@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Command;
 use RMS\PushNotificationsBundle\Message\iOSMessage;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -49,8 +50,8 @@ class PushTestCommand extends ContainerAwareCommand
         $this
             ->setName('dp:push-test')
             ->setDescription('Test push notification')
-            ->addArgument('uuid')
-            ->addArgument('message')
+            ->addOption('uuid', null, InputOption::VALUE_REQUIRED)
+            ->addOption('message', null, InputOption::VALUE_REQUIRED)
         ;
     }
 
@@ -60,8 +61,8 @@ class PushTestCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $message = new iOSMessage();
-        $message->setMessage($input->getArgument('message'));
-        $message->setDeviceIdentifier($input->getArgument('uuid'));
+        $message->setMessage($input->getOption('message'));
+        $message->setDeviceIdentifier($input->getOption('uuid'));
 
         $this->getContainer()->get('rms_push_notifications')->send($message);
     }
