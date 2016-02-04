@@ -24,7 +24,7 @@ class DatManager implements DatManagerInterface
      */
     public function hasTrigger($id)
     {
-        return is_file($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.trigger');
+        return $this->hasFile($id.'.trigger');
     }
 
     /**
@@ -32,15 +32,7 @@ class DatManager implements DatManagerInterface
      */
     public function enableTrigger($id)
     {
-        $tries = 0;
-        do {
-            if ($this->hasTrigger($id)) {
-                return true;
-            }
-            $success = @file_put_contents($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.trigger', date('Y-m-d H:i:s'), \LOCK_EX) !== false;
-        } while (!$success && ++$tries < 3);
-
-        return $success;
+        return $this->writeFile($id.'.trigger', date('Y-m-d H:i:s'));
     }
 
     /**
@@ -48,15 +40,7 @@ class DatManager implements DatManagerInterface
      */
     public function disableTrigger($id)
     {
-        $tries = 0;
-        do {
-            if (!$this->hasTrigger($id)) {
-                return true;
-            }
-            $success = @unlink($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.trigger');
-        } while (!$success && ++$tries < 3);
-
-        return $success;
+        return $this->removeFile($id.'.trigger');
     }
 
     /**
@@ -64,7 +48,7 @@ class DatManager implements DatManagerInterface
      */
     public function hasDatFile($id)
     {
-        return is_file($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.dat');
+        return $this->hasFile($id.'.dat');
     }
 
     /**
@@ -72,14 +56,7 @@ class DatManager implements DatManagerInterface
      */
     public function readDatFile($id, $default = '__throw__')
     {
-        $content = false;
-
-        if ($this->hasDatFile($id)) {
-            $tries = 0;
-            do {
-                $content = @file_get_contents($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.dat');
-            } while (($content === false) && ++$tries < 3);
-        }
+        $content = $this->readFile($id.'.dat');
 
         if ($content === false) {
             if ($default === '__throw__') {
@@ -109,12 +86,7 @@ class DatManager implements DatManagerInterface
             'content' => $content
         ]);
 
-        $tries = 0;
-        do {
-            $success = @file_put_contents($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.dat', $write_content, \LOCK_EX) !== false;
-        } while (!$success && ++$tries < 3);
-
-        return $success;
+        return $this->writeFile($id.'.dat', $write_content);
     }
 
     /**
@@ -122,14 +94,130 @@ class DatManager implements DatManagerInterface
      */
     public function removeDatFile($id)
     {
-        $tries = 0;
-        do {
-            if (!$this->hasDatFile($id)) {
-                return true;
+        return $this->removeFile($id.'.dat');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasTxtFile($id)
+    {
+        return $this->hasFile($id.'.txt');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function readTxtFile($id, $default = '__throw__')
+    {
+        $content = $this->readFile($id.'.txt');
+
+        if ($content === false) {
+            if ($default === '__throw__') {
+                throw new \RuntimeException("Failed to read datfile: " . $id);
             }
-            $success = @unlink($this->cache_dir . DIRECTORY_SEPARATOR . $id . '.dat');
+            return $default;
+        }
+
+        $content = str_replace(array("\r\n", "\r"), "\n", trim($content));
+
+        return $content;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function writeTxtFile($id, $txt)
+    {
+        $txt = str_replace(array("\r\n", "\r"), "\n", trim($txt));
+        return $this->writeFile($id.'.txt', $txt);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeTxtFile($id)
+    {
+        return $this->removeFile($id.'.txt');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasBinFile($id)
+    {
+        return $this->hasFile($id.'.bin');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function readBinFile($id, $default = '__throw__')
+    {
+        return $this->readFile($id.'.bin');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function writeBinFile($id, $txt)
+    {
+        return $this->writeFile($id.'.bin', $txt);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeBinFile($id)
+    {
+        return $this->removeFile($id.'.bin');
+    }
+
+    ####################################################################################################################
+
+    private function hasFile($name)
+    {
+        return is_file($this->cache_dir . DIRECTORY_SEPARATOR . $name);
+    }
+
+    private function readFile($name)
+    {
+        $path = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
+
+        if (is_file($path)) {
+            $tries = 0;
+            do {
+                $content = @file_get_contents($path);
+            } while (($content === false) && ++$tries < 3);
+        } else {
+            $content = false;
+        }
+
+        return $content;
+    }
+
+    private function writeFile($name, $content)
+    {
+        $path  = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
+        $tries = 0;
+
+        do {
+            $success = @file_put_contents($path, $content, \LOCK_EX) !== false;
         } while (!$success && ++$tries < 3);
 
         return $success;
+    }
+
+    public function removeFile($name)
+    {
+        $path  = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
+        $tries = 0;
+
+        do {
+            if (!is_file($path)) {
+                return true;
+            }
+            $success = @unlink($path);
+        } while (!$success && ++$tries < 3);
     }
 }

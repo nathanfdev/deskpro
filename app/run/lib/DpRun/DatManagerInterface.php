@@ -16,7 +16,9 @@ namespace DpRun;
  * - A 'trigger' file is simply a file that exists or does not exist. It
  *   is just a signal (boolean) for a particular thing. E.g., 'is_helpdesk_disabled'
  * - A 'dat' file is any arbitrary data file that contains data. Any data you set
- *   must be primitive PHP values (scalars and arrays only).
+ *   must be primitive PHP values (scalars and arrays only). You can save data structures here.
+ * - A 'txt' file is any string data you want written. The string is normalised to use LF and it's trimmed.
+ * - A 'bin' file is arbitrary binary data. This data is written as-is.
  */
 interface DatManagerInterface
 {
@@ -79,4 +81,76 @@ interface DatManagerInterface
      * @return bool True for success, false for error
      */
     public function removeDatFile($id);
+
+    /**
+     * Check if a txt file exists.
+     *
+     * @param string $id
+     * @return bool
+     */
+    public function hasTxtFile($id);
+
+    /**
+     * Read a txt file, or return $default if it does not exist.
+     * If $default is the string '__throw__' then a RuntimeException will
+     * be raised if the file does not exist.
+     *
+     * @param string $id
+     * @param string $default
+     * @return mixed
+     */
+    public function readTxtFile($id, $default = '__throw__');
+
+    /**
+     * Write a txt file.
+     *
+     * @param string $id
+     * @param string $txt
+     * @return bool True for success, false for error
+     */
+    public function writeTxtFile($id, $txt);
+
+    /**
+     * Remove a txt file.
+     *
+     * @param string $id
+     * @return bool True for success, false for error
+     */
+    public function removeTxtFile($id);
+
+    /**
+     * Check if a bin file exists.
+     *
+     * @param string $id
+     * @return bool
+     */
+    public function hasBinFile($id);
+
+    /**
+     * Read a bin file, or return $default if it does not exist.
+     * If $default is the string '__throw__' then a RuntimeException will
+     * be raised if the file does not exist.
+     *
+     * @param string $id
+     * @param string $default
+     * @return mixed
+     */
+    public function readBinFile($id, $default = '__throw__');
+
+    /**
+     * Write a bin file.
+     *
+     * @param string $id
+     * @param string $txt
+     * @return bool True for success, false for error
+     */
+    public function writeBinFile($id, $txt);
+
+    /**
+     * Remove a bin file.
+     *
+     * @param string $id
+     * @return bool True for success, false for error
+     */
+    public function removeBinFile($id);
 }

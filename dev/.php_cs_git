@@ -20,7 +20,8 @@ $filename_pattern = '/\.php$/';
 
 $exclude_dirs = array(
     PHP_CS_SRC_DIR.'/vendor',
-    PHP_CS_SRC_DIR.'/vendor-src'
+    PHP_CS_SRC_DIR.'/vendor-src',
+    PHP_CS_SRC_DIR.'/config_new',
 );
 
 $exclude_file_names = array(
@@ -31,8 +32,11 @@ $changed_files = array_map(function($filename) {
     return realpath(GIT_BASE_DIR.'/'.$filename);
 }, $outputs);
 
-$changed_files = array_filter($outputs, function($filename) use ($filename_pattern, $exclude_dirs, $exclude_file_names) {
-    if (!(preg_match($filename_pattern, $filename) && file_exists($filename))) {
+$changed_files = array_filter($changed_files, function($filename) use ($filename_pattern, $exclude_dirs, $exclude_file_names) {
+    if (!$filename) {
+        return false;
+    }
+    if (!preg_match($filename_pattern, $filename) || !file_exists($filename)) {
         return false;
     }
 

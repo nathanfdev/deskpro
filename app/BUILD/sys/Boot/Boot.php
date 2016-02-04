@@ -127,6 +127,27 @@ class Boot
      */
     public static function bootWeb()
     {
+        // Makes sure the www path we have in cache
+        // is the same as the path we are requesting
+        if (defined('DESKPRO_WWW_PATH')) {
+            /** @var \DpRun\DpEnv $env */
+            $env = $GLOBALS['DP_ENV'];
+
+            if ($env) {
+                // Check if its a non-default path...
+                if (DESKPRO_WWW_PATH !== $env->getDpRoot().DIRECTORY_SEPARATOR.'www') {
+                    $current = $env->getDatManager()->readTxtFile('www_dir', null);
+                    if (!$current || $current !== DESKPRO_WWW_PATH) {
+                        $env->getDatManager()->writeTxtFile('www_dir', DESKPRO_WWW_PATH);
+                    }
+                // If it IS the default path, then we just
+                // make sure to remove the cache file.
+                } else {
+                    $env->getDatManager()->removeTxtFile('www_dir');
+                }
+            }
+        }
+
         if (isset($_GET['__serverinfo'])) {
             self::bootServerInfoChecks();
 

@@ -32,6 +32,7 @@ Symfony\CS\Fixer\Contrib\HeaderCommentFixer::setHeader($header);
 $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('vendor')
     ->exclude('vendor-src')
+    ->exclude('config_new')
     ->in(PHP_CS_SRC_DIR)
 ;
 

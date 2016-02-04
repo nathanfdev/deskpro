@@ -1,29 +1,26 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
+########################################################################
+# Path to the main DeskPRO directory
+########################################################################
 
-require __DIR__.'/../app/run/targets/web.php';
+$deskpro_dir = __DIR__.'/../';
+
+
+########################################################################
+# Do not edit below this line
+########################################################################
+
+$deskpro_dir = realpath($deskpro_dir);
+
+if (!$deskpro_dir
+    || !is_dir($deskpro_dir)
+    || !file_exists($deskpro_dir . '/app/run/targets/web.php')
+) {
+    echo 'The $deskpro_dir configuration variable is invalid.';
+	echo 'Please edit index.php and correct the path.';
+	exit(1);
+}
+
+define('DESKPRO_WWW_PATH', __DIR__);
+require $deskpro_dir . '/app/run/targets/web.php';

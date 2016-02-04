@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /assets/
-Disallow: /admin/
-Disallow: /agent/
-Disallow: /api/
-Disallow: /billing/
-Disallow: /reports/
