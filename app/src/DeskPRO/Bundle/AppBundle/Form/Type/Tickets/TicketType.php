@@ -427,30 +427,30 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function removeField(TicketFormContext $form_context, LayoutField $field)
+    private function removeField(TicketFormContext $context, LayoutField $field)
     {
-        if (!$form_context->getForm()->has($field->getId())) {
+        if (!$context->getForm()->has($field->getId())) {
             return;
         }
 
-        $form_context->getForm()->remove($field->getId());
+        $context->getForm()->remove($field->getId());
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      */
-    private function addField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
-        if ($form_context->getForm()->has($field->getId())) {
+        if ($context->getForm()->has($field->getId())) {
             return;
         }
 
-        if ($this->shouldFieldBeSkipped($field, $form_context)) {
+        if ($this->shouldFieldBeSkipped($field, $context)) {
             return;
         }
 
@@ -458,69 +458,69 @@ class TicketType extends AbstractType
 
         switch ($field_type) {
             case FormFields::SUBJECT:
-                $this->addSubject($form_context, $ignore_validation);
+                $this->addSubject($context, $ignore_validation);
                 break;
             case FormFields::MESSAGE:
-                $this->addMessage($form_context, $field);
+                $this->addMessage($context, $field);
                 break;
             case FormFields::USER_NAME_AND_EMAIL:
-                $this->addUserNameAndEmail($form_context, $field);
+                $this->addUserNameAndEmail($context, $field);
                 break;
             case FormFields::DEPARTMENT:
-                $this->addDepartment($form_context, $field);
+                $this->addDepartment($context, $field);
                 break;
             case FormFields::CATEGORY:
-                $this->addCategory($form_context, $field);
+                $this->addCategory($context, $field);
                 break;
             case FormFields::PRIORITY:
-                $this->addPriority($form_context, $field);
+                $this->addPriority($context, $field);
                 break;
             case FormFields::WORKFLOW:
-                $this->addWorkflow($form_context, $field);
+                $this->addWorkflow($context, $field);
                 break;
             case FormFields::PRODUCT:
-                $this->addProduct($form_context, $field);
+                $this->addProduct($context, $field);
                 break;
             case FormFields::CAPTCHA:
-                $this->addCaptcha($form_context, $field, $ignore_validation);
+                $this->addCaptcha($context, $field, $ignore_validation);
                 break;
             case FormFields::CC:
-                $this->addCc($form_context, $field);
+                $this->addCc($context, $field);
                 break;
             case FormFields::ATTACH:
-                $this->addAttach($form_context);
+                $this->addAttach($context);
                 break;
             case FormFields::USER_EMAIL:
-                $this->addUserEmail($form_context);
+                $this->addUserEmail($context);
                 break;
             case FormFields::USER_NAME:
-                $this->addUserName($form_context);
+                $this->addUserName($context);
                 break;
             case FormFields::USER_TIMEZONE:
-                $this->addUserTimezone($form_context, $field);
+                $this->addUserTimezone($context, $field);
                 break;
             case FormFields::USER_FIELD:
-                $this->addCustomUserField($form_context, $field, $ignore_validation);
+                $this->addCustomUserField($context, $field, $ignore_validation);
                 break;
             case FormFields::ORG_FIELD:
-                $this->addCustomOrgField($form_context, $field, $ignore_validation);
+                $this->addCustomOrgField($context, $field, $ignore_validation);
                 break;
             case FormFields::TICKET_FIELD:
-                $this->addCustomTicketField($form_context, $field, $ignore_validation);
+                $this->addCustomTicketField($context, $field, $ignore_validation);
                 break;
             case FormFields::CUSTOM_FIELD:
-                $this->addCustomPerField($form_context, $field, $ignore_validation);
+                $this->addCustomPerField($context, $field, $ignore_validation);
                 break;
         }
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addDepartment(TicketFormContext $form_context, LayoutField $field)
+    private function addDepartment(TicketFormContext $context, LayoutField $field)
     {
-        $person    = $form_context->getForm()->getConfig()->getOption('person');
+        $person    = $context->getForm()->getConfig()->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if it is 1 or less to choose from, dont even add this field to the form
@@ -528,10 +528,10 @@ class TicketType extends AbstractType
             return;
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_department', [
+        $context->getForm()->add($field->getId(), 'deskpro_department', [
             'label'       => $this->phrase('portal.forms.label_department'),
-            'person'      => $form_context->getPerson(),
-            'ticket'      => $form_context->getTicket(),
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
             'placeholder' => '',
             'constraints' => [
                 new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
@@ -541,10 +541,10 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param bool|false        $ignore_validation
      */
-    private function addSubject(TicketFormContext $form_context, $ignore_validation = false)
+    private function addSubject(TicketFormContext $context, $ignore_validation = false)
     {
         $options = [
             'label'       => $this->phrase('portal.forms.label_subject'),
@@ -564,53 +564,53 @@ class TicketType extends AbstractType
             $options = $this->markNoValidation($options);
         }
 
-        $form_context->getForm()->add('subject', 'text', $options);
+        $context->getForm()->add('subject', 'text', $options);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addMessage(TicketFormContext $form_context, LayoutField $field)
+    private function addMessage(TicketFormContext $context, LayoutField $field)
     {
-        if (TicketFormContext::VISIBILITY_NEW !== $form_context->getVisibility()) {
+        if (TicketFormContext::VISIBILITY_NEW !== $context->getVisibility()) {
             return;
         }
 
-        $form_context->getForm()->add($field->getId(), 'ticket_description', [
+        $context->getForm()->add($field->getId(), 'ticket_description', [
             'mapped' => false,
             'label'  => false,
-            'person' => $form_context->getPerson(),
-            'ticket' => $form_context->getTicket(),
-            'data'   => $form_context->getMessage(),
+            'person' => $context->getPerson(),
+            'ticket' => $context->getTicket(),
+            'data'   => $context->getMessage(),
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addUserNameAndEmail(TicketFormContext $form_context, LayoutField $field)
+    private function addUserNameAndEmail(TicketFormContext $context, LayoutField $field)
     {
-        $form_context->getForm()->add(
+        $context->getForm()->add(
             $field->getId(),
             'deskpro_combined_type',
             [
                 'forms' => [
-                    $this->createUserName($form_context),
-                    $this->createUserEmail($form_context),
+                    $this->createUserName($context),
+                    $this->createUserEmail($context),
                 ],
             ]
         );
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      */
-    private function addUserName(TicketFormContext $form_context)
+    private function addUserName(TicketFormContext $context)
     {
-        $form = $this->createUserName($form_context);
-        $form_context->getForm()->add(
+        $form = $this->createUserName($context);
+        $context->getForm()->add(
             $form['name'],
             $form['type'],
             $form['options']
@@ -618,11 +618,11 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return array
      */
-    private function createUserName(TicketFormContext $form_context)
+    private function createUserName(TicketFormContext $context)
     {
         return [
             'name'    => FormFields::USER_NAME,
@@ -630,18 +630,18 @@ class TicketType extends AbstractType
             'options' => [
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $form_context->getPerson()->getDisplayName(),
+                'empty_data'    => $context->getPerson()->getDisplayName(),
             ],
         ];
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      */
-    private function addUserEmail(TicketFormContext $form_context)
+    private function addUserEmail(TicketFormContext $context)
     {
-        $form = $this->createUserEmail($form_context);
-        $form_context->getForm()->add(
+        $form = $this->createUserEmail($context);
+        $context->getForm()->add(
             $form['name'],
             $form['type'],
             $form['options']
@@ -649,13 +649,13 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return array
      */
-    private function createUserEmail(TicketFormContext $form_context)
+    private function createUserEmail(TicketFormContext $context)
     {
-        $person = $form_context->getPerson();
+        $person = $context->getPerson();
         if ($person->isUser()) {
             return [
                 'name'    => FormFields::USER_EMAIL,
@@ -680,25 +680,25 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addUserTimezone(TicketFormContext $form_context, LayoutField $field)
+    private function addUserTimezone(TicketFormContext $context, LayoutField $field)
     {
-        $form_context->getForm()->add($field->getId(), 'timezone', [
+        $context->getForm()->add($field->getId(), 'timezone', [
             'property_path' => 'person.timezone',
             'label'         => $this->phrase('portal.forms.label_timezone'),
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      *
      * @return bool
      */
-    private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addCustomTicketField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
         if (!$field_def || !$field_def->isEnabled()) {
@@ -707,9 +707,9 @@ class TicketType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'ticket'            => $form_context->getTicket(),
+            'ticket'            => $context->getTicket(),
             'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
             'required'          => $field_def->isRequired(),
         ];
@@ -726,7 +726,7 @@ class TicketType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $form_context->getForm()->add(
+        $context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_ticket',
             $options
@@ -734,11 +734,11 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      */
-    private function addCustomUserField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addCustomUserField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
         if (!$field_def->isEnabled()) {
@@ -747,9 +747,9 @@ class TicketType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'person'            => $form_context->getPerson(),
+            'person'            => $context->getPerson(),
             'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
         ];
 
@@ -758,7 +758,7 @@ class TicketType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $form_context->getForm()->add(
+        $context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_person',
             $options
@@ -766,23 +766,23 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      */
-    private function addCustomOrgField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addCustomOrgField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
         if (!$field_def->isEnabled()) {
             return;
         }
 
-        $ticket_organization = $form_context->getTicket()->getOrganization();
+        $ticket_organization = $context->getTicket()->getOrganization();
         if (!$ticket_organization) {
             // must be in an organization to see this field
             return;
         }
-        if ($form_context->getPerson()->getOrganization() !== $ticket_organization) {
+        if ($context->getPerson()->getOrganization() !== $ticket_organization) {
             // person must be a part of the tickets organization to edit org fields
             return;
         }
@@ -791,7 +791,7 @@ class TicketType extends AbstractType
             'custom_data_field' => $field_def,
             'organization'      => $ticket_organization,
             'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
-            'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
         ];
 
@@ -800,7 +800,7 @@ class TicketType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $form_context->getForm()->add(
+        $context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_organization',
             $options
@@ -808,31 +808,31 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      */
-    private function addCustomPerField(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addCustomPerField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
-        $context = new CustomFieldTicketContext($form_context->getTicket());
-        $def     = $this->custom_per_field_manager->getCustomPerFieldDefinition($field->getFieldId(), $context);
+        $field_context = new CustomFieldTicketContext($context->getTicket());
+        $def           = $this->custom_per_field_manager->getCustomPerFieldDefinition($field->getFieldId(), $field_context);
 
         if (!$def || !$def->isEnabled()) {
             return;
         }
 
-        $possible_choices = $this->custom_per_field_manager->getCustomPerFieldChoices($def, $context);
+        $possible_choices = $this->custom_per_field_manager->getCustomPerFieldChoices($def, $field_context);
         if (count($possible_choices) < 1) {
             return;
         }
 
-        $data = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $context);
+        $data = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $field_context);
 
         $options = [
-            'agent_interface'             => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'agent_interface'             => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'                       => $def->getTitle(),
             'data'                        => $data,
-            'custom_per_field_context'    => $context,
+            'custom_per_field_context'    => $field_context,
             'custom_per_field_definition' => $def,
             'mapped'                      => false,
         ];
@@ -841,7 +841,7 @@ class TicketType extends AbstractType
             $options = $this->markNoValidation($options);
         }
 
-        $form_context->getForm()->add(
+        $context->getForm()->add(
             $field->getId(),
             'deskpro_custom_per_field_data',
             $options
@@ -849,103 +849,103 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addCategory(TicketFormContext $form_context, LayoutField $field)
+    private function addCategory(TicketFormContext $context, LayoutField $field)
     {
-        if (!$this->canCategoryBeDisplayed($form_context)) {
+        if (!$this->canCategoryBeDisplayed($context)) {
             return;
         }
 
-        $default = $form_context->getSetting('core.default_ticket_cat', null);
+        $default = $context->getSetting('core.default_ticket_cat', null);
         if ($default) {
-            if (!$form_context->getTicket()->getCategoryId()) {
-                $form_context->getTicket()->setCategoryId($default);
+            if (!$context->getTicket()->getCategoryId()) {
+                $context->getTicket()->setCategoryId($default);
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_category', [
+        $context->getForm()->add($field->getId(), 'deskpro_category', [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addPriority(TicketFormContext $form_context, LayoutField $field)
+    private function addPriority(TicketFormContext $context, LayoutField $field)
     {
-        if (!$this->canPriorityBeDisplayed($form_context)) {
+        if (!$this->canPriorityBeDisplayed($context)) {
             return;
         }
 
-        $default = $form_context->getSetting('core.default_ticket_pri', null);
+        $default = $context->getSetting('core.default_ticket_pri', null);
         if ($default) {
-            if (!$form_context->getTicket()->getPriorityId()) {
-                $form_context->getTicket()->setPriorityId($default);
+            if (!$context->getTicket()->getPriorityId()) {
+                $context->getTicket()->setPriorityId($default);
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_priority', [
+        $context->getForm()->add($field->getId(), 'deskpro_priority', [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
+    private function addWorkflow(TicketFormContext $context, LayoutField $field)
     {
-        if (!$this->canWorkflowBeDisplayed($form_context)) {
+        if (!$this->canWorkflowBeDisplayed($context)) {
             return;
         }
 
-        $default = $form_context->getSetting('core.default_ticket_work', null);
+        $default = $context->getSetting('core.default_ticket_work', null);
         if ($default) {
-            if (!$form_context->getTicket()->getWorkflowId()) {
-                $form_context->getTicket()->setWorkflowId($default);
+            if (!$context->getTicket()->getWorkflowId()) {
+                $context->getTicket()->setWorkflowId($default);
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_workflow', [
+        $context->getForm()->add($field->getId(), 'deskpro_workflow', [
             'label' => $this->phrase('portal.forms.label_workflow'),
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addProduct(TicketFormContext $form_context, LayoutField $field)
+    private function addProduct(TicketFormContext $context, LayoutField $field)
     {
-        if (!$this->canProductBeDisplayed($form_context)) {
+        if (!$this->canProductBeDisplayed($context)) {
             return;
         }
 
-        $default = $form_context->getSetting('core.default_prod_id', null);
+        $default = $context->getSetting('core.default_prod_id', null);
         if ($default) {
-            if (!$form_context->getTicket()->getProductId()) {
-                $form_context->getTicket()->setProductId($default);
+            if (!$context->getTicket()->getProductId()) {
+                $context->getTicket()->setProductId($default);
             }
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_product', [
+        $context->getForm()->add($field->getId(), 'deskpro_product', [
             'placeholder' => '',
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      * @param bool|false        $ignore_validation
      */
-    private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
+    private function addCaptcha(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
-        if (!$this->canCaptchaBeDisplayed($form_context)) {
+        if (!$this->canCaptchaBeDisplayed($context)) {
             return;
         }
 
@@ -962,40 +962,40 @@ class TicketType extends AbstractType
             $options = $this->markNoValidation($options);
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_captcha', $options);
-        $form_context->setCaptchaExistsOnForm(true);
+        $context->getForm()->add($field->getId(), 'deskpro_captcha', $options);
+        $context->setCaptchaExistsOnForm(true);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addCc(TicketFormContext $form_context, LayoutField $field)
+    private function addCc(TicketFormContext $context, LayoutField $field)
     {
-        $form_context->getForm()->add($field->getId(), 'deskpro_cc', [
+        $context->getForm()->add($field->getId(), 'deskpro_cc', [
             'label'    => $this->phrase('portal.forms.label_cc'),
-            'ticket'   => $form_context->getTicket(),
+            'ticket'   => $context->getTicket(),
             'mapped'   => false,
             'required' => false,
         ]);
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      */
-    private function addAttach(TicketFormContext $form_context)
+    private function addAttach(TicketFormContext $context)
     {
-        if (!$form_context->getMessage()) {
+        if (!$context->getMessage()) {
             return;
         }
 
-        $form = $form_context->getForm();
+        $form = $context->getForm();
         $form
             ->add('attachments', 'ticket_message_attachment_collection', [
                 'property_path'  => 'messages[0].attachments',
                 'required'       => false,
-                'person'         => $form_context->getPerson(),
-                'ticket_message' => $form_context->getMessage(),
+                'person'         => $context->getPerson(),
+                'ticket_message' => $context->getMessage(),
             ])
             ->add('more_attachments', 'submit', [
                 'validation_groups' => false,
@@ -1005,17 +1005,17 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      */
-    private function addSubmit(TicketFormContext $form_context)
+    private function addSubmit(TicketFormContext $context)
     {
-        if ($form_context->getVisibility() !== TicketFormContext::VISIBILITY_NEW) {
+        if ($context->getVisibility() !== TicketFormContext::VISIBILITY_NEW) {
             $label = $this->phrase('portal.forms.label_save');
         } else {
             $label = $this->phrase('portal.forms.label_submit');
         }
 
-        $form_context->getForm()->add('submit', 'submit', [
+        $context->getForm()->add('submit', 'submit', [
             'label' => $label,
         ]);
     }
@@ -1186,14 +1186,14 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return bool
      */
-    protected function canProductBeDisplayed(TicketFormContext $form_context)
+    protected function canProductBeDisplayed(TicketFormContext $context)
     {
         // we need the brand setting to be correct
-        if (!$form_context->getSetting('core.use_product', false)) {
+        if (!$context->getSetting('core.use_product', false)) {
             return false;
         }
 
@@ -1204,14 +1204,14 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return bool
      */
-    protected function canPriorityBeDisplayed(TicketFormContext $form_context)
+    protected function canPriorityBeDisplayed(TicketFormContext $context)
     {
         // we need the brand setting to be correct
-        if (!$form_context->getSetting('core.use_ticket_priority', false)) {
+        if (!$context->getSetting('core.use_ticket_priority', false)) {
             return false;
         }
 
@@ -1222,14 +1222,14 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return bool
      */
-    protected function canCategoryBeDisplayed(TicketFormContext $form_context)
+    protected function canCategoryBeDisplayed(TicketFormContext $context)
     {
         // we need the brand setting to be correct
-        if (!$form_context->getSetting('core.use_ticket_category', false)) {
+        if (!$context->getSetting('core.use_ticket_category', false)) {
             return false;
         }
 
@@ -1240,14 +1240,14 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return bool
      */
-    protected function canWorkflowBeDisplayed(TicketFormContext $form_context)
+    protected function canWorkflowBeDisplayed(TicketFormContext $context)
     {
         // we need the brand setting to be correct
-        if (!$form_context->getSetting('core.use_ticket_workflow', false)) {
+        if (!$context->getSetting('core.use_ticket_workflow', false)) {
             return false;
         }
 
@@ -1258,18 +1258,18 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param TicketFormContext $form_context
+     * @param TicketFormContext $context
      *
      * @return bool
      */
-    protected function canCaptchaBeDisplayed(TicketFormContext $form_context)
+    protected function canCaptchaBeDisplayed(TicketFormContext $context)
     {
-        if (!$form_context->getForm()->getConfig()->getOption('use_captcha')) {
+        if (!$context->getForm()->getConfig()->getOption('use_captcha')) {
             return false;
         }
 
         // ensure captcha is only present once
-        if ($form_context->doesCaptchaExistOnForm()) {
+        if ($context->doesCaptchaExistOnForm()) {
             return false;
         }
 
