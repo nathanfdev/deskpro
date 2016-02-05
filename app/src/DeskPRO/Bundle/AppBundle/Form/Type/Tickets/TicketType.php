@@ -577,20 +577,6 @@ class TicketType extends AbstractType
             return;
         }
 
-        $ticket = $form_context->getTicket();
-        if (!$ticket->messages->count()) {
-            $ticket_message = new TicketMessage();
-            $ticket_message
-                ->setPerson($form_context->getPerson())
-                ->setMessage('')
-            ;
-
-            $ticket->addMessage($ticket_message);
-            $form_context->setMessage($ticket_message);
-        } elseif (!$form_context->getMessage()) {
-            $form_context->setMessage($ticket->messages->first());
-        }
-
         $form_context->getForm()->add($field->getId(), 'ticket_description', [
             'mapped' => false,
             'label'  => false,
@@ -999,18 +985,23 @@ class TicketType extends AbstractType
      */
     private function addAttach(TicketFormContext $form_context)
     {
-        if ($form_context->getMessage()) {
-            $form_context->getForm()->add('attachments', 'ticket_message_attachment_collection', [
+        if (!$form_context->getMessage()) {
+            return;
+        }
+
+        $form = $form_context->getForm();
+        $form
+            ->add('attachments', 'ticket_message_attachment_collection', [
                 'property_path'  => 'messages[0].attachments',
                 'required'       => false,
                 'person'         => $form_context->getPerson(),
                 'ticket_message' => $form_context->getMessage(),
-            ]);
-            $form_context->getForm()->add('more_attachments', 'submit', [
+            ])
+            ->add('more_attachments', 'submit', [
                 'validation_groups' => false,
                 'label'             => $this->phrase('portal.forms.label_add_attachment'),
-            ]);
-        }
+            ])
+        ;
     }
 
     /**

@@ -34,6 +34,8 @@ Feature: /tickets endpoint
 
   @basic
   Scenario: I create a ticket
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
@@ -42,7 +44,11 @@ Feature: /tickets endpoint
   "message": {
     "message_html": "<p>my html message</p>",
     "message_format": "html"
-  }
+  },
+  "attachments": [
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
+  ]
 }
     """
     Then the response status code should be 201
@@ -56,6 +62,9 @@ Feature: /tickets endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should contain "<p>my html message"
 
+    # Department with id = 1 has default layout without attachments field
+    And the JSON node "data[0].attachments" should have 0 elements
+
   @basic
   Scenario: I modify and retrieve a ticket
     When I send a PUT request to "/api/v2/tickets/5" with body:
@@ -66,7 +75,11 @@ Feature: /tickets endpoint
   "message": {
     "message_text": "my text message",
     "message_format": "text"
-  }
+  },
+  "attachments": [
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
+  ]
 }
     """
     And I send a GET request to "/api/v2/tickets/5"
@@ -80,6 +93,9 @@ Feature: /tickets endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should be equal to "my text message"
+    And the JSON node "data[0].attachments" should have 2 elements
+    And the JSON node "data[0].attachments[0]" should be equal to 1
+    And the JSON node "data[0].attachments[1]" should be equal to 2
 
   @basic
   Scenario: I delete a ticket

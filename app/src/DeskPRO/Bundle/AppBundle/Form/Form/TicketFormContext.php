@@ -217,7 +217,10 @@ class TicketFormContext
         return $this->ticket;
     }
 
-    public function setNewLayout($destination_layout)
+    /**
+     * @param TicketLayout $destination_layout
+     */
+    public function setNewLayout(TicketLayout $destination_layout)
     {
         $this->previous_layout = $this->layout;
         $this->layout          = $destination_layout;
@@ -232,22 +235,26 @@ class TicketFormContext
     }
 
     /**
-     * @param TicketMessage $ticket_message
-     *
-     * @return $this
-     */
-    public function setMessage(TicketMessage $ticket_message)
-    {
-        $this->ticket_message = $ticket_message;
-
-        return $this;
-    }
-
-    /**
      * @return TicketMessage
      */
     public function getMessage()
     {
+        if (!$this->ticket_message) {
+            $ticket = $this->getTicket();
+            if ($ticket->messages->count()) {
+                $this->ticket_message = $ticket->messages->first();
+            } else {
+                $ticket_message = new TicketMessage();
+                $ticket_message
+                    ->setPerson($this->getPerson())
+                    ->setMessage('')
+                ;
+
+                $ticket->addMessage($ticket_message);
+                $this->ticket_message = $ticket_message;
+            }
+        }
+
         return $this->ticket_message;
     }
 
