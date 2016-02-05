@@ -203,12 +203,6 @@ services:
       - { name: form.type, alias: deskpro_language }
 
 
-  form.person_email:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailType
-    tags:
-      - { name: form.type, alias: deskpro_person_email }
-
-
   form.display_html:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DisplayHtmlType
     tags:

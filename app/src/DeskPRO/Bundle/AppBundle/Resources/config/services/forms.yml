@@ -74,6 +74,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_category }
 
+  form.person_email:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType
+    tags:
+      - { name: form.type, alias: deskpro_person_email }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
