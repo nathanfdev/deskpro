@@ -858,7 +858,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_cat', null);
+        $default = $form_context->getSetting('core.default_ticket_cat', null);
         if ($default) {
             if (!$form_context->getTicket()->getCategoryId()) {
                 $form_context->getTicket()->setCategoryId($default);
@@ -881,7 +881,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_pri', null);
+        $default = $form_context->getSetting('core.default_ticket_pri', null);
         if ($default) {
             if (!$form_context->getTicket()->getPriorityId()) {
                 $form_context->getTicket()->setPriorityId($default);
@@ -904,7 +904,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_work', null);
+        $default = $form_context->getSetting('core.default_ticket_work', null);
         if ($default) {
             if (!$form_context->getTicket()->getWorkflowId()) {
                 $form_context->getTicket()->setWorkflowId($default);
@@ -926,7 +926,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $default = $this->getSettingsBag($form_context->getForm())->get('core.default_prod_id', null);
+        $default = $form_context->getSetting('core.default_prod_id', null);
         if ($default) {
             if (!$form_context->getTicket()->getProductId()) {
                 $form_context->getTicket()->setProductId($default);
@@ -1056,16 +1056,6 @@ class TicketType extends AbstractType
             'validation_groups' => [],
             'constraints'       => [],
         ]);
-    }
-
-    /**
-     * @param FormInterface $form
-     *
-     * @return \Application\DeskPRO\NewSettings\SettingsBag
-     */
-    private function getSettingsBag(FormInterface $form)
-    {
-        return $form->getConfig()->getOption('settings');
     }
 
     /**
@@ -1203,7 +1193,7 @@ class TicketType extends AbstractType
     protected function canProductBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_product', false)) {
+        if (!$form_context->getSetting('core.use_product', false)) {
             return false;
         }
 
@@ -1221,7 +1211,7 @@ class TicketType extends AbstractType
     protected function canPriorityBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_priority', false)) {
+        if (!$form_context->getSetting('core.use_ticket_priority', false)) {
             return false;
         }
 
@@ -1239,7 +1229,7 @@ class TicketType extends AbstractType
     protected function canCategoryBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_category', false)) {
+        if (!$form_context->getSetting('core.use_ticket_category', false)) {
             return false;
         }
 
@@ -1257,7 +1247,7 @@ class TicketType extends AbstractType
     protected function canWorkflowBeDisplayed(TicketFormContext $form_context)
     {
         // we need the brand setting to be correct
-        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_workflow', false)) {
+        if (!$form_context->getSetting('core.use_ticket_workflow', false)) {
             return false;
         }
 

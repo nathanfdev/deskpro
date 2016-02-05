@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Symfony\Component\Form\FormInterface;
@@ -296,5 +297,19 @@ class TicketFormContext
     public function getPreviouslyDisplayedFields()
     {
         return $this->previously_displayed_fields;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getSetting($key, $default = null)
+    {
+        /** @var SettingsBag $settings_bag */
+        $settings_bag = $this->form->getConfig()->getOption('settings');
+
+        return $settings_bag->get($key, $default);
     }
 }
