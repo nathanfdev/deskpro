@@ -97,7 +97,8 @@ class TextField extends CustomFieldAbstract
             $field->setOption('regex', null);
         } elseif ($this->regex) {
             // No delims
-            if ($this->regex[0] != substr($this->regex, -1, 1)) {
+
+            if (false === @preg_match($this->regex, 'test')) {
                 $this->regex = '/'.$this->regex.'/';
             }
 
