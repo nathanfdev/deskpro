@@ -53,7 +53,10 @@ define [
       # @return {Array}
     ###
     getOperators: (options) ->
-      return options.operators || ['is', 'not', 'isset', 'not_isset']
+      ops = options.operators || ['is', 'not', 'isset', 'not_isset']
+      if (options.addOperators)
+        ops = ops.concat(options.addOperators)
+      return ops
 
     ###
       # Constructs standard input from a custom field def
@@ -61,7 +64,7 @@ define [
     getStandardForFieldDef: (field, options = {}) ->
       options.type_name = field.type_name
       if not options.propName then options.propName = 'value'
-      options.operators = ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
+      options.addOperators = ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
 
       if field.type_name == 'choice'
         options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
