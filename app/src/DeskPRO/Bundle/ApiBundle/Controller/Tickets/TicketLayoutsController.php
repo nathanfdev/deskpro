@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -76,7 +75,7 @@ class TicketLayoutsController extends BaseController
     public function cgetAction($context)
     {
         $ticket_layouts = $this->getTicketLayoutRepository()->findAll();
-        if (empty($ticket_layout)) {
+        if (empty($ticket_layouts)) {
             $ticket_layouts[] = new TicketLayout();
         }
 
