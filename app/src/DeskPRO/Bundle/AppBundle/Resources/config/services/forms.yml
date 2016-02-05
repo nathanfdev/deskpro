@@ -48,6 +48,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_department }
 
+  form.cc:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CcType
+    arguments: [@person_factory]
+    tags:
+      - { name: form.type, alias: deskpro_cc }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
