@@ -136,6 +136,7 @@ class ApiDb extends AbstractDbSet
         $layout->add(new LayoutField(FormFields::MESSAGE));
         $layout->add(new LayoutField(FormFields::ATTACH));
         $layout->add(new LayoutField(FormFields::CAPTCHA));
+        $layout->add(new LayoutField(FormFields::PRODUCT));
 
         $ticket_layout2               = new TicketLayout($dep2);
         $ticket_layout2->is_enabled   = true;

@@ -67,11 +67,13 @@ Feature: /tickets endpoint
 
   @basic
   Scenario: I modify and retrieve a ticket
+    Given the setting "core.use_product" is set to 1
     When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
   "subject": "Modified subject",
   "department": 2,
+  "product": 2,
   "message": {
     "message_text": "my text message",
     "message_format": "text"
@@ -87,6 +89,7 @@ Feature: /tickets endpoint
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.product" should be equal to 2
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
