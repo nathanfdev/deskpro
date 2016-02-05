@@ -324,7 +324,12 @@ class TicketsController extends CrudController
      */
     protected function findEntity($id)
     {
-        return $this->getTicketManager()->getTicket($id);
+        $entity = $this->getTicketManager()->getTicket($id);
+        if (!$entity) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 
     /**

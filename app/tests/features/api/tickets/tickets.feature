@@ -97,3 +97,12 @@ Feature: /tickets endpoint
   Scenario: I try to get not existing ticket
     When I send a GET request to "/api/v2/tickets/40404"
     Then the response status code should be 404
+
+  Scenario: I try to modify not existing ticket
+    When I send a PUT request to "/api/v2/tickets/40404" with body:
+    """
+{
+  "subject": "Modified subject"
+}
+    """
+    Then the response status code should be 404
