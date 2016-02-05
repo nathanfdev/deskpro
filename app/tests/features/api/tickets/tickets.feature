@@ -23,11 +23,7 @@ Feature: /tickets endpoint
     And the JSON node "data[1].subject" should be equal to "Ticket #2"
 
   Scenario: I try to create a ticket providing empty data
-    When I send a POST request to "/api/v2/tickets" with body:
-    """
-{
-}
-    """
+    When I send a POST request to "/api/v2/tickets"
     Then the response should be in JSON
     And the response status code should be 400
     And the JSON node "errors.fields.subject" should exist
@@ -41,6 +37,7 @@ Feature: /tickets endpoint
 {
   "subject": "Sample Ticket",
   "department": 1,
+  "product": 2,
   "message": {
     "message_html": "<p>my html message</p>",
     "message_format": "html"
@@ -55,6 +52,9 @@ Feature: /tickets endpoint
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
+
+    # Layout has no product field and core.use_product = 0
+    And the JSON node "data.product" should be equal to 0
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
