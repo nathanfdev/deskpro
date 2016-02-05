@@ -38,6 +38,7 @@ Feature: /tickets endpoint
   "subject": "Sample Ticket",
   "department": 1,
   "product": 2,
+  "priority": 3,
   "cc": "agent@deskpro.dev, user@deskpro.dev",
   "message": {
     "message_html": "<p>my html message</p>",
@@ -54,8 +55,11 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
 
-    # Layout has no product field and core.use_product = 0
+    # Layout has no product field and "core.use_product" = 0
     And the JSON node "data.product" should be equal to 0
+
+    # Layout has no priority field and "core.use_ticket_priority" = 0
+    And the JSON node "data.priority" should be equal to 0
 
     # Layout has not cc field
     And the JSON node "data.participants" should have 0 elements
@@ -73,12 +77,14 @@ Feature: /tickets endpoint
   @basic
   Scenario: I modify and retrieve a ticket
     Given the setting "core.use_product" is set to 1
+    Given the setting "core.use_ticket_priority" is set to 1
     When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
   "subject": "Modified subject",
   "department": 2,
   "product": 2,
+  "priority": 3,
   "cc": "agent@deskpro.dev, user@deskpro.dev",
   "message": {
     "message_text": "my text message",
@@ -96,6 +102,7 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2
     And the JSON node "data.product" should be equal to 2
+    And the JSON node "data.priority" should be equal to 3
     And the JSON node "data.participants" should have 1 element
     And the JSON node "data.participants[0]" should be equal to 3
     And the JSON node "data.followers" should have 1 element

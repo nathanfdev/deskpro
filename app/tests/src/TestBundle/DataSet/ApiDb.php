@@ -141,6 +141,7 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField(FormFields::CAPTCHA))
             ->add(new LayoutField(FormFields::PRODUCT))
             ->add(new LayoutField(FormFields::CC))
+            ->add(new LayoutField(FormFields::PRIORITY))
         ;
 
         $ticket_layout2               = new TicketLayout($dep2);
@@ -567,7 +568,7 @@ class ApiDb extends AbstractDbSet
             "
             INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('1', '1', '1', 'tickets', 'full', '1');
             INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('2', '2', '1', 'tickets', 'full', '1');
-            "
+        "
         );
         // end of department permissions
 
@@ -577,9 +578,19 @@ class ApiDb extends AbstractDbSet
             INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('1', 'Product 1', '10', '0');
             INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('2', 'Product 2', '20', '0');
             INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('3', 'Product 3', '30', '0');
-            "
+        "
         );
         // end of products
+
+        // Ticket priorities test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('1', 'Priority 1', '10');
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('2', 'Priority 2', '20');
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('3', 'Priority 3', '30');
+        "
+        );
+        // end of ticket priorities
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(
