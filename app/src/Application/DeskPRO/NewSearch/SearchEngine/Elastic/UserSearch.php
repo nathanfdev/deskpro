@@ -149,13 +149,28 @@ class UserSearch implements UserSearchInterface
         $qs->setDefaultOperator('AND');
         $bool_query->addMust($qs);
 
+        $match = new Query\Match();
+        $match->setFieldQuery('_type', 'ticket');
+        $match->setFieldBoost('_type', 1000);
+        $bool_query->addShould($match);
+
+        $match = new Query\Match();
+        $match->setFieldQuery('_id', $query);
+        $match->setFieldBoost('_id', 1000);
+        $bool_query->addShould($match);
+
+        $match = new Query\Match();
+        $match->setFieldQuery('ref', $query);
+        $match->setFieldBoost('ref', 3);
+        $bool_query->addShould($match);
+
         $sticky_match = new Query\Match();
         $sticky_match->setFieldQuery('sticky_words', $query);
         $sticky_match->setFieldOperator('sticky_words', 'AND');
         $sticky_match->setFieldBoost('sticky_words', 2);
         $bool_query->addShould($sticky_match);
 
-        $filtered_query = new Query\Filtered($qs, $filter);
+        $filtered_query = new Query\Filtered($bool_query, $filter);
         $res            = $search->search($filtered_query, array('limit' => self::LIMIT));
         $objects        = $this->transformer->transform($res->getResults());
 
