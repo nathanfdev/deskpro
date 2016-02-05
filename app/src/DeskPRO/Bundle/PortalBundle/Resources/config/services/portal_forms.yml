@@ -228,12 +228,6 @@ services:
       - { name: form.type, alias: deskpro_category }
 
 
-  form.priority:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PriorityType
-    tags:
-      - { name: form.type, alias: deskpro_priority }
-
-
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
     arguments: [@brand_stack, @language_manager]

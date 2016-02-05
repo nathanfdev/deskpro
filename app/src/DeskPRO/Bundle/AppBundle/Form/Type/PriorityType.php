@@ -29,38 +29,50 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class PriorityType.
+ */
 class PriorityType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_priority';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'entity';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'class'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
             'property'      => 'title',
             'empty_data'    => null,
             'required'      => true,
             'query_builder' => function (EntityRepository $repo) {
-                    return $repo
-                        ->createQueryBuilder('p')
-                        ->select('p')
-                        ->addOrderBy('p.priority')
-                    ;
-                },
-        ));
+                return $repo
+                    ->createQueryBuilder('p')
+                    ->select('p')
+                    ->addOrderBy('p.priority')
+                ;
+            },
+        ]);
     }
 }
