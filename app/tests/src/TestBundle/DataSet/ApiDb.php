@@ -554,6 +554,15 @@ class ApiDb extends AbstractDbSet
         );
         // end of "/user_groups"
 
+        // Department permissions test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('1', '1', '1', 'tickets', 'full', '1');
+            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('2', '2', '1', 'tickets', 'full', '1');
+            "
+        );
+        // end of department permissions
+
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(
             "

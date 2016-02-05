@@ -87,6 +87,7 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
+     * @var string
      */
     protected $app;
 
