@@ -97,6 +97,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_custom_data_ticket }
 
+  form.deskpro_custom_per_field_data:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
+    arguments: [@tickets.custom_per_field_manager, @form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_per_field_data }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
