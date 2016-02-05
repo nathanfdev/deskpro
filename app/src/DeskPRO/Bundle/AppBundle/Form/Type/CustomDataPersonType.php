@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataPerson;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CustomDataPersonType.
+ */
 class CustomDataPersonType extends AbstractType
 {
     /**
@@ -46,18 +49,29 @@ class CustomDataPersonType extends AbstractType
      */
     private $field_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param FormFieldManager $field_manager
+     */
     public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitEvent'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'submitEvent'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'submitEvent']);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preDataEvent(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
@@ -81,15 +95,18 @@ class CustomDataPersonType extends AbstractType
         $options['error_bubbling'] = true;
 
         if ($config->getOption('ignore_validation')) {
-            $options = array_merge($options, array(
-                'validation_groups' => array(),
-                'constraints'       => array(),
-            ));
+            $options = array_merge($options, [
+                'validation_groups' => [],
+                'constraints'       => [],
+            ]);
         }
 
         $form->add($value_name, $form_type, $options);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function submitEvent(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
@@ -99,12 +116,16 @@ class CustomDataPersonType extends AbstractType
             $custom_data = new CustomDataPerson();
             $event->setData($custom_data);
         }
+
         $field               = $config->getOption('custom_data_field');
         $person              = $config->getOption('person');
         $custom_data->field  = $field;
         $custom_data->person = $person;
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function postSubmitEvent(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
@@ -128,24 +149,32 @@ class CustomDataPersonType extends AbstractType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class'        => 'Application\DeskPRO\Entity\CustomDataPerson',
-            'ignore_validation' => false,
-        ));
-        $resolver->setRequired(array(
-            'custom_data_field',
-            'person',
-            'agent_interface',
-        ));
-        $resolver->setAllowedTypes(array(
-            'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefPerson',
-            'person'            => 'Application\DeskPRO\Entity\Person',
-            'agent_interface'   => 'bool',
-        ));
+        $resolver
+            ->setDefaults([
+                'data_class'        => 'Application\DeskPRO\Entity\CustomDataPerson',
+                'ignore_validation' => false,
+            ])
+            ->setRequired([
+                'custom_data_field',
+                'person',
+                'agent_interface',
+            ])
+            ->setAllowedTypes([
+                'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefPerson',
+                'person'            => 'Application\DeskPRO\Entity\Person',
+                'agent_interface'   => 'bool',
+            ])
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_custom_data_person';

@@ -79,6 +79,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_person_email }
 
+  form.custom_data_person:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataPersonType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_person }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
