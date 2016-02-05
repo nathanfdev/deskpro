@@ -222,12 +222,6 @@ services:
       - { name: form.type, alias: deskpro_hidden }
 
 
-  form.department:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DepartmentType
-    tags:
-      - { name: form.type, alias: deskpro_department }
-
-
   form.product:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ProductType
     tags:
@@ -296,13 +290,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }
-
-
-  form.entity_hierarchy:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\EntityHeirarchyType
-    arguments: [@form_hierarchy_generator]
-    tags:
-      - { name: form.type, alias: entity_hierarchy }
 
 
   form.api.chat_create:

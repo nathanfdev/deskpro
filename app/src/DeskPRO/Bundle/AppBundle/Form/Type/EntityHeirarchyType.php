@@ -29,49 +29,68 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class DepartmentType extends AbstractType
+/**
+ * Class EntityHeirarchyType.
+ */
+class EntityHeirarchyType extends AbstractType
 {
-    public function getName()
+    /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchy_generator;
+
+    /**
+     * Constructor.
+     *
+     * @param HierarchyGenerator $hierarchy_generator
+     */
+    public function __construct(HierarchyGenerator $hierarchy_generator)
     {
-        return 'deskpro_department';
+        $this->hierarchy_generator = $hierarchy_generator;
     }
 
-    public function getParent()
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_list'], $options['expanded']));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
     {
         return 'entity_hierarchy';
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return 'choice';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'choice_list' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
-
-                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])->getChoiceList();
-            },
-            'ticket' => null, // provide a ticket so the ticket's dep is always in the hierarchy list
-        ));
-
-        $resolver->setRequired(
-            array(
-                'person',
-            )
-        );
-
-        $resolver->setAllowedTypes(
-            array(
-                'ticket' => array(
-                    'null',
-                    'Application\DeskPRO\Entity\Ticket',
-                ),
-            )
-        );
+        $resolver
+            ->setDefaults([
+                'hierarchy_generator' => $this->hierarchy_generator,
+            ])
+            ->setRequired('choice_list')
+        ;
     }
 }

@@ -37,6 +37,17 @@ services:
     tags:
       - { name: form.type, alias: deskpro_person_email_choice }
 
+  form.entity_hierarchy:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: entity_hierarchy }
+
+  form.department:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+    tags:
+      - { name: form.type, alias: deskpro_department }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
