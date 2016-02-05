@@ -120,7 +120,7 @@ class ActionPermissionsVoter extends Voter
      */
     protected function checkMode($mode, MethodMetadata $methodMetadata)
     {
-        return in_array($mode, $methodMetadata->getModes());
+        return in_array($mode, (array) $methodMetadata->getModes());
     }
 
     /**

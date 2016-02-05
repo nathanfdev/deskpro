@@ -36,14 +36,14 @@ use Metadata\MethodMetadata as BaseMethodMetadata;
 class MethodMetadata extends BaseMethodMetadata
 {
     /**
-     * @var
+     * @var array
      */
-    protected $modes;
+    protected $modes = [];
 
     /**
-     * @var
+     * @var array
      */
-    protected $tags;
+    protected $tags = [];
 
     /**
      * @param $modes
