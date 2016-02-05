@@ -563,6 +563,16 @@ class ApiDb extends AbstractDbSet
         );
         // end of department permissions
 
+        // Products test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('1', 'Product 1', '10', '0');
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('2', 'Product 2', '20', '0');
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('3', 'Product 3', '30', '0');
+            "
+        );
+        // end of products
+
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(
             "
