@@ -69,6 +69,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_priority }
 
+  form.category:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CategoryType
+    tags:
+      - { name: form.type, alias: deskpro_category }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
