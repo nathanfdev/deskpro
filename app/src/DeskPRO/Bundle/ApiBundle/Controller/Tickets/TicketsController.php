@@ -304,8 +304,9 @@ class TicketsController extends CrudController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'person'   => $this->getUser(),
-            'settings' => new SettingsBag(),
+            'person'      => $this->getUser(),
+            'settings'    => new SettingsBag(),
+            'use_captcha' => false,
         ]);
 
         return parent::handleForm($model, $request, $options);

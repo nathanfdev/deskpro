@@ -43,6 +43,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -121,8 +122,8 @@ class ApiDb extends AbstractDbSet
 
         // Create ticket layouts
         $layout = new Layout();
-        $layout->add(new LayoutField('department'));
-        $layout->add(new LayoutField('message'));
+        $layout->add(new LayoutField(FormFields::DEPARTMENT));
+        $layout->add(new LayoutField(FormFields::MESSAGE));
 
         $ticket_layout1               = new TicketLayout();
         $ticket_layout1->is_enabled   = true;
@@ -130,10 +131,11 @@ class ApiDb extends AbstractDbSet
         $ticket_layout1->user_layout  = $layout;
 
         $layout = new Layout();
-        $layout->add(new LayoutField('user_name_and_email'));
-        $layout->add(new LayoutField('department'));
-        $layout->add(new LayoutField('message'));
-        $layout->add(new LayoutField('attach'));
+        $layout->add(new LayoutField(FormFields::USER_NAME_AND_EMAIL));
+        $layout->add(new LayoutField(FormFields::DEPARTMENT));
+        $layout->add(new LayoutField(FormFields::MESSAGE));
+        $layout->add(new LayoutField(FormFields::ATTACH));
+        $layout->add(new LayoutField(FormFields::CAPTCHA));
 
         $ticket_layout2               = new TicketLayout($dep2);
         $ticket_layout2->is_enabled   = true;
