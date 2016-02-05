@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
@@ -42,6 +42,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CustomDataTicketType.
+ */
 class CustomDataTicketType extends AbstractType
 {
     /**
@@ -49,30 +52,45 @@ class CustomDataTicketType extends AbstractType
      */
     private $field_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param FormFieldManager $field_manager
+     */
     public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitEvent'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'submitEvent'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'submitEvent']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         foreach ($form->all() as $child) {
             // set it to the first child's label
             if (!$view->vars['help']) {
-                if ($child_help = $child->getConfig()->getOption('help')) {
+                $child_help = $child->getConfig()->getOption('help');
+                if ($child_help) {
                     $view->vars['help'] = $child_help;
                 }
             }
         }
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preDataEvent(FormEvent $event)
     {
         $form   = $event->getForm();
@@ -95,15 +113,18 @@ class CustomDataTicketType extends AbstractType
         list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
 
         if ($config->getOption('ignore_validation')) {
-            $options = array_merge($options, array(
-                'validation_groups' => array(),
+            $options = array_merge($options, [
+                'validation_groups' => [],
                 'constraints'       => null,
-            ));
+            ]);
         }
 
         $form->add($value_name, $form_type, $options);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function submitEvent(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
@@ -119,6 +140,9 @@ class CustomDataTicketType extends AbstractType
         $custom_data->ticket = $ticket;
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function postSubmitEvent(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
@@ -142,32 +166,41 @@ class CustomDataTicketType extends AbstractType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class'        => 'Application\DeskPRO\Entity\CustomDataTicket',
-            'ignore_validation' => false,
-            'fully_hidden'      => function (Options $options) {
-                /** @var \Application\DeskPRO\Entity\CustomDefTicket $field */
-                if ($field = $options['custom_data_field']) {
-                    return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
-                }
+        $resolver
+            ->setDefaults([
+                'data_class'        => 'Application\DeskPRO\Entity\CustomDataTicket',
+                'ignore_validation' => false,
+                'fully_hidden'      => function (Options $options) {
+                    /** @var \Application\DeskPRO\Entity\CustomDefTicket $field */
+                    $field = $options['custom_data_field'];
+                    if ($field) {
+                        return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
+                    }
 
-                return false;
-            },
-        ));
-        $resolver->setRequired(array(
-            'custom_data_field',
-            'ticket',
-            'agent_interface',
-        ));
-        $resolver->setAllowedTypes(array(
-            'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefTicket',
-            'ticket'            => 'Application\DeskPRO\Entity\Ticket',
-            'agent_interface'   => 'bool',
-        ));
+                    return false;
+                },
+            ])
+            ->setRequired([
+                'custom_data_field',
+                'ticket',
+                'agent_interface',
+            ])
+            ->setAllowedTypes([
+                'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefTicket',
+                'ticket'            => 'Application\DeskPRO\Entity\Ticket',
+                'agent_interface'   => 'bool',
+            ])
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_custom_data_ticket';

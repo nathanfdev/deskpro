@@ -91,6 +91,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_custom_data_organization }
 
+  form.custom_data_ticket:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataTicketType
+    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_ticket }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

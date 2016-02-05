@@ -148,13 +148,6 @@ services:
       - { name: form.type, alias: deskpro_custom_per_field_data }
 
 
-  form.custom_data_ticket:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataTicketType
-    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_ticket }
-
-
   form.custom_data_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataFeedbackType
     arguments: [@form_field_manager]
