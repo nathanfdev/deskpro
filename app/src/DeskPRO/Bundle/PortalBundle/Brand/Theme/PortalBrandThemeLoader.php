@@ -33,6 +33,9 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
+/**
+ * Class PortalBrandThemeLoader.
+ */
 class PortalBrandThemeLoader
 {
     /**
@@ -53,8 +56,15 @@ class PortalBrandThemeLoader
     /**
      * @var PortalBrandTheme[]
      */
-    private $inst = [];
+    private $instances = [];
 
+    /**
+     * Constructor.
+     *
+     * @param BrandContainerFactory $brandContainerFactory
+     * @param ThemeResolver         $themeResolver
+     * @param PortalModeStorage     $portalModeStorage
+     */
     public function __construct(BrandContainerFactory $brandContainerFactory, ThemeResolver $themeResolver, PortalModeStorage $portalModeStorage)
     {
         $this->brandContainerFactory = $brandContainerFactory;
@@ -71,14 +81,14 @@ class PortalBrandThemeLoader
     {
         $id = $brand->getId();
 
-        if (!isset($this->inst[$id])) {
-            $this->inst[$id] = new PortalBrandTheme(
+        if (!isset($this->instances[$id])) {
+            $this->instances[$id] = new PortalBrandTheme(
                 $this->brandContainerFactory->create($brand),
                 $this->themeResolver,
                 $this->portalModeStorage
             );
         }
 
-        return $this->inst[$id];
+        return $this->instances[$id];
     }
 }

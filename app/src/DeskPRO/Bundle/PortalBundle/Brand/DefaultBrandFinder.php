@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
@@ -39,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 
 /**
- * A serive that can quickly hand you the default brand (useful in cases here there is no request listener detecting
+ * A service that can quickly hand you the default brand (useful in cases here there is no request listener detecting
  * the active brand on the stack (CLI).
  */
 class DefaultBrandFinder
@@ -55,6 +54,8 @@ class DefaultBrandFinder
     private $brand_repo;
 
     /**
+     * Constructor.
+     *
      * @param SettingsResolver $settings_resolver
      * @param Brand            $brand_repo
      */
