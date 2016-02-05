@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
@@ -305,7 +304,7 @@ class TicketsController extends CrudController
     {
         $options = array_merge($options, [
             'person'      => $this->getUser(),
-            'settings'    => new SettingsBag(),
+            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
             'use_captcha' => false,
         ]);
 
