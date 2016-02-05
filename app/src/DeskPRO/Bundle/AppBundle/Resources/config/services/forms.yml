@@ -85,6 +85,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_custom_data_person }
 
+  form.custom_data_organization:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataOrganizationType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_organization }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

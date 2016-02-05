@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataOrganization;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CustomDataOrganizationType.
+ */
 class CustomDataOrganizationType extends AbstractType
 {
     /**
@@ -46,18 +49,29 @@ class CustomDataOrganizationType extends AbstractType
      */
     private $field_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param FormFieldManager $field_manager
+     */
     public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitEvent'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'submitEvent'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'submitEvent']);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preDataEvent(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataOrganization $custom_data */
@@ -79,15 +93,18 @@ class CustomDataOrganizationType extends AbstractType
         list($value_name, $form_type, $options) = $this->field_manager->getCustomOrganizationField($custom_data_field, $config->getOption('agent_interface'));
 
         if ($config->getOption('ignore_validation')) {
-            $options = array_merge($options, array(
-                'validation_groups' => array(),
-                'constraints'       => array(),
-            ));
+            $options = array_merge($options, [
+                'validation_groups' => [],
+                'constraints'       => [],
+            ]);
         }
 
         $form->add($value_name, $form_type, $options);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function submitEvent(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
@@ -103,6 +120,9 @@ class CustomDataOrganizationType extends AbstractType
         $custom_data->organization = $organization;
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function postSubmitEvent(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
@@ -126,24 +146,32 @@ class CustomDataOrganizationType extends AbstractType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class'        => 'Application\DeskPRO\Entity\CustomDataOrganization',
-            'ignore_validation' => false,
-        ));
-        $resolver->setRequired(array(
-            'custom_data_field',
-            'organization',
-            'agent_interface',
-        ));
-        $resolver->setAllowedTypes(array(
-            'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefOrganization',
-            'organization'      => 'Application\DeskPRO\Entity\Organization',
-            'agent_interface'   => 'bool',
-        ));
+        $resolver
+            ->setDefaults([
+                'data_class'        => 'Application\DeskPRO\Entity\CustomDataOrganization',
+                'ignore_validation' => false,
+            ])
+            ->setRequired([
+                'custom_data_field',
+                'organization',
+                'agent_interface',
+            ])
+            ->setAllowedTypes([
+                'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefOrganization',
+                'organization'      => 'Application\DeskPRO\Entity\Organization',
+                'agent_interface'   => 'bool',
+            ])
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_custom_data_organization';

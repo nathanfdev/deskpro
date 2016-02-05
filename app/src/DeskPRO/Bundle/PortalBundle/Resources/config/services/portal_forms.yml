@@ -155,13 +155,6 @@ services:
       - { name: form.type, alias: deskpro_custom_data_ticket }
 
 
-  form.custom_data_organization:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataOrganizationType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_organization }
-
-
   form.custom_data_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataFeedbackType
     arguments: [@form_field_manager]
