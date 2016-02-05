@@ -38,6 +38,7 @@ Feature: /tickets endpoint
   "subject": "Sample Ticket",
   "department": 1,
   "product": 2,
+  "cc": "agent@deskpro.dev, user@deskpro.dev",
   "message": {
     "message_html": "<p>my html message</p>",
     "message_format": "html"
@@ -55,6 +56,10 @@ Feature: /tickets endpoint
 
     # Layout has no product field and core.use_product = 0
     And the JSON node "data.product" should be equal to 0
+
+    # Layout has not cc field
+    And the JSON node "data.participants" should have 0 elements
+    And the JSON node "data.followers" should have 0 elements
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
@@ -74,6 +79,7 @@ Feature: /tickets endpoint
   "subject": "Modified subject",
   "department": 2,
   "product": 2,
+  "cc": "agent@deskpro.dev, user@deskpro.dev",
   "message": {
     "message_text": "my text message",
     "message_format": "text"
@@ -90,6 +96,10 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2
     And the JSON node "data.product" should be equal to 2
+    And the JSON node "data.participants" should have 1 element
+    And the JSON node "data.participants[0]" should be equal to 3
+    And the JSON node "data.followers" should have 1 element
+    And the JSON node "data.followers[0]" should be equal to 2
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200

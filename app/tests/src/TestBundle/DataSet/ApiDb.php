@@ -122,8 +122,10 @@ class ApiDb extends AbstractDbSet
 
         // Create ticket layouts
         $layout = new Layout();
-        $layout->add(new LayoutField(FormFields::DEPARTMENT));
-        $layout->add(new LayoutField(FormFields::MESSAGE));
+        $layout
+            ->add(new LayoutField(FormFields::DEPARTMENT))
+            ->add(new LayoutField(FormFields::MESSAGE))
+        ;
 
         $ticket_layout1               = new TicketLayout();
         $ticket_layout1->is_enabled   = true;
@@ -131,12 +133,15 @@ class ApiDb extends AbstractDbSet
         $ticket_layout1->user_layout  = $layout;
 
         $layout = new Layout();
-        $layout->add(new LayoutField(FormFields::USER_NAME_AND_EMAIL));
-        $layout->add(new LayoutField(FormFields::DEPARTMENT));
-        $layout->add(new LayoutField(FormFields::MESSAGE));
-        $layout->add(new LayoutField(FormFields::ATTACH));
-        $layout->add(new LayoutField(FormFields::CAPTCHA));
-        $layout->add(new LayoutField(FormFields::PRODUCT));
+        $layout
+            ->add(new LayoutField(FormFields::USER_NAME_AND_EMAIL))
+            ->add(new LayoutField(FormFields::DEPARTMENT))
+            ->add(new LayoutField(FormFields::MESSAGE))
+            ->add(new LayoutField(FormFields::ATTACH))
+            ->add(new LayoutField(FormFields::CAPTCHA))
+            ->add(new LayoutField(FormFields::PRODUCT))
+            ->add(new LayoutField(FormFields::CC))
+        ;
 
         $ticket_layout2               = new TicketLayout($dep2);
         $ticket_layout2->is_enabled   = true;
