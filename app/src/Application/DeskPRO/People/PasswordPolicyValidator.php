@@ -34,6 +34,7 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
 use Application\DeskPRO\Settings\PasswordPolicy;
+use Application\DeskPRO\Usersource\UsersourceManager;
 use Orb\Util\Strings;
 
 class PasswordPolicyValidator
@@ -63,15 +64,21 @@ class PasswordPolicyValidator
     private $history_repos;
 
     /**
+     * @var UsersourceManager
+     */
+    private $um;
+
+    /**
      * @param PasswordPolicy       $user_policy
      * @param PasswordPolicy       $agent_policy
      * @param PasswordHistoryRepos $history_repos
      */
-    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos)
+    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos, UsersourceManager $um)
     {
         $this->user_policy   = $user_policy;
         $this->agent_policy  = $agent_policy;
         $this->history_repos = $history_repos;
+        $this->um            = $um;
     }
 
     /**
@@ -141,6 +148,12 @@ class PasswordPolicyValidator
     {
         if (!$person->date_password_set) {
             return false;
+        }
+
+        foreach ($this->um->getAll() as $us) {
+            if ('DeskPRO' === $us->title && !$us->is_enabled && 'agent' === $us->type) {
+                return false;
+            }
         }
 
         // Matches special expired date
