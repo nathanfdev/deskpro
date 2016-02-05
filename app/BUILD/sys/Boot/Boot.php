@@ -208,4 +208,31 @@ class Boot
         $app = new Application($kernel);
         $app->run($input);
     }
+
+    /**
+     * Boot cron app.
+     */
+    public static function bootCron()
+    {
+        //TODO
+        exit;
+
+        $tasks = [
+            'Loader',
+            'Lib',
+            'PreparePaths',
+            'CliKernel',
+        ];
+
+        $res = self::runBootTasks($tasks);
+
+        /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
+        $kernel = $res['cli_kernel'];
+
+        /** @var \Symfony\Component\Console\Input\ArgvInput $input */
+        $input = $res['cli_input'];
+
+        $app = new Application($kernel);
+        $app->run($input);
+    }
 }
