@@ -158,22 +158,23 @@ class TicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         $ticket         = $event->getData();
         $form           = $event->getForm();
-        $ticket_message = $form->getConfig()->getOption('ticket_message');
+        $config         = $form->getConfig();
+        $ticket_message = $config->getOption('ticket_message');
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
 
         // Setting ticket person if not defined
         if (!$ticket->getPerson()) {
-            $ticket->setPerson($form->getConfig()->getOption('person'));
+            $ticket->setPerson($config->getOption('person'));
         }
 
-        if ($form->getConfig()->getOption('full_version')) {
+        if ($config->getOption('full_version')) {
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person    = $context->getForm()->getConfig()->getOption('person');
+        $person    = $config->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
@@ -205,6 +206,7 @@ class TicketType extends AbstractType
         $ticket_message           = $form->getConfig()->getOption('ticket_message');
         $pre_submit_data          = $event->getData();
         $already_displayed_fields = [];
+
         if (array_key_exists('displayed_fields', $pre_submit_data)) {
             $already_displayed_fields = explode(',', $pre_submit_data['displayed_fields']);
         }
@@ -223,8 +225,14 @@ class TicketType extends AbstractType
                 $context->getForm()->remove('last_department_id');
             }
 
-            $context->getForm()->add('last_department_id', 'hidden', ['mapped' => false, 'label' => false]);
-            $event->setData(array_merge($pre_submit_data, ['last_department_id' => $new_department_id]));
+            $context->getForm()->add('last_department_id', 'hidden', [
+                'mapped' => false,
+                'label'  => false,
+            ]);
+
+            $event->setData(array_merge($pre_submit_data, [
+                'last_department_id' => $new_department_id,
+            ]));
 
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
             $context->setNewLayout($destination_layout);
@@ -286,7 +294,10 @@ class TicketType extends AbstractType
 
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
             if (count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
-                $context->getForm()->add('rerender_form', 'hidden', ['mapped' => false, 'label' => false]);
+                $context->getForm()->add('rerender_form', 'hidden', [
+                    'mapped' => false,
+                    'label'  => false,
+                ]);
             }
 
             $added_something = true;
@@ -780,19 +791,19 @@ class TicketType extends AbstractType
             return;
         }
 
-        $organization = $form_context->getTicket()->getOrganization();
-        if (!$organization) {
+        $ticket_organization = $form_context->getTicket()->getOrganization();
+        if (!$ticket_organization) {
             // must be in an organization to see this field
             return;
         }
-        if ($form_context->getPerson()->getOrganization() !== $form_context->getTicket()->getOrganization()) {
+        if ($form_context->getPerson()->getOrganization() !== $ticket_organization) {
             // person must be a part of the tickets organization to edit org fields
             return;
         }
 
         $options = [
             'custom_data_field' => $field_def,
-            'organization'      => $organization,
+            'organization'      => $ticket_organization,
             'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
@@ -1012,6 +1023,7 @@ class TicketType extends AbstractType
         } else {
             $label = $this->phrase('portal.forms.label_submit');
         }
+
         $form_context->getForm()->add('submit', 'submit', [
             'label' => $label,
         ]);

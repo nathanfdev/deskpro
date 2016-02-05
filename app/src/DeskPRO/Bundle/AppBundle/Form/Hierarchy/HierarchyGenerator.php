@@ -50,6 +50,9 @@ use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * HierarchyGenerator.
+ */
 class HierarchyGenerator
 {
     /**
@@ -82,6 +85,14 @@ class HierarchyGenerator
      */
     private $language_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager         $em
+     * @param DepartmentDataService $department_data_service
+     * @param FeedbackDataService   $feedback_data_service
+     * @param LanguageManager       $language_manager
+     */
     public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service, LanguageManager $language_manager)
     {
         $this->em                      = $em;
@@ -90,15 +101,20 @@ class HierarchyGenerator
         $this->language_manager        = $language_manager;
     }
 
+    /**
+     * @param CustomDefAbstract $field
+     *
+     * @return mixed
+     */
     public function generateForCustomFormField(CustomDefAbstract $field)
     {
         return $this->generateAndCache(
-            array(
+            [
                 'generateForCustomFormField',
                 $field,
-            ),
+            ],
             function () use ($field) {
-                $root_nodes = array();
+                $root_nodes = [];
                 foreach ($field->children as $field_child) {
                     // fields with a parent_id are dealt with below
                     if (!$field_child->getOption('parent_id')) {
@@ -106,7 +122,8 @@ class HierarchyGenerator
                     }
                 }
 
-                if ($expanded = $field->getOption('expanded')) {
+                $expanded = $field->getOption('expanded');
+                if ($expanded) {
                     $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
                 } else {
                     $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
@@ -116,8 +133,10 @@ class HierarchyGenerator
                 $hierarchy->markOnlyLeafSelections();
 
                 foreach ($field->children as $field_child) {
-                    if ($parent_id = $field_child->getOption('parent_id')) {
-                        if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
+                    $parent_id = $field_child->getOption('parent_id');
+                    if ($parent_id) {
+                        $parent = $parent_node = $hierarchy->findNodeById($parent_id);
+                        if ($parent) {
                             $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, HierarchyGenerator::reverseDisplayOrder($field_child->display_order)));
                         }
                     }
@@ -128,22 +147,29 @@ class HierarchyGenerator
         );
     }
 
-    public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextual_choices = array())
+    /**
+     * @param CustomFieldDefinition $field
+     * @param array                 $contextual_choices
+     *
+     * @return mixed
+     */
+    public function generateForCustomPerFormField(CustomFieldDefinition $field, array $contextual_choices = [])
     {
         return $this->generateAndCache(
-            array(
+            [
                 'generateForCustomPerFormField',
                 $field,
                 $contextual_choices,
-            ),
+            ],
             function () use ($field, $contextual_choices) {
-                $root_nodes = array();
+                $root_nodes = [];
                 foreach ($contextual_choices as $field_child) {
                     // fields with a parent_id are dealt with below
                     $root_nodes[] = new HierarchyNode($field_child, 0, HierarchyGenerator::reverseDisplayOrder($field_child->display_order));
                 }
 
-                if ($expanded = $field->getOption('expanded')) {
+                $expanded = $field->getOption('expanded');
+                if ($expanded) {
                     $formatter = new ParentListLanguageAwareFormatter($this->language_manager);
                 } else {
                     $formatter = new FlatListLanguageAwareFormatter($this->language_manager);
@@ -157,18 +183,21 @@ class HierarchyGenerator
         );
     }
 
+    /**
+     * @return mixed
+     */
     public function generateTicketProductsHierarchy()
     {
         $em = $this->em;
 
         return $this->generateAndCache(
-            array(
+            [
                 'generateTicketProductsHierarchy',
-            ),
+            ],
             function () use ($em) {
                 $products = $em->getRepository('DeskPRO:Product')->findAll();
 
-                $root_nodes = array();
+                $root_nodes = [];
                 foreach ($products as $product) {
                     if ($product->getParent()) {
                         continue;
@@ -209,11 +238,11 @@ class HierarchyGenerator
         $department_data_service = $this->department_data_service;
 
         return $this->generateAndCache(
-            array(
+            [
                 'generateTicketDepartmentsHierarchy',
                 $person,
                 $ticket,
-            ),
+            ],
             function () use ($department_data_service, $person, $ticket) {
                 $allowed_departments = $department_data_service->getTicketDepartmentsForPerson($person);
                 $allowed_departments = new ArrayCollection($allowed_departments); // for convenient methods
@@ -226,7 +255,7 @@ class HierarchyGenerator
                     }
                 }
 
-                $root_nodes = array();
+                $root_nodes = [];
                 /** @var \Application\DeskPRO\Entity\Department $department */
                 foreach ($allowed_departments as $department) {
                     $found_root = null;
@@ -280,18 +309,21 @@ class HierarchyGenerator
         );
     }
 
+    /**
+     * @return mixed
+     */
     public function generateTicketCategoriesHierarchy()
     {
         $em = $this->em;
 
         return $this->generateAndCache(
-            array(
+            [
                 'generateTicketCategoriesHierarchy',
-            ),
+            ],
             function () use ($em) {
                 $products = $em->getRepository('DeskPRO:TicketCategory')->findAll();
 
-                $root_nodes = array();
+                $root_nodes = [];
                 foreach ($products as $product) {
                     if ($product->getParent()) {
                         continue;
@@ -318,20 +350,25 @@ class HierarchyGenerator
         );
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
     public function generateForFeedbackCategories(Person $person)
     {
         $feedback_data_service = $this->feedback_data_service;
 
         return $this->generateAndCache(
-            array(
+            [
                 'generateForFeedbackCategories',
                 $person,
-            ),
+            ],
             function () use ($feedback_data_service, $person) {
 
                 $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
 
-                $root_nodes = array();
+                $root_nodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {
                         continue;

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
@@ -96,11 +95,20 @@ class PortalPermissionsManager
      */
     protected $permissions_loader;
 
+    /**
+     * Consctructor.
+     *
+     * @param SettingsResolver        $settingsResolver
+     * @param EntityManager           $em
+     * @param CacheAdapterInterface   $cacheAdapter
+     * @param PortalUsergroupDecider  $usergroupDecider
+     * @param PortalPermissionsLoader $permissionsLoader
+     */
     public function __construct(
-        SettingsResolver $settingsResolver,
-        EntityManager $em,
-        CacheAdapterInterface $cacheAdapter,
-        PortalUsergroupDecider $usergroupDecider,
+        SettingsResolver        $settingsResolver,
+        EntityManager           $em,
+        CacheAdapterInterface   $cacheAdapter,
+        PortalUsergroupDecider  $usergroupDecider,
         PortalPermissionsLoader $permissionsLoader
     ) {
         $this->settingsResolver   = $settingsResolver;
@@ -156,8 +164,8 @@ class PortalPermissionsManager
 
         return new PermissionsBag(
             $permissions_map,
-            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
-            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array(),
+            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : [],
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : [],
             $allowed_feedback_categories,
             $allowed_news_categories,
             $allowed_article_categories,
@@ -202,8 +210,8 @@ class PortalPermissionsManager
 
         return new PermissionsBag(
             $permissions_map,
-            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : array(),
-            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : array(),
+            isset($allowed_departments['tickets']) ? $allowed_departments['tickets'] : [],
+            isset($allowed_departments['chat']) ? $allowed_departments['chat'] : [],
             $allowed_feedback_categories,
             $allowed_news_categories,
             $allowed_article_categories,
@@ -221,26 +229,51 @@ class PortalPermissionsManager
         return new PermissionsBag($this->generatePermissionsMapForRegisteredUsergroup());
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return int[]
+     */
     protected function getAllowedDepartmentIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedDepartments($person);
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return int[]
+     */
     protected function getAllowedFeedbackCategoryIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedFeedbackCategories($person);
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return int[]
+     */
     protected function getAllowedNewsCategoryIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedNewsCategories($person);
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return int[]
+     */
     protected function getAllowedArticleCategoryIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedArticleCategories($person);
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return int[]
+     */
     protected function getAllowedDownloadCategoryIds(Person $person)
     {
         return $this->permissions_loader->loadAllowedDownloadCategories($person);
@@ -294,7 +327,7 @@ class PortalPermissionsManager
      */
     public function getCacheKeyForUsergroups(array $usergroups)
     {
-        $usergroupIds = array();
+        $usergroupIds = [];
 
         foreach ($usergroups as $usergroup) {
             $usergroupIds[] = $usergroup['id'];
@@ -335,9 +368,9 @@ class PortalPermissionsManager
     public function generatePermissionsMapForRegisteredUsergroup()
     {
         /** @var \Application\DeskPRO\Entity\Usergroup $registered */
-        $registered = $this->getEm()->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'registered'));
+        $registered = $this->em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'registered']);
 
-        return $this->permissions_loader->loadPermissions(array($registered->getId()));
+        return $this->permissions_loader->loadPermissions([$registered->getId()]);
     }
 
     /**
@@ -352,13 +385,11 @@ class PortalPermissionsManager
         return  $this->permissions_loader->loadPermissions($usergoupIds);
     }
 
+    /**
+     * @return bool
+     */
     public function isCacheDisabled()
     {
         return $this->settingsResolver->getGlobalSettings()->get('portal.disable_permissions_cache', false);
-    }
-
-    public function getEm()
-    {
-        return $this->em;
     }
 }

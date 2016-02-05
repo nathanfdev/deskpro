@@ -36,6 +36,9 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class DepartmentDataService.
+ */
 class DepartmentDataService extends AbstractDataService
 {
     /**
@@ -43,6 +46,12 @@ class DepartmentDataService extends AbstractDataService
      */
     private $permissions_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager      $em
+     * @param PermissionsManager $permissions_manager
+     */
     public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
     {
         parent::__construct($em);
@@ -69,10 +78,10 @@ class DepartmentDataService extends AbstractDataService
         $em                  = $this->em;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getAuthorizedDepartmentsForPersonInPortal',
                 $person,
-            ),
+            ],
             function () use ($person, $permissions_manager, $em) {
                 $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
@@ -110,10 +119,10 @@ class DepartmentDataService extends AbstractDataService
         $em                  = $this->em;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getChatDepartmentsForPerson',
                 $person,
-            ),
+            ],
             function () use ($person, $permissions_manager, $em) {
                 $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_department_ids = $permission_bag->getAllowedChatDepartmentIds();
