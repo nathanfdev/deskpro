@@ -234,12 +234,6 @@ services:
       - { name: form.type, alias: deskpro_category }
 
 
-  form.workflow:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\WorkflowType
-    tags:
-      - { name: form.type, alias: deskpro_workflow }
-
-
   form.priority:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PriorityType
     tags:

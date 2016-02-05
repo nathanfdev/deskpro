@@ -54,6 +54,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_cc }
 
+  form.workflow:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\WorkflowType
+    tags:
+      - { name: form.type, alias: deskpro_workflow }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
