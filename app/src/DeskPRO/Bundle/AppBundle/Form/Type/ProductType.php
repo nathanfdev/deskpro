@@ -29,33 +29,45 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class ProductType.
+ */
 class ProductType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_product';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'entity_hierarchy';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'choice_list' => function (Options $options) {
                 /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
                 $hierarchy_generator = $options['hierarchy_generator'];
 
                 return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
             },
-        ));
+        ]);
     }
 }

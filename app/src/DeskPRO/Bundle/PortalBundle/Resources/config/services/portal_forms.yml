@@ -222,12 +222,6 @@ services:
       - { name: form.type, alias: deskpro_hidden }
 
 
-  form.product:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ProductType
-    tags:
-      - { name: form.type, alias: deskpro_product }
-
-
   form.category:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CategoryType
     tags:
