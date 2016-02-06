@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDrive
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock\ActionPermissionsClass;
 use Doctrine\Common\Annotations\AnnotationReader;
 use DpTest\ApiTestCase;
+use Metadata\ClassMetadata;
 
 class ActionPermissionsMetadataFactoryTest extends ApiTestCase
 {
@@ -49,49 +50,61 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
 
     public function testAnnotations()
     {
-        $classMetadata = $this->factory->getMetadataForClass(ActionPermissionsClass::class);
+        $class_metadata = $this->factory->getMetadataForClass(ActionPermissionsClass::class);
 
+        $this->checkMetadata($class_metadata);
+    }
+
+    public function testAnnotationsCacheRewrite()
+    {
+        $class_metadata = $this->factory->getMetadataForClass(ActionPermissionsClass::class, true);
+
+        $this->checkMetadata($class_metadata);
+    }
+
+    protected function checkMetadata(ClassMetadata $class_metadata)
+    {
         $this->assertEquals(
             ['session', 'token'],
-            $classMetadata->methodMetadata['inherit']->getModes(),
+            $class_metadata->methodMetadata['inherit']->getModes(),
             'Inherit class ApiModes problem'
         );
         $this->assertEquals(
             ['class.mock'],
-            $classMetadata->methodMetadata['inherit']->getTags(),
+            $class_metadata->methodMetadata['inherit']->getTags(),
             'Inherit class ApiTag problem'
         );
 
         $this->assertEquals(
             ['session', 'token', 'key'],
-            $classMetadata->methodMetadata['overrideModes']->getModes(),
+            $class_metadata->methodMetadata['overrideModes']->getModes(),
             'overrideModes ApiModes problem'
         );
         $this->assertEquals(
             ['class.mock'],
-            $classMetadata->methodMetadata['overrideModes']->getTags(),
+            $class_metadata->methodMetadata['overrideModes']->getTags(),
             'overrideModes ApiTags problem'
         );
 
         $this->assertEquals(
             ['session', 'token'],
-            $classMetadata->methodMetadata['overrideTags']->getModes(),
+            $class_metadata->methodMetadata['overrideTags']->getModes(),
             'overrideTags ApiModes problem'
         );
         $this->assertEquals(
             ['class.overridden'],
-            $classMetadata->methodMetadata['overrideTags']->getTags(),
+            $class_metadata->methodMetadata['overrideTags']->getTags(),
             'overrideTags ApiTags problem'
         );
 
         $this->assertEquals(
             ['token', 'key'],
-            $classMetadata->methodMetadata['overrideBoth']->getModes(),
+            $class_metadata->methodMetadata['overrideBoth']->getModes(),
             'overrideBoth ApiModes problem'
         );
         $this->assertEquals(
             ['class.overridden', 'class.overridden2'],
-            $classMetadata->methodMetadata['overrideBoth']->getTags(),
+            $class_metadata->methodMetadata['overrideBoth']->getTags(),
             'overrideBoth ApiTags problem'
         );
     }

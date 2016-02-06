@@ -124,16 +124,7 @@ class ActionPermissionsCache extends FileCache
     private function renameFile($source, $target)
     {
         if (false === @rename($source, $target)) {
-            if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-                if (false === copy($source, $target)) {
-                    throw new \RuntimeException(sprintf('(WIN) Could not write new cache file to %s.', $target));
-                }
-                if (false === unlink($source)) {
-                    throw new \RuntimeException(sprintf('(WIN) Could not delete temp cache file to %s.', $source));
-                }
-            } else {
-                throw new \RuntimeException(sprintf('Could not write new cache file to %s.', $target));
-            }
+            throw new \RuntimeException(sprintf('Could not write new cache file to %s.', $target));
         }
     }
 }
