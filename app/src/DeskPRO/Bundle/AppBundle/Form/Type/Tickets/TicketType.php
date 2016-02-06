@@ -255,7 +255,7 @@ class TicketType extends AbstractType
      *
      * @return array of field names that are now displayed on the form
      */
-    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = [])
+    private function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = [])
     {
         $additional_fields             = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
@@ -1059,7 +1059,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function fieldWasDisplayedBefore(TicketFormContext $context, LayoutField $field)
+    private function fieldWasDisplayedBefore(TicketFormContext $context, LayoutField $field)
     {
         return in_array($field->getId(), $context->getPreviouslyDisplayedFields());
     }
@@ -1070,7 +1070,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function fieldHasCriteriaAndCriteriaDoesNOTMatch(LayoutField $field, $extracted_data)
+    private function fieldHasCriteriaAndCriteriaDoesNOTMatch(LayoutField $field, $extracted_data)
     {
         return $field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data);
     }
@@ -1081,7 +1081,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function fieldHasCriteriaAndItDOESMatch(LayoutField $field, $extracted_data)
+    private function fieldHasCriteriaAndItDOESMatch(LayoutField $field, $extracted_data)
     {
         return $field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data);
     }
@@ -1093,7 +1093,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, LayoutField $field, $extracted_data)
+    private function fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, LayoutField $field, $extracted_data)
     {
         return !$has_field_criteria
         ||
@@ -1106,7 +1106,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function shouldFieldBeSkipped(LayoutField $field, TicketFormContext $context)
+    private function shouldFieldBeSkipped(LayoutField $field, TicketFormContext $context)
     {
         switch ($field->getFieldType()) {
             case FormFields::PRIORITY:
@@ -1133,7 +1133,7 @@ class TicketType extends AbstractType
      *
      * @return array
      */
-    protected function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketFormContext $context, $extracted_data, $fields_to_remove, $additional_fields)
+    private function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketFormContext $context, $extracted_data, $fields_to_remove, $additional_fields)
     {
         // DEPENDENT FIELDS
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
@@ -1174,9 +1174,8 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function canProductBeDisplayed(TicketFormContext $context)
+    private function canProductBeDisplayed(TicketFormContext $context)
     {
-        // we need the brand setting to be correct
         if (!$context->getSetting('core.use_product', false)) {
             return false;
         }
@@ -1192,9 +1191,8 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function canPriorityBeDisplayed(TicketFormContext $context)
+    private function canPriorityBeDisplayed(TicketFormContext $context)
     {
-        // we need the brand setting to be correct
         if (!$context->getSetting('core.use_ticket_priority', false)) {
             return false;
         }
@@ -1210,9 +1208,8 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function canCategoryBeDisplayed(TicketFormContext $context)
+    private function canCategoryBeDisplayed(TicketFormContext $context)
     {
-        // we need the brand setting to be correct
         if (!$context->getSetting('core.use_ticket_category', false)) {
             return false;
         }
@@ -1228,9 +1225,8 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function canWorkflowBeDisplayed(TicketFormContext $context)
+    private function canWorkflowBeDisplayed(TicketFormContext $context)
     {
-        // we need the brand setting to be correct
         if (!$context->getSetting('core.use_ticket_workflow', false)) {
             return false;
         }
@@ -1246,7 +1242,7 @@ class TicketType extends AbstractType
      *
      * @return bool
      */
-    protected function canCaptchaBeDisplayed(TicketFormContext $context)
+    private function canCaptchaBeDisplayed(TicketFormContext $context)
     {
         if (!$context->getOption('use_captcha')) {
             return false;
