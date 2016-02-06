@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class SearchMessagesType.
+ */
 class SearchMessagesType extends AbstractType
 {
     /**
@@ -52,12 +54,11 @@ class SearchMessagesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('search', 'text', ['empty_data' => '', 'required' => false])
-            ->add('page', 'integer', ['empty_data' => 1, 'required' => false])
+            ->add('search', 'text', ['required' => false])
             ->add('order', 'choice', [
                 'choices' => [
-                        'By date' => 'date_created',
-                    ],
+                    'By date' => 'date_created',
+                ],
                 'empty_data'        => 'date_created',
                 'choices_as_values' => true,
                 'required'          => false,
@@ -71,6 +72,7 @@ class SearchMessagesType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
+            'allow_extra_fields'            => true,
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);

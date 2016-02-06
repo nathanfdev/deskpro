@@ -68,20 +68,26 @@ Feature: Agent Chats api service
     And the JSON node data should exist
     And the JSON node "data.id" should be equal to 1
 
+  Scenario: I try to create a message (failed validation)
+    When I send a POST request to "/api/v2/agent_chats/1/messages"
+    Then the response status code should be 400
+
   Scenario: I create a message
     When I send a POST request to "/api/v2/agent_chats/1/messages" with body:
     """
       {
-        "message": "This is a TEST message"
+        "message": "This is a TEST message",
+        "uuid": "216fff40-98d9-11e3-a5e2-0800200c9a66"
       }
     """
-    And the response status code should be 201
+    Then the response status code should be 201
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.message" should be equal to "This is a TEST message"
 
   Scenario: I get a message list
     When I send a GET request to "/api/v2/agent_chats/1/messages?search=message"
+    And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0]" should exist

@@ -29,14 +29,20 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class MessageType.
+ */
 class MessageType extends AbstractType
 {
     /**
@@ -53,18 +59,11 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('uuid', 'text', [
-                'constraints' => [
-                    new Assert\Uuid(),
-                ],
-                'required' => true,
-            ])
+            ->add('message', 'html_textarea')
+            ->add('uuid', 'text')
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
 
     /**
@@ -72,9 +71,37 @@ class MessageType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'csrf_protection'               => false,
-            'csrf_double_submit_protection' => false,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class'                    => 'DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage',
+                'csrf_protection'               => false,
+                'csrf_double_submit_protection' => false,
+                'person'                        => null,
+                'chat'                          => null,
+            ])
+            ->setAllowedTypes([
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'chat'   => 'DeskPRO\\Bundle\\AppBundle\\Entity\\AgentChat',
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var AgentChatMessage $message */
+        $message = $form->getData();
+        /** @var AgentChat $chat */
+        $chat = $config->getOption('chat');
+        /** @var Person $person */
+        $person = $config->getOption('person');
+
+        $message->setPerson($person);
+        $chat->addMessage($message);
     }
 }

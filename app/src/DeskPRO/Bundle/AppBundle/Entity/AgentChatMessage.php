@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -66,6 +65,9 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string", length=36)
+     *
+     * @Assert\NotNull()
+     * @Assert\Uuid()
      */
     protected $uuid;
 
@@ -86,6 +88,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $person_name;
@@ -93,20 +96,24 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="text", nullable=false)
+     *
      * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
     protected $message;
 
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=false)
+     *
      * @Assert\NotNull()
      */
-    protected $metadata;
+    protected $metadata = [];
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $date_created;
@@ -114,10 +121,14 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var int
      * @ORM\Column(type="integer", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $status = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->date_created = new \DateTime();
@@ -167,6 +178,11 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
         return $this->person;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
     public function setPerson(Person $person)
     {
         $this->person      = $person;
@@ -175,6 +191,9 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getPersonName()
     {
         return $this->person_name;

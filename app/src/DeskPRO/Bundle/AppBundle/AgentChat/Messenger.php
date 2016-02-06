@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -77,29 +76,6 @@ class Messenger
         $this->em                      = $em;
         $this->department_data_service = $department_data_service;
         $this->event_dispatcher        = $event_dispatcher;
-    }
-
-    /**
-     * @param AgentChat $chat
-     * @param Person    $person
-     * @param string    $message
-     * @param string    $uuid
-     *
-     * @return AgentChatMessage
-     */
-    public function addMessage(AgentChat $chat, Person $person, $message, $uuid)
-    {
-        $agentMessage = new AgentChatMessage();
-        $agentMessage->setPerson($person)
-            ->setMessage($message)
-            ->setUuid($uuid)
-            ->setMetadata(array());
-        $chat->addMessage($agentMessage);
-        $this->em->persist($chat);
-        $this->em->persist($agentMessage);
-        $this->em->flush();
-
-        return $agentMessage;
     }
 
     /**
