@@ -81,6 +81,9 @@ Feature: /tickets endpoint
     When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
+  "user_name_and_email": {
+    "user_name": "Changed Name"
+  },
   "subject": "Modified subject",
   "department": 2,
   "product": 2,
@@ -116,6 +119,10 @@ Feature: /tickets endpoint
     And the JSON node "data[0].attachments" should have 2 elements
     And the JSON node "data[0].attachments[0]" should be equal to 1
     And the JSON node "data[0].attachments[1]" should be equal to 2
+
+    When I send a GET request to "/api/v2/people/1"
+    Then the response status code should be 200
+    And the JSON node "data.name" should be equal to "Changed Name"
 
   @basic
   Scenario: I delete a ticket
