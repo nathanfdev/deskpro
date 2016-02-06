@@ -66,7 +66,6 @@ class NewTicketController extends AbstractController
         // do a one through with the GET request to update our model before starting the "real" form
         $form = $this->createForm('ticket', $ticket, [
             'person'            => $person,
-            'ticket_message'    => $ticket_message,
             'method'            => 'GET',
             'validation_groups' => false,
             'settings'          => $this->getBrandContainer()->getSettings(),
@@ -162,11 +161,10 @@ class NewTicketController extends AbstractController
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
-            'person'         => $person,
-            'ticket_message' => null,
-            'settings'       => $this->getBrandContainer()->getSettings(),
-            'full_version'   => true,
-            'action'         => $this->generateUrl('portal_new_ticket'),
+            'person'       => $person,
+            'settings'     => $this->getBrandContainer()->getSettings(),
+            'full_version' => true,
+            'action'       => $this->generateUrl('portal_new_ticket'),
         ]);
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */

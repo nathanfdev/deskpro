@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
@@ -156,12 +155,11 @@ class TicketType extends AbstractType
     public function onPreData(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket         = $event->getData();
-        $form           = $event->getForm();
-        $config         = $form->getConfig();
-        $person         = $config->getOption('person');
-        $ticket_message = $config->getOption('ticket_message');
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $ticket = $event->getData();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+        $person = $config->getOption('person');
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
 
         // Setting ticket person if not defined
         if (!$ticket->getPerson()) {
@@ -172,7 +170,7 @@ class TicketType extends AbstractType
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
-        $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+        $context = $this->createTicketFormContext($form, $ticket, $layout);
 
         // if there is only one department we want to make sure to set it now...
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
@@ -204,7 +202,6 @@ class TicketType extends AbstractType
         /* @var \Application\DeskPRO\Entity\Ticket $ticket */
         $form                     = $event->getForm();
         $ticket                   = $form->getData();
-        $ticket_message           = $form->getConfig()->getOption('ticket_message');
         $pre_submit_data          = $event->getData();
         $already_displayed_fields = [];
 
@@ -214,7 +211,7 @@ class TicketType extends AbstractType
 
         // calculate the initial layout of the form (before any form submissions took place)
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context        = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout, $already_displayed_fields);
+        $context        = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
         $initial_layout = $context->getActiveLayout();
 
         // now we need to compare the department's layout, maybe the layout has changed
@@ -396,7 +393,6 @@ class TicketType extends AbstractType
                 'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
                 'method'              => 'POST',
                 'allow_extra_fields'  => true,
-                'ticket_message'      => null,
                 'full_version'        => false,
                 'use_captcha'         => true,
             ])
@@ -412,9 +408,8 @@ class TicketType extends AbstractType
                 ],
             ])
             ->setAllowedTypes([
-                'person'         => 'Application\\DeskPRO\\Entity\\Person',
-                'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-                'ticket_message' => ['Application\\DeskPRO\\Entity\\TicketMessage', 'null'],
+                'person'   => 'Application\\DeskPRO\\Entity\\Person',
+                'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
             ])
         ;
     }
@@ -1022,28 +1017,16 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param Ticket        $ticket
-     * @param TicketMessage $ticket_message
      * @param FormInterface $form
+     * @param Ticket        $ticket
      * @param TicketLayout  $initial_layout
      * @param array         $already_displayed_fields
      *
      * @return TicketFormContext
      */
-    private function createTicketFormContext(Ticket $ticket, TicketMessage $ticket_message = null, FormInterface $form, TicketLayout $initial_layout, $already_displayed_fields = [])
+    private function createTicketFormContext(FormInterface $form, Ticket $ticket, TicketLayout $initial_layout, $already_displayed_fields = [])
     {
-        $config = $form->getConfig();
-
-        return new TicketFormContext(
-            $form,
-            $ticket,
-            $ticket_message,
-            $config->getOption('person'),
-            $initial_layout,
-            $config->getOption('ticket_view_context'),
-            $config->getOption('ticket_visibility'),
-            $already_displayed_fields
-        );
+        return new TicketFormContext($form, $ticket, $initial_layout, $already_displayed_fields);
     }
 
     /**

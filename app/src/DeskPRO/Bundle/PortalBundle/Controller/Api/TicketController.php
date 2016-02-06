@@ -77,7 +77,6 @@ class TicketController extends AbstractApiController
 
         $form = $this->createForm('ticket', $ticket, [
             'person'                        => $person,
-            'ticket_message'                => $ticket_message,
             'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
             'csrf_protection'               => false,
@@ -112,12 +111,11 @@ class TicketController extends AbstractApiController
         }
 
         $form_full = $this->createForm('ticket', $ticket, [
-            'person'         => $person,
-            'ticket_message' => null,
-            'settings'       => $this->getBrandContainer()->getSettings(),
-            'full_version'   => true,
-            'action'         => $this->generateUrl('portal_api_ticket_new'),
-            'use_captcha'    => false,
+            'person'       => $person,
+            'settings'     => $this->getBrandContainer()->getSettings(),
+            'full_version' => true,
+            'action'       => $this->generateUrl('portal_api_ticket_new'),
+            'use_captcha'  => false,
         ]);
 
         $params = [

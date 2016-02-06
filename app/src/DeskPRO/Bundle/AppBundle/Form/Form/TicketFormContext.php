@@ -41,7 +41,7 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use Symfony\Component\Form\FormInterface;
 
 /**
- * Often times there is a sifnigifant amount of data surrounding a form that needs to be kept in context.
+ * Often times there is a significant amount of data surrounding a form that needs to be kept in context.
  */
 class TicketFormContext
 {
@@ -57,6 +57,11 @@ class TicketFormContext
      */
     const VIEW_USER  = 'user';
     const VIEW_AGENT = 'agent';
+
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $ticket;
 
     /**
      * @var TicketLayout
@@ -84,16 +89,6 @@ class TicketFormContext
     private $form;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
-     */
-    private $person;
-
-    /**
-     * @var \Application\DeskPRO\Entity\TicketMessage
-     */
-    private $ticket_message;
-
-    /**
      * @var bool keeps track of if we have already added a captcha to the form or not
      */
     private $captcha_exists_on_form;
@@ -105,34 +100,26 @@ class TicketFormContext
     private $previously_displayed_fields;
 
     /**
+     * Constructor.
+     *
      * @param FormInterface $form
-     * @param Person        $person
      * @param Ticket        $ticket
-     * @param TicketLayout  $layout         the ticket layout we are using for this form
-     * @param string        $view_context   - "user" or "agent"?
-     * @param string        $visibility     the view, such as "new", "edit", "view" (contants of this class)
-     * @param TicketMessage $ticket_message
+     * @param TicketLayout  $layout
+     * @param array         $previously_displayed_fields
      */
-    public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility, array $previously_displayed_fields)
+    public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout, array $previously_displayed_fields)
     {
         $this->form                        = $form;
         $this->ticket                      = $ticket;
-        $this->person                      = $person;
         $this->layout                      = $layout;
         $this->previous_layout             = $layout;
-        $this->view_context                = $view_context;
-        $this->visibility                  = $visibility;
-        $this->ticket_message              = $ticket_message;
         $this->captcha_exists_on_form      = false;
         $this->previously_displayed_fields = $previously_displayed_fields;
     }
 
     /**
-     * @var \Application\DeskPRO\Entity\Ticket
-     */
-    private $ticket;
-
-    /**
+     * The ticket layout we are using for this form.
+     *
      * @return TicketLayout
      */
     public function getLayout()
@@ -157,19 +144,23 @@ class TicketFormContext
     }
 
     /**
-     * @return string "user" or "agent"
+     * Returns "user" or "agent".
+     *
+     * @return string
      */
     public function getViewContext()
     {
-        return $this->view_context;
+        return $this->getOption('ticket_view_context');
     }
 
     /**
+     * The view, such as "new", "edit", "view" (constants of this class).
+     *
      * @return string
      */
     public function getVisibility()
     {
-        return $this->visibility;
+        return $this->getOption('ticket_visibility');
     }
 
     /**
@@ -207,7 +198,7 @@ class TicketFormContext
      */
     public function getPerson()
     {
-        return $this->person;
+        return $this->getOption('person');
     }
 
     /**
@@ -240,23 +231,24 @@ class TicketFormContext
      */
     public function getMessage()
     {
-        if (!$this->ticket_message) {
-            $ticket = $this->getTicket();
-            if ($ticket->messages->count()) {
-                $this->ticket_message = $ticket->messages->first();
-            } else {
-                $ticket_message = new TicketMessage();
-                $ticket_message
-                    ->setPerson($this->getPerson())
-                    ->setMessage('')
-                ;
-
-                $ticket->addMessage($ticket_message);
-                $this->ticket_message = $ticket_message;
-            }
+        $ticket = $this->getTicket();
+        if (!$ticket) {
+            throw new \RuntimeException('Ticket is not defined');
         }
 
-        return $this->ticket_message;
+        if ($ticket->messages->count()) {
+            return $ticket->messages->first();
+        }
+
+        $ticket_message = new TicketMessage();
+        $ticket_message
+            ->setPerson($this->getPerson())
+            ->setMessage('')
+        ;
+
+        $ticket->addMessage($ticket_message);
+
+        return $ticket_message;
     }
 
     /**
