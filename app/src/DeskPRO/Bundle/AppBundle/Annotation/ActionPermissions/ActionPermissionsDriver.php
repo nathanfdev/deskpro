@@ -150,7 +150,7 @@ class ActionPermissionsDriver implements DriverInterface
         $tag   = explode('\\', $fqcn);
         $tag[] = $metadata->name;
         foreach ($tag as &$t) {
-            $t = ltrim(strtolower(preg_replace(['/Controller/', '/[A-Z]/'], ['', '_$0'], $t)), '_'); //snake case
+            $t = ltrim(strtolower(preg_replace(['/Controller/', '/[A-Z](?!([A-Z]+)|$)/'], ['', '_$0'], $t)), '_'); //snake case
         }
         $tag = implode('.', $tag);
 
