@@ -159,6 +159,7 @@ class TicketType extends AbstractType
         $ticket         = $event->getData();
         $form           = $event->getForm();
         $config         = $form->getConfig();
+        $person         = $config->getOption('person');
         $ticket_message = $config->getOption('ticket_message');
         $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
 
@@ -174,7 +175,6 @@ class TicketType extends AbstractType
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
 
         // if there is only one department we want to make sure to set it now...
-        $person    = $config->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
@@ -184,10 +184,11 @@ class TicketType extends AbstractType
 
         $displaying_fields = $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
 
-        if ($context->getForm()->has('displayed_fields')) {
-            $context->getForm()->remove('displayed_fields');
+        if ($form->has('displayed_fields')) {
+            $form->remove('displayed_fields');
         }
-        $context->getForm()->add('displayed_fields', 'hidden', [
+
+        $form->add('displayed_fields', 'hidden', [
             'mapped' => false,
             'data'   => $displaying_fields['displayed_fields'],
         ]);
@@ -221,11 +222,11 @@ class TicketType extends AbstractType
             $extracted_data    = $this->getTicketDataIds($pre_submit_data, $context);
             $new_department_id = $extracted_data['department'];
 
-            if ($context->getForm()->has('last_department_id')) {
-                $context->getForm()->remove('last_department_id');
+            if ($form->has('last_department_id')) {
+                $form->remove('last_department_id');
             }
 
-            $context->getForm()->add('last_department_id', 'hidden', [
+            $form->add('last_department_id', 'hidden', [
                 'mapped' => false,
                 'label'  => false,
             ]);
