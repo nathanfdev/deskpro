@@ -81,7 +81,6 @@ class NewTicketController extends AbstractController
 
         $form = $this->createForm('ticket', $ticket, [
             'person'                => $person,
-            'ticket_message'        => $ticket_message,
             'settings'              => $this->getBrandContainer()->getSettings(),
             'action'                => $this->generateUrl('portal_new_ticket'),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
