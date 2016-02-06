@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import { merge } from 'lodash'
+import $ from 'jquery';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
@@ -24,8 +24,6 @@ export function toImmutable(data) {
 }
 
 export function fakeState(additional = {}) {
-  const frs = fakeRecordStoreState;
-
   const base = {
     Agent: {
       settings: toImmutable({tickets: {filter_groupings: {}}})
@@ -39,12 +37,12 @@ export function fakeState(additional = {}) {
       massActions: toImmutable({selected: []})
     },
     RecordStores: {
-      CRM: {people: frs()},
-      Agent: {departments: frs()}
+      CRM: {people: fakeRecordStoreState()},
+      Agent: {departments: fakeRecordStoreState()}
     }
   };
 
-  return merge(base, additional);
+  return $.extend(true, {}, base, additional);
 }
 
 export function fakeRecordStoreState(records = {}, requests = {}) {
