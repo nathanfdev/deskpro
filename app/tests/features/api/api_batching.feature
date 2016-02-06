@@ -22,7 +22,7 @@ Feature: API batch requests
     """
     {
         "requests": {
-            "an_identifier": "/api/v2/sandbox_widgets"
+            "an_identifier": "/api/v2/user_groups"
         }
     }
     """
@@ -40,7 +40,7 @@ Feature: API batch requests
         "requests": {
             "an_identifier": {
                 "method": "GET",
-                "url": "/api/v2/sandbox_widgets",
+                "url": "/api/v2/user_groups",
                 "headers": {
                     "authorize": "key se3LaKeY5"
                 }
@@ -62,16 +62,15 @@ Feature: API batch requests
         "requests": {
             "new_stuff": {
                 "method": "POST",
-                "url": "/api/v2/sandbox_widgets",
+                "url": "/api/v2/tickets",
                 "headers": {
                     "authorize": "key se3LaKeY5"
                 },
                 "data": {
-                    "name": "some name here!",
-                    "inventory": 11
+                    "subject": "My ticket"
                 }
             },
-            "an_identifier": "/api/v2/sandbox_widgets"
+            "an_identifier": "/api/v2/user_groups"
         }
     }
     """
