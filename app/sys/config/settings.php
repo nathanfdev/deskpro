@@ -1047,7 +1047,7 @@ return array(
         'notification.agent_chat.new_message' => [
             'strategy' => 'immediate',
             'delivery' => [
-                'pusher',
+                'db',
             ],
         ],
 //        'notification.yet.another.system.event' => [
@@ -1062,7 +1062,7 @@ return array(
     'notification.settings.default_strategy' => [
         'strategy' => 'immediate',
         'delivery' => [
-            'pusher',
+            'db',
         ],
     ],
     # You MUST provide pusher application settings if you plan to use it.
