@@ -87,7 +87,6 @@ Feature: Agent Chats api service
 
   Scenario: I get a message list
     When I send a GET request to "/api/v2/agent_chats/1/messages?search=message"
-    And print last JSON response
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0]" should exist
