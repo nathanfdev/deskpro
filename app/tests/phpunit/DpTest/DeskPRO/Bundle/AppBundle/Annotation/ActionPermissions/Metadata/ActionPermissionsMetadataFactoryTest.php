@@ -70,7 +70,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
             'Inherit class ApiModes problem'
         );
         $this->assertEquals(
-            ['class.mock'],
+            ['class.mock', ''],
             $class_metadata->methodMetadata['inherit']->getTags(),
             'Inherit class ApiTag problem'
         );
