@@ -520,7 +520,7 @@ class TicketType extends AbstractType
      */
     private function addDepartment(TicketFormContext $context, LayoutField $field)
     {
-        $person    = $context->getForm()->getConfig()->getOption('person');
+        $person    = $context->getOption('person');
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if it is 1 or less to choose from, dont even add this field to the form
@@ -1264,7 +1264,7 @@ class TicketType extends AbstractType
      */
     protected function canCaptchaBeDisplayed(TicketFormContext $context)
     {
-        if (!$context->getForm()->getConfig()->getOption('use_captcha')) {
+        if (!$context->getOption('use_captcha')) {
             return false;
         }
 

@@ -300,16 +300,27 @@ class TicketFormContext
     }
 
     /**
-     * @param string $key
+     * @param string $name
      * @param mixed  $default
      *
      * @return mixed
      */
-    public function getSetting($key, $default = null)
+    public function getSetting($name, $default = null)
     {
         /** @var SettingsBag $settings_bag */
         $settings_bag = $this->form->getConfig()->getOption('settings');
 
-        return $settings_bag->get($key, $default);
+        return $settings_bag->get($name, $default);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getOption($name, $default = null)
+    {
+        return $this->form->getConfig()->getOption($name, $default);
     }
 }
