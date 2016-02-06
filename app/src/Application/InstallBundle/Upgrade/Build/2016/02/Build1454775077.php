@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454775077);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1454775077 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Api keys actions');
+        $this->execMutateSql('CREATE TABLE api_keys_actions (id INT AUTO_INCREMENT NOT NULL, api_key_id INT DEFAULT NULL, action VARCHAR(255) NOT NULL, INDEX IDX_DEAC73078BE312B3 (api_key_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;');
+    }
+}

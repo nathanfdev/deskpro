@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -85,10 +86,16 @@ class ApiKey extends DomainObject
      */
     protected $logs;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $actions;
+
     public function __construct()
     {
         $this->regenerateApiKey();
-        $this->logs = new ArrayCollection();
+        $this->logs    = new ArrayCollection();
+        $this->actions = new ArrayCollection();
     }
 
     /**
@@ -198,6 +205,15 @@ class ApiKey extends DomainObject
         $metadata->mapOneToMany(array(
             'fieldName'    => 'logs',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+            'mappedBy'     => 'key',
+            'inversedBy'   => null,
+            'orderBy'      => array('id' => 'DESC'),
+            'cascade'      => array('persist', 'remove'), // doesn't work
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'actions',
+            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiKeyAction',
             'mappedBy'     => 'key',
             'inversedBy'   => null,
             'orderBy'      => array('id' => 'DESC'),
