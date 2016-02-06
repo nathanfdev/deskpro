@@ -344,7 +344,6 @@ BODY;
         $tables = array(
             'agent_alerts',
             'client_messages',
-            'visitor_tracks',
         );
 
         $threshold = 2145000000;
