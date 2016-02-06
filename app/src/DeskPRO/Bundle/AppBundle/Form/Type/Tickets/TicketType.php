@@ -286,13 +286,13 @@ class TicketType extends AbstractType
             }
 
             // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
-            if ($context->getForm()->has('submit')) {
-                $context->getForm()->remove('submit');
+            if ($form->has('submit')) {
+                $form->remove('submit');
             }
 
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-            if (count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
-                $context->getForm()->add('rerender_form', 'hidden', [
+            if (count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$form->has('rerender_form')) {
+                $form->add('rerender_form', 'hidden', [
                     'mapped' => false,
                     'label'  => false,
                 ]);
@@ -323,9 +323,9 @@ class TicketType extends AbstractType
             }
         }
 
-        if (!$added_something && $context->getForm()->has('rerender_form')) {
+        if (!$added_something && $form->has('rerender_form')) {
             // we didn't add anything new, so remove the signal to re-render
-            $context->getForm()->remove('rerender_form');
+            $form->remove('rerender_form');
         }
 
         $this->addSubmit($context);
