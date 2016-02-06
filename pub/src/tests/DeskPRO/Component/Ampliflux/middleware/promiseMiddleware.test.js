@@ -3,7 +3,7 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('lodash/utility/uniqueId');
 
 describe('Ampliflux Promise Middleware', () => {
-  const async = require('Helpers/async');
+  const { async } = require('Helpers/async');
   const { promiseMiddleware } = require('DeskPRO/Component/Ampliflux/middleware/promiseMiddleware');
   const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const actionUtils = require('DeskPRO/Component/Ampliflux/actions/actionUtils');
