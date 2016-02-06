@@ -189,6 +189,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	updateDisplay_modify: function() {
 		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
+		var baseId = this.page.meta.baseId;
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
 		}
@@ -237,7 +238,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				var classname = f.field_type;
 			}
 
-			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
+			var item = this.display.find('.item.' + classname);
+			$('input, select', item).each(function(){
+				var prevId = $(this).attr('id');
+				$('label[for="' + prevId + '"]', item).attr('for', baseId + '_' + prevId);
+				$(this)
+					.attr('name', baseId + '_' + $(this).attr('name'))
+					.attr('id', baseId + '_' + prevId)
+				;
+			});
+			item.detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
     this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
@@ -318,6 +328,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	saveChanges: function() {
 		var changeManager = this.page.changeManager;
+		var baseId = this.page.meta.baseId;
 
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
@@ -327,6 +338,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
+		for (var i = 0; i < customFieldData.length; i++) {
+			customFieldData[i].name = customFieldData[i].name.replace(baseId + '_', '');
+		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
 		changeManager.saveChanges(
