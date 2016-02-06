@@ -71,49 +71,49 @@ class ActionPermissionsDriverTest extends DeskProTestCase
 
     public function testAnnotations()
     {
-        $classMetadata = $this->driver->loadMetadataForClass(new \ReflectionClass(ActionPermissionsClass::class));
+        $class_metadata = $this->driver->loadMetadataForClass(new \ReflectionClass(ActionPermissionsClass::class));
 
         $this->assertEquals(
             ['session', 'token'],
-            $classMetadata->methodMetadata['inherit']->getModes(),
+            $class_metadata->methodMetadata['inherit']->getModes(),
             'Inherit class ApiModes problem'
         );
         $this->assertEquals(
             ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.inherit'],
-            $classMetadata->methodMetadata['inherit']->getTags(),
+            $class_metadata->methodMetadata['inherit']->getTags(),
             'Inherit class ApiTag problem'
         );
 
         $this->assertEquals(
             ['session', 'token', 'key'],
-            $classMetadata->methodMetadata['overrideModes']->getModes(),
+            $class_metadata->methodMetadata['overrideModes']->getModes(),
             'overrideModes ApiModes problem'
         );
         $this->assertEquals(
             ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_modes'],
-            $classMetadata->methodMetadata['overrideModes']->getTags(),
+            $class_metadata->methodMetadata['overrideModes']->getTags(),
             'overrideModes ApiTags problem'
         );
 
         $this->assertEquals(
             ['session', 'token'],
-            $classMetadata->methodMetadata['overrideTags']->getModes(),
+            $class_metadata->methodMetadata['overrideTags']->getModes(),
             'overrideTags ApiModes problem'
         );
         $this->assertEquals(
             ['class.overridden', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_tags'],
-            $classMetadata->methodMetadata['overrideTags']->getTags(),
+            $class_metadata->methodMetadata['overrideTags']->getTags(),
             'overrideTags ApiTags problem'
         );
 
         $this->assertEquals(
             ['token', 'key'],
-            $classMetadata->methodMetadata['overrideBoth']->getModes(),
+            $class_metadata->methodMetadata['overrideBoth']->getModes(),
             'overrideBoth ApiModes problem'
         );
         $this->assertEquals(
             ['class.overridden', 'class.overridden2', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_both'],
-            $classMetadata->methodMetadata['overrideBoth']->getTags(),
+            $class_metadata->methodMetadata['overrideBoth']->getTags(),
             'overrideBoth ApiTags problem'
         );
     }

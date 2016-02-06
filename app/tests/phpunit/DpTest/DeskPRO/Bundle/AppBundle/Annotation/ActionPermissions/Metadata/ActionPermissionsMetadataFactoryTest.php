@@ -70,7 +70,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
             'Inherit class ApiModes problem'
         );
         $this->assertEquals(
-            ['class.mock', ''],
+            ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.inherit'],
             $class_metadata->methodMetadata['inherit']->getTags(),
             'Inherit class ApiTag problem'
         );
@@ -81,7 +81,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
             'overrideModes ApiModes problem'
         );
         $this->assertEquals(
-            ['class.mock'],
+            ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_modes'],
             $class_metadata->methodMetadata['overrideModes']->getTags(),
             'overrideModes ApiTags problem'
         );
@@ -92,7 +92,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
             'overrideTags ApiModes problem'
         );
         $this->assertEquals(
-            ['class.overridden'],
+            ['class.overridden', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_tags'],
             $class_metadata->methodMetadata['overrideTags']->getTags(),
             'overrideTags ApiTags problem'
         );
@@ -103,7 +103,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
             'overrideBoth ApiModes problem'
         );
         $this->assertEquals(
-            ['class.overridden', 'class.overridden2'],
+            ['class.overridden', 'class.overridden2', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_both'],
             $class_metadata->methodMetadata['overrideBoth']->getTags(),
             'overrideBoth ApiTags problem'
         );
