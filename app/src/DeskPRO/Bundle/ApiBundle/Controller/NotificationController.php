@@ -108,6 +108,9 @@ class NotificationController extends BaseController
         );
     }
 
+    /**
+     * @param Request $request
+     */
     protected function doHeartbeat(Request $request)
     {
         $session_code = $request->cookies->get('dpsid-agent');

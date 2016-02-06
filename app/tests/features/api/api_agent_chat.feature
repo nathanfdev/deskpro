@@ -14,7 +14,7 @@ Feature: Agent Chats api service
     And the JSON node data should exist
 
   Scenario: I create chat with agent
-    When I send a POST request to "api/v2/agent_chats/start" with body:
+    When I send a POST request to "/api/v2/agent_chats/start" with body:
     """
       {
         "type" : "agent",

@@ -14,6 +14,7 @@ api:
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
                 - DpBehat\PermissionContext
+                - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
     extensions:

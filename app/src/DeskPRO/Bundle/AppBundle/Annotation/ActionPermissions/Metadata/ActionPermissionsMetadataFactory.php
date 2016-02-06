@@ -56,7 +56,7 @@ class ActionPermissionsMetadataFactory implements MetadataFactoryInterface
     /**
      * @var array
      */
-    protected $loaded_metadata = [];
+    public $loaded_metadata = [];
 
     /**
      * @param ActionPermissionsDriver $driver
@@ -76,6 +76,9 @@ class ActionPermissionsMetadataFactory implements MetadataFactoryInterface
      */
     public function getMetadataForClass($class_name, $force_rewrite = false)
     {
+        if (isset($this->loaded_metadata[$class_name]) && !$force_rewrite) {
+            return $this->loaded_metadata[$class_name];
+        }
         $reflection = new \ReflectionClass($class_name);
         if (null !== $classMetadata = $this->cache->loadClassMetadataFromCache($reflection)) {
             if ($this->debug || $force_rewrite) {
