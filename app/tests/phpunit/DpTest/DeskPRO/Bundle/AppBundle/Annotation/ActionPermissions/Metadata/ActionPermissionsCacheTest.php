@@ -56,7 +56,16 @@ class ActionPermissionsCacheTest extends ApiTestCase
 
     public function testReadCache()
     {
-        self::$cache->loadClassMetadataFromCache(new \ReflectionClass(ActionPermissionsCache::class));
+        $class_metadata = self::$cache->loadClassMetadataFromCache(new \ReflectionClass(ActionPermissionsCache::class));
+        $this->assertTrue(is_object($class_metadata));
+        $this->assertTrue($class_metadata instanceof ClassMetadata);
+    }
+
+    public function testReadUnexistingCache()
+    {
+        $class_metadata = self::$cache->loadClassMetadataFromCache(new \ReflectionClass(self::class));
+        $this->assertFalse(is_object($class_metadata));
+        $this->assertFalse($class_metadata instanceof ClassMetadata);
     }
 
     public function testEraseCache()

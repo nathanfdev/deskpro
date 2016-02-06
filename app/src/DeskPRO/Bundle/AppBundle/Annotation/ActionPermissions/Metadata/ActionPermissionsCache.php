@@ -121,7 +121,7 @@ class ActionPermissionsCache extends FileCache
      * @param string $source
      * @param string $target
      */
-    private function renameFile($source, $target)
+    protected function renameFile($source, $target)
     {
         if (false === @rename($source, $target)) {
             throw new \RuntimeException(sprintf('Could not write new cache file to %s.', $target));
