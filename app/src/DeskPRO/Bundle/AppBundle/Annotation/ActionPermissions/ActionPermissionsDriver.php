@@ -127,11 +127,33 @@ class ActionPermissionsDriver implements DriverInterface
     {
         $tags = $this->reader->getMethodAnnotation($method, ApiTags::class);
 
+        $explicit_tags = [];
         if ($tags && $tags instanceof ApiTags) {
-            $metadata->setTags($tags->getTags());
+            $explicit_tags = $tags->getTags();
         } elseif ($classTags) {
             /* @var ApiTags $classTags */
-            $metadata->setTags($classTags->getTags());
+            $explicit_tags = $classTags->getTags();
         }
+
+        $tags = array_merge($explicit_tags, $this->getImplicitTags($metadata));
+        $metadata->setTags($tags);
+    }
+
+    public function getImplicitTags(MethodMetadata $metadata)
+    {
+        $matches = [];
+        if (preg_match_all('#(.*?\\Controller)#i', $metadata->class, $matches)) {
+            $fqcn = ltrim($matches[0][1], '\\');
+        } else {
+            $fqcn = $metadata->class;
+        }
+        $tag   = explode('\\', $fqcn);
+        $tag[] = $metadata->name;
+        foreach ($tag as &$t) {
+            $t = ltrim(strtolower(preg_replace(['/Controller/', '/[A-Z]/'], ['', '_$0'], $t)), '_'); //snake case
+        }
+        $tag = implode('.', $tag);
+
+        return [$tag];
     }
 }
