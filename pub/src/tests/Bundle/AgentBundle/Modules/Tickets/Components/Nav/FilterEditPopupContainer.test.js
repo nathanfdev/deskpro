@@ -5,18 +5,16 @@ jest.dontMock('~nav/FilterEditPopupContainer');
 jest.mock('DeskPRO/Component/Positioned/Detached');
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: FilterEditPopupContainer component', () => {
-  const FilterEditPopupContainer = require('~nav/FilterEditPopupContainer').FilterEditPopupContainer;
-  const actions                  = require('~root/Actions/navActions');
-  const dispatch                 = jasmine.createSpy('dispatch');
-  const Detached                 = require('DeskPRO/Component/Positioned/Detached').Detached;
+  const { FilterEditPopupContainer } = require('~nav/FilterEditPopupContainer');
+  const actions = require('~root/Actions/navActions');
+  const dispatch = jasmine.createSpy('dispatch');
 
   function render() {
-    return renderInTicketsApp({}, <FilterEditPopupContainer filterId="42" />, dispatch);
+    return renderInTicketsApp({}, <FilterEditPopupContainer filterId={42} />, dispatch);
   }
 
   it('should render select box with grouping options', () => {
