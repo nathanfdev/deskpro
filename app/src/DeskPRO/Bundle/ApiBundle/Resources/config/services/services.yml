@@ -89,5 +89,6 @@ services:
           - @api_logger
           - @security.token_storage
           - @doctrine.orm.default_entity_manager
+          - @settings_resolver
       tags:
           - { name: kernel.event_subscriber }

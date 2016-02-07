@@ -32,7 +32,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Log\ApiLoggerInterface;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -56,11 +58,23 @@ class ApiLogListener implements EventSubscriberInterface
     protected $token_storage;
 
     /**
+     * @var bool
+     */
+    protected $enabled;
+
+    /**
      * @param ApiLoggerInterface    $logger
      * @param TokenStorageInterface $token_storage
+     * @param EntityManager         $em
+     * @param SettingsResolver      $resolver
      */
-    public function __construct(ApiLoggerInterface $logger, TokenStorageInterface $token_storage, EntityManager $em)
-    {
+    public function __construct(
+        ApiLoggerInterface $logger,
+        TokenStorageInterface $token_storage,
+        EntityManager $em,
+        SettingsResolver $resolver
+    ) {
+        $this->enabled       = $resolver->getGlobalSettings()->get('api_logger.enabled');
         $this->logger        = $logger;
         $this->token_storage = $token_storage;
         $this->em            = $em;
@@ -81,27 +95,29 @@ class ApiLogListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        $token = $this->token_storage->getToken();
-        if ($token && $token->getName() === 'api_key') {
-            $request  = $event->getRequest();
-            $response = $event->getResponse();
-            /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
-            $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+        if ($this->enabled) {
+            $token = $this->token_storage->getToken();
+            if ($token instanceof AbstractApiSecurityToken && $token->getName() === 'api_key') {
+                $request  = $event->getRequest();
+                $response = $event->getResponse();
+                /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
+                $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
 
-            if ($key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())) {
-                /*
-                 * @var \Application\DeskPRO\Entity\ApiKey $key
-                 */
-                $log = new ApiLog();
-                $log
-                    ->setStartTime(time())
-                    ->setEndTime(time())
-                    ->setKey($key)
-                    ->setRequestedUri($request->getUri())
-                    ->setResponseData($response->getContent())
-                    ->setRequestData(var_export($request->request->all(), true))
-                    ->setStatus($response->getStatusCode());
-                $this->logger->log($log);
+                if ($key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())) {
+                    /*
+                     * @var \Application\DeskPRO\Entity\ApiKey $key
+                     */
+                    $log = new ApiLog();
+                    $log
+                        ->setStartTime(time())
+                        ->setEndTime(time())
+                        ->setKey($key)
+                        ->setRequestedUri($request->getUri())
+                        ->setResponseData($response->getContent())
+                        ->setRequestData(var_export($request->request->all(), true))
+                        ->setStatus($response->getStatusCode());
+                    $this->logger->log($log);
+                }
             }
         }
     }

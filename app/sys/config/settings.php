@@ -1087,8 +1087,9 @@ return array(
     # api_logger.settings
     ####################################################################################################################
 
-    'api_logger.type' => 'db',
-    'api_logger.file' => [
+    'api_logger.enabled' => false,
+    'api_logger.type'    => 'db',
+    'api_logger.file'    => [
         'log_max_size'  => 5 * 1024 * 1024,
         'log_max_files' => 5,
         'log_name'      => 'api_log.log',
