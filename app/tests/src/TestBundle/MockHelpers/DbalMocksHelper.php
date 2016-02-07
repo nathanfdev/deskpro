@@ -72,6 +72,7 @@ trait DbalMocksHelper
         // describe Query double
         $query->getArrayResult()->willReturn([]);
         $query->getSingleScalarResult()->willReturn(42);
+        $query->getResult()->willReturn([]);
 
         // describe QueryBuilder double
         $qb->getQuery()->willReturn($query);
