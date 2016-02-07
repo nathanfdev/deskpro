@@ -1,6 +1,7 @@
 import uuid from 'node-uuid';
 import { Http } from 'DeskPRO/Component/Http/Http';
 import { UrlCorrector } from './UrlCorrector';
+import $ from 'jquery';
 
 /*
 class BatchRequest extends Http {
