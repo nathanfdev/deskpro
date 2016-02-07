@@ -91,12 +91,3 @@ services:
           - @doctrine.orm.default_entity_manager
       tags:
           - { name: kernel.event_subscriber }
-
-parameters:
-    api_logger.type:
-      log_max_size: 5242880 # 5 * 1024 * 1024
-      log_max_files: 5
-      log_name: 'api_log.log'
-
-
-
