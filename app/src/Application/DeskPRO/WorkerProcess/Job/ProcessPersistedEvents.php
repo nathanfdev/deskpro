@@ -26,43 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+namespace Application\DeskPRO\WorkerProcess\Job;
+
+use DeskPRO\Bundle\AppBundle\Entity\Event;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\DeferredStrategy;
 
 /**
- * Class UpdateOnlineEvent.
+ * Updates agents online through dispatching event for action alerts.
  */
-class UpdateOnlineEvent extends AbstractSystemEvent
+class ProcessPersistedEvents extends AbstractJob
 {
-    const EVENT_NAME = 'notification.agents.update_online';
+    const DEFAULT_INTERVAL = 60; // 1 minute
 
-    /** @var array */
-    protected $agents_online_status;
-
-    /**
-     * @param array $agents_online_status
-     */
-    public function __construct(array $agents_online_status)
+    public function run()
     {
-        $this->agents_online_status = $agents_online_status;
-    }
+        $em   = $this->getContainer()->getEm();
+        $repo = $em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\Event');
+        /** @var Event[] $events*/
+        $events = $repo->findBy(['processed' => false]);
 
-    /**
-     * @return array
-     */
-    public function getAgentsOnlineStatus()
-    {
-        return $this->agents_online_status;
-    }
-
-    public function getOnlineAgents()
-    {
-        return $this->agents_online_status['online'];
-    }
-
-    public function getOfflineStatus()
-    {
-        return $this->agents_online_status['offline'];
+        if ($events) {
+            /** @var DeferredStrategy $strategy */
+            $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
+            foreach ($events as $event) {
+                $strategy->handlePersistedEvent($event->getEvent());
+//                $event->setIsPorcessed(true);
+//                $em->persist($event);
+            }
+//            $em->flush();
+        }
     }
 }

@@ -89,21 +89,4 @@ class TicketUpdatedEvent extends AbstractSystemEvent
 
         return $this;
     }
-
-    /**
-     * @return array
-     */
-    public function __sleep()
-    {
-        return ['ticket_id', 'data'];
-    }
-
-    /**
-     * @param $array
-     */
-    public function __wakeup($array)
-    {
-        $this->ticket_id = $array['ticket_id'];
-        $this->data      = $array('data');
-    }
 }

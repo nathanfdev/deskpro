@@ -65,6 +65,13 @@ class Event implements EntityInterface, NotifyPropertyChanged
     protected $event;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     *
+     * @var bool
+     */
+    protected $processed = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -98,6 +105,26 @@ class Event implements EntityInterface, NotifyPropertyChanged
     public function setEvent(SystemEventInterface $event)
     {
         $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPorcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param $processed
+     *
+     * @return $this
+     */
+    public function setIsPorcessed($processed)
+    {
+        $this->processed = (boolean) $processed;
 
         return $this;
     }

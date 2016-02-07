@@ -26,43 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
-
-/**
- * Class UpdateOnlineEvent.
- */
-class UpdateOnlineEvent extends AbstractSystemEvent
+class Build1454864297 extends AbstractBuild
 {
-    const EVENT_NAME = 'notification.agents.update_online';
-
-    /** @var array */
-    protected $agents_online_status;
-
-    /**
-     * @param array $agents_online_status
-     */
-    public function __construct(array $agents_online_status)
+    public function run()
     {
-        $this->agents_online_status = $agents_online_status;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAgentsOnlineStatus()
-    {
-        return $this->agents_online_status;
-    }
-
-    public function getOnlineAgents()
-    {
-        return $this->agents_online_status['online'];
-    }
-
-    public function getOfflineStatus()
-    {
-        return $this->agents_online_status['offline'];
+        $this->out('Upgrade notifications event table');
+        $this->execMutateSql('ALTER TABLE notification_system_event ADD processed TINYINT(1) NOT NULL');
+        $this->execMutateSql("INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`) VALUES ('process_persisted_events', 'process_persisted_events', 'Process persisted notification events', 'Process persisted notification events', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\ProcessPersistedEvents', '0x613A303A7B7D', 60, '2016-01-31 20:01:48');");
     }
 }

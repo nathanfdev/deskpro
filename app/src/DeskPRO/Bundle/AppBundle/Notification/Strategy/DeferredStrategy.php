@@ -46,6 +46,24 @@ class DeferredStrategy extends AbstractStrategy
         $this->persistEvent($event);
     }
 
+    public function handlePersistedEvent(SystemEventInterface $event)
+    {
+        $messages = $this->createMessages($event);
+        foreach ($messages as $message) {
+            $this->delivery_service->deliver($message);
+        }
+    }
+
+    protected function createMessages(SystemEventInterface $event)
+    {
+        $messages = [];
+        foreach ($this->event_handlers as $handler) {
+            $messages = array_merge($messages, $handler->processEvent($event));
+        }
+
+        return $messages;
+    }
+
     /**
      * @param PersistanceAdapterInterface $persistance_adapter
      *
