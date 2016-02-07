@@ -272,16 +272,4 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
             'requested_uri',
         ];
     }
-
-    /**
-     * @TODO ApiKey setting
-     *
-     * @param $properties
-     */
-    public function __wakeup($properties)
-    {
-        foreach ($properties as $property => $value) {
-            $this->$property = $value;
-        }
-    }
 }
