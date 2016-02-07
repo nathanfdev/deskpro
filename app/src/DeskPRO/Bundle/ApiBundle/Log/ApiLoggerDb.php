@@ -26,4 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454850311);
+namespace DeskPRO\Bundle\ApiBundle\Log;
+
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use Doctrine\ORM\EntityManager;
+
+class ApiLoggerDb implements ApiLoggerInterface
+{
+    protected $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function log(ApiLog $log)
+    {
+        $this->em->persist($log);
+        $this->em->flush();
+    }
+}

@@ -26,4 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454850311);
+namespace DeskPRO\Bundle\ApiBundle\Log;
+
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+
+interface ApiLoggerInterface
+{
+    public function log(ApiLog $log);
+}

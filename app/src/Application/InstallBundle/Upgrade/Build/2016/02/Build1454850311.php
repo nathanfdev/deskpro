@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454850311);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1454850311 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('New api log table');
+        $this->execMutateSql('CREATE TABLE api_log (id INT AUTO_INCREMENT NOT NULL, api_key_id INT DEFAULT NULL, start_time INT NOT NULL, end_time INT NOT NULL, requested_uri VARCHAR(255) NOT NULL, status INT NOT NULL, request_data LONGTEXT NOT NULL, response_data LONGTEXT NOT NULL, INDEX IDX_CCBD2EF18BE312B3 (api_key_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+        $this->execMutateSql('ALTER TABLE api_log ADD CONSTRAINT FK_CCBD2EF18BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
+    }
+}

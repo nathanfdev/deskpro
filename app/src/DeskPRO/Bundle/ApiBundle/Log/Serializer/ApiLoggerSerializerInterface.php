@@ -26,4 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454850311);
+namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
+
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+
+/**
+ * Interface ApiLoggerSerializerInterface.
+ */
+interface ApiLoggerSerializerInterface
+{
+    /**
+     * @param ApiLog $log
+     *
+     * @return string
+     */
+    public function serialize(ApiLog $log);
+}

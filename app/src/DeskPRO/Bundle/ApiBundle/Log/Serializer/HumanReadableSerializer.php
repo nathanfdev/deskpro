@@ -26,4 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1454850311);
+namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
+
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+
+class HumanReadableSerializer implements ApiLoggerSerializerInterface
+{
+    public function serialize(ApiLog $log)
+    {
+        return sprintf('======================= LOG ENTRY ======================
+uri: %s
+execution time: %d
+request time: %s
+request body:
+------------------------------------
+%s
+------------------------------------
+response body:
+------------------------------------
+%s
+------------------------------------
+response status: %d
+api_key_id: %d
+=======================/LOG ENTRY ======================
+'.PHP_EOL,
+            $log->getRequestedUri(),
+            $log->getEndTime() - $log->getStartTime(),
+            date('Y-m-d H:i:s', $log->getStartTime()),
+            $log->getRequestData(),
+            $log->getResponseData(),
+            $log->getStatus(),
+            $log->getKey()->getId()
+        );
+    }
+}

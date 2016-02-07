@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -90,6 +91,11 @@ class ApiKey extends DomainObject
     /**
      * @var ArrayCollection
      */
+    protected $api_logs;
+
+    /**
+     * @var ArrayCollection
+     */
     protected $actions;
 
     /**
@@ -98,8 +104,9 @@ class ApiKey extends DomainObject
     public function __construct()
     {
         $this->regenerateApiKey();
-        $this->logs    = new ArrayCollection();
-        $this->actions = new ArrayCollection();
+        $this->logs     = new ArrayCollection();
+        $this->actions  = new ArrayCollection();
+        $this->api_logs = new ArrayCollection();
     }
 
     /**
@@ -159,6 +166,19 @@ class ApiKey extends DomainObject
     {
         $this->actions->add($action);
         $action->setKey($this);
+
+        return $this;
+    }
+
+    /**
+     * @param ApiLog $log
+     *
+     * @return $this
+     */
+    public function addApiLog(ApiLog $log)
+    {
+        $this->actions->add($log);
+        $log->setKey($this);
 
         return $this;
     }
@@ -231,6 +251,15 @@ class ApiKey extends DomainObject
         $metadata->mapOneToMany(array(
             'fieldName'    => 'actions',
             'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiKeyAction',
+            'mappedBy'     => 'key',
+            'inversedBy'   => null,
+            'orderBy'      => array('id' => 'DESC'),
+            'cascade'      => array('persist', 'remove'), // doesn't work
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'api_logs',
+            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiLog',
             'mappedBy'     => 'key',
             'inversedBy'   => null,
             'orderBy'      => array('id' => 'DESC'),

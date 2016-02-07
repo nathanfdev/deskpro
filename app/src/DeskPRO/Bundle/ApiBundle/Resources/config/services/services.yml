@@ -52,3 +52,56 @@ services:
           - @doctrine.orm.entity_manager
           - @job.scheduler
 
+  api_logger_factory:
+    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerFactory
+    arguments:
+      - @service_container
+
+  api_logger:
+    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
+    factory: [@api_logger_factory, createLogger]
+    arguments:
+      - 'file'
+
+  api_logger.db:
+    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
+  api_logger.file:
+    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerFile
+    arguments:
+      - %kernel.logs_dir%
+      - %api_logger.file%
+      - @api_logger.file.serializer
+
+  api_logger.file.serializer:
+    class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
+    factory: [@api_logger_factory, createSerializer]
+    arguments:
+      - %api_logger.file.serializer.type%
+
+  api_logger.file.serializer.human_readable:
+      class: DeskPRO\Bundle\ApiBundle\Log\Serializer\HumanReadableSerializer
+
+  api_logger.file.serializer.serialize:
+        class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
+
+  api_log_listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\ApiLogListener
+      arguments:
+          - @api_logger
+          - @security.token_storage
+          - @doctrine.orm.default_entity_manager
+      tags:
+          - { name: kernel.event_subscriber }
+
+parameters:
+    api_logger.type: file
+    api_logger.file:
+      log_max_size: 5242880 # 5 * 1024 * 1024
+      log_max_files: 5
+      log_name: 'api_log.log'
+    api_logger.file.serializer.type: serialize
+
+
