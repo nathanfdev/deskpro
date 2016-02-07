@@ -28,10 +28,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 
 /**
  * Class ApiLoggerFile.
+ *
+ * @todo log rotate
  */
 class ApiLoggerFile implements ApiLoggerInterface
 {
@@ -60,12 +63,12 @@ class ApiLoggerFile implements ApiLoggerInterface
 
     /**
      * @param $logs_dir
-     * @param array                                   $options
-     * @param Serializer\ApiLoggerSerializerInterface $serializer
+     * @param SettingsResolver $settings_resolver
+     * @param  $serializer
      */
-    public function __construct($logs_dir, array $options, Serializer\ApiLoggerSerializerInterface $serializer)
+    public function __construct($logs_dir, SettingsResolver $settings_resolver, Serializer\ApiLoggerSerializerInterface $serializer)
     {
-        $this->setup($options);
+        $this->setup($settings_resolver->getGlobalSettings()->get('api_logger.file'));
         $this->file       = new \SplFileObject($logs_dir.DIRECTORY_SEPARATOR.$this->log_name, 'a');
         $this->serializer = $serializer;
     }

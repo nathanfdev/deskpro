@@ -60,8 +60,6 @@ services:
   api_logger:
     class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
     factory: [@api_logger_factory, createLogger]
-    arguments:
-      - 'file'
 
   api_logger.db:
     class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
@@ -72,14 +70,12 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerFile
     arguments:
       - %kernel.logs_dir%
-      - %api_logger.file%
+      - @settings_resolver
       - @api_logger.file.serializer
 
   api_logger.file.serializer:
     class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
     factory: [@api_logger_factory, createSerializer]
-    arguments:
-      - %api_logger.file.serializer.type%
 
   api_logger.file.serializer.human_readable:
       class: DeskPRO\Bundle\ApiBundle\Log\Serializer\HumanReadableSerializer
@@ -97,11 +93,10 @@ services:
           - { name: kernel.event_subscriber }
 
 parameters:
-    api_logger.type: file
-    api_logger.file:
+    api_logger.type:
       log_max_size: 5242880 # 5 * 1024 * 1024
       log_max_files: 5
       log_name: 'api_log.log'
-    api_logger.file.serializer.type: serialize
+
 
 

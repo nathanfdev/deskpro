@@ -1082,4 +1082,16 @@ return array(
 
     'portal.chat.email_validation' => false,
     'portal.chat.require_login'    => false,
+
+    ####################################################################################################################
+    # api_logger.settings
+    ####################################################################################################################
+
+    'api_logger.type' => 'db',
+    'api_logger.file' => [
+        'log_max_size'  => 5 * 1024 * 1024,
+        'log_max_files' => 5,
+        'log_name'      => 'api_log.log',
+    ],
+    'api_logger.file.serializer.type' => 'serialize',
 );

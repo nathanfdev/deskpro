@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,30 +42,38 @@ class ApiLoggerFactory
     protected $container;
 
     /**
+     * @var SettingsResolver
+     */
+    protected $settings_resolver;
+
+    /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->container         = $container;
+        $this->settings_resolver = $this->container->get('settings_resolver');
     }
 
-    public function createLogger($type)
+    public function createLogger()
     {
+        $type       = $this->settings_resolver->getGlobalSettings()->get('api_logger.type');
         $loggerName = sprintf('api_logger.%s', $type);
         if ($this->container->has($loggerName)) {
             return $this->container->get($loggerName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Coulndn\'t instantiate logger with type [ %s ]', $loggerName));
+            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate logger with type [ %s ]', $loggerName));
         }
     }
 
-    public function createSerializer($type)
+    public function createSerializer()
     {
-        $loggerName = sprintf('api_logger.file.serializer.%s', $type);
-        if ($this->container->has($loggerName)) {
-            return $this->container->get($loggerName);
+        $type           = $this->settings_resolver->getGlobalSettings()->get('api_logger.file.serializer.type');
+        $serializerName = sprintf('api_logger.file.serializer.%s', $type);
+        if ($this->container->has($serializerName)) {
+            return $this->container->get($serializerName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Coulndn\'t instantiate logger serializer with type [ %s ]', $loggerName));
+            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate logger serializer with type [ %s ]', $serializerName));
         }
     }
 }
