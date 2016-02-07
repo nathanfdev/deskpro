@@ -60,14 +60,16 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
     }
 
     /**
-     * @Given My key have no access to any controller or action
+     * @Given I set tags for my key to :tag
+     *
+     * @param string $tag
      */
-    public function setTagForMyKey()
+    public function setTagForMyKey($tag)
     {
         $em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
         $key_actions_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction');
         $key_action       = $key_actions_repo->findOneBy(['key' => 1]);
-        $key_action->setAction('-*');
+        $key_action->setAction($tag);
         $this->persistAndFlush($key_action);
     }
 }
