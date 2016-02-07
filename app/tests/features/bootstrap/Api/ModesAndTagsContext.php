@@ -58,4 +58,16 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
         }
         $factory->loaded_metadata[$controller_fqcn] = $class_metadata;
     }
+
+    /**
+     * @Given My key have no access to any controller or action
+     */
+    public function setTagForMyKey()
+    {
+        $em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $key_actions_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction');
+        $key_action       = $key_actions_repo->findOneBy(['key' => 1]);
+        $key_action->setAction('-*');
+        $this->persistAndFlush($key_action);
+    }
 }
