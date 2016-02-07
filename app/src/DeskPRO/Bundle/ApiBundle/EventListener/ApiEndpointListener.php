@@ -74,7 +74,7 @@ class ApiEndpointListener implements EventSubscriberInterface
         }
 
         if (!$this->checker->isGranted($controller[1], $controller[0])) {
-            throw new AccessDeniedHttpException();
+            throw new AccessDeniedHttpException('You are not allowed to access this point with this auth mode', null, 403);
         }
     }
 }

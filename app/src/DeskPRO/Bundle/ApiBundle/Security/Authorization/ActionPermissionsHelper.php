@@ -88,7 +88,7 @@ class ActionPermissionsHelper
     {
         $permit    = is_null($base_permission) ? !(0 === strpos($tags, '-')) : $base_permission;
         $tags      = explode('.', str_replace('-', '', $tags));
-        $hierarchy = $this->recursion([], $tags, $permit);
+        $hierarchy = $this->recursion($tags, $permit);
 
         return $hierarchy;
     }
@@ -103,17 +103,17 @@ class ActionPermissionsHelper
      *          ],
      *      ].
      *
-     * @param $hierarchy
      * @param $tags
      * @param $permit
      *
      * @return mixed
      */
-    protected function recursion($hierarchy, $tags, $permit)
+    protected function recursion($tags, $permit)
     {
-        $tag = array_shift($tags);
+        $hierarchy = [];
+        $tag       = array_shift($tags);
         if ($tags) {
-            $hierarchy[$tag] = $this->recursion([], $tags, $permit);
+            $hierarchy[$tag] = $this->recursion($tags, $permit);
         } else {
             $hierarchy[$tag] = $permit;
         }
