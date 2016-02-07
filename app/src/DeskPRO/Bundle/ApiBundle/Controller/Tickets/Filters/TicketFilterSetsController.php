@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -51,7 +50,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * API access to TicketFilterSet entities.
  *
  * @ApiModes("all")
- * @ApiTags("agent.tickets.filters.ticket_filter_sets")
  */
 class TicketFilterSetsController extends BaseController
 {

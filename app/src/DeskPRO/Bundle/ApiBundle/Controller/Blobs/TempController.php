@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TempController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.blob.temp")
  */
 class TempController extends BaseController
 {

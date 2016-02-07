@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -50,7 +49,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class ChatsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.chats.chats")
  */
 class ChatsController extends BaseController
 {

@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -46,7 +45,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class LabelsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.labels.labels")
  */
 class LabelsController extends BaseController
 {

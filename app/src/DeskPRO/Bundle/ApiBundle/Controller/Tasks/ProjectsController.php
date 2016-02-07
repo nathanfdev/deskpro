@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
@@ -57,7 +56,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ProjectsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.tasks.project")
  */
 class ProjectsController extends BaseController implements ClassResourceInterface
 {

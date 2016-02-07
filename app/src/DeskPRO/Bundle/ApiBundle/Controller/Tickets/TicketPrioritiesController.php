@@ -35,14 +35,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\TicketPriority;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
  * Class TicketPrioritiesController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.tickets.ticket_priorities")
  * @Route("/ticket_priorities")
  */
 class TicketPrioritiesController extends CrudController

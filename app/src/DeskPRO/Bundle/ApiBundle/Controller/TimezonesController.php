@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +38,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TimezonesController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.timezones")
  */
 class TimezonesController extends BaseController
 {

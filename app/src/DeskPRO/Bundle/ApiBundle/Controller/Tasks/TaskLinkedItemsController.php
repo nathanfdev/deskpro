@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use Doctrine\DBAL\DBALException;
@@ -54,7 +53,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TaskLinkedItemsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.tasks.task_linked_items")
  */
 class TaskLinkedItemsController extends BaseController implements ClassResourceInterface
 {

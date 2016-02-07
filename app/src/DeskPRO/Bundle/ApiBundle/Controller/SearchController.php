@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -43,7 +42,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class SearchController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.search")
  */
 class SearchController extends BaseController
 {

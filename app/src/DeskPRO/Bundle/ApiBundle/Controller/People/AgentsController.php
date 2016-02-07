@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -45,7 +44,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class AgentsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.people.agents")
  */
 class AgentsController extends CrudController
 {

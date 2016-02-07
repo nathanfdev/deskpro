@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\JobQueue;
 use Application\DeskPRO\Entity\Job;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
@@ -46,7 +45,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class JobController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.job_queue.job")
  * @Route("/mass_actions")
  */
 class JobController extends CrudController

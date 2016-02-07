@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipantType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -45,7 +44,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketParticipantsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.tickets.ticket_participants")
  * @Route("/tickets/{parentId}/participants")
  */
 class TicketParticipantsController extends CrudSubController

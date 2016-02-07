@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\DataStore;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -47,7 +46,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Class WidgetSetupController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.user_groups")
  */
 class WidgetSetupController extends BaseController
 {

@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -48,7 +47,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class OrganizationsController.
  *
  * @ApiModes("all")
- * @ApiTags("agent.organizations.organizations")
  * @Route("/organizations")
  */
 class OrganizationsController extends CrudController
