@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
+use Doctrine\ORM\EntityManager;
 use Metadata\ClassMetadata;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -56,11 +57,23 @@ class ActionPermissionsVoter extends Voter
     protected $factory;
 
     /**
-     * @param ActionPermissionsMetadataFactory $factory
+     * @var ActionPermissionsHelper
      */
-    public function __construct(ActionPermissionsMetadataFactory $factory)
-    {
+    protected $helper;
+
+    /**
+     * @param ActionPermissionsMetadataFactory $factory
+     * @param ActionPermissionsHelper          $helper
+     * @param EntityManager                    $em
+     */
+    public function __construct(
+        ActionPermissionsMetadataFactory $factory,
+        ActionPermissionsHelper $helper,
+        EntityManager $em
+    ) {
         $this->factory = $factory;
+        $this->helper  = $helper;
+        $this->em      = $em;
     }
 
     /**
@@ -109,7 +122,7 @@ class ActionPermissionsVoter extends Voter
         $methodMetadata = $this->fetchMetadata($method, $controller);
         $mode           = $this->getMode($token->getName());
 
-        return $this->checkMode($mode, $methodMetadata) && ($mode !== 'key' || $this->checkTags($methodMetadata));
+        return $this->checkMode($mode, $methodMetadata) && ($mode !== 'key' || $this->checkTags($methodMetadata, $token));
     }
 
     /**
@@ -128,9 +141,22 @@ class ActionPermissionsVoter extends Voter
      *
      * @return bool
      */
-    protected function checkTags(MethodMetadata $methodMetadata)
+    protected function checkTags(MethodMetadata $methodMetadata, TokenInterface $token)
     {
-        return true;
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
+        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+
+        if ($key = $key_repo->findByKeyString($token->getCredentials())) {
+            $action_tags   = $methodMetadata->getTags();
+            $gathered_tags = [];
+            foreach ($key->getActions() as $action) {
+                $gathered_tags[] = $action->getAction();
+            }
+
+            return $this->helper->calculateAccess($action_tags, $gathered_tags);
+        }
+
+        return false;
     }
 
     /**

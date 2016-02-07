@@ -44,6 +44,13 @@ class ActionPermissionsHelper
         $action_tags_hierarchy   = call_user_func_array('array_merge_recursive', array_map([$this, 'createActionTagsHierarchy'], $action_tags));
         $gathered_tags_hierarchy = $gathered_tags ? call_user_func_array('array_merge_recursive', array_map([$this, 'createGatheredTagsHierarchy'], $gathered_tags)) : [];
 
+        //temporary allow/deny all restrictions
+        if (in_array('*', $gathered_tags)) {
+            return true;
+        } elseif (in_array('-*', $gathered_tags)) {
+            return false;
+        }
+
         $result = array_merge($action_tags_hierarchy, $gathered_tags_hierarchy);
 
         $result = array_reduce($result, [$this, 'reduce']);
@@ -87,6 +94,15 @@ class ActionPermissionsHelper
     }
 
     /**
+     * This method just inflate hierarchy tree. E.g.
+     *     'test.test2.test3' becomes
+     *      'test' => [
+     *          'test1' => [
+     *              'test3' => true
+     *              ],
+     *          ],
+     *      ].
+     *
      * @param $hierarchy
      * @param $tags
      * @param $permit
@@ -108,6 +124,8 @@ class ActionPermissionsHelper
     /**
      * @param $permit
      * @param $item
+     * Reduces whole the hierarchy tree for current method to just one boolean value.
+     * It's simple. Access will be granted if and only all tags are allowed.
      *
      * @return bool|mixed
      */

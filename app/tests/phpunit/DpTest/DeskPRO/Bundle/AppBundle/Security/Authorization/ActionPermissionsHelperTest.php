@@ -53,6 +53,9 @@ class ActionPermissionsHelperTest extends ApiTestCase
         return [
             // simple example - one tag was received from annotation, no tags in store
             // remember that there is at least one tag for any method in controller.
+            [['test.tag'], ['*'], true],
+            // simple example - one tag was received from annotation, no tags in store
+            // remember that there is at least one tag for any method in controller.
             [['test.tag'], [], false],
             // two tags was received from annotation, one global restriction
             [['test.test2.test3', 'test.test2.test4'], ['-test.test2.*'], false],
