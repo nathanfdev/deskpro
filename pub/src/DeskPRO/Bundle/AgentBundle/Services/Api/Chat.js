@@ -1,5 +1,5 @@
-import { api } from '../DpApi';
-import { compileParams } from '../ApiHelpers';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 
 /**
  * @param groupBy
@@ -7,7 +7,6 @@ import { compileParams } from '../ApiHelpers';
  * @return Promise
  */
 export function loadCounts(groupBy, agent) {
-  console.log('DP_API/user_chats/counts?include=person,agent,department&group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
   return api.sendGet('DP_API/user_chats/counts?group_by=' + groupBy + (agent ? '&agent=' + agent : ''));
 }
 

@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
 import { loadPeople } from '../../Application/RecordStores/Actions/peopleActions';

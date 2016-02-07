@@ -4,7 +4,7 @@ const stateSelector = state => state.Tickets.list;
 
 export const viewModeSelector = createSelector(
   stateSelector,
-    state => state.get('viewMode')
+   state => state.get('viewMode')
 );
 
 export const listParamsSelector = createSelector(
@@ -32,17 +32,7 @@ export const listOrderSelector = createSelector(
     params => params.get('order')
 );
 
-export const elementsSelector = createSelector(
-  stateSelector,
-    state => state.get('elements')
-);
-
 export const paginationSelector = createSelector(
   stateSelector,
     state => state.get('pagination')
-);
-
-export const isLoadedSelector = createSelector(
-  stateSelector,
-    state => state.getIn(['async', 'done'])
 );

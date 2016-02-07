@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
 import { createRecordsRequest } from 'Ampliflux/common/record-store/actions';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 
 export const releaseProfiles = createAction('RELEASE_PROFILES', rsa.releaseRecords());
 export const releaseProfilesRequest = createAction('RELEASE_PROFILES_REQUEST', rsa.releaseRequest());

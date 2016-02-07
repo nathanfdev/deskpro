@@ -1,18 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
-import { elementsSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
+import { cardVisibleFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
-import { ticketsSelector } from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/index';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({
-  ids: elementsSelector(state),
-  tickets: ticketsSelector(state),
+  tickets: collectionSelectorFactory('Ticket', 'list')(state),
   selected: selectedSelector(state),
   fields: cardVisibleFieldsSelector(state)
 }))
-
 export class ListCardViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -24,28 +22,26 @@ export class ListCardViewContainer extends Component {
 
   toggleSelected(id, e) {
     e.stopPropagation();
-    const { dispatch } = this.props;
-    dispatch(toggleSelectedAction(id));
+    this.props.dispatch(toggleSelectedAction(id));
   }
 
-  renderCard(id) {
-    const { tickets, fields, selected } = this.props;
+  renderCard(ticket) {
+    const { fields, selected } = this.props;
+    const id = ticket.get('id');
 
     return (
       <TicketCard key={id}
                   fields={fields}
                   selected={selected.indexOf(id) > -1}
                   toggleSelected={this.toggleSelected.bind(this, id)}
-                  ticket={tickets.get(id)}/>
+                  ticket={ticket}/>
     );
   }
 
   render() {
-    const { ids } = this.props;
-
     return (
       <div>
-        {ids.map(id => this.renderCard(id))}
+        {this.props.tickets.map(ticket => this.renderCard(ticket))}
       </div>
     );
   }

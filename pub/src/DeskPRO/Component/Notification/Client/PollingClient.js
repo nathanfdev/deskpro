@@ -2,7 +2,7 @@
  * wrapper for pusher-app client
  */
 import { AbstractClient } from './AbstractClient';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import DpApi from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 
 export class PollingClient extends AbstractClient {
 

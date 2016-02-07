@@ -1,21 +1,15 @@
 import { createReducer } from 'Ampliflux';
 import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
-import { toggleAll, toggleSelected, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, unload }
-  from '../Actions/listActions';
+import { toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode } from '../Actions/listActions';
 
 export const ticketsListInitialState = {
   viewMode: 'card',
-  elements: [],
   listParams: {
     sort: 'urgency',
     order: 'desc',
     filter: null
   },
-
-  // async indicators
-  async: {
-    done: true
-  },
+  pagination: {},
 
   tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
   cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels']
@@ -26,16 +20,7 @@ export default createReducer(ticketsListInitialState, {
   // Private -----------------------------------------------------------------------------------------------------------
 
   TICKETS_LIST_SET_LIST_PARAMS: setFullPayload('listParams'),
-  TICKETS_LIST_LOAD_LIST: async({
-    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
-  }),
-
-  // Public ------------------------------------------------------------------------------------------------------------
-
-  [toggleSelected]: togglePayloadInCollection('selected'),
-  [unload]: setValue('elements', []),
+  TICKETS_LIST_SET_PAGINATION: setFullPayload('pagination'),
 
   // Public (control bar) ----------------------------------------------------------------------------------------------
 

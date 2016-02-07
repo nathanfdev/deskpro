@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 import * as rsa from 'Ampliflux/common/record-store/actions';
 
 export const release = createAction('EG_WIDGET_TYPES_RELEASE', rsa.releaseRecords());

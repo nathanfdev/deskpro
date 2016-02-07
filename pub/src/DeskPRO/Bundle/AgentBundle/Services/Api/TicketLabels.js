@@ -1,4 +1,4 @@
-import { api } from '../DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 
 export function loadLabels() {
     return api.sendGet('DP_API/ticket_labels');

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { DpApi } from 'DeskPRO/Bundle/AppBundle/Http/DpApi';
+import { DpApi } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 import { UrlCorrector } from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
 
 export const widgetApi = new DpApi($.ajax);
