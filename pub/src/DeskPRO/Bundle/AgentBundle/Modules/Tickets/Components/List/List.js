@@ -9,21 +9,18 @@ import { PaginationContainer } from './PaginationContainer';
 export class List extends Component {
   static propTypes = {
     viewMode: PropTypes.string.isRequired,
-    pagination: PropTypes.object,
     isLoaded: PropTypes.bool.isRequired
   };
 
   render() {
-    const { isLoaded, pagination } = this.props;
-
     return (
       <ListFrameContainer>
         <ListFrameMenu>
           <ControlBarContainer />
         </ListFrameMenu>
-        <ListFrameContents isLoaded={isLoaded}>
+        <ListFrameContents isLoaded={this.props.isLoaded}>
           {this.props.viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}
-          {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+          <PaginationContainer />
         </ListFrameContents>
       </ListFrameContainer>
     );

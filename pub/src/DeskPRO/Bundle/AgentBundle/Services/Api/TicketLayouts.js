@@ -1,4 +1,4 @@
-import { api } from "DeskPRO/Bundle/AgentBundle/Services/DpApi";
+import { api } from "DeskPRO/Bundle/AppBundle/DAL/Http/DpApi";
 
 export function loadAllTicketLayouts() {
     api.sendGet('DP_API/ticket_layouts');

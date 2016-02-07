@@ -11,6 +11,8 @@ import { DpAppContainer } from './Modules/Application/Components/DpAppContainer'
 import { IntlProvider } from 'react-intl';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
+import { loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL/index';
+import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 
 /**
  * ---------------------------------------------------------------------------------------------------------------------
@@ -43,6 +45,9 @@ export class AgentApp {
       return reducer;
     };
 
+    // Bootstrap DAL
+    loadRepositoriesConfig(repositoriesConfig);
+
     const reducer = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
     const middleware = applyMiddleware(
       ampMiddleware.timerMiddleware('startTime'),
@@ -51,8 +56,8 @@ export class AgentApp {
       ampMiddleware.actionThunkMiddleware,
       ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
-      ampMiddleware.promiseMiddleware,
-      ampMiddleware.loggerMiddleware
+      ampMiddleware.promiseMiddleware
+      ,ampMiddleware.loggerMiddleware
     );
     const makeStore = compose(middleware)(createStore);
     const store = makeStore(reducer);

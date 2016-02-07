@@ -39,6 +39,9 @@ export function fakeState(additional = {}) {
     RecordStores: {
       CRM: {people: fakeRecordStoreState()},
       Agent: {departments: fakeRecordStoreState()}
+    },
+    RecordsStore: {
+      store: toImmutable({})
     }
   };
 

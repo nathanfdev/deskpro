@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 
 export const releaseTaskLists = createAction('RELEASE_TASK_LISTS', rsa.releaseRecords());
 export const releaseTaskListsRequest = createAction('RELEASE_TASK_LISTS_REQUEST', rsa.releaseRequest());

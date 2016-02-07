@@ -5,14 +5,13 @@ import { connect } from 'react-redux';
 import { elementsSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelected } from '../../../../Actions/listActions';
-import { ticketsSelector }
-  from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/index';
 
 // @todo Extract Row component (to omit selecting all tickets from record store + better structure + easier to test)
 
 @connect(state => ({
   ids: elementsSelector(state),
-  tickets: ticketsSelector(state),
+  tickets: collectionSelectorFactory('Ticket', 'list')(state),
   selected: selectedSelector(state),
   fields: tableVisibleFieldsSelector(state)
 }))

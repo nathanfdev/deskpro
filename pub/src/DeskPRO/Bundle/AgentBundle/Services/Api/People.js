@@ -1,5 +1,5 @@
-import { api } from '../DpApi';
-import { compileParams } from '../ApiHelpers';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 
 export function loadPeople(options) {
   if (options.is_me) {

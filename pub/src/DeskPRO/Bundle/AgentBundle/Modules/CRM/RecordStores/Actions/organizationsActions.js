@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as rsa from 'Ampliflux/common/record-store/actions';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 
 export const releaseOrganizations = createAction('RELEASE_ORGANIZATIONS', rsa.releaseRecords());
 export const releaseOrganizationsRequest = createAction('RELEASE_ORGANIZATIONS_REQUEST', rsa.releaseRequest());

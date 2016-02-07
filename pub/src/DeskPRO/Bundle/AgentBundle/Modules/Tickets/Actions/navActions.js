@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 import { editedFilterIdSelector } from '../Selectors/nav';
 import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -7,7 +7,7 @@ import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest a
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/organizationsActions';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 // Private -------------------------------------------------------------------------------------------------------------

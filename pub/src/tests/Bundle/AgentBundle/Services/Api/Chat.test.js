@@ -1,10 +1,10 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/Api/Chat.js');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/ApiHelpers.js');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
+jest.dontMock('DeskPRO/Bundle/AppBundle/DAL/Http/Helpers.js');
+jest.dontMock('DeskPRO/Bundle/AppBundle/DAL/Http/DpApi.js');
 
 describe('API Chat service', () => {
 
-  const DpApi = require('DeskPRO/Bundle/AgentBundle/Services/DpApi.js');
+  const DpApi = require('DeskPRO/Bundle/AppBundle/DAL/Http/DpApi.js');
   const Chat = require('DeskPRO/Bundle/AgentBundle/Services/Api/Chat.js');
 
   it('should load chats', () => {

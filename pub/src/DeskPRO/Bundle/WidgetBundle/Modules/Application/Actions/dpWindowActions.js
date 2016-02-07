@@ -17,7 +17,7 @@ import {
   dateEndedSelector,
   needValidateEmailSelector
 } from '../../Chat/Selectors/chat';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addSessionCode } from './bootstrapActions';
 import { history } from '../../../Services/history';
 import $ from 'jquery';

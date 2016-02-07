@@ -1,12 +1,12 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
 import Immutable from 'immutable';
 import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector, elementsSelector }
   from '../Selectors/list';
 import { tasksSelector } from '../Selectors/recordStores';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { setTaskListsRequest } from '../RecordStores/Actions/taskListActions.js';
 
 /**
