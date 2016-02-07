@@ -267,6 +267,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row);
 								if (el.is('select')) {
 									el.find('[value="' + subval + '"]').prop('selected', true);
+									el.trigger('change');
 								} else if (el.is(':checkbox') || el.is(':radio')) {
 									el.each(function(){
 										if(subval === $(this).val()) $(this).prop('checked', true);
