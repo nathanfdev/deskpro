@@ -94,11 +94,11 @@ class AuthContext extends BaseContext implements RebootableContextInterface
         $key->code   = $code;
         $key->person = $this->user_details->getWho($who);
 
-        $this->persistAndFlush($key);
-
         $key_action = new ApiKeyAction();
-        $key_action->setAction('*')->setKey($key);
+        $key_action->setAction('*');
+        $key->addApiKeyAction($key_action);
 
+        $this->persistAndFlush($key);
         $this->persistAndFlush($key_action);
 
         if ($key->id != $id) {
