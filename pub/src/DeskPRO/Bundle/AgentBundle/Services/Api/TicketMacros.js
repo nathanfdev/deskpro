@@ -1,4 +1,4 @@
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export function loadAllTicketMacros() {
     return api.sendGet('DP_API/ticket_macros');

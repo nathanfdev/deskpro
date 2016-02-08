@@ -1,6 +1,6 @@
 import { ApiRepository } from './Repository/ApiRepository';
 import { AbstractRepository } from './Repository/AbstractRepository';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 let repositoriesConfig;
 

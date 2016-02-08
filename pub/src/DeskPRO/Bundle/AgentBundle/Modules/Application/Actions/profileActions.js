@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const updateProfile = createAction(
   'PROFILE_UPDATE',

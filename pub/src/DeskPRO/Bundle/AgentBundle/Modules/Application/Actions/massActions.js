@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const toggleMassAction = createAction('APP_TOGGLE_MASS_ACTION');
 export const toggleSelectedAction = createAction('APP_TOGGLE_SELECTED_ACTION');

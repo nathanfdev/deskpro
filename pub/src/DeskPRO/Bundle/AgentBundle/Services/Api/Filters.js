@@ -1,4 +1,4 @@
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 /**
  * Loads all filters in a filter set.

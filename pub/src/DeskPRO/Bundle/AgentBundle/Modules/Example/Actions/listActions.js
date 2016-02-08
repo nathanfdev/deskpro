@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 import * as widgetActions from '../RecordStores/Actions/widgetActions';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const viewFilter = createAction('EG_WIDGET_LOAD_FILTER', (params) => dispatch => {
   dispatch(widgetActions.releaseRequest('view_filter'));

@@ -1,7 +1,7 @@
 import EventEmitter2 from 'eventemitter2';
 import { PusherClient } from 'DeskPRO/Component/Notification/Client/PusherClient';
 import { PollingClient } from 'DeskPRO/Component/Notification/Client/PollingClient';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export class NotificationService {
 
