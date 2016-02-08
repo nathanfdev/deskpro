@@ -89,6 +89,9 @@ Feature: /tickets endpoint
   "product": 2,
   "priority": 3,
   "cc": "agent@deskpro.dev, user@deskpro.dev",
+  "ticket_field_1": {
+    "data": "2"
+  },
   "message": {
     "message_text": "my text message",
     "message_format": "text"
@@ -110,6 +113,9 @@ Feature: /tickets endpoint
     And the JSON node "data.participants[0]" should be equal to 3
     And the JSON node "data.followers" should have 1 element
     And the JSON node "data.followers[0]" should be equal to 2
+    And the JSON node "data.fields.1.value" should have 1 element
+    And the JSON node "data.fields.1.value[0]" should be equal to 1
+    And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
