@@ -69,9 +69,11 @@ export class BaseItem extends Component {
    * @return {void}
    */
   closeMenu = () => {
-    this.setState({
-      openMenu: false
-    });
+    if (this.updater.length > 0) {
+      this.setState({
+        openMenu: false
+      });
+    }
   };
 
   /**

@@ -22,7 +22,8 @@ export class LabelsFilter extends Component {
     const mode = stateValue(modeParam);
     const isActive = Boolean(selected.length);
 
-    const selectLabel = selectedLabel => {
+    const selectLabel = (selectedLabel, event) => {
+      event.preventDefault();
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
         dispatch(setParamsAction({ [param]: selected, delayReload: true }));

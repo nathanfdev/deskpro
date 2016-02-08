@@ -3,7 +3,6 @@ import Moment from 'moment';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/DateTimePicker';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 
 export class DateFilter extends Component {
   static propTypes = {
