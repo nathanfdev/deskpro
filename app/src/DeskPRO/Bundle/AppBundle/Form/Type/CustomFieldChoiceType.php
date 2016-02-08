@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CustomFieldChoiceType.
+ */
 class CustomFieldChoiceType extends AbstractType
 {
     /**
@@ -46,47 +49,66 @@ class CustomFieldChoiceType extends AbstractType
      */
     private $hierarchy_generator;
 
+    /**
+     * Constructor.
+     *
+     * @param HierarchyGenerator $hierarchy
+     */
     public function __construct(HierarchyGenerator $hierarchy)
     {
         $this->hierarchy_generator = $hierarchy;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
         }
+
         $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_custom_field_choice';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'choice';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $hierarchy_generator = $this->hierarchy_generator;
 
-        $resolver->setDefaults(array(
-            'empty_data'  => null,
-            'choice_list' => function (Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
-                },
-            'placeholder' => '',
-        ));
-
-        $resolver->setRequired(array(
-            'custom_field',
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract',
-        ));
+        $resolver
+            ->setDefaults([
+                'empty_data'  => null,
+                'choice_list' => function (Options $options) use ($hierarchy_generator) {
+                        return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
+                    },
+                'placeholder' => '',
+                'help'        => '',
+            ])
+            ->setRequired([
+                'custom_field',
+            ])
+            ->setAllowedTypes([
+                'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract',
+            ])
+        ;
     }
 }

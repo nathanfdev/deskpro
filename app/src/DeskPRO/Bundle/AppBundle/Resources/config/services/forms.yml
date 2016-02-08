@@ -103,6 +103,12 @@ services:
     tags:
       - { name: form.type, alias: deskpro_custom_per_field_data }
 
+  form.custom_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: deskpro_custom_field_choice }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:
