@@ -63,7 +63,7 @@ class FileIntegrityStep extends AbstractStep
         }
 
         $map = @json_decode(file_get_contents($map_path), true);
-        if (!$map || count($map) < 10000) {
+        if (!$map || count($map) < 9000) {
             $this->writeln('<error>The file integrity database seems invalid.</error>');
             $this->writeln("The file was read from here: $map_path");
             $this->writeln('');

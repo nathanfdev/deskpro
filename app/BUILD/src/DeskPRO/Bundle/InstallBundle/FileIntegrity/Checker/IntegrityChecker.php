@@ -66,6 +66,9 @@ class IntegrityChecker
         $result = new IntegrityCheckResult();
 
         foreach ($map as $path => $correctHash) {
+            if (strpos($path, 'integrity_file_map.dat') !== false) {
+                continue;
+            }
             $realPath = $this->proj->getRealPath($path);
             if (!file_exists($realPath)) {
                 $result->recordBadPath($realPath, IntegrityCheckResult::MISSING);
