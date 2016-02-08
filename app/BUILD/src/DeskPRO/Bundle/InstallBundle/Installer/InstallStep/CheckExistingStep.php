@@ -104,7 +104,7 @@ class CheckExistingStep extends AbstractStep
             }
         }
 
-        return true;
+        return false;
     }
 
     public function isComplete()

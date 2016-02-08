@@ -120,8 +120,8 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln('Verifying web root is safe...');
 
         foreach ([
-            $url.'/app/run/test_ping.php',
-            $url.'/../app/run/test_ping.php',
+            $url.'/app/run/test_ping.html',
+            $url.'/../app/run/test_ping.html',
         ] as $test) {
             $res = @file_get_contents($test);
             if ($res && strpos($res, 'DESKPRO_PONG') !== false) {

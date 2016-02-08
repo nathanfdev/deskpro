@@ -98,7 +98,7 @@ class FileIntegrityStep extends AbstractStep
                 $count_missing = 0;
                 $count_invalid = 0;
                 foreach ($badInfo as $info) {
-                    if ($info['reason'] === IntegrityCheckResult::MISSING) {
+                    if ($info['error'] === IntegrityCheckResult::MISSING) {
                         ++$count_missing;
                     } else {
                         ++$count_invalid;
@@ -114,7 +114,7 @@ class FileIntegrityStep extends AbstractStep
                 $this->writeln('<error>We found problems with the following files:</error>');
 
                 foreach ($badInfo as $info) {
-                    if ($info['reason'] === IntegrityCheckResult::MISSING) {
+                    if ($info['error'] === IntegrityCheckResult::MISSING) {
                         $key = 'MISSING';
                     } else {
                         $key = 'INVALID';
