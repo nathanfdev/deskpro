@@ -121,6 +121,15 @@ class ApiDb extends AbstractDbSet
         $ticket_def->title = 'def';
 
         // Create ticket layouts
+        $this->getDb()->exec(
+            "
+            INSERT INTO `custom_def_ticket` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
+            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
+            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
+            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
+            "
+        );
+
         $layout = new Layout();
         $layout
             ->add(new LayoutField(FormFields::DEPARTMENT))
@@ -142,6 +151,7 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField(FormFields::PRODUCT))
             ->add(new LayoutField(FormFields::CC))
             ->add(new LayoutField(FormFields::PRIORITY))
+            ->add(new LayoutField('ticket_field', 1))
         ;
 
         $ticket_layout2               = new TicketLayout($dep2);
