@@ -371,7 +371,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\FeedbackDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
      */
     public function getFeedbackDataService()
     {
