@@ -3,6 +3,10 @@
  */
 export class AbstractRepository {
   constructor() {
+    if (new.target === AbstractRepository) {
+      throw new TypeError("Can't instantiate AbstractRepository");
+    }
+
     const methods = [
       'load',
       'loadBatch',
@@ -13,7 +17,7 @@ export class AbstractRepository {
 
     for (const method of methods) {
       if (this[method] === undefined) {
-        throw new TypeError(`AbstractRepository must define ${method} method`);
+        throw new TypeError(`${new.target} must define ${method} method`);
       }
     }
   }
