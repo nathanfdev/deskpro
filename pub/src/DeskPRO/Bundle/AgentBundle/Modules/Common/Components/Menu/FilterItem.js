@@ -13,10 +13,10 @@ export class FilterItem extends Component {
 
   renderFilterInfo = (labels) => {
     if (labels.length) {
-      const result = [<span className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
+      const result = [<span key={0} className="dpw-navigation-dropdown-item-inline-info">{labels[0]}</span>];
       if (labels.length > 1) {
         result.push(
-          <span className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
+          <span key={length} className="dpw-navigation-dropdown-item-inline-info dpw-navigation-dropdown-item-inline-info-extra">
             +{labels.length - 1}
           </span>
         );
