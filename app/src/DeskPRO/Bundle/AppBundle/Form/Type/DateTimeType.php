@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use Symfony\Component\Form\AbstractType;
@@ -37,30 +37,45 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class DateTimeType.
+ */
 class DateTimeType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_datetime';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'datetime';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $current_date = new \DateTime();
         $current_year = (int) $current_date->format('Y');
-        $resolver->setDefaults(
-            [
-                'years'       => range(($current_year - 100), ($current_year + 100)),
-                'placeholder' => '',
-            ]
-        );
+
+        $resolver->setDefaults([
+            'years'       => range(($current_year - 100), ($current_year + 100)),
+            'placeholder' => '',
+            'help'        => '',
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['weekdays'] = null;
@@ -78,12 +93,17 @@ class DateTimeType extends AbstractType
         }
     }
 
+    /**
+     * @param mixed $date
+     *
+     * @return string
+     */
     private function formatDate($date)
     {
         if ($date instanceof \DateTime) {
             return $date->format('Y m d');
         }
 
-        return;
+        return '';
     }
 }

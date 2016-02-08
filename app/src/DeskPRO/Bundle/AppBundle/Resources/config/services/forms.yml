@@ -109,6 +109,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_custom_field_choice }
 
+  form.datetime:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType
+    tags:
+      - { name: form.type, alias: deskpro_datetime }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

@@ -208,12 +208,6 @@ services:
       - { name: form.type, alias: deskpro_date }
 
 
-  form.datetime:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateTimeType
-    tags:
-      - { name: form.type, alias: deskpro_datetime }
-
-
   form.heirarchical_entity:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
     tags:
