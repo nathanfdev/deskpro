@@ -250,8 +250,8 @@ services:
     tags:
       - { name: form.type, alias: ticket_message_attachment_collection }
 
-  form.ticket:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
+  form.ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayoutsType
     arguments:
       - @form_field_manager
       - @ticket_layout_factory
@@ -262,7 +262,7 @@ services:
       - @tickets.custom_per_field_manager
       - @default_value_for_ticket_layout_field
     tags:
-      - { name: form.type, alias: ticket }
+      - { name: form.type, alias: ticket_with_layouts }
 
   form.ticket_description:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType

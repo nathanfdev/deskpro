@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -56,12 +54,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Route("/tickets")
  */
-class TicketsController extends CrudController
+class TicketsController extends AbstractTicketsController
 {
     use LabelsHelper;
 
-    public static $entity = Ticket::class;
-    public static $type   = 'ticket';
+    public static $type = TicketType::class;
 
     /**
      * @param HttpKernelInterface $kernel
@@ -294,57 +291,6 @@ class TicketsController extends CrudController
         return View::create([], Response::HTTP_OK);
     }
 
-    // Override CRUD callbacks to use TicketManager --------------------------------------------------------------------
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handleForm($model, Request $request, array $options = [])
-    {
-        $options = array_merge($options, [
-            'person'      => $this->getUser(),
-            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
-            'use_captcha' => false,
-        ]);
-
-        return parent::handleForm($model, $request, $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        return $this->getTicketManager()->createTicket();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function findEntity($id)
-    {
-        $entity = $this->getTicketManager()->getTicket($id);
-        if (!$entity) {
-            throw $this->createNotFoundException();
-        }
-
-        return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function persistModel($entity)
-    {
-        /* @var Ticket $entity */
-        $tm      = $this->getTicketManager();
-        $action  = $entity->getId() ? 'update' : 'new';
-        $context = $tm->createAgentExecutorContext($this->getUser(), $action, 'api');
-        $tm->saveTicket($entity, $context);
-
-        return $entity;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -357,14 +303,4 @@ class TicketsController extends CrudController
         $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
         $tm->saveTicket($entity, $context);
     }
-
-    /**
-     * @return TicketManager
-     */
-    private function getTicketManager()
-    {
-        return $this->getContainer()->getTicketManager();
-    }
-
-    // End of CRUD callbacks -------------------------------------------------------------------------------------------
 }
