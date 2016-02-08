@@ -53,7 +53,8 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('skip', 'x', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Skip one or more steps (by name)')
             ->addOption('list-steps', null, InputOption::VALUE_NONE, 'List all steps instead of running them')
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
-            ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete');
+            ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
+            ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
     }
 
     /**
@@ -81,6 +82,10 @@ class InstallCommand extends ContainerAwareCommand
         #------------------------------
 
         try {
+            if ($input->hasOption('install-source')) {
+                $session->setSource($input->getOption('install-source'));
+            }
+
             $sm->saveInstallSession($session);
         } catch (FileWriteException $e) {
             $var_dir = realpath($app_env->getUserTmpDir().'/../');
@@ -129,6 +134,8 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\AcceptWebUrlStep($context),
             new InstallStep\AcceptDatabaseStep($context),
             new InstallStep\InstallTablesStep($context),
+            new InstallStep\InstallConfigStep($context),
+            new InstallStep\InstallFixturesStep($context),
             new InstallStep\DoneStep($context),
         ];
 

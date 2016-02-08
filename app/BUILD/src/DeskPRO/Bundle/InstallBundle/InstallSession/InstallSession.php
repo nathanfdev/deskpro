@@ -34,6 +34,9 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 
 class InstallSession
 {
+    const SOURCE_DEV         = 'dev';
+    const SOURCE_BUILDSERVER = 'buildserver';
+
     /**
      * @var string
      */
@@ -68,6 +71,11 @@ class InstallSession
      * @var string
      */
     private $web_url;
+
+    /**
+     * @var string
+     */
+    private $source;
 
     /**
      * @var array
@@ -177,5 +185,21 @@ class InstallSession
     public function touch()
     {
         $this->update_date = new \DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
     }
 }

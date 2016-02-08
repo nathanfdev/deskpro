@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
+use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaArray;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaInstaller;
 use Symfony\Component\Process\ProcessBuilder;
@@ -46,16 +47,26 @@ class InstallTablesStep extends AbstractStep
             .DIRECTORY_SEPARATOR
             .'deskpro_schema.php';
 
-        $is_dev = strpos(__DIR__, 'BUILD') !== false;
+        $is_dev = $this->getSession()->getSource() === InstallSession::SOURCE_DEV;
 
         if (!$is_dev && file_exists($cache_path)) {
             $schema = SchemaArray::createFromFile($cache_path);
         } else {
-            $this->writeln('<info>No schema file exists</info>');
+            if (!$is_dev) {
+                $this->writeln('<error>No schema file exists</error>');
+                $this->writeln('Your installation is missing a critical file. Please re-download DeskPRO and try agian.');
+                $this->markAsFailed();
+
+                return;
+            }
+
+            $this->writeln('<info>Generating schema file</info>');
             $this->writeln('You are probably a developer. We will execute the schema file command for you:');
 
             $builder = new ProcessBuilder([
                 $this->getSession()->getPaths()->php_path,
+                $this->getContext()->getDpEnv()->getDpRoot().'/bin/console',
+                'dpdev:gen:schema-file',
                 '--fake-db-connection',
             ]);
 
@@ -80,18 +91,8 @@ class InstallTablesStep extends AbstractStep
         # DB connection
         #------------------------------
 
-        $dbinfo = $this->getSession()->getDbInfo();
-
-        $conn_info = \DpRun\LowUtil::getMysqlInfoFromConfigArray([
-            'host'     => $dbinfo->host,
-            'user'     => $dbinfo->user,
-            'password' => $dbinfo->password,
-            'dbname'   => $dbinfo->dbname,
-        ]);
-
         try {
-            $pdo = new \PDO($conn_info['dsn'], $conn_info['user'], $conn_info['password']);
-            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $pdo = $this->getSession()->getDbInfo()->getPdo();
         } catch (\Exception $e) {
             $this->writeln('');
             $this->writeln('<error>There was an error while installing the database:</error>');

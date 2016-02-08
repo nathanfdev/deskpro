@@ -26,30 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\InstallBundle\InstallSession\Model;
+namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
-class DbInfo
+class InstallConfigStep extends AbstractStep
 {
-    public $host;
-    public $user;
-    public $password;
-    public $dbname;
-
-    /**
-     * @return \PDO
-     */
-    public function getPdo()
+    public function run()
     {
-        $conn_info = \DpRun\LowUtil::getMysqlInfoFromConfigArray([
-            'host'     => $this->host,
-            'user'     => $this->user,
-            'password' => $this->password,
-            'dbname'   => $this->dbname,
-        ]);
+        $this->writeBigTitle('Installing configuration');
 
-        $pdo = new \PDO($conn_info['dsn'], $conn_info['user'], $conn_info['password']);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        //TOOD
 
-        return $pdo;
+        $this->getSession()->enableFlag('install_fixtures_ok');
+    }
+
+    public function isComplete()
+    {
+        return $this->getSession()->hasFlag('install_fixtures_ok');
     }
 }

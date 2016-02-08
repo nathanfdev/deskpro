@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\InstallBundle\Installer;
 
 use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DpSys\Kernel\DpKernel;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,6 +60,11 @@ class InstallerContext
      * @var InstallSession
      */
     private $session;
+
+    /**
+     * @var DpKernel
+     */
+    private $mainKernel;
 
     /**
      * InstallerContext constructor.
@@ -116,5 +122,25 @@ class InstallerContext
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    public function getMainContainer($reload = false)
+    {
+        if ($this->mainKernel) {
+            if (!$reload) {
+                return $this->mainKernel->getContainer();
+            }
+
+            $this->mainKernel->shutdown();
+            $this->mainKernel = null;
+        }
+
+        $this->mainKernel = new DpKernel($this->getDpEnv());
+        $this->mainKernel->boot();
+
+        return $this->mainKernel->getContainer();
     }
 }
