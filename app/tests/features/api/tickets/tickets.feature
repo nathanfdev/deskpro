@@ -105,6 +105,12 @@ Feature: /tickets endpoint
       }
     }
   },
+  "ticket_field_6": {
+    "input": "inline text"
+  },
+  "ticket_field_7": {
+    "input": "textarea text"
+  },
   "message": {
     "message_text": "my text message",
     "message_format": "text"
@@ -130,6 +136,8 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.1.value[0]" should be equal to 2
     And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
     And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
+    And the JSON node "data.fields.6.value" should be equal to "inline text"
+    And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
