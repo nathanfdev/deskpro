@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { DpApi } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
-import { UrlCorrector } from 'DeskPRO/Bundle/AppBundle/Http/UrlCorrector';
+import { UrlCorrector } from 'DeskPRO/Bundle/AppBundle/DAL/Http/UrlCorrector';
 
 export const widgetApi = new DpApi($.ajax);
 widgetApi.enableJsonPayloads();
