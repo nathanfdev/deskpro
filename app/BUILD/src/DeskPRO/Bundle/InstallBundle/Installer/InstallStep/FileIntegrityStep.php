@@ -86,7 +86,6 @@ class FileIntegrityStep extends AbstractStep
             $progress->advance();
         });
         $progress->finish();
-        $progress->clear();
 
         $this->writeln('');
 

@@ -26,34 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle;
+namespace DeskPRO\Bundle\InstallBundle\Schema;
 
-use DeskPRO\Bundle\DevBundle\Command\DevTestCommand;
-use DeskPRO\Bundle\DevBundle\Command\Lang\CheckUsesCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class DevBundle extends Bundle
+interface SchemaInterface extends \Countable
 {
-    public function registerCommands(Application $application)
-    {
-        $application->add(new CheckUsesCommand());
-        $application->add(new DevTestCommand());
+    /**
+     * @return array
+     */
+    public function getCreates();
 
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-    }
+    /**
+     * @return array
+     */
+    public function getAlters();
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
+    /**
+     * @return array
+     */
+    public function getTriggers();
 
-    public function getPath()
-    {
-        return __DIR__;
-    }
+    /**
+     * Counts all creates, alters and triggers for a grand total
+     * of schema artefacts.
+     *
+     * @return int
+     */
+    public function count();
 }

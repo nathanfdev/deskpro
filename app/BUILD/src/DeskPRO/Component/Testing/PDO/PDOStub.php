@@ -26,34 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle;
+namespace DeskPRO\Component\Testing\PDO;
 
-use DeskPRO\Bundle\DevBundle\Command\DevTestCommand;
-use DeskPRO\Bundle\DevBundle\Command\Lang\CheckUsesCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class DevBundle extends Bundle
+class PDOStub extends \PDO
 {
-    public function registerCommands(Application $application)
+    public function __construct()
     {
-        $application->add(new CheckUsesCommand());
-        $application->add(new DevTestCommand());
-
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        //noop
     }
 }

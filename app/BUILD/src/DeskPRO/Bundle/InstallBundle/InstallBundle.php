@@ -39,7 +39,6 @@ class InstallBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $application->add(new Command\InstallCommand());
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
     }
 
     public function getNamespace()

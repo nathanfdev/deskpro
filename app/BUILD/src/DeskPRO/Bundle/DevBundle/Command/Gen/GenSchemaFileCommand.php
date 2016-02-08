@@ -29,23 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\InstallBundle\Command\Gen;
+namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
-use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
-use DeskPRO\Bundle\InstallBundle\FileIntegrity\Generator\IntegrityMapGenerator;
-use DeskPRO\Bundle\InstallBundle\FileIntegrity\ProjectFileSet;
+use DeskPRO\Bundle\InstallBundle\Schema\SchemaGenerator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GenIntegrityMapCommand extends ContainerAwareCommand
+class GenSchemaFileCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('install:gen:integrity-map');
+        $this->setName('dpdev:gen:schema-file')
+            ->addOption('--fake-db-connection', null, InputOption::VALUE_NONE, 'Dont try to use a real connection');
     }
 
     /**
@@ -56,18 +56,17 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $set    = new ProjectFileSet($DP_ENV);
-        $hasher = new FileHasher();
-        $gen    = new IntegrityMapGenerator($set, $hasher);
+        $em = $this->getContainer()->get('doctrine')->getManager();
 
         $output->writeln('Generating map... This might take a while.');
         $startTime = microtime(true);
-        $map       = $gen->generateMap();
-        $output->writeln(sprintf('Generated map of %d files in %.3fs', count($map), microtime(true) - $startTime));
 
-        $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
-        file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
+        $gen = new SchemaGenerator($em);
 
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', $writePath));
+        $output->writeln(sprintf('Generated schema of %d artefacts %.3fs', $gen->count(), microtime(true) - $startTime));
+
+        $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'deskpro_schema.php';
+        $gen->dumpToFile($writePath);
+        $output->writeln(sprintf('Wrote schema to: <info>%s</info>', $writePath));
     }
 }
