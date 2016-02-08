@@ -1,5 +1,10 @@
 services:
 
+  form.form_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
+    tags:
+      - { name: form.type_extension, alias: form }
+
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
