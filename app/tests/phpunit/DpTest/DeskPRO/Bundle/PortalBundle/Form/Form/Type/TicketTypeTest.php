@@ -273,7 +273,7 @@ class TicketTypeTest extends PortalTestCase
         $crawler = $client->request('GET', '/new-ticket');
         $res     = $client->getResponse();
 
-        $button_node = $crawler->selectButton('ticket_submit');
+        $button_node = $crawler->selectButton('ticket_with_layouts_submit');
         $form        = $button_node->form([
             'ticket' => [
                 FormFields::DEPARTMENT => 1, // this dep has the default layout, so submitting this
@@ -308,7 +308,7 @@ class TicketTypeTest extends PortalTestCase
         $crawler = $client->request('GET', '/new-ticket');
         $res     = $client->getResponse();
 
-        $button_node = $crawler->selectButton('ticket_submit');
+        $button_node = $crawler->selectButton('ticket_with_layouts_submit');
         $form        = $button_node->form([
             'ticket' => [
                 FormFields::DEPARTMENT => $sales_dep_id, // a dep with this default form
@@ -416,7 +416,7 @@ class TicketTypeTest extends PortalTestCase
         $message->setPerson($person);
         $ticket->addMessage($message);
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket', $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
             'person'          => $person,
             'settings'        => $this->getBrandSettings(),
             'csrf_protection' => false,
