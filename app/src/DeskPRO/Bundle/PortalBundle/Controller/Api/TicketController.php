@@ -75,7 +75,7 @@ class TicketController extends AbstractApiController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'                        => $person,
             'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
@@ -110,7 +110,7 @@ class TicketController extends AbstractApiController
             return new View();
         }
 
-        $form_full = $this->createForm('ticket', $ticket, [
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
             'person'       => $person,
             'settings'     => $this->getBrandContainer()->getSettings(),
             'full_version' => true,

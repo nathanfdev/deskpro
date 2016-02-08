@@ -64,7 +64,7 @@ class NewTicketController extends AbstractController
         $ticket_message = $ticket->messages[0];
 
         // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
             'method'            => 'GET',
             'validation_groups' => false,
@@ -79,7 +79,7 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'                => $person,
             'settings'              => $this->getBrandContainer()->getSettings(),
             'action'                => $this->generateUrl('portal_new_ticket'),
@@ -159,7 +159,7 @@ class NewTicketController extends AbstractController
             $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
-        $form_full = $this->createForm('ticket', $ticket, [
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
             'person'       => $person,
             'settings'     => $this->getBrandContainer()->getSettings(),
             'full_version' => true,
