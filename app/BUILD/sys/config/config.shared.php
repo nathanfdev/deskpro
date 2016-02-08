@@ -228,7 +228,7 @@ $container->loadFromExtension(
     'doctrine',
     array(
         'orm' => array(
-            'auto_generate_proxy_classes' => false,
+            'auto_generate_proxy_classes' => 'FILE_NOT_EXISTS',
             'default_entity_manager'      => 'default',
             'entity_managers'             => array(
                 'default' => array(

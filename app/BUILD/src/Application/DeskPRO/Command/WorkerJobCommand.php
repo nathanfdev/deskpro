@@ -60,6 +60,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /* \DpRun\DpEnv */
+        global $DP_ENV;
+        $DP_ENV->getDatManager()->enableTrigger('has_run_cron');
+
         $time_cron_start = microtime(true);
 
         @ini_set('track_errors', true);

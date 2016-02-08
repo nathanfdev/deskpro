@@ -67,29 +67,35 @@ class ConfigReader implements ConfigReaderInterface
     private $config_values_short = [];
 
     /**
-     * @var array
+     * @var string[]
      */
     private $config_dirs;
 
     /**
+     * @var callable[]
+     */
+    private $config_loaders = [];
+
+    /**
      * ConfigReader constructor.
      *
-     * @param string[]|callable[] $config_dirs Paths or functions that can load config.
+     * @param string[]   $config_dirs Paths that can contain config.
+     * @param callable[] $config_loaders Functions can can load config
      */
-    public function __construct(array $config_dirs)
+    public function __construct(array $config_dirs, array $config_loaders = [])
     {
         $this->config_dirs = $config_dirs;
+        $this->config_loaders = $config_loaders;
     }
 
     /**
-     * In this reader, you can specify a directory string and a loader will be generated
-     * for you.
+     * Add a config loader
      *
-     * @param string|callable $loader
+     * @param callable $loader
      */
     public function addConfigLoader($loader)
     {
-        $this->config_dirs[] = $loader;
+        $this->config_loaders[] = $loader;
     }
 
     /**
@@ -111,10 +117,7 @@ class ConfigReader implements ConfigReaderInterface
 
         if (!isset($this->config_values[$file_id])) {
             foreach ($this->config_dirs as $config_dir) {
-
-                if (!is_string($config_dir) && is_callable($config_dir)) {
-                    $array = call_user_func($config_dir, $file_id) ?: [];
-                } else {
+                if (is_string($config_dir)) {
                     $config_file_path = $config_dir
                         . DIRECTORY_SEPARATOR
                         . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
@@ -129,6 +132,15 @@ class ConfigReader implements ConfigReaderInterface
                         $array = [ ];
                     }
                 }
+
+                if (!isset($this->config_values[$file_id])) {
+                    $this->config_values[$file_id] = $array;
+                } else if ($array) {
+                    $this->config_values[$file_id] = array_merge($this->config_values[$file_id], $array);
+                }
+            }
+            foreach ($this->config_loaders as $loader) {
+                $array = call_user_func($loader, $file_id, $this->config_values[$file_id]) ?: [];
 
                 if (!isset($this->config_values[$file_id])) {
                     $this->config_values[$file_id] = $array;

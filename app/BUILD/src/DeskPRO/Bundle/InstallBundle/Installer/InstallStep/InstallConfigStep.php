@@ -28,19 +28,88 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+
 class InstallConfigStep extends AbstractStep
 {
     public function run()
     {
         $this->writeBigTitle('Installing configuration');
 
-        //TOOD
+        $fs = new Filesystem();
 
-        $this->getSession()->enableFlag('install_fixtures_ok');
+        $dir = Finder::create()
+            ->files()
+            ->in($this->getContext()->getDpEnv()->getAppDir().'/config_new');
+
+        $config_path = $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'config';
+
+        $this->writeln('Installing confifuration files to:');
+        $this->writeln('<info>'.$config_path.'</info>');
+
+        /** @var \SplFileInfo $f */
+        foreach ($dir as $f) {
+            $path    = str_replace('\\', '/', $f->getRealPath());
+            $relPath = preg_replace('#^.*?/config_new/#', '/', $path);
+            $relPath = str_replace('/', DIRECTORY_SEPARATOR, $relPath);
+
+            $fs->copy(
+                $f->getRealPath(),
+                $config_path.$relPath
+            );
+        }
+
+        $this->writeVars('config.database.php', 'DB_CONFIG', [
+            'host'     => $this->getSession()->getDbInfo()->host,
+            'user'     => $this->getSession()->getDbInfo()->user,
+            'password' => $this->getSession()->getDbInfo()->password,
+            'dbname'   => $this->getSession()->getDbInfo()->dbname,
+        ]);
+
+        $this->writeVars('config.paths.php', 'PATHS_CONFIG', [
+            'php_path'       => $this->getSession()->getPaths()->php_path,
+            'mysqldump_path' => $this->getSession()->getPaths()->mysqldump_path,
+            'mysql_path'     => $this->getSession()->getPaths()->mysql_path,
+        ]);
+
+        $this->writeln('Done!');
+    }
+
+    private function writeVars($file, $varname, array $vars)
+    {
+        $full = $this->getContext()->getDpEnv()->getDpRoot()
+            .DIRECTORY_SEPARATOR
+            .'config'
+            .DIRECTORY_SEPARATOR
+            .$file;
+
+        $content = file_get_contents($full);
+
+        foreach ($vars as $k => $v) {
+            $content = $this->writeInContent($k, $v, $content, $varname);
+        }
+
+        file_put_contents($full, $content);
+    }
+
+    private function writeInContent($name, $value, $content, $varname)
+    {
+        $key = preg_quote($name, '#');
+
+        return preg_replace(
+            '#^\$'.$varname.'\[\''.$key.'\']\s*=\s*.*?;$#m',
+            '$'.$varname.'[\''.$name.'\'] = '.var_export($value, true).';',
+            $content
+        );
     }
 
     public function isComplete()
     {
-        return $this->getSession()->hasFlag('install_fixtures_ok');
+        return file_exists(
+            $this->getContext()->getDpEnv()->getDpRoot()
+            .DIRECTORY_SEPARATOR.'config'
+            .DIRECTORY_SEPARATOR.'config.database.php'
+        );
     }
 }
