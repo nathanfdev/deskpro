@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
 import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequest }
   from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -22,9 +22,7 @@ const loadFilterCount = createAction(
   'TICKETS_NAV_LOAD_FILTER_COUNT',
   id => (dispatch, getState) => new Promise(resolve => {
     const groupBy = filterSetGroupingsSettingsSelector(getState()).get(String(id), '');
-    api
-      .sendGet(`DP_API/ticket_filters/${id}/count?group_by=` + groupBy)
-      .success(response => resolve(response.data));
+    repository('TicketFilter').loadFilterCounts(id, groupBy).success(response => resolve(response.data));
   })
 );
 
@@ -45,7 +43,7 @@ export const applyFilterEditing = createAction(
       dispatch(markFilterLoading(id));
     }
 
-    api.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy}).success(() => {
+    repository('TicketFilter').update({id, group_by: groupBy}).success(() => {
       dispatch(updateFilterGrouping(id, groupBy));
 
       // reload filter counts if grouping is applied

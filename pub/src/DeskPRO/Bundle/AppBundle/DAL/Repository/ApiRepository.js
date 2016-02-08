@@ -15,7 +15,7 @@ export class ApiRepository extends AbstractRepository {
   constructor(api, url, supportsLoadAll = false, searchParams = null) {
     super();
     this.api = api;
-    this.url = url;
+    this.url = url.replace(/^\/+/, '');
     this.supportsLoadAll = supportsLoadAll;
     this.searchParams = searchParams;
   }
@@ -61,11 +61,11 @@ export class ApiRepository extends AbstractRepository {
    * @returns {*}
    */
   update(record, id = null) {
-    if (!id && !record.hasOwnProperty(id)) {
+    if (!id && !record.hasOwnProperty('id')) {
       throw Error("Can't resolve record ID");
     }
 
-    const recordId = id ? id : record[id];
+    const recordId = id ? id : record['id'];
 
     return this.api.sendPut(`DP_API/${this.url}/${recordId}`, record);
   }

@@ -64,8 +64,9 @@ function createApiRepository(config, record) {
   const url = config['url'];
   const allowAll = config.hasOwnProperty('allowAll') ? config['allowAll'] : false;
   const searchParams = config.hasOwnProperty('search') ? config['search'] : null;
+  const repositoryClass = config.hasOwnProperty('repositoryClass') ? config['repositoryClass'] : ApiRepository;
 
-  return new ApiRepository(api, url, allowAll, searchParams);
+  return new repositoryClass(api, url, allowAll, searchParams);
 }
 
 /**
