@@ -92,6 +92,19 @@ Feature: /tickets endpoint
   "ticket_field_1": {
     "data": "2"
   },
+  "ticket_field_5": {
+    "input": {
+      "date": {
+        "year": "2016",
+        "month": "2",
+        "day": "9"
+      },
+      "time": {
+        "hour": "17",
+        "minute": "28"
+      }
+    }
+  },
   "message": {
     "message_text": "my text message",
     "message_format": "text"
@@ -116,6 +129,7 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
     And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
+    And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200

@@ -81,12 +81,18 @@ class CustomDataCollectionTransformer extends AbstractDataSerializerTransformer
                 case 'datetime':
                     $v = $cd->getData();
                     $v = array_pop($v);
+
                     if ($v) {
+                        $v = $v->getInput();
+
                         try {
-                            $row['value'] = new \DateTime('@'.$v->getValue());
-                            $row['value']->format(\DateTime::ISO8601);
+                            $row['value'] = new \DateTime('@'.$v);
                         } catch (\Exception $e) {
-                            $row['value'] = null;
+                            try {
+                                $row['value'] = new \DateTime($v);
+                            } catch (\Exception $e) {
+                                $row['value'] = null;
+                            }
                         }
                     } else {
                         $row['value'] = null;
