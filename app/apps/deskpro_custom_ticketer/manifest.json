@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_custom_ticketer",
+	"is_native": true,
+	"title": "Ticketer App",
+	"description": "Custom app",
+	"tags": ["custom"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "org_is_operator_fid",
+			"type": "text",
+			"label": "is_operator field ID",
+			"description": "The ID of the is_operator organization field",
+			"native_only": false
+		},
+		{
+			"name": "ticket_operator_title_fid",
+			"type": "text",
+			"label": "operator_title field ID",
+			"description": "The ID of the operator_title ticket field",
+			"native_only": false
+		}
+	]
+}

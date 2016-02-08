@@ -2152,14 +2152,27 @@ class TicketSearch extends SearcherAbstract
                                     if (!is_array($choice)) {
                                         $choice = array($choice);
                                     }
+
+                                    /* @var  $children */
+                                    $children_titles = array_map(function ($v) {
+                                        return trim(strtolower($v));
+                                    }, $field_def->getAllChildTitles());
+
                                     foreach ($choice as $c) {
+                                        // if its an invalid id, try to find it based off a title match
+                                        if (!ctype_digit($c) || !array_key_exists($c, $children_titles)) {
+                                            $c = array_search(trim(strtolower($c)), $children_titles);
+                                        }
                                         $choices_in[] = (int) $c;
                                     }
                                     $choices_in = implode(',', $choices_in);
                                 }
 
-                                if (!$choices_in) {
+                                if (!$choice && !$choices_in) {
                                     $choice = 'DP_NO_SELECTION';
+                                } elseif (!$choices_in) {
+                                    $choice     = array(0);
+                                    $choices_in = '0';
                                 }
 
                                 $field = 'custom_data_ticket_'.$join_id.'.field_id';
