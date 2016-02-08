@@ -17,7 +17,8 @@ npm-debug.log
 .jest-cache
 phantomjsdriver.log
 
-/dev/scratch
+/dev/scratch/*
+!/dev/scratch/README.md
 /dev/dev_config
 
 # vendors and build files
