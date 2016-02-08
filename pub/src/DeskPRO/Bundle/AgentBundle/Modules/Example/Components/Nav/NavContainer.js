@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 
-import { NavFrame, NavFrameHeaderContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NavFrame, NavFrameHeaderContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 import { WidgetNavListContainer } from "./WidgetNavList";
 

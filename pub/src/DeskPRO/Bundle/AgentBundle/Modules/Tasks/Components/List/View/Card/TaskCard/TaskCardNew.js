@@ -18,7 +18,7 @@ import {
   Comments,
   AssignButton,
   AssigneeAvatar
-} from '../../../TaskCard/index';
+} from '../../../TaskCard';
 
 @connect()
 

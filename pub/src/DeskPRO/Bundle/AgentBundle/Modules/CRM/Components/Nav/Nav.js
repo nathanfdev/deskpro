@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem,
-  LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from './NestedList';
 import { ListItemContainer } from './ListItemContainer';
 

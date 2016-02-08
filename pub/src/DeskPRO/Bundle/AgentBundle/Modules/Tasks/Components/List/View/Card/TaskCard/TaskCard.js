@@ -18,7 +18,7 @@ import {
   AssignButton,
   TicketLinkContainer,
   CardProject
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard';
 
 export class TaskCard extends BaseTaskCard {
 

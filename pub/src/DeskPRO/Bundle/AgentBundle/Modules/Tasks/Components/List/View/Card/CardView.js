@@ -4,7 +4,7 @@ import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
-import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { NewTaskButton } from './NewTaskButton';
 
 export class CardView extends React.Component {

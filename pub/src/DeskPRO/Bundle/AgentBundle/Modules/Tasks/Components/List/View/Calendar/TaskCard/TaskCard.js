@@ -15,7 +15,7 @@ import {
   TicketLinkContainer,
   ProjectContainer,
   CardProject
-} from '../../../TaskCard/index';
+} from '../../../TaskCard';
 
 export class TaskCard extends BaseTaskCard {
 

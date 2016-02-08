@@ -1,5 +1,5 @@
 import React from 'react';
-import { NestedList as BaseNestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NestedList as BaseNestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from './ListItemContainer';
 import { UrgencyList } from './UrgencyList';
 import Immutable from 'immutable';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { cardVisibleFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/index';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({

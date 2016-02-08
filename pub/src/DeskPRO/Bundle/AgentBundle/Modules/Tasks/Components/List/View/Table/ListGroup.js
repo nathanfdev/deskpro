@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { TableGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { TableGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import classNames from 'classnames';
 
 @DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)

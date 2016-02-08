@@ -21,7 +21,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from '../../Form/index';
+} from '../../Form';
 
 @connect(state => ({
   me: meSelector(state),

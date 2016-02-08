@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
-import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { feedbackSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackCategoriesSelector, peopleSelector }
   from '../../../../Selectors/recordStores';
 import { idsSelector, currentListSortSelector, currentListOrderSelector }

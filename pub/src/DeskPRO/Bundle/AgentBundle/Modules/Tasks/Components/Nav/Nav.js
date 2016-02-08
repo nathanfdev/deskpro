@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { GroupsContainer } from './Groups/GroupsContainer';
 import { ProjectsContainer } from './Projects/ProjectsContainer';
 import { AgentsContainer } from './Agents/AgentsContainer';

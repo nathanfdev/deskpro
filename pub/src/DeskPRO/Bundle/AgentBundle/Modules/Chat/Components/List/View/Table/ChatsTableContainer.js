@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
 import { elementsSelector } from '../../../../Selectors/list';

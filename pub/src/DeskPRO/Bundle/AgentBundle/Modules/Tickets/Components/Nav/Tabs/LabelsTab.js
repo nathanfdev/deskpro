@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 export class LabelsTab extends Component {
   static propTypes = {

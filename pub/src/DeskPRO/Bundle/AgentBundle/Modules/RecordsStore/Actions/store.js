@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL/index';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',

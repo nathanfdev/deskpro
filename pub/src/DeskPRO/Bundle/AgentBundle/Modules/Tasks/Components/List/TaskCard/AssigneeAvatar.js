@@ -4,7 +4,7 @@ import {
   PersonAvatar,
   DepartmentAvatar,
   AgentTeamAvatar
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
