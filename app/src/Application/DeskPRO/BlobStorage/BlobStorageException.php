@@ -58,7 +58,7 @@ class BlobStorageException extends \Exception
      * @param int       $code
      * @param Exception $previous
      */
-    public function __construct($message, $code, Exception $previous)
+    public function __construct($message, $code, Exception $previous = null)
     {
         if ($previous) {
             $message .= ' -- '.$previous->getMessage().' ['.implode('.', Util::getClassnameParts($previous)).':'.$previous->getCode().']';
