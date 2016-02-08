@@ -114,7 +114,7 @@ Feature: /tickets endpoint
     And the JSON node "data.followers" should have 1 element
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.fields.1.value" should have 1 element
-    And the JSON node "data.fields.1.value[0]" should be equal to 1
+    And the JSON node "data.fields.1.value[0]" should be equal to 2
     And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
 
     When I send a GET request to "/api/v2/tickets/5/messages"

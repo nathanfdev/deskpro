@@ -32,6 +32,9 @@ use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
+/**
+ * Class CustomDataCollectionTransformer.
+ */
 class CustomDataCollectionTransformer extends AbstractDataSerializerTransformer
 {
     /**
@@ -63,7 +66,7 @@ class CustomDataCollectionTransformer extends AbstractDataSerializerTransformer
                     foreach ($cd->getData() as $v) {
                         $fid = $v->field->getId();// value is the ID of the selected option
 
-                        $vals[]        = $fid;
+                        $vals[]        = $v->getValue();
                         $details[$fid] = [
                             'id'    => $v->field->getId(),
                             'title' => $v->field->getTitle(),
