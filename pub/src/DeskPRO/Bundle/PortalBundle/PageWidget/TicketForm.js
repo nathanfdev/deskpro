@@ -92,7 +92,7 @@ export class TicketForm extends PageWidget {
     this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
-      alwaysFields: ['department', 'user_name_and_email', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
+      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
       onInit: () => {
         updateLastDepId();
 

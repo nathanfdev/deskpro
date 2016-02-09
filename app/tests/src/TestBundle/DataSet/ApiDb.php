@@ -146,7 +146,7 @@ class ApiDb extends AbstractDbSet
 
         $layout = new Layout();
         $layout
-            ->add(new LayoutField(FormFields::USER_NAME_AND_EMAIL))
+            ->add(new LayoutField(FormFields::PERSON))
             ->add(new LayoutField(FormFields::DEPARTMENT))
             ->add(new LayoutField(FormFields::MESSAGE))
             ->add(new LayoutField(FormFields::ATTACH))

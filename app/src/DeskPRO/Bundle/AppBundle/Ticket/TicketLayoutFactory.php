@@ -203,17 +203,17 @@ class TicketLayoutFactory
             }
         }
 
-        // if no email input exists, add the new USER_NAME_AND_EMAIL
-        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::USER_NAME_AND_EMAIL)) {
-            $new = new LayoutField(FormFields::USER_NAME_AND_EMAIL);
+        // if no email input exists, add the new PERSON
+        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::PERSON)) {
+            $new = new LayoutField(FormFields::PERSON);
             $new->enableOnNew();
             $new->enableOnEdit();
             $new->enableOnView();
             $layout->add($new);
         }
 
-        // finally, if USER_NAME_AND_EMAIL exists, remove USER_EMAIL and USER_NAME as they are redundant
-        if ($layout->has(FormFields::USER_NAME_AND_EMAIL)) {
+        // finally, if PERSON exists, remove USER_EMAIL and USER_NAME as they are redundant
+        if ($layout->has(FormFields::PERSON)) {
             if ($layout->has(FormFields::USER_EMAIL)) {
                 $layout->remove(FormFields::USER_EMAIL);
             }

@@ -59,7 +59,7 @@ Feature: /tickets endpoint
     When I send a PUT request to "/api/v2/ticket_forms/5" with body:
     """
 {
-  "user_name_and_email": {
+  "person": {
     "user_name": "Changed Name"
   },
   "subject": "Modified subject",

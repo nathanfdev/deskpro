@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -349,7 +348,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
     {
         foreach ($this->dep_to_fields as $depId => $fields) {
             $layout = new Layout();
-            $layout->add(new LayoutField('user_name_and_email'));
+            $layout->add(new LayoutField('person'));
             $layout->add(new LayoutField('department'));
             $layout->add(new LayoutField('department'));
             $layout->add(new LayoutField('subject'));

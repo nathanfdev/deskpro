@@ -467,8 +467,8 @@ class TicketWithLayoutsType extends AbstractType
             case FormFields::MESSAGE:
                 $this->addMessage($context, $field);
                 break;
-            case FormFields::USER_NAME_AND_EMAIL:
-                $this->addUserNameAndEmail($context, $field);
+            case FormFields::PERSON:
+                $this->addPerson($context, $field);
                 break;
             case FormFields::DEPARTMENT:
                 $this->addDepartment($context, $field);
@@ -594,7 +594,7 @@ class TicketWithLayoutsType extends AbstractType
      * @param TicketFormContext $context
      * @param LayoutField       $field
      */
-    private function addUserNameAndEmail(TicketFormContext $context, LayoutField $field)
+    private function addPerson(TicketFormContext $context, LayoutField $field)
     {
         $context->getForm()->add(
             $field->getId(),
