@@ -18,7 +18,7 @@ Feature: /tickets endpoint
   "department": 1,
   "product": 2,
   "priority": 3,
-  "cc": "agent@deskpro.dev, user@deskpro.dev",
+  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "message": {
     "message": "<p>my html message</p>",
     "format": "html"
@@ -66,7 +66,7 @@ Feature: /tickets endpoint
   "department": 2,
   "product": 2,
   "priority": 3,
-  "cc": "agent@deskpro.dev, user@deskpro.dev",
+  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "ticket_field_1": {
     "data": "2"
   },

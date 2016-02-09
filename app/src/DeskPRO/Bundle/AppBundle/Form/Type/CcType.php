@@ -43,7 +43,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class CcType.
+ * Accepts comma separated list of emails.
  */
 class CcType extends AbstractType
 {
@@ -67,10 +67,12 @@ class CcType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new ArrayToStringTransformer());
+        if ($options['view_type'] === 'inline') {
+            $builder->addViewTransformer(new ArrayToStringTransformer());
+        }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostsubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -103,6 +105,7 @@ class CcType extends AbstractType
 
         $participants = [];
         $cc_emails    = $form->getData();
+
         foreach ($cc_emails as $email) {
             $email = trim($email);
 
@@ -154,11 +157,15 @@ class CcType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
+            ->setDefaults([
+                'view_type' => 'inline',
+            ])
             ->setRequired([
                 'ticket',
             ])
             ->setAllowedTypes([
-                'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'cc_view_type' => ['inline', 'array'],
+                'ticket'       => 'Application\\DeskPRO\\Entity\\Ticket',
             ])
         ;
     }

@@ -395,6 +395,7 @@ class TicketWithLayoutsType extends AbstractType
                 'allow_extra_fields'  => true,
                 'full_version'        => false,
                 'use_captcha'         => true,
+                'cc_view_type'        => 'inline',
             ])
             ->setRequired([
                 'person',
@@ -977,10 +978,11 @@ class TicketWithLayoutsType extends AbstractType
     private function addCc(TicketFormContext $context, LayoutField $field)
     {
         $context->getForm()->add($field->getId(), 'deskpro_cc', [
-            'label'    => $this->phrase('portal.forms.label_cc'),
-            'ticket'   => $context->getTicket(),
-            'mapped'   => false,
-            'required' => false,
+            'label'     => $this->phrase('portal.forms.label_cc'),
+            'ticket'    => $context->getTicket(),
+            'mapped'    => false,
+            'required'  => false,
+            'view_type' => $context->getOption('cc_view_type'),
         ]);
     }
 

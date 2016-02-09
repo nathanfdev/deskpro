@@ -29,35 +29,13 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Route;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\AbstractType;
 
 /**
- * Class TicketFormsController.
- *
- * @ApiModes("all")
- * @Route("/ticket_forms")
+ * Class PersonIdentityType.
  */
-class TicketFormsController extends AbstractTicketsController
+class PersonIdentityType extends AbstractType
 {
-    public static $exposeOnly = ['post', 'put'];
-    public static $type       = 'ticket_with_layouts';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handleForm($model, Request $request, array $options = [])
-    {
-        $options = array_merge($options, [
-            'person'       => $this->getUser(),
-            'settings'     => $this->get('brand_stack')->getActive()->getSettings(),
-            'use_captcha'  => false,
-            'cc_view_type' => 'array',
-        ]);
-
-        return parent::handleForm($model, $request, $options);
-    }
 }
