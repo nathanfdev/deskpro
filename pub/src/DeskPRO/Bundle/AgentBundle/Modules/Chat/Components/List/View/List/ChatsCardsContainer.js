@@ -25,12 +25,12 @@ export class ChatsCardsContainer extends Component {
     const { toggleSelected, people, departments, selected } = this.props;
 
     return (
-      <ChatCard key={id}
+      <ChatCard key={element.get('id')}
                 author={people.get(element.get('person'))}
                 agent={people.get(element.get('agent'))}
                 department={departments.get(element.get('department'))}
                 chat={element}
-                selected={selected.includes(id)}
+                selected={selected.includes(element.get('id'))}
                 toggleSelected={toggleSelected}/>
     );
   }
