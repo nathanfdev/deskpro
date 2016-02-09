@@ -31,7 +31,6 @@ namespace spec\DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -42,11 +41,9 @@ use PhpSpec\ObjectBehavior;
 class AgentAlertTransformerSpec extends ObjectBehavior
 {
     public function let(
-        EntityManager $em,
         DataTransformerRequest $request,
         AgentAlert $alert
     ) {
-        $this->beConstructedWith($em);
         $request->getDataToBeTransformed()->willReturn($alert);
     }
 
