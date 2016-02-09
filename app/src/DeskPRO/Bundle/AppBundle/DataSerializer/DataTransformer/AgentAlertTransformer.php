@@ -34,8 +34,8 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
-use Application\DeskPRO\ORM\EntityManager;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 
 class AgentAlertTransformer extends AbstractDataSerializerTransformer
