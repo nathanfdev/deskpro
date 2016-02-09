@@ -29,27 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 
 class AgentAlertTransformer extends AbstractDataSerializerTransformer
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * @param DataTransformerRequest $transformation_request
      *
@@ -132,32 +119,7 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
     {
         $data = $alert->getData();
         if (isset($data['@fetch_types'])) {
-            $fetch_types = $data['@fetch_types'];
             unset($data['@fetch_types']);
-
-            foreach ($fetch_types as $k => $type) {
-                if (!isset($data[$k]) || !$data[$k]) {
-                    $data[$k] = null;
-                    continue;
-                }
-
-                $val = $data[$k];
-                if (is_array($val)) {
-                    $data[$k] = $this->em->getRepository($type)->getByIds($val, true);
-
-                    foreach ($data[$k] as &$sub) {
-                        $sub = $sub->toApiData(true, false);
-                    }
-                    unset($sub);
-                } else {
-                    $data[$k] = $this->em->getRepository($type)->find($val);
-                    if ($data[$k] && $data[$k] instanceof DomainObject) {
-                        $data[$k] = $data[$k]->toApiData(true, false);
-                    } else {
-                        unset($data[$k]);
-                    }
-                }
-            }
         }
 
         return $data;
