@@ -175,8 +175,8 @@ class TicketTypeTest extends PortalTestCase
             FormFields::DEPARTMENT => $new_dep_id,
             FormFields::SUBJECT    => 'My Test Subject',
             FormFields::MESSAGE    => [
-                'message_text'   => 'This is my message, a test message!',
-                'message_format' => 'text',
+                'message' => 'This is my message, a test message!',
+                'format'  => 'text',
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
             'displayed_fields'     => 'department,subject,message,user_email,attach',
@@ -241,8 +241,8 @@ class TicketTypeTest extends PortalTestCase
             FormFields::DEPARTMENT => $new_dep_id,
             FormFields::SUBJECT    => 'Test Subject',
             FormFields::MESSAGE    => [
-                'message_text'   => 'This is my message, a test message!',
-                'message_format' => 'text',
+                'message' => 'This is my message, a test message!',
+                'format'  => 'text',
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
             'ticket_field_1'       => null,
@@ -279,8 +279,8 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::DEPARTMENT => 1, // this dep has the default layout, so submitting this
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
-                    'message_text'   => 'This is my message, a test message!',
-                    'message_format' => 'text',
+                    'message' => 'This is my message, a test message!',
+                    'format'  => 'text',
                 ],
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
@@ -314,8 +314,8 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::DEPARTMENT => $sales_dep_id, // a dep with this default form
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
-                    'message_text'   => 'This is my message, a test message!',
-                    'message_format' => 'text',
+                    'message' => 'This is my message, a test message!',
+                    'format'  => 'text',
                 ],
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
@@ -336,8 +336,8 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::DEPARTMENT => $sales_dep_id,
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
-                    'message_text'   => 'This is my message, a test message!',
-                    'message_format' => 'text',
+                    'message' => 'This is my message, a test message!',
+                    'format'  => 'text',
                 ],
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',

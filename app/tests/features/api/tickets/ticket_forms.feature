@@ -20,8 +20,8 @@ Feature: /tickets endpoint
   "priority": 3,
   "cc": "agent@deskpro.dev, user@deskpro.dev",
   "message": {
-    "message_html": "<p>my html message</p>",
-    "message_format": "html"
+    "message": "<p>my html message</p>",
+    "format": "html"
   },
   "attachments": [
     {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
@@ -90,8 +90,8 @@ Feature: /tickets endpoint
     "input": "textarea text"
   },
   "message": {
-    "message_text": "my text message",
-    "message_format": "text"
+    "message": "my text message",
+    "format": "text"
   },
   "attachments": [
     {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
