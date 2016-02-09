@@ -1,6 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { deleteFeedbackComment, editFeedbackComment, approveFeedbackComment, commentsToReviewList, commentsToReview }
-  from 'DeskPRO/Bundle/AgentBundle/Services/Api/FeedbackComment';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { applyParams } from './FeedbackListActions';
 import { setFeedbackCommentsRequest } from '../RecordStores/Actions/feedbackCommentsActions.js';
 import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
@@ -24,13 +23,13 @@ const prepareLinkedData = (linked) => {
 
 export const commentsToReviewCounter = createAction(
   'FEEDBACK_COMMENTS_TO_REVIEW_COUNTER',
-  () => commentsToReview().then(promise => promise.getData())
+  () => repository('FeedbackComment').commentsToReview().then(promise => promise.getData())
 );
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
   (ids) => dispatch => {
-    deleteFeedbackComment(ids).then(()=> {
+    repository('FeedbackComment').removeBatch(ids).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -41,7 +40,7 @@ export const deleteComment = createAction(
 export const approveComment = createAction(
   'FEEDBACK_COMMENTS_APPROVE',
   (ids) => dispatch => {
-    approveFeedbackComment(ids).then(()=> {
+    repository('FeedbackComment').approveFeedbackComment(ids).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -52,9 +51,7 @@ export const approveComment = createAction(
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
   (data) => dispatch => {
-    const commentId = data.commentId;
-    delete data.commentId;
-    editFeedbackComment(commentId, data).then(()=> {
+    repository('FeedbackComment').update(data).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -63,7 +60,7 @@ export const editComment = createAction(
 
 export const loadFeedbackCommentsList = createAction(
   'FEEDBACK_LIST_OF_COMMENTS',
-    params => (dispatch) => commentsToReviewList(params).then(promise => {
+    params => (dispatch) => repository('FeedbackComment').commentsToReviewList(params).then(promise => {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 

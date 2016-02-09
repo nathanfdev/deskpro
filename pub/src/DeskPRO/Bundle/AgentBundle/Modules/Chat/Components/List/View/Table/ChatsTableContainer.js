@@ -3,7 +3,8 @@ import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/List
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
 import { elementsSelector } from '../../../../Selectors/list';
-import { chatsSelector, peopleSelector, departmentsSelector } from '../../../../Selectors/recordStores';
+import { chatsSelector, peopleSelector } from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 import { connect } from 'react-redux';
 @connect(state => {
@@ -11,7 +12,7 @@ import { connect } from 'react-redux';
     ids: elementsSelector(state),
     chats: chatsSelector(state),
     people: peopleSelector(state),
-    departments: departmentsSelector(state)
+    departments: collectionSelectorFactory('Department', 'chats')(state)
   });
 })
 export class ChatsTableContainer extends Component {

@@ -10,14 +10,12 @@ export class ApiRepository extends AbstractRepository {
    * @param api
    * @param url
    * @param supportsLoadAll
-   * @param searchParams
    */
-  constructor(api, url, supportsLoadAll = false, searchParams = null) {
+  constructor(api, url, supportsLoadAll = false) {
     super();
     this.api = api;
     this.url = url.replace(/^\/+/, '');
     this.supportsLoadAll = supportsLoadAll;
-    this.searchParams = searchParams;
   }
 
   /**
@@ -49,10 +47,11 @@ export class ApiRepository extends AbstractRepository {
 
   /**
    * @param params
+   * @param include
    * @returns {*}
    */
-  search(params) {
-    return this.api.sendGet(`DP_API/${this.url}?` + this.compileParams(params));
+  search(params, include) {
+    return this.api.sendGet(`DP_API/${this.url}?` + this.compileParams(include ? {...params, include} : params));
   }
 
   /**
@@ -115,18 +114,6 @@ export class ApiRepository extends AbstractRepository {
    * @param params
    */
   compileParams(params) {
-    const whiteList = ['sort', 'order', 'page'];
-
-    if (!this.searchParams) {
-      throw new Error(`${this.url} endpoint is not allowed to search()`);
-    }
-
-    for (const param in params) {
-      if (this.searchParams.indexOf(param) === -1 && whiteList.indexOf(param) === -1) {
-        throw new Error(`${this.url} endpoint is not configured to search() by "${param}"`);
-      }
-    }
-
     return compileParams(params);
   }
 }

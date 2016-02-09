@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import {
   BaseForm,
   Header,
@@ -29,9 +29,7 @@ import {
   agentTeams: agentTeamsSelector(state),
   departments: allDepartmentsSelector(state)
 }))
-
 export class AssignForm extends BaseForm {
-
   static propTypes = {
     task: PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired

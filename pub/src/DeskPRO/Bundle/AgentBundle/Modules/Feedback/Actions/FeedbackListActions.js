@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
@@ -53,7 +53,7 @@ export const setDisplayFields = createAction(
 
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST_OF_FEEDBACK',
-    params => (dispatch) => Feedback.getList(params).then(promise => {
+    params => (dispatch) => repository('Feedback').search(params).then(promise => {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 

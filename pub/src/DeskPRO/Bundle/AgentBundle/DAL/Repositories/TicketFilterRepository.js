@@ -4,7 +4,6 @@ import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
  * TicketFilterRepository
  */
 export class TicketFilterRepository extends ApiRepository {
-
   /**
    * @param id
    * @param groupBy

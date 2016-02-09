@@ -7,7 +7,7 @@ import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelecto
 import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({

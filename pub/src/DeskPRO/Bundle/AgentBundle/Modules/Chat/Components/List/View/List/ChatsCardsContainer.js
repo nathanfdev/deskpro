@@ -1,19 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import { ChatCard } from './ChatCard';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { elementsSelector } from '../../../../Selectors/list';
-import { chatsSelector, peopleSelector, departmentsSelector } from '../../../../Selectors/recordStores';
-
+import { peopleSelector } from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    ids: elementsSelector(state),
-    chats: chatsSelector(state),
-    selected: selectedSelector(state),
-    people: peopleSelector(state),
-    departments: departmentsSelector(state)
-  });
-})
+
+@connect(state => ({
+  chats: collectionSelectorFactory('Chat', 'chats')(state),
+  selected: selectedSelector(state),
+  people: peopleSelector(state),
+  departments: collectionSelectorFactory('Department', 'chats')(state)
+}))
 export class ChatsCardsContainer extends Component {
   static propTypes = {
     ids: PropTypes.array.isRequired,
@@ -24,9 +21,8 @@ export class ChatsCardsContainer extends Component {
     toggleSelected: PropTypes.func.isRequired
   };
 
-  renderCard(id) {
-    const { chats, toggleSelected, people, departments, selected } = this.props;
-    const element = chats.get(id);
+  renderCard(element) {
+    const { toggleSelected, people, departments, selected } = this.props;
 
     return (
       <ChatCard key={id}
@@ -42,7 +38,7 @@ export class ChatsCardsContainer extends Component {
   render() {
     return (
       <div>
-        {this.props.ids.map(id => this.renderCard(id))}
+        {this.props.chats.map(chat => this.renderCard(chat))}
       </div>
     );
   }
