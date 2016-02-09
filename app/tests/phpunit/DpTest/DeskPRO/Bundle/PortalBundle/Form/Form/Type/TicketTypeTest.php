@@ -273,9 +273,9 @@ class TicketTypeTest extends PortalTestCase
         $crawler = $client->request('GET', '/new-ticket');
         $res     = $client->getResponse();
 
-        $button_node = $crawler->selectButton('ticket_with_layouts_submit');
+        $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
-            'ticket_with_layouts' => [
+            'ticket' => [
                 FormFields::DEPARTMENT => 1, // this dep has the default layout, so submitting this
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
@@ -308,9 +308,9 @@ class TicketTypeTest extends PortalTestCase
         $crawler = $client->request('GET', '/new-ticket');
         $res     = $client->getResponse();
 
-        $button_node = $crawler->selectButton('ticket_with_layouts_submit');
+        $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
-            'ticket_with_layouts' => [
+            'ticket' => [
                 FormFields::DEPARTMENT => $sales_dep_id, // a dep with this default form
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
@@ -330,9 +330,9 @@ class TicketTypeTest extends PortalTestCase
             $client->getHistory()->current()->getUri(),
             'the ticket form properly re-renders after a department change with a layout that has additional fields'
         ); // we are still on /new-ticket because we changed dep
-        $button_node = $crawler->selectButton('ticket_with_layouts_submit');
+        $button_node = $crawler->selectButton('ticket_submit');
         $form        = $button_node->form([
-            'ticket_with_layouts' => [
+            'ticket' => [
                 FormFields::DEPARTMENT => $sales_dep_id,
                 FormFields::SUBJECT    => 'Test Subject',
                 FormFields::MESSAGE    => [
@@ -420,7 +420,7 @@ class TicketTypeTest extends PortalTestCase
         $message->setPerson($person);
         $ticket->addMessage($message);
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create('ticket', $ticket, [
             'person'          => $person,
             'settings'        => $this->getBrandSettings(),
             'csrf_protection' => false,

@@ -423,6 +423,14 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'ticket';
+    }
+
+    /**
      * @param TicketFormContext $context
      * @param LayoutField       $field
      */
