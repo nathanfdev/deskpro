@@ -420,7 +420,7 @@ class TicketTypeTest extends PortalTestCase
         $message->setPerson($person);
         $ticket->addMessage($message);
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket', $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
             'person'          => $person,
             'settings'        => $this->getBrandSettings(),
             'csrf_protection' => false,
