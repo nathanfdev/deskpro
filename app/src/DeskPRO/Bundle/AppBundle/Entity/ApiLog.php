@@ -61,7 +61,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var int timestamp
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $end_time;
 
@@ -81,7 +81,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $status;
 
@@ -93,7 +93,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json_array", nullable=true)
      */
     protected $response_data;
 

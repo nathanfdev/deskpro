@@ -29,23 +29,30 @@
 namespace DeskPRO\Bundle\ApiBundle\Log;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\ApiBundle\Log\Finder\FinderInterface;
+use DeskPRO\Component\Util\RandUtils;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LogHelper.
  */
 class LogHelper
 {
-    /**
-     * @const string
-     */
-    const REQUEST_ID_HEADER = 'X-DeskPRO-Request-ID';
+    const REQUEST_ID_HEADER             = 'X-DeskPRO-Request-ID';
+    const REQUEST_ID_CLIENT_HEADER      = 'X-DeskPRO-Client-Request-ID';
+    const REQUEST_CLIENT_OPTIONS_HEADER = 'X-DeskPRO-Client-Request-Options';
 
-    /**
-     * @const string
-     */
-    const REQUEST_ID_CLIENT_HEADER = 'X-DeskPRO-Request-ID';
+    const CLIENT_SUFFIX  = 'c';
+    const DESKPRO_SUFFIX = 'd';
+
+    const DUPLICATE_MODE_FAIL   = 'fail';
+    const DUPLICATE_MODE_RESEND = 'resend';
+
+    const FAILURE_MODE_SAVE = 'save';
+    const FAILURE_MODE_SKIP = 'skip';
+
+    const EAGER_ON  = 1;
+    const EAGER_OFF = 0;
 
     /**
      * @var SettingsResolver
@@ -53,23 +60,27 @@ class LogHelper
     protected $resolver;
 
     /**
-     * @param SettingsResolver $resolver
+     * @var FinderInterface
      */
-    public function __construct(SettingsResolver $resolver)
-    {
-        $this->resolver = $resolver;
-    }
+    protected $finder;
+
+    /** @var string */
+    protected $request_id;
+
+    /** @var array */
+    protected $request_options;
+
+    /** @var bool */
+    protected $client_generated_request_id = false;
 
     /**
-     * And where is my method overloading? :(.
-     *
-     * @param Response $response
-     *
-     * @return null|string
+     * @param SettingsResolver $resolver
+     * @param FinderInterface  $finder
      */
-    public function getRequestIdFromResponse(Response $response)
+    public function __construct(SettingsResolver $resolver, FinderInterface $finder)
     {
-        return $this->getRequestId($response->headers);
+        $this->resolver = $resolver;
+        $this->finder   = $finder;
     }
 
     /**
@@ -78,6 +89,96 @@ class LogHelper
      * @return string|null
      */
     public function getRequestId($headers)
+    {
+        if (!$this->request_id) {
+            $headers          = $this->mutateHeaders($headers);
+            $this->request_id =
+                ($headers->has(self::REQUEST_ID_CLIENT_HEADER))
+                    ? $this->generateRequestId(true, $headers->get(self::REQUEST_ID_CLIENT_HEADER))
+                    : $this->generateRequestId();
+        }
+
+        return $this->request_id;
+    }
+
+    /**
+     * @param bool|false $incoming
+     * @param string     $incoming_value
+     *
+     * @return string
+     */
+    protected function generateRequestId($incoming = false, $incoming_value = '')
+    {
+        if ($incoming && !$incoming_value) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'In case you have incoming %s header, you should provide it\'s value when generating ID',
+                    self::REQUEST_ID_CLIENT_HEADER
+                ));
+        }
+        if ($incoming) {
+            $value                             = $incoming_value;
+            $suffix                            = self::CLIENT_SUFFIX;
+            $prefix                            = '';
+            $this->client_generated_request_id = true;
+        } else {
+            $value  = RandUtils::randomStringFormat('%30cn');
+            $suffix = self::DESKPRO_SUFFIX;
+            $prefix = time().'-';
+        }
+
+        return sprintf('%s%s-%s', $prefix, $value, $suffix);
+    }
+
+    /**
+     * @param $headers
+     *
+     * @return array
+     */
+    public function getRequestOptions($headers)
+    {
+        if (!$this->request_options) {
+            $headers = $this->mutateHeaders($headers);
+            if ($headers->has(self::REQUEST_CLIENT_OPTIONS_HEADER)) {
+                $this->request_options = $this->mergeOptions(json_decode($headers->get(self::REQUEST_CLIENT_OPTIONS_HEADER), true));
+            } else {
+                $this->request_options = $this->getDefaultOptions();
+            }
+        }
+
+        return $this->request_options;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultOptions()
+    {
+        return [
+            'duplicate_mode' => self::DUPLICATE_MODE_FAIL,
+            'failure_mode'   => self::FAILURE_MODE_SKIP,
+            'eager'          => self::EAGER_OFF,
+        ];
+    }
+
+    /**
+     * @param $options
+     *
+     * @return array
+     */
+    protected function mergeOptions($options)
+    {
+        $options = array_merge($this->getDefaultOptions(), $options);
+
+        return array_intersect_key($options, $this->getDefaultOptions());
+    }
+
+    /**
+     * @param $headers
+     *
+     * @return HeaderBag
+     */
+    protected function mutateHeaders($headers)
     {
         switch (true) {
             case $headers instanceof HeaderBag:
@@ -94,7 +195,7 @@ class LogHelper
                     ));
         }
 
-        return $headers->get(self::REQUEST_ID_HEADER);
+        return $headers;
     }
 
     /**
@@ -103,5 +204,20 @@ class LogHelper
     public function isLoggingEnabled()
     {
         return $this->resolver->getGlobalSettings()->get('api_log.enabled');
+    }
+
+    public function isClientRequestdLog()
+    {
+        return $this->client_generated_request_id;
+    }
+
+    public function shouldLog()
+    {
+        return $this->isLoggingEnabled() || $this->client_generated_request_id;
+    }
+
+    public function findRequest($request_id)
+    {
+        return $this->finder->find($request_id);
     }
 }

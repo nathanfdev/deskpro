@@ -26,4 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455058562);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1455058562 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->execMutateSql('ALTER TABLE api_log CHANGE end_time end_time INT DEFAULT NULL;');
+        $this->execMutateSql('ALTER TABLE api_log CHANGE status status INT DEFAULT NULL;');
+        $this->execMutateSql('ALTER TABLE api_log CHANGE response_data response_data LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\';');
+    }
+}

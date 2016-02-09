@@ -26,4 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455058562);
+namespace DeskPRO\Bundle\ApiBundle\Log\Finder;
+
+/**
+ * Interface FinderInterface.
+ */
+interface FinderInterface
+{
+    /**
+     * @param $request_id
+     *
+     * @return mixed
+     */
+    public function find($request_id);
+}

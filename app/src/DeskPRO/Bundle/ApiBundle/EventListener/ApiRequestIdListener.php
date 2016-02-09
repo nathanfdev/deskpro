@@ -29,13 +29,31 @@
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
-use DeskPRO\Component\Util\RandUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ApiRequestIdListener.
+ */
 class ApiRequestIdListener implements EventSubscriberInterface
 {
+    /**
+     * @var LogHelper
+     */
+    protected $helper;
+
+    /**
+     * @param LogHelper $helper
+     */
+    public function __construct(LogHelper $helper)
+    {
+        $this->helper = $helper;
+    }
+
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -43,9 +61,13 @@ class ApiRequestIdListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param FilterResponseEvent $event
+     */
     public function onResponse(FilterResponseEvent $event)
     {
-        $id = sprintf('%d-%s', time(), RandUtils::randomStringFormat('%30cn'));
-        $event->getResponse()->headers->add([LogHelper::REQUEST_ID_HEADER => $id]);
+        $request  = $event->getRequest();
+        $response = $event->getResponse();
+        $response->headers->add([LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId($request->headers)]);
     }
 }

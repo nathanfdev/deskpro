@@ -26,15 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
+namespace DeskPRO\Bundle\ApiBundle\Log;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class WriterFactory.
+ * Class LogServiceFactory.
  */
-class WriterFactory
+class LogServiceFactory
 {
     /**
      * @var ContainerInterface
@@ -53,27 +53,41 @@ class WriterFactory
     {
         $this->container         = $container;
         $this->settings_resolver = $this->container->get('settings_resolver');
+        $this->settings_resolver->setVirtual(
+            'api_log.finder.type',
+            function ($global) {return $global['api_log.writer.type'];});
+        $this->settings_resolver->getGlobalSettings(true);
     }
 
     public function createWriter()
     {
-        $type       = $this->settings_resolver->getGlobalSettings()->get('api_log.writer.type');
-        $writerName = sprintf('api_log.writer.%s', $type);
-        if ($this->container->has($writerName)) {
-            return $this->container->get($writerName);
-        } else {
-            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate writer with type [ %s ]', $writerName));
-        }
+        return $this->create('api_log.writer', 'writer');
+    }
+
+    public function createFinder()
+    {
+        return $this->create('api_log.finder', 'finder');
     }
 
     public function createSerializer()
     {
-        $type           = $this->settings_resolver->getGlobalSettings()->get('api_log.writer.file.serializer.type');
-        $serializerName = sprintf('api_log.writer.file.serializer.%s', $type);
-        if ($this->container->has($serializerName)) {
-            return $this->container->get($serializerName);
+        return $this->create('api_log.writer.file.serializer', 'serializer');
+    }
+
+    protected function create($prefix, $object_type)
+    {
+        $type = $this->settings_resolver->getGlobalSettings()->get(sprintf('%s.type', $prefix));
+        $name = sprintf('%s.%s', $prefix, $type);
+        if ($this->container->has($name)) {
+            return $this->container->get($name);
         } else {
-            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate serializer with type [ %s ] for api_log file writer', $serializerName));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Couldn\'t instantiate %s with type [ %s ] for api_log file writer',
+                    $object_type,
+                    $name
+                )
+            );
         }
     }
 }
