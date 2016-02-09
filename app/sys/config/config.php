@@ -284,6 +284,12 @@ $definition->setArguments(array(new Reference('dp_enc')));
 $definition->addTag('form.type', array('alias' => 'dp_enc_password'));
 $container->setDefinition('dp_enc.form.type.dp_enc_password', $definition);
 
+// session.storage
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\EventListener\\HtmlTrackingListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('html_tracking.listener', $definition);
+
 ############################################################################
 # Validators and Constraints
 ############################################################################
