@@ -825,6 +825,7 @@ define [
               {title: 'Red', value: 'red'},
               {title: 'Blue', value: 'blue'},
               {title: 'Green', value: 'green'},
+              {title: 'Yellow', value: 'yellow'},
               {title: 'Orange', value: 'orange'},
               {title: 'Purple', value: 'purple'},
               {title: 'Pink', value: 'pink'}
