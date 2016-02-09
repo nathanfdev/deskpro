@@ -26,4 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455032315);
+namespace DeskPRO\Bundle\AppBundle\HttpKernel;
+
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Class ResponseUtil.
+ */
+class ResponseUtil
+{
+    /**
+     *
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * @const string
+     */
+    const REQUEST_ID_HEADER = 'X-DeskPRO-Request-ID';
+
+    /**
+     * And where is method overloading? :(.
+     *
+     * @param Response $response
+     *
+     * @return null|string
+     */
+    public static function getRequestIdFromResponse(Response $response)
+    {
+        return self::getRequestId($response->headers->all());
+    }
+
+    /**
+     * @param array $headers
+     *
+     * @return string|null
+     */
+    public static function getRequestId(array $headers)
+    {
+        if (isset($headers[strtolower(self::REQUEST_ID_HEADER)])) {
+            return array_shift($headers[strtolower(self::REQUEST_ID_HEADER)]);
+        }
+
+        return;
+    }
+}

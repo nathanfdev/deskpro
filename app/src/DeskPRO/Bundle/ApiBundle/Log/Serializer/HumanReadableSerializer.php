@@ -35,6 +35,7 @@ class HumanReadableSerializer implements ApiLoggerSerializerInterface
     public function serialize(ApiLog $log)
     {
         return sprintf('======================= LOG ENTRY ======================
+request_id: %s
 uri: %s
 execution time: %d
 request time: %s
@@ -59,6 +60,7 @@ response status: %d
 api_key_id: %d
 =======================/LOG ENTRY ======================
 '.PHP_EOL,
+            $log->getRequestId(),
             $log->getRequestedUri(),
             $log->getEndTime() - $log->getStartTime(),
             date('Y-m-d H:i:s', $log->getStartTime()),

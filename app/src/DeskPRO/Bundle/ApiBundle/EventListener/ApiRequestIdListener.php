@@ -26,4 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455032315);
+namespace DeskPRO\Bundle\ApiBundle\EventListener;
+
+use DeskPRO\Bundle\AppBundle\HttpKernel\ResponseUtil;
+use DeskPRO\Component\Util\RandUtils;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+class ApiRequestIdListener implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::RESPONSE => array('onResponse', 1024), //make sure this stuff will be trigger before log and perhaps something else
+        ];
+    }
+
+    public function onResponse(FilterResponseEvent $event)
+    {
+        $id = sprintf('%d-%s', time(), RandUtils::randomStringFormat('%30cn'));
+        $event->getResponse()->headers->add([ResponseUtil::REQUEST_ID_HEADER => $id]);
+    }
+}

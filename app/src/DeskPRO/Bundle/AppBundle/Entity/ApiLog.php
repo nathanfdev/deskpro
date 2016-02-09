@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ApiLog.
  *
  * @ORM\Entity()
- * @ORM\Table("api_log")
+ * @ORM\Table("api_log", uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
@@ -86,16 +86,23 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     protected $status;
 
     /**
-     * @var string
+     * @var array
      * @ORM\Column(type="json_array")
      */
     protected $request_data;
 
     /**
-     * @var string
+     * @var array
      * @ORM\Column(type="json_array")
      */
     protected $response_data;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $request_id;
 
     /**
      * @return int
@@ -238,11 +245,31 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getResponseData()
     {
         return $this->response_data;
+    }
+
+    /**
+     * @param $request_id
+     *
+     * @return $this
+     */
+    public function setRequestId($request_id)
+    {
+        $this->request_id = $request_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId()
+    {
+        return $this->request_id;
     }
 
     /**
@@ -270,6 +297,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
             'response_data',
             'request_data',
             'requested_uri',
+            'request_id',
             'key',
         ];
     }

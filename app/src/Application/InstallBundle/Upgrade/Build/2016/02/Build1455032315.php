@@ -26,4 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455032315);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1455032315 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('We are truncating api_log table!');
+        $this->execMutateSql('TRUNCATE TABLE api_log;');
+        $this->execMutateSql("ALTER TABLE api_log ADD request_id VARCHAR(255) NOT NULL AFTER id, CHANGE request_data request_data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', CHANGE response_data response_data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
+        $this->execMutateSql('CREATE UNIQUE INDEX request_id_unique ON api_log (request_id);');
+    }
+}

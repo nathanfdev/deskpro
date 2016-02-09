@@ -36,6 +36,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Log\ApiLoggerInterface;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use DeskPRO\Bundle\AppBundle\HttpKernel\ResponseUtil;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -86,7 +87,7 @@ class ApiLogListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::RESPONSE => array('onResponse', 1024),
+            KernelEvents::RESPONSE => array('onResponse', 32),
         );
     }
 
@@ -104,6 +105,7 @@ class ApiLogListener implements EventSubscriberInterface
                 $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
 
                 if ($key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())) {
+
                     /*
                      * @var \Application\DeskPRO\Entity\ApiKey $key
                      */
@@ -125,6 +127,7 @@ class ApiLogListener implements EventSubscriberInterface
                     ];
 
                     $log
+                        ->setRequestId(ResponseUtil::getRequestIdFromResponse($response))
                         ->setStartTime((int) DP_START_TIME)
                         ->setEndTime(time())
                         ->setKey($key)
