@@ -52,10 +52,10 @@ class TicketFormsController extends AbstractTicketsController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'person'       => $this->getUser(),
-            'settings'     => $this->get('brand_stack')->getActive()->getSettings(),
-            'use_captcha'  => false,
-            'cc_view_type' => 'array',
+            'person'      => $this->getUser(),
+            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
+            'use_captcha' => false,
+            'for_api'     => true,
         ]);
 
         return parent::handleForm($model, $request, $options);

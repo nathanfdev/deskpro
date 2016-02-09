@@ -31,11 +31,118 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class PersonIdentityType.
+ * Form can accept person "id", "email address" or {"email": "xxx", "name": "xxx"}.
  */
 class PersonIdentityType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('id', 'text', [
+                'required' => false,
+            ])
+            ->add('name', 'text', [
+                'label'    => $options['label_name'],
+                'required' => false,
+            ])
+            ->add('email', 'text', [
+                'label'    => $options['label_email'],
+                'required' => false,
+            ])
+        ;
+
+        foreach (['id', 'name', 'email'] as $available_field) {
+            if (!in_array($available_field, $options['available_fields'])) {
+                $builder->remove($available_field);
+            }
+        }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPrepare']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetData']);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onPrepare(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        if ($person) {
+            $event->setData($person);
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetData(FormEvent $event)
+    {
+        $data = $event->getData();
+
+        /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
+        $person_repository = $this->em->getRepository('DeskPRO:Person');
+
+        if (is_array($data)) {
+            $event->setData($person_repository->findOneBy(['email' => $data['email']]));
+        } elseif (is_numeric($data)) {
+            $event->setData($person_repository->find((int) $data));
+        } else {
+            $event->setData($person_repository->findOneBy(['email' => $data]));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'person'           => null,
+                'label_name'       => '',
+                'label_email'      => '',
+                'data_class'       => 'Application\\DeskPRO\\Entity\\Person',
+                'available_fields' => ['id', 'name', 'email'],
+            ])
+            ->setAllowedTypes([
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
+            ])
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'deskpro_person_identity';
+    }
 }
