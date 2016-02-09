@@ -1624,7 +1624,7 @@ define(function() {
     url: '/kb/labels',
     templateName: 'Labels/Kb/list.html',
     controller: 'Admin_Labels_Ctrl_List',
-    data: {type: 'articles'}
+    data: {type: 'kb'}
   });
 
   routes.push({
@@ -1632,7 +1632,7 @@ define(function() {
     url: '/create/',
     templateName: 'Labels/Kb/edit.html',
     controller: 'Admin_Labels_Ctrl_Edit',
-    data: {type: 'articles'}
+    data: {type: 'kb'}
   });
 
   routes.push({

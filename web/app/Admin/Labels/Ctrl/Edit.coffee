@@ -24,9 +24,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     initialLoad: ->
       if @$stateParams.label
         @LabelDefinition.get(@type, @$stateParams.label).then (def) =>
-          console.log(def)
           return if !def
-          @definition = def
+          @definition = def || {}
           @$scope.form = angular.copy def
 
     color2hex: (color) ->
