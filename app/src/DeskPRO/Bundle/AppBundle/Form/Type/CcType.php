@@ -43,7 +43,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Accepts comma separated list of emails.
+ * Accepts comma separated list or array of emails.
  */
 class CcType extends AbstractType
 {
@@ -163,9 +163,11 @@ class CcType extends AbstractType
             ->setRequired([
                 'ticket',
             ])
+            ->setAllowedValues([
+                'view_type' => ['inline', 'array'],
+            ])
             ->setAllowedTypes([
-                'cc_view_type' => ['inline', 'array'],
-                'ticket'       => 'Application\\DeskPRO\\Entity\\Ticket',
+                'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
             ])
         ;
     }
