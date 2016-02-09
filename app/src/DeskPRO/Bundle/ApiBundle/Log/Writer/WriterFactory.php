@@ -26,15 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log;
+namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class ApiLoggerFactory.
+ * Class WriterFactory.
  */
-class ApiLoggerFactory
+class WriterFactory
 {
     /**
      * @var ContainerInterface
@@ -55,25 +55,25 @@ class ApiLoggerFactory
         $this->settings_resolver = $this->container->get('settings_resolver');
     }
 
-    public function createLogger()
+    public function createWriter()
     {
-        $type       = $this->settings_resolver->getGlobalSettings()->get('api_logger.type');
-        $loggerName = sprintf('api_logger.%s', $type);
-        if ($this->container->has($loggerName)) {
-            return $this->container->get($loggerName);
+        $type       = $this->settings_resolver->getGlobalSettings()->get('api_log.writer.type');
+        $writerName = sprintf('api_log.writer.%s', $type);
+        if ($this->container->has($writerName)) {
+            return $this->container->get($writerName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate logger with type [ %s ]', $loggerName));
+            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate writer with type [ %s ]', $writerName));
         }
     }
 
     public function createSerializer()
     {
-        $type           = $this->settings_resolver->getGlobalSettings()->get('api_logger.file.serializer.type');
-        $serializerName = sprintf('api_logger.file.serializer.%s', $type);
+        $type           = $this->settings_resolver->getGlobalSettings()->get('api_log.writer.file.serializer.type');
+        $serializerName = sprintf('api_log.writer.file.serializer.%s', $type);
         if ($this->container->has($serializerName)) {
             return $this->container->get($serializerName);
         } else {
-            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate logger serializer with type [ %s ]', $serializerName));
+            throw new \InvalidArgumentException(sprintf('Couldn\'t instantiate serializer with type [ %s ] for api_log file writer', $serializerName));
         }
     }
 }

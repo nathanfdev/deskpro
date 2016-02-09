@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 
-class HumanReadableSerializer implements ApiLoggerSerializerInterface
+class HumanReadableSerializer implements SerializerInterface
 {
     public function serialize(ApiLog $log)
     {

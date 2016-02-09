@@ -26,17 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log;
+namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 
 /**
- * Class ApiLoggerFile.
+ * Class WriterInterface.
  *
  * @todo log rotate
  */
-class ApiLoggerFile implements ApiLoggerInterface
+class FileWriter implements WriterInterface
 {
     /**
      * @var string
@@ -57,7 +58,7 @@ class ApiLoggerFile implements ApiLoggerInterface
     protected $file;
 
     /**
-     * @var Serializer\ApiLoggerSerializerInterface
+     * @var SerializerInterface
      */
     protected $serializer;
 
@@ -66,9 +67,9 @@ class ApiLoggerFile implements ApiLoggerInterface
      * @param SettingsResolver $settings_resolver
      * @param  $serializer
      */
-    public function __construct($logs_dir, SettingsResolver $settings_resolver, Serializer\ApiLoggerSerializerInterface $serializer)
+    public function __construct($logs_dir, SettingsResolver $settings_resolver, SerializerInterface $serializer)
     {
-        $this->setup($settings_resolver->getGlobalSettings()->get('api_logger.file'));
+        $this->setup($settings_resolver->getGlobalSettings()->get('api_log.writer.file'));
         $this->file       = new \SplFileObject($logs_dir.DIRECTORY_SEPARATOR.$this->log_name, 'a');
         $this->serializer = $serializer;
     }
@@ -76,7 +77,7 @@ class ApiLoggerFile implements ApiLoggerInterface
     /**
      * @param ApiLog $log
      */
-    public function log(ApiLog $log)
+    public function write(ApiLog $log)
     {
         if (false === $this->file->fwrite($this->serializer->serialize($log))) {
             throw new \RuntimeException('Couldn\'t write api_log');

@@ -29,16 +29,49 @@
 namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use Doctrine\ORM\EntityManager;
 
-class SerializeSerializer implements ApiLoggerSerializerInterface
+/**
+ * Class SerializeSerializer.
+ */
+class SerializeSerializer implements SerializerInterface
 {
-    public function serialize(ApiLog $log)
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
     {
-        return serialize($log).PHP_EOL;
+        $this->em = $em;
     }
 
+    /**
+     * @param ApiLog $log
+     *
+     * @return string
+     */
+    public function serialize(ApiLog $log)
+    {
+        $this->em->detach($log);
+
+        return $log->getRequestId().'%%%'.serialize($log).PHP_EOL;
+    }
+
+    /**
+     * @param $str
+     *
+     * @return mixed
+     */
     public function unserialize($str)
     {
-        return unserialize($str);
+        $data       = explode('%%%', $str);
+        $request_id = $data[0];
+        /** @var ApiLog $logModel */
+        $log = unserialize($data[1]);
+        $this->em->merge($log);
     }
 }

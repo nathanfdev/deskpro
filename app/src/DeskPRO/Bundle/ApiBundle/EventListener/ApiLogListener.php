@@ -32,13 +32,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\ApiBundle\Log\ApiLoggerInterface;
+use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
+use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
-use DeskPRO\Bundle\AppBundle\HttpKernel\ResponseUtil;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -49,9 +49,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class ApiLogListener implements EventSubscriberInterface
 {
     /**
-     * @var ApiLoggerInterface
+     * @var WriterInterface
      */
-    protected $logger;
+    protected $writer;
 
     /**
      * @var TokenStorageInterface
@@ -63,22 +63,26 @@ class ApiLogListener implements EventSubscriberInterface
      */
     protected $enabled;
 
+    protected $log;
+
+    protected $persisted;
+
     /**
-     * @param ApiLoggerInterface    $logger
+     * @param WriterInterface       $writer
      * @param TokenStorageInterface $token_storage
      * @param EntityManager         $em
-     * @param SettingsResolver      $resolver
+     * @param LogHelper             $helper
      */
     public function __construct(
-        ApiLoggerInterface $logger,
+        WriterInterface $writer,
         TokenStorageInterface $token_storage,
         EntityManager $em,
-        SettingsResolver $resolver
+        LogHelper $helper
     ) {
-        $this->enabled       = $resolver->getGlobalSettings()->get('api_logger.enabled');
-        $this->logger        = $logger;
+        $this->writer        = $writer;
         $this->token_storage = $token_storage;
         $this->em            = $em;
+        $this->helper        = $helper;
     }
 
     /**
@@ -96,7 +100,7 @@ class ApiLogListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        if ($this->enabled && $event->isMasterRequest()) {
+        if ($this->helper->isLoggingEnabled() && $event->isMasterRequest()) {
             $token = $this->token_storage->getToken();
             if ($token instanceof AbstractApiSecurityToken && $token->getName() === 'api_key') {
                 $request  = $event->getRequest();
@@ -106,9 +110,7 @@ class ApiLogListener implements EventSubscriberInterface
 
                 if ($key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())) {
 
-                    /*
-                     * @var \Application\DeskPRO\Entity\ApiKey $key
-                     */
+                    /* @var \Application\DeskPRO\Entity\ApiKey $key */
                     $log = new ApiLog();
 
                     $response_data = [
@@ -117,17 +119,16 @@ class ApiLogListener implements EventSubscriberInterface
                     ];
 
                     $request_data = [
-                        'headers'    => $request->headers->all(),
-                        'body'       => $request->getContent(),
-                        'query'      => $request->query->all(),
-                        'post'       => $request->request->all(),
-                        'files'      => $request->files->all(),
-                        'server'     => $request->server->all(),
-                        'attributes' => $request->attributes->all(),
+                        'headers' => $request->headers->all(),
+                        'body'    => $request->getContent(),
+                        'query'   => $request->query->all(),
+                        'post'    => $request->request->all(),
+                        'files'   => $request->files->all(),
+                        'server'  => $request->server->all(),
                     ];
 
                     $log
-                        ->setRequestId(ResponseUtil::getRequestIdFromResponse($response))
+                        ->setRequestId($this->helper->getRequestIdFromResponse($response))
                         ->setStartTime((int) DP_START_TIME)
                         ->setEndTime(time())
                         ->setKey($key)
@@ -135,7 +136,7 @@ class ApiLogListener implements EventSubscriberInterface
                         ->setResponseData($response_data)
                         ->setRequestData($request_data)
                         ->setStatus($response->getStatusCode());
-                    $this->logger->log($log);
+                    $this->writer->write($log);
                 }
             }
         }

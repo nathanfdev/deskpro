@@ -26,19 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
+namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Interface ApiLoggerSerializerInterface.
+ * Class DbWriter.
  */
-interface ApiLoggerSerializerInterface
+class DbWriter implements WriterInterface
 {
     /**
-     * @param ApiLog $log
-     *
-     * @return string
+     * @var EntityManager
      */
-    public function serialize(ApiLog $log);
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param ApiLog $log
+     */
+    public function write(ApiLog $log)
+    {
+        $this->em->persist($log);
+        $this->em->flush();
+    }
 }

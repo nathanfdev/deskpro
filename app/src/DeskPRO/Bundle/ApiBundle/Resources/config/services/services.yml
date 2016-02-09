@@ -52,46 +52,53 @@ services:
           - @doctrine.orm.entity_manager
           - @job.scheduler
 
-  api_logger_factory:
-    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerFactory
+  api_log.writer_factory:
+    class: DeskPRO\Bundle\ApiBundle\Log\Writer\WriterFactory
     arguments:
       - @service_container
 
-  api_logger:
-    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
-    factory: [@api_logger_factory, createLogger]
+  api_log.writer:
+    class: DeskPRO\Bundle\ApiBundle\Log\Writer\DbWriter
+    factory: [@api_log.writer_factory, createWriter]
 
-  api_logger.db:
-    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerDb
+  api_log.writer.db:
+    class: DeskPRO\Bundle\ApiBundle\Log\Writer\DbWriter
     arguments:
       - @doctrine.orm.default_entity_manager
 
-  api_logger.file:
-    class: DeskPRO\Bundle\ApiBundle\Log\ApiLoggerFile
+  api_log.writer.file:
+    class: DeskPRO\Bundle\ApiBundle\Log\Writer\FileWriter
     arguments:
       - %kernel.logs_dir%
       - @settings_resolver
-      - @api_logger.file.serializer
+      - @api_log.writer.file.serializer
 
-  api_logger.file.serializer:
+  api_log.writer.file.serializer:
     class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
-    factory: [@api_logger_factory, createSerializer]
+    factory: [@api_log.writer_factory, createSerializer]
 
-  api_logger.file.serializer.human_readable:
+  api_log.writer.file.serializer.human_readable:
       class: DeskPRO\Bundle\ApiBundle\Log\Serializer\HumanReadableSerializer
 
-  api_logger.file.serializer.serialize:
-        class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
+  api_log.writer.file.serializer.serialize:
+      class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
+      arguments:
+        - @doctrine.orm.default_entity_manager
 
-  api_log_listener:
+  api_log.listener:
       class: DeskPRO\Bundle\ApiBundle\EventListener\ApiLogListener
       arguments:
-          - @api_logger
+          - @api_log.writer
           - @security.token_storage
           - @doctrine.orm.default_entity_manager
-          - @settings_resolver
+          - @api_log.helper
       tags:
           - { name: kernel.event_subscriber }
+
+  api_log.helper:
+    class: DeskPRO\Bundle\ApiBundle\Log\LogHelper
+    arguments:
+      - @settings_resolver
 
   api_request_id_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiRequestIdListener

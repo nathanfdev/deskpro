@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\ResponseUtil;
+use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
 use DeskPRO\Component\Util\RandUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -46,6 +46,6 @@ class ApiRequestIdListener implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $id = sprintf('%d-%s', time(), RandUtils::randomStringFormat('%30cn'));
-        $event->getResponse()->headers->add([ResponseUtil::REQUEST_ID_HEADER => $id]);
+        $event->getResponse()->headers->add([LogHelper::REQUEST_ID_HEADER => $id]);
     }
 }

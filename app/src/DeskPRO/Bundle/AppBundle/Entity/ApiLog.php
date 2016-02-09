@@ -298,7 +298,6 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
             'request_data',
             'requested_uri',
             'request_id',
-            'key',
         ];
     }
 }
