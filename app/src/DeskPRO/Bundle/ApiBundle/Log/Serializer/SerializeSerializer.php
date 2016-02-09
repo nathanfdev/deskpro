@@ -34,7 +34,7 @@ class SerializeSerializer implements ApiLoggerSerializerInterface
 {
     public function serialize(ApiLog $log)
     {
-        return serialize($log);
+        return serialize($log).PHP_EOL;
     }
 
     public function unserialize($str)

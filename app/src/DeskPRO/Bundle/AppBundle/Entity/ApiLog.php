@@ -87,13 +87,13 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="json_array")
      */
     protected $request_data;
 
     /**
      * @var string
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="json_array")
      */
     protected $response_data;
 
@@ -226,11 +226,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $request_data
+     * @param array $request_data
      *
      * @return $this
      */
-    public function setRequestData($request_data)
+    public function setRequestData(array $request_data)
     {
         $this->request_data = $request_data;
 
@@ -246,11 +246,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $response_data
+     * @param array $response_data
      *
      * @return $this
      */
-    public function setResponseData($response_data)
+    public function setResponseData(array $response_data)
     {
         $this->response_data = $response_data;
 
@@ -270,6 +270,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
             'response_data',
             'request_data',
             'requested_uri',
+            'key',
         ];
     }
 }

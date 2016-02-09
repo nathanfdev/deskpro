@@ -95,7 +95,7 @@ class ApiLogListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        if ($this->enabled) {
+        if ($this->enabled && $event->isMasterRequest()) {
             $token = $this->token_storage->getToken();
             if ($token instanceof AbstractApiSecurityToken && $token->getName() === 'api_key') {
                 $request  = $event->getRequest();
@@ -108,13 +108,29 @@ class ApiLogListener implements EventSubscriberInterface
                      * @var \Application\DeskPRO\Entity\ApiKey $key
                      */
                     $log = new ApiLog();
+
+                    $response_data = [
+                        'headers' => $response->headers->all(),
+                        'body'    => $response->getContent(),
+                    ];
+
+                    $request_data = [
+                        'headers'    => $request->headers->all(),
+                        'body'       => $request->getContent(),
+                        'query'      => $request->query->all(),
+                        'post'       => $request->request->all(),
+                        'files'      => $request->files->all(),
+                        'server'     => $request->server->all(),
+                        'attributes' => $request->attributes->all(),
+                    ];
+
                     $log
-                        ->setStartTime(time())
+                        ->setStartTime((int) DP_START_TIME)
                         ->setEndTime(time())
                         ->setKey($key)
                         ->setRequestedUri($request->getUri())
-                        ->setResponseData($response->getContent())
-                        ->setRequestData(var_export($request->request->all(), true))
+                        ->setResponseData($response_data)
+                        ->setRequestData($request_data)
                         ->setStatus($response->getStatusCode());
                     $this->logger->log($log);
                 }

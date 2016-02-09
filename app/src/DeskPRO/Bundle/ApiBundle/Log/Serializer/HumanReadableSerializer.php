@@ -38,11 +38,20 @@ class HumanReadableSerializer implements ApiLoggerSerializerInterface
 uri: %s
 execution time: %d
 request time: %s
-request body:
+
+request data:
 ------------------------------------
+HEADERS:
+%s
+----------------
+POST:
+%s
+----------------
+QUERY:
 %s
 ------------------------------------
-response body:
+
+response data:
 ------------------------------------
 %s
 ------------------------------------
@@ -53,8 +62,10 @@ api_key_id: %d
             $log->getRequestedUri(),
             $log->getEndTime() - $log->getStartTime(),
             date('Y-m-d H:i:s', $log->getStartTime()),
-            $log->getRequestData(),
-            $log->getResponseData(),
+            var_export($log->getRequestData()['headers'], true),
+            var_export($log->getRequestData()['post'], true),
+            var_export($log->getRequestData()['query'], true),
+            var_export($log->getResponseData(), true),
             $log->getStatus(),
             $log->getKey()->getId()
         );
