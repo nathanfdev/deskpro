@@ -195,31 +195,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 
 		fields = fields['default'];
-
-		// Check to see if the fields are the same and in the same order
-		if (fields.length == this.currentDisplayModify.length) {
-			var change = false;
-			for (var i = 0; i < fields.length; i++) {
-				if (this.currentDisplayModify && this.currentDisplayModify[i] && fields[i].field_type == this.currentDisplayModify[i].field_type) {
-					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplayModify[i].field_id) {
-						change = true;
-						break;
-					}
-				} else {
-					change = true;
-					break;
-				}
-			}
-		} else {
-			var change = true;
-		}
-
-		// No Changes, dont need to do any expensive dom work
-		if (!change) {
-			console.log("[TicketFields] No change");
-			return;
-		}
-
 		this.currentDisplayModify = fields;
 
 		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
