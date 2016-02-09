@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
 use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -118,6 +117,8 @@ class ApiLogListener implements EventSubscriberInterface
             if ($this->helper->isClientRequestdLog()) {
                 $this->processRequestDupe($event, $options);
                 if ($event->hasResponse()) {
+                    $this->helper->setRequestIsProcessed(true);
+
                     return $event->getResponse();
                 }
                 $this->processEager($options);
@@ -133,27 +134,19 @@ class ApiLogListener implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         if ($this->helper->shouldLog() && $event->isMasterRequest()) {
-            $token = $this->token_storage->getToken();
-            if ($token instanceof AbstractApiSecurityToken && $token->getName() === 'api_key') {
-                $response = $event->getResponse();
-                /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
-                $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+            $response = $event->getResponse();
 
-                if ($key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())) {
+            $this->setApiLogAuthData($this->log);
 
-                    /* @var \Application\DeskPRO\Entity\ApiKey $key */
-                    $response_data = [
-                        'headers' => $response->headers->all(),
-                        'body'    => $response->getContent(),
-                    ];
-                    $this->log
-                        ->setEndTime(time())
-                        ->setKey($key)
-                        ->setResponseData($response_data)
-                        ->setStatus($response->getStatusCode());
-                    $this->writer->write($this->log);
-                }
-            }
+            $response_data = [
+                'headers' => $response->headers->all(),
+                'body'    => $response->getContent(),
+            ];
+            $this->log
+                ->setEndTime(time())
+                ->setResponseData($response_data)
+                ->setStatus($response->getStatusCode());
+            $this->writer->write($this->log);
         }
     }
 
@@ -175,16 +168,7 @@ class ApiLogListener implements EventSubscriberInterface
             ->setRequestedUri($request->getUri())
             ->setRequestData($request_data)
             ->setRequestId($this->getRequestId($request));
-
-        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
-        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
-        if (
-            $this->token_storage->getToken()
-            && $this->token_storage->getToken()->getName() === 'api_key'
-            && $key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())
-        ) {
-            $log->setKey($key);
-        }
+        $this->setApiLogAuthData($log);
 
         return $log;
     }
@@ -192,6 +176,20 @@ class ApiLogListener implements EventSubscriberInterface
     protected function getRequestId(Request $request)
     {
         return $this->helper->getRequestId($request->headers);
+    }
+
+    protected function setApiLogAuthData(ApiLog $log)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
+        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+        if (
+            $this->token_storage->getToken()
+            && $this->token_storage->getToken()->getName() === 'api_key'
+            && $key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())
+        ) {
+            /* @var \Application\DeskPRO\Entity\ApiKey $key */
+            $log->setKey($key);
+        }
     }
 
     protected function processRequestDupe(GetResponseEvent $event, $options)

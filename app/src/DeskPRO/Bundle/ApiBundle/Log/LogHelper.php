@@ -74,6 +74,11 @@ class LogHelper
     protected $client_generated_request_id = false;
 
     /**
+     * @var bool
+     */
+    protected $request_is_processed = false;
+
+    /**
      * @param SettingsResolver $resolver
      * @param FinderInterface  $finder
      */
@@ -206,18 +211,41 @@ class LogHelper
         return $this->resolver->getGlobalSettings()->get('api_log.enabled');
     }
 
+    /**
+     * @return bool
+     */
     public function isClientRequestdLog()
     {
         return $this->client_generated_request_id;
     }
 
+    /**
+     * @return bool
+     */
     public function shouldLog()
     {
-        return $this->isLoggingEnabled() || $this->client_generated_request_id;
+        return ($this->isLoggingEnabled() || $this->client_generated_request_id) && !$this->request_is_processed;
     }
 
+    /**
+     * @param $request_id
+     *
+     * @return mixed
+     */
     public function findRequest($request_id)
     {
         return $this->finder->find($request_id);
+    }
+
+    /**
+     * @param bool $request_is_processed
+     *
+     * @return $this
+     */
+    public function setRequestIsProcessed($request_is_processed)
+    {
+        $this->request_is_processed = $request_is_processed;
+
+        return $this;
     }
 }
