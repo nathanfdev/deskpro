@@ -3,8 +3,8 @@ import { OrganizationsTable } from './OrganizationsTable';
 import { PeopleTable } from './PeopleTable';
 import { currentContentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { peopleSelector, organizationsSelector }
-  from '../../../../Selectors/recordStores';
+import { peopleSelector } from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { applyParams} from '../../../../Actions/crmListActions';
 
 import { connect } from 'react-redux';
@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
   return ({
     content: currentContentSelector(state),
     people: peopleSelector(state),
-    organizations: organizationsSelector(state),
+    organizations: collectionSelectorFactory('Organization', 'crm')(state),
     currentOrder: currentListOrderSelector(state),
     currentSort: currentListSortSelector(state)
   });

@@ -5,7 +5,7 @@ import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
 import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
-import { peopleSelector, organizationsSelector, userGroupsSelector } from '../../../../Selectors/recordStores';
+import { peopleSelector, userGroupsSelector } from '../../../../Selectors/recordStores';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { selectedSelector} from '../../../../../Application/Selectors/massActions';
 import { connect } from 'react-redux';
@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 @connect(state => ({
   elements: elementsSelector(state),
   people: peopleSelector(state),
-  organizations: organizationsSelector(state),
+  organizations: collectionSelectorFactory('Organization', 'crm')(state),
   selected: selectedSelector(state),
   usergroups: userGroupsSelector(state),
   languages: collectionSelectorFactory('Language', 'crm')(state),

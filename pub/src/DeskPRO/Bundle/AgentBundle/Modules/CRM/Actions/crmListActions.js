@@ -2,7 +2,6 @@ import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from '../Selectors/list';
 import { setPeopleRequest } from '../RecordStores/Actions/peopleActions';
-import { setOrganizationsRequest } from '../RecordStores/Actions/organizationsActions';
 import { setUserGroupsRequest } from '../RecordStores/Actions/userGroupsActions';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
@@ -26,7 +25,7 @@ export const loadPeople = createAction(
   'CRM_LIST_LOAD_DATA',
   (params) => dispatch => repository('Person').search(params, include).then(promise => {
     const res = promise.getData();
-    dispatch(setOrganizationsRequest(recordStoresId, prepareLinkedData(res.linked.organization)));
+    dispatch(setCollection('Organization', recordStoresId, prepareLinkedData(res.linked.organization)));
     dispatch(setUserGroupsRequest(recordStoresId, prepareLinkedData(res.linked.usergroup)));
     dispatch(setCollection('Language', recordStoresId, prepareLinkedData(res.linked.language)));
     dispatch(setPeopleRequest(recordStoresId, res.data));
@@ -39,7 +38,7 @@ export const loadOrganizations = createAction(
   'CRM_LIST_LOAD_DATA',
   (params) => dispatch => repository('Organization').search(params).then(promise => {
     const res = promise.getData();
-    dispatch(setOrganizationsRequest(recordStoresId, res.data));
+    dispatch(setCollection('Organization', recordStoresId, res.data));
     const ids = res.data.map(item=>item.id);
     return { ids: ids, pagination: res.meta.pagination };
   })
