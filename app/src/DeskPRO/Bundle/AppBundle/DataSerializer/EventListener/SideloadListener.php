@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataPropertyTransformer;
@@ -61,16 +60,25 @@ class SideloadListener implements EventSubscriberInterface
      * @var LoggerInterface
      */
     private $logger;
+
     /**
      * @var DeferredPropertiesListener
      */
     private $deferred_properties_listener;
 
+    /**
+     * Constructor.
+     *
+     * @param DataTransformer            $data_transformer
+     * @param DataPropertyTransformer    $property_transformer
+     * @param DeferredPropertiesListener $deferred_properties_listener
+     * @param LoggerInterface            $logger
+     */
     public function __construct(
-        DataTransformer $data_transformer,
-        DataPropertyTransformer $property_transformer,
+        DataTransformer            $data_transformer,
+        DataPropertyTransformer    $property_transformer,
         DeferredPropertiesListener $deferred_properties_listener,
-        LoggerInterface $logger
+        LoggerInterface            $logger
     ) {
         $this->data_transformer             = $data_transformer;
         $this->property_transformer         = $property_transformer;
@@ -78,6 +86,9 @@ class SideloadListener implements EventSubscriberInterface
         $this->logger                       = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -87,11 +98,12 @@ class SideloadListener implements EventSubscriberInterface
 
     /**
      * Process the $context->getSideloads() object, and add it to "linked" in the serialized array.
+     *
+     * @param DataSerializerEvent $event
      */
     public function postSerialize(DataSerializerEvent $event)
     {
-        $context = $event->getContext();
-
+        $context   = $event->getContext();
         $sideloads = $context->getSideloads();
 
         // keep looping and resolving sideloads until there are none left to resolve

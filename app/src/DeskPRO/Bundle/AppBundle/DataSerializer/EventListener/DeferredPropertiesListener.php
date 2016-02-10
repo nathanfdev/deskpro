@@ -51,11 +51,20 @@ class DeferredPropertiesListener implements EventSubscriberInterface
      */
     private $property_transformer;
 
+    /**
+     * Constructor.
+     *
+     * @param DataPropertyTransformer $property_transformer
+     * @param LoggerInterface         $logger
+     */
     public function __construct(DataPropertyTransformer $property_transformer, LoggerInterface $logger)
     {
         $this->property_transformer = $property_transformer;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -63,6 +72,9 @@ class DeferredPropertiesListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param DataSerializerEvent $event
+     */
     public function postTransform(DataSerializerEvent $event)
     {
         $context = $event->getContext();
@@ -70,6 +82,9 @@ class DeferredPropertiesListener implements EventSubscriberInterface
         $this->processDeferredPropertiesInSerializedArray($context);
     }
 
+    /**
+     * @param DataSerializerContext $context
+     */
     protected function processDeferredPropertiesInSerializedArray(DataSerializerContext $context)
     {
         // this is a big array that might have some deferred properties to deal with

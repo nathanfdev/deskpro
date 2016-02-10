@@ -41,6 +41,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class PaginationListener implements EventSubscriberInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
