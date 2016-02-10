@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
-import { loadBatch, loadAll, setCollection, releaseCollection } from '../Actions/store'
+import { loadBatch, setCollection, releaseCollection } from '../Actions/store'
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 

@@ -6,7 +6,7 @@ import { tasksSelector } from '../../Selectors/recordStores';
 import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
 import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { allDepartmentsSelector, allAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
@@ -16,8 +16,8 @@ import { editTask } from '../../Actions/listActions';
   lists: allTaskListsSelector(state),
   projects: allProjectsSelector(state),
   agents: agentsSelector(state),
-  agentTeams: allAgentTeamsSelector(state),
-  departments: allDepartmentsSelector(state)
+  agentTeams: allSelectorFactory('AgentTeam')(state),
+  departments: allSelectorFactory('Department')(state)
 }))
 export class ListGroupContainer extends React.Component {
 

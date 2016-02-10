@@ -1,16 +1,9 @@
 import { collectionSelectorFactory, isLoadedCollectionSelectorFactory } from './store';
 
 // Department
-
-export const allDepartmentsSelector = collectionSelectorFactory('Department', 'all');
 export const myDepartmentsSelector = collectionSelectorFactory('Department', 'my');
 export const departmentsLoaded = isLoadedCollectionSelectorFactory('Department', 'all');
 
 // AgentTeam
-
-export const allAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'all');
 export const myAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'my');
 export const agentTeamsLoadedSelector = isLoadedCollectionSelectorFactory('AgentTeam', 'all');
-
-// Language
-export const allLanguagesSelector = collectionSelectorFactory('Language', 'all');

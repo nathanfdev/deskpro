@@ -26,3 +26,7 @@ export function collectionSelectorFactory(recordName, collectionName) {
     }
   );
 }
+
+export function allSelectorFactory(recordName) {
+  return collectionSelectorFactory(recordName, 'all');
+}
