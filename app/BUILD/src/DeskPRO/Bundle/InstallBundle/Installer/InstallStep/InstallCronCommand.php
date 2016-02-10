@@ -52,6 +52,15 @@ class InstallCronCommand extends AbstractStep
         $this->writeln('(Note that you may exit this script and resume it later if you need access to the command line using this terminal.)');
         $this->writeln('');
 
+        if ($this->getContext()->getSession()->getSource() === 'dev'
+            || $this->getContext()->getSession()->getSource() === 'buildserver'
+        ) {
+            $this->writeln('Dev mode. Skipping cron check.');
+            $this->getContext()->getDpEnv()->getDatManager()->enableTrigger('cron_has_run');
+
+            return;
+        }
+
         $progress = $this->createProgressBar();
         $progress->setFormat('Waiting for cron ... [%bar%]');
         $progress->setRedrawFrequency(1);

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\HitTrack\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
@@ -83,7 +82,11 @@ JS;
                 $pre_script = '';
             }
 
-            $script = file_get_contents(DP_WEB_ROOT.'/pub/build/hit_recorder.min.js');
+            if (!file_exists(DP_WEB_ROOT.'/pub/build/hit_recorder.min.js')) {
+                $script = '';
+            } else {
+                $script = file_get_contents(DP_WEB_ROOT.'/pub/build/hit_recorder.min.js');
+            }
             $script = str_replace('__DP_URL__', 'window.DESKPRO_ROOT_URL', $script);
             $script = "$pre_script<script type=\"text/javascript\">{$script}</script>";
 

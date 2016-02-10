@@ -153,11 +153,40 @@ abstract class AbstractStep
 
     /**
      * @param Question $q
+     * @param string   $id
      *
      * @return string
      */
-    public function askQuestion(Question $q)
+    public function askQuestion(Question $q, $id = null)
     {
+        $p = $this->getContext()->getProfile();
+        if ($p->hasAnswer($id)) {
+            $val = $p->getAnswer($id);
+            $this->write($q->getQuestion());
+            if ($q->isHidden()) {
+                $this->write(str_repeat('*', strlen($val)));
+            } else {
+                $this->write($val);
+            }
+            $this->writeln('');
+
+            if ($validate = $q->getValidator()) {
+                try {
+                    $val = call_user_func($validate, $val);
+                } catch (\Exception $e) {
+                    $this->writeln($e->getMessage());
+                    // ask without id to prompt the user
+                    return $this->askQuestion($q);
+                }
+            }
+
+            return $val;
+        }
+
+        if (!$this->getInput()->isInteractive() && $q->getDefault() === null) {
+            throw new \RuntimeException('Non-interactive mode but we do not have an answer to: '.$q->getQuestion());
+        }
+
         return $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
     }
 

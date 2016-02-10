@@ -76,6 +76,14 @@ class CheckExistingStep extends AbstractStep
 
     private function doesConfigExist()
     {
+        if ($this->getContext()->getSession()->getSource() === 'dev'
+            || $this->getContext()->getSession()->getSource() === 'buildserver'
+        ) {
+            $this->writeln('Dev mode. Skipping check on existing config (will be placed into backup dir if it exists).');
+
+            return false;
+        }
+
         $env = $this->getContext()->getDpEnv();
 
         $config_dir  = $env->getDpRoot().DIRECTORY_SEPARATOR.'config';

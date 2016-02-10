@@ -49,6 +49,15 @@ class FileIntegrityStep extends AbstractStep
         );
         $this->writeln('');
 
+        if ($this->getContext()->getSession()->getSource() === 'dev'
+            || $this->getContext()->getSession()->getSource() === 'buildserver'
+        ) {
+            $this->writeln('Dev mode. Skipping integrity check.');
+            $this->getSession()->enableFlag('file_integrity_ok');
+
+            return;
+        }
+
         $dpEnv = $this->getContext()->getDpEnv();
 
         $map_path = $dpEnv->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';

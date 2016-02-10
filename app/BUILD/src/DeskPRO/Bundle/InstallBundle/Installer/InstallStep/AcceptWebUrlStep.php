@@ -34,6 +34,11 @@ use Symfony\Component\Console\Question\Question;
 
 class AcceptWebUrlStep extends AbstractStep
 {
+    /**
+     * @var string
+     */
+    private $authcode;
+
     public function run()
     {
         $this->writeBigTitle('DeskPRO Web Interface');
@@ -46,6 +51,13 @@ class AcceptWebUrlStep extends AbstractStep
         $this->writeln(' > http://192.168.5.40/');
         $this->writeln(' > http://internal/deskpro/');
         $this->writeln(' > https://support.example.com/');
+
+        $env = $this->getContext()->getDpEnv();
+        if ($env->getDatManager()->hasTxtFile('server_info_auth')) {
+            $this->authcode = $env->getDatManager()->readTxtFile('server_info_auth');
+        } else {
+            $this->authcode = '';
+        }
 
         #------------------------------
         # Get input
@@ -74,7 +86,7 @@ class AcceptWebUrlStep extends AbstractStep
                 return $v;
             });
 
-            $url = $this->askQuestion($q);
+            $url = $this->askQuestion($q, 'web_url');
 
             if ($this->validateUrl($url)) {
                 break;
@@ -101,7 +113,7 @@ class AcceptWebUrlStep extends AbstractStep
 
         $code = Strings::random(10);
         $env->getDatManager()->writeTxtFile('pong_message', $code);
-        $res = $this->loadUrl($url.'/index.php?__serverinfo=ping');
+        $res = $this->loadUrl($url.'/index.php?__serverinfo=ping&auth='.$this->authcode);
         $env->getDatManager()->removeTxtFile('pong_message');
 
         if (!$res || strpos($res, 'pong') === false) {
@@ -144,7 +156,7 @@ class AcceptWebUrlStep extends AbstractStep
 
         $this->writeln('Verifying URL routing...');
 
-        $check_url = $url.'/__serverinfo/url_check/path';
+        $check_url = $url.'/__serverinfo/url_check/path?auth='.$this->authcode;
         $res       = $this->loadUrl($check_url);
         if (!$res || strpos($res, 'DP_CHECK_SUCCESS') === false) {
             $this->writeln('<error>Your server is not routing requests properly.</error>');
@@ -166,7 +178,7 @@ class AcceptWebUrlStep extends AbstractStep
 
         $this->writeln('Verifying the web server meets requirements...');
 
-        $reqs_url = $url.'/index.php?__serverinfo=check_requirements';
+        $reqs_url = $url.'/index.php?__serverinfo=check_requirements&auth='.$this->authcode;
         if ($server_info_auth = $env->getDatManager()->readDatFile('server_info_auth', null)) {
             $reqs_url .= '&auth='.$server_info_auth['auth'];
         }

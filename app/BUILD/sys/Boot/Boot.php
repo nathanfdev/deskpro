@@ -91,13 +91,13 @@ class Boot
         }
 
         // If installed, we require auth
-        if ($env->getConfig('database.host') || $env->getConfig('database.0.host')) {
-            $server_info_auth = $env->getDatManager()->readDatFile('server_info_auth', null);
+        if (($env->getConfig('database.host') || $env->getConfig('database.0.host'))) {
+            $server_info_auth = $env->getDatManager()->readTxtFile('server_info_auth', null);
             if (!$server_info_auth || empty($_GET['auth'])) {
                 echo "Use the dp:web-server-info command to generate links to view server info.\n";
                 exit;
             }
-            if ($_GET['auth'] !== $server_info_auth['auth']) {
+            if ($_GET['auth'] !== $server_info_auth) {
                 echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
                 exit;
             }

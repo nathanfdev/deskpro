@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
+use DeskPRO\Bundle\InstallBundle\Installer\InstallProfile;
 use DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 use DeskPRO\Component\Exception\Filesystem\FileWriteException;
 use DeskPRO\Component\Util\EnvUtils;
@@ -51,10 +52,15 @@ class InstallCommand extends ContainerAwareCommand
     {
         $this->setName('install:run')
             ->addOption('skip', 'x', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Skip one or more steps (by name)')
-            ->addOption('list-steps', null, InputOption::VALUE_NONE, 'List all steps instead of running them')
+            ->addOption('list-steps', 'l', InputOption::VALUE_NONE, 'List all steps instead of running them')
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
+            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
+
+        foreach (InstallProfile::getQuestionIds() as $qid) {
+            $this->addOption('opt_'.$qid, null, InputOption::VALUE_REQUIRED, 'Installer option');
+        }
     }
 
     /**
@@ -62,9 +68,21 @@ class InstallCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        $force_restart = false;
+        $profile       = new InstallProfile();
+
+        if ($input->getOption('profile')) {
+            $force_restart = true;
+            $profile->readAnswersFile($input->getOption('profile'));
+        }
+        $profile->readAnswersInput($input);
+
         $app_env = $this->getContainer()->get('deskpro.app_env');
         $sm      = $this->getContainer()->get('install.session_manager');
-        $session = $sm->getLastInstallSession($input->getOption('restart'));
+        $session = $sm->getLastInstallSession($input->getOption('restart') || $force_restart);
 
         $restart_step = $input->getOption('redo-step');
 
@@ -82,7 +100,10 @@ class InstallCommand extends ContainerAwareCommand
         #------------------------------
 
         try {
-            if ($input->hasOption('install-source')) {
+            if ($profile->hasAnswer('install-source')) {
+                $session->setSource($profile->getAnswer('install-source'));
+            }
+            if ($input->getOption('install-source')) {
                 $session->setSource($input->getOption('install-source'));
             }
 
@@ -106,7 +127,11 @@ class InstallCommand extends ContainerAwareCommand
             return 1;
         }
 
-        register_shutdown_function(function () use ($sm, $session) {
+        if (!$DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
+            $DP_ENV->getDatManager()->writeTxtFile('server_info_auth', Strings::random(30, Strings::CHARS_ALPHANUM_IU));
+        }
+
+        register_shutdown_function(function () use ($sm, $session, $DP_ENV) {
             $sm->saveInstallSession($session);
         });
 
@@ -114,12 +139,10 @@ class InstallCommand extends ContainerAwareCommand
         # Create the steps
         #------------------------------
 
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-
         $context = new InstallerContext(
             $DP_ENV,
             $session,
+            $profile,
             $output,
             $input,
             $this->getHelperSet()

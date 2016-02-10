@@ -95,25 +95,28 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('You should make sure the path to PHP that you specify here is the same one as you are using to execute this installer tool.');
         $this->writeln('');
 
-        $finder = new PhpExecutableFinder();
-        $path   = $finder->find(false);
+        $from_profile = $this->getContext()->getProfile()->getAnswer('path_php');
+        if (!$from_profile || $from_profile === 'auto') {
+            $finder = new PhpExecutableFinder();
+            $path   = $finder->find(false);
 
-        if ($path) {
-            try {
-                $path = $this->validatePhpPath($path);
-                $this->writeln('<info>We detected the path to a PHP binary:</info>');
-                $this->writeln("<info>$path</info>");
-                $this->writeln('Do you want to use this path?');
-                if ($this->askConfirm(true)) {
-                    return $path;
+            if ($path) {
+                try {
+                    $path = $this->validatePhpPath($path);
+                    $this->writeln('<info>We detected the path to a PHP binary:</info>');
+                    $this->writeln("<info>$path</info>");
+                    $this->writeln('Do you want to use this path?');
+                    if ($from_profile || $this->askConfirm(true)) {
+                        return $path;
+                    }
+                } catch (\Exception $e) {
                 }
-            } catch (\Exception $e) {
             }
         }
 
         $q = new Question('Enter \'php\' Path> ');
         $q->setValidator([$this, 'validatePhpPath']);
-        $result = $this->askQuestion($q);
+        $result = $this->askQuestion($q, 'path_php');
 
         $this->writeln('');
         $this->writeln('<info>Success! The path to PHP has been validated and is correct.</info>');
@@ -129,8 +132,8 @@ class AcceptPathsStep extends AbstractStep
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function validatePhpPath($path)
     {
@@ -231,25 +234,28 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('This is required so DeskPRO can manage database backups and low-level database commands.');
         $this->writeln('');
 
-        $finder = new ExecutableFinder();
-        $path   = $finder->find('mysql');
+        $from_profile = $this->getContext()->getProfile()->getAnswer('path_mysql');
+        if (!$from_profile || $from_profile === 'auto') {
+            $finder = new ExecutableFinder();
+            $path   = $finder->find('mysql');
 
-        if ($path) {
-            try {
-                $path = $this->validateMysqlPath($path);
-                $this->writeln('<info>We detected the path to a MySQL binary:</info>');
-                $this->writeln("<info>$path</info>");
-                $this->writeln('Do you want to use this path?');
-                if ($this->askConfirm(true)) {
-                    return $path;
+            if ($path) {
+                try {
+                    $path = $this->validateMysqlPath($path);
+                    $this->writeln('<info>We detected the path to a MySQL binary:</info>');
+                    $this->writeln("<info>$path</info>");
+                    $this->writeln('Do you want to use this path?');
+                    if ($from_profile || $this->askConfirm(true)) {
+                        return $path;
+                    }
+                } catch (\Exception $e) {
                 }
-            } catch (\Exception $e) {
             }
         }
 
         $q = new Question('Enter \'mysql\' Path> ');
         $q->setValidator([$this, 'validateMysqlPath']);
-        $result = $this->askQuestion($q);
+        $result = $this->askQuestion($q, 'path_mysql');
 
         $this->writeln('');
         $this->writeln('<info>Success! The path to MySQL has been validated and is correct.</info>');
@@ -265,8 +271,8 @@ class AcceptPathsStep extends AbstractStep
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function validateMysqlPath($path)
     {
@@ -313,25 +319,28 @@ class AcceptPathsStep extends AbstractStep
         $this->writeln('This is required so DeskPRO can make database backups.');
         $this->writeln('');
 
-        $finder = new ExecutableFinder();
-        $path   = $finder->find('mysqldump');
+        $from_profile = $this->getContext()->getProfile()->getAnswer('path_mysqldump');
+        if (!$from_profile || $from_profile === 'auto') {
+            $finder = new ExecutableFinder();
+            $path   = $finder->find('mysqldump');
 
-        if ($path) {
-            try {
-                $path = $this->validateMysqldumpPath($path);
-                $this->writeln('<info>We detected the path to a mysqldump binary:</info>');
-                $this->writeln("<info>$path</info>");
-                $this->writeln('Do you want to use this path?');
-                if ($this->askConfirm(true)) {
-                    return $path;
+            if ($path) {
+                try {
+                    $path = $this->validateMysqldumpPath($path);
+                    $this->writeln('<info>We detected the path to a mysqldump binary:</info>');
+                    $this->writeln("<info>$path</info>");
+                    $this->writeln('Do you want to use this path?');
+                    if ($from_profile || $this->askConfirm(true)) {
+                        return $path;
+                    }
+                } catch (\Exception $e) {
                 }
-            } catch (\Exception $e) {
             }
         }
 
         $q = new Question('Enter \'mysqldump\' Path> ');
         $q->setValidator([$this, 'validateMysqldumpPath']);
-        $result = $this->askQuestion($q);
+        $result = $this->askQuestion($q, 'path_mysqldump');
 
         $this->writeln('');
         $this->writeln('<info>Success! The path to MySQL Dump has been validated and is correct.</info>');
@@ -347,8 +356,8 @@ class AcceptPathsStep extends AbstractStep
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function validateMysqldumpPath($path)
     {
@@ -389,8 +398,8 @@ class AcceptPathsStep extends AbstractStep
      * @param string $path
      *
      * @throws \Exception
-     * @return string
      *
+     * @return string
      */
     public function validateStandard($path)
     {

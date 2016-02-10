@@ -51,12 +51,11 @@ class WebServerInfoCommand extends Command
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
-        if (!$DP_ENV->getDatManager()->hasDatFile('server_info_auth')) {
-            $DP_ENV->getDatManager()->writeDatFile('server_info_auth', ['auth' => Strings::random(30, Strings::CHARS_ALPHANUM_IU)]);
+        if (!$DP_ENV->getDatManager()->hasTxtFile('server_info_auth')) {
+            $DP_ENV->getDatManager()->writeTxtFile('server_info_auth', Strings::random(30, Strings::CHARS_ALPHANUM_IU));
         }
 
-        $info = $DP_ENV->getDatManager()->readDatFile('server_info_auth');
-        $auth = $info['auth'];
+        $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth');
 
         /** @var \Symfony\Component\Console\Helper\TableHelper $table */
         $table = $this->getHelper('table');

@@ -62,6 +62,11 @@ class InstallerContext
     private $session;
 
     /**
+     * @var InstallProfile
+     */
+    private $profile;
+
+    /**
      * @var DpKernel
      */
     private $mainKernel;
@@ -71,14 +76,16 @@ class InstallerContext
      *
      * @param \DpRun\DpEnv    $dpEnv
      * @param InstallSession  $session
+     * @param InstallProfile  $profile
      * @param OutputInterface $output
      * @param InputInterface  $input
      * @param HelperSet       $helperSet
      */
-    public function __construct(\DpRun\DpEnv $dpEnv, InstallSession $session, OutputInterface $output, InputInterface $input, HelperSet $helperSet)
+    public function __construct(\DpRun\DpEnv $dpEnv, InstallSession $session, InstallProfile $profile, OutputInterface $output, InputInterface $input, HelperSet $helperSet)
     {
         $this->dpEnv     = $dpEnv;
         $this->session   = $session;
+        $this->profile   = $profile;
         $this->output    = $output;
         $this->input     = $input;
         $this->helperSet = $helperSet;
@@ -122,6 +129,14 @@ class InstallerContext
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+     * @return InstallProfile
+     */
+    public function getProfile()
+    {
+        return $this->profile;
     }
 
     /**

@@ -105,10 +105,16 @@ class OwnRequirementsStep extends AbstractStep
             $this->writeln('');
         }
 
-        if (!$error_count && $warn_count) {
+        if (!$error_count && $warn_count && !$this->getContext()->getSession()->getSource() !== 'buildserver') {
             $this->writeln('Do you want to skip these recommendations and continue with the install?');
-            $q   = new Question('[Y/n]> ', 'Y');
-            $res = $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+
+            if (($res = $this->getContext()->getProfile()->getAnswer('skip_recommendations'))) {
+                $this->writeln('> '.$res);
+                $res = 'Y';
+            } else {
+                $q   = new Question('[Y/n]> ', 'Y');
+                $res = $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+            }
 
             if (strtoupper($res) !== 'Y') {
                 $this->markAsFailed();

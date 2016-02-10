@@ -57,25 +57,25 @@ class AcceptDatabaseStep extends AbstractStep
                 $this->writeln('  > unix_socket:/tmp/mysql.sock        <info>(*nix socket)</info>');
             }
             $this->writeln('');
-            $dbinfo->host = $this->askQuestion($this->getHostQuestion($dbinfo->host));
+            $dbinfo->host = $this->askQuestion($this->getHostQuestion($dbinfo->host), 'db_host');
             $this->writeln('');
 
             $this->writeln($f->formatBlock('MySQL User', 'question', true));
             $this->writeln('Please enter a MySQL user.');
             $this->writeln('');
-            $dbinfo->user = $this->askQuestion($this->getUserQuestion($dbinfo->user));
+            $dbinfo->user = $this->askQuestion($this->getUserQuestion($dbinfo->user), 'db_user');
             $this->writeln('');
 
             $this->writeln($f->formatBlock(sprintf('MySQL Password (for %s)', $dbinfo->user), 'question', true));
             $this->writeln('Please enter the password for the '.$dbinfo->user.' user.');
             $this->writeln('<info>(Note: Your input below will be hidden while you type it as a security precaution.)</info>');
-            $dbinfo->password = $this->askQuestion($this->getPasswordQuestion($dbinfo->password));
+            $dbinfo->password = $this->askQuestion($this->getPasswordQuestion($dbinfo->password), 'db_password');
             $this->writeln('');
 
             $this->writeln($f->formatBlock('MySQL Database Name', 'question', true));
             $this->writeln('Please enter the database name that DeskPRO should use.');
             $this->writeln('');
-            $dbinfo->dbname = $this->askQuestion($this->getDbnameQuestion($dbinfo->dbname));
+            $dbinfo->dbname = $this->askQuestion($this->getDbnameQuestion($dbinfo->dbname), 'db_dbname');
             $this->writeln('');
 
             $this->writeln($f->formatBlock('Checking database details', 'question', true));

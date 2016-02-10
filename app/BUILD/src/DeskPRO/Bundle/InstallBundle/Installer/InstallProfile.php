@@ -1,0 +1,168 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\InstallBundle\Installer;
+
+use Symfony\Component\Console\Input\InputInterface;
+
+/**
+ * A profile is just pre-answered questions.
+ */
+class InstallProfile
+{
+    private static $questionIds = [
+        'db_host',
+        'db_user',
+        'db_password',
+        'db_dbname',
+        'path_php',
+        'path_mysqldump',
+        'path_mysql',
+        'web_url',
+        'user_name',
+        'user_email',
+        'user_password',
+        'skip_recommendations',
+    ];
+
+    /**
+     * @var array
+     */
+    private $answers = [];
+
+    /**
+     * @return array
+     */
+    public static function getQuestionIds()
+    {
+        return self::$questionIds;
+    }
+
+    /**
+     * @param string $f
+     */
+    public function readAnswersFile($f)
+    {
+        if (!file_exists($f)) {
+            throw new \InvalidArgumentException('Profile file does not exist: '.$f);
+        }
+
+        $data = @json_decode(@file_get_contents($f), true);
+
+        if (!is_array($data)) {
+            throw new \InvalidArgumentException('Invalid profile file: '.$f);
+        }
+
+        $this->answers = array_merge($this->answers, $this->processAnswers($data));
+    }
+
+    /**
+     * @param InputInterface $input
+     */
+    public function readAnswersInput(InputInterface $input)
+    {
+        $new_answers = [];
+        foreach (self::getQuestionIds() as $qid) {
+            if ($input->getOption('opt_'.$qid) !== null) {
+                $new_answers[$qid] = $input->getOption('opt_'.$qid);
+            }
+        }
+
+        $this->answers = array_merge($this->answers, $this->processAnswers($new_answers));
+    }
+
+    /**
+     * @param array $answers
+     *
+     * @return array
+     */
+    private function processAnswers(array $answers)
+    {
+        $new_answers = [];
+
+        foreach ($answers as $k => $v) {
+            switch ($k) {
+                case 'user':
+                    if (isset($v['name'])) {
+                        $new_answers['user_name'] = $v['name'];
+                    }
+                    if (isset($v['email'])) {
+                        $new_answers['user_email'] = $v['email'];
+                    }
+                    if (isset($v['password'])) {
+                        $new_answers['user_password'] = $v['password'];
+                    }
+                    break;
+                case 'dbinfo':
+                    if (isset($v['host'])) {
+                        $new_answers['db_host'] = $v['host'];
+                    }
+                    if (isset($v['user'])) {
+                        $new_answers['db_user'] = $v['user'];
+                    }
+                    if (isset($v['password'])) {
+                        $new_answers['db_password'] = $v['password'];
+                    }
+                    if (isset($v['dbname'])) {
+                        $new_answers['db_dbname'] = $v['dbname'];
+                    }
+                    break;
+                case 'skip_recommendations':
+                    $v = strtolower($v);
+                    if ($v === 'true' || $v === 't' || $v === 'y' || $v === 'yes' || $v === '1' || $v === 'on') {
+                        $new_answers[$k] = $v;
+                    }
+                    break;
+                default:
+                    $new_answers[$k] = $v;
+            }
+        }
+
+        return $new_answers;
+    }
+
+    /**
+     * @param string $qid
+     *
+     * @return bool
+     */
+    public function hasAnswer($qid)
+    {
+        return array_key_exists($qid, $this->answers);
+    }
+
+    /**
+     * @param string $qid
+     *
+     * @return mixed|null
+     */
+    public function getAnswer($qid)
+    {
+        return @$this->answers[$qid] ?: null;
+    }
+}

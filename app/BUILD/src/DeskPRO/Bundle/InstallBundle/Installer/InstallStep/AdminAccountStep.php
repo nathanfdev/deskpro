@@ -59,10 +59,10 @@ class AdminAccountStep extends AbstractStep
         $q->setHidden(true);
 
         while (true) {
-            $this->set_password = $this->askQuestion($q);
+            $this->set_password = $this->askQuestion($q, 'user_password');
 
             $this->writeln('Now type your password again to verify.');
-            $pass2 = $this->askQuestion($q);
+            $pass2 = $this->askQuestion($q, 'user_password');
 
             if ($this->set_password === $pass2) {
                 break;

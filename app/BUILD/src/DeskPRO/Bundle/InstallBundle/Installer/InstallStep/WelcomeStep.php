@@ -71,7 +71,7 @@ class WelcomeStep extends AbstractStep
             return $str;
         });
 
-        $name = $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+        $name = $this->askQuestion($q, 'user_name');
 
         return $name;
     }
@@ -90,7 +90,7 @@ class WelcomeStep extends AbstractStep
             return strtolower($str);
         });
 
-        $email = $this->getQuestionHelper()->ask($this->getInput(), $this->getOutput(), $q);
+        $email = $this->askQuestion($q, 'user_email');
 
         return $email;
     }
