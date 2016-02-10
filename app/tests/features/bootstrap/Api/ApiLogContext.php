@@ -28,8 +28,9 @@
 
 namespace DpBehat\Api;
 
-use Behat\Behat\Context\Context;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DpBehat\BaseContext;
+use Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 
 /**
  * Defines application features from the specific context.
@@ -37,6 +38,11 @@ use DpBehat\BaseContext;
 class ApiLogContext extends BaseContext
 {
     protected $request_id;
+
+    /**
+     * @var RestContext
+     */
+    private $rest_context;
 
     /**
      * @Given I have enabled api log feature
@@ -57,5 +63,61 @@ class ApiLogContext extends BaseContext
                 'Api Log was not added!'
             );
         }
+    }
+
+    /**
+     * @Then api log with :id id should appear in table
+     *
+     * @param $id
+     */
+    public function checkLogById($id)
+    {
+        $api_log = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->findOneBy(['request_id' => $id]);
+        if (!$api_log) {
+            throw new \RuntimeException(
+                'Api Log was not added!'
+            );
+        }
+    }
+
+    /**
+     * Add an header element in a request.
+     *
+     * @Given I set duplcicate mode as :dup_mode, failure mode as :fail_mode, eager as :eager in request
+     */
+    public function iAddRequestHeaderEqualTo($dup_mode, $fail_mode, $eager)
+    {
+        $header = [
+            'duplicate_mode' => $dup_mode,
+            'failure_mode'   => $fail_mode,
+            'eager'          => $eager,
+        ];
+
+        $this->rest_context->iAddHeaderEqualTo('X-DeskPRO-Client-Request-Options', json_encode($header));
+    }
+
+    /** @BeforeScenario */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        $this->rest_context = $environment->getContext('DpBehat\Api\RestContext');
+    }
+
+    /**
+     * @Given There is the eager log with :id to :url
+     *
+     * @param string $id
+     * @param string $url
+     */
+    public function addEagerLogWith($id, $url)
+    {
+        $log = new ApiLog();
+        $log
+            ->setRequestedUri($url)
+            ->setRequestId($id)
+            ->setRequestData([])
+            ->setStartTime(time());
+        $this->persistAndFlush($log);
     }
 }
