@@ -1,9 +1,8 @@
 import { createAction } from 'Ampliflux';
-import { load as loadChats } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Selectors/list';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { setChatsRequest } from '../RecordStores/Actions/chatsActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
 /**
@@ -36,15 +35,14 @@ export const load = createAction(
       delete params.navItem;
       params = { ...params, ...navItem };
     }
-    return loadChats(params).then(promise => {
-      const res = promise.getData();
-      const ids = res.data.map(item=>item.id);
-      dispatch(setChatsRequest(recordStoresId, res.data));
+    return repository('Chat').search(params, 'person,agent,department').then(response => {
+      const res = response.getData();
+      dispatch(setCollection('Chat', recordStoresId, res.data));
       dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
-      dispatch(setDepartmentsRequest(recordStoresId, prepareLinkedData(res.linked.department)));
+      dispatch(setCollection('Department', recordStoresId, prepareLinkedData(res.linked.department)));
       dispatch(toggleMassAction());
 
-      return { ids: ids, pagination: res.meta.pagination };
+      return {pagination: res.meta.pagination};
     });
   }
 );

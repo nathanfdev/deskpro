@@ -183,16 +183,6 @@ class ApiKey extends DomainObject
         return $this;
     }
 
-    public function __sleep()
-    {
-        return [
-            'id',
-            'code',
-            'note',
-            'flags',
-        ];
-    }
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################

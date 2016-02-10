@@ -26,11 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log;
+namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use Doctrine\ORM\EntityManager;
 
-interface ApiLoggerInterface
+/**
+ * Class DbWriter.
+ */
+class DbWriter implements WriterInterface
 {
-    public function log(ApiLog $log);
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param ApiLog $log
+     */
+    public function write(ApiLog $log)
+    {
+        $this->em->persist($log);
+        $this->em->flush();
+    }
 }

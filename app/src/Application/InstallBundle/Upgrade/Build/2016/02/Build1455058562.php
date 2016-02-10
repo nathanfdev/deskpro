@@ -26,23 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
-use Doctrine\ORM\EntityManager;
-
-class ApiLoggerDb implements ApiLoggerInterface
+class Build1455058562 extends AbstractBuild
 {
-    protected $em;
-
-    public function __construct(EntityManager $em)
+    public function run()
     {
-        $this->em = $em;
-    }
-
-    public function log(ApiLog $log)
-    {
-        $this->em->persist($log);
-        $this->em->flush();
+        $this->execMutateSql('ALTER TABLE api_log CHANGE end_time end_time INT DEFAULT NULL;');
+        $this->execMutateSql('ALTER TABLE api_log CHANGE status status INT DEFAULT NULL;');
+        $this->execMutateSql('ALTER TABLE api_log CHANGE response_data response_data LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\';');
     }
 }

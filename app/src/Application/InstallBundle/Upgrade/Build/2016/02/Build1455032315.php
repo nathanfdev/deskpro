@@ -26,52 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
-use Doctrine\ORM\EntityManager;
-
-/**
- * Class SerializeSerializer.
- */
-class SerializeSerializer implements SerializerInterface
+class Build1455032315 extends AbstractBuild
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function run()
     {
-        $this->em = $em;
-    }
-
-    /**
-     * @param ApiLog $log
-     *
-     * @return string
-     */
-    public function serialize(ApiLog $log)
-    {
-        $this->em->detach($log);
-
-        return $log->getRequestId().'%%%'.serialize($log).PHP_EOL;
-    }
-
-    /**
-     * @param $str
-     *
-     * @return mixed
-     */
-    public function unserialize($str)
-    {
-        $data       = explode('%%%', $str);
-        $request_id = $data[0];
-        /** @var ApiLog $logModel */
-        $log = unserialize($data[1]);
-        $this->em->merge($log);
+        $this->out('We are truncating api_log table!');
+        $this->execMutateSql('TRUNCATE TABLE api_log;');
+        $this->execMutateSql("ALTER TABLE api_log ADD request_id VARCHAR(255) NOT NULL AFTER id, CHANGE request_data request_data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', CHANGE response_data response_data LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
+        $this->execMutateSql('CREATE UNIQUE INDEX request_id_unique ON api_log (request_id);');
     }
 }

@@ -26,19 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
-
-use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+namespace DeskPRO\Bundle\ApiBundle\Log\Finder;
 
 /**
- * Interface ApiLoggerSerializerInterface.
+ * Interface FinderInterface.
  */
-interface ApiLoggerSerializerInterface
+interface FinderInterface
 {
     /**
-     * @param ApiLog $log
+     * @param $request_id
      *
-     * @return string
+     * @return mixed
      */
-    public function serialize(ApiLog $log);
+    public function find($request_id);
 }

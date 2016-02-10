@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setFeedbackTypesRequest } from '../RecordStores/Actions/feedbackTypesActions';
 import { setFeedbackCategoriesRequest } from '../RecordStores/Actions/feedbackCategoriesActions';
 import { setDisplayFields } from './FeedbackListActions';
@@ -71,10 +71,10 @@ export const initialLoad = createAction(
 
 export const feedbackToValidateCounter = createAction(
   'FEEDBACK_TO_VALIDATE_COUNTER',
-  () => Feedback.feedbackToValidate().then(promise => promise.getData())
+  () => repository('Feedback').loadFeedbackToValidate().then(response => response.getData())
 );
 
 export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',
-  () => Feedback.getCustomCategories().then(promise => promise.getData())
+  () => repository('Feedback').loadCustomCategories().then(response => response.getData())
 );

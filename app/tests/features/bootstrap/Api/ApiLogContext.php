@@ -26,32 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace spec\DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DpBehat\Api;
 
-use Application\DeskPRO\Entity\AgentAlert;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use Doctrine\ORM\EntityManager;
-use PhpSpec\ObjectBehavior;
+use Behat\Behat\Context\Context;
+use DpBehat\BaseContext;
 
 /**
- * @mixin AgentAlertTransformer
- *
- * @todo can't test with spec normally because of magic calls
+ * Defines application features from the specific context.
  */
-class AgentAlertTransformerSpec extends ObjectBehavior
+class ApiLogContext extends BaseContext
 {
-    public function let(
-        EntityManager $em,
-        DataTransformerRequest $request,
-        AgentAlert $alert
-    ) {
-        $this->beConstructedWith($em);
-        $request->getDataToBeTransformed()->willReturn($alert);
+    protected $request_id;
+
+    /**
+     * @Given I have enabled api log feature
+     */
+    public function enableApiLog()
+    {
+        $this->getContainer()->get('settings_resolver')->setSetting('api_log.enabled', true);
     }
 
-    public function it_returns_no_automatic_properties(DataTransformerRequest $request)
+    /**
+     * @Then api log should appear in table
+     */
+    public function checkLog()
     {
-        $this->getAutomaticProperties($request)->shouldBeEqualTo([]);
+        $api_log = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->find(1);
+        if (!$api_log) {
+            throw new \RuntimeException(
+                'Api Log was not added!'
+            );
+        }
     }
 }

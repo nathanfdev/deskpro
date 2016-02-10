@@ -29,10 +29,8 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvents;
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
@@ -52,6 +50,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class JsonApiFormatListener implements EventSubscriberInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -59,6 +60,11 @@ class JsonApiFormatListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param DataSerializerEvent $event
+     *
+     * @throws DataSerializerException
+     */
     public function postTransform(DataSerializerEvent $event)
     {
         $context = $event->getContext();
@@ -67,14 +73,14 @@ class JsonApiFormatListener implements EventSubscriberInterface
         // if we use a different format, then this listener shouldn't even be registered.
         if (!empty($context->getSerializedArray())) {
             throw new DataSerializerException(
-                'JsonApiFormatListener expects DataSerializerContext::getSeriliazedArray to be empty, but it is not'
+                'JsonApiFormatListener expects DataSerializerContext::getSerializedArray to be empty, but it is not'
             );
         }
 
         $context->setSerializedArray([
             'data'   => $context->getMainTransformed(),
-            'meta'   => array(),
-            'linked' => array(),
+            'meta'   => [],
+            'linked' => [],
         ]);
     }
 }

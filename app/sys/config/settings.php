@@ -1087,12 +1087,12 @@ return array(
     # api_logger.settings
     ####################################################################################################################
 
-    'api_logger.enabled' => false,
-    'api_logger.type'    => 'db',
-    'api_logger.file'    => [
+    'api_log.enabled'     => false,
+    'api_log.writer.type' => 'db',
+    'api_log.writer.file' => [
         'log_max_size'  => 5 * 1024 * 1024,
         'log_max_files' => 5,
         'log_name'      => 'api_log.log',
     ],
-    'api_logger.file.serializer.type' => 'serialize',
+    'api_log.writer.file.serializer.type' => 'serialize',
 );

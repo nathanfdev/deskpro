@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { setAgentTeamsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
 import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
@@ -29,8 +29,8 @@ export const preloadData = createAction(
       api.sendGet(batch)
         .success(({responses}) => {
           const data = flattenBatchResponses(responses);
-          dispatch(setDepartmentsRequest('all', data[0]));
-          dispatch(setDepartmentsRequest('my', data[1]));
+          dispatch(setCollection('Department', 'all', data[0]));
+          dispatch(setCollection('Department', 'my', data[1]));
           dispatch(setPeopleRequest('agents', data[2]));
           dispatch(setAgentTeamsRequest('all', data[3]));
           dispatch(setAgentTeamsRequest('my', data[4]));

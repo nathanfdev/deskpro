@@ -28,25 +28,27 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
+use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 /**
- * Class ApiEndpointListener.
+ * Class ApiRequestIdListener.
  */
-class ApiEndpointListener implements EventSubscriberInterface
+class ApiRequestIdListener implements EventSubscriberInterface
 {
     /**
-     * @param AuthorizationChecker $checker
+     * @var LogHelper
      */
-    public function __construct(AuthorizationChecker $checker)
+    protected $helper;
+
+    /**
+     * @param LogHelper $helper
+     */
+    public function __construct(LogHelper $helper)
     {
-        $this->checker = $checker;
+        $this->helper = $helper;
     }
 
     /**
@@ -54,29 +56,18 @@ class ApiEndpointListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::CONTROLLER => array('onController', 1024),
-        );
+        return [
+            KernelEvents::RESPONSE => array('onResponse', 1024), //make sure this stuff will be trigger before log and perhaps something else
+        ];
     }
 
     /**
-     * @var AuthorizationChecker
+     * @param FilterResponseEvent $event
      */
-    protected $checker;
-
-    /**
-     * @param FilterControllerEvent $event
-     */
-    public function onController(FilterControllerEvent $event)
+    public function onResponse(FilterResponseEvent $event)
     {
-        if (!is_array($controller = $event->getController())
-            || !$controller[0] instanceof BaseController // just a stub
-            || $controller[0] instanceof ExceptionController) {
-            return;
-        }
-
-        if (!$this->checker->isGranted($controller[1], $controller[0])) {
-            throw new AccessDeniedHttpException('You are not allowed to access this point with this auth mode', null, 403);
-        }
+        $request  = $event->getRequest();
+        $response = $event->getResponse();
+        $response->headers->add([LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId($request->headers)]);
     }
 }
