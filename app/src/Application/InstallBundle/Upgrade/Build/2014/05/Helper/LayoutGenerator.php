@@ -34,6 +34,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class LayoutGenerator
 {
@@ -91,7 +92,7 @@ class LayoutGenerator
 
         $layout->add(new TicketLayout\LayoutField('subject'));
         $layout->add(new TicketLayout\LayoutField('message'));
-        $layout->add(new TicketLayout\LayoutField('attach'));
+        $layout->add(new TicketLayout\LayoutField(FormFields::ATTACH));
 
         return $layout;
     }
