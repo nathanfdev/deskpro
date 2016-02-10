@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
 use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use DeskPRO\Bundle\InstallBundle\Schema\Exception\SchemaInstallException;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaArray;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaInstaller;
 use Symfony\Component\Process\ProcessBuilder;
@@ -115,11 +116,27 @@ class InstallTablesStep extends AbstractStep
             $schemaInstaller->installSchema($pdo, function ($info) use ($progress) {
                 $progress->advance();
             });
-        } catch (\Exception $e) {
+        } catch (SchemaInstallException $e) {
             $this->writeln('');
             $this->writeln('<error>There was an error while installing the database:</error>');
             $this->writeln('<info>'.$e->getMessage().'</info>');
+            $this->writeln('');
+            $this->writeln('The query being executed:');
+            $this->writeln('<info>'.$e->getQuery().'</info>');
             $this->markAsFailed();
+
+            // if we have any successfully created tables, we need to unset the db var
+            // because we cant resume a half-installed db
+            try {
+                $tables   = $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
+                $do_reset = !empty($tables);
+            } catch (\Exception $e) {
+                $do_reset = true;
+            }
+
+            if ($do_reset) {
+                $this->getSession()->enableFlag('reset_db_details');
+            }
 
             return;
         }

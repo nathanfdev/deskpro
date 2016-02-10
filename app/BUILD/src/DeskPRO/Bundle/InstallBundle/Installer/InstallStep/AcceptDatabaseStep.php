@@ -41,7 +41,7 @@ class AcceptDatabaseStep extends AbstractStep
 
         $f = $this->getFormatterHelper();
 
-        $dbinfo = new DbInfo();
+        $dbinfo = $this->getSession()->getDbInfo() ?: new DbInfo();
         $ok     = false;
 
         while (true) {
@@ -94,6 +94,7 @@ class AcceptDatabaseStep extends AbstractStep
         }
 
         $this->getSession()->setDbInfo($dbinfo);
+        $this->getSession()->enableFlag('reset_db_details');
     }
 
     private function validateDbInfo(DbInfo $dbinfo, $auto_create = false)
@@ -284,6 +285,7 @@ class AcceptDatabaseStep extends AbstractStep
 
     public function isComplete()
     {
-        return $this->getSession()->getDbInfo() !== null;
+        return $this->getSession()->getDbInfo() !== null
+            && !$this->getSession()->hasFlag('reset_db_details');
     }
 }

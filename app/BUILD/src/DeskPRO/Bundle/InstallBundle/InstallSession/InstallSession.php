@@ -180,6 +180,14 @@ class InstallSession
     }
 
     /**
+     * @param string $id
+     */
+    public function disableFlag($id)
+    {
+        unset($this->flags[$id]);
+    }
+
+    /**
      * Touches the last update date.
      */
     public function touch()

@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\InstallBundle\Schema;
 
-use Doctrine\DBAL\Connection;
+use DeskPRO\Bundle\InstallBundle\Schema\Exception\SchemaInstallException;
 
 class SchemaInstaller
 {
@@ -48,17 +48,21 @@ class SchemaInstaller
     }
 
     /**
-     * @param Connection $db
-     * @param callable   $stepper A custom callable to run after each query
+     * @param \PDO     $db
+     * @param callable $stepper A custom callable to run after each query
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws SchemaInstallException
+     *
      * @return bool
-     *
      */
     public function installSchema(\PDO $db, $stepper = null)
     {
         foreach ($this->schema->getCreates() as $idx => $query) {
-            $db->exec($query);
+            try {
+                $db->exec($query);
+            } catch (\Exception $e) {
+                throw new SchemaInstallException($query, $e->getMessage(), $e->getCode(), $e);
+            }
 
             if ($stepper) {
                 call_user_func($stepper, [
@@ -70,7 +74,11 @@ class SchemaInstaller
         }
 
         foreach ($this->schema->getAlters() as $idx => $query) {
-            $db->exec($query);
+            try {
+                $db->exec($query);
+            } catch (\Exception $e) {
+                throw new SchemaInstallException($query, $e->getMessage(), $e->getCode(), $e);
+            }
 
             if ($stepper) {
                 call_user_func($stepper, [
