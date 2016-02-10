@@ -63,8 +63,12 @@ class AcceptWebUrlStep extends AbstractStep
             $q->setValidator(function ($v) {
                 $v = trim($v);
                 $v = trim($v, '/').'/';
-                if (!$v || !preg_match('#^https?://#', $v)) {
-                    throw new \Exception('Please enter a full URL, including http:// or https://');
+                $v = strtolower($v);
+                if (!$v) {
+                    throw new \Exception('Please enter a full URL');
+                }
+                if (!preg_match('#^https?://#', $v)) {
+                    $v = 'http://'.$v;
                 }
 
                 return $v;
@@ -86,6 +90,7 @@ class AcceptWebUrlStep extends AbstractStep
 
     private function validateUrl($url)
     {
+        $url = rtrim($url, '/');
         $env = $this->getContext()->getDpEnv();
 
         #------------------------------
@@ -96,16 +101,16 @@ class AcceptWebUrlStep extends AbstractStep
 
         $code = Strings::random(10);
         $env->getDatManager()->writeTxtFile('pong_message', $code);
-        $res = @file_get_contents($url.'/index.php?__serverinfo=ping');
+        $res = $this->loadUrl($url.'/index.php?__serverinfo=ping');
         $env->getDatManager()->removeTxtFile('pong_message');
 
-        if (strpos($res, 'pong') === false) {
+        if (!$res || strpos($res, 'pong') === false) {
             $this->writeln('<error>The URL you entered does not appear to be a DeskPRO URL, or the URL is not loading.</error>');
 
             return false;
         }
 
-        if (strpos($res, $code) === false) {
+        if (!$res || strpos($res, $code) === false) {
             $this->writeln('<error>The URL you appears to be a URL for a *different* DeskPRO instance.</error>');
 
             return false;
@@ -123,12 +128,32 @@ class AcceptWebUrlStep extends AbstractStep
             $url.'/app/run/test_ping.html',
             $url.'/../app/run/test_ping.html',
         ] as $test) {
-            $res = @file_get_contents($test);
+            $res = $this->loadUrl($test);
             if ($res && strpos($res, 'DESKPRO_PONG') !== false) {
                 $this->writeln('<error>It seems like you have put DeskPRO files within the web root. This is a major security issue. You must only put the www/ directory within the web root.</error>');
 
                 return false;
             }
+        }
+
+        $this->writeln('  > <info>OK</info>');
+
+        #------------------------------
+        # Verify rewriting is ok
+        #------------------------------
+
+        $this->writeln('Verifying URL routing...');
+
+        $check_url = $url.'/__serverinfo/url_check/path';
+        $res       = $this->loadUrl($check_url);
+        if (!$res || strpos($res, 'DP_CHECK_SUCCESS') === false) {
+            $this->writeln('<error>Your server is not routing requests properly.</error>');
+            $this->writeln('');
+            $this->writeln('This is the URL we were testing:');
+            $this->writeln('<info>'.$check_url.'</info>');
+            $this->writeln('');
+
+            return false;
         }
 
         $this->writeln('  > <info>OK</info>');
@@ -148,9 +173,9 @@ class AcceptWebUrlStep extends AbstractStep
 
         $reqs_url_encoded = $reqs_url.'&encode-output';
 
-        $res = @file_get_contents($reqs_url_encoded);
+        $res = $this->loadUrl($reqs_url_encoded);
 
-        if (!$this->validateRequirements($res)) {
+        if (!$res || !$this->validateRequirements($res)) {
             $this->writeln('<error>The web server does not meet server requirements</error>');
             $this->writeln('You can view the server requirements test page here:');
             $this->writeln('<info>'.$reqs_url.'</info>');
@@ -164,6 +189,30 @@ class AcceptWebUrlStep extends AbstractStep
         return true;
     }
 
+    /**
+     * Loads a URL.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    private function loadUrl($url)
+    {
+        $context = stream_context_create([
+            'http' => ['timeout' => 20],
+            'ssl'  => ['verify_peer' => false, 'verify_peer_name' => false],
+        ]);
+
+        return @file_get_contents($url, false, $context);
+    }
+
+    /**
+     * Checks the payload from a web server check to see if there are failed requirements.
+     *
+     * @param string $res
+     *
+     * @return bool
+     */
     private function validateRequirements($res)
     {
         if (!$res) {

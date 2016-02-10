@@ -75,12 +75,12 @@ class Boot
         return $resources;
     }
 
-    public static function bootServerInfoChecks()
+    public static function bootServerInfoChecks($reqName)
     {
         /** @var \DpRun\DpEnv $env */
         $env = $GLOBALS['DP_ENV'];
 
-        if ($_GET['__serverinfo'] === 'ping') {
+        if ($reqName === 'ping') {
             header('Content-Type: text/plain');
             echo 'pong';
             if ($msg = $env->getDatManager()->readTxtFile('pong_message')) {
@@ -103,7 +103,7 @@ class Boot
             }
         }
 
-        switch ($_GET['__serverinfo']) {
+        switch ($reqName) {
             case 'phpinfo':
                 phpinfo();
                 break;
@@ -123,6 +123,11 @@ class Boot
                 $majorProblems = $checker->getFailedRequirements();
                 $minorProblems = $checker->getFailedRecommendations();
                 require __DIR__.'/../Resources/views/requirements.php';
+                break;
+
+            case 'url_check/path':
+                header('Content-Type: text/plain');
+                echo 'DP_CHECK_SUCCESS';
                 break;
 
             default:
@@ -158,8 +163,9 @@ class Boot
             }
         }
 
+        // An 'early' serverinfo request
         if (isset($_GET['__serverinfo'])) {
-            self::bootServerInfoChecks();
+            self::bootServerInfoChecks($_GET['__serverinfo']);
 
             return;
         }
@@ -169,13 +175,23 @@ class Boot
             'Lib',
             'PreparePaths',
             'Request',
-            'HttpKernel',
         ];
 
         $res = self::runBootTasks($tasks);
 
         /** @var \Symfony\Component\HttpFoundation\Request $request */
         $request = $res['request'];
+
+        // We can also enter serverinfo via a path,
+        // this is usually only used when we need to test URL rewriting
+        $path = '/'.ltrim($request->getPathInfo(), '/');
+        if (substr($path, 0, 14) === '/__serverinfo/') {
+            self::bootServerInfoChecks(substr($path, 14));
+
+            return;
+        }
+
+        $res = self::runBootTasks(['HttpKernel'], $res);
 
         /** @var \Symfony\Component\HttpKernel\HttpKernel $kernel */
         $kernel = $res['http_kernel'];
