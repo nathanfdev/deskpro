@@ -39,6 +39,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
+ * Assigns person entity using multiple formats.
  * Form can accept person "id", "email address" or {"email": "xxx", "name": "xxx"}.
  */
 class PersonIdentityType extends AbstractType
@@ -66,6 +67,7 @@ class PersonIdentityType extends AbstractType
         $builder
             ->add('id', 'text', [
                 'required' => false,
+                'mapped'   => false,
             ])
             ->add('name', 'text', [
                 'label'    => $options['label_name'],
@@ -74,6 +76,7 @@ class PersonIdentityType extends AbstractType
             ->add('email', 'text', [
                 'label'    => $options['label_email'],
                 'required' => false,
+                'mapped'   => false,
             ])
         ;
 
@@ -83,39 +86,47 @@ class PersonIdentityType extends AbstractType
             }
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPrepare']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields'], 200);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson'], 100);
     }
 
     /**
      * @param FormEvent $event
      */
-    public function onPrepare(FormEvent $event)
+    public function onSetFields(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
+        $data = $event->getData();
 
-        if ($person) {
-            $event->setData($person);
+        if (is_scalar($data)) {
+            if (is_numeric($data)) {
+                $event->setData(['id' => $data]);
+            } else {
+                $event->setData(['email' => $data]);
+            }
         }
     }
 
     /**
      * @param FormEvent $event
      */
-    public function onSetData(FormEvent $event)
+    public function onSetPerson(FormEvent $event)
     {
         $data = $event->getData();
+        $form = $event->getForm();
 
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
         $person_repository = $this->em->getRepository('DeskPRO:Person');
+        $default_person    = $form->getConfig()->getOption('person');
 
-        if (is_array($data)) {
-            $event->setData($person_repository->findOneBy(['email' => $data['email']]));
-        } elseif (is_numeric($data)) {
-            $event->setData($person_repository->find((int) $data));
-        } else {
-            $event->setData($person_repository->findOneBy(['email' => $data]));
+        // Set person entity from request fields (id or email)
+        if (!empty($data['email'])) {
+            $form->setData($person_repository->findOneByEmail($data['email']));
+        } elseif (!empty($data['id'])) {
+            $form->setData($person_repository->find((int) $data['id']));
+
+        // Use config person entity as default
+        } elseif (!$form->getData() && $default_person) {
+            $form->setData($default_person);
         }
     }
 
@@ -130,7 +141,7 @@ class PersonIdentityType extends AbstractType
                 'label_name'       => '',
                 'label_email'      => '',
                 'data_class'       => 'Application\\DeskPRO\\Entity\\Person',
-                'available_fields' => ['id', 'name', 'email'],
+                'available_fields' => ['name', 'email'],
             ])
             ->setAllowedTypes([
                 'person' => 'Application\\DeskPRO\\Entity\\Person',

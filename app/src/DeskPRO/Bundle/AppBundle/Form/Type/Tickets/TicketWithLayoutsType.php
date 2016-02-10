@@ -597,18 +597,24 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addPerson(TicketFormContext $context, LayoutField $field)
     {
-        $available_fields = ['email', 'name'];
-        if ($context->forApi()) {
-            $available_fields[] = 'id';
-        }
+        $form = $context->getForm();
 
-        $context->getForm()->add($field->getId(), 'deskpro_person_identity', [
-            'property_path'    => 'person',
-            'person'           => $context->getPerson(),
-            'label_name'       => $this->phrase('portal.forms.label_name'),
-            'label_email'      => $this->phrase('portal.forms.label_email'),
-            'available_fields' => $available_fields,
-        ]);
+        if ($context->forApi()) {
+            $form->add($field->getId(), 'deskpro_person_identity', [
+                'property_path'    => 'person',
+                'person'           => $context->getPerson(),
+                'label_name'       => $this->phrase('portal.forms.label_name'),
+                'label_email'      => $this->phrase('portal.forms.label_email'),
+                'available_fields' => ['id', 'email', 'name'],
+            ]);
+        } else {
+            $form->add($field->getId(), 'deskpro_combined_type', [
+                'forms' => [
+                    $this->createUserName($context),
+                    $this->createUserEmail($context),
+                ],
+            ]);
+        }
     }
 
     /**
