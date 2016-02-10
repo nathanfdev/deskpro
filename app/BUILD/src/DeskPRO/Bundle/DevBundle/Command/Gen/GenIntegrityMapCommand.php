@@ -34,8 +34,10 @@ namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\Generator\IntegrityMapGenerator;
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\ProjectFileSet;
+use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenIntegrityMapCommand extends ContainerAwareCommand
@@ -46,6 +48,7 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('dpdev:gen:integrity-map');
+        $this->addOption('clean-missing', null, InputOption::VALUE_NONE, 'Read the existing map and just remove files that dont exist');
     }
 
     /**
@@ -56,18 +59,38 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $set    = new ProjectFileSet($DP_ENV);
-        $hasher = new FileHasher();
-        $gen    = new IntegrityMapGenerator($set, $hasher);
-
-        $output->writeln('Generating map... This might take a while.');
-        $startTime = microtime(true);
-        $map       = $gen->generateMap();
-        $output->writeln(sprintf('Generated map of %d files in %.3fs', count($map), microtime(true) - $startTime));
-
         $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
-        file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
+        $set       = new ProjectFileSet($DP_ENV);
 
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', $writePath));
+        if ($input->getOption('clean-missing') && file_exists($writePath)) {
+            $map = json_decode(file_get_contents($writePath), true);
+
+            $output->writeln('Cleaning map...');
+            $startTime = microtime(true);
+            $output->writeln(sprintf('Cleaned in %.3fs', microtime(true) - $startTime));
+
+            MapUtils::filter($map, function ($path) use ($set) {
+                $realPath = $set->getRealPath($path);
+
+                return file_exists($realPath);
+            });
+
+            file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
+
+            $output->writeln(sprintf('Re-wrote map to: <info>%s</info>', $writePath));
+        } else {
+            $hasher = new FileHasher();
+            $gen    = new IntegrityMapGenerator($set, $hasher);
+
+            $output->writeln('Generating map... This might take a while.');
+            $startTime = microtime(true);
+            $map       = $gen->generateMap();
+            $output->writeln(sprintf('Generated map of %d files in %.3fs', count($map), microtime(true) - $startTime));
+
+            $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
+            file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
+
+            $output->writeln(sprintf('Wrote map to: <info>%s</info>', $writePath));
+        }
     }
 }
