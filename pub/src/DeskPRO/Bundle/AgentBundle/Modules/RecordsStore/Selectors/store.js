@@ -6,7 +6,8 @@ const storeSelector = state => state.RecordsStore.store;
 export function isLoadedCollectionSelectorFactory(recordName, collectionName) {
   return createSelector(
     storeSelector,
-    state => state.getIn([recordName, 'statuses', collectionName, 'isLoaded']) === true
+    state => state.getIn([recordName, 'statuses', collectionName, 'success']) === true
+             && !state.getIn([recordName, 'statuses', collectionName, 'loading'])
   );
 }
 

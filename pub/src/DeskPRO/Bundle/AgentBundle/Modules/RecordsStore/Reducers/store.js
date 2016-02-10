@@ -14,7 +14,7 @@ function handleSetCollection(state, {recordName, collectionName, records}) {
     [recordName]: {
       records: recordsMap,
       collections: {[collectionName]: recordIds},
-      statuses: {[collectionName]: {isLoaded: true}}
+      statuses: {[collectionName]: {success: true, loading: false}}
     }
   });
 }
@@ -22,8 +22,8 @@ function handleSetCollection(state, {recordName, collectionName, records}) {
 export default createReducer(storeInitialState, {
   [loadBatch]: composeHandlers(
     asyncIndicator((state, {recordName, collectionName, records}) => ({
-      loading:   `${recordName}.statuses.${collectionName}.isLoading`,
-      success:   `${recordName}.statuses.${collectionName}.isLoaded`,
+      loading:   `${recordName}.statuses.${collectionName}.loading`,
+      success:   `${recordName}.statuses.${collectionName}.success`,
       isError:   `${recordName}.statuses.${collectionName}.isError`,
       errorCode: `${recordName}.statuses.${collectionName}.errorCode`
     })),
