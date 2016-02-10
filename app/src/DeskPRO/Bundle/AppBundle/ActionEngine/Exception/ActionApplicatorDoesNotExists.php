@@ -30,36 +30,8 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Exception;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-class SetStatusCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ActionApplicatorDoesNotExists extends \InvalidArgumentException
 {
-    public function __construct(array $options)
-    {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
-    }
 }

@@ -30,36 +30,21 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DpTest\DeskProTestCase;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class DeleteActionTest extends DeskProTestCase
 {
-    public function __construct(array $options)
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
-
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        $action = new DeleteAction();
+        $this->assertInstanceOf(DeleteAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
     }
 }

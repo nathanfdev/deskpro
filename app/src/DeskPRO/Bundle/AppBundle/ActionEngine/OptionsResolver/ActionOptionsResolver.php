@@ -30,39 +30,26 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ActionOptionsResolver extends OptionsResolver
 {
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired('labels');
-    }
+    protected $constraints;
 
-    public function init()
+    public function setConstraints(array $constraints)
     {
-        return true;
-    }
+        $this->constraints = [];
 
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        foreach ($this->options['labels'] as $string) {
-            $feedback->addLabelByString($string);
+        foreach ($constraints as $option => $constraint_list) {
+            $this->constraints[$option] = $constraint_list;
+            $this->setDefined($option);
         }
     }
 
-    /** @return array */
-    public function getSerialized()
+    public function getConstraints()
     {
-        return [self::ADD_LABELS_ACTION => ['labels' => $this->options['labels']]];
+        return $this->constraints ?: [];
     }
 }

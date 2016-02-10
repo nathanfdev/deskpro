@@ -30,20 +30,31 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
-interface ActionInterface
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+
+class ApplySetStatusCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    /**
-     * Prepare all needed data (i.e. fetch category for setting to items set and so on).
-     */
-    public function init();
+    const OPTION_STATUS_CATEGORY_ID = 'id';
+    private $statusCategory;
 
     /**
-     * @param mixed $entity
+     * Fetch status category (FeedbackStatusCategory).
      */
-    public function run($entity);
+    public function init()
+    {
+        $id                   = $this->options[self::OPTION_STATUS_CATEGORY_ID];
+        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($id);
+    }
 
-    /** @return array */
-    public function getSerialized();
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
+    {
+        $feedback->setStatusCategory($this->statusCategory);
+    }
 }

@@ -30,41 +30,34 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
+class ApplySetTypeAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired('labels');
-    }
+    const OPTION_TYPE_ID = 'id';
+    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
+    private $type;
 
+    /**
+     * Fetch type (FeedbackCategory) for setting to items.
+     */
     public function init()
     {
-        return true;
+        $id         = $this->options[self::OPTION_TYPE_ID];
+        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 
     /**
      * @param Feedback $feedback
+     *
+     * @return Feedback
      */
-    public function run($feedback)
+    public function applyAction($feedback)
     {
-        foreach ($this->options['labels'] as $string) {
-            if ($label = $feedback->findLabelByString($string)) {
-                $feedback->labels->removeElement($label);
-            }
-        }
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::REMOVE_LABELS_ACTION => ['labels' => $this->options['labels']]];
+        $feedback->setCategory($this->type);
     }
 }

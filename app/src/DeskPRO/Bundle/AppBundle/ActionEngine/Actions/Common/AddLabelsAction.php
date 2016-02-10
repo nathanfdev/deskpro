@@ -30,30 +30,37 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class ApproveAction extends AbstractAction implements ActionInterface
+class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    public function init()
+    public function __construct(array $options)
     {
-        return true;
+        $resolver = new ActionOptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
     }
 
-    /**
-     * @param FeedbackComment $comment
-     */
-    public function run($comment)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
+        $resolver->setRequired(self::OPTION_LABELS);
+        $resolver->setConstraints([
+            self::OPTION_LABELS => [
+                new Assert\NotBlank(),
+                new Assert\Type('array'),
+            ],
+        ]);
     }
 
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::APPROVE_ACTION => []];
+        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
     }
 }

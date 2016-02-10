@@ -30,36 +30,37 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    public function __construct(array $options)
+    const OPTION_INPUT = 'input';
+    private $customDef;
+
+    /**
+     * Fetch CustomDef.
+     */
+    public function init()
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->customDef = $this->em
+            ->getRepository('DeskPRO:CustomDefFeedback')
+            ->findOneBy(['title' => 'Category']);
     }
 
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
-
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        $feedback->resetCustomData();
+        $customCategory = new CustomDataFeedback();
+        $customCategory->setInput($this->options[self::OPTION_INPUT]);
+        $customCategory->setField($this->customDef);
+        $feedback->addCustomData($customCategory);
     }
 }

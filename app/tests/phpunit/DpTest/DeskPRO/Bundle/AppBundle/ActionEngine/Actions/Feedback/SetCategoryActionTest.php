@@ -30,42 +30,32 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DpTest\DeskProTestCase;
 
-class ActionCollection
+class SetCategoryActionTest extends DeskProTestCase
 {
-    /** @var ArrayCollection */
-    private $actions;
-
-    public function __construct()
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $this->actions = new ArrayCollection();
+        $action = new SetCategoryAction(['input' => 'Linux']);
+        $this->assertInstanceOf(SetCategoryAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
     }
 
-    public function addAction(ActionInterface $action)
+    /**
+     * @test
+     */
+    public function it_should_extend_AbstractAction()
     {
-        $this->actions->add($action);
-
-        return $this;
-    }
-
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    public function getSerializedActions()
-    {
-        $serialized = [];
-        foreach ($this->actions as $action) {
-            $serializedAction = $action->getSerialized();
-            if (!empty($serializedAction)) {
-                $serialized[] = $serializedAction;
-            }
-        }
-
-        return $serialized;
+        $this->assertContains(AbstractAction::class, class_parents(SetCategoryAction::class));
     }
 }

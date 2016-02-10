@@ -33,7 +33,7 @@
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorFactory;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorFactory;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -75,17 +75,9 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $preProcessor      = MassActionsPreprocessorFactory::create($this->em, $data);
-        $entities          = $preProcessor->selectEntities();
-        $actionsCollection = $preProcessor->prepareActions();
-        $actions           = $actionsCollection->getActions();
-
-        foreach ($entities as $entity) {
-            /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface $action */
-            foreach ($actions as $action) {
-                $action->run($entity);
-            }
-        }
+        $applicator        = ActionApplicatorFactory::create($this->em, $data);
+        $actionsCollection = $applicator->prepareActions();
+        $applicator->applyActionCollection($data['ids'], $actionsCollection);
         $this->em->flush();
 
         return true;

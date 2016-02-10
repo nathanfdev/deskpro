@@ -30,36 +30,36 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionToJsonTransformer;
+use Doctrine\ORM\EntityManager;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+abstract class AbstractActionApplicator
 {
-    public function __construct(array $options)
+    protected $em;
+    protected $options;
+    protected $actions;
+    protected $transformer;
+
+    public function __construct(EntityManager $em, array $options)
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->em          = $em;
+        $this->options     = $options;
+        $this->actions     = new ActionCollection();
+        $this->transformer = new ActionToJsonTransformer($this->em);
     }
 
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    protected function getEntities($class, array $ids)
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('entity')
+            ->from($class, 'entity')
+            ->where('entity.id IN (:ids)')
+            ->setParameter('ids', $ids);
 
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        return $qb->getQuery()->getResult();
     }
 }

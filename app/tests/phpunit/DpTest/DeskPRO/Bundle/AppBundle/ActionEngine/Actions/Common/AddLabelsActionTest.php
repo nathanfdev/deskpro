@@ -30,36 +30,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use DpTest\DeskProTestCase;
+use Prophecy\Argument;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class AddLabelsActionTest extends DeskProTestCase
 {
-    public function __construct(array $options)
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $action = new AddLabelsAction(['labels' => ['one', 'two']]);
+        $this->assertInstanceOf(AddLabelsAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
     }
 
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @test
+     */
+    public function it_should_extend_AbstractAction()
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
+        $this->assertContains(AbstractAction::class, class_parents(AddLabelsAction::class));
     }
 
-    public function serialize()
+    /**
+     * @test
+     */
+    public function it_should_add_constraints_and_default_value_for_the_labels_param()
     {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        $resolver = $this->prophesize(ActionOptionsResolver::class);
+        $resolver->setRequired('labels')->shouldBeCalled();
+        $resolver->setConstraints(Argument::type('array'))->shouldBeCalled();
+        $resolver = $resolver->reveal();
+        AddLabelsAction::configureOptions($resolver);
     }
 }

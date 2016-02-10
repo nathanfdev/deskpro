@@ -30,36 +30,11 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+interface ActionWithOptionsInterface
 {
-    public function __construct(array $options)
-    {
-        $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
-    public static function configureOptions(ActionOptionsResolver $resolver)
-    {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
-    }
+    public static function configureOptions(ActionOptionsResolver $resolver);
 }

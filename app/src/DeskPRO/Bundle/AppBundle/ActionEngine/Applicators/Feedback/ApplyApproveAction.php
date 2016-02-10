@@ -30,36 +30,36 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplyApproveAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    public function __construct(array $options)
+    private $defaultStatusCategory;
+
+    /**
+     * Fetch default status category.
+     */
+    public function init()
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+        $this->defaultStatusCategory = $activeStatusCategories[0];
     }
 
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
-
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        if ($feedback->status === Feedback::STATUS_HIDDEN) {
+            $feedback->setHiddenStatus();
+            $feedback->setStatus(Feedback::STATUS_ACTIVE);
+            $feedback->setStatusCategory($this->defaultStatusCategory);
+        }
+        $feedback->setIsReviewed(true);
     }
 }

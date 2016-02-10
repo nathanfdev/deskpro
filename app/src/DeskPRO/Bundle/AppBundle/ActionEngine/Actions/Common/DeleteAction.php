@@ -30,30 +30,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 
-class DeleteAction extends AbstractAction implements ActionInterface
+class DeleteAction implements ActionInterface
 {
-    public function init()
-    {
-        return true;
-    }
-
-    /**
-     * @param FeedbackComment $comment
-     */
-    public function run($comment)
-    {
-        $comment->setStatus(FeedbackComment::STATUS_DELETED);
-    }
-
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::DELETE_ACTION => []];
+        return [];
     }
 }

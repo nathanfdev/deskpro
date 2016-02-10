@@ -30,36 +30,39 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
 {
     public function __construct(array $options)
     {
-        $resolver = new OptionsResolver();
+        $resolver = new ActionOptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
     }
 
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
+        $resolver->setRequired(self::OPTION_LABELS);
+        $resolver->setConstraints(
+            [
+                self::OPTION_LABELS => [
+                    new Assert\NotBlank(),
+                    new Assert\Type('string'),
+                ],
+            ]
         );
     }
 
+    /** @return array */
     public function serialize()
     {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
     }
 }

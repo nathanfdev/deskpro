@@ -29,32 +29,33 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsMassActions;
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackMassActions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
+
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback\FeedbackApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment\FeedbackCommentApplicator;
 use Doctrine\ORM\EntityManager;
 
-class MassActionsPreprocessorFactory
+class ActionApplicatorFactory
 {
     /**
      * @param EntityManager $em
      * @param array         $params
      *
-     * @return MassActionsPreprocessorInterface
+     * @return ActionCollectionApplicatorInterface
      */
     public static function create(EntityManager $em, array $params)
     {
         $content = $params['content'];
         switch ($content) {
             case 'feedback':
-                return new FeedbackMassActions($em, $params);
+                return new FeedbackApplicator($em, $params);
             case 'feedback_comments':
-                return new FeedbackCommentsMassActions($em, $params);
+                return new FeedbackCommentApplicator($em, $params);
         }
 
         throw new \InvalidArgumentException(
-            "mass action preprocessor for '$content' does not exist, please check logic inside of MassActionsPreprocessorFactory'"
+            "action applicator for '$content' does not exist, please check logic inside of ActionApplicatorFactory'"
         );
     }
 }

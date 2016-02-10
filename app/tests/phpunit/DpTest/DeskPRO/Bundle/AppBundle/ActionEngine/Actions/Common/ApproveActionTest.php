@@ -30,11 +30,21 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DpTest\DeskProTestCase;
 
-interface ActionWithOptionsInterface
+class ApproveActionTest extends DeskProTestCase
 {
-    public function configureOptions(OptionsResolver $resolver);
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
+    {
+        $action = new ApproveAction();
+        $this->assertInstanceOf(ApproveAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+    }
 }

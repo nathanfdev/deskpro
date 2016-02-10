@@ -142,8 +142,7 @@ export const massActionsSelector = createSelector(
     massActions.push({
       label: 'Type',
       type: 'action',
-      param: 'type',
-      field: 'id',
+      param: 'set_type',
       quickFilter: true,
       options: typeOptions
     });
@@ -156,12 +155,12 @@ export const massActionsSelector = createSelector(
       param: param
     }));
     const statusOptions = [
-      { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
-      { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'status_category') },
-      { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'hidden_status') }
+      { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'set_status_category') },
+      { label: 'Closed', value: 'closed', nested: toStatusOptions(statuses.closed.nested, 'set_status_category') },
+      { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'set_hidden_status') }
     ];
     massActions.push({
-      label: 'Status', type: 'action', field: 'id', param: 'status', quickFilter: true,
+      label: 'Status', type: 'action', param: 'set_status', quickFilter: true,
       options: statusOptions
     });
 
@@ -171,14 +170,14 @@ export const massActionsSelector = createSelector(
       value: cat.get('input')
     }));
     massActions.push({
-      label: 'Category', type: 'action', param: 'category', field: 'input', quickFilter: true,
+      label: 'Category', type: 'action', param: 'set_category', quickFilter: true,
       options: categoryOptions
     });
 
     // Other options
     const otherOptions = [
-      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'addLabels' },
-      { label: 'Remove label', icon: 'minus-square', labels: labels, param: 'removeLabels' }
+      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'add_labels' },
+      { label: 'Remove label', icon: 'minus-square', labels: labels, param: 'remove_labels' }
     ];
     massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });
 

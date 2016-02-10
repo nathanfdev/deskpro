@@ -30,35 +30,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 
-class DeleteAction extends AbstractAction implements ActionInterface
+interface ActionCollectionApplicatorInterface
 {
-    /**
-     * Prepare all needed data (i.e. fetch category for setting to items set and so on).
-     */
-    public function init()
-    {
-        return true;
-    }
+    public function prepareActions();
 
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        $feedback->setStatus(Feedback::STATUS_HIDDEN);
-        $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
-        $feedback->setIsReviewed(true);
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::DELETE_ACTION => []];
-    }
+    public function applyActionCollection(array $ids, ActionCollection $collection);
 }

@@ -30,37 +30,24 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment;
 
 use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\ApproveAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\DeleteAction;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class FeedbackCommentsMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    protected static $entity = FeedbackComment::class;
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function init()
     {
-        $resolver->setDefined(['approve', 'delete']);
+        return true;
     }
 
-    public function prepareActions()
+    /**
+     * @param FeedbackComment $comment
+     */
+    public function applyAction($comment)
     {
-        foreach ($this->params['actions'] as $name => $options) {
-            switch ($name) {
-                case 'approve':
-                    $this->actions->addAction(new ApproveAction());
-                    break;
-                case 'delete':
-                    $this->actions->addAction(new DeleteAction());
-                    break;
-            }
-        }
-
-        return $this->actions;
+        $comment->setStatus(FeedbackComment::STATUS_DELETED);
     }
 }

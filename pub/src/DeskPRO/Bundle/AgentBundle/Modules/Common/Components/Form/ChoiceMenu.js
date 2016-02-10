@@ -82,7 +82,6 @@ export class RadioChoiceMenuOption extends Component {
     param: PropTypes.string.isRequired,
     isActive: PropTypes.bool,
     label: PropTypes.string.isRequired,
-    field: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     values: PropTypes.array,
     setParams: PropTypes.func.isRequired,
@@ -93,11 +92,11 @@ export class RadioChoiceMenuOption extends Component {
 
   handleClick(event) {
     event.stopPropagation();
-    const {param, value, setParams, dispatch, isActive, resetSingleAction, field} = this.props;
+    const { param, value, setParams, dispatch, isActive, resetSingleAction } = this.props;
     if (isActive) {
       dispatch(resetSingleAction(param));
     } else {
-      dispatch(setParams({ [param]: { [field]: value } }));
+      dispatch(setParams({ [param]: value }));
     }
   }
 
