@@ -31,12 +31,30 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 
+/**
+ * Class AgentAlertTransformer.
+ */
 class AgentAlertTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @param DataTransformerRequest $transformation_request
      *
@@ -55,14 +73,15 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
         /* @var \Application\DeskPRO\Entity\AgentAlert $data */
-        $alert     = $transformation_request->getDataToBeTransformed();
-        $data      = $this->getDataArray($alert);
-        $alertData = [];
-        $notifData = [
+        $alert = $transformation_request->getDataToBeTransformed();
+        $type  = 'notifications.'.$alert->getTypename();
+        $data  = $alert->getData();
+
+        $alertData  = [];
+        $notifyData = [
             'title'   => '',
             'summary' => '',
         ];
-        $type = 'notifications.'.$alert->getTypename();
 
         switch ($alert->getTypename()) {
             case 'tickets':
@@ -88,11 +107,23 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
         $summary = Strings::extractRegexMatch('#<small>(.*?)</small>#s', $data['browser_rendered']);
         $summary = $this->cleanString($summary);
 
-        $notifData['title']   = $title;
-        $notifData['summary'] = $summary;
+        $notifyData['title']   = $title;
+        $notifyData['summary'] = $summary;
 
-        $alertData['notification'] = $notifData;
+        $alertData['notification'] = $notifyData;
         $alertData['performer']    = $data['performer'];
+
+        $context   = $transformation_request->getSerializerContext();
+        $sideloads = $context->getSideloads();
+
+        if (!empty($data['performer']) && $context->isTypeIncluded('person')) {
+            $performer = $this->em->getRepository('DeskPRO:Person')->find($data['performer']);
+            $sideloads->addSideloadDataId('person', $data['performer'], $performer);
+        }
+        if (!empty($data['ticket']) && $context->isTypeIncluded('ticket')) {
+            $ticket = $this->em->getRepository('DeskPRO:Ticket')->find($data['ticket']);
+            $sideloads->addSideloadDataId('ticket', $data['ticket'], $ticket);
+        }
 
         return [
             'uuid'         => (string) $alert->getId(),
@@ -103,25 +134,20 @@ class AgentAlertTransformer extends AbstractDataSerializerTransformer
         ];
     }
 
-    private function cleanString($str)
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    private function cleanString($string)
     {
-        $str = Strings::decodeHtmlEntities($str);
-        $str = Strings::removeInvisibleCharacters($str);
-        $str = Strings::removeLineBreaks($str);
-        $str = str_replace("\t", ' ', $str);
-        $str = preg_replace('#\s{,2}#', ' ', $str);
-        $str = trim($str);
+        $string = Strings::decodeHtmlEntities($string);
+        $string = Strings::removeInvisibleCharacters($string);
+        $string = Strings::removeLineBreaks($string);
+        $string = str_replace("\t", ' ', $string);
+        $string = preg_replace('#\s{,2}#', ' ', $string);
+        $string = trim($string);
 
-        return $str;
-    }
-
-    private function getDataArray(AgentAlert $alert)
-    {
-        $data = $alert->getData();
-        if (isset($data['@fetch_types'])) {
-            unset($data['@fetch_types']);
-        }
-
-        return $data;
+        return $string;
     }
 }

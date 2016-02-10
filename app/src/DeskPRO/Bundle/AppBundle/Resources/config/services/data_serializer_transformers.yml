@@ -68,3 +68,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ThemeSetAssetTransformer
     arguments:
       - @router
+
+  data_serializer.transformer.agent_alert:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer
+    arguments:
+      - @doctrine.orm.default_entity_manager
