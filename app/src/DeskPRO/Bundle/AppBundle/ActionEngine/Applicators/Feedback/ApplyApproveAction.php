@@ -30,10 +30,10 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Feedback\Apply;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
 class ApplyApproveAction extends AbstractActionApplicator implements SingleActionApplicatorInterface

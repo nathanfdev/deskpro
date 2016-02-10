@@ -35,9 +35,17 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists;
+use Doctrine\ORM\EntityManager;
 
 class ActionToJsonTransformer
 {
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * Takes an ActionInterface and returns a serialized form in JSON format.
      *
@@ -94,6 +102,6 @@ class ActionToJsonTransformer
         }
         $options = array_key_exists('options', $serialized_array) ? $serialized_array['options'] : [];
 
-        return new $class($options);
+        return new $class($this->em, $options);
     }
 }

@@ -30,37 +30,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment;
 
 use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\ApproveAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment\DeleteAction;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\AbstractMassActionsPreprocessor;
-use DeskPRO\Bundle\AppBundle\Data\MassActions\MassActionsPreprocessorInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionCollectionApplicatorInterface;
 
-class FeedbackCommentsMassActions extends AbstractMassActionsPreprocessor implements MassActionsPreprocessorInterface
+class FeedbackCommentApplicator extends AbstractActionApplicator implements ActionCollectionApplicatorInterface
 {
-    protected static $entity = FeedbackComment::class;
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefined(['approve', 'delete']);
-    }
-
     public function prepareActions()
     {
-        foreach ($this->params['actions'] as $name => $options) {
+        foreach ($this->options['actions'] as $name => $options) {
             switch ($name) {
-                case 'approve':
+                case AbstractAction::APPROVE_ACTION:
                     $this->actions->addAction(new ApproveAction());
                     break;
-                case 'delete':
+                case AbstractAction::DELETE_ACTION:
                     $this->actions->addAction(new DeleteAction());
                     break;
             }
         }
 
         return $this->actions;
+    }
+
+    public function applyActionCollection(array $ids, ActionCollection $collection)
+    {
+        $comments = $this->getEntities(FeedbackComment::class, $ids);
+        /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface $action */
+        foreach ($collection->getActions() as $action) {
+            $actionJson = $this->transformer->toJson($action);
+            $applicator = $this->transformer->toActionApplicator('FeedbackComment', $actionJson);
+            $applicator->init();
+            foreach ($comments as $comment) {
+                $applicator->applyAction($comment);
+            }
+        }
+        $this->em->flush();
     }
 }

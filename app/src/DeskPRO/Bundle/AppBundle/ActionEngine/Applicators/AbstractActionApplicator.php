@@ -30,19 +30,25 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionToJsonTransformer;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractActionApplicator
 {
     protected $em;
     protected $options;
+    protected $actions;
+    protected $transformer;
 
     public function __construct(EntityManager $em, array $options)
     {
-        $this->em      = $em;
-        $this->options = $options;
+        $this->em          = $em;
+        $this->options     = $options;
+        $this->actions     = new ActionCollection();
+        $this->transformer = new ActionToJsonTransformer($this->em);
     }
 
     protected function getEntities($class, array $ids)

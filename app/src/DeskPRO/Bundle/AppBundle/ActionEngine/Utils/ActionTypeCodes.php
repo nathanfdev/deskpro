@@ -57,7 +57,7 @@ class ActionTypeCodes
     {
         return strtolower(
             Strings::camelCaseToUnderscore(
-                substr(implode('', array_slice(explode('\\', get_class($action)), -1)), 0, -4)
+                substr(implode('', array_slice(explode('\\', get_class($action)), -1)), 0, -6)
             )
         );
     }
@@ -72,16 +72,15 @@ class ActionTypeCodes
      */
     public static function getActionApplicatorClassForTypeCode($namespace, $action_type_code)
     {
-        $action_applicator_class_namespace = ucfirst(Strings::underscoreToCamelCase($namespace));
-        $action_applicator_class_name      = ucfirst(Strings::underscoreToCamelCase($action_type_code));
-        $action_applicator_class           = sprintf(
+        $action_applicator_class_name = ucfirst(Strings::underscoreToCamelCase($action_type_code));
+        $action_applicator_class      = sprintf(
             'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Applicators\\%s\\Apply%sAction',
-            $action_applicator_class_namespace,
+            $namespace,
             $action_applicator_class_name
         );
-
+        echo "\nApplicator: ".$action_applicator_class."\n";
         if (!class_exists($action_applicator_class)) {
-            throw new ActionApplicatorDoesNotExists($action_type_code);
+            throw new ActionApplicatorDoesNotExists('Action Applicator Does Not Exists '.$action_type_code);
         }
 
         return $action_applicator_class;

@@ -30,16 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\Apply;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    public function applyAction($thing, ActionInterface $action)
+    public function init()
+    {
+        return true;
+    }
+
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
     {
         $feedback->setStatus(Feedback::STATUS_HIDDEN);
         $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);

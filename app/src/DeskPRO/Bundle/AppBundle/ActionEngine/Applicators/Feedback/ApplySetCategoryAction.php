@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
 class ApplySetCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface

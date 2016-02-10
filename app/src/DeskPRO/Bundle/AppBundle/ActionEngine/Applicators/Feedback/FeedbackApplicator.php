@@ -33,21 +33,61 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionCollectionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionToJsonTransformer;
 
 class FeedbackApplicator extends AbstractActionApplicator implements ActionCollectionApplicatorInterface
 {
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection
+     */
+    public function prepareActions()
+    {
+        foreach ($this->options['actions'] as $name => $options) {
+            switch ($name) {
+                case AbstractAction::SET_STATUS_CATEGORY_ACTION:
+                    $this->actions->addAction(new SetStatusCategoryAction($this->em, $options));
+                    break;
+                case AbstractAction::SET_TYPE_ACTION:
+                    $this->actions->addAction(new SetTypeAction($this->em, $options));
+                    break;
+                case AbstractAction::SET_CATEGORY_ACTION:
+                    $this->actions->addAction(new SetCategoryAction($this->em, $options));
+                    break;
+                case AbstractAction::ADD_LABELS_ACTION:
+                    $this->actions->addAction(new AddLabelsAction($options));
+                    break;
+                case AbstractAction::REMOVE_LABELS_ACTION:
+                    $this->actions->addAction(new RemoveLabelsAction($options));
+                    break;
+                case AbstractAction::APPROVE_ACTION:
+                    $this->actions->addAction(new ApproveAction());
+                    break;
+                case AbstractAction::DELETE_ACTION:
+                    $this->actions->addAction(new DeleteAction());
+                    break;
+            }
+        }
+
+        return $this->actions;
+    }
+
     public function applyActionCollection(array $ids, ActionCollection $collection)
     {
         $feedback = $this->getEntities(Feedback::class, $ids);
         /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface $action */
         foreach ($collection->getActions() as $action) {
-            $transformer = new ActionToJsonTransformer();
-            $action      = $transformer->toJson($action);
-            $applicator  = $transformer->toActionApplicator('Feedback', $action);
+            $actionJson = $this->transformer->toJson($action);
+            $applicator = $this->transformer->toActionApplicator('Feedback', $actionJson);
             $applicator->init();
             foreach ($feedback as $item) {
                 $applicator->applyAction($item);
