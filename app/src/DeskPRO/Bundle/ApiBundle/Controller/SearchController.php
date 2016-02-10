@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -46,7 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends BaseController
 {
     /**
-     * @Annotations\Get("/search", name="api_languages")
+     * @Annotations\Get("/search", name="api_quick_search")
      *
      * @param Request $request
      *
