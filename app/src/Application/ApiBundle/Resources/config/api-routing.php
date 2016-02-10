@@ -723,7 +723,7 @@ $collection->create('api_people_person_phone_numbers_get', array(
     'methods'      => array('GET'),
 ));
 
-$collection->create('api_people_person_phone_numbers_delete', array(
+$collection->create('api_people_person_phone_numbers_update', array(
     'path'         => '/people/{person_id}/phone_numbers/{number_id}',
     'controller'   => 'ApiBundle:Person:postPersonPhoneNumber',
     'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
