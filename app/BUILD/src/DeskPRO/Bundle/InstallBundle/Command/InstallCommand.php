@@ -56,6 +56,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
+            ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
 
         foreach (InstallProfile::getQuestionIds() as $qid) {
@@ -163,6 +164,19 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\AdminAccountStep($context),
             new InstallStep\DoneStep($context),
         ];
+
+        if ($input->getOption('skip-wizard')) {
+            array_unshift($steps, new InstallStep\SkipWizardStep($context));
+
+            $skip_list[] = 'file_integrity';
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'check_existing';
+            $skip_list[] = 'accept_paths';
+            $skip_list[] = 'accept_web_url';
+            $skip_list[] = 'accept_database';
+            $skip_list[] = 'install_config';
+            $skip_list[] = 'install_cron';
+        }
 
         /** @var InstallStep\AbstractStep $step */
         foreach ($steps as $num => $step) {

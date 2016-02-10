@@ -32,10 +32,10 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Setting;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Util\Strings;
 
 class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
 {
@@ -58,7 +58,8 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             'core.deskpro_build_num' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
             'core.install_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
             'core.install_timestamp' => time(),
-            'core.install_key' => Strings::CHARS_KEY,
+            'core.install_key' => RandUtils::randomStringFormat('%25An'),
+            'core.app_secret' => RandUtils::randomStringFormat('%75An'),
         ) as $name => $value) {
             $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;

@@ -78,12 +78,16 @@ class SessionManager
         $write_content = base64_encode(serialize($session));
         $einfo         = null;
 
-        $success = ExceptionUtils::detectSuppressedError(function () use ($path, $write_content) {
-            return @file_put_contents($path, $write_content);
-        }, $einfo);
+        if ($session->hasFlag('installer_done')) {
+            @unlink($path);
+        } else {
+            $success = ExceptionUtils::detectSuppressedError(function () use ($path, $write_content) {
+                return @file_put_contents($path, $write_content);
+            }, $einfo);
 
-        if (!$success) {
-            throw new FileWriteException("Could not write to {$this->tmp_path}/install_session.bin", 0, null, @$einfo['message'] ?: 'General write error');
+            if (!$success) {
+                throw new FileWriteException("Could not write to {$this->tmp_path}/install_session.bin", 0, null, @$einfo['message'] ?: 'General write error');
+            }
         }
     }
 }

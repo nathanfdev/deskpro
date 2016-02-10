@@ -33,11 +33,6 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class InstallFixturesStep extends AbstractStep
 {
-    /**
-     * @var string
-     */
-    private $set_password;
-
     public function run()
     {
         $this->writeBigTitle('Initializing database');
@@ -97,7 +92,7 @@ class InstallFixturesStep extends AbstractStep
             // Failure here means we need to reinstall db
             $this->getSession()->enableFlag('reset_db_details');
 
-            return false;
+            return;
         }
 
         $this->writeln('Done!');

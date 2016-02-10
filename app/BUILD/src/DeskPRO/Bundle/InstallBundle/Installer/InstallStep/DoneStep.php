@@ -36,6 +36,8 @@ class DoneStep extends AbstractStep
         $this->writeln('');
         $this->writeln('DeskPRO has been installed successfully.');
         $this->writeln('');
+
+        $this->getSession()->enableFlag('installer_done');
     }
 
     public function isComplete()
