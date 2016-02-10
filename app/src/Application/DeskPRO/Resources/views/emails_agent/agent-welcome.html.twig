@@ -26,12 +26,10 @@
 {{ phrase('agent.emails.newagent-login-link', { link: app.getSetting('core.deskpro_url') ~ 'agent/' }) }}<br/>
 {{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
 {%  if agent.getPlaintextPassword() %}
-	{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}
+	{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}<br/><br/>
 {% else %}
-	{{ phrase('agent.emails.newagent-login-your-password') }}
+	{{ phrase('agent.emails.newagent-login-your-password') }}<br/><br/>
 {% endif %}
-
-<br/><br/>
 
 {{ phrase('agent.emails.newagent-about-pdf') }}
 
