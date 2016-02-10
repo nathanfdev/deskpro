@@ -233,13 +233,14 @@ abstract class AbstractStep
             ++$right;
         }
 
-        $str = str_repeat(' ', $line_len)
+        $fmt = '<bg=blue;fg=white;options=bold>';
+        $str = $fmt.str_repeat(' ', $line_len).'</>'
             .PHP_EOL
-            .str_repeat(' ', $left).$title.str_repeat(' ', $right)
+            .$fmt.str_repeat(' ', $left).$title.str_repeat(' ', $right).'</>'
             .PHP_EOL
-            .str_repeat(' ', $line_len)
+            .$fmt.str_repeat(' ', $line_len).'</>'
             .PHP_EOL;
 
-        $this->writeln("<bg=cyan;fg=black;options=bold>$str</>");
+        $this->writeln($str);
     }
 }
