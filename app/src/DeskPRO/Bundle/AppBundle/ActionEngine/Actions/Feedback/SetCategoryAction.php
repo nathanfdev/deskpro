@@ -42,7 +42,7 @@ class SetCategoryAction extends AbstractAction implements ActionInterface, Actio
     public function __construct(array $options)
     {
         $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
+        self::configureOptions($resolver);
         $this->options = $resolver->resolve($options);
     }
 

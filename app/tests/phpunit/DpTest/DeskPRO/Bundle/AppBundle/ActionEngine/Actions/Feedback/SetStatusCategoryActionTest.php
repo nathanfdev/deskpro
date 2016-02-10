@@ -30,36 +30,31 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
+use DpTest\DeskProTestCase;
 
-class SetStatusCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class SetStatusCategoryActionTest extends DeskProTestCase
 {
-    public function __construct(array $options)
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $resolver = new ActionOptionsResolver();
-        self::configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $action = new SetStatusCategoryAction(['id' => 1]);
+        $this->assertInstanceOf(SetStatusCategoryAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
     }
-
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /**
+     * @test
+     */
+    public function it_should_extend_AbstractAction()
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedValues(
-            self::OPTION_ID,
-            function ($value) {
-                return is_int($value) || ctype_digit($value);
-            }
-        );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
+        $this->assertContains(AbstractAction::class, class_parents(SetStatusCategoryAction::class));
     }
 }
