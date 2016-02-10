@@ -245,10 +245,6 @@ class ChatsController extends AbstractController
     }
 
     /**
-     * This is just a stub to make possible start or find tet-a-tet chats.
-     * In current UI implementation there is no way to know about chats id - only agent pictures,
-     * department pictures and teams pictures. So the main point is that you can start chat with agent only.
-     *
      * @ApiDoc(
      *      description="create an agent-chat with agent",
      *      statusCodes={
@@ -273,15 +269,24 @@ class ChatsController extends AbstractController
         $form = $this->submitForm('api_agent_chat_start_chat', $request->request);
         if (!$form->isValid()) {
             $errors = $this->createFormErrorsData($form);
+            $status = Response::HTTP_BAD_REQUEST;
 
-            return $this->createErrorRepresentation(Response::HTTP_BAD_REQUEST, Response::HTTP_BAD_REQUEST, "Couldn't start chat", $errors);
+            return View::create(
+                $this->createErrorRepresentation($status, $status, "Couldn't start chat", $errors),
+                $status
+            );
         }
 
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
 
         if (!$entity = $messenger->findParticipant($form->get('type')->getData(), $form->get('id')->getData())) {
-            throw new BadRequestHttpException();
+            $status = Response::HTTP_BAD_REQUEST;
+
+            return View::create(
+                $this->createErrorRepresentation($status, $status, "Couldn't start chat", ['Target not found!']),
+                $status
+            );
         }
 
         $user = $this->getUser();

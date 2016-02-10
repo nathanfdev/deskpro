@@ -67,11 +67,15 @@ class StartChatType extends AbstractType
                     ],
                     'choices_as_values' => true,
                     'required'          => true,
+                    'constraints'       => [
+                        new Assert\NotNull(),
+                    ],
                 ]
             )
             ->add('id', 'integer', [
                 'constraints' => [
                     new Assert\GreaterThan(['value' => 0]),
+                    new Assert\NotNull(),
                 ],
                 'required' => true,
             ])
