@@ -84,7 +84,7 @@ export class ActionContainer extends Component {
     };
 
     const choiceOtherAction = (option, key)=> {
-      if (option.param === 'addLabels') {
+      if (option.param === 'add_labels') {
         return (
           <AddLabelsContainer key={key}
                               option={option}
@@ -92,7 +92,7 @@ export class ActionContainer extends Component {
                               stateValue={this.stateValue}
                               unsetParams={resetSingleAction}/>
         );
-      } else if (option.param === 'removeLabels') {
+      } else if (option.param === 'remove_labels') {
         return (
           <RemoveLabelsContainer key={key}
                                  option={option}

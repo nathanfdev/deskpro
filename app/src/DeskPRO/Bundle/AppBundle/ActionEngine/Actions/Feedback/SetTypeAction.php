@@ -39,13 +39,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    const OPTION_TYPE_ID = 'id';
+    public function __construct(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
+
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_TYPE_ID);
+        $resolver->setRequired(self::OPTION_ID);
         $resolver->setAllowedValues(
-            self::OPTION_TYPE_ID,
+            self::OPTION_ID,
             function ($value) {
                 return is_int($value) || ctype_digit($value);
             }
@@ -54,6 +60,6 @@ class SetTypeAction extends AbstractAction implements ActionInterface, ActionWit
 
     public function serialize()
     {
-        return [self::OPTION_TYPE_ID => $this->options[self::OPTION_TYPE_ID]];
+        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
     }
 }

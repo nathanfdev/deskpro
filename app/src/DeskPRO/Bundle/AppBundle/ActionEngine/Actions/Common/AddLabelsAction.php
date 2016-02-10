@@ -32,15 +32,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddLabelsAction implements ActionInterface, ActionWithOptionsInterface
+class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    const OPTION_LABELS = 'labels';
-    private $options;
-
     public function __construct(array $options)
     {
         $resolver = new OptionsResolver();

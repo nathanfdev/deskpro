@@ -55,19 +55,19 @@ class FeedbackApplicator extends AbstractActionApplicator implements ActionColle
         foreach ($this->options['actions'] as $name => $options) {
             switch ($name) {
                 case AbstractAction::SET_STATUS_CATEGORY_ACTION:
-                    $this->actions->addAction(new SetStatusCategoryAction($this->em, $options));
+                    $this->actions->addAction(new SetStatusCategoryAction([AbstractAction::OPTION_ID => $options]));
                     break;
                 case AbstractAction::SET_TYPE_ACTION:
-                    $this->actions->addAction(new SetTypeAction($this->em, $options));
+                    $this->actions->addAction(new SetTypeAction([AbstractAction::OPTION_ID => $options]));
                     break;
                 case AbstractAction::SET_CATEGORY_ACTION:
-                    $this->actions->addAction(new SetCategoryAction($this->em, $options));
+                    $this->actions->addAction(new SetCategoryAction([AbstractAction::OPTION_INPUT => $options]));
                     break;
                 case AbstractAction::ADD_LABELS_ACTION:
-                    $this->actions->addAction(new AddLabelsAction($options));
+                    $this->actions->addAction(new AddLabelsAction([AbstractAction::OPTION_LABELS => $options]));
                     break;
                 case AbstractAction::REMOVE_LABELS_ACTION:
-                    $this->actions->addAction(new RemoveLabelsAction($options));
+                    $this->actions->addAction(new RemoveLabelsAction([AbstractAction::OPTION_LABELS => $options]));
                     break;
                 case AbstractAction::APPROVE_ACTION:
                     $this->actions->addAction(new ApproveAction());

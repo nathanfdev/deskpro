@@ -39,13 +39,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SetStatusCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    const OPTION_STATUS_CATEGORY_ID = 'id';
+    public function __construct(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_STATUS_CATEGORY_ID);
+        $resolver->setRequired(self::OPTION_ID);
         $resolver->setAllowedValues(
-            self::OPTION_STATUS_CATEGORY_ID,
+            self::OPTION_ID,
             function ($value) {
                 return is_int($value) || ctype_digit($value);
             }
@@ -55,6 +60,6 @@ class SetStatusCategoryAction extends AbstractAction implements ActionInterface,
     /** @return array */
     public function serialize()
     {
-        return [self::OPTION_STATUS_CATEGORY_ID => $this->options[self::OPTION_STATUS_CATEGORY_ID]];
+        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
     }
 }

@@ -39,7 +39,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    const OPTION_INPUT = 'input';
+    public function __construct(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {

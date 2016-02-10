@@ -32,9 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 abstract class AbstractAction
 {
     const APPROVE_ACTION             = 'approve';
@@ -45,17 +42,9 @@ abstract class AbstractAction
     const ADD_LABELS_ACTION          = 'add_labels';
     const REMOVE_LABELS_ACTION       = 'remove_labels';
 
-    protected $em;
+    const OPTION_LABELS = 'labels';
+    const OPTION_INPUT  = 'input';
+    const OPTION_ID     = 'id';
+
     protected $options;
-
-    public function __construct(EntityManager $em = null, array $options = [])
-    {
-        $this->em = $em;
-        if (!empty($options)) {
-            $resolver = new OptionsResolver();
-            $this->configureOptions($resolver);
-
-            $this->options = $resolver->resolve($options);
-        }
-    }
 }

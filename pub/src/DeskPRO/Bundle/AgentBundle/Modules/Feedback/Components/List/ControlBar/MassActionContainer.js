@@ -39,7 +39,6 @@ export class MassActionContainer extends Component {
               actions: { delete: [] }
             },
             loadIndicatorAction: loadIndicator,
-            reloadListAction: applyParams,
             reloadNavAction: initialLoad
           }
         ));
@@ -54,7 +53,6 @@ export class MassActionContainer extends Component {
               actions: { approve: [] }
             },
             loadIndicatorAction: loadIndicator,
-            reloadListAction: applyParams,
             reloadNavAction: initialLoad
           }
         ));
@@ -75,7 +73,6 @@ export class MassActionContainer extends Component {
       jobType: 'publish_mass',
       content: isComments ? 'feedback_comments' : 'feedback',
       loadIndicatorAction: loadIndicator,
-      reloadListAction: applyParams,
       reloadNavAction: initialLoad
     };
 
