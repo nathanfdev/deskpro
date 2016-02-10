@@ -76,11 +76,6 @@ class TicketFormContext
     /**
      * @var string
      */
-    private $view_context;
-
-    /**
-     * @var string
-     */
     private $visibility;
 
     /**
@@ -132,7 +127,7 @@ class TicketFormContext
      */
     public function getActiveLayout()
     {
-        return ('agent' === $this->view_context) ? $this->layout->agent_layout : $this->layout->user_layout;
+        return self::VIEW_AGENT === $this->getViewContext() ? $this->layout->agent_layout : $this->layout->user_layout;
     }
 
     /**
@@ -140,7 +135,7 @@ class TicketFormContext
      */
     public function getPreviouslyActiveLayout()
     {
-        return ('agent' === $this->view_context) ? $this->layout->agent_layout : $this->layout->user_layout;
+        return self::VIEW_AGENT === $this->getViewContext() ? $this->layout->agent_layout : $this->layout->user_layout;
     }
 
     /**
@@ -150,7 +145,7 @@ class TicketFormContext
      */
     public function getViewContext()
     {
-        return $this->getOption('ticket_view_context');
+        return $this->getOption('ticket_view_context', self::VIEW_USER);
     }
 
     /**

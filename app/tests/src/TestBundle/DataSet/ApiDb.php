@@ -141,8 +141,8 @@ class ApiDb extends AbstractDbSet
 
         $ticket_layout1               = new TicketLayout();
         $ticket_layout1->is_enabled   = true;
-        $ticket_layout1->agent_layout = new Layout();
-        $ticket_layout1->user_layout  = $layout;
+        $ticket_layout1->agent_layout = $layout;
+        $ticket_layout1->user_layout  = new Layout();
 
         $layout = new Layout();
         $layout
@@ -163,8 +163,8 @@ class ApiDb extends AbstractDbSet
 
         $ticket_layout2               = new TicketLayout($dep2);
         $ticket_layout2->is_enabled   = true;
-        $ticket_layout2->agent_layout = new Layout();
-        $ticket_layout2->user_layout  = $layout;
+        $ticket_layout2->agent_layout = $layout;
+        $ticket_layout2->user_layout  = new Layout();
 
         // Create a basic task
         $task = new Task($admin);
