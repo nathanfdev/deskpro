@@ -35,19 +35,19 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
     public function __construct(array $options)
     {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
+        $resolver = new ActionOptionsResolver();
+        self::configureOptions($resolver);
         $this->options = $resolver->resolve($options);
     }
 
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_ID);
         $resolver->setAllowedValues(
