@@ -14,8 +14,7 @@ import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStor
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-import { departmentsLoaded, myDepartmentsSelector, myAgentTeamsSelector, agentTeamsLoadedSelector } 
-  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
@@ -27,9 +26,7 @@ import { departmentsLoaded, myDepartmentsSelector, myAgentTeamsSelector, agentTe
   chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  teamsLoaded: agentTeamsLoadedSelector(state),
   agentsStatus: agentsStatusSelector(state),
-  departmentsLoaded: departmentsLoaded(state),
   recentChatsStatus: recentChatsStatusSelector(state)
 }))
 export class List extends React.Component {
@@ -43,9 +40,7 @@ export class List extends React.Component {
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    teamsLoaded: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
-    departmentsLoaded: PropTypes.bool.isRequired,
     recentChatsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
@@ -93,13 +88,8 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsLoaded, departmentsLoaded, loadingCounts, chating } = this.props;
-    const loaded = (
-      recentChatsStatus.get('isDone')
-      && agentsStatus.get('isDone')
-      && teamsLoaded
-      && departmentsLoaded
-    );
+    const { recentChatsStatus, agentsStatus, loadingCounts, chating } = this.props;
+    const loaded = recentChatsStatus.get('isDone') && agentsStatus.get('isDone');
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
