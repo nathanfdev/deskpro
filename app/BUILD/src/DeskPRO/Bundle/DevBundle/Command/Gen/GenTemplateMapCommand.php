@@ -29,32 +29,34 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\DevBundle;
+namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
-use DeskPRO\Bundle\DevBundle\Command\DevTestCommand;
-use DeskPRO\Bundle\DevBundle\Command\Lang\CheckUsesCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class DevBundle extends Bundle
+class GenTemplateMapCommand extends ContainerAwareCommand
 {
-    public function registerCommands(Application $application)
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
-        $application->add(new CheckUsesCommand());
-        $application->add(new DevTestCommand());
-
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-        $application->add(new Command\Gen\GenTemplateMapCommand());
+        $this->setName('dpdev:gen:template-map');
     }
 
-    public function getNamespace()
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        return __NAMESPACE__;
-    }
+        $output->writeln('Generating map... This might take a while.');
+        $startTime = microtime(true);
 
-    public function getPath()
-    {
-        return __DIR__;
+        TemplatesScanner::dump();
+
+        $output->writeln(sprintf('Done in %.3fs', $gen->count(), microtime(true) - $startTime));
+        $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
     }
 }

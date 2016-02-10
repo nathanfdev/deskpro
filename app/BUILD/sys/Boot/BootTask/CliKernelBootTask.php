@@ -47,6 +47,14 @@ class CliKernelBootTask implements BootTaskInterface
 
         $argv[0] = 'console';
 
+        // --kernel virtual arg is not passed to real commands
+        if (($idx = array_search('--kernel', $argv, true)) !== false) {
+            $cmd_ns = $argv[$idx + 1];
+            unset($argv[$idx]);
+            unset($argv[$idx + 1]);
+            $argv = array_values($argv);
+        }
+
         define('DP_INTERFACE', 'cli');
 
         switch ($cmd_ns) {
@@ -57,6 +65,10 @@ class CliKernelBootTask implements BootTaskInterface
             case 'install':
             case 'update':
                 $kernel = new Kernel\InstallKernel($env);
+                break;
+
+            case 'portal':
+                $kernel = new Kernel\PortalKernel($env);
                 break;
 
             default:

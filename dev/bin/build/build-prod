@@ -1,7 +1,97 @@
-#!/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DP_DIR="`cd "${SCRIPT_DIR}/../../../";pwd`"
+#!/usr/bin/env php
+<?php
 
-echo $DP_DIR
+$DP_DIR = realpath(__DIR__.'./../../../');
+chdir($DP_DIR);
 
-# TODO
+function dp_build_runcmd($cmd) {
+    $ret = null;
+
+    echo "\$ $cmd\n";
+    passthru($cmd, $ret);
+
+    if ($ret) {
+        echo "Command failed with status {$ret}\n";
+        exit(1);
+    }
+}
+
+$options = getopt('', [
+    'quick',
+    'with-build',
+    'with-build-time',
+]);
+
+$is_quick = (bool) @$options['quick'];
+
+########################################################################################################################
+# Init project
+########################################################################################################################
+
+echo "Running init-project";
+dp_build_runcmd('dev/init-project');
+
+########################################################################################################################
+# Cache warmup
+########################################################################################################################
+
+echo "Cache warmup: dev";
+dp_build_runcmd('bin/console --kernel dev --env prod cache:warmup --verbose');
+
+echo "Cache warmup: dp";
+dp_build_runcmd('bin/console --kernel dp --env prod cache:warmup --verbose');
+
+echo "Cache warmup: portal";
+dp_build_runcmd('bin/console --kernel portal --env prod cache:warmup --verbose');
+
+########################################################################################################################
+# Legacy Assets
+########################################################################################################################
+
+echo "Legacy assets";
+dp_build_runcmd('bin/console --kernel dp --env prod dp:assetic -r ALL --verbose');
+
+########################################################################################################################
+# Schema file
+########################################################################################################################
+
+echo "Generating schema file";
+dp_build_runcmd('bin/console dpdev:gen:schema-file --fake-db-connection');
+
+########################################################################################################################
+# Template map
+########################################################################################################################
+
+if (!$is_quick) {
+    dp_build_runcmd('bin/console dpdev:gen:template-map');
+}
+
+########################################################################################################################
+# Build time/versions
+########################################################################################################################
+
+$build_num = @$options['build'] ?: null;
+$build_time = @$options['build-time'] ?: time();
+
+file_put_contents(DP_APP_DIR.'/sys/config/build-time.php', "<?php define('DP_BUILD_TIME', {$build_time});\n");
+
+if ($build_num) {
+    if (strpos($build_num, '.')) {
+        list ($build_num_base, $build_rev) = explode($build_num, '.', 2);
+    } else {
+        $build_num_base = $build_num;
+        $build_rev = 0;
+    }
+    file_put_contents(DP_APP_DIR.'/sys/config/build-num.php',
+        "<?php define('DP_BUILD_NUM', $build_num);\n"
+        ."define('DP_BUILD_NUM_BASE', $build_num_base);\n"
+        ."define('DP_BUILD_NUM_REV', $build_rev);\n"
+    );
+}
+
+########################################################################################################################
+# Checksum file
+########################################################################################################################
+
+echo "Generating file integrity map";
+dp_build_runcmd('bin/console dpdev:gen:integrity-map');
