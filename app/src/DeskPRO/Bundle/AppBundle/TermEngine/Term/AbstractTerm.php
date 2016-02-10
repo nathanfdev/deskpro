@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -62,7 +63,7 @@ abstract class AbstractTerm implements TermInterface
      * This is where all of the data of a term is stored.
      *
      * Note that default options are not stored here. We only store options
-     * that were explicitely added. The only access to options is via the
+     * that were explicitly added. The only access to options is via the
      * getOptions() method (which uses OptionsResolver to resolve the options).
      *
      * @var array the defined settings

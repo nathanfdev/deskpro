@@ -34,10 +34,10 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\AddLabelsAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\ApproveAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\DeleteAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
@@ -57,7 +57,7 @@ class FeedbackMassActions extends AbstractMassActionsPreprocessor implements Mas
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection
+     * @return \DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection
      */
     public function prepareActions()
     {
@@ -73,13 +73,13 @@ class FeedbackMassActions extends AbstractMassActionsPreprocessor implements Mas
                     $this->actions->addAction(new SetCategoryAction($this->em, $options));
                     break;
                 case AbstractAction::ADD_LABELS_ACTION:
-                    $this->actions->addAction(new AddLabelsAction($this->em, $options));
+                    $this->actions->addAction(new AddLabelsAction($options));
                     break;
                 case AbstractAction::REMOVE_LABELS_ACTION:
-                    $this->actions->addAction(new RemoveLabelsAction($this->em, $options));
+                    $this->actions->addAction(new RemoveLabelsAction($options));
                     break;
                 case AbstractAction::APPROVE_ACTION:
-                    $this->actions->addAction(new ApproveAction($this->em));
+                    $this->actions->addAction(new ApproveAction());
                     break;
                 case AbstractAction::DELETE_ACTION:
                     $this->actions->addAction(new DeleteAction());

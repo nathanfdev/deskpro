@@ -57,8 +57,5 @@ abstract class AbstractAction
 
             $this->options = $resolver->resolve($options);
         }
-        $this->init();
     }
-
-    abstract public function init();
 }

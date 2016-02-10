@@ -33,10 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
 
 use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class ApproveAction extends AbstractAction implements ActionInterface
+class ApplyApproveAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
     public function init()
     {
@@ -46,14 +46,8 @@ class ApproveAction extends AbstractAction implements ActionInterface
     /**
      * @param FeedbackComment $comment
      */
-    public function run($comment)
+    public function applyAction($comment)
     {
         $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::APPROVE_ACTION => []];
     }
 }

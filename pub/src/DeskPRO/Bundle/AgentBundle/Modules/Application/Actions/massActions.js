@@ -37,7 +37,6 @@ export const submitMassActions = createAction(
   (data) => (dispatch) => new Promise(resolve =>
     api.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
       .success(response => {
-        console.log('Job', response);
         dispatch(toggleMassAction());
         dispatch(cancelMassActions());
         dispatch(data.loadIndicatorAction());

@@ -30,31 +30,37 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
     const OPTION_INPUT = 'input';
+    private $customDef;
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * Fetch CustomDef.
+     */
+    public function init()
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
+        $this->customDef = $this->em
+            ->getRepository('DeskPRO:CustomDefFeedback')
+            ->findOneBy(['title' => 'Category']);
     }
 
-    /** @return array */
-    public function serialize()
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        $feedback->resetCustomData();
+        $customCategory = new CustomDataFeedback();
+        $customCategory->setInput($this->options[self::OPTION_INPUT]);
+        $customCategory->setField($this->customDef);
+        $feedback->addCustomData($customCategory);
     }
 }

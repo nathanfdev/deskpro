@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Data\MassActions;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

@@ -30,11 +30,11 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 
-interface ActionWithOptionsInterface
+interface ActionApplicatorInterface
 {
-    public function configureOptions(OptionsResolver $resolver);
+    public function applyActionCollection(array $ids, ActionCollection $collection);
 }

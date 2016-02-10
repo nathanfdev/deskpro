@@ -30,31 +30,32 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class AddLabelsAction implements ActionInterface, ActionWithOptionsInterface
 {
-    const OPTION_INPUT = 'input';
+    const OPTION_LABELS = 'labels';
+    private $options;
+
+    public function __construct(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
+        $resolver->setRequired(self::OPTION_LABELS);
     }
 
     /** @return array */
     public function serialize()
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
     }
 }

@@ -30,39 +30,36 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Feedback\Apply;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplyApproveAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired('labels');
-    }
+    private $defaultStatusCategory;
 
+    /**
+     * Fetch default status category.
+     */
     public function init()
     {
-        return true;
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+        $this->defaultStatusCategory = $activeStatusCategories[0];
     }
 
     /**
      * @param Feedback $feedback
      */
-    public function run($feedback)
+    public function applyAction($feedback)
     {
-        foreach ($this->options['labels'] as $string) {
-            $feedback->addLabelByString($string);
+        if ($feedback->status === Feedback::STATUS_HIDDEN) {
+            $feedback->setHiddenStatus();
+            $feedback->setStatus(Feedback::STATUS_ACTIVE);
+            $feedback->setStatusCategory($this->defaultStatusCategory);
         }
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::ADD_LABELS_ACTION => ['labels' => $this->options['labels']]];
+        $feedback->setIsReviewed(true);
     }
 }

@@ -30,31 +30,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApproveAction implements ActionInterface
 {
-    const OPTION_INPUT = 'input';
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
-    }
-
     /** @return array */
     public function serialize()
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        return [];
     }
 }

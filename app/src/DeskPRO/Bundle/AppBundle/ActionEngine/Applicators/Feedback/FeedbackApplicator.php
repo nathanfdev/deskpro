@@ -30,43 +30,29 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionCollectionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionToJsonTransformer;
 
-class ApproveAction extends AbstractAction implements ActionInterface
+class FeedbackApplicator extends AbstractActionApplicator implements ActionCollectionApplicatorInterface
 {
-    private $defaultStatusCategory;
-
-    /**
-     * Fetch default status category.
-     */
-    public function init()
+    public function applyActionCollection(array $ids, ActionCollection $collection)
     {
-        $activeStatusCategories = $this->em
-            ->getRepository('DeskPRO:FeedbackStatusCategory')
-            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
-        $this->defaultStatusCategory = $activeStatusCategories[0];
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        if ($feedback->status === Feedback::STATUS_HIDDEN) {
-            $feedback->setHiddenStatus();
-            $feedback->setStatus(Feedback::STATUS_ACTIVE);
-            $feedback->setStatusCategory($this->defaultStatusCategory);
+        $feedback = $this->getEntities(Feedback::class, $ids);
+        /** @var \DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface $action */
+        foreach ($collection->getActions() as $action) {
+            $transformer = new ActionToJsonTransformer();
+            $action      = $transformer->toJson($action);
+            $applicator  = $transformer->toActionApplicator('Feedback', $action);
+            $applicator->init();
+            foreach ($feedback as $item) {
+                $applicator->applyAction($item);
+            }
         }
-        $feedback->setIsReviewed(true);
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::APPROVE_ACTION => []];
+        $this->em->flush();
     }
 }

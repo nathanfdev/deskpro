@@ -32,29 +32,28 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplyRemoveLabelsAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    const OPTION_INPUT = 'input';
+    const OPTION_LABELS = 'labels';
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function init()
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
+        return true;
     }
 
-    /** @return array */
-    public function serialize()
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        foreach ($this->options[self::OPTION_LABELS] as $string) {
+            if ($label = $feedback->findLabelByString($string)) {
+                $feedback->labels->removeElement($label);
+            }
+        }
     }
 }

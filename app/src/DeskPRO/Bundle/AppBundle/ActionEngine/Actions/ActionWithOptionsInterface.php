@@ -30,20 +30,11 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-interface ActionInterface
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+interface ActionWithOptionsInterface
 {
-    /**
-     * Prepare all needed data (i.e. fetch category for setting to items set and so on).
-     */
-    public function init();
-
-    /**
-     * @param mixed $entity
-     */
-    public function run($entity);
-
-    /** @return array */
-    public function getSerialized();
+    public function configureOptions(OptionsResolver $resolver);
 }

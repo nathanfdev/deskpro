@@ -30,41 +30,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 
-class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
+class DeleteAction implements ActionInterface
 {
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setRequired('labels');
-    }
-
-    public function init()
-    {
-        return true;
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        foreach ($this->options['labels'] as $string) {
-            if ($label = $feedback->findLabelByString($string)) {
-                $feedback->labels->removeElement($label);
-            }
-        }
-    }
-
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::REMOVE_LABELS_ACTION => ['labels' => $this->options['labels']]];
+        return [];
     }
 }

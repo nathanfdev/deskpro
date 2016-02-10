@@ -30,35 +30,19 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\Apply;
 
 use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 
-class DeleteAction extends AbstractAction implements ActionInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /**
-     * Prepare all needed data (i.e. fetch category for setting to items set and so on).
-     */
-    public function init()
-    {
-        return true;
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
+    public function applyAction($thing, ActionInterface $action)
     {
         $feedback->setStatus(Feedback::STATUS_HIDDEN);
         $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
         $feedback->setIsReviewed(true);
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::DELETE_ACTION => []];
     }
 }

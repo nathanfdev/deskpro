@@ -30,31 +30,30 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityManager;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+abstract class AbstractActionApplicator
 {
-    const OPTION_INPUT = 'input';
+    protected $em;
+    protected $options;
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function __construct(EntityManager $em, array $options)
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
+        $this->em      = $em;
+        $this->options = $options;
     }
 
-    /** @return array */
-    public function serialize()
+    protected function getEntities($class, array $ids)
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('entity')
+            ->from($class, 'entity')
+            ->where('entity.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
     }
 }

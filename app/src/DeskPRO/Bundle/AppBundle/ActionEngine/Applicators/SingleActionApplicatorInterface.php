@@ -30,42 +30,11 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
-class ActionCollection
+interface SingleActionApplicatorInterface
 {
-    /** @var ArrayCollection */
-    private $actions;
+    public function init();
 
-    public function __construct()
-    {
-        $this->actions = new ArrayCollection();
-    }
-
-    public function addAction(ActionInterface $action)
-    {
-        $this->actions->add($action);
-
-        return $this;
-    }
-
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    public function getSerializedActions()
-    {
-        $serialized = [];
-        foreach ($this->actions as $action) {
-            $serializedAction = $action->getSerialized();
-            if (!empty($serializedAction)) {
-                $serialized[] = $serializedAction;
-            }
-        }
-
-        return $serialized;
-    }
+    public function applyAction($entity);
 }

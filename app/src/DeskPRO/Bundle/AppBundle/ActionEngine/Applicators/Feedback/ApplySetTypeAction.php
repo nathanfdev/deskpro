@@ -30,30 +30,34 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class DeleteAction extends AbstractAction implements ActionInterface
+class ApplySetTypeAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
+    const OPTION_TYPE_ID = 'id';
+    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
+    private $type;
+
+    /**
+     * Fetch type (FeedbackCategory) for setting to items.
+     */
     public function init()
     {
-        return true;
+        $id         = $this->options[self::OPTION_TYPE_ID];
+        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 
     /**
-     * @param FeedbackComment $comment
+     * @param Feedback $feedback
+     *
+     * @return Feedback
      */
-    public function run($comment)
+    public function applyAction($feedback)
     {
-        $comment->setStatus(FeedbackComment::STATUS_DELETED);
-    }
-
-    /** @return array */
-    public function getSerialized()
-    {
-        return [self::DELETE_ACTION => []];
+        $feedback->setCategory($this->type);
     }
 }

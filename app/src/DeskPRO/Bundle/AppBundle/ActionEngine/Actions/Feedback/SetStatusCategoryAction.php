@@ -32,47 +32,29 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SetStatusCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    private $statusCategory;
+    const OPTION_STATUS_CATEGORY_ID = 'id';
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('id');
+        $resolver->setRequired(self::OPTION_STATUS_CATEGORY_ID);
         $resolver->setAllowedValues(
-            'id',
+            self::OPTION_STATUS_CATEGORY_ID,
             function ($value) {
                 return is_int($value) || ctype_digit($value);
             }
         );
     }
 
-    /**
-     * Fetch status category (FeedbackStatusCategory).
-     */
-    public function init()
-    {
-        $id                   = $this->options['id'];
-        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($id);
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        $feedback->setStatusCategory($this->statusCategory);
-    }
-
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::SET_STATUS_CATEGORY_ACTION => ['id' => $this->options['id']]];
+        return [self::OPTION_STATUS_CATEGORY_ID => $this->options[self::OPTION_STATUS_CATEGORY_ID]];
     }
 }

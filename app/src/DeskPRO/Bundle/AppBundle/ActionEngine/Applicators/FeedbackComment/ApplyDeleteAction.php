@@ -30,31 +30,24 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\FeedbackComment;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\DeskPRO\Entity\FeedbackComment;
+use DeskPRO\Bundle\AppBundle\ActionEngine\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    const OPTION_INPUT = 'input';
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function init()
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
+        return true;
     }
 
-    /** @return array */
-    public function serialize()
+    /**
+     * @param FeedbackComment $comment
+     */
+    public function applyAction($comment)
     {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        $comment->setStatus(FeedbackComment::STATUS_DELETED);
     }
 }
