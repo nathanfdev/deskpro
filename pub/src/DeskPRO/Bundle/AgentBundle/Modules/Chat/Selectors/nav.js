@@ -15,4 +15,3 @@ export const allChatsSelector = createSelector(
   stateSelector,
     list => list.get('all')
 );
-

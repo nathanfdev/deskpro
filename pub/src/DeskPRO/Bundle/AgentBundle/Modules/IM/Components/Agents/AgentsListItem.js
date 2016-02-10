@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import * as actions from '../../Actions/chatsActions';
 import { connect } from 'react-redux';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import TimeAgo from 'react-timeago';
 
 @connect()

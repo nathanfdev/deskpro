@@ -1,6 +1,6 @@
 import React from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { NestedList as BaseNestedList, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { NestedList as BaseNestedList, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from './ListItemContainer';
 
 export class NestedList extends BaseNestedList {

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
@@ -55,6 +54,12 @@ class TransformerListener implements EventSubscriberInterface
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param DataTransformer $data_transformer
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         DataTransformer $data_transformer,
         LoggerInterface $logger
@@ -63,6 +68,9 @@ class TransformerListener implements EventSubscriberInterface
         $this->data_transformer = $data_transformer;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -72,6 +80,8 @@ class TransformerListener implements EventSubscriberInterface
 
     /**
      * Now execute the transformer and set the "main transformed data".
+     *
+     * @param DataSerializerEvent $event
      */
     public function transform(DataSerializerEvent $event)
     {
@@ -93,6 +103,12 @@ class TransformerListener implements EventSubscriberInterface
         $context->setMainTransformed($main_transformed);
     }
 
+    /**
+     * @param mixed                 $data
+     * @param DataSerializerContext $context
+     *
+     * @return array|\Traversable
+     */
     protected function recursiveTransform($data, DataSerializerContext $context)
     {
         if (!is_array($data) && !$data instanceof \Traversable) {

@@ -30,19 +30,29 @@ namespace DeskPRO\Bundle\ApiBundle\Log\Serializer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 
-class HumanReadableSerializer implements ApiLoggerSerializerInterface
+class HumanReadableSerializer implements SerializerInterface
 {
     public function serialize(ApiLog $log)
     {
         return sprintf('======================= LOG ENTRY ======================
+request_id: %s
 uri: %s
 execution time: %d
 request time: %s
-request body:
+
+request data:
 ------------------------------------
+HEADERS:
+%s
+----------------
+POST:
+%s
+----------------
+QUERY:
 %s
 ------------------------------------
-response body:
+
+response data:
 ------------------------------------
 %s
 ------------------------------------
@@ -50,11 +60,14 @@ response status: %d
 api_key_id: %d
 =======================/LOG ENTRY ======================
 '.PHP_EOL,
+            $log->getRequestId(),
             $log->getRequestedUri(),
             $log->getEndTime() - $log->getStartTime(),
             date('Y-m-d H:i:s', $log->getStartTime()),
-            $log->getRequestData(),
-            $log->getResponseData(),
+            var_export($log->getRequestData()['headers'], true),
+            var_export($log->getRequestData()['post'], true),
+            var_export($log->getRequestData()['query'], true),
+            var_export($log->getResponseData(), true),
             $log->getStatus(),
             $log->getKey()->getId()
         );

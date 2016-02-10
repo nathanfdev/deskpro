@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -93,7 +92,7 @@ class FeedbackController extends BaseController
      *          200="Success"
      *      }
      * )
-     * @Get("/feedback/", name="api_feedback")
+     * @Get("/feedback", name="api_feedback")
      *
      * @param Request $request
      *

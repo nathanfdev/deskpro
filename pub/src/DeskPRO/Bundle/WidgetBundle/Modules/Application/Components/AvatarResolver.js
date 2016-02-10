@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ImageAvatar, Gravatar } from 'DeskPRO/Component/Avatar/index';
+import { ImageAvatar, Gravatar } from 'DeskPRO/Component/Avatar';
 import Immutable from 'immutable';
 
 export class AvatarResolver extends React.Component {

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 /**
@@ -184,7 +183,8 @@ class DataSerializerContext
      */
     public function setMainData($main_data)
     {
-        if ($type = $this->getMainType()) {
+        $type = $this->getMainType();
+        if ($type) {
             $this->sideloads->addIgnoredData($type, $main_data);
         }
 

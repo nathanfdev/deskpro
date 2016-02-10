@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -68,7 +69,7 @@ class AgentChatParticipantSpec extends ObjectBehavior
         $this->getTeam()->shouldBeEqualTo(null);
     }
 
-    public function it_cat_return_person_list_even_it_references_just_one_person(
+    public function it_can_return_person_list_even_it_references_just_one_person(
         Person $tomCat,
         Person $jerryMouse,
         AgentTeam $cartoon,

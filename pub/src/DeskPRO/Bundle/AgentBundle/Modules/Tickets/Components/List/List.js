@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListFrameContainer, ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { ListFrameContainer, ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ControlBarContainer } from './ControlBarContainer';
 import { ListTableViewContainer } from './View/Table/ListTableViewContainer';
 import { ListCardViewContainer } from './View/Card/ListCardViewContainer';

@@ -1,11 +1,10 @@
 import { createAction } from 'Ampliflux';
 import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
-import { releaseChats, setChatsRequest } from '../RecordStores/Actions/chatsActions';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
 export const openChat = createAction('IM_OPEN_CHAT');
-
 
 export const markChatAsManuallyClosed = createAction(
   'MARK_CHAT_AS_CLOSED',
@@ -41,9 +40,9 @@ export const startChat = createAction(
         return method.call()
           .success((response) => {
             const records = {};
-            dispatch(releaseChats('recent', [response.data.id]));
+            dispatch(releaseCollection('Chat', 'recent', [response.data.id]));
             records[response.data.id] = response.data;
-            dispatch(setChatsRequest('recent', records, [parseInt(response.data.id, 10)]));
+            dispatch(setCollection('Chat', 'recent', records, [parseInt(response.data.id, 10)]));
             dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })

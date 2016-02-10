@@ -155,13 +155,6 @@ services:
       - { name: form.type, alias: ticket_message }
 
 
-  form.custom_field_choice:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomFieldChoiceType
-    arguments: [@form_hierarchy_generator]
-    tags:
-      - { name: form.type, alias: deskpro_custom_field_choice }
-
-
   form.deskpro_contextual_per_field_choice:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
     arguments: [@form_hierarchy_generator]
@@ -213,12 +206,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateType
     tags:
       - { name: form.type, alias: deskpro_date }
-
-
-  form.datetime:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateTimeType
-    tags:
-      - { name: form.type, alias: deskpro_datetime }
 
 
   form.heirarchical_entity:

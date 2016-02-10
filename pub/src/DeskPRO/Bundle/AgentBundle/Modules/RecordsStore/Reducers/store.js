@@ -2,13 +2,13 @@ import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
 import { loadBatch, setCollection, releaseCollection } from '../Actions/store'
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
-import { objectKeyedFromArray } from 'DeskPRO/Component/Util/Objects';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const storeInitialState = {};
 
 function handleSetCollection(state, {recordName, collectionName, records}) {
-  const recordsMap = objectKeyedFromArray(records, 'id');
-  const recordIds = Object.keys(recordsMap).map(id => parseInt(id));
+  const recordsMap = mapKeyedFromArray(records, 'id');
+  const recordIds = recordsMap.keySeq().toArray();
 
   return state.mergeDeep({
     [recordName]: {

@@ -31,8 +31,8 @@ Feature: /ticket_layouts endpoint
 
     And the JSON node "[1].department" should be equal to 2
     And the JSON node "[1].context" should be equal to <context>
-    And the JSON node "[1].fields" should have 6 elements
-    And the JSON node "[1].fields[0].field_type" should be equal to "user_name_and_email"
+    And the JSON node "[1].fields" should have 10 elements
+    And the JSON node "[1].fields[0].field_type" should be equal to "person"
     And the JSON node "[1].fields[1].field_type" should be equal to "department"
     And the JSON node "[1].fields[2].field_type" should be equal to "message"
     And the JSON node "[1].fields[3].field_type" should be equal to "attach"
@@ -65,8 +65,8 @@ Feature: /ticket_layouts endpoint
     Examples:
       | context | department_id | expected_department_id | expected_fields_count |
       | agent   |  1            | 1                      | 2                     |
-      | agent   |  2            | 2                      | 6                     |
+      | agent   |  2            | 2                      | 10                    |
       | agent   |  default      | 0                      | 2                     |
       | user    |  1            | 1                      | 2                     |
-      | user    |  2            | 2                      | 6                     |
+      | user    |  2            | 2                      | 10                    |
       | user    |  default      | 0                      | 2                     |

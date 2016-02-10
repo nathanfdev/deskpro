@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -54,7 +55,7 @@ class ApiEndpointListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onController', -1),
+            KernelEvents::CONTROLLER => array('onController', 1024),
         );
     }
 
@@ -69,6 +70,7 @@ class ApiEndpointListener implements EventSubscriberInterface
     public function onController(FilterControllerEvent $event)
     {
         if (!is_array($controller = $event->getController())
+            || !$controller[0] instanceof BaseController // just a stub
             || $controller[0] instanceof ExceptionController) {
             return;
         }

@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ApiLog.
  *
  * @ORM\Entity()
- * @ORM\Table("api_log")
+ * @ORM\Table("api_log", uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
@@ -61,7 +61,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var int timestamp
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $end_time;
 
@@ -81,21 +81,28 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $status;
 
     /**
-     * @var string
-     * @ORM\Column(type="text")
+     * @var array
+     * @ORM\Column(type="json_array")
      */
     protected $request_data;
 
     /**
-     * @var string
-     * @ORM\Column(type="text")
+     * @var array
+     * @ORM\Column(type="json_array", nullable=true)
      */
     protected $response_data;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $request_id;
 
     /**
      * @return int
@@ -226,11 +233,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $request_data
+     * @param array $request_data
      *
      * @return $this
      */
-    public function setRequestData($request_data)
+    public function setRequestData(array $request_data)
     {
         $this->request_data = $request_data;
 
@@ -238,7 +245,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getResponseData()
     {
@@ -246,11 +253,31 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $response_data
+     * @param $request_id
      *
      * @return $this
      */
-    public function setResponseData($response_data)
+    public function setRequestId($request_id)
+    {
+        $this->request_id = $request_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestId()
+    {
+        return $this->request_id;
+    }
+
+    /**
+     * @param array $response_data
+     *
+     * @return $this
+     */
+    public function setResponseData(array $response_data)
     {
         $this->response_data = $response_data;
 
@@ -270,6 +297,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
             'response_data',
             'request_data',
             'requested_uri',
+            'request_id',
         ];
     }
 }

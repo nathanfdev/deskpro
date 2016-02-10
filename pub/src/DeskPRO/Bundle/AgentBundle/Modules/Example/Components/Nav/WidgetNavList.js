@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import { loadTypes } from '../../RecordStores/Actions/widgetTypeActions';
 import { setWidgetFilter } from '../../Actions/actions';
 import { typesSelector, typesStatus } from '../../RecordStores/Selectors/widgetTypesSelectors';
-import { ListSection, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListSection, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 @connect(state => ({
   status: typesStatus(state),

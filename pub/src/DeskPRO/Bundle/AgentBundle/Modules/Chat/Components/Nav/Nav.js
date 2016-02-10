@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionsPane }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { MyChats } from './Sections/MyChats';
 import { AllChats } from './Sections/AllChats';
 import { pureRender } from 'Ampliflux';

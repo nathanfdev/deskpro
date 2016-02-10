@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
@@ -70,6 +69,11 @@ class DataSideloads
      */
     private $needs_processing_since_last_sideload_get;
 
+    /**
+     * Constructor.
+     *
+     * @param DataTypeIdFinder $id_finder
+     */
     public function __construct(DataTypeIdFinder $id_finder)
     {
         $this->deferred_properties                      = [];
@@ -80,11 +84,18 @@ class DataSideloads
         $this->needs_processing_since_last_sideload_get = false;
     }
 
+    /**
+     * @return bool
+     */
     public function hasUnprocessed()
     {
         return $this->needs_processing_since_last_sideload_get;
     }
 
+    /**
+     * @param string             $type
+     * @param array|\Traversable $data
+     */
     public function addIgnoredData($type, $data)
     {
         if (is_array($data) || $data instanceof \Traversable) {
@@ -104,6 +115,10 @@ class DataSideloads
         }
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     */
     public function addIgnoredTypeId($type, $id)
     {
         if (null === $id) {
@@ -117,11 +132,20 @@ class DataSideloads
         $this->ignore_data[$type][] = $id;
     }
 
+    /**
+     * @param string $type
+     * @param mixed  $data
+     */
     public function addSideloadData($type, $data)
     {
         $this->addSideloadDataId($type, $this->id_finder->findDataId($data), $data);
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     * @param mixed  $data
+     */
     public function addSideloadDataId($type, $id, $data)
     {
         if (array_key_exists($type, $this->ignore_data)) {
@@ -143,6 +167,12 @@ class DataSideloads
         $this->sideload_data[$type][$id] = $data;
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     *
+     * @return bool
+     */
     public function hasSideloadData($type, $id)
     {
         if (null === $id) {
@@ -156,6 +186,10 @@ class DataSideloads
         return false;
     }
 
+    /**
+     * @param string                    $type
+     * @param DeferredPropertyInterface $deferred
+     */
     public function addDeferred($type, DeferredPropertyInterface $deferred)
     {
         if (!array_key_exists($type, $this->deferred_properties)) {
@@ -167,6 +201,9 @@ class DataSideloads
         $this->deferred_properties[$type][] = $deferred;
     }
 
+    /**
+     * @return array
+     */
     public function getAndClearDeferred()
     {
         $temp                      = $this->deferred_properties;
@@ -175,6 +212,10 @@ class DataSideloads
         return $temp;
     }
 
+    /**
+     * @param string $type
+     * @param mixed  $array_of_data
+     */
     public function addSideloadCollection($type, $array_of_data)
     {
         if (!array_key_exists($type, $this->sideload_collections)) {
@@ -203,6 +244,9 @@ class DataSideloads
         $this->sideload_collections = [];
     }
 
+    /**
+     * @return array
+     */
     public function getSideloadData()
     {
         $this->needs_processing_since_last_sideload_get = false;

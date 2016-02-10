@@ -11,7 +11,7 @@ import { DpAppContainer } from './Modules/Application/Components/DpAppContainer'
 import { IntlProvider } from 'react-intl';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
-import { loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL/index';
+import { loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 
 /**

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import moment from 'moment';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 

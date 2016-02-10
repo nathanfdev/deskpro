@@ -1,6 +1,6 @@
 import { ApiRepository } from './Repository/ApiRepository';
 import { AbstractRepository } from './Repository/AbstractRepository';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 let repositoriesConfig;
 
@@ -63,9 +63,9 @@ function createApiRepository(config, record) {
 
   const url = config['url'];
   const allowAll = config.hasOwnProperty('allowAll') ? config['allowAll'] : false;
-  const searchParams = config.hasOwnProperty('search') ? config['search'] : null;
+  const repositoryClass = config.hasOwnProperty('repositoryClass') ? config['repositoryClass'] : ApiRepository;
 
-  return new ApiRepository(api, url, allowAll, searchParams);
+  return new repositoryClass(api, url, allowAll);
 }
 
 /**

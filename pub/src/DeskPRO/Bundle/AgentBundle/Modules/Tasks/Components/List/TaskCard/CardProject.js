@@ -17,7 +17,7 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form';
 
 @connect(state => ({
   projects: allProjectsSelector(state)

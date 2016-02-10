@@ -17,9 +17,7 @@ import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Recor
 
 // teams
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-
-// departmetns
-import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { departmentsLoaded, myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
@@ -33,7 +31,7 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   loadingCounts: state.IM.messages.get('loadingCounts'),
   teamsStatus: myAgentTeamsStatusSelector(state),
   agentsStatus: agentsStatusSelector(state),
-  departmentsStatus: myDepartmentsStatusSelector(state),
+  departmentsLoaded: departmentsLoaded(state),
   recentChatsStatus: recentChatsStatusSelector(state)
 }))
 export class List extends React.Component {
@@ -49,7 +47,7 @@ export class List extends React.Component {
     loadingCounts: PropTypes.bool.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
-    departmentsStatus: PropTypes.object.isRequired,
+    departmentsLoaded: PropTypes.bool.isRequired,
     recentChatsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
@@ -97,12 +95,12 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, loadingCounts, chating } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsLoaded, loadingCounts, chating } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
       && teamsStatus.get('isDone')
-      && departmentsStatus.get('isDone')
+      && departmentsLoaded
     );
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {

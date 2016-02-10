@@ -73,8 +73,9 @@ class TicketLayoutFactory
     public function getInitialLayout()
     {
         return $this
-            ->entity_manager
-            ->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
+            ->getBaseTicketLayoutQueryBuilder()
+            ->where('l.department IS NULL')
+            ->getQuery()
             ->getOneOrNullResult()
         ;
     }
@@ -91,9 +92,10 @@ class TicketLayoutFactory
         //if ($department && !($department instanceof Department)) {
         if ($department) {
             $layout = $this
-                ->entity_manager
-                ->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+                ->getBaseTicketLayoutQueryBuilder()
+                ->where('l.department = :department')
                 ->setParameter('department', $department)
+                ->getQuery()
                 ->getOneOrNullResult()
             ;
         }
@@ -154,7 +156,7 @@ class TicketLayoutFactory
         $layout = new TicketLayout();
 
         /** @var TicketLayout[] $all_layouts */
-        $all_layouts = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l')->execute();
+        $all_layouts = $this->getBaseTicketLayoutQueryBuilder()->getQuery()->execute();
 
         foreach ($all_layouts as $l) {
             foreach ($l->getUserLayout()->all() as $f) {
@@ -203,17 +205,17 @@ class TicketLayoutFactory
             }
         }
 
-        // if no email input exists, add the new USER_NAME_AND_EMAIL
-        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::USER_NAME_AND_EMAIL)) {
-            $new = new LayoutField(FormFields::USER_NAME_AND_EMAIL);
+        // if no email input exists, add the new PERSON
+        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::PERSON)) {
+            $new = new LayoutField(FormFields::PERSON);
             $new->enableOnNew();
             $new->enableOnEdit();
             $new->enableOnView();
             $layout->add($new);
         }
 
-        // finally, if USER_NAME_AND_EMAIL exists, remove USER_EMAIL and USER_NAME as they are redundant
-        if ($layout->has(FormFields::USER_NAME_AND_EMAIL)) {
+        // finally, if PERSON exists, remove USER_EMAIL and USER_NAME as they are redundant
+        if ($layout->has(FormFields::PERSON)) {
             if ($layout->has(FormFields::USER_EMAIL)) {
                 $layout->remove(FormFields::USER_EMAIL);
             }
@@ -269,5 +271,18 @@ class TicketLayoutFactory
                 $layout->add($new);
             }
         }
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function getBaseTicketLayoutQueryBuilder()
+    {
+        return $this
+            ->entity_manager
+            ->createQueryBuilder()
+            ->select('l')
+            ->from('DeskPRO:TicketLayout', 'l')
+        ;
     }
 }

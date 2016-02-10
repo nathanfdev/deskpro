@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Section, SectionHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from '../ListItemContainer';
 import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
 

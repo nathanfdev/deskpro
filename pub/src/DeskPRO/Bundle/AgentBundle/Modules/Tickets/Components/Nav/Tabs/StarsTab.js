@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { SectionHeader, NestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { SectionHeader, NestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 
 export class StarsTab extends Component {
   static propTypes = {

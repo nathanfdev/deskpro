@@ -112,7 +112,7 @@ security:
             stateless: true
             anonymous: ~
         api_session_request:
-            pattern: ^/api/v2/get_session$
+            pattern: ^/api/v2/(get_session|helpdesk/discover|doc)$
             stateless: true
             anonymous: ~
         api:
@@ -122,7 +122,7 @@ security:
                 authenticator: api_authenticator
 
     access_control:
-        - { path: '^/api/v2(?!/api_tokens|/doc|/get_session)', roles: ['ROLE_API'] }
+        - { path: '^/api/v2(?!/api_tokens|/doc|/get_session|/helpdesk/discover)', roles: ['ROLE_API'] }
 
 sensio_framework_extra:
     cache:    { annotations: true }

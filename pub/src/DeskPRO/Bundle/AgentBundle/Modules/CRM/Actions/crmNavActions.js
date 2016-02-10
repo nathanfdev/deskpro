@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL/Http/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { pluck } from 'lodash';
 
 export const initialLoad = createAction(

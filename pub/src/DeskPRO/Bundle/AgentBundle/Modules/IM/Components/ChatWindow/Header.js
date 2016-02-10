@@ -6,8 +6,7 @@ import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 // teams
 import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-// departmetns
-import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
@@ -16,13 +15,9 @@ import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bund
   teams: myAgentTeamsSelector(state),
   teamsStatus: myAgentTeamsStatusSelector(state),
   departments: myDepartmentsSelector(state),
-  departmentsStatus: myDepartmentsStatusSelector(state),
   current: state.IM.chats.get('current')
-
 }))
 export class Header extends React.Component {
-
-
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
@@ -30,7 +25,6 @@ export class Header extends React.Component {
     teams: PropTypes.object.isRequired,
     teamsStatus: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
-    departmentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     toggleSearch: PropTypes.func.isRequired,

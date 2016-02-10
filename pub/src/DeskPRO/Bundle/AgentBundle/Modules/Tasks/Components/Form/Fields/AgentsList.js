@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { BaseList } from './BaseList';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 
 export class AgentsList extends BaseList {
 

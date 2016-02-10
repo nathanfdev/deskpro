@@ -17,8 +17,8 @@ import {
   ChatPollingContainer,
   ChatActive,
   ChatWaiting
-} from '../../../Chat/Components/index';
-import { TicketApp, TicketForm, TicketFormSubmitted } from '../../../Ticket/Components/index';
+} from '../../../Chat/Components';
+import { TicketApp, TicketForm, TicketFormSubmitted } from '../../../Ticket/Components';
 import { history } from '../../../../Services/history';
 
 export class Widget extends React.Component {

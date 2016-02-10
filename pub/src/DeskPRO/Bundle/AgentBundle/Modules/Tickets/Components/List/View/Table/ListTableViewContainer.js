@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Th, Td, TdId, TdTitle, TableCheckbox }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { connect } from 'react-redux';
 import { elementsSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelected } from '../../../../Actions/listActions';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/index';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 // @todo Extract Row component (to omit selecting all tickets from record store + better structure + easier to test)
 

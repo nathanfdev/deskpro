@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Td, TdId, PersonInTable }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 
 export class Row extends Component {
   static propTypes = {

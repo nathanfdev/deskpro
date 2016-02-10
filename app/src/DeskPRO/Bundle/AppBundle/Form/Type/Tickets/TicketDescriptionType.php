@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use Orb\Util\Strings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -75,24 +74,19 @@ class TicketDescriptionType extends AbstractType
             ];
         }
 
-        // message_text and message_html are not mapped because
+        // message is not mapped because
         // we manually call our setters onPostSubmit so we can
         // set text or html, depending on what the users browser submitted
 
         $builder
-            ->add('message_text', 'textarea', [
+            ->add('message', 'html_textarea', [
                 'label'       => $options['message_label'],
                 'required'    => $options['required'],
-                'attr'        => ['data-rte-field' => 'text'],
+                'attr'        => ['data-rte-field' => 'message'],
                 'constraints' => $constraints,
                 'mapped'      => false,
             ])
-            ->add('message_html', 'html_textarea', [
-                'attr'   => ['data-rte-field' => 'html', 'style' => 'display:none'], // style is hidden by default, we show with JS
-                'label'  => false,
-                'mapped' => false,
-            ])
-            ->add('message_format', 'hidden', [
+            ->add('format', 'hidden', [
                 'data'        => 'text',
                 'attr'        => ['data-rte-field' => 'format'],
                 'constraints' => [
@@ -103,7 +97,6 @@ class TicketDescriptionType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -130,45 +123,13 @@ class TicketDescriptionType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $messageData = $event->getData();
-
-        switch ($messageData['message_format']) {
-            case 'text':
-                $messageData['message_html'] = '';
-                $event->setData($messageData);
-                break;
-
-            case 'html':
-                // Let's assign a plaintext version to the text var
-                // so the length constraints can still be tested.
-                $messageData['message_text'] = Strings::stripTags($messageData['message_html']);
-                $event->setData($messageData);
-                break;
-        }
-    }
-
-    /**
-     * @param FormEvent $event
-     */
     public function onPostSubmit(FormEvent $event)
     {
         $form = $event->getForm();
 
         /** @var \Application\DeskPRO\Entity\TicketMessage $message */
         $message = $event->getData();
-
-        // Manually bind the data using the appropriate setter
-        switch ($form->get('message_format')->getData()) {
-            case 'text':
-                $message->setMessageText($form->get('message_text')->getData());
-                break;
-
-            case 'html':
-                $message->setMessageHtml($form->get('message_html')->getData());
-                break;
-        }
+        $message->setMessageHtml($form->get('message')->getData());
     }
 
     /**
