@@ -11,7 +11,7 @@ export function fakeChatsState(num = 0) {
   const ids = [];
   for (let id = 1; id <= num; id++) {
     records[id] = {id};
-    ids.push(id);
+    ids.push('' + id);
   }
 
   return fakeState({

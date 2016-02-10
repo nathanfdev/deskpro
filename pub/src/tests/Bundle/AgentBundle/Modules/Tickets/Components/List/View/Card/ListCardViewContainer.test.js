@@ -11,7 +11,7 @@ const fakeState = {
     store: toImmutable({
       Ticket: {
         records: {1: {}, 2: {}, 3: {}},
-        collections: {list: [1, 2, 3]},
+        collections: {list: ['1', '2', '3']},
         statuses: {list: {isDone: true}}
       }
     })
