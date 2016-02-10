@@ -4,7 +4,7 @@ import { currentListParamsSelector } from '../Selectors/list';
 import { setPeopleRequest } from '../RecordStores/Actions/peopleActions';
 import { setOrganizationsRequest } from '../RecordStores/Actions/organizationsActions';
 import { setUserGroupsRequest } from '../RecordStores/Actions/userGroupsActions';
-import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'crm';
@@ -28,7 +28,7 @@ export const loadPeople = createAction(
     const res = promise.getData();
     dispatch(setOrganizationsRequest(recordStoresId, prepareLinkedData(res.linked.organization)));
     dispatch(setUserGroupsRequest(recordStoresId, prepareLinkedData(res.linked.usergroup)));
-    dispatch(setLanguagesRequest(recordStoresId, prepareLinkedData(res.linked.language)));
+    dispatch(setCollection('Language', recordStoresId, prepareLinkedData(res.linked.language)));
     dispatch(setPeopleRequest(recordStoresId, res.data));
     const ids = res.data.map(item=>item.id);
     return { ids: ids, pagination: res.meta.pagination };

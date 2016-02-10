@@ -11,3 +11,6 @@ export const departmentsLoaded = isLoadedCollectionSelectorFactory('Department',
 export const allAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'all');
 export const myAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'my');
 export const agentTeamsLoadedSelector = isLoadedCollectionSelectorFactory('AgentTeam', 'all');
+
+// Language
+export const allLanguagesSelector = collectionSelectorFactory('Language', 'all');

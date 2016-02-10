@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Content } from './Content';
 import * as TimezonesActions from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/timezonesActions';
 import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
-import { languagesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Selectors/languagesSelectors';
+import { allLanguagesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { timezonesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Selectors/timezonesSelectors';
 import { mySelector, myStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/profilesSelectors';
 
 @connect(state => ({
-  languages: languagesSelector(state),
+  languages: allLanguagesSelector(state),
   timezones: timezonesSelector(state),
   profile: mySelector(state),
   profileStatus: myStatusSelector(state)
