@@ -18,7 +18,7 @@ export function collectionSelectorFactory(recordName, collectionName) {
       let result;
       if (state.hasIn([recordName, 'collections', collectionName]) && state.hasIn([recordName, 'records'])) {
         const ids = state.getIn([recordName, 'collections', collectionName]);
-        result = state.getIn([recordName, 'records']).filter((record, id) => ids.includes(parseInt(id)));
+        result = state.getIn([recordName, 'records']).filter((record, id) => ids.includes(id));
       } else {
         result = Immutable.fromJS({});
       }
