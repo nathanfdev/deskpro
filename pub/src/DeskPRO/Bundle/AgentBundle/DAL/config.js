@@ -10,5 +10,6 @@ export const repositoriesConfig = {
   Feedback:        {type: 'api', url: '/feedback', repositoryClass: FeedbackRepository},
   FeedbackComment: {type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository},
   Organization:    {type: 'api', url: '/organizations'},
-  Person:          {type: 'api', url: '/people'}
+  Person:          {type: 'api', url: '/people'},
+  Timezone:        {type: 'api', url: '/timezones', allowAll: true}
 };
