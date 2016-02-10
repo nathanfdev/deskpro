@@ -1,27 +1,49 @@
 import { createAction } from 'Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
+
+// loadAll(), loadBatch() and loadCustom have the same ID because they share reducer -----------------------------------
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, target, collectionName) => {
     const ids = (typeof ids === 'number') ? [target] : target;
-    return repository(recordName).loadBatch(ids).then(response => ({
+    return {
+      recordName,
+      collectionName,
+      promise: repository(recordName).loadBatch(ids).then(response => ({
+        recordName,
+        collectionName,
+        records: response.getData().data
+      }))
+    }
+  }
+);
+export const loadAll = createAction(
+  'RECORDS_STORE_LOAD',
+  (recordName) => ({
+    recordName,
+    collectionName: 'all',
+    promise: repository(recordName).loadAll().then(response => ({
+      recordName,
+      collectionName: 'all',
+      records: response.getData().data
+    }))
+  })
+);
+export const loadCustom = createAction(
+  'RECORDS_STORE_LOAD',
+  (recordName, url, collectionName) => ({
+    recordName,
+    collectionName,
+    promise: api.sendGet(url).then(response => ({
       recordName,
       collectionName,
       records: response.getData().data
     }))
-  }
+  })
 );
 
-// loadAll() has the same id as loadBatch() because they share reducer
-export const loadAll = createAction(
-  'RECORDS_STORE_LOAD',
-  (recordName) => repository(recordName).loadAll().then(response =>({
-    recordName,
-    collectionName: 'all',
-    records: response.getData().data
-  }))
-);
+// ---------------------------------------------------------------------------------------------------------------------
 
 export const setCollection = createAction(
   'RECORDS_STORE_SET_COLLECTION',
