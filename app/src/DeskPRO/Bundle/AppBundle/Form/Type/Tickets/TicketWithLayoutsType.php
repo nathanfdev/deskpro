@@ -395,7 +395,7 @@ class TicketWithLayoutsType extends AbstractType
                 'allow_extra_fields'  => true,
                 'full_version'        => false,
                 'use_captcha'         => true,
-                'cc_view_type'        => 'inline',
+                'for_api'             => false,
             ])
             ->setRequired([
                 'person',
@@ -597,16 +597,24 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addPerson(TicketFormContext $context, LayoutField $field)
     {
-        $context->getForm()->add(
-            $field->getId(),
-            'deskpro_combined_type',
-            [
+        $form = $context->getForm();
+
+        if ($context->forApi()) {
+            $form->add($field->getId(), 'deskpro_person_identity', [
+                'property_path'    => 'person',
+                'person'           => $context->getPerson(),
+                'label_name'       => $this->phrase('portal.forms.label_name'),
+                'label_email'      => $this->phrase('portal.forms.label_email'),
+                'available_fields' => ['id', 'email', 'name'],
+            ]);
+        } else {
+            $form->add($field->getId(), 'deskpro_combined_type', [
                 'forms' => [
                     $this->createUserName($context),
                     $this->createUserEmail($context),
                 ],
-            ]
-        );
+            ]);
+        }
     }
 
     /**
@@ -982,7 +990,7 @@ class TicketWithLayoutsType extends AbstractType
             'ticket'    => $context->getTicket(),
             'mapped'    => false,
             'required'  => false,
-            'view_type' => $context->getOption('cc_view_type'),
+            'view_type' => $context->forApi() ? 'array' : 'inline',
         ]);
     }
 

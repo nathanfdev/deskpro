@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -139,7 +138,7 @@ class Person extends AbstractEntityRepository
      *
      * @param Department|int $department the actual department or the id of it
      *
-     * @return Person[]
+     * @return PersonEntity[]
      */
     public function getAgentsInDepartment($department)
     {

@@ -202,6 +202,14 @@ class TicketFormContext
     }
 
     /**
+     * @return bool
+     */
+    public function forApi()
+    {
+        return $this->getOption('for_api', false);
+    }
+
+    /**
      * @return Ticket
      */
     public function getTicket()

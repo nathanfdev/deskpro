@@ -60,7 +60,7 @@ Feature: /tickets endpoint
     """
 {
   "person": {
-    "user_name": "Changed Name"
+    "name": "Changed Name"
   },
   "subject": "Modified subject",
   "department": 2,
@@ -99,11 +99,13 @@ Feature: /tickets endpoint
   ]
 }
     """
-    And I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 204
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.person" should be equal to 1
     And the JSON node "data.product" should be equal to 2
     And the JSON node "data.priority" should be equal to 3
     And the JSON node "data.participants" should have 1 element
@@ -129,3 +131,29 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/people/1"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Changed Name"
+
+  Scenario: I modify ticket person by id
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": 2
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.person" should be equal to 2
+
+  Scenario: I modify ticket person by email
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": "user@deskpro.dev"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.person" should be equal to 3

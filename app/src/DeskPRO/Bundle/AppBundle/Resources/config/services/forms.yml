@@ -35,6 +35,13 @@ services:
     tags:
       - { name: form.type, alias: deskpro_combined_type }
 
+  form.person_identity:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonIdentityType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_identity }
+
   form.person_email_choice:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
     arguments:
