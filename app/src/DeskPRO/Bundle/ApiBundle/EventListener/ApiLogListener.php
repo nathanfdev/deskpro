@@ -164,7 +164,7 @@ class ApiLogListener implements EventSubscriberInterface
         ];
 
         $log
-            ->setStartTime(DP_START_TIME)
+            ->setStartTime(defined('DP_START_TIME') ? DP_START_TIME : time())
             ->setRequestedUri($request->getUri())
             ->setRequestData($request_data)
             ->setRequestId($this->getRequestId($request));

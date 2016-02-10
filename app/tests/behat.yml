@@ -15,6 +15,7 @@ api:
                 - DpBehat\Api\PeopleContext
                 - DpBehat\PermissionContext
                 - DpBehat\Api\ModesAndTagsContext
+                - DpBehat\Api\ApiLogContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
     extensions:
