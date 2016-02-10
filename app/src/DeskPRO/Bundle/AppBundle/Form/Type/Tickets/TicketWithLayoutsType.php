@@ -478,17 +478,11 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addField(TicketFormContext $context, LayoutField $field, $ignore_validation = false)
     {
-        if ($context->getForm()->has($field->getId())) {
+        if ($context->getForm()->has($field->getId()) || $this->shouldFieldBeSkipped($field, $context)) {
             return;
         }
 
-        if ($this->shouldFieldBeSkipped($field, $context)) {
-            return;
-        }
-
-        $field_type = $field->getFieldType();
-
-        switch ($field_type) {
+        switch ($field->getFieldType()) {
             case FormFields::SUBJECT:
                 $this->addSubject($context, $ignore_validation);
                 break;
@@ -532,7 +526,7 @@ class TicketWithLayoutsType extends AbstractType
                 $this->addUserTimezone($context, $field);
                 break;
             case FormFields::LABEL:
-                $this->addLabelField($context, $field);
+                $this->addLabelField($context);
                 break;
             case FormFields::USER_FIELD:
                 $this->addCustomUserField($context, $field, $ignore_validation);
@@ -737,11 +731,10 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketFormContext $context
-     * @param LayoutField       $field
      */
-    private function addLabelField(TicketFormContext $context, LayoutField $field)
+    private function addLabelField(TicketFormContext $context)
     {
-        $context->getForm()->add($field->getId(), 'api_labels_collection', [
+        $context->getForm()->add('labels', 'api_labels_collection', [
             'labels_class'   => LabelTicket::class,
             'labels_owner'   => $context->getTicket(),
             'owner_property' => 'ticket',
