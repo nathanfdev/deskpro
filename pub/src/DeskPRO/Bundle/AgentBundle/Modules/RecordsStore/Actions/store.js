@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-// loadAll(), loadBatch() and loadCustom have the same ID because they share reducer -----------------------------------
+// loadAll(), loadBatch() and loadFromApi() have the same ID because they share reducer --------------------------------
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
@@ -30,7 +30,7 @@ export const loadAll = createAction(
     }))
   })
 );
-export const loadCustom = createAction(
+export const loadFromApi = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, url, collectionName) => ({
     recordName,

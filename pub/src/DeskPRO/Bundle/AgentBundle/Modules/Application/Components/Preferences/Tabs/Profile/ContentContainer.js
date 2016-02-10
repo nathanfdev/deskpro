@@ -1,31 +1,27 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
-import * as ProfilesActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/profilesActions';
-import { loadAll, allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
-import { mySelector, myStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/profilesSelectors';
+import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadMyProfile, myProfileSelector, isMyProfileLoadedSelector }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/profile';
 
 @connect(state => ({
   languages: allSelectorFactory('Language')(state),
-  timezones: collectionSelectorFactory('Timezone', 'all')(state),
-  profile: mySelector(state),
-  profileStatus: myStatusSelector(state)
+  timezones: allSelectorFactory('Timezone')(state),
+  profile: myProfileSelector(state),
+  profileLoaded: isMyProfileLoadedSelector(state)
 }))
 export class ContentContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    languages: PropTypes.object.isRequired,
-    timezones: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
-    profileStatus: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
     props.dispatch(loadAll('Timezone'));
-    props.dispatch(ProfilesActions.loadMy());
+    props.dispatch(loadMyProfile());
   }
 
   render() {

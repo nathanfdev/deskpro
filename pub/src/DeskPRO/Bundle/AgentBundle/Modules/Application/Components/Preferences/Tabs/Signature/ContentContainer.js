@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
-import { loadCustom, isLoadedCollectionSelectorFactory, collectionSelectorFactory }
+import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFactory }
   from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
@@ -17,7 +17,7 @@ export class ContentContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    props.dispatch(loadCustom('Settings', 'DP_API/person_setting', 'my'));
+    props.dispatch(loadFromApi('Settings', 'DP_API/person_setting', 'my'));
   }
 
   render() {
