@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Form\TicketFormContext;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -52,10 +53,11 @@ class TicketFormsController extends AbstractTicketsController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'person'      => $this->getUser(),
-            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
-            'use_captcha' => false,
-            'for_api'     => true,
+            'person'              => $this->getUser(),
+            'settings'            => $this->get('brand_stack')->getActive()->getSettings(),
+            'use_captcha'         => false,
+            'for_api'             => true,
+            'ticket_view_context' => TicketFormContext::VIEW_AGENT,
         ]);
 
         return parent::handleForm($model, $request, $options);
