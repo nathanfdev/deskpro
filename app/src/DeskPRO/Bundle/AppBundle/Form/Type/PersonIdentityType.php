@@ -31,12 +31,15 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Assigns person entity using multiple formats.
@@ -73,10 +76,13 @@ class PersonIdentityType extends AbstractType
                 'label'    => $options['label_name'],
                 'required' => false,
             ])
-            ->add('email', 'text', [
-                'label'    => $options['label_email'],
-                'required' => false,
-                'mapped'   => false,
+            ->add('email', 'email', [
+                'label'       => $options['label_email'],
+                'required'    => false,
+                'mapped'      => false,
+                'constraints' => [
+                    new Assert\Email(),
+                ],
             ])
         ;
 
@@ -119,10 +125,27 @@ class PersonIdentityType extends AbstractType
         $default_person    = $form->getConfig()->getOption('person');
 
         // Set person entity from request fields (id or email)
+        // Creates a new person if no person found by provided email
+
         if (!empty($data['email'])) {
-            $form->setData($person_repository->findOneByEmail($data['email']));
+            $person = $person_repository->findOneByEmail($data['email']);
+            if (!$person) {
+                if (empty($data['name'])) {
+                    $form->get('name')->addError(new FormError('not_blank'));
+                }
+
+                $person = new Person();
+                $person->addEmailAddressString($data['email']);
+            }
+
+            $form->setData($person);
         } elseif (!empty($data['id'])) {
-            $form->setData($person_repository->find((int) $data['id']));
+            $person = $person_repository->find((int) $data['id']);
+            if (!$person) {
+                $form->addError(new FormError('person_not_found'));
+            }
+
+            $form->setData($person);
 
         // Use config person entity as default
         } elseif (!$form->getData() && $default_person) {

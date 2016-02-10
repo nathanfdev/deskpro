@@ -132,6 +132,16 @@ Feature: /tickets endpoint
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Changed Name"
 
+  Scenario: I modify ticket person by unknown id
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": 10000
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_found"
+
   Scenario: I modify ticket person by id
     When I send a PUT request to "/api/v2/ticket_forms/5" with body:
     """
@@ -163,3 +173,68 @@ Feature: /tickets endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].person" should be equal to 3
+
+  Scenario: I modify ticket person by unknown email
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": "unknown-email@deskpro.dev"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
+
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": {
+    "email": "unknown-email@deskpro.dev"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
+
+  Scenario: I modify ticket person by creating a new person using name and email fields
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": {
+    "email": "new-user@deskpro.dev",
+    "name": "Some NewUser"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.person" should be equal to 5
+
+    When I send a GET request to "/api/v2/people/5"
+    Then the response status code should be 200
+    And the JSON node "data.name" should be equal to "Some NewUser"
+    And the JSON node "data.primary_email" should be equal to "new-user@deskpro.dev"
+    And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
+
+  Scenario: I modify ticket person with incorrect email
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": {
+    "email": "incorrect - emaildeskpro.dev",
+    "name": "Some NewUser"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
+
+    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    """
+{
+  "person": "incorrect - emaildeskpro.dev"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
