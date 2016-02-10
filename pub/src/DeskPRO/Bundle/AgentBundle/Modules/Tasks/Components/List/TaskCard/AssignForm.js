@@ -6,8 +6,7 @@ import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { allDepartmentsSelector, allAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import {
   BaseForm,
   Header,
@@ -26,7 +25,7 @@ import {
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
-  agentTeams: agentTeamsSelector(state),
+  agentTeams: allAgentTeamsSelector(state),
   departments: allDepartmentsSelector(state)
 }))
 export class AssignForm extends BaseForm {

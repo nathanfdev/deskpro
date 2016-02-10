@@ -14,10 +14,8 @@ import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStor
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
-// teams
-import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { departmentsLoaded, myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { departmentsLoaded, myDepartmentsSelector, myAgentTeamsSelector, agentTeamsLoadedSelector } 
+  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
@@ -29,7 +27,7 @@ import { departmentsLoaded, myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBu
   chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  teamsStatus: myAgentTeamsStatusSelector(state),
+  teamsLoaded: agentTeamsLoadedSelector(state),
   agentsStatus: agentsStatusSelector(state),
   departmentsLoaded: departmentsLoaded(state),
   recentChatsStatus: recentChatsStatusSelector(state)
@@ -45,7 +43,7 @@ export class List extends React.Component {
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    teamsStatus: PropTypes.object.isRequired,
+    teamsLoaded: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     departmentsLoaded: PropTypes.bool.isRequired,
     recentChatsStatus: PropTypes.object.isRequired,
@@ -95,11 +93,11 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsLoaded, loadingCounts, chating } = this.props;
+    const { recentChatsStatus, agentsStatus, teamsLoaded, departmentsLoaded, loadingCounts, chating } = this.props;
     const loaded = (
       recentChatsStatus.get('isDone')
       && agentsStatus.get('isDone')
-      && teamsStatus.get('isDone')
+      && teamsLoaded
       && departmentsLoaded
     );
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;

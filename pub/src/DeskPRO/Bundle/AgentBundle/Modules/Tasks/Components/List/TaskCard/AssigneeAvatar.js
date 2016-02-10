@@ -2,12 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { PersonAvatar, DepartmentAvatar, AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { allDepartmentsSelector, allAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   agents: agentsSelector(state),
-  agentTeams: agentTeamsSelector(state),
+  agentTeams: allAgentTeamsSelector(state),
   departments: allDepartmentsSelector(state)
 }))
 export class AssigneeAvatar extends React.Component {

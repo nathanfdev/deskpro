@@ -4,16 +4,13 @@ import { connect } from 'react-redux';
 // agents
 import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-// teams
-import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   agentsStatus: agentsStatusSelector(state),
   teams: myAgentTeamsSelector(state),
-  teamsStatus: myAgentTeamsStatusSelector(state),
   departments: myDepartmentsSelector(state),
   current: state.IM.chats.get('current')
 }))
@@ -23,7 +20,6 @@ export class Header extends React.Component {
     agents: PropTypes.object.isRequired,
     agentsStatus: PropTypes.object.isRequired,
     teams: PropTypes.object.isRequired,
-    teamsStatus: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
