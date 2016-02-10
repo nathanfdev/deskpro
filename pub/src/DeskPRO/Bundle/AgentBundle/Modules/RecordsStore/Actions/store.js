@@ -13,6 +13,16 @@ export const loadBatch = createAction(
   }
 );
 
+// loadAll() has the same id as loadBatch() because they share reducer
+export const loadAll = createAction(
+  'RECORDS_STORE_LOAD',
+  (recordName, collectionName = 'all') => repository(recordName).loadAll().then(response =>({
+    recordName,
+    collectionName,
+    records: response.getData().data
+  }))
+);
+
 export const setCollection = createAction(
   'RECORDS_STORE_SET_COLLECTION',
   (recordName, collectionName, records) => ({recordName, collectionName, records})
