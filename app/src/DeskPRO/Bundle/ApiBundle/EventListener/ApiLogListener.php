@@ -146,7 +146,18 @@ class ApiLogListener implements EventSubscriberInterface
                 ->setEndTime(time())
                 ->setResponseData($response_data)
                 ->setStatus($response->getStatusCode());
-            $this->writer->write($this->log);
+
+            $options = $this->helper->getRequestOptions($event->getRequest()->headers);
+
+            if (
+                $this->helper->isClientRequestdLog()
+                && $options['failure_mode'] === LogHelper::FAILURE_MODE_SKIP
+                && !($event->getResponse()->isSuccessful() || $event->getResponse()->isRedirection())
+            ) {
+                return;
+            } else {
+                $this->writer->write($this->log);
+            }
         }
     }
 
@@ -209,7 +220,7 @@ class ApiLogListener implements EventSubscriberInterface
                     throw new ConflictHttpException('This is duplicate request');
                     break;
                 case LogHelper::DUPLICATE_MODE_RESEND:
-                    $response->setStatusCode(Response::HTTP_OK);
+                    $response->setStatusCode($api_log->getStatus());
                     $response->setContent($api_log->getResponseData()['body']);
                     $headers           = new ResponseHeaderBag($api_log->getResponseData()['headers']);
                     $response->headers = $headers;
