@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
@@ -145,6 +146,7 @@ class TicketWithLayoutsType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData']);
     }
 
     /**
@@ -245,6 +247,30 @@ class TicketWithLayoutsType extends AbstractType
         );
 
         $event->setData(array_merge($event->getData(), $extra_data_to_submit));
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onUpdateRelatedData(FormEvent $event)
+    {
+        $ticket = $event->getForm()->getData();
+
+        // update ticket message properties
+        /** @var TicketMessage $ticket_message */
+        $ticket_message = $ticket->messages->first();
+        if ($ticket_message) {
+            $person = $ticket->getPerson();
+            $ticket_message->setPerson($person);
+            foreach ($ticket_message->getAttachments() as $attachment) {
+                $blob = $attachment->getBlob();
+                if ($blob) {
+                    $blob->is_temp = false;
+                }
+
+                $attachment->setPerson($person);
+            }
+        }
     }
 
     /**

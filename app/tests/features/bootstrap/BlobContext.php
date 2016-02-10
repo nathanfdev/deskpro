@@ -47,6 +47,7 @@ class BlobContext extends BaseContext
 
         $blob           = $blob_storage->createBlobRecordFromString('blob content', 'file.txt', 'text/plain');
         $blob->authcode = $auth_code;
+        $blob->is_temp  = true;
 
         $this->em()->persist($blob);
         $this->em()->flush($blob);

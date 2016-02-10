@@ -108,11 +108,6 @@ class NewTicketController extends AbstractController
                             $ticket->setPerson($person);
                             $ticket_message->setPerson($person);
                             foreach ($ticket_message->getAttachments() as $attachment) {
-                                $blob = $attachment->getBlob();
-                                if ($blob) {
-                                    $blob->is_temp = false;
-                                }
-
                                 $attachment->setPerson($person);
                             }
 

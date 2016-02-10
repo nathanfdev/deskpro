@@ -157,3 +157,9 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.person" should be equal to 3
+
+    When I send a GET request to "/api/v2/tickets/5/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].person" should be equal to 3
