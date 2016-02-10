@@ -138,7 +138,7 @@ class InstallConfigStep extends AbstractStep
 
         $finder = Finder::create()
             ->notName('.gitkeep')
-            ->depth(1)
+            ->depth(0)
             ->in($config_path);
 
         /** @var \SplFileInfo $f */
