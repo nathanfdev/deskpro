@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Routing\Generator;
 
 use Application\DeskPRO\App;
@@ -46,7 +45,7 @@ class UrlGenerator extends BaseUrlGenerator
 
     public function setContext(RequestContext $context)
     {
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && !defined('DP_USE_FAKE_DB_CONNECTION')) {
             $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
 
             $info = parse_url($deskpro_url);

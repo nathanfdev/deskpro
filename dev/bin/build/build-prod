@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-$DP_DIR = realpath(__DIR__.'./../../../');
+$DP_DIR = realpath(__DIR__.'/../../../');
 chdir($DP_DIR);
 
 function dp_build_runcmd($cmd) {
@@ -28,34 +28,40 @@ $is_quick = (bool) @$options['quick'];
 # Init project
 ########################################################################################################################
 
-echo "Running init-project";
-dp_build_runcmd('dev/init-project');
+echo "Running init-project\n";
+dp_build_runcmd('dev/bin/init-project');
 
 ########################################################################################################################
 # Cache warmup
 ########################################################################################################################
 
-echo "Cache warmup: dev";
-dp_build_runcmd('bin/console --kernel dev --env prod cache:warmup --verbose');
+echo "Cache warmup: dev\n";
+dp_build_runcmd('bin/console cache:warmup --kernel dev --env prod --verbose --fake-db-connection');
 
-echo "Cache warmup: dp";
-dp_build_runcmd('bin/console --kernel dp --env prod cache:warmup --verbose');
+echo "Cache warmup: dp\n";
+dp_build_runcmd('bin/console cache:warmup --kernel dp --env prod --verbose --fake-db-connection');
 
-echo "Cache warmup: portal";
-dp_build_runcmd('bin/console --kernel portal --env prod cache:warmup --verbose');
+echo "Cache warmup: portal\n";
+dp_build_runcmd('bin/console cache:warmup --kernel portal --env prod --verbose --fake-db-connection');
+
+echo "Cache warmup: install\n";
+dp_build_runcmd('bin/console cache:warmup --kernel install --env prod --verbose --fake-db-connection');
+
+echo "Cache warmup: api\n";
+dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --verbose --fake-db-connection');
 
 ########################################################################################################################
 # Legacy Assets
 ########################################################################################################################
 
-echo "Legacy assets";
+echo "Legacy assets\n";
 dp_build_runcmd('bin/console --kernel dp --env prod dp:assetic -r ALL --verbose');
 
 ########################################################################################################################
 # Schema file
 ########################################################################################################################
 
-echo "Generating schema file";
+echo "Generating schema file\n";
 dp_build_runcmd('bin/console dpdev:gen:schema-file --fake-db-connection');
 
 ########################################################################################################################
@@ -63,12 +69,15 @@ dp_build_runcmd('bin/console dpdev:gen:schema-file --fake-db-connection');
 ########################################################################################################################
 
 if (!$is_quick) {
+    echo "Generating template map\n";
     dp_build_runcmd('bin/console dpdev:gen:template-map');
 }
 
 ########################################################################################################################
 # Build time/versions
 ########################################################################################################################
+
+echo "Placing versions\n";
 
 $build_num = @$options['build'] ?: null;
 $build_time = @$options['build-time'] ?: time();
@@ -93,5 +102,5 @@ if ($build_num) {
 # Checksum file
 ########################################################################################################################
 
-echo "Generating file integrity map";
+echo "Generating file integrity map\n";
 dp_build_runcmd('bin/console dpdev:gen:integrity-map');

@@ -40,11 +40,6 @@ class CliKernelBootTask implements BootTaskInterface
     {
         $argv = $_SERVER['argv'];
 
-        if (count($argv) < 2 || empty($argv[1]) || !($cmd_ns = $this->getNamespace($argv[1]))) {
-            echo "Usage: console NAMESPACE:CMD [options...]\n";
-            exit(1);
-        }
-
         $argv[0] = 'console';
 
         // --kernel virtual arg is not passed to real commands
@@ -53,6 +48,20 @@ class CliKernelBootTask implements BootTaskInterface
             unset($argv[$idx]);
             unset($argv[$idx + 1]);
             $argv = array_values($argv);
+        } else {
+            $cmd_ns = null;
+        }
+
+        // another virtual arg
+        if (($idx = array_search('--fake-db-connection', $argv, true)) !== false) {
+            define('DP_USE_FAKE_DB_CONNECTION', true);
+            unset($argv[$idx]);
+            $argv = array_values($argv);
+        }
+
+        if (!$cmd_ns && (count($argv) < 2 || empty($argv[1]) || !($cmd_ns = $this->getNamespace($argv[1])))) {
+            echo "Usage: console NAMESPACE:CMD [options...]\n";
+            exit(1);
         }
 
         define('DP_INTERFACE', 'cli');

@@ -3,6 +3,7 @@ parameters:
   # we override default symfony so warmer services are lazy-loaded
   # see LazyWarmersPass
   cache_warmer.class: DeskPRO\Bundle\AppBundle\HttpKernel\CacheWarmer\CacheWarmerServiceAggregate
+  doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
 
 
 monolog:

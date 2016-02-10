@@ -10,13 +10,10 @@ rm -rf $DIR_ROOT/www/BUILD/web/node_modules
 rm -rf $DIR_ROOT/www/BUILD/pub/node_modules
 rm -rf $DIR_ROOT/www/BUILD/pub/build
 
-rm -rf ../../var/cache/*/
-rm -rf ../../var/kernel_cache/*/
-rm -rf ../../var/tmp/*/
+rm -rf $DIR_ROOT/var/cache/*/
+rm -rf $DIR_ROOT/var/kernel_cache/*/
+rm -rf $DIR_ROOT/var/tmp/*/
 
-chmod -R 0777 ../../var/cache/*/
-chmod -R 0777 ../../var/kernel_cache/*/
-chmod -R 0777 ../../var/tmp/*/
+find $DIR_ROOT/var/ -type d -print0 | xargs -0 chmod 755
 
-rm -f $DIR_ROOT/app/BUILD/src/Application/InstallBundle/Data/schema.php
 rm -f $DIR_ROOT/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js

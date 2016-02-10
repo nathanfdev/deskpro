@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaGenerator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenSchemaFileCommand extends ContainerAwareCommand
@@ -44,8 +43,7 @@ class GenSchemaFileCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:gen:schema-file')
-            ->addOption('--fake-db-connection', null, InputOption::VALUE_NONE, 'Dont try to use a real connection');
+        $this->setName('dpdev:gen:schema-file');
     }
 
     /**
