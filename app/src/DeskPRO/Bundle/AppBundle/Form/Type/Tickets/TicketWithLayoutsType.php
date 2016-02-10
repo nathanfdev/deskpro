@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -530,6 +531,9 @@ class TicketWithLayoutsType extends AbstractType
             case FormFields::USER_TIMEZONE:
                 $this->addUserTimezone($context, $field);
                 break;
+            case FormFields::LABEL:
+                $this->addLabelField($context, $field);
+                break;
             case FormFields::USER_FIELD:
                 $this->addCustomUserField($context, $field, $ignore_validation);
                 break;
@@ -728,6 +732,19 @@ class TicketWithLayoutsType extends AbstractType
         $context->getForm()->add($field->getId(), 'timezone', [
             'property_path' => 'person.timezone',
             'label'         => $this->phrase('portal.forms.label_timezone'),
+        ]);
+    }
+
+    /**
+     * @param TicketFormContext $context
+     * @param LayoutField       $field
+     */
+    private function addLabelField(TicketFormContext $context, LayoutField $field)
+    {
+        $context->getForm()->add($field->getId(), 'api_labels_collection', [
+            'labels_class'   => LabelTicket::class,
+            'labels_owner'   => $context->getTicket(),
+            'owner_property' => 'ticket',
         ]);
     }
 

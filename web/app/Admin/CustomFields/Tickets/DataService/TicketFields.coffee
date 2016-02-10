@@ -14,6 +14,7 @@ define [
         priority: true,
         workflow: true,
         product:  true
+        label:    true
       }
 
     _doLoadList: ->
@@ -23,7 +24,7 @@ define [
       @Api.sendDataGet([
         '/ticket_fields'
       ]).then( (res) =>
-        for f in ['category', 'priority', 'workflow', 'product']
+        for f in ['category', 'priority', 'workflow', 'product', 'label']
           @field_enabled[f] = false
           if res.data.api_ticket_fields[f + '_enabled']
             @field_enabled[f] = true

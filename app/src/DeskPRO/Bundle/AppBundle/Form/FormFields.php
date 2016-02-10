@@ -55,4 +55,5 @@ class FormFields
     const CAPTCHA       = 'captcha';
     const CC            = 'cc';
     const ATTACH        = 'attach';
+    const LABEL         = 'label';
 }
