@@ -26,40 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat;
+namespace DeskPRO\Bundle\AppBundle\Cache;
 
-/**
- * Class MarkMessageEvent.
- */
-class MarkMessageEvent extends AbstractMessageEvent
+class EtagGenerator
 {
-    const EVENT_NAME = 'notification.agent_chat.mark_message';
-
-    /**
-     * @var int
-     */
-    protected $status;
-
-    /**
-     * @param int $message_id
-     * @param int $status
-     */
-    public function __construct($message_id, $status)
+    public function generate($parameters)
     {
-        parent::__construct($message_id);
-        $this->status = $status;
+        $segments = $this->createSegments($parameters);
+
+        return $this->getHash($segments);
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    protected function getHash(array $segments)
     {
-        return $this->status;
+        return md5(implode('::', $segments));
     }
 
-    public function __sleep()
+    protected function createSegments($params)
     {
-        return array_merge(parent::__sleep(), ['status']);
     }
 }

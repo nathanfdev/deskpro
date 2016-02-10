@@ -65,4 +65,9 @@ class UpdateOnlineEvent extends AbstractSystemEvent
     {
         return $this->agents_online_status['offline'];
     }
+
+    public function __sleep()
+    {
+        return ['agents_online_status'];
+    }
 }

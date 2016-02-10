@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
 use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -195,6 +196,7 @@ class ApiLogListener implements EventSubscriberInterface
         $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
         if (
             $this->token_storage->getToken()
+            && $this->token_storage->getToken() instanceof AbstractApiSecurityToken
             && $this->token_storage->getToken()->getName() === 'api_key'
             && $key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())
         ) {

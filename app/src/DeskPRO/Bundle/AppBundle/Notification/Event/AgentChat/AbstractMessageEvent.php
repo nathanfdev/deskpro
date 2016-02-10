@@ -65,4 +65,9 @@ abstract class AbstractMessageEvent extends AbstractSystemEvent
 
         return $this;
     }
+
+    public function __sleep()
+    {
+        return ['message_id'];
+    }
 }

@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Event\Ticket;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
 
+/**
+ * Class TicketUpdatedEvent.
+ */
 class TicketUpdatedEvent extends AbstractSystemEvent
 {
     const EVENT_NAME = 'notification.ticket.updated';
@@ -88,5 +91,16 @@ class TicketUpdatedEvent extends AbstractSystemEvent
         $this->data = $data;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function __sleep()
+    {
+        return [
+            'ticket_id',
+            'data',
+        ];
     }
 }
