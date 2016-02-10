@@ -30,37 +30,32 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DpTest\DeskProTestCase;
 
-class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class SetCategoryActionTest extends DeskProTestCase
 {
-    public function __construct(array $options)
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $action = new SetCategoryAction(['input' => 'Linux']);
+        $this->assertInstanceOf(SetCategoryAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
     }
 
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /**
+     * @test
+     */
+    public function it_should_extend_AbstractAction()
     {
-        $resolver->setRequired(self::OPTION_LABELS);
-        $resolver->setConstraints([
-            self::OPTION_LABELS => [
-                new Assert\NotBlank(),
-                new Assert\Type('array'),
-            ],
-        ]);
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
+        $this->assertContains(AbstractAction::class, class_parents(SetCategoryAction::class));
     }
 }

@@ -56,17 +56,4 @@ class ActionCollection
     {
         return $this->actions;
     }
-
-    public function getSerializedActions()
-    {
-        $serialized = [];
-        foreach ($this->actions as $action) {
-            $serializedAction = $action->getSerialized();
-            if (!empty($serializedAction)) {
-                $serialized[] = $serializedAction;
-            }
-        }
-
-        return $serialized;
-    }
 }

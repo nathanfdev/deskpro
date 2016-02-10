@@ -32,9 +32,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 interface ActionWithOptionsInterface
 {
-    public function configureOptions(OptionsResolver $resolver);
+    public static function configureOptions(ActionOptionsResolver $resolver);
 }

@@ -30,37 +30,21 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DpTest\DeskProTestCase;
 
-class AddLabelsAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ApproveActionTest extends DeskProTestCase
 {
-    public function __construct(array $options)
+    /**
+     * @test
+     */
+    public function it_should_be_instantiable()
     {
-        $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
-    public static function configureOptions(ActionOptionsResolver $resolver)
-    {
-        $resolver->setRequired(self::OPTION_LABELS);
-        $resolver->setConstraints([
-            self::OPTION_LABELS => [
-                new Assert\NotBlank(),
-                new Assert\Type('array'),
-            ],
-        ]);
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
+        $action = new ApproveAction();
+        $this->assertInstanceOf(ApproveAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
     }
 }

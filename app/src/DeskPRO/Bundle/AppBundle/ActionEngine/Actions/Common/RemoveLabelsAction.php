@@ -35,20 +35,29 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
 {
     public function __construct(array $options)
     {
-        $resolver = new OptionsResolver();
+        $resolver = new ActionOptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_LABELS);
+        $resolver->setConstraints(
+            [
+                self::OPTION_LABELS => [
+                    new Assert\NotBlank(),
+                    new Assert\Type('string'),
+                ],
+            ]
+        );
     }
 
     /** @return array */

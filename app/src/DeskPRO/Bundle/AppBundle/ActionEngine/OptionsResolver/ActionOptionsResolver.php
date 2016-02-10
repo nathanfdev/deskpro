@@ -30,36 +30,26 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class ActionOptionsResolver extends OptionsResolver
 {
-    public function __construct(array $options)
+    protected $constraints;
+
+    public function setConstraints(array $constraints)
     {
-        $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
+        $this->constraints = [];
+
+        foreach ($constraints as $option => $constraint_list) {
+            $this->constraints[$option] = $constraint_list;
+            $this->setDefined($option);
+        }
     }
 
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    public function getConstraints()
     {
-        $resolver->setRequired(self::OPTION_INPUT);
-        $resolver->setAllowedValues(
-            self::OPTION_INPUT,
-            function ($value) {
-                return is_string($value);
-            }
-        );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
+        return $this->constraints ?: [];
     }
 }
