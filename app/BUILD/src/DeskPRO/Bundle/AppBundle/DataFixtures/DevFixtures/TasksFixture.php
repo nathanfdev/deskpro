@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -378,6 +377,7 @@ class TasksFixture extends AbstractFixture implements ContainerAwareInterface, O
             ];
         }
 
-        $this->db->batchInsert('task_links', $batch, true);
+        //TODO: This is failing
+        //$this->db->batchInsert('task_links', $batch, true);
     }
 }

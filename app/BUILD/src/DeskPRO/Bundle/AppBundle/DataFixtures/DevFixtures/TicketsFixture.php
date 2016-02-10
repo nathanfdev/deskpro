@@ -171,9 +171,9 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
         $this->agent_ids          = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
         $this->agent_team_ids     = $this->db->fetchAllCol('SELECT id FROM agent_teams');
         $this->people_ids         = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 0');
-        $this->joe_id             = $this->db->fetchColumn("SELECT people.id FROM people JOIN people_emails pe ON people.id = pe.person_id WHERE pe.email = 'joe@deskprodemo.com';");
-        $this->joe_manager_id     = $this->db->fetchColumn("SELECT people.id FROM people JOIN people_emails pe ON people.id = pe.person_id WHERE pe.email = 'manager@deskprodemo.com';");
-        $this->joe_manager_org_id = $this->db->fetchColumn("SELECT org.id FROM organizations org WHERE org.name = 'Mana Publishing'");
+        $this->joe_id             = $this->getReference('person.joe')->getId();
+        $this->joe_manager_id     = $this->getReference('person.joes_manager')->getId();
+        $this->joe_manager_org_id = $this->getReference('org.mana')->getId();
         $this->department_ids     = $this->db->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
 
         $this->fields = $this->container->get('doctrine.orm.entity_manager')->createQuery('

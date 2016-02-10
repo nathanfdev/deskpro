@@ -145,6 +145,8 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         $this->people_ids = $this->db->fetchAllCol('SELECT id FROM people');
 
         $this->loadPeopleProps();
+
+        $this->createOrgExample();
     }
 
     private function loadLabels()
@@ -310,5 +312,55 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         if ($notes_batch) {
             $this->db->batchInsert('people_notes', $notes_batch);
         }
+    }
+
+    private function createOrgExample()
+    {
+        // the content publisher agent guy
+        $publisher            = new \Application\DeskPRO\Entity\Person();
+        $publisher->name      = 'Corporate Content';
+        $publisher->can_agent = true;
+        $publisher->is_agent  = true;
+        $publisher->addEmailAddressString('content.publisher@deskprodemo.com');
+        $publisher->setPassword('publisher');
+
+        $this->manager->persist($publisher);
+        $this->manager->flush();
+
+        $this->setReference('person.publisher', $publisher);
+
+        // an org
+        $organization = new \Application\DeskPRO\Entity\Organization();
+        $organization->setName('Mana Publishing');
+        $organization->setImportance(5);
+
+        $this->setReference('org.mana', $organization);
+
+        // a regular dude
+        $person       = new \Application\DeskPRO\Entity\Person();
+        $person->name = 'Joe Kool';
+        $person->addEmailAddressString('joe@deskprodemo.com');
+        $person->setPassword('joe');
+        $person->setOrganization($organization);
+
+        $this->setReference('person.joe', $person);
+
+        // an organization
+        $mana       = new \Application\DeskPRO\Entity\Person();
+        $mana->name = 'Mana Ger';
+        $mana->addEmailAddressString('manager@deskprodemo.com');
+        $mana->setPassword('manager');
+        $mana->setOrganization($organization);
+        $mana->organization_manager = true;
+        $mana->setOrganizationPosition('MANAGER');
+
+        $this->setReference('person.joes_manager', $person);
+
+        $this->manager->persist($mana);
+        $this->manager->persist($organization);
+        $this->manager->flush();
+
+        $this->manager->persist($person);
+        $this->manager->flush();
     }
 }
