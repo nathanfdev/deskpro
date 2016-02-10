@@ -104,7 +104,7 @@ class TicketTypeTest extends PortalTestCase
             'displayed_fields',
         ]);
 
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attach');
+        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments');
         $this->assertRerenderFormDoesNotExist($form);
 
         $this->teardownEnvForTicketForm();
@@ -133,7 +133,7 @@ class TicketTypeTest extends PortalTestCase
             'submit',
             'displayed_fields',
         ]);
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attach,ticket_field_1');
+        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments,ticket_field_1');
         $this->assertRerenderFormDoesNotExist($form);
 
         $this->teardownEnvForTicketForm();
@@ -179,13 +179,13 @@ class TicketTypeTest extends PortalTestCase
                 'format'  => 'text',
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
-            'displayed_fields'     => 'department,subject,message,user_email,attach',
+            'displayed_fields'     => 'department,subject,message,user_email,attachments',
         ];
         $form->submit($submit_data);
 
         // assert
         $this->assertRerenderFormExists($form);
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attach,ticket_field_1');
+        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments,ticket_field_1');
         $this->assertFields($form, [
             'department',
             'subject',
@@ -246,7 +246,7 @@ class TicketTypeTest extends PortalTestCase
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
             'ticket_field_1'       => null,
-            'displayed_fields'     => 'department,subject,message,user_email,attach,ticket_field_1',
+            'displayed_fields'     => 'department,subject,message,user_email,attachments,ticket_field_1',
         ];
         $form->submit($submit_data);
 
@@ -285,7 +285,7 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                'displayed_fields' => 'department,subject,message,user_email,attach',
+                'displayed_fields' => 'department,subject,message,user_email,attachments',
             ],
         ]);
         $client->submit($form);
@@ -320,7 +320,7 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                'displayed_fields' => 'department,subject,message,user_email,attach',
+                'displayed_fields' => 'department,subject,message,user_email,attachments',
             ],
         ]);
 
@@ -343,7 +343,7 @@ class TicketTypeTest extends PortalTestCase
                     'email' => 'some@test.email',
                 ],
                 'ticket_field_1'   => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
-                'displayed_fields' => 'department,subject,message,user_email,attach,ticket_field_1', // fix
+                'displayed_fields' => 'department,subject,message,user_email,attachments,ticket_field_1', // fix
             ],
         ]);
 
@@ -558,7 +558,7 @@ class TicketTypeTest extends PortalTestCase
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
 
-            $ticket_layout->user_layout->add(new LayoutField('attach'));
+            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACH));
 
             $f = $this->createField('radio', 'Reason for Complaint', ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']);
             $ticket_layout->user_layout->add(new LayoutField('ticket_field', $f->getId()));
