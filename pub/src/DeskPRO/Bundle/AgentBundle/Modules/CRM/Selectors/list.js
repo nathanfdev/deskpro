@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
-import { userGroupsSelector } from '../RecordStores/Selectors/userGroupsSelectors';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 const stateSelector = state => state.CRM.list;
 
@@ -44,7 +43,7 @@ export const currentContentSelector = createSelector(
 );
 
 export const listFiltersSelector = createSelector(
-  [currentContentSelector, userGroupsSelector, collectionSelectorFactory('Organization', 'crm')],
+  [currentContentSelector, allSelectorFactory('UserGroup'), collectionSelectorFactory('Organization', 'crm')],
   (currentContent, userGroups, organizations) => {
     const datePeriodsOptions = () => {
       const periods = DatePeriods.all;

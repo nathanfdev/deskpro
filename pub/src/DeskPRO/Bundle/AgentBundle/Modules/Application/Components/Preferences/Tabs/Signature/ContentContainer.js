@@ -1,24 +1,23 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
-import * as SettingsActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/settingsActions';
-import { mySelector, myStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/settingsSelectors';
+import { loadCustom, isLoadedCollectionSelectorFactory, collectionSelectorFactory }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  settings: mySelector(state),
-  settingStatus: myStatusSelector(state)
+  settings: collectionSelectorFactory('Settings', 'my')(state),
+  settingsLoaded: isLoadedCollectionSelectorFactory('Settings', 'my')(state)
 }))
 export class ContentContainer extends React.Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired,
-    settingStatus: PropTypes.object.isRequired
+    settingsLoaded: PropTypes.bool.isRequired
   };
 
   constructor(props) {
     super(props);
-    props.dispatch(SettingsActions.loadMy());
+    props.dispatch(loadCustom('Settings', 'DP_API/person_setting', 'my'));
   }
 
   render() {

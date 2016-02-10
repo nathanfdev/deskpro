@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
-import * as SettingsActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/settingsActions';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
 export class SingleForm extends React.Component {
@@ -12,6 +12,9 @@ export class SingleForm extends React.Component {
 
   constructor(props) {
     super(props);
+
+    console.log(this.props.settings);
+    console.log(this.props.settings.toJS());
 
     const settings = this.props.settings;
     const signature = settings && settings.get('signature') || Immutable.fromJS({});
@@ -41,11 +44,8 @@ export class SingleForm extends React.Component {
 
     promise
       .success(response => {
-        const records = {};
-        records[response.data.id] = response.data;
-
-        dispatch(SettingsActions.releaseSettings('my'));
-        dispatch(SettingsActions.setSettingsRequest('my', records, [response.data.id]));
+        dispatch(releaseCollection('Settings', 'my'));
+        dispatch(setCollection('Settings', 'my', {[response.data.id]: response.data}));
       });
   };
 
