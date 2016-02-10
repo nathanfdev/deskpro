@@ -502,6 +502,14 @@ class DpEnv
     }
 
     /**
+     * Resets config cache. Next call to fetch config fill result in a reload.
+     */
+    public function resetConfigCache()
+    {
+        $this->config_reader->resetCache();
+    }
+
+    /**
      * @param string  $id        The config value you want
      * @param mixed   $default   If the value is unset, the default value
      * @return mixed

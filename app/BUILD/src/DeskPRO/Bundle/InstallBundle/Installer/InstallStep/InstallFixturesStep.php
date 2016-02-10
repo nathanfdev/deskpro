@@ -42,6 +42,8 @@ class InstallFixturesStep extends AbstractStep
     {
         $this->writeBigTitle('Initializing database');
 
+        $this->writeln('We will now initialize the database. This may take a few minutes.');
+
         $fixtures = [
             'SeedFixtures',
             'InstallFixtures',
@@ -63,12 +65,26 @@ class InstallFixturesStep extends AbstractStep
             '--verbose',
         ]);
 
+        $builder->setTimeout(10 * 60);
+
         foreach ($fixtures as $f) {
             $builder->add('--fixtures')->add($path = DP_APP_DIR.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/'.$f);
         }
 
+        $progress = $this->createProgressBar();
+        $progress->setFormat('Initializing ... [%bar%]');
+        $progress->setRedrawFrequency(1);
+        $progress->setBarWidth(5);
+
         $proc = $builder->getProcess();
-        $proc->run();
+
+        $proc->start();
+        $proc->wait(function () use ($progress) {
+            $progress->advance();
+        });
+
+        $progress->clear();
+        $this->writeln('');
 
         if (!$proc->isSuccessful()) {
             $this->writeln('<error>Failed to initialize database</error>');
@@ -77,6 +93,9 @@ class InstallFixturesStep extends AbstractStep
             $this->writeln('<info>'.$proc->getCommandLine().'</info>');
             $this->writeln($proc->getOutput());
             $this->writeln($proc->getErrorOutput());
+
+            // Failure here means we need to reinstall db
+            $this->getSession()->enableFlag('reset_db_details');
 
             return false;
         }

@@ -222,4 +222,13 @@ class ConfigReader implements ConfigReaderInterface
 
         return null;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function resetCache()
+    {
+        $this->config_values = [];
+        $this->config_values_short = [];
+    }
 }

@@ -33,4 +33,10 @@ interface ConfigReaderInterface
      * @return void
      */
     public function addConfigLoader($loader);
+
+    /**
+     * Resets any local cache
+     * @return void
+     */
+    public function resetCache();
 }

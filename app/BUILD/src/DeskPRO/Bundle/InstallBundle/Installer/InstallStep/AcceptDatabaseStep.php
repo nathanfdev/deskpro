@@ -42,7 +42,6 @@ class AcceptDatabaseStep extends AbstractStep
         $f = $this->getFormatterHelper();
 
         $dbinfo = $this->getSession()->getDbInfo() ?: new DbInfo();
-        $ok     = false;
 
         while (true) {
             $this->writeln($f->formatBlock('MySQL Host', 'question', true));
@@ -94,7 +93,9 @@ class AcceptDatabaseStep extends AbstractStep
         }
 
         $this->getSession()->setDbInfo($dbinfo);
-        $this->getSession()->enableFlag('reset_db_details');
+        $this->getSession()->disableFlag('reset_db_details');
+        $this->getSession()->disableFlag('install_tables_ok');
+        $this->getSession()->enableFlag('reset_config');
     }
 
     private function validateDbInfo(DbInfo $dbinfo, $auto_create = false)
@@ -272,6 +273,9 @@ class AcceptDatabaseStep extends AbstractStep
             if (!$v) {
                 throw new \Exception('Please the name of the database.');
             }
+
+            $v = str_replace('%DEV_RAND%', 'deskpro_dev_%RAND%', $v);
+            $v = str_replace('%RAND%', date('YmdHi').'_'.mt_rand(1000, 9999), $v);
 
             if (!preg_match('#^[a-zA-z0-9\-_\.]+#', $v)) {
                 throw new \Exception('Database names must only contain: letters a-z, numbers 0-9, underscores, dashes, periods.');

@@ -50,10 +50,20 @@ class InstallCronCommand extends AbstractStep
         $this->writeln('');
         $this->writeln('This command will now wait until the task has been configured and has run at least once.');
         $this->writeln('(Note that you may exit this script and resume it later if you need access to the command line using this terminal.)');
+        $this->writeln('');
+
+        $progress = $this->createProgressBar();
+        $progress->setFormat('Waiting for cron ... [%bar%]');
+        $progress->setRedrawFrequency(1);
+        $progress->setBarWidth(5);
 
         while (!$this->isComplete()) {
-            sleep(5);
+            $progress->advance();
+            usleep(600000);
         }
+
+        $progress->clear();
+        $this->writeln('');
 
         $this->writeln('Done!');
     }

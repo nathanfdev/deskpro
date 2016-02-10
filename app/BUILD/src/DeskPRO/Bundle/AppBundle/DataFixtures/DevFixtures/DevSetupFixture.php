@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -95,7 +94,7 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
             ['name' => 'core.default_timezone',      'value' => 'UTC'],
             ['name' => 'core.deskpro_name',          'value' => 'Helpesk'],
             ['name' => 'core.deskpro_url',           'value' => $url],
-            ['name' => 'core.license',               'value' => file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt')],
+            ['name' => 'core.license',               'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
         ];
 
         if (!empty($GLOBALS['DP_CONFIG']['SETTINGS'])) {

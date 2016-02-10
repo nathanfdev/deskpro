@@ -57,7 +57,21 @@ class AdminAccountStep extends AbstractStep
             return $v;
         });
         $q->setHidden(true);
-        $this->set_password = $this->askQuestion($q);
+
+        while (true) {
+            $this->set_password = $this->askQuestion($q);
+
+            $this->writeln('Now type your password again to verify.');
+            $pass2 = $this->askQuestion($q);
+
+            if ($this->set_password === $pass2) {
+                break;
+            }
+
+            $this->writeln('<error>Passwords did not match.</error>');
+            $this->writeln('Try again.');
+            $this->writeln('');
+        }
 
         $container = $this->getContext()->getMainContainer();
         $em        = $container->get('doctrine')->getManager();

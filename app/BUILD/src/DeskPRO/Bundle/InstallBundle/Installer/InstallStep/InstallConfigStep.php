@@ -43,9 +43,19 @@ class InstallConfigStep extends AbstractStep
             ->files()
             ->in($this->getContext()->getDpEnv()->getAppDir().'/config_new');
 
-        $config_path = $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'config';
+        $config_path = $this->getConfigPath();
 
-        $this->writeln('Installing confifuration files to:');
+        if (file_exists($config_path.DIRECTORY_SEPARATOR.'config.database.php')) {
+            $backup_dir = $this->backupConfig();
+            $this->writeln('<info>Configuration files already exist</info>');
+            $this->writeln("We have MOVED configuration files into a sub-directory:\n<info>$backup_dir</info>");
+            $this->writeln('');
+        } else {
+            // might be non database files as well, just backup anyway
+            $this->backupConfig();
+        }
+
+        $this->writeln('Installing configuration files to:');
         $this->writeln('<info>'.$config_path.'</info>');
 
         /** @var \SplFileInfo $f */
@@ -74,6 +84,7 @@ class InstallConfigStep extends AbstractStep
         ]);
 
         $this->writeln('Done!');
+        $this->getSession()->disableFlag('reset_config');
     }
 
     private function writeVars($file, $varname, array $vars)
@@ -104,12 +115,53 @@ class InstallConfigStep extends AbstractStep
         );
     }
 
+    /**
+     * Example: /path/to/deskpro/config.
+     *
+     * @return string
+     */
+    private function getConfigPath()
+    {
+        return $this->getContext()->getDpEnv()->getDpRoot().DIRECTORY_SEPARATOR.'config';
+    }
+
+    private function backupConfig()
+    {
+        $fs          = new Filesystem();
+        $config_path = $this->getConfigPath();
+
+        $backup_basedir = $this->getContext()->getDpEnv()->getUserBackupsDir().DIRECTORY_SEPARATOR.'config_backup';
+        $backup_dir     = $backup_basedir.DIRECTORY_SEPARATOR.date('Ymd_His').'_'.mt_rand(1000, 9999);
+        $any            = false;
+
+        $fs->mkdir($backup_dir);
+
+        $finder = Finder::create()
+            ->notName('.gitkeep')
+            ->depth(1)
+            ->in($config_path);
+
+        /** @var \SplFileInfo $f */
+        foreach ($finder as $f) {
+            $fs->rename($f->getRealPath(), $backup_dir.DIRECTORY_SEPARATOR.$f->getBasename());
+            $any = true;
+        }
+
+        if (!$any) {
+            $fs->remove($backup_dir);
+        }
+
+        return $backup_dir;
+    }
+
     public function isComplete()
     {
-        return file_exists(
-            $this->getContext()->getDpEnv()->getDpRoot()
-            .DIRECTORY_SEPARATOR.'config'
-            .DIRECTORY_SEPARATOR.'config.database.php'
-        );
+        return !$this->getSession()->hasFlag('reset_config')
+            && file_exists(
+                $this->getContext()->getDpEnv()->getDpRoot()
+                .DIRECTORY_SEPARATOR.'config'
+                .DIRECTORY_SEPARATOR.'config.database.php'
+            )
+        ;
     }
 }

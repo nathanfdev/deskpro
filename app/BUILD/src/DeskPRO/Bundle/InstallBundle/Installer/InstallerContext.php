@@ -125,6 +125,8 @@ class InstallerContext
     }
 
     /**
+     * @param bool $reload
+     *
      * @return \Symfony\Component\DependencyInjection\ContainerInterface
      */
     public function getMainContainer($reload = false)
@@ -138,6 +140,7 @@ class InstallerContext
             $this->mainKernel = null;
         }
 
+        $this->getDpEnv()->resetConfigCache();
         $this->mainKernel = new DpKernel($this->getDpEnv());
         $this->mainKernel->boot();
 
