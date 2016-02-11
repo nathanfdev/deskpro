@@ -115,6 +115,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 $sforce->createConnection(DP_ROOT.'/vendor-src/salesforce/partner.wsdl.xml');
             } catch (\Exception $e) {
                 $log[] = 'Failed to create partner client';
+                $log[] = $e->getMessage();
 
                 return;
             }
