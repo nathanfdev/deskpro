@@ -28,11 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Cache;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+
 class EtagGenerator
 {
     public function generate($parameters)
     {
-        $segments = $this->createSegments($parameters);
+        $segments = $this->flatten($this->createSegments($parameters));
 
         return $this->getHash($segments);
     }
@@ -44,5 +47,33 @@ class EtagGenerator
 
     protected function createSegments($params)
     {
+        $segments = [];
+        foreach ($params as $param) {
+            switch (true) {
+                case is_scalar($param):
+                    $segment = $param;
+                    break;
+                case is_array($param) || $param instanceof \Traversable:
+                    $segment = $this->createSegments($param);
+                    break;
+                case $param instanceof DomainObject || $param instanceof EntityInterface:
+                    $segment = $param->getId();
+                    break;
+                default:
+                    continue 2;
+
+            }
+            $segments[] = $segment;
+        }
+
+        return $segments;
+    }
+
+    protected function flatten($params)
+    {
+        $segments = [];
+        array_walk_recursive($params, function ($a) use (&$segments) {$segments[] = $a;});
+
+        return $segments;
     }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -42,6 +43,8 @@ use Orb\Util\Util;
  * The basic entity class.
  *
  * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @method getId()
  *
  * @deprecated please see how DeskPRO\Bundle\AppBundle\Entity entities are declared using interfaces and traits for new entities.
  */
