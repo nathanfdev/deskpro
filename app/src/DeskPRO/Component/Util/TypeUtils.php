@@ -68,7 +68,7 @@ class TypeUtils
             throw new InvalidArgumentException('Expected object, got: '.self::getVarType($var));
         }
 
-        $parts = explode('\\', get_class($var));
+        return explode('\\', get_class($var));
     }
 
     /**
