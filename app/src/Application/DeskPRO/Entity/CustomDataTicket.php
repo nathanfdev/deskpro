@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -97,6 +96,9 @@ class CustomDataTicket extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getTicketId()
     {
         return $this->ticket['id'];

@@ -125,16 +125,16 @@ class CustomDataOrganizationType extends AbstractType
      */
     public function postSubmitEvent(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataOrganization $custom_data */
         $custom_data = $event->getData();
         $form        = $event->getForm();
         $config      = $form->getConfig();
 
-        if ($custom_data->input === null) {
-            $custom_data->input = '';
+        if ($custom_data->getInput() === null) {
+            $custom_data->setInput('');
         }
-        if ($custom_data->input) {
-            $custom_data->value = 0;
+        if ($custom_data->getInput()) {
+            $custom_data->setValue(0);
         }
 
         // if admin switched from multi select to single select, we need to fix the data object
@@ -142,7 +142,7 @@ class CustomDataOrganizationType extends AbstractType
         list($value_name, $form_type, $options) = $this->field_manager->getCustomOrganizationField($custom_data_field, $config->getOption('agent_interface'));
 
         if (array_key_exists('multiple', $options) && !$options['multiple']) {
-            $custom_data->input = '';
+            $custom_data->setInput('');
         }
     }
 
