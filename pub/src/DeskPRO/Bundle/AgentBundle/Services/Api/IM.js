@@ -15,14 +15,6 @@ function compileParams(params) {
   return compiled.join('&');
 }
 
-export function loadRecentChats() {
-  return api.sendGet('DP_API/agent_chats/recent');
-}
-
-export function loadChats(missingIds) {
-  return api.sendGet('DP_API/agent_chats/?ids=' + missingIds.toArray().join(','));
-}
-
 export function loadChat(id) {
   return api.sendGet('DP_API/agent_chats/' + parseInt(id, 10));
 }

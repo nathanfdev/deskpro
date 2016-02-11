@@ -27,7 +27,7 @@ export const startChat = createAction(
     }
     return new Promise(
       (resolve, reject) => {
-        const store = getState().RecordStores.IM.chats;
+        const store = getState().RecordsStore.store.get('AgentChat');
         if (chatId && store.get('records').toJS()[chatId]) {
           return resolve(store.get('records').toJS()[chatId]);
         }

@@ -1,30 +1,25 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-
 import Loader from 'react-loader';
-
 import { Item } from './Item';
-
-// chats
 import * as actions from '../../Actions/chatsActions';
-import * as chatActions from '../../RecordStores/Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
-import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
-import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { myDepartmentsSelector, myAgentTeamsSelector, setCollection, loadFromApi, isLoadedCollectionSelectorFactory,
+  collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
   teams: myAgentTeamsSelector(state),
   departments: myDepartmentsSelector(state),
-  recentChats: recentChatsSelector(state),
+  recentChats: collectionSelectorFactory('AgentChat', 'recent')(state),
   current: state.IM.chats.get('current'),
   chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  recentChatsStatus: recentChatsStatusSelector(state)
+  loaded: isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
 }))
 export class List extends React.Component {
 
@@ -37,7 +32,7 @@ export class List extends React.Component {
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    recentChatsStatus: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -49,7 +44,7 @@ export class List extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(chatActions.loadRecentChats());
+    this.props.dispatch(loadFromApi('AgentChat', 'DP_API/agent_chats/recent', 'recent'));
     this.refreshCounts();
   }
 
@@ -65,14 +60,13 @@ export class List extends React.Component {
         ids.push(parseInt(item.chat_id, 10));
         records[item.chat_id] = item.chat;
       });
-      dispatch(chatActions.releaseChats('recent', ids));
-      dispatch(chatActions.setChatsRequest('recent', records, ids));
+      dispatch(setCollection('AgentChat', 'recent', records));
     }
     this.props = props;
   }
 
   refreshCounts() {
-    if (this.props.recentChatsStatus.get('isDone')) {
+    if (this.props.loaded) {
       this.props.dispatch(messagesActions.refreshCounts());
     } else {
       setTimeout(this.refreshCounts.bind(this), 2000);
@@ -84,8 +78,7 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, loadingCounts, chating } = this.props;
-    const loaded = recentChatsStatus.get('isDone');
+    const { loaded, loadingCounts, chating } = this.props;
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));
