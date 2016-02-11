@@ -121,17 +121,20 @@ class ApiDb extends AbstractDbSet
         $ticket_def->title = 'def';
 
         // Create ticket layouts
-        $this->getDb()->exec(
+        // prepare custom defs for people, organizations and tickets
+        foreach (['custom_def_people', 'custom_def_organizations', 'custom_def_ticket'] as $custom_def_table) {
+            $this->getDb()->exec(
+                "
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('5', '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', '?', '1', '1', '10', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('7', '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0');
             "
-            INSERT INTO `custom_def_ticket` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('5', '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', '?', '1', '1', '10', '0');
-            INSERT INTO `custom_def_ticket` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('7', '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0');
-            "
-        );
+            );
+        }
 
         $layout = new Layout();
         $layout
@@ -155,10 +158,21 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField(FormFields::CC))
             ->add(new LayoutField(FormFields::PRIORITY))
             ->add(new LayoutField(FormFields::LABEL))
+
             ->add(new LayoutField('ticket_field', 1)) // Select box
             ->add(new LayoutField('ticket_field', 5)) // Datetime
             ->add(new LayoutField('ticket_field', 6)) // Text
             ->add(new LayoutField('ticket_field', 7)) // Textarea
+
+            ->add(new LayoutField('user_field', 1)) // Select box
+            ->add(new LayoutField('user_field', 5)) // Datetime
+            ->add(new LayoutField('user_field', 6)) // Text
+            ->add(new LayoutField('user_field', 7)) // Textarea
+
+            ->add(new LayoutField('organization_field', 1)) // Select box
+            ->add(new LayoutField('organization_field', 5)) // Datetime
+            ->add(new LayoutField('organization_field', 6)) // Text
+            ->add(new LayoutField('organization_field', 7)) // Textarea
         ;
 
         $ticket_layout2               = new TicketLayout($dep2);
