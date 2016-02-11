@@ -78,7 +78,6 @@ class ActionTypeCodes
             $namespace,
             $action_applicator_class_name
         );
-        echo "\nApplicator: ".$action_applicator_class."\n";
         if (!class_exists($action_applicator_class)) {
             throw new ActionApplicatorDoesNotExists('Action Applicator Does Not Exists '.$action_type_code);
         }

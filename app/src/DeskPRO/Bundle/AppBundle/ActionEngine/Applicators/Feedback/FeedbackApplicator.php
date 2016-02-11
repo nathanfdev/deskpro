@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetHiddenStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
@@ -56,6 +57,9 @@ class FeedbackApplicator extends AbstractActionApplicator implements ActionColle
             switch ($name) {
                 case AbstractAction::SET_STATUS_CATEGORY_ACTION:
                     $this->actions->addAction(new SetStatusCategoryAction([AbstractAction::OPTION_ID => $options]));
+                    break;
+                case AbstractAction::SET_HIDDEN_STATUS_ACTION:
+                    $this->actions->addAction(new SetHiddenStatusAction([AbstractAction::OPTION_INPUT => $options]));
                     break;
                 case AbstractAction::SET_TYPE_ACTION:
                     $this->actions->addAction(new SetTypeAction([AbstractAction::OPTION_ID => $options]));
@@ -81,6 +85,10 @@ class FeedbackApplicator extends AbstractActionApplicator implements ActionColle
         return $this->actions;
     }
 
+    /**
+     * @param array            $ids
+     * @param ActionCollection $collection
+     */
     public function applyActionCollection(array $ids, ActionCollection $collection)
     {
         $feedback = $this->getEntities(Feedback::class, $ids);

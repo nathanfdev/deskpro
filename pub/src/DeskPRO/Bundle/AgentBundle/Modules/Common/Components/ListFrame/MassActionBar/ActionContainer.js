@@ -89,6 +89,7 @@ export class ActionContainer extends Component {
           <AddLabelsContainer key={key}
                               option={option}
                               setParams={setParams}
+                              currentParams={currentParams}
                               stateValue={this.stateValue}
                               unsetParams={resetSingleAction}/>
         );
@@ -97,6 +98,7 @@ export class ActionContainer extends Component {
           <RemoveLabelsContainer key={key}
                                  option={option}
                                  setParams={setParams}
+                                 currentParams={currentParams}
                                  stateValue={this.stateValue}
                                  unsetParams={resetSingleAction}/>
         );
