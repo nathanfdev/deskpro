@@ -75,14 +75,10 @@ export class TicketForm extends PageWidget {
 
     setDisplayedFields = event => {
       // handle special field "attachments"
-      // if "attachments" exists, we need to call it "attach" because the backend uses "attach".
-      // we also remove the unnecessary "attachments" and "more_attachments" from the string
+      // we remove the unnecessary and "more_attachments" from the string
       const theFields = event.inst.currentFields;
-      if (_.includes(theFields, 'attachments')) {
-        theFields.push('attach');
-      }
 
-      const displayedFields = theFields.filter(field => !_.includes(['displayed_fields', 'attachments', 'more_attachments'], field)).join(',');
+      const displayedFields = theFields.filter(field => !_.includes(['displayed_fields', 'more_attachments'], field)).join(',');
       const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
 
       console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayedFields);
@@ -115,7 +111,7 @@ export class TicketForm extends PageWidget {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';
-            case 'attach': return ['attachments', 'more_attachments'];
+            case 'attachments': return ['attachments', 'more_attachments'];
             default: return id;
           }
         });
