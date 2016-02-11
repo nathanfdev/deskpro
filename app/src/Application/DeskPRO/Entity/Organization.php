@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -86,7 +85,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $importance = 0;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomDataAbstract[]
      */
     protected $custom_data;
 
@@ -260,6 +259,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         }
 
         return;
+    }
+
+    /**
+     * @return CustomDataAbstract[]|ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     public function getCustomDataCollection()

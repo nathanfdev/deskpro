@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 
@@ -148,6 +149,7 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         $ret['phone_numbers'] = $person->getPhoneNumbersArray();
         $ret['tickets_count'] = $person->getTicketsCount();
         $ret['chats_count']   = $person->getChatsCount();
+        $ret['fields']        = new CustomDataCollection($person->custom_data);
 
         return $ret;
     }
