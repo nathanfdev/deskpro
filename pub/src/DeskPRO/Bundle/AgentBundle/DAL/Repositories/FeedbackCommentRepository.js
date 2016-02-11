@@ -13,7 +13,7 @@ export class FeedbackCommentRepository extends ApiRepository {
     ids.forEach((id) => {
       params.push('id[]=' + id);
     });
-    return api.sendPatch(`DP_API/${this.url}/approve?` + params.join('&'));
+    return this.api.sendPatch(`DP_API/${this.url}/approve?` + params.join('&'));
   }
 
   /*
@@ -28,6 +28,6 @@ export class FeedbackCommentRepository extends ApiRepository {
    * @returns {*}
    */
   commentsToReview() {
-    return api.sendGet(`DP_API/${this.url}/counts?awaiting_validation=1`);
+    return this.api.sendGet(`DP_API/${this.url}/counts?awaiting_validation=1`);
   }
 }
