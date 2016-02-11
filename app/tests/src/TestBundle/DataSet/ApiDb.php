@@ -169,10 +169,10 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField('user_field', 6)) // Text
             ->add(new LayoutField('user_field', 7)) // Textarea
 
-            ->add(new LayoutField('organization_field', 1)) // Select box
-            ->add(new LayoutField('organization_field', 5)) // Datetime
-            ->add(new LayoutField('organization_field', 6)) // Text
-            ->add(new LayoutField('organization_field', 7)) // Textarea
+            ->add(new LayoutField('org_field', 1)) // Select box
+            ->add(new LayoutField('org_field', 5)) // Datetime
+            ->add(new LayoutField('org_field', 6)) // Text
+            ->add(new LayoutField('org_field', 7)) // Textarea
         ;
 
         $ticket_layout2               = new TicketLayout($dep2);

@@ -827,13 +827,20 @@ class TicketWithLayoutsType extends AbstractType
             return;
         }
 
+        $person_organization = $context->getPerson()->getOrganization();
         $ticket_organization = $context->getTicket()->getOrganization();
+
         if (!$ticket_organization) {
             // must be in an organization to see this field
-            return;
+            if (!$person_organization) {
+                return;
+            }
+
+            $ticket_organization = $person_organization;
         }
-        if ($context->getPerson()->getOrganization() !== $ticket_organization) {
-            // person must be a part of the tickets organization to edit org fields
+
+        // person must be a part of the tickets organization to edit org fields
+        if ($person_organization !== $ticket_organization) {
             return;
         }
 
