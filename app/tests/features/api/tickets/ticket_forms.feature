@@ -5,6 +5,8 @@ Feature: /tickets endpoint
 
   Background:
     Given I install the api data set
+    Given the setting "core.use_product" is set to 1
+    Given the setting "core.use_ticket_priority" is set to 1
     And my request is authenticated
 
   @reinstall
@@ -34,10 +36,10 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
 
-    # Layout has no product field and "core.use_product" = 0
+    # Layout has no product field
     And the JSON node "data.product" should be equal to 0
 
-    # Layout has no priority field and "core.use_ticket_priority" = 0
+    # Layout has no priority field
     And the JSON node "data.priority" should be equal to 0
 
     # Layout has not cc field
@@ -54,8 +56,6 @@ Feature: /tickets endpoint
     And the JSON node "data[0].attachments" should have 0 elements
 
   Scenario: I modify and retrieve a ticket
-    Given the setting "core.use_product" is set to 1
-    Given the setting "core.use_ticket_priority" is set to 1
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
@@ -238,3 +238,19 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
+
+  Scenario: I modify ticket using user layout (doesn't have product and priority fields)
+    When I send a PUT request to "/api/v2/ticket_forms/user/5" with body:
+    """
+{
+  "department": 2,
+  "product": 3,
+  "priority": 2
+}
+    """
+    Then the response status code should be 204
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.product" should be equal to 2
+    And the JSON node "data.priority" should be equal to 3
