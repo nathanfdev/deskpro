@@ -3,11 +3,10 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
 import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector, elementsSelector }
   from '../Selectors/list';
-import { tasksSelector } from '../Selectors/recordStores';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { setTaskListsRequest } from '../RecordStores/Actions/taskListActions.js';
+import { setCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -57,7 +56,7 @@ export const loadList = createAction(
         const res = promise.getData();
         const ids = res.data.map(item=>item.id);
 
-        dispatch(setTaskListsRequest(recordStoresId, res.data));
+        dispatch(setCollection('Task', recordStoresId, res.data));
 
         return { ids: ids, pagination: res.meta.pagination };
       }
@@ -103,7 +102,7 @@ export const editTask = createAction(
   (taskId, data) => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
     const ids = elementsSelector(state);
-    const tasks = tasksSelector(state);
+    const tasks = collectionSelectorFactory('TaskList', 'tasks')(state);
     const task = tasks.get(taskId);
     const taskIndex = ids.indexOf(taskId);
 

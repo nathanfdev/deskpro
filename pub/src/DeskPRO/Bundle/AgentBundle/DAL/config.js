@@ -14,5 +14,8 @@ export const repositoriesConfig = {
   Timezone:               {type: 'api', url: '/timezones', allowAll: true},
   FeedbackCategory:       {type: 'api', url: '/feedback_categories'},
   FeedbackCommentCounter: {type: 'api', url: '/feedback_comments_counter'},
-  AgentChat:              {type: 'api', url: '/agent_chats'}
+  AgentChat:              {type: 'api', url: '/agent_chats'},
+  Project:                {type: 'api', url: '/projects', allowAll: true},
+  TaskLabel:              {type: 'api', url: '/task_labels', allowAll: true},
+  TaskList:               {type: 'api', url: '/task_lists', allowAll: true}
 };

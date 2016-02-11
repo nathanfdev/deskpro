@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Projects } from './Projects';
-import { allProjectsSelector } from '../../../RecordStores/Selectors/projectSelectors';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { projectsCountSelector } from '../../../Selectors/nav';
 
 @connect(state => ({
-  projects: allProjectsSelector(state),
+  projects: allSelectorFactory('Project')(state),
   projectsCount: projectsCountSelector(state)
 }))
 export class ProjectsContainer extends React.Component {

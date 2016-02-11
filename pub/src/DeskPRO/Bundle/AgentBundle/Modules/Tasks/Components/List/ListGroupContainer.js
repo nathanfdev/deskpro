@@ -2,19 +2,16 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { groupCollection } from 'Util/ListGroup';
 import { currentSortSelector, elementsSelector } from '../../Selectors/list';
-import { tasksSelector } from '../../Selectors/recordStores';
-import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
-import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
+import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
   ids: elementsSelector(state),
-  tasks: tasksSelector(state),
+  tasks: collectionSelectorFactory('Task', 'tasks')(state),
   sort: currentSortSelector(state),
-  lists: allTaskListsSelector(state),
-  projects: allProjectsSelector(state),
+  lists: allSelectorFactory('TaskList')(state),
+  projects: allSelectorFactory('Project')(state),
   agents: agentsSelector(state),
   agentTeams: allSelectorFactory('AgentTeam')(state),
   departments: allSelectorFactory('Department')(state)
