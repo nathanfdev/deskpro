@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Component\Util;
 
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * Utility methods working with types.
