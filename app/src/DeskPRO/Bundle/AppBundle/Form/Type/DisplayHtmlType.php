@@ -29,35 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class DisplayHtmlType.
+ */
 class DisplayHtmlType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_display_html';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'hidden';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'html'  => '',
-                'label' => false,
-            )
-        );
+        $resolver->setDefaults([
+            'html'  => '',
+            'label' => false,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['html'] = $options['html'];

@@ -119,6 +119,17 @@ services:
     tags:
       - { name: form.type, alias: deskpro_datetime }
 
+  form.display_html:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType
+    tags:
+      - { name: form.type, alias: deskpro_display_html }
+
+  form.hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenType
+    arguments: [@request_stack]
+    tags:
+      - { name: form.type, alias: deskpro_hidden }
+
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
     tags:

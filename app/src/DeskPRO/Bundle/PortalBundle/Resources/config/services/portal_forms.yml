@@ -168,19 +168,6 @@ services:
       - { name: form.type, alias: deskpro_language }
 
 
-  form.display_html:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DisplayHtmlType
-    tags:
-      - { name: form.type, alias: deskpro_display_html }
-
-
-  form.hidden:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HiddenType
-    arguments: [@request_stack]
-    tags:
-      - { name: form.type, alias: deskpro_hidden }
-
-
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
     arguments: [@brand_stack, @language_manager]
