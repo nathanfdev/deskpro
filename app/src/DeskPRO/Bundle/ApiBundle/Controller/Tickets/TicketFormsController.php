@@ -31,9 +31,13 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Form\TicketFormContext;
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -44,8 +48,77 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketFormsController extends AbstractTicketsController
 {
-    public static $exposeOnly = ['post', 'put'];
+    public static $exposeOnly = [];
     public static $type       = 'ticket_with_layouts';
+
+    /**
+     * @ApiDoc(
+     *      description="Create a new resource",
+     *      requirements={
+     *          {
+     *              "name"="context",
+     *              "requirement"="agent|user",
+     *              "description"="Ticket layout context",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
+     * @Post("/{context}", requirements={"context"="(agent|user)"})
+     *
+     * @param string  $context
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postContextAction($context, Request $request)
+    {
+        return $this->handleForm($this->instantiateEntity($request), $request, [
+            'ticket_view_context' => $context,
+        ]);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Update an existing resource",
+     *      requirements={
+     *          {
+     *              "name"="context",
+     *              "requirement"="agent|user",
+     *              "description"="Ticket layout context",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          400="Bad Request",
+     *          403="Denied"
+     *      }
+     * )
+     * @Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
+     *
+     * @param string  $context
+     * @param Ticket  $ticket
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function putContextAction($context, Ticket $ticket, Request $request)
+    {
+        return $this->handleForm($ticket, $request, [
+            'ticket_view_context' => $context,
+        ]);
+    }
 
     /**
      * {@inheritdoc}
@@ -53,11 +126,10 @@ class TicketFormsController extends AbstractTicketsController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'person'              => $this->getUser(),
-            'settings'            => $this->get('brand_stack')->getActive()->getSettings(),
-            'use_captcha'         => false,
-            'for_api'             => true,
-            'ticket_view_context' => TicketFormContext::VIEW_AGENT,
+            'person'      => $this->getUser(),
+            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
+            'use_captcha' => false,
+            'for_api'     => true,
         ]);
 
         return parent::handleForm($model, $request, $options);

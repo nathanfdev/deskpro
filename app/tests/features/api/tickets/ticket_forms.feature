@@ -11,7 +11,7 @@ Feature: /tickets endpoint
   Scenario: I create a ticket
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
     And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
-    When I send a POST request to "/api/v2/ticket_forms" with body:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
 {
   "subject": "Sample Ticket",
@@ -56,7 +56,7 @@ Feature: /tickets endpoint
   Scenario: I modify and retrieve a ticket
     Given the setting "core.use_product" is set to 1
     Given the setting "core.use_ticket_priority" is set to 1
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": {
@@ -133,7 +133,7 @@ Feature: /tickets endpoint
     And the JSON node "data.name" should be equal to "Changed Name"
 
   Scenario: I modify ticket person by unknown id
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": 10000
@@ -143,7 +143,7 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_found"
 
   Scenario: I modify ticket person by id
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": 2
@@ -156,7 +156,7 @@ Feature: /tickets endpoint
     And the JSON node "data.person" should be equal to 2
 
   Scenario: I modify ticket person by email
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": "user@deskpro.dev"
@@ -175,7 +175,7 @@ Feature: /tickets endpoint
     And the JSON node "data[0].person" should be equal to 3
 
   Scenario: I modify ticket person by unknown email
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": "unknown-email@deskpro.dev"
@@ -184,7 +184,7 @@ Feature: /tickets endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
 
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": {
@@ -196,7 +196,7 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
 
   Scenario: I modify ticket person by creating a new person using name and email fields
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": {
@@ -218,7 +218,7 @@ Feature: /tickets endpoint
     And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
 
   Scenario: I modify ticket person with incorrect email
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": {
@@ -230,7 +230,7 @@ Feature: /tickets endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
 
-    When I send a PUT request to "/api/v2/ticket_forms/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
   "person": "incorrect - emaildeskpro.dev"
