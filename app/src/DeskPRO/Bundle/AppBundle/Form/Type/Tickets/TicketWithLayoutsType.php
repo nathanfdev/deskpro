@@ -757,7 +757,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'ticket'            => $context->getTicket(),
+            'owner'             => $context->getTicket(),
             'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
@@ -778,7 +778,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $context->getForm()->add(
             $field->getId(),
-            'deskpro_custom_data_ticket',
+            'deskpro_custom_data',
             $options
         );
     }
@@ -797,7 +797,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'person'            => $context->getPerson(),
+            'owner'             => $context->getPerson(),
             'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
@@ -810,7 +810,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $context->getForm()->add(
             $field->getId(),
-            'deskpro_custom_data_person',
+            'deskpro_custom_data',
             $options
         );
     }
@@ -846,7 +846,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'organization'      => $ticket_organization,
+            'owner'             => $ticket_organization,
             'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
@@ -859,7 +859,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $context->getForm()->add(
             $field->getId(),
-            'deskpro_custom_data_organization',
+            'deskpro_custom_data',
             $options
         );
     }

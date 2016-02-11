@@ -91,23 +91,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_person_email }
 
-  form.custom_data_person:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataPersonType
+  form.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
     arguments: [@form_field_manager]
     tags:
-      - { name: form.type, alias: deskpro_custom_data_person }
-
-  form.custom_data_organization:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataOrganizationType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_organization }
-
-  form.custom_data_ticket:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataTicketType
-    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_ticket }
+      - { name: form.type, alias: deskpro_custom_data }
 
   form.deskpro_custom_per_field_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType

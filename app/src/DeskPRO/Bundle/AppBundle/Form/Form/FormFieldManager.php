@@ -57,6 +57,9 @@ class FormFieldManager
      */
     private $em;
 
+    /**
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -217,7 +220,7 @@ class FormFieldManager
      *
      * @return array
      */
-    protected function createCustomField(CustomDefAbstract $field, $agent_interface)
+    public function createCustomField(CustomDefAbstract $field, $agent_interface)
     {
         list($type, $value_name, $options) = $this->getFormType($field, $agent_interface);
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -190,10 +189,10 @@ class PersonEditProfileType extends AbstractType
             $id = $field_def->getId();
             $form->add(
                 $id,
-                'deskpro_custom_data_person',
+                'deskpro_custom_data',
                 array(
                     'custom_data_field' => $field_def,
-                    'person'            => $event->getData(),
+                    'owner'             => $event->getData(),
                     'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
                     'agent_interface'   => false,
                     'label'             => false,
