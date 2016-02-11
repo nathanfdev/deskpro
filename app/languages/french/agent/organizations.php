@@ -1,48 +1,20 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'agent.organizations.add_person'                      => 'Ajouter une personne à cette organisation',
-    'agent.organizations.browse_all_members'              => 'Faire défiler tous les membres',
-    'agent.organizations.click_set_manager'               => 'Cliquer pour définir comme manager de l\'organisation',
-    'agent.organizations.create_organization'             => 'Créer organisation',
-    'agent.organizations.email_domain_assoc'              => 'Email associations de domaine',
-    'agent.organizations.email_domain_assoc_add'          => 'Ajouter nouveau domaine',
-    'agent.organizations.email_domain_assoc_explain'      => 'Le utilisateurs avec email de ces domaines seront automatiquement associés à cette organisation',
-    'agent.organizations.email_domain_assoc_move'         => 'Associer 1 utilisateur|Associer {{count}}utilisateurs',
-    'agent.organizations.email_domain_assoc_move_all'     => 'Associer 1 utilisateur qui appartient déjà à une organisation différente|Associer {{count}} utilisateurs qui appartiennent déjà à d\'autres organisations',
-    'agent.organizations.email_domain_assoc_none'         => 'Définir un domaine email pour auto-associer les utilisateurs à cette organisation.',
-    'agent.organizations.email_domain_assoc_remove'       => 'Retirer le domaine email',
-    'agent.organizations.email_domain_assoc_remove_users' => 'Retirer le domaine email et retirer 1 utilisateur de cette organisation|Retirer le domaine email et retirer {{count}} utilisateurde cette organisation',
-    'agent.organizations.email_domain_assoc_title'        => 'Email associations de domaine pour {{name}}',
-    'agent.organizations.enter_position'                  => 'Entrer position',
-    'agent.organizations.is_empty'                        => 'Cette organisation n\'a pas de membres',
-    'agent.organizations.list_title'                      => '1 organisation|{{count}} organisations',
-    'agent.organizations.no_slas'                         => 'Aucun SLA ne s\'applique automatiquement à cette organisation.',
-    'agent.organizations.org_manager_click_to_remove'     => 'Manager organisation. Cliquer pour retirer',
+<?php return array(
+	'agent.organizations.add_person'                                       => 'Ajouter une personne à cette organisation',
+	'agent.organizations.browse_all_members'                               => 'Faire défiler tous les membres',
+	'agent.organizations.click_set_manager'                                => 'Cliquer pour définir comme manager de l\'organisation',
+	'agent.organizations.create_organization'                              => 'Créer organisation',
+	'agent.organizations.email_domain_assoc'                               => 'Email associations de domaine',
+	'agent.organizations.email_domain_assoc_add'                           => 'Ajouter nouveau domaine',
+	'agent.organizations.email_domain_assoc_explain'                       => 'Le utilisateurs avec email de ces domaines seront automatiquement associés à cette organisation',
+	'agent.organizations.email_domain_assoc_move'                          => 'Associer 1 utilisateur|Associer {{count}}utilisateurs',
+	'agent.organizations.email_domain_assoc_move_all'                      => 'Associer 1 utilisateur qui appartient déjà à une organisation différente|Associer {{count}} utilisateurs qui appartiennent déjà à d\'autres organisations',
+	'agent.organizations.email_domain_assoc_none'                          => 'Définir un domaine email pour auto-associer les utilisateurs à cette organisation.',
+	'agent.organizations.email_domain_assoc_remove'                        => 'Retirer le domaine email',
+	'agent.organizations.email_domain_assoc_remove_users'                  => 'Retirer le domaine email et retirer 1 utilisateur de cette organisation|Retirer le domaine email et retirer {{count}} utilisateurde cette organisation',
+	'agent.organizations.email_domain_assoc_title'                         => 'Email associations de domaine pour {{name}}',
+	'agent.organizations.enter_position'                                   => 'Entrer position',
+	'agent.organizations.is_empty'                                         => 'Cette organisation n\'a pas de membres',
+	'agent.organizations.list_title'                                       => '1 organisation|{{count}} organisations',
+	'agent.organizations.no_slas'                                          => 'Aucun SLA ne s\'applique automatiquement à cette organisation.',
+	'agent.organizations.org_manager_click_to_remove'                      => 'Manager organisation. Cliquer pour retirer',
 );

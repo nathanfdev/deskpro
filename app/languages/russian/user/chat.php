@@ -1,79 +1,51 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'user.chat.email'                           => 'Адрес Вашей электронной почты',
-    'user.chat.ended-no-agent'                  => 'Приносим свои извинения, но пока нет свободных специалистов, чтобы связаться с Вами. Пожалуйста, напишите нам электронное письмо или попытайтесь еще раз через некоторое время.',
-    'user.chat.error'                           => 'Ошибка диалога',
-    'user.chat.form_chat_button-submit'         => 'Отправить',
-    'user.chat.form_chat_send-file'             => 'Отправить файл',
-    'user.chat.form_create_button-submit'       => 'Начать диалог',
-    'user.chat.form_create_department'          => 'Выбрать раздел',
-    'user.chat.form_create_title'               => 'Начать диалог со специалистом',
-    'user.chat.form_feedback_button-submit'     => 'Отправить отзыв и закрыть окно',
-    'user.chat.form_feedback_comments'          => 'Замечания?',
-    'user.chat.form_feedback_rate-satisfaction' => 'Нам удалось решить Вашу проблему',
-    'user.chat.form_feedback_rate-satisfied'    => 'Да',
-    'user.chat.form_feedback_rate-time'         => 'Достаточно ли быстро мы среагировали?',
-    'user.chat.form_feedback_rate-unsatisfied'  => 'Нет',
-    'user.chat.form_feedback_title'             => 'Отправить нам отзыв',
-    'user.chat.form_feedback_transcript-email'  => 'Отправить запись этого разговора',
-    'user.chat.log_chat-id'                     => 'Идентификатор чата',
-    'user.chat.log_fields_department'           => 'Отдел',
-    'user.chat.log_message_author-you'          => 'Вы',
-    'user.chat.message_agent-timeout'           => 'Приносим свои извинения; произошло разъединение с{{name}}. Пожалуйста, подождите, пока мы подберем Вам нового специалиста',
-    'user.chat.message_assigned'                => 'Диалог передан {{name}}',
-    'user.chat.message_chatting-with'           => 'Вы ведете диалог с',
-    'user.chat.message_ended'                   => 'Разговор завершен',
-    'user.chat.message_ended-by'                => 'Разговор завершен {{name}}',
-    'user.chat.message_ended-by-user'           => 'Разговор завершен пользователем',
-    'user.chat.message_finding-agent'           => 'Подбор специалиста',
-    'user.chat.message_long-wait'               => 'Мы все еще пытаемся подобрать Вам специалиста; обычно это занимает меньше минуты. <br /><br />Спешите? <a class="cancel-and-newticket-trigger">Можете оставить нам сообщение</a>',
-    'user.chat.message_set-department'          => '{{name}} установил раздел: {{department}}',
-    'user.chat.message_started'                 => 'Начат диалог',
-    'user.chat.message_unassigned'              => 'Диалог отменен',
-    'user.chat.message_uploading'               => 'Отправка...',
-    'user.chat.message_user-joined'             => '{{name}} присоединился к диалогу',
-    'user.chat.message_user-left'               => '{{name}} прекратил диалог',
-    'user.chat.message_user-returned'           => 'Пользователь вернулся',
-    'user.chat.message_user-timeout'            => 'Пользователь временно вышел',
-    'user.chat.message_wait'                    => 'Мы подбираем Вам специалиста',
-    'user.chat.name'                            => 'Ваше имя',
-    'user.chat.submit-ticket-button'            => 'Отправьте нам электронное письмо',
-    'user.chat.submit-ticket-title'             => 'Лучше отправьте нам электронное письмо',
-    'user.chat.window_cancel'                   => 'Отмена',
-    'user.chat.window_cancel-confirm'           => 'Вы уверены, что хотите закончить разговор?',
-    'user.chat.window_close'                    => 'Нет, спасибо, просто закрыть данное окно',
-    'user.chat.window_close_only'               => 'Закрыть окно',
-    'user.chat.window_end-chat'                 => 'Завершить диалог',
-    'user.chat.window_offline-button'           => 'Нажмите, чтобы связаться с нами',
-    'user.chat.window_open-new'                 => 'Открыть диалог в новом окне',
-    'user.chat.window_resume-button'            => 'Открыть Ваш диалог',
-    'user.chat.window_start-button'             => 'Чтобы начать с нами диалог, нажмите здесь',
-    'user.chat.window_upload-drag'              => 'Чтобы отправить в этот диалог файл, перетащите его сюда',
+<?php return array(
+	'user.chat.email'                                                      => 'Адрес Вашей электронной почты',
+	'user.chat.ended-no-agent'                                             => 'Приносим свои извинения, но пока нет свободных специалистов, чтобы связаться с Вами. Пожалуйста, напишите нам электронное письмо или попытайтесь еще раз через некоторое время.',
+	'user.chat.error'                                                      => 'Ошибка диалога',
+	'user.chat.form_chat_button-submit'                                    => 'Отправить',
+	'user.chat.form_chat_send-file'                                        => 'Отправить файл',
+	'user.chat.form_create_button-submit'                                  => 'Начать диалог',
+	'user.chat.form_create_department'                                     => 'Выбрать раздел',
+	'user.chat.form_create_title'                                          => 'Начать диалог со специалистом',
+	'user.chat.form_feedback_button-submit'                                => 'Отправить отзыв и закрыть окно',
+	'user.chat.form_feedback_comments'                                     => 'Замечания?',
+	'user.chat.form_feedback_rate-satisfaction'                            => 'Нам удалось решить Вашу проблему',
+	'user.chat.form_feedback_rate-satisfied'                               => 'Да',
+	'user.chat.form_feedback_rate-time'                                    => 'Достаточно ли быстро мы среагировали?',
+	'user.chat.form_feedback_rate-unsatisfied'                             => 'Нет',
+	'user.chat.form_feedback_title'                                        => 'Отправить нам отзыв',
+	'user.chat.form_feedback_transcript-email'                             => 'Отправить запись этого разговора',
+	'user.chat.log_chat-id'                                                => 'Идентификатор чата',
+	'user.chat.log_fields_department'                                      => 'Отдел',
+	'user.chat.log_message_author-you'                                     => 'Вы',
+	'user.chat.message_agent-timeout'                                      => 'Приносим свои извинения; произошло разъединение с{{name}}. Пожалуйста, подождите, пока мы подберем Вам нового специалиста',
+	'user.chat.message_assigned'                                           => 'Диалог передан {{name}}',
+	'user.chat.message_chatting-with'                                      => 'Вы ведете диалог с',
+	'user.chat.message_ended'                                              => 'Разговор завершен',
+	'user.chat.message_ended-by'                                           => 'Разговор завершен {{name}}',
+	'user.chat.message_ended-by-user'                                      => 'Разговор завершен пользователем',
+	'user.chat.message_finding-agent'                                      => 'Подбор специалиста',
+	'user.chat.message_long-wait'                                          => 'Мы все еще пытаемся подобрать Вам специалиста; обычно это занимает меньше минуты. <br /><br />Спешите? <a class="cancel-and-newticket-trigger">Можете оставить нам сообщение</a>',
+	'user.chat.message_set-department'                                     => '{{name}} установил раздел: {{department}}',
+	'user.chat.message_started'                                            => 'Начат диалог',
+	'user.chat.message_unassigned'                                         => 'Диалог отменен',
+	'user.chat.message_uploading'                                          => 'Отправка...',
+	'user.chat.message_user-joined'                                        => '{{name}} присоединился к диалогу',
+	'user.chat.message_user-left'                                          => '{{name}} прекратил диалог',
+	'user.chat.message_user-returned'                                      => 'Пользователь вернулся',
+	'user.chat.message_user-timeout'                                       => 'Пользователь временно вышел',
+	'user.chat.message_wait'                                               => 'Мы подбираем Вам специалиста',
+	'user.chat.name'                                                       => 'Ваше имя',
+	'user.chat.submit-ticket-button'                                       => 'Отправьте нам электронное письмо',
+	'user.chat.submit-ticket-title'                                        => 'Лучше отправьте нам электронное письмо',
+	'user.chat.window_cancel'                                              => 'Отмена',
+	'user.chat.window_cancel-confirm'                                      => 'Вы уверены, что хотите закончить разговор?',
+	'user.chat.window_close'                                               => 'Нет, спасибо, просто закрыть данное окно',
+	'user.chat.window_close_only'                                          => 'Закрыть окно',
+	'user.chat.window_end-chat'                                            => 'Завершить диалог',
+	'user.chat.window_offline-button'                                      => 'Нажмите, чтобы связаться с нами',
+	'user.chat.window_open-new'                                            => 'Открыть диалог в новом окне',
+	'user.chat.window_resume-button'                                       => 'Открыть Ваш диалог',
+	'user.chat.window_start-button'                                        => 'Чтобы начать с нами диалог, нажмите здесь',
+	'user.chat.window_upload-drag'                                         => 'Чтобы отправить в этот диалог файл, перетащите его сюда',
 );
