@@ -66,7 +66,7 @@ class CustomDataCollectionTransformer extends AbstractDataSerializerTransformer
                     foreach ($cd->getData() as $v) {
                         $fid = $v->field->getId();// value is the ID of the selected option
 
-                        $vals[]        = $v->getValue();
+                        $vals[]        = $fid;
                         $details[$fid] = [
                             'id'    => $v->field->getId(),
                             'title' => $v->field->getTitle(),
