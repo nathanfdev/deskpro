@@ -34,9 +34,9 @@ export const load = createAction(
       delete params.navItem;
       params = { ...params, ...navItem };
     }
-    return repository('Chat').search(params, 'person,agent,department').then(response => {
+    return repository('UserChat').search(params, 'person,agent,department').then(response => {
       const res = response.getData();
-      dispatch(setCollection('Chat', recordStoresId, res.data));
+      dispatch(setCollection('UserChat', recordStoresId, res.data));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
       dispatch(setCollection('Department', recordStoresId, prepareLinkedData(res.linked.department)));
       dispatch(toggleMassAction());

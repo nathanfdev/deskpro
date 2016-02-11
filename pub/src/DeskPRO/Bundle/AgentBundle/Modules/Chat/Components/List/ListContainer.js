@@ -6,7 +6,7 @@ import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 import { isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  isLoaded: isLoadedCollectionSelectorFactory('Chat', 'chats')(state)
+  isLoaded: isLoadedCollectionSelectorFactory('UserChat', 'chats')(state)
             && isLoadedCollectionSelectorFactory('Department', 'chats')(state),
   pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)

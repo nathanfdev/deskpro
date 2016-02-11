@@ -29,7 +29,7 @@ export const initialLoad = createAction(
 export const loadCounts = createAction(
   'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
   (list, groupBy) =>
-    (dispatch) => repository('Chat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+    (dispatch) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       const res = promise.getData();
       if (groupBy === 'department') {
         dispatch(loadBatch('Department', recordStoresId, res.data.nested.map(count => count.group)));

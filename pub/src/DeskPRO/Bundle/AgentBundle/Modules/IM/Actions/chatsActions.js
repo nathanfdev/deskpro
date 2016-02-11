@@ -40,9 +40,9 @@ export const startChat = createAction(
         return method.call()
           .success((response) => {
             const records = {};
-            dispatch(releaseCollection('Chat', 'recent', [response.data.id]));
+            dispatch(releaseCollection('UserChat', 'recent', [response.data.id]));
             records[response.data.id] = response.data;
-            dispatch(setCollection('Chat', 'recent', records, [parseInt(response.data.id, 10)]));
+            dispatch(setCollection('UserChat', 'recent', records, [parseInt(response.data.id, 10)]));
             dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })

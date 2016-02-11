@@ -6,7 +6,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Re
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  chats: collectionSelectorFactory('Chat', 'chats')(state),
+  chats: collectionSelectorFactory('UserChat', 'chats')(state),
   people: collectionSelectorFactory('Person', 'chats')(state),
   departments: collectionSelectorFactory('Department', 'chats')(state)
 }))
