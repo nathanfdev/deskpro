@@ -1611,6 +1611,10 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455058562.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455058562',
     ),
+    1455225069 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455225069.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455225069',
+    ),
     1456790400 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0061_ticketalter2.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0061_ticketalter2',

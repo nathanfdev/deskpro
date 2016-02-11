@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455225069);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1455225069 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Cache versions table');
+        $this->execMutateSql('CREATE TABLE cache_versions (id INT AUTO_INCREMENT NOT NULL, resource_id VARCHAR(150) NOT NULL, version_id VARCHAR(50) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+    }
+}
