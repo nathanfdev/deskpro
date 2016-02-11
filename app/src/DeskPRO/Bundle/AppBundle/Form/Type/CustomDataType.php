@@ -131,6 +131,7 @@ class CustomDataType extends AbstractType
             $options = array_merge($options, [
                 'validation_groups' => [],
                 'constraints'       => null,
+                'error_bubbling'    => true,
             ]);
         }
 
@@ -192,6 +193,7 @@ class CustomDataType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'error_bubbling'    => false,
                 'ignore_validation' => false,
                 'fully_hidden'      => function (Options $options) {
                     /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
