@@ -30,22 +30,27 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
-abstract class AbstractAction
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+
+class ApplySetHiddenStatusAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
 {
-    const APPROVE_ACTION             = 'approve';
-    const DELETE_ACTION              = 'delete';
-    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
-    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
-    const SET_TYPE_ACTION            = 'set_type';
-    const SET_CATEGORY_ACTION        = 'set_category';
-    const ADD_LABELS_ACTION          = 'add_labels';
-    const REMOVE_LABELS_ACTION       = 'remove_labels';
+    public function init()
+    {
+        return true;
+    }
 
-    const OPTION_LABELS = 'labels';
-    const OPTION_INPUT  = 'input';
-    const OPTION_ID     = 'id';
-
-    protected $options;
+    /**
+     * @param Feedback $feedback
+     */
+    public function applyAction($feedback)
+    {
+        $feedback
+            ->setHiddenStatus($this->options[AbstractAction::OPTION_INPUT])
+            ->setStatus(Feedback::STATUS_HIDDEN);
+    }
 }

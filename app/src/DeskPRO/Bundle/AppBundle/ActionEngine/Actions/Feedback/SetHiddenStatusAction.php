@@ -30,37 +30,41 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class ApplySetCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class SetHiddenStatusAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    private $customDef;
-
-    /**
-     * Fetch CustomDef.
-     */
-    public function init()
+    public function __construct(array $options)
     {
-        $this->customDef = $this->em
-            ->getRepository('DeskPRO:CustomDefFeedback')
-            ->findOneBy(['title' => 'Category']);
+        $resolver = new ActionOptionsResolver();
+        self::configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
     }
 
-    /**
-     * @param Feedback $feedback
-     */
-    public function applyAction($feedback)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $feedback->resetCustomData();
-        $customCategory = new CustomDataFeedback();
-        $customCategory->setInput($this->options[AbstractAction::OPTION_INPUT]);
-        $customCategory->setField($this->customDef);
-        $feedback->addCustomData($customCategory);
+        $resolver->setRequired(self::OPTION_INPUT);
+        $resolver->setAllowedTypes(self::OPTION_INPUT, 'string');
+        $resolver->setAllowedValues(
+            self::OPTION_INPUT,
+            [
+                Feedback::HIDDEN_STATUS_DELETED,
+                Feedback::HIDDEN_STATUS_DRAFT,
+                Feedback::HIDDEN_STATUS_SPAM,
+                Feedback::HIDDEN_STATUS_UNPUBLISHED,
+            ]
+        );
+    }
+
+    /** @return array */
+    public function serialize()
+    {
+        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
     }
 }
