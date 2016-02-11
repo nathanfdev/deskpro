@@ -2,13 +2,6 @@ import { createAction } from 'Ampliflux';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { currentListParamsSelector } from '../Selectors/list';
-import { setArticlesRequest } from '../RecordStores/Actions/articlesActions';
-import { setNewsRequest } from '../RecordStores/Actions/newsActions';
-import { setDownloadsRequest } from '../RecordStores/Actions/downloadsActions';
-import { setArticlesCommentsRequest } from '../RecordStores/Actions/articlesCommentsActions';
-import { setNewsCommentsRequest } from '../RecordStores/Actions/newsCommentsActions';
-import { setDownloadsCommentsRequest } from '../RecordStores/Actions/downloadsCommentsActions';
-import { setArticlePendingCreatesRequest } from '../RecordStores/Actions/articlePendingCreatesActions.js';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'publish';
@@ -44,28 +37,28 @@ export const load = createAction(
 
         switch (params.content) {
           case 'articles':
-            dispatch(setArticlesRequest(recordStoresId, res.data));
+            dispatch(setCollection('Article', recordStoresId, res.data));
             break;
           case 'news':
-            dispatch(setNewsRequest(recordStoresId, res.data));
+            dispatch(setCollection('News', recordStoresId, res.data));
             break;
           case 'downloads':
-            dispatch(setDownloadsRequest(recordStoresId, res.data));
+            dispatch(setCollection('Download', recordStoresId, res.data));
             break;
           case 'article_comments':
-            dispatch(setArticlesCommentsRequest(recordStoresId, res.data));
-            dispatch(setArticlesRequest(recordStoresId, prepareLinkedData(res.linked.article)));
+            dispatch(setCollection('ArticleComment', recordStoresId, res.data));
+            dispatch(setCollection('Article', recordStoresId, prepareLinkedData(res.linked.article)));
             break;
           case 'download_comments':
-            dispatch(setDownloadsCommentsRequest(recordStoresId, res.data));
-            dispatch(setDownloadsRequest(recordStoresId, prepareLinkedData(res.linked.download)));
+            dispatch(setCollection('DownloadComment', recordStoresId, res.data));
+            dispatch(setCollection('Download', recordStoresId, prepareLinkedData(res.linked.download)));
             break;
           case 'news_comments':
-            dispatch(setNewsCommentsRequest(recordStoresId, res.data));
-            dispatch(setNewsRequest(recordStoresId, prepareLinkedData(res.linked.news)));
+            dispatch(setCollection('NewsComment', recordStoresId, res.data));
+            dispatch(setCollection('News', recordStoresId, prepareLinkedData(res.linked.news)));
             break;
           case 'article_pending_creates':
-            dispatch(setArticlePendingCreatesRequest(recordStoresId, res.data));
+            dispatch(setCollection('ArticlePendingCreate', recordStoresId, res.data));
             break;
           default:
         }
