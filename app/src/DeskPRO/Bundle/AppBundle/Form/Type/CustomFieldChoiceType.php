@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -98,8 +98,8 @@ class CustomFieldChoiceType extends AbstractType
             ->setDefaults([
                 'empty_data'  => null,
                 'choice_list' => function (Options $options) use ($hierarchy_generator) {
-                        return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
-                    },
+                    return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
+                },
                 'placeholder' => '',
                 'help'        => '',
             ])
