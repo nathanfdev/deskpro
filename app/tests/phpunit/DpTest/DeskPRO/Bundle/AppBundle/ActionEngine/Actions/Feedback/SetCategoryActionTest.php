@@ -36,7 +36,9 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 use DpTest\DeskProTestCase;
+use Prophecy\Argument;
 
 class SetCategoryActionTest extends DeskProTestCase
 {
@@ -45,7 +47,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetCategoryAction(['input' => 'Linux']);
+        $action = new SetCategoryAction([AbstractAction::OPTION_INPUT => 'Linux']);
         $this->assertInstanceOf(SetCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -57,5 +59,58 @@ class SetCategoryActionTest extends DeskProTestCase
     public function it_should_extend_AbstractAction()
     {
         $this->assertContains(AbstractAction::class, class_parents(SetCategoryAction::class));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_configure_the_input_param()
+    {
+        $resolver = $this->prophesize(ActionOptionsResolver::class);
+        $resolver
+            ->setRequired(Argument::exact(AbstractAction::OPTION_INPUT))
+            ->shouldBeCalled();
+        $resolver
+            ->setAllowedTypes(Argument::exact(AbstractAction::OPTION_INPUT), Argument::exact('string'))
+            ->shouldBeCalled();
+        $resolver
+            ->setAllowedValues(
+                Argument::exact(AbstractAction::OPTION_INPUT),
+                Argument::that(
+                    function ($value) {
+                        return !empty($value);
+                    }
+                )
+            )
+            ->shouldBeCalled();
+        $resolver = $resolver->reveal();
+        SetCategoryAction::configureOptions($resolver);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_empty_input_param()
+    {
+        new SetCategoryAction([AbstractAction::OPTION_INPUT => '']);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_none_string_input_param()
+    {
+        new SetCategoryAction([AbstractAction::OPTION_INPUT => ['one']]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
+     */
+    public function it_should_raise_exception_on_the_none_input_param()
+    {
+        new SetCategoryAction(['something' => []]);
     }
 }

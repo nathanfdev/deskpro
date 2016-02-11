@@ -47,7 +47,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new AddLabelsAction(['labels' => ['one', 'two']]);
+        $action = new AddLabelsAction([AbstractAction::OPTION_LABELS => ['one', 'two']]);
         $this->assertInstanceOf(AddLabelsAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -64,12 +64,47 @@ class AddLabelsActionTest extends DeskProTestCase
     /**
      * @test
      */
-    public function it_should_add_constraints_and_default_value_for_the_labels_param()
+    public function it_should_configure_the_labels_param()
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
-        $resolver->setRequired('labels')->shouldBeCalled();
-        $resolver->setConstraints(Argument::type('array'))->shouldBeCalled();
+        $resolver->setRequired(Argument::exact(AbstractAction::OPTION_LABELS))->shouldBeCalled();
+        $resolver->setAllowedTypes(Argument::exact(AbstractAction::OPTION_LABELS), Argument::exact('array'))->shouldBeCalled();
+        $resolver->setAllowedValues(
+            Argument::exact(AbstractAction::OPTION_LABELS),
+            Argument::that(
+                function ($value) {
+                    return !empty($value);
+                }
+            )
+        )->shouldBeCalled();
         $resolver = $resolver->reveal();
         AddLabelsAction::configureOptions($resolver);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_empty_labels_param()
+    {
+        new AddLabelsAction([AbstractAction::OPTION_LABELS => []]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_string_labels_param()
+    {
+        new AddLabelsAction([AbstractAction::OPTION_LABELS => 'one']);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
+     */
+    public function it_should_raise_exception_on_the_none_labels_param()
+    {
+        new AddLabelsAction(['something' => []]);
     }
 }

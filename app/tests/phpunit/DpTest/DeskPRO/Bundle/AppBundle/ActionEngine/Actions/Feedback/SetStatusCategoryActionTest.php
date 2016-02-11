@@ -36,7 +36,9 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 use DpTest\DeskProTestCase;
+use Prophecy\Argument;
 
 class SetStatusCategoryActionTest extends DeskProTestCase
 {
@@ -45,7 +47,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetStatusCategoryAction(['id' => 1]);
+        $action = new SetStatusCategoryAction([AbstractAction::OPTION_ID => 1]);
         $this->assertInstanceOf(SetStatusCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -56,5 +58,58 @@ class SetStatusCategoryActionTest extends DeskProTestCase
     public function it_should_extend_AbstractAction()
     {
         $this->assertContains(AbstractAction::class, class_parents(SetStatusCategoryAction::class));
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_configure_the_id_param()
+    {
+        $resolver = $this->prophesize(ActionOptionsResolver::class);
+        $resolver
+            ->setRequired(Argument::exact(AbstractAction::OPTION_ID))
+            ->shouldBeCalled();
+        $resolver
+            ->setAllowedTypes(Argument::exact(AbstractAction::OPTION_ID), Argument::exact(['string', 'int']))
+            ->shouldBeCalled();
+        $resolver
+            ->setAllowedValues(
+                Argument::exact(AbstractAction::OPTION_ID),
+                Argument::that(
+                    function ($value) {
+                        return !empty($value);
+                    }
+                )
+            )
+            ->shouldBeCalled();
+        $resolver = $resolver->reveal();
+        SetStatusCategoryAction::configureOptions($resolver);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_empty_id_param()
+    {
+        new SetStatusCategoryAction([AbstractAction::OPTION_ID => 0]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
+     */
+    public function it_should_raise_exception_on_the_none_integer_id_param()
+    {
+        new SetStatusCategoryAction([AbstractAction::OPTION_ID => ['one']]);
+    }
+
+    /**
+     * @test
+     * @expectedException \Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException
+     */
+    public function it_should_raise_exception_on_the_none_id_param()
+    {
+        new SetStatusCategoryAction(['something' => []]);
     }
 }
