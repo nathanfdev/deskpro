@@ -98,15 +98,15 @@ class CustomDataType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'submitEvent']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
      * @param FormEvent $event
      */
-    public function preDataEvent(FormEvent $event)
+    public function onPreData(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
@@ -140,7 +140,7 @@ class CustomDataType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function submitEvent(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
         $owner  = $config->getOption('owner');
@@ -162,7 +162,7 @@ class CustomDataType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function postSubmitEvent(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\CustomDataAbstract $custom_data */
         $custom_data = $event->getData();
@@ -177,8 +177,8 @@ class CustomDataType extends AbstractType
         }
 
         // if admin switched from multi select to single select, we need to fix the data object
-        $custom_data_field                      = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
-        list($value_name, $form_type, $options) = $this->field_manager->createCustomField($custom_data_field, $config->getOption('agent_interface'));
+        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+        list(, , $options) = $this->field_manager->createCustomField($custom_data_field, $config->getOption('agent_interface'));
 
         if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->setInput('');
