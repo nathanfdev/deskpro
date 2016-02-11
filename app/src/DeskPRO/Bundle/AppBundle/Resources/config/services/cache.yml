@@ -6,6 +6,8 @@ services:
 
   etag_generator:
     class: DeskPRO\Bundle\AppBundle\Cache\EtagGenerator
+    arguments:
+      - @settings_resolver
 
   cache.version_service:
     class: DeskPRO\Bundle\AppBundle\Cache\VersionService
