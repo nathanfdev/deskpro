@@ -141,13 +141,6 @@ services:
       - @deskpro.core.translate
 
 
-  form.custom_data_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataFeedbackType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_feedback }
-
-
   form.ticket_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageType
     arguments: [@language_manager]

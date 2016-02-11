@@ -32,12 +32,14 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDataOrganization;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -144,7 +146,6 @@ class CustomDataType extends AbstractType
     public function onSubmit(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
-        $owner  = $config->getOption('owner');
 
         /** @var \Application\DeskPRO\Entity\CustomDataAbstract $custom_data */
         $custom_data = $event->getData();
@@ -153,11 +154,12 @@ class CustomDataType extends AbstractType
             $event->setData($custom_data);
         }
 
-        $property = $this->getOwnerProperty($config);
+        $custom_data->field = $config->getOption('custom_data_field');
 
-        $field                  = $config->getOption('custom_data_field');
-        $custom_data->field     = $field;
-        $custom_data->$property = $owner;
+        if ($config->getOption('owner')) {
+            $property               = $this->getOwnerProperty($config);
+            $custom_data->$property = $config->getOption('owner');
+        }
     }
 
     /**
@@ -193,6 +195,7 @@ class CustomDataType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'owner'             => null,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
                 'fully_hidden'      => function (Options $options) {
@@ -224,16 +227,18 @@ class CustomDataType extends AbstractType
      */
     protected function createCustomData(FormConfigInterface $config)
     {
-        $owner = $config->getOption('owner');
-        if ($owner instanceof Ticket) {
+        $custom_def = $config->getOption('custom_data_field');
+        if ($custom_def instanceof CustomDefTicket) {
             return new CustomDataTicket();
-        } elseif ($owner instanceof Person) {
+        } elseif ($custom_def instanceof CustomDefPerson) {
             return new CustomDataPerson();
-        } elseif ($owner instanceof Organization) {
+        } elseif ($custom_def instanceof CustomDefOrganization) {
             return new CustomDataOrganization();
+        } elseif ($custom_def instanceof CustomDefFeedback) {
+            return new CustomDataFeedback();
         }
 
-        throw new \RuntimeException('Unsupported custom data owner '.get_class($owner));
+        throw new \RuntimeException('Unsupported custom data owner '.get_class($custom_def));
     }
 
     /**
@@ -243,15 +248,17 @@ class CustomDataType extends AbstractType
      */
     protected function getOwnerProperty(FormConfigInterface $config)
     {
-        $owner = $config->getOption('owner');
-        if ($owner instanceof Ticket) {
+        $custom_def = $config->getOption('custom_data_field');
+        if ($custom_def instanceof CustomDefTicket) {
             return 'ticket';
-        } elseif ($owner instanceof Person) {
+        } elseif ($custom_def instanceof CustomDefPerson) {
             return 'person';
-        } elseif ($owner instanceof Organization) {
+        } elseif ($custom_def instanceof CustomDefOrganization) {
             return 'organization';
+        } elseif ($custom_def instanceof CustomDefFeedback) {
+            return 'feedback';
         }
 
-        throw new \RuntimeException('Unsupported custom data owner '.get_class($owner));
+        throw new \RuntimeException('Unsupported custom data owner '.get_class($custom_def));
     }
 }

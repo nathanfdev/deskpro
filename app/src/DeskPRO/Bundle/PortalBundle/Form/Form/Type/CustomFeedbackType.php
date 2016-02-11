@@ -36,6 +36,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CustomFeedbackType.
+ */
 class CustomFeedbackType extends AbstractType
 {
     /**
@@ -43,11 +46,19 @@ class CustomFeedbackType extends AbstractType
      */
     private $field_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param FormFieldManager $field_manager
+     */
     public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $field_defs = $this->field_manager->getFeedbackFields();
@@ -55,28 +66,32 @@ class CustomFeedbackType extends AbstractType
         foreach ($field_defs as $field_def) {
             $builder->add(
                 'custom_feedback_def_'.$field_def->getId(),
-                'deskpro_custom_data_feedback',
-                array(
+                'deskpro_custom_data',
+                [
                     'custom_data_field' => $field_def,
                     'property_path'     => sprintf('[%s]', $field_def->getId()),
                     'agent_interface'   => $options['agent_interface'],
                     'label'             => $field_def->title,
-                )
+                ]
             );
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class'      => 'DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection',
-                'agent_interface' => false,
-                'label'           => false,
-            )
-        );
+        $resolver->setDefaults([
+            'data_class'      => 'DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection',
+            'agent_interface' => false,
+            'label'           => false,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'custom_feedback_fields';
