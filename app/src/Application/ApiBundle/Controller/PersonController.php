@@ -634,6 +634,20 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			),
      *			@SWG\Parameter(
+     *				name="first_name",
+     *				description="First name of the Person.",
+     *				paramType="query",
+     *				required=false,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
+     *				name="last_name",
+     *				description="Last name of the Person.",
+     *				paramType="query",
+     *				required=false,
+     *				type="string"
+     *			),
+     *			@SWG\Parameter(
      *				name="disable_autoresponses",
      *				description="If true, disables sending this person automatic notifications when actions are applied to their tickets.",
      *				paramType="query",
@@ -700,9 +714,14 @@ class PersonController extends AbstractController implements ProtectedController
 
         $errors = array();
 
-        $name = $this->in->getString('name');
-        if ($name) {
-            $person->name = $name;
+        if ($this->in->checkIsset('name')) {
+            $person->name = $this->in->getString('name');
+        }
+        if ($this->in->checkIsset('first_name')) {
+            $person->first_name = $this->in->getString('first_name');
+        }
+        if ($this->in->checkIsset('last_name')) {
+            $person->last_name = $this->in->getString('last_name');
         }
 
         $updates = $this->_setBasicPersonDetailsFromInput($person);
