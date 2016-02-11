@@ -59,6 +59,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
      */
     private function callApiAction(AgentRequestContext $context)
     {
+        libxml_disable_entity_loader(false);
         $user     = $context->getAppSetting('api_user');
         $password = $context->getAppSetting('api_password');
         $token    = $context->getAppSetting('api_security_token');

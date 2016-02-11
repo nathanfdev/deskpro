@@ -70,6 +70,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
+        libxml_disable_entity_loader(false);
+
         $user     = $context->getIn()->getString('api_user');
         $password = $context->getIn()->getString('api_password');
         $token    = $context->getIn()->getString('api_security_token');
