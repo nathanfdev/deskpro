@@ -79,7 +79,7 @@ class ActionPermissionsDriverTest extends DeskProTestCase
             'Inherit class ApiModes problem'
         );
         $this->assertEquals(
-            ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.inherit'],
+            ['class.mock', 'desk_pro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.inherit'],
             $class_metadata->methodMetadata['inherit']->getTags(),
             'Inherit class ApiTag problem'
         );
@@ -90,7 +90,7 @@ class ActionPermissionsDriverTest extends DeskProTestCase
             'overrideModes ApiModes problem'
         );
         $this->assertEquals(
-            ['class.mock', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_modes'],
+            ['class.mock', 'desk_pro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_modes'],
             $class_metadata->methodMetadata['overrideModes']->getTags(),
             'overrideModes ApiTags problem'
         );
@@ -101,7 +101,7 @@ class ActionPermissionsDriverTest extends DeskProTestCase
             'overrideTags ApiModes problem'
         );
         $this->assertEquals(
-            ['class.overridden', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_tags'],
+            ['class.overridden', 'desk_pro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_tags'],
             $class_metadata->methodMetadata['overrideTags']->getTags(),
             'overrideTags ApiTags problem'
         );
@@ -112,7 +112,7 @@ class ActionPermissionsDriverTest extends DeskProTestCase
             'overrideBoth ApiModes problem'
         );
         $this->assertEquals(
-            ['class.overridden', 'class.overridden2', 'deskpro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_both'],
+            ['class.overridden', 'class.overridden2', 'desk_pro.bundle.app_bundle.annotation.action_permissions.mock.action_permissions_class.override_both'],
             $class_metadata->methodMetadata['overrideBoth']->getTags(),
             'overrideBoth ApiTags problem'
         );

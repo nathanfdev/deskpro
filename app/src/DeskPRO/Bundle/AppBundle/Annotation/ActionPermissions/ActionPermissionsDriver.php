@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
@@ -150,7 +151,8 @@ class ActionPermissionsDriver implements DriverInterface
         $tag   = explode('\\', $fqcn);
         $tag[] = $metadata->name;
         foreach ($tag as &$t) {
-            $t = ltrim(strtolower(preg_replace(['/Controller/', '/[A-Z](?!([A-Z]+)|$)/'], ['', '_$0'], $t)), '_'); //snake case
+            $t = str_replace('/Controller/', '', $t);
+            $t = StringUtils::toSnakeCase($t);
         }
         $tag = implode('.', $tag);
 
