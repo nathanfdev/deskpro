@@ -29,8 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Cache;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DpTest\DeskProTestCase;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Class EtagGeneratorTest.
@@ -47,7 +49,15 @@ class EtagGeneratorTest extends DeskProTestCase
      */
     public function setUp()
     {
-        $this->etagGenerator = new EtagGenerator();
+        $parameterBag = new ParameterBag();
+        $parameterBag->set('api.cache.global_version', 'global_version');
+
+        $settings_resolver = $this->prophesize(SettingsResolver::class);
+        $settings_resolver->getGlobalSettings()->willReturn($parameterBag);
+        $settings_resolver = $settings_resolver->reveal();
+
+        /* @var SettingsResolver $settings_resolver */
+        $this->etagGenerator = new EtagGenerator($settings_resolver);
     }
 
     /**

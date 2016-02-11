@@ -29,22 +29,56 @@
 namespace DeskPRO\Bundle\AppBundle\Cache;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 
+/**
+ * Class EtagGenerator.
+ */
 class EtagGenerator
 {
+    /**
+     * @var SettingsResolver
+     */
+    protected $resolver;
+
+    /**
+     * @param SettingsResolver $resolver
+     */
+    public function __construct(SettingsResolver $resolver)
+    {
+        $this->resolver = $resolver;
+    }
+
+    /**
+     * @param $parameters
+     *
+     * @return string
+     */
     public function generate($parameters)
     {
-        $segments = $this->flatten($this->createSegments($parameters));
+        $segments = $this->createSegments($parameters);
+        $segments = $this->flatten($segments);
+        array_unshift($segments, $this->resolver->getGlobalSettings('api.cache.global_version'));
 
         return $this->getHash($segments);
     }
 
+    /**
+     * @param array $segments
+     *
+     * @return string
+     */
     protected function getHash(array $segments)
     {
         return md5(implode('::', $segments));
     }
 
+    /**
+     * @param $params
+     *
+     * @return array
+     */
     protected function createSegments($params)
     {
         $segments = [];
@@ -69,6 +103,11 @@ class EtagGenerator
         return $segments;
     }
 
+    /**
+     * @param $params
+     *
+     * @return array
+     */
     protected function flatten($params)
     {
         $segments = [];
