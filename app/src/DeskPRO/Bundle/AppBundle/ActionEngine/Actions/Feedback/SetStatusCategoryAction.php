@@ -49,10 +49,11 @@ class SetStatusCategoryAction extends AbstractAction implements ActionInterface,
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_ID);
+        $resolver->setAllowedTypes(self::OPTION_ID, ['string', 'int']);
         $resolver->setAllowedValues(
             self::OPTION_ID,
             function ($value) {
-                return is_int($value) || ctype_digit($value);
+                return (is_int($value) && $value > 0) || ctype_digit($value);
             }
         );
     }

@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
 {
@@ -50,13 +49,12 @@ class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInte
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_LABELS);
-        $resolver->setConstraints(
-            [
-                self::OPTION_LABELS => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('string'),
-                ],
-            ]
+        $resolver->setAllowedTypes(self::OPTION_LABELS, 'array');
+        $resolver->setAllowedValues(
+            self::OPTION_LABELS,
+            function ($value) {
+                return !empty($value);
+            }
         );
     }
 

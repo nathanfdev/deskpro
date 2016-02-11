@@ -49,10 +49,11 @@ class SetCategoryAction extends AbstractAction implements ActionInterface, Actio
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_INPUT);
+        $resolver->setAllowedTypes(self::OPTION_INPUT, 'string');
         $resolver->setAllowedValues(
             self::OPTION_INPUT,
             function ($value) {
-                return is_string($value);
+                return !empty($value);
             }
         );
     }
