@@ -1,0 +1,13 @@
+services:
+  cache.resolver:
+    class: DeskPRO\Bundle\AppBundle\Cache\Resolver\FileResolver
+    arguments:
+      - %kernel.cache_dir%
+
+  etag_generator:
+    class: DeskPRO\Bundle\AppBundle\Cache\EtagGenerator
+
+  cache.version_service:
+    class: DeskPRO\Bundle\AppBundle\Cache\VersionService
+    arguments:
+      - @doctrine.orm.default_entity_manager
