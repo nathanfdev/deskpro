@@ -10,9 +10,7 @@ import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
-
-// agents
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
@@ -26,7 +24,6 @@ import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/Agen
   chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  agentsStatus: agentsStatusSelector(state),
   recentChatsStatus: recentChatsStatusSelector(state)
 }))
 export class List extends React.Component {
@@ -40,7 +37,6 @@ export class List extends React.Component {
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    agentsStatus: PropTypes.object.isRequired,
     recentChatsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
@@ -88,8 +84,8 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, loadingCounts, chating } = this.props;
-    const loaded = recentChatsStatus.get('isDone') && agentsStatus.get('isDone');
+    const { recentChatsStatus, loadingCounts, chating } = this.props;
+    const loaded = recentChatsStatus.get('isDone');
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));

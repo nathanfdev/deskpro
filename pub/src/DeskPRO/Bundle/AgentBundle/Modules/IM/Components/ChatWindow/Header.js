@@ -2,14 +2,13 @@ import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
 // agents
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
-  agentsStatus: agentsStatusSelector(state),
   teams: myAgentTeamsSelector(state),
   departments: myDepartmentsSelector(state),
   current: state.IM.chats.get('current')
@@ -18,7 +17,6 @@ export class Header extends React.Component {
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    agentsStatus: PropTypes.object.isRequired,
     teams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,

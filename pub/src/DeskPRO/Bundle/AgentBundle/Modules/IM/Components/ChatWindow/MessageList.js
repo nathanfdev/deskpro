@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Message } from './Message';
 import { loadMessages, markMessages } from '../../Actions/messagesActions';
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
 import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
 import Loader from 'react-loader';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state),
-  agentsStatus: agentsStatusSelector(state),
   messages: state.IM.messages,
   loadingMessages: state.IM.messages.get('loadingMessages'),
   updatingMessages: state.IM.messages.get('updatingMessages')
@@ -20,7 +19,6 @@ export class MessageList extends React.Component {
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    agentsStatus: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
     messages: PropTypes.object.isRequired,
     loadingMessages: PropTypes.bool.isRequired,
