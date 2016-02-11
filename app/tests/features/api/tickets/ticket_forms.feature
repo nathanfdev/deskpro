@@ -67,6 +67,7 @@ Feature: /tickets endpoint
   "product": 2,
   "priority": 3,
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
+  "labels": ["ticket label 1", "ticket label 2"],
   "ticket_field_1": {
     "data": "2"
   },
@@ -100,6 +101,7 @@ Feature: /tickets endpoint
 }
     """
     Then the response status code should be 204
+
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 5
@@ -112,6 +114,9 @@ Feature: /tickets endpoint
     And the JSON node "data.participants[0]" should be equal to 3
     And the JSON node "data.followers" should have 1 element
     And the JSON node "data.followers[0]" should be equal to 2
+    And the JSON node "data.labels" should have 2 elements
+    And the JSON node "data.labels[0]" should be equal to "ticket label 1"
+    And the JSON node "data.labels[1]" should be equal to "ticket label 2"
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
     And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
