@@ -202,12 +202,6 @@ services:
       - { name: form.type, alias: deskpro_blob }
 
 
-  form.date:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateType
-    tags:
-      - { name: form.type, alias: deskpro_date }
-
-
   form.heirarchical_entity:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
     tags:
