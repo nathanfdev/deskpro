@@ -191,4 +191,37 @@ class BaseController extends FOSRestController
     {
         return $this->container;
     }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Cache\EtagGenerator
+     */
+    protected function getEtagGenerator()
+    {
+        return $this->get('etag_generator');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Cache\VersionService
+     */
+    protected function getVersionService()
+    {
+        return $this->get('cache.version_service');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return null|\Symfony\Component\HttpFoundation\Response
+     */
+    protected function getCachedResponse(Request $request, $etag)
+    {
+        if ($response = $this->get('cache.resolver')->resolve($request)) {
+            return $response->getEtag() === $etag ? $this->getCacheResolver()->restoreResponseBody($response) : null;
+        }
+    }
+
+    protected function getCacheResolver()
+    {
+        return $this->get('cache.resolver');
+    }
 }

@@ -59,7 +59,7 @@ class VersionService
     public function getVersion($resource_id, $force_create = true)
     {
         $repo    = $this->em->getRepository('DeskPRO\Bundle\AppBundle\Entity\CacheVersion');
-        $version = $repo->findOneBy([['resource_id' => $resource_id]]);
+        $version = $repo->findOneBy(['resource_id' => $resource_id]);
         if (!$version && $force_create) {
             return $this->newVersion($resource_id);
         } elseif (!$version) {

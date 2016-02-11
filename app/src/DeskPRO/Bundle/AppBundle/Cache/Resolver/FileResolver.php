@@ -111,7 +111,7 @@ class FileResolver implements ResolverInterface
         if ($response->headers->has('X-Body-File')) {
             $response->setContent(file_get_contents($response->headers->get('X-Body-File')));
         } else {
-            return;
+            return $response;
         }
 
         $response->headers->remove('X-Body-File');

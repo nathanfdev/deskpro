@@ -31,6 +31,8 @@ namespace DeskPRO\Bundle\AppBundle\Cache;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Component\Util\StringUtils;
+use DeskPRO\Component\Util\TypeUtils;
 
 /**
  * Class EtagGenerator.
@@ -59,7 +61,7 @@ class EtagGenerator
     {
         $segments = $this->createSegments($parameters);
         $segments = $this->flatten($segments);
-        array_unshift($segments, $this->resolver->getGlobalSettings('api.cache.global_version'));
+        array_unshift($segments, $this->resolver->getGlobalSettings()->get('api.cache.global_version'));
 
         return $this->getHash($segments);
     }
@@ -71,7 +73,7 @@ class EtagGenerator
      */
     protected function getHash(array $segments)
     {
-        return md5(implode('::', $segments));
+        return sprintf('%s%s%s', '"', md5(implode('::', $segments)), '"');
     }
 
     /**
@@ -82,7 +84,7 @@ class EtagGenerator
     protected function createSegments($params)
     {
         $segments = [];
-        foreach ($params as $param) {
+        foreach ($params as $param_name => $param) {
             switch (true) {
                 case is_scalar($param):
                     $segment = $param;
@@ -91,13 +93,17 @@ class EtagGenerator
                     $segment = $this->createSegments($param);
                     break;
                 case $param instanceof DomainObject || $param instanceof EntityInterface:
-                    $segment = $param->getId();
+                    $segment = StringUtils::toSnakeCase(TypeUtils::getBaseTypeName($param)).'-'.$param->getId();
                     break;
                 default:
                     continue 2;
 
             }
-            $segments[] = $segment;
+            if (is_int($param_name)) {
+                $segments[] = $segment;
+            } else {
+                $segments[$param_name] = $segment;
+            }
         }
 
         return $segments;
@@ -111,7 +117,13 @@ class EtagGenerator
     protected function flatten($params)
     {
         $segments = [];
-        array_walk_recursive($params, function ($a) use (&$segments) {$segments[] = $a;});
+        array_walk_recursive(
+            $params,
+            function ($value, $key) use (&$segments) {
+                $prefix = is_int($key) ? '' : "$key=>";
+                $segments[] = sprintf('%s%s', $prefix, $value);
+            }
+        );
 
         return $segments;
     }

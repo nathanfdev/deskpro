@@ -88,10 +88,31 @@ class EtagGeneratorTest extends DeskProTestCase
         $mockEntity->id = 2;
 
         return [
+            [[], []],
             [[1, [2, 3]], [1, 2, 3]],
             [[1, [2, 3 => [3, 4]]], [1, 2, 3, 4]],
-            [[1, [$domainOjectEntity, 3]], [1, 1, 3]],
-            [[1, [$domainOjectEntity, $mockEntity]], [1, 1, 2]],
+            [[1, [$domainOjectEntity, 3]], [1, 'mock_domain_object-1', 3]],
+            [[1, [$domainOjectEntity, $mockEntity]], [1, 'mock_domain_object-1', 'mock_entity-2']],
+            [['a' => 'b'], ['a=>b']],
+            [['a' => 'b', 'c'], ['a=>b', 'c']],
+            // Eeeeeehhhhhhhhhaaaaaaa
+            [
+                [
+                    1,
+                    [
+                        'do'       => $domainOjectEntity,
+                        'entities' => [
+                            $mockEntity,
+                        ],
+                    ],
+                ],
+                [
+                    1,
+                    'do=>mock_domain_object-1',
+                    'mock_entity-2',
+                ],
+            ],
+
         ];
     }
 }
