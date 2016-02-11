@@ -45,7 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Assigns person entity using multiple formats.
  * Form can accept person "id", "email address" or {"email": "xxx", "name": "xxx"}.
  */
-class PersonIdentityType extends AbstractType
+class PersonAssignType extends AbstractType
 {
     /**
      * @var EntityManager
