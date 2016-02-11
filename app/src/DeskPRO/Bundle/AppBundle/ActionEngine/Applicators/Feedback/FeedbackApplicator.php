@@ -81,6 +81,10 @@ class FeedbackApplicator extends AbstractActionApplicator implements ActionColle
         return $this->actions;
     }
 
+    /**
+     * @param array            $ids
+     * @param ActionCollection $collection
+     */
     public function applyActionCollection(array $ids, ActionCollection $collection)
     {
         $feedback = $this->getEntities(Feedback::class, $ids);
