@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from '../Selectors/list';
-import { setPeopleRequest } from '../RecordStores/Actions/peopleActions';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
@@ -27,7 +26,7 @@ export const loadPeople = createAction(
     dispatch(setCollection('Organization', recordStoresId, prepareLinkedData(res.linked.organization)));
     dispatch(setCollection('UserGroup', recordStoresId, prepareLinkedData(res.linked.usergroup)));
     dispatch(setCollection('Language', recordStoresId, prepareLinkedData(res.linked.language)));
-    dispatch(setPeopleRequest(recordStoresId, res.data));
+    dispatch(setCollection('Person', recordStoresId, res.data));
     const ids = res.data.map(item=>item.id);
     return { ids: ids, pagination: res.meta.pagination };
   })

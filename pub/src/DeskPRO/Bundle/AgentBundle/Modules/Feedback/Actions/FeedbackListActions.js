@@ -3,7 +3,6 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 import { loadBatch, setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
@@ -55,7 +54,7 @@ export const loadFeedbackList = createAction(
       const ids = res.data.map(item=>item.id);
 
       dispatch(setCollection('Feedback', recordStoresId, res.data));
-      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
       dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
       dispatch(getCommentsCounter(ids));
 

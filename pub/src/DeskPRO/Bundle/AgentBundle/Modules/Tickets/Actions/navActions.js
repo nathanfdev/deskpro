@@ -1,8 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
-import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';

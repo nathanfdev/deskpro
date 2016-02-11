@@ -7,7 +7,7 @@ import { AppSwitcher } from './AppSwitcher';
 import { TabBodyPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { TabFrame } from './TabFrame';
 import { NotificationsContainer } from './Notifications/notifications';
-import { meSelector } from '../RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 import { workspaceDimsSelector } from '../Selectors/workspace';
 import * as appActions from '../Actions/appActions';
 import debounce from 'lodash/function/debounce';

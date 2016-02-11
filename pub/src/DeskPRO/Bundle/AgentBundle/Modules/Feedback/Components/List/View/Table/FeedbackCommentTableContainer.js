@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { idsSelector, currentListSortSelector, currentListOrderSelector } from '../../../../Selectors/list';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
@@ -14,7 +13,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Re
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state),
   feedbackCategories: collectionSelectorFactory('FeedbackCategory', 'feedback')(state),
   feedbackTypes: collectionSelectorFactory('FeedbackType', 'feedback')(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'feedback')(state),
   viewFields: state.Feedback.list.get('commentsTableVisibleFields'),
   currentSort: currentListSortSelector(state),
   currentOrder: currentListOrderSelector(state)

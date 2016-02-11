@@ -5,14 +5,13 @@ import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
 import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { selectedSelector} from '../../../../../Application/Selectors/massActions';
 import { connect } from 'react-redux';
 
 @connect(state => ({
   elements: elementsSelector(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'crm')(state),
   organizations: collectionSelectorFactory('Organization', 'crm')(state),
   selected: selectedSelector(state),
   usergroups: allSelectorFactory('UserGroup')(state),

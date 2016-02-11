@@ -8,7 +8,7 @@ import { ReplyForm } from '../Popups/AgentMessage/ReplyForm';
 import { OnlineAgentsContainer } from '../Popups/OnlineAgentsContainer';
 import { openWidget, openTriggerPopup, closeTriggerPopup } from '../../../Actions/dpWindowActions';
 import { loadOnlineAgents } from '../../../Actions/peopleActions';
-import { onlineAgentsCountSelector } from '../../../RecordStores/Selectors/peopleSelectors';
+import { onlineAgentsCountSelector } from '../../../Selectors/peopleSelectors';
 import {
   widgetHasChatSelector,
   widgetOpenedSelector,

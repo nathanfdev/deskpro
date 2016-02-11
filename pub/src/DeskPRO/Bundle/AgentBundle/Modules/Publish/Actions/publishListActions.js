@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { currentListParamsSelector } from '../Selectors/list';
 import { setArticlesRequest } from '../RecordStores/Actions/articlesActions';
 import { setNewsRequest } from '../RecordStores/Actions/newsActions';
@@ -69,7 +69,7 @@ export const load = createAction(
             break;
           default:
         }
-        dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+        dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
         dispatch(toggleMassAction());
 
         const ids = res.data.map(item=>item.id);

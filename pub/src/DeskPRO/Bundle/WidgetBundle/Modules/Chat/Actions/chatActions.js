@@ -3,7 +3,7 @@ import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
-import { loadPeople } from '../../Application/RecordStores/Actions/peopleActions';
+import { loadBatch } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -50,7 +50,7 @@ export const updateChatInfo = createAction(
     }
 
     if (peopleIds.length) {
-      dispatch(loadPeople('all', peopleIds));
+      dispatch(loadBatch('Person', 'all', peopleIds));
     }
 
     return chatInfo;
@@ -305,7 +305,7 @@ export const pollingChat = createAction(
         });
 
         if (peopleIds.length) {
-          dispatch(loadPeople('all', peopleIds));
+          dispatch(loadBatch('Person', 'all', peopleIds));
         }
       }
 

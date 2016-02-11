@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { peopleSelector } from '../../Application/RecordStores/Selectors/peopleSelectors';
+import { peopleSelector } from '../../Application/Selectors/peopleSelectors';
 
 const stateSelector = state => state.Chat.chat;
 

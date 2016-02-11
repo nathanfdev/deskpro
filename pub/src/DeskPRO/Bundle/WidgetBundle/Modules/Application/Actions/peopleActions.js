@@ -1,8 +1,8 @@
 import { createAction } from 'Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from './bootstrapActions';
-import { setPeopleRequest, releasePeopleRequest } from '../RecordStores/Actions/peopleActions';
-import { onlineAgentsSelector } from '../RecordStores/Selectors/peopleSelectors';
+import { l } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
 import Immutable from 'immutable';
 
 export const loadOnlineAgents = createAction(
@@ -14,8 +14,7 @@ export const loadOnlineAgents = createAction(
         const oldAgents = Immutable.fromJS(Object.values(onlineAgentsSelector(state).toJS()));
 
         if (!oldAgents.equals(Immutable.fromJS(response.data))) {
-          dispatch(releasePeopleRequest('onlineAgents'));
-          dispatch(setPeopleRequest('onlineAgents', response.data));
+          dispatch(setCollection('Person', 'onlineAgents', response.data));
         }
       })
 );

@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { requireChatLoginSelector } from '../Selectors/bootstrap';
-import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
+import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
   chatBeginModeSelector,
   widgetHasChatSelector,

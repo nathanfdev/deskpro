@@ -1,34 +1,31 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import { ContentCard } from './ContentCard';
 import { ContentCommentCard } from './ContentCommentCard';
 import { ArticlePendingCreateCard } from './ArticlePendingCreateCard';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { contentSelector, elementsSelector }
-  from '../../../../Selectors/list';
-import { peopleSelector, articlesSelector, newsSelector, downloadsSelector,
-  articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
-  from '../../../../Selectors/recordStores';
+from '../../../../Selectors/list';
+import { articlesSelector, newsSelector, downloadsSelector,
+articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
+from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
-import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    content: contentSelector(state),
-    elements: elementsSelector(state),
-    people: peopleSelector(state),
-    articles: articlesSelector(state),
-    news: newsSelector(state),
-    downloads: downloadsSelector(state),
-    article_pending_creates: articlePendingCreatesSelector(state),
-    article_comments: articlesCommentsSelector(state),
-    news_comments: newsCommentsSelector(state),
-    download_comments: downloadsCommentsSelector(state),
-    selected: selectedSelector(state)
-  });
-})
-
+@connect(state => ({
+  content: contentSelector(state),
+  elements: elementsSelector(state),
+  people: collectionSelectorFactory('Person', 'publish')(state),
+  articles: articlesSelector(state),
+  news: newsSelector(state),
+  downloads: downloadsSelector(state),
+  article_pending_creates: articlePendingCreatesSelector(state),
+  article_comments: articlesCommentsSelector(state),
+  news_comments: newsCommentsSelector(state),
+  download_comments: downloadsCommentsSelector(state),
+  selected: selectedSelector(state)
+}))
 export class CardsContainer extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     content: PropTypes.string.isRequired,

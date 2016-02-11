@@ -5,7 +5,7 @@ import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updat
 import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
 import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailValidationSelector } from '../Selectors/bootstrap';
 import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
-import { onlineAgentsCountSelector } from '../RecordStores/Selectors/peopleSelectors';
+import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { widgetEmitter } from '../../../Services/emitter';

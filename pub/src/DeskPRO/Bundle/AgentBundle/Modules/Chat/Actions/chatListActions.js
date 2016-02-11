@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Selectors/list';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
@@ -38,7 +37,7 @@ export const load = createAction(
     return repository('Chat').search(params, 'person,agent,department').then(response => {
       const res = response.getData();
       dispatch(setCollection('Chat', recordStoresId, res.data));
-      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
       dispatch(setCollection('Department', recordStoresId, prepareLinkedData(res.linked.department)));
       dispatch(toggleMassAction());
 

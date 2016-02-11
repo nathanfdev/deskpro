@@ -4,7 +4,6 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { idsSelector, currentListSortSelector, currentListOrderSelector } from '../../../../Selectors/list';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
@@ -16,7 +15,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Re
   feedbackComments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state),
   feedbackCategories: collectionSelectorFactory('FeedbackCategory', 'feedback')(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'feedback')(state),
   currentSort: currentListSortSelector(state),
   currentOrder: currentListOrderSelector(state)
 }))

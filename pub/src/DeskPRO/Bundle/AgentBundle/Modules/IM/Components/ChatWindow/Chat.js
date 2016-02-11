@@ -13,10 +13,9 @@ import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 
 // messages
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 import { addMessage } from '../../Actions/messagesActions';
-
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
 
 @connect(state => ({
   me: meSelector(state),
@@ -25,7 +24,6 @@ import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordS
   agents: agentsSelector(state)
 }))
 export class Chat extends React.Component {
-
   static propTypes = {
     me: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,

@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import { ChatCard } from './ChatCard';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
 
 @connect(state => ({
   chats: collectionSelectorFactory('Chat', 'chats')(state),
   selected: selectedSelector(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'chats')(state),
   departments: collectionSelectorFactory('Department', 'chats')(state)
 }))
 export class ChatsCardsContainer extends Component {

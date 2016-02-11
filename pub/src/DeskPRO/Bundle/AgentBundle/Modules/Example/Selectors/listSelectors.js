@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { listFilterSelector } from '../RecordStores/Selectors/widgetSelectors';
-import { agentNamesSelector } from '../../Agent/RecordStores/Selectors/agentsSelectors';
+import { agentNamesSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
 
 const stateSel = state => state.Example.list;
 

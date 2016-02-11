@@ -5,7 +5,7 @@ import { currentSortSelector, elementsSelector } from '../../Selectors/list';
 import { tasksSelector } from '../../Selectors/recordStores';
 import { allProjectsSelector } from '../../RecordStores/Selectors/projectSelectors';
 import { allTaskListsSelector } from '../../RecordStores/Selectors/taskListSelectors';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { editTask } from '../../Actions/listActions';
 

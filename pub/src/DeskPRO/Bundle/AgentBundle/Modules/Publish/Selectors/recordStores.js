@@ -1,6 +1,4 @@
 import { createSelector } from 'reselect';
-import { createPeopleRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Selectors/peopleSelectors';
 import { createArticlesRequestSelectors } from '../RecordStores/Selectors/articlesSelectors';
 import { createNewsRequestSelectors } from '../RecordStores/Selectors/newsSelectors';
 import { createDownloadsRequestSelectors } from '../RecordStores/Selectors/downloadsSelectors';
@@ -8,11 +6,6 @@ import { createArticlesCommentsRequestSelectors } from '../RecordStores/Selector
 import { createNewsCommentsRequestSelectors } from '../RecordStores/Selectors/newsCommentsSelectors';
 import { createDownloadsCommentsRequestSelectors } from '../RecordStores/Selectors/downloadsCommentsSelectors';
 import { createArticlePendingCreatesRequestSelectors } from '../RecordStores/Selectors/articlePendingCreatesSelectors';
-
-export const peopleSelector = createSelector(
-  createPeopleRequestSelectors('publish').recordsSel,
-    people => people
-);
 
 export const articlesSelector = createSelector(
   createArticlesRequestSelectors('publish').recordsSel,

@@ -10,8 +10,8 @@ import * as actions from '../../Actions/chatsActions';
 import * as chatActions from '../../RecordStores/Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
 import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({

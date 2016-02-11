@@ -1,32 +1,31 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import { elementsSelector, contentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { peopleSelector, articlesSelector, newsSelector, downloadsSelector,
-  articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
+import { articlesSelector, newsSelector, downloadsSelector,
+articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
   from '../../../../Selectors/recordStores';
 import { applyParams } from '../../../../Actions/publishListActions';
 import { ContentTable } from './ContentTable';
 import { CommentTable } from './CommentTable';
 import { APCTable } from './APCTable';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
-import { connect } from 'react-redux';
-@connect(state => {
-  return {
-    elements: elementsSelector(state),
-    people: peopleSelector(state),
-    content: contentSelector(state),
-    articles: articlesSelector(state),
-    news: newsSelector(state),
-    downloads: downloadsSelector(state),
-    article_pending_creates: articlePendingCreatesSelector(state),
-    article_comments: articlesCommentsSelector(state),
-    news_comments: newsCommentsSelector(state),
-    download_comments: downloadsCommentsSelector(state),
-    currentSort: currentListSortSelector(state),
-    currentOrder: currentListOrderSelector(state)
-  };
-})
 
+@connect(state => ({
+  elements: elementsSelector(state),
+  people: collectionSelectorFactory('Person', 'publish')(state),
+  content: contentSelector(state),
+  articles: articlesSelector(state),
+  news: newsSelector(state),
+  downloads: downloadsSelector(state),
+  article_pending_creates: articlePendingCreatesSelector(state),
+  article_comments: articlesCommentsSelector(state),
+  news_comments: newsCommentsSelector(state),
+  download_comments: downloadsCommentsSelector(state),
+  currentSort: currentListSortSelector(state),
+  currentOrder: currentListOrderSelector(state)
+}))
 export class TableContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

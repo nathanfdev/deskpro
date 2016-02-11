@@ -2,7 +2,6 @@ import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { applyParams } from './FeedbackListActions';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 /**
  * Used to identify requests within record stores
@@ -65,7 +64,7 @@ export const loadFeedbackCommentsList = createAction(
 
       dispatch(setCollection('FeedbackComment', recordStoresId, res.data));
       dispatch(setCollection('Feedback', recordStoresId, prepareLinkedData(res.linked.feedback)));
-      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
 
       return { ids: ids, pagination: res.meta.pagination };
     }

@@ -2,13 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
 
 @connect(state => ({
   chats: collectionSelectorFactory('Chat', 'chats')(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'chats')(state),
   departments: collectionSelectorFactory('Department', 'chats')(state)
 }))
 export class ChatsTableContainer extends Component {

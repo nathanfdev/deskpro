@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { idsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
@@ -10,7 +9,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Re
   ids: idsSelector(state),
   comments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   selected: selectedSelector(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'feedback')(state),
   massAction: state.Feedback.list.get('massAction'),
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state)
 }))

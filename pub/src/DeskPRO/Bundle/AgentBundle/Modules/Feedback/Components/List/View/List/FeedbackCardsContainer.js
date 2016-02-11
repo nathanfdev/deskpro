@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
-import { peopleSelector } from '../../../../Selectors/recordStores';
 import { idsSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
@@ -11,7 +10,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Re
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state),
   viewFields: cardVisibleFieldsSelector(state),
   selected: selectedSelector(state),
-  people: peopleSelector(state),
+  people: collectionSelectorFactory('Person', 'feedback')(state),
   feedbackTypes: collectionSelectorFactory('FeedbackType', 'feedback')(state),
   feedbackComments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state)

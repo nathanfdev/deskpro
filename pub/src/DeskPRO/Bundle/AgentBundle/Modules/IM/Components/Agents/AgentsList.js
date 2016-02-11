@@ -1,15 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import { AgentsListItem } from './AgentsListItem';
 import { connect } from 'react-redux';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 
 @connect(state => ({
   me: meSelector(state),
   agents: agentsSelector(state)
 }))
 export class AgentsList extends Component {
-
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,

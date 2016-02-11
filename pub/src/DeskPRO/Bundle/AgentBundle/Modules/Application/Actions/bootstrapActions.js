@@ -2,7 +2,6 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
@@ -28,14 +27,14 @@ export const preloadData = createAction(
           const data = flattenBatchResponses(responses);
           dispatch(setCollection('Department', 'all', data[0]));
           dispatch(setCollection('Department', 'my', data[1]));
-          dispatch(setPeopleRequest('agents', data[2]));
+          dispatch(setCollection('Person', 'agents', data[2]));
           dispatch(setCollection('AgentTeam', 'all', data[3]));
           dispatch(setCollection('AgentTeam', 'my', data[4]));
           dispatch(setCollection('Language', 'all', data[5]));
           dispatch(setCollection('UserGroup', 'all', data[6]));
           dispatch(setAgentSettings(data[7]));
           dispatch(setupActionAlerts(data[8]));
-          dispatch(setPeopleRequest('me', [data[9].person]));
+          dispatch(setCollection('Person', 'me', [data[9].person]));
 
           dispatch(donePreloading());
         })
