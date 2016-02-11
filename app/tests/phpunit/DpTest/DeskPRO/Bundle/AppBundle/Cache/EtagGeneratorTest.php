@@ -76,6 +76,9 @@ class EtagGeneratorTest extends DeskProTestCase
         $this->assertEquals($excected, $segments);
     }
 
+    /**
+     * @return array
+     */
     public function getTestCreateSegments()
     {
         $domainOjectEntity     = new MockDomainObject();
@@ -93,15 +96,30 @@ class EtagGeneratorTest extends DeskProTestCase
     }
 }
 
+/**
+ * Class MockDomainObject.
+ */
 class MockDomainObject extends DomainObject
 {
+    /**
+     * @var
+     */
     public $id;
 }
 
+/**
+ * Class MockEntity.
+ */
 class MockEntity implements EntityInterface
 {
+    /**
+     * @var
+     */
     public $id;
 
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
