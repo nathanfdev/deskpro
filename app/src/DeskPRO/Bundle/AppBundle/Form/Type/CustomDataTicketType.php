@@ -32,11 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -45,33 +41,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class CustomDataTicketType.
  */
-class CustomDataTicketType extends AbstractType
+class CustomDataTicketType extends AbstractCustomDataType
 {
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
-     */
-    private $field_manager;
-
-    /**
-     * Constructor.
-     *
-     * @param FormFieldManager $field_manager
-     */
-    public function __construct(FormFieldManager $field_manager)
-    {
-        $this->field_manager = $field_manager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preDataEvent']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'postSubmitEvent']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'submitEvent']);
-    }
-
     /**
      * {@inheritdoc}
      */
