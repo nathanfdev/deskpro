@@ -16,7 +16,7 @@ export function fakeChatsState(num = 0) {
 
   return fakeState({
     Chat: {list: toImmutable({currentListParams: {}})},
-    RecordsStore: {store: toImmutable({Chat: {records, collections: {chats: ids}, statuses: {chats: {isDone: true}}}})}
+    RecordsStore: {store: toImmutable({UserChat: {records, collections: {chats: ids}, statuses: {chats: {isDone: true}}}})}
   });
 }
 
