@@ -90,6 +90,9 @@ Feature: /tickets endpoint
   "ticket_field_7": {
     "input": "textarea text"
   },
+  "ticket_field_8": {
+    "data": ["10", "11"]
+  },
   "user_field_1": {
     "data": "2"
   },
@@ -167,6 +170,7 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
+    And the JSON node "data.fields.8.detail.8.title" should be equal to "Multiple choice"
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
