@@ -1,80 +1,52 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'user.emails.auto-close'                  => 'Faute d\'avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.',
-    'user.emails.chat_transcript'             => 'Nous vous remercions pour cet échange. Voici une transcription du Chat.',
-    'user.emails.comment_approved'            => 'Votre commentaire a été publié.',
-    'user.emails.comment_deleted'             => 'Votre commentaire a été utilisé pour améliorer la page.',
-    'user.emails.comment_thank-you'           => 'Merci pour votre commentaire sur {{link}}.',
-    'user.emails.comment_validate-email'      => 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:',
-    'user.emails.do-not-reply'                => 'Merci de ne pas répondre à cet email. Ce message a été généré automatiquement par une machine et les réponses envoyées à cette adresse ne seront pas lues par notre équipe.',
-    'user.emails.email-too-big'               => 'Votre email "{{subject}}" n\'a pu être envoyé car il est trop lourd. La taille maximale des emails acceptée par ce helpdesk est de {{max_size}}. Supprimez des pièces jointes et essayez à nouveau.',
-    'user.emails.feedback_agent-validation'   => 'Merci de noter que votre remarque n\'apparaîtra publiquement sur notre site qu\'après avoir été lue par un de nos agents.',
-    'user.emails.feedback_approved'           => 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.',
-    'user.emails.feedback_closed'             => 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}',
-    'user.emails.feedback_disapproved'        => 'Nous vous écrivons pour vous informer que votre remarque n\'a malheureusement pas été approuvée. Elle n\'apparaîtra donc pas sur notre site.',
-    'user.emails.feedback_disapproved-reason' => 'Nous vous écrivons pour vous informer que votre remarque n\'a malheureusement pas été approuvée. Elle n\'apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:',
-    'user.emails.feedback_new-comment'        => '{{name}} a posté un nouveau commentaire',
-    'user.emails.feedback_published'          => 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.',
-    'user.emails.feedback_thank-you'          => 'Merci de nous avoir fait parvenir vos remarques "{{title}}"',
-    'user.emails.feedback_updated'            => 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}',
-    'user.emails.feedback_validate-email'     => 'Merci de valider votre adresse email en ligne en cliquant sur le lien suivant:',
-    'user.emails.feedback_votes'              => 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:|Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:',
-    'user.emails.greeting'                    => 'Chère/Cher {{to_name}},',
-    'user.emails.kb-explain'                  => 'Vous recevez cet email car vous êtes inscrit à notre base de connaissances sur <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>.<br />Vous ne souhaitez plus recevoir ces emails?<a href="{{ unsubscribe_url }}">Cliquez ici pour vous désinscrire.</a>',
-    'user.emails.kb-new-articles'             => '1 nouvel article|{{count}} nouveaux articles',
-    'user.emails.kb-updated-articles'         => '1 article mis à jour|{{count}} articles mis à jour',
-    'user.emails.label_view-online'           => 'Voir en ligne',
-    'user.emails.message-clipped'             => '(Le message a été tronqué)',
-    'user.emails.password_agent-reset'        => 'Un agent a généré un nouveau mot de passe pour votre compte. Vous pouvez vous connecter avec ces informations de connexion.',
-    'user.emails.password_reset'              => 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:',
-    'user.emails.profile_email-new-confirm'   => 'Pour finir d\'ajouter cette deuxième adresse email à votre compte, cliquez sur le lien d\'activation suivant:',
-    'user.emails.profile_email_link-validate' => 'Cliquez simplement sur le lien suivant pour valider votre adresse email.',
-    'user.emails.register-agent-validation'   => 'Remarque : avant que votre compte ne soit activé, nos agents doivent le valider manuellement. Les tickets et tout autre contenu que vous soumettez seront mis en file d\'attente jusqu\'à ce qu\'un agent valide votre compte.',
-    'user.emails.register-confirm'            => 'Merci d\'avoir créé un compte.<br /><br />Avant de pouvoir utiliser votre compte, vous devez valider votre adresse mail en cliquant sur le lien suivant',
-    'user.emails.register-welcome'            => 'Merci pour votre inscription. Vous pouvez maintenant vous connecter en utilisant votre adresse email {{to_email}} sur le helpdesk :',
-    'user.emails.registration_closed'         => 'Chère/Cher {{name}},<br /><br /><br /><br />Seuls les membres inscrits au service d\'aide sont habilités à poster de nouveaux tickets. Si vous possédez un compte, merci de nous écrire avec l\'adresse email enregistrée pour votre compte.',
-    'user.emails.reject_resolved'             => 'Votre réponse n\'a pu aboutir car votre ticket a déjà été résolu. Nos agents ne liront pas ou ne répondront pas à ce message.',
-    'user.emails.reject_resolved-new'         => 'Si vous souhaitez créér un nouveau ticket, envoyez un email à <a href="mailto:{{email_to}}">{{email_to}}</a> ou remplir notre formulaire en ligne :<br /><a href="{{link}}">{{link}}</a>',
-    'user.emails.reject_resolved-newemail'    => 'Si vous souhaitez créér un nouveau ticket, envoyez un email à <a href="mailto:{{email_to}}">{{email_to}}</a>',
-    'user.emails.ticket_access_ticket_online' => 'Voir et gérer votre ticket en ligne',
-    'user.emails.ticket_cc-new'               => 'Vous avez été ajouté à un ticket créé par {{name}}.',
-    'user.emails.ticket_flood'                => 'Vous avez récemment envoyé un email à notre service d\'assistance, suite à quoi notre système a détecté l\'envoi successifs par votre boite mail de nombreux messages certainement automatiques.<br /><br />Pour éviter la création d\'une chaine de messages automatiques notre service d\'assistance ne vous enverra plus de notifications automatiques par email.',
-    'user.emails.ticket_message_title'        => 'Le {{date}} à {{time}}, {{author}} a écrit:',
-    'user.emails.ticket_no-autoresponse'      => 'Attention: Emails de confirmation désactivés.',
-    'user.emails.ticket_rate-negative'        => 'Non',
-    'user.emails.ticket_rate-neutral'         => 'Partiellement',
-    'user.emails.ticket_rate-positive'        => 'Oui',
-    'user.emails.ticket_rate-question'        => 'Ce message vous a-t-il aidé ?',
-    'user.emails.ticket_received'             => 'Votre ticket a bien été reçu. Un de nos agents va vous répondre sous peu.',
-    'user.emails.ticket_reply-confirm'        => 'Merci pour votre réponse. Un de nos agents va vous répondre sous peu.',
-    'user.emails.ticket_validate'             => 'Merci de nous avoir contacté.<br /><br />Avant que nos agents ne lisent et répondent à votre message, vous devez valider votre adresse email.',
-    'user.emails.tickets_ommitted'            => '1 message a été omis|{{count}} messages ont été omis',
-    'user.emails.view_full_history_online'    => 'Voir l\'intégralité du ticket en ligne',
+<?php return array(
+	'user.emails.auto-close'                                               => 'Faute d\'avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.',
+	'user.emails.chat_transcript'                                          => 'Nous vous remercions pour cet échange. Voici une transcription du Chat.',
+	'user.emails.comment_approved'                                         => 'Votre commentaire a été publié.',
+	'user.emails.comment_deleted'                                          => 'Votre commentaire a été utilisé pour améliorer la page.',
+	'user.emails.comment_thank-you'                                        => 'Merci pour votre commentaire sur {{link}}.',
+	'user.emails.comment_validate-email'                                   => 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:',
+	'user.emails.do-not-reply'                                             => 'Merci de ne pas répondre à cet email. Ce message a été généré automatiquement par une machine et les réponses envoyées à cette adresse ne seront pas lues par notre équipe.',
+	'user.emails.email-too-big'                                            => 'Votre email "{{subject}}" n\'a pu être envoyé car il est trop lourd. La taille maximale des emails acceptée par ce helpdesk est de {{max_size}}. Supprimez des pièces jointes et essayez à nouveau.',
+	'user.emails.feedback_agent-validation'                                => 'Merci de noter que votre remarque n\'apparaîtra publiquement sur notre site qu\'après avoir été lue par un de nos agents.',
+	'user.emails.feedback_approved'                                        => 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.',
+	'user.emails.feedback_closed'                                          => 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}',
+	'user.emails.feedback_disapproved'                                     => 'Nous vous écrivons pour vous informer que votre remarque n\'a malheureusement pas été approuvée. Elle n\'apparaîtra donc pas sur notre site.',
+	'user.emails.feedback_disapproved-reason'                              => 'Nous vous écrivons pour vous informer que votre remarque n\'a malheureusement pas été approuvée. Elle n\'apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:',
+	'user.emails.feedback_new-comment'                                     => '{{name}} a posté un nouveau commentaire',
+	'user.emails.feedback_published'                                       => 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.',
+	'user.emails.feedback_thank-you'                                       => 'Merci de nous avoir fait parvenir vos remarques "{{title}}"',
+	'user.emails.feedback_updated'                                         => 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}',
+	'user.emails.feedback_validate-email'                                  => 'Merci de valider votre adresse email en ligne en cliquant sur le lien suivant:',
+	'user.emails.feedback_votes'                                           => 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:|Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:',
+	'user.emails.greeting'                                                 => 'Chère/Cher {{to_name}},',
+	'user.emails.kb-explain'                                               => 'Vous recevez cet email car vous êtes inscrit à notre base de connaissances sur <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>.<br />Vous ne souhaitez plus recevoir ces emails?<a href="{{ unsubscribe_url }}">Cliquez ici pour vous désinscrire.</a>',
+	'user.emails.kb-new-articles'                                          => '1 nouvel article|{{count}} nouveaux articles',
+	'user.emails.kb-updated-articles'                                      => '1 article mis à jour|{{count}} articles mis à jour',
+	'user.emails.label_view-online'                                        => 'Voir en ligne',
+	'user.emails.message-clipped'                                          => '(Le message a été tronqué)',
+	'user.emails.password_agent-reset'                                     => 'Un agent a généré un nouveau mot de passe pour votre compte. Vous pouvez vous connecter avec ces informations de connexion.',
+	'user.emails.password_reset'                                           => 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:',
+	'user.emails.profile_email-new-confirm'                                => 'Pour finir d\'ajouter cette deuxième adresse email à votre compte, cliquez sur le lien d\'activation suivant:',
+	'user.emails.profile_email_link-validate'                              => 'Cliquez simplement sur le lien suivant pour valider votre adresse email.',
+	'user.emails.register-agent-validation'                                => 'Remarque : avant que votre compte ne soit activé, nos agents doivent le valider manuellement. Les tickets et tout autre contenu que vous soumettez seront mis en file d\'attente jusqu\'à ce qu\'un agent valide votre compte.',
+	'user.emails.register-confirm'                                         => 'Merci d\'avoir créé un compte.<br /><br />Avant de pouvoir utiliser votre compte, vous devez valider votre adresse mail en cliquant sur le lien suivant',
+	'user.emails.register-welcome'                                         => 'Merci pour votre inscription. Vous pouvez maintenant vous connecter en utilisant votre adresse email {{to_email}} sur le helpdesk :',
+	'user.emails.registration_closed'                                      => 'Chère/Cher {{name}},<br /><br /><br /><br />Seuls les membres inscrits au service d\'aide sont habilités à poster de nouveaux tickets. Si vous possédez un compte, merci de nous écrire avec l\'adresse email enregistrée pour votre compte.',
+	'user.emails.reject_resolved'                                          => 'Votre réponse n\'a pu aboutir car votre ticket a déjà été résolu. Nos agents ne liront pas ou ne répondront pas à ce message.',
+	'user.emails.reject_resolved-new'                                      => 'Si vous souhaitez créér un nouveau ticket, envoyez un email à <a href="mailto:{{email_to}}">{{email_to}}</a> ou remplir notre formulaire en ligne :<br /><a href="{{link}}">{{link}}</a>',
+	'user.emails.reject_resolved-newemail'                                 => 'Si vous souhaitez créér un nouveau ticket, envoyez un email à <a href="mailto:{{email_to}}">{{email_to}}</a>',
+	'user.emails.ticket_access_ticket_online'                              => 'Voir et gérer votre ticket en ligne',
+	'user.emails.ticket_cc-new'                                            => 'Vous avez été ajouté à un ticket créé par {{name}}.',
+	'user.emails.ticket_flood'                                             => 'Vous avez récemment envoyé un email à notre service d\'assistance, suite à quoi notre système a détecté l\'envoi successifs par votre boite mail de nombreux messages certainement automatiques.<br /><br />Pour éviter la création d\'une chaine de messages automatiques notre service d\'assistance ne vous enverra plus de notifications automatiques par email.',
+	'user.emails.ticket_message_title'                                     => 'Le {{date}} à {{time}}, {{author}} a écrit:',
+	'user.emails.ticket_no-autoresponse'                                   => 'Attention: Emails de confirmation désactivés.',
+	'user.emails.ticket_rate-negative'                                     => 'Non',
+	'user.emails.ticket_rate-neutral'                                      => 'Partiellement',
+	'user.emails.ticket_rate-positive'                                     => 'Oui',
+	'user.emails.ticket_rate-question'                                     => 'Ce message vous a-t-il aidé ?',
+	'user.emails.ticket_received'                                          => 'Votre ticket a bien été reçu. Un de nos agents va vous répondre sous peu.',
+	'user.emails.ticket_reply-confirm'                                     => 'Merci pour votre réponse. Un de nos agents va vous répondre sous peu.',
+	'user.emails.ticket_validate'                                          => 'Merci de nous avoir contacté.<br /><br />Avant que nos agents ne lisent et répondent à votre message, vous devez valider votre adresse email.',
+	'user.emails.tickets_ommitted'                                         => '1 message a été omis|{{count}} messages ont été omis',
+	'user.emails.view_full_history_online'                                 => 'Voir l\'intégralité du ticket en ligne',
 );

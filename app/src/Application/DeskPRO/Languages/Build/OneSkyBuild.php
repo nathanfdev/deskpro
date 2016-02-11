@@ -170,7 +170,8 @@ class OneSkyBuild extends AbstractBuild
 
         if (!file_exists($source_file)) {
             $this->getLogger()->logDebug("$section.$category invalid source file: ".$source_file);
-            throw new \InvalidArgumentException('Source file does not exist: '.$source_file);
+
+            return array();
         }
 
         $this->getLogger()->logDebug("$section.$category source file: $source_file");

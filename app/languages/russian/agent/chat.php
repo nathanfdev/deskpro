@@ -1,89 +1,61 @@
-<?php
-
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-return array(
-    'agent.chat.added_as_participant'             => 'Добавлен как участник',
-    'agent.chat.agent_chats'                      => 'Чат агентов',
-    'agent.chat.between_members'                  => 'Чат между:',
-    'agent.chat.chat_history'                     => 'История чата',
-    'agent.chat.chat_started_by'                  => 'Чат начал(а)',
-    'agent.chat.chat_transcript'                  => 'История сообщений в чате',
-    'agent.chat.chat_with_x'                      => 'Чат с {{name}}',
-    'agent.chat.count_seconds'                    => '{{count}}секунда|{{count}}секунды',
-    'agent.chat.filter_title_assigned'            => 'Назначенные чаты',
-    'agent.chat.filter_title_mine'                => 'Мои чаты',
-    'agent.chat.filter_title_missed'              => 'Пропущенные чаты',
-    'agent.chat.in_department'                    => 'в {{name}}',
-    'agent.chat.invite_agent'                     => 'Пригласить агента',
-    'agent.chat.invite_another_agent'             => 'Пригласить другого агента',
-    'agent.chat.invite_no_agents'                 => 'Нет других агентов, которых можно пригласить.',
-    'agent.chat.invite_others'                    => 'Пригласить других',
-    'agent.chat.join_chat'                        => 'Войти в чат',
-    'agent.chat.label_assigned_others'            => 'Другой агент в этом чате',
-    'agent.chat.leave_chat_confirm'               => 'Вы уверены, что хотите покинуть этот чат?',
-    'agent.chat.leave_end'                        => 'Закончить чат и покинуть его',
-    'agent.chat.leave_unassign'                   => 'Переназначить с меня и покинуть',
-    'agent.chat.list_title'                       => '1 беседа|{{count}} бесед',
-    'agent.chat.msg_agent_timeout'                => 'Истекло время ожидания агента {{agent_name}}',
-    'agent.chat.msg_assigned_agent'               => 'Чат назначен на {{agent_name}}',
-    'agent.chat.msg_part_joined'                  => '{{person_name}} присоединился',
-    'agent.chat.msg_part_left'                    => '{{person_name}} отсоединился',
-    'agent.chat.msg_unassigned_agent'             => '{{agent_name}} не назначен',
-    'agent.chat.my_open_chats'                    => 'Мои открытые чаты',
-    'agent.chat.new_agent_note_by'                => 'Примечание агента {{name}}',
-    'agent.chat.new_agent_reply_by'               => 'Новый ответ агента {{name}}',
-    'agent.chat.new_chat'                         => 'Новый чат',
-    'agent.chat.new_ticket_by'                    => 'Новый тикет от {{name}} {{email}}',
-    'agent.chat.new_user_reply_by'                => 'Новый ответ пользователя {{name}} {{email}}',
-    'agent.chat.no_department'                    => 'Нет подразделения',
-    'agent.chat.no_email'                         => 'Нет e-mail',
-    'agent.chat.no_online_agents'                 => 'Агенты не в  сети',
-    'agent.chat.no_open_chats'                    => 'Сейчас нет открытых чатов.',
-    'agent.chat.no_others'                        => 'Нет других',
-    'agent.chat.offline'                          => 'Не в сети',
-    'agent.chat.online'                           => 'В сети',
-    'agent.chat.open_chat'                        => 'Открыть чат',
-    'agent.chat.other_agents'                     => 'Другие агенты',
-    'agent.chat.show_offline'                     => 'Показать "Не в сети"',
-    'agent.chat.snippets'                         => 'Фрагменты',
-    'agent.chat.take_chat'                        => 'Принять чат',
-    'agent.chat.team_chats'                       => 'Команда чатов',
-    'agent.chat.title_active_chats'               => 'Все открытые чаты',
-    'agent.chat.title_chat_id'                    => 'Чат {{chat_id}}',
-    'agent.chat.title_ended'                      => 'Завершенные чаты',
-    'agent.chat.title_leave_chat_prompt'          => 'Покинуть чат?',
-    'agent.chat.title_new_chats'                  => 'Новые чаты',
-    'agent.chat.title_open'                       => 'Открытые чаты',
-    'agent.chat.user_is_viewing'                  => 'Просмотры пользователей',
-    'agent.chat.user_typing'                      => 'Ввод',
-    'agent.chat.warning'                          => 'Предупреждение',
-    'agent.chat.warning_email_address_not_unique' => 'Пользователь не вошел в систему и не может быть идентифицирован. Будьте осторожны, не подвергайте опасности конфиденциальную информацию!',
-    'agent.chat.x_by_anonymous'                   => 'Чат {{chat_id}} от Анонима',
-    'agent.chat.x_by_anonymousymous'              => 'Чат от Анонима',
-    'agent.chat.you_have_been_invited'            => 'Вы были приглашены в чат',
+<?php return array(
+	'agent.chat.added_as_participant'                                      => 'Добавлен как участник',
+	'agent.chat.agent_chats'                                               => 'Чат агентов',
+	'agent.chat.between_members'                                           => 'Чат между:',
+	'agent.chat.chat_history'                                              => 'История чата',
+	'agent.chat.chat_started_by'                                           => 'Чат начал(а)',
+	'agent.chat.chat_transcript'                                           => 'История сообщений в чате',
+	'agent.chat.chat_with_x'                                               => 'Чат с {{name}}',
+	'agent.chat.count_seconds'                                             => '{{count}}секунда|{{count}}секунды',
+	'agent.chat.filter_title_assigned'                                     => 'Назначенные чаты',
+	'agent.chat.filter_title_mine'                                         => 'Мои чаты',
+	'agent.chat.filter_title_missed'                                       => 'Пропущенные чаты',
+	'agent.chat.in_department'                                             => 'в {{name}}',
+	'agent.chat.invite_agent'                                              => 'Пригласить агента',
+	'agent.chat.invite_another_agent'                                      => 'Пригласить другого агента',
+	'agent.chat.invite_no_agents'                                          => 'Нет других агентов, которых можно пригласить.',
+	'agent.chat.invite_others'                                             => 'Пригласить других',
+	'agent.chat.join_chat'                                                 => 'Войти в чат',
+	'agent.chat.label_assigned_others'                                     => 'Другой агент в этом чате',
+	'agent.chat.leave_chat_confirm'                                        => 'Вы уверены, что хотите покинуть этот чат?',
+	'agent.chat.leave_end'                                                 => 'Закончить чат и покинуть его',
+	'agent.chat.leave_unassign'                                            => 'Переназначить с меня и покинуть',
+	'agent.chat.list_title'                                                => '1 беседа|{{count}} бесед',
+	'agent.chat.msg_agent_timeout'                                         => 'Истекло время ожидания агента {{agent_name}}',
+	'agent.chat.msg_assigned_agent'                                        => 'Чат назначен на {{agent_name}}',
+	'agent.chat.msg_part_joined'                                           => '{{person_name}} присоединился',
+	'agent.chat.msg_part_left'                                             => '{{person_name}} отсоединился',
+	'agent.chat.msg_unassigned_agent'                                      => '{{agent_name}} не назначен',
+	'agent.chat.my_open_chats'                                             => 'Мои открытые чаты',
+	'agent.chat.new_agent_note_by'                                         => 'Примечание агента {{name}}',
+	'agent.chat.new_agent_reply_by'                                        => 'Новый ответ агента {{name}}',
+	'agent.chat.new_chat'                                                  => 'Новый чат',
+	'agent.chat.new_ticket_by'                                             => 'Новый тикет от {{name}} {{email}}',
+	'agent.chat.new_user_reply_by'                                         => 'Новый ответ пользователя {{name}} {{email}}',
+	'agent.chat.no_department'                                             => 'Нет подразделения',
+	'agent.chat.no_email'                                                  => 'Нет e-mail',
+	'agent.chat.no_online_agents'                                          => 'Агенты не в  сети',
+	'agent.chat.no_open_chats'                                             => 'Сейчас нет открытых чатов.',
+	'agent.chat.no_others'                                                 => 'Нет других',
+	'agent.chat.offline'                                                   => 'Не в сети',
+	'agent.chat.online'                                                    => 'В сети',
+	'agent.chat.open_chat'                                                 => 'Открыть чат',
+	'agent.chat.other_agents'                                              => 'Другие агенты',
+	'agent.chat.show_offline'                                              => 'Показать "Не в сети"',
+	'agent.chat.snippets'                                                  => 'Фрагменты',
+	'agent.chat.take_chat'                                                 => 'Принять чат',
+	'agent.chat.team_chats'                                                => 'Команда чатов',
+	'agent.chat.title_active_chats'                                        => 'Все открытые чаты',
+	'agent.chat.title_chat_id'                                             => 'Чат {{chat_id}}',
+	'agent.chat.title_ended'                                               => 'Завершенные чаты',
+	'agent.chat.title_leave_chat_prompt'                                   => 'Покинуть чат?',
+	'agent.chat.title_new_chats'                                           => 'Новые чаты',
+	'agent.chat.title_open'                                                => 'Открытые чаты',
+	'agent.chat.user_is_viewing'                                           => 'Просмотры пользователей',
+	'agent.chat.user_typing'                                               => 'Ввод',
+	'agent.chat.warning'                                                   => 'Предупреждение',
+	'agent.chat.warning_email_address_not_unique'                          => 'Пользователь не вошел в систему и не может быть идентифицирован. Будьте осторожны, не подвергайте опасности конфиденциальную информацию!',
+	'agent.chat.x_by_anonymous'                                            => 'Чат {{chat_id}} от Анонима',
+	'agent.chat.x_by_anonymousymous'                                       => 'Чат от Анонима',
+	'agent.chat.you_have_been_invited'                                     => 'Вы были приглашены в чат',
 );
