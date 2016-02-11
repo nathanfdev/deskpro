@@ -4,12 +4,9 @@ import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
-import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
-import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
-import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { toggleMassAction } from '../../Application/Actions/massActions';
+import { loadBatch, setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -35,7 +32,7 @@ export const loadLabels = createAction(
 
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
-    ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
+    ids => dispatch => dispatch(loadBatch('FeedbackCategory', ids, recordStoresId))
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
@@ -43,7 +40,7 @@ export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
-    ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
+    ids => dispatch => dispatch(loadBatch('FeedbackCommentCounter', recordStoresId, ids))
 );
 
 export const setDisplayFields = createAction(
@@ -57,9 +54,9 @@ export const loadFeedbackList = createAction(
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 
-      dispatch(setFeedbackRequest(recordStoresId, res.data));
+      dispatch(setCollection('Feedback', recordStoresId, res.data));
       dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
-      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
+      dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
       dispatch(getCommentsCounter(ids));
 
       return { ids: ids, pagination: res.meta.pagination };

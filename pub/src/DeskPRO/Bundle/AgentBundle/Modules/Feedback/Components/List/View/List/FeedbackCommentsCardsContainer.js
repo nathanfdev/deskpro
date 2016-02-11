@@ -1,23 +1,20 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
-import { feedbackCommentsSelector, peopleSelector, feedbackSelector } from '../../../../Selectors/recordStores';
+import { peopleSelector } from '../../../../Selectors/recordStores';
 import { idsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
-import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    ids: idsSelector(state),
-    comments: feedbackCommentsSelector(state),
-    selected: selectedSelector(state),
-    people: peopleSelector(state),
-    massAction: state.Feedback.list.get('massAction'),
-    feedback: feedbackSelector(state)
-  });
-})
-
+@connect(state => ({
+  ids: idsSelector(state),
+  comments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
+  selected: selectedSelector(state),
+  people: peopleSelector(state),
+  massAction: state.Feedback.list.get('massAction'),
+  feedback: collectionSelectorFactory('Feedback', 'feedback')(state)
+}))
 export class FeedbackCommentsCardsContainer extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     ids: PropTypes.array.isRequired,

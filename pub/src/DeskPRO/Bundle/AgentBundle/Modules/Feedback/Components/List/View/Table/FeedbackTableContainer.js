@@ -1,22 +1,21 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { feedbackSelector, peopleSelector, feedbackTypesSelector, feedbackCommentsSelector, feedbackStatusCategoriesSelector, feedbackCategoriesSelector }
-  from '../../../../Selectors/recordStores';
-import { idsSelector, currentListSortSelector, currentListOrderSelector }
-  from '../../../../Selectors/list';
+import { peopleSelector } from '../../../../Selectors/recordStores';
+import { idsSelector, currentListSortSelector, currentListOrderSelector } from '../../../../Selectors/list';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
-import { connect } from 'react-redux';
 @connect(state => ({
   ids: idsSelector(state),
-  feedback: feedbackSelector(state),
+  feedback: collectionSelectorFactory('Feedback', 'feedback')(state),
   viewFields: state.Feedback.list.get('tableVisibleFields'),
-  feedbackTypes: feedbackTypesSelector(state),
-  feedbackComments: feedbackCommentsSelector(state),
-  feedbackStatusCategories: feedbackStatusCategoriesSelector(state),
-  feedbackCategories: feedbackCategoriesSelector(state),
+  feedbackTypes: collectionSelectorFactory('FeedbackType', 'feedback')(state),
+  feedbackComments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
+  feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state),
+  feedbackCategories: collectionSelectorFactory('FeedbackCategory', 'feedback')(state),
   people: peopleSelector(state),
   currentSort: currentListSortSelector(state),
   currentOrder: currentListOrderSelector(state)

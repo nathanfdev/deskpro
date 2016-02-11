@@ -1,8 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { applyParams } from './FeedbackListActions';
-import { setFeedbackCommentsRequest } from '../RecordStores/Actions/feedbackCommentsActions.js';
-import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 /**
@@ -64,8 +63,8 @@ export const loadFeedbackCommentsList = createAction(
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 
-      dispatch(setFeedbackCommentsRequest(recordStoresId, res.data));
-      dispatch(setFeedbackRequest(recordStoresId, prepareLinkedData(res.linked.feedback)));
+      dispatch(setCollection('FeedbackComment', recordStoresId, res.data));
+      dispatch(setCollection('Feedback', recordStoresId, prepareLinkedData(res.linked.feedback)));
       dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
 
       return { ids: ids, pagination: res.meta.pagination };

@@ -5,8 +5,7 @@ import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, target, collectionName) => {
-    const ids = (typeof ids === 'number') ? [target] : target;
+  (recordName, ids, collectionName) => {
     return {
       recordName,
       collectionName,

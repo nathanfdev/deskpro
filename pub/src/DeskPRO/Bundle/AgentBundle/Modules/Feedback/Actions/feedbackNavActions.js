@@ -2,8 +2,7 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setFeedbackTypesRequest } from '../RecordStores/Actions/feedbackTypesActions';
-import { setFeedbackCategoriesRequest } from '../RecordStores/Actions/feedbackCategoriesActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { setDisplayFields } from './FeedbackListActions';
 import { defaultCardFields, defaultTableFields, defaultCommentTableFields }
   from '../Components/List/ControlBar/FeedbackViewOptions';
@@ -54,8 +53,8 @@ export const initialLoad = createAction(
               }
             }));
           }
-          dispatch(setFeedbackTypesRequest(recordStoresId, payload.rsTypes));
-          dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.rsCategories));
+          dispatch(setCollection('FeedbackType', recordStoresId, payload.rsTypes));
+          dispatch(setCollection('FeedbackCategory', recordStoresId, payload.rsCategories));
           delete payload.rsTypes;
           delete payload.rsCategories;
           delete payload.active;

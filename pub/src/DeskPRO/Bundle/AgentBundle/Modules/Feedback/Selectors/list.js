@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
-import { feedbackCategoriesSelector, feedbackTypesSelector } from './recordStores';
 import { feedbackLabelsSelector } from './nav';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+
 
 const stateSelector = state => state.Feedback.list;
 const navStateSelector = state => state.Feedback.nav;
@@ -64,7 +65,7 @@ export const isLoadedSelector = createSelector(
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listFiltersSelector = createSelector(
-  [navStateSelector, currentListParamsSelector, feedbackCategoriesSelector, feedbackLabelsSelector, feedbackTypesSelector],
+  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('Feedback', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
   (navState, currentListParams, categories, labels, types) => {
     const checkIfShowStatus = ()=> {
       const navItem = currentListParams.get('navItem');
@@ -134,7 +135,7 @@ export const listFiltersSelector = createSelector(
 /* ==================== Mass actions ===================== */
 
 export const massActionsSelector = createSelector(
-  [navStateSelector, feedbackCategoriesSelector, feedbackTypesSelector, feedbackLabelsSelector],
+  [navStateSelector, collectionSelectorFactory('Feedback', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
   (navState, categories, types, labels) => {
     const massActions = [];
     // Type options
