@@ -32,7 +32,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\CacheVersion")
  * @ORM\Table(name="cache_versions")
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
