@@ -29,8 +29,8 @@
 namespace DpBehat\Api;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use DpBehat\BaseContext;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use DpBehat\BaseContext;
 
 /**
  * Defines application features from the specific context.

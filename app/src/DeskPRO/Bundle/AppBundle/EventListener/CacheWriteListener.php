@@ -49,9 +49,9 @@ class CacheWriteListener implements EventSubscriberInterface
     protected $resolver;
 
     /**
-     * @var bool
+     * @var SettingsResolver
      */
-    protected $enabled;
+    protected $settings_resolver;
 
     /**
      * @param ResolverInterface $resolver
@@ -59,8 +59,8 @@ class CacheWriteListener implements EventSubscriberInterface
      */
     public function __construct(ResolverInterface $resolver, SettingsResolver $settings_resolver)
     {
-        $this->resolver = $resolver;
-        $this->enabled  = $settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
+        $this->resolver          = $resolver;
+        $this->settings_resolver = $settings_resolver;
     }
 
     const X_DP_CACHE_STORE_HEADER = 'X-DeskPRO-Cache-Store';
@@ -79,7 +79,7 @@ class CacheWriteListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        if ($this->enabled) {
+        if ($this->isEnabled()) {
             $this->processResponse($event->getRequest(), $event->getResponse());
         } else {
             $this->cleanHeaders($event->getResponse());
@@ -96,11 +96,12 @@ class CacheWriteListener implements EventSubscriberInterface
             $etag = $response->headers->get(self::X_DP_CACHE_STORE_HEADER);
             $response->setEtag($etag);
             $response->headers->set(self::X_DP_CACHE_HEADER, 'store');
+            $this->cleanHeaders($response); // headers MUST be cleaned before response is stored
             $this->resolver->write($request, $response);
         } elseif ($response->headers->has(self::X_DP_CACHE_HEADER)) {
             $response->headers->set(self::X_DP_CACHE_HEADER, 'hit');
+            $this->cleanHeaders($response);
         }
-        $this->cleanHeaders($response);
     }
 
     /**
@@ -110,5 +111,10 @@ class CacheWriteListener implements EventSubscriberInterface
     {
         $response->headers->remove(self::X_DP_CACHE_STORE_HEADER);
         $response->headers->remove('x-content-digest');
+    }
+
+    protected function isEnabled()
+    {
+        return $this->settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
     }
 }

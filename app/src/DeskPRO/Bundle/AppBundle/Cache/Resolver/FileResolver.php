@@ -53,16 +53,16 @@ class FileResolver implements ResolverInterface
      */
     protected $resolve_status = 0;
 
-    /** @var bool */
-    protected $enabled;
+    /** @var SettingsResolver */
+    protected $settings_resolver;
 
     /**
      * @param string $cache_dir
      */
     public function __construct($cache_dir, SettingsResolver $settings_resolver)
     {
-        $this->store   = new Store($cache_dir.'/http_cache/api');
-        $this->enabled = $settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
+        $this->store             = new Store($cache_dir.'/http_cache/api');
+        $this->settings_resolver = $settings_resolver;
     }
 
     /**
@@ -72,7 +72,7 @@ class FileResolver implements ResolverInterface
      */
     public function resolve(Request $request)
     {
-        if ($this->enabled && !$this->resolved_response && $this->resolve_status === 0) {
+        if ($this->isEnabled() && !$this->resolved_response && $this->resolve_status === 0) {
             $this->resolved_response = $this->store->lookup($request);
             $this->resolve_status    = 1; // means lookup was performed
         }
@@ -122,5 +122,10 @@ class FileResolver implements ResolverInterface
         $response->headers->remove('X-Body-File');
 
         return $response;
+    }
+
+    protected function isEnabled()
+    {
+        return $this->settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
     }
 }
