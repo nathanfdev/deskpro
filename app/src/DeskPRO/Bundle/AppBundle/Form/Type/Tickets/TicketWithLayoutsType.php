@@ -762,6 +762,7 @@ class TicketWithLayoutsType extends AbstractType
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
             'required'          => $field_def->isRequired(),
+            'inline'            => $context->forApi(),
         ];
 
         if (in_array($field_def->getHandlerClass(), [
@@ -801,6 +802,7 @@ class TicketWithLayoutsType extends AbstractType
             'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
+            'inline'            => $context->forApi(),
         ];
 
         if ($ignore_validation) {
@@ -850,6 +852,7 @@ class TicketWithLayoutsType extends AbstractType
             'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
+            'inline'            => $context->forApi(),
         ];
 
         if ($ignore_validation) {

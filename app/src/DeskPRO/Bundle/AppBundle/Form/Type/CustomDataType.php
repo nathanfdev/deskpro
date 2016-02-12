@@ -127,7 +127,11 @@ class CustomDataType extends AbstractType
             $custom_data->setData($custom_data_field->getDefaultValue());
         }
 
-        list($value_name, $form_type, $options) = $this->field_manager->createCustomField($custom_data_field, $config->getOption('agent_interface'));
+        list($value_name, $form_type, $options) = $this->field_manager->createCustomField(
+            $custom_data_field,
+            $config->getOption('agent_interface'),
+            $config->getOption('inline')
+        );
 
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, [
@@ -181,7 +185,11 @@ class CustomDataType extends AbstractType
 
         // if admin switched from multi select to single select, we need to fix the data object
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
-        list(, , $options) = $this->field_manager->createCustomField($custom_data_field, $config->getOption('agent_interface'));
+        list(, , $options) = $this->field_manager->createCustomField(
+            $custom_data_field,
+            $config->getOption('agent_interface'),
+            $config->getOption('inline')
+        );
 
         if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->setInput('');
@@ -195,6 +203,7 @@ class CustomDataType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'inline'            => false,
                 'owner'             => null,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
@@ -216,6 +225,7 @@ class CustomDataType extends AbstractType
             ->setAllowedTypes([
                 'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefAbstract',
                 'agent_interface'   => 'bool',
+                'inline'            => 'bool',
             ])
         ;
     }

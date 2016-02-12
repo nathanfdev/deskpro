@@ -104,16 +104,19 @@ class FormFieldManager
      */
     public function getAvailablePersonFields()
     {
-        $query = $this->em->createQuery('
-        SELECT f
-        FROM DeskPRO:CustomDefPerson f
-        WHERE f.is_user_enabled = true
-        AND f.is_enabled = true
-        AND f.handler_class IS NOT NULL
-        ORDER BY f.display_order
-        ');
-
-        return $query->getResult();
+        return $this->em
+            ->createQueryBuilder()
+            ->select('f')
+            ->from('DeskPRO:CustomDefPerson', 'f')
+            ->where(
+                'f.is_user_enabled = true',
+                'f.is_enabled = true',
+                'f.handler_class IS NOT NULL'
+            )
+            ->orderBy('f.display_order')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     /**
@@ -121,10 +124,10 @@ class FormFieldManager
      */
     public function getFeedbackFields()
     {
-        $fields = [];
-
+        $fields     = [];
         $all_fields = $this->em->getRepository('DeskPRO:CustomDefFeedback')->findAll();
 
+        /** @var CustomDefAbstract $field */
         foreach ($all_fields as $field) {
             if (!$field->isEnabled()) {
                 continue;
@@ -204,13 +207,14 @@ class FormFieldManager
 
     /**
      * @param CustomDefAbstract $field
-     * @param                   $agent_interface
+     * @param bool              $is_agent
+     * @param bool              $is_inline
      *
      * @return array
      */
-    public function createCustomField(CustomDefAbstract $field, $agent_interface)
+    public function createCustomField(CustomDefAbstract $field, $is_agent = false, $is_inline = false)
     {
-        list($type, $value_name, $options) = $this->getFormType($field, $agent_interface);
+        list($type, $value_name, $options) = $this->getFormType($field, $is_agent, $is_inline);
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -223,27 +227,28 @@ class FormFieldManager
 
     /**
      * @param CustomDefAbstract $field_type
-     * @param                   $agent_interface
+     * @param bool              $is_agent
+     * @param bool              $is_inline
      *
      * @throws \InvalidArgumentException
      *
      * @return array
      */
-    private function getFormType(CustomDefAbstract $field_type, $agent_interface)
+    private function getFormType(CustomDefAbstract $field_type, $is_agent, $is_inline)
     {
         switch ($field_type->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
                 return [
                     'text',
                     'input',
-                    $this->getGeneralOptionsForField($field_type, [], $agent_interface),
+                    $this->getGeneralOptionsForField($field_type, [], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
                 return [
                     'textarea',
                     'input',
-                    $this->getGeneralOptionsForField($field_type, [], $agent_interface),
+                    $this->getGeneralOptionsForField($field_type, [], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
@@ -253,7 +258,7 @@ class FormFieldManager
                     $this->getGeneralOptionsForField($field_type, [
                         'checkbox_label' => $field_type->getOption('label_text') ?: '',
                         'force_boolean'  => true,
-                    ], $agent_interface),
+                    ], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
@@ -264,7 +269,7 @@ class FormFieldManager
                         'html'  => $field_type->getOption('html'),
                         'data'  => '',
                         'label' => false,
-                    ], $agent_interface),
+                    ], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
@@ -278,7 +283,7 @@ class FormFieldManager
                         'expanded'     => $expanded,
                         'multiple'     => $multiple,
                         'custom_field' => $field_type,
-                    ], $agent_interface),
+                    ], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
@@ -289,7 +294,7 @@ class FormFieldManager
                         'input'  => 'string',
                         'widget' => 'choice',
                         'format' => 'y-M-d',
-                    ], $agent_interface),
+                    ], $is_agent),
                 ];
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
@@ -297,7 +302,7 @@ class FormFieldManager
                     'input'  => 'string',
                     'widget' => 'choice',
                     'format' => 'Y-m-d H:i',
-                ], $agent_interface);
+                ], $is_agent);
 
                 return [
                     'deskpro_datetime',
@@ -315,7 +320,7 @@ class FormFieldManager
                     'request_param_name' => $field_type->getOption('param_name'),
                 ];
 
-                return ['deskpro_hidden', 'input', $this->getGeneralOptionsForField($field_type, $options, $agent_interface)];
+                return ['deskpro_hidden', 'input', $this->getGeneralOptionsForField($field_type, $options, $is_agent)];
 
             default:
                 break;
@@ -327,25 +332,23 @@ class FormFieldManager
     /**
      * @param CustomDefAbstract $field_type
      * @param array             $specific_options
-     * @param bool              $agent_interface
+     * @param bool              $is_agent
      *
      * @return array
      */
-    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options, $agent_interface)
+    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options, $is_agent)
     {
-        $isAgent = $agent_interface;
-
         $constraints = $options = [];
 
         // required
-        if ($field_type->isRequired($isAgent)) {
-            $options['required'] = $field_type->isRequired($isAgent);
+        if ($field_type->isRequired($is_agent)) {
+            $options['required'] = $field_type->isRequired($is_agent);
             $constraints[]       = new NotBlank(['message' => 'portal.forms.error_required']);
         }
 
         // length
-        $min = $field_type->getMinLength($isAgent);
-        $max = $field_type->getMaxLength($isAgent);
+        $min = $field_type->getMinLength($is_agent);
+        $max = $field_type->getMaxLength($is_agent);
         if ($min || $max) {
             $opts = [];
 
@@ -364,7 +367,7 @@ class FormFieldManager
         $options['help'] = $field_type->getRealDescription();
 
         // regex
-        $regex = $field_type->getRegex($isAgent);
+        $regex = $field_type->getRegex($is_agent);
         if ($regex) {
             $constraints[] = new ValidRegex([
                 'pattern' => Strings::getInputRegexPattern($regex),
