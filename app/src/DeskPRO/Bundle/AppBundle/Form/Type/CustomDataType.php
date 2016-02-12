@@ -182,7 +182,7 @@ class CustomDataType extends AbstractType
 
         if ($custom_def->isChoiceType()) {
             $data = $form->get('field')->getNormData();
-            $data = is_array($data) ? $data : [$data];
+            $data = is_array($data) ? $data : ($data ? [$data] : []);
             $data = array_map(function (HierarchyNode $choice_custom_def) {
                 return $choice_custom_def->getData()->getId();
             }, $data);
