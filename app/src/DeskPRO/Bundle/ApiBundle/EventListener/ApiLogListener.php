@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
 use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -192,13 +193,19 @@ class ApiLogListener implements EventSubscriberInterface
 
     protected function setApiLogAuthData(ApiLog $log)
     {
+        if ($this->getToken() && $this->getToken() instanceof AbstractApiSecurityToken) {
+            $this->addKey($log);
+            $log->setCredentials($this->getToken()->getCredentials());
+            $log->setMode(ApiUtil::getMode($this->getToken()->getName()));
+        }
+    }
+
+    protected function addKey(ApiLog $log)
+    {
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
         $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
-        if (
-            $this->token_storage->getToken()
-            && $this->token_storage->getToken() instanceof AbstractApiSecurityToken
-            && $this->token_storage->getToken()->getName() === 'api_key'
-            && $key = $key_repo->findByKeyString($this->token_storage->getToken()->getCredentials())
+        if ($this->getToken()->getName() === 'api_key'
+            && $key = $key_repo->findByKeyString($this->getToken()->getCredentials())
         ) {
             /* @var \Application\DeskPRO\Entity\ApiKey $key */
             $log->setKey($key);
@@ -237,5 +244,10 @@ class ApiLogListener implements EventSubscriberInterface
             $this->persisted = true;
             $this->writer->write($this->log);
         }
+    }
+
+    protected function getToken()
+    {
+        return $this->token_storage->getToken();
     }
 }

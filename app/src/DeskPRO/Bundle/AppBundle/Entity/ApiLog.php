@@ -75,6 +75,18 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
+     */
+    protected $credentials;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     */
+    protected $mode;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull()
      */
     protected $requested_uri;
@@ -180,6 +192,46 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function setKey(ApiKey $key)
     {
         $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCredentials()
+    {
+        return $this->credentials;
+    }
+
+    /**
+     * @param string $credentials
+     *
+     * @return $this
+     */
+    public function setCredentials($credentials)
+    {
+        $this->credentials = $credentials;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param mixed $mode
+     *
+     * @return $this
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
 
         return $this;
     }

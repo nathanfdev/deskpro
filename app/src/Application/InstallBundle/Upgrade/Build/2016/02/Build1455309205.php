@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455309205);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1455309205 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Upgrade api log table');
+        $this->execMutateSql('ALTER TABLE api_log ADD credentials VARCHAR(255) NOT NULL, ADD mode VARCHAR(255) NOT NULL');
+    }
+}

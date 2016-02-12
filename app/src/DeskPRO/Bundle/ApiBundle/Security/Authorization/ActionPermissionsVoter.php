@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use Doctrine\ORM\EntityManager;
@@ -166,6 +167,6 @@ class ActionPermissionsVoter extends Voter
      */
     protected function getMode($token_name)
     {
-        return $this->mode_map[$token_name];
+        return ApiUtil::getMode($token_name);
     }
 }

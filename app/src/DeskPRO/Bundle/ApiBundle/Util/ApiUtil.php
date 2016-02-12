@@ -26,4 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1455309205);
+namespace DeskPRO\Bundle\ApiBundle\Util;
+
+class ApiUtil
+{
+    protected static $modeMap = [
+        'agent_session' => 'session',
+        'api_key'       => 'key',
+        'api_token'     => 'token',
+    ];
+
+    public static function getMode($mode)
+    {
+        if (isset(self::$modeMap[$mode])) {
+            return self::$modeMap[$mode];
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Unsupported api auth mode [ %s ], supported modes are [ %s ]',
+                $mode,
+                implode(array_keys(self::$modeMap)
+                )
+            )
+        );
+    }
+}
