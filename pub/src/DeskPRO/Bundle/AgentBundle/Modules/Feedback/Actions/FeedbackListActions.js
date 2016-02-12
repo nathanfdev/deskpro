@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
 import { toggleMassAction } from '../../Application/Actions/massActions';
@@ -86,7 +85,7 @@ export const loadList = createAction(
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => PersonSetting.get('feedback_display_fields').then(value => value.getData())
+  () => repository('PersonSetting').load('feedback_display_fields').then(value => value.getData())
 );
 
 export const setViewFieldsSettingStoredFlag = createAction(
@@ -98,7 +97,7 @@ export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    PersonSetting.post('feedback_display_fields', displayFields);
+    repository('PersonSetting').create({name: 'feedback_display_fields', value: displayFields});
     dispatch(setViewFieldsSettingStoredFlag(true));
     return displayFields;
   }
@@ -108,7 +107,7 @@ export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    PersonSetting.put('feedback_display_fields', displayFields);
+    repository('PersonSetting').update({name: 'feedback_display_fields', value: displayFields});
     return displayFields;
   }
 );

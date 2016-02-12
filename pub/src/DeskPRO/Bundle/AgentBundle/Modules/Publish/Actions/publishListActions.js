@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { currentListParamsSelector } from '../Selectors/list';
 import { toggleMassAction } from '../../Application/Actions/massActions';
@@ -31,7 +31,7 @@ export const load = createAction(
       params = { ...dateFilter, ...params };
     }
 
-    return Content.load(params)
+    return repository('Content').load(params)
       .then(promise => {
         const res = promise.getData();
 

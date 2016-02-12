@@ -1,8 +1,13 @@
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { TicketFilterRepository } from './Repositories/TicketFilterRepository';
 import { UserChatRepository } from './Repositories/UserChatRepository';
 import { AgentChatRepository } from './Repositories/AgentChatRepository';
 import { FeedbackRepository } from './Repositories/FeedbackRepository';
 import { FeedbackCommentRepository } from './Repositories/FeedbackCommentRepository';
+import { PersonSettingRepository } from './Repositories/PersonSettingRepository';
+import { ArticlePendingCreateRepository } from './Repositories/ArticlePendingCreateRepository';
+import { ContentRepository } from './Repositories/ContentRepository';
+import { CommentsRepository } from './Repositories/CommentsRepository';
 
 export const repositoriesConfig = {
   Ticket:                 {type: 'api', url: '/tickets'},
@@ -18,5 +23,9 @@ export const repositoriesConfig = {
   FeedbackCommentCounter: {type: 'api', url: '/feedback_comments_counter'},
   Project:                {type: 'api', url: '/projects', allowAll: true},
   TaskLabel:              {type: 'api', url: '/task_labels', allowAll: true},
-  TaskList:               {type: 'api', url: '/task_lists', allowAll: true}
+  TaskList:               {type: 'api', url: '/task_lists', allowAll: true},
+  PersonSetting:          {type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository},
+  ArticlePendingCreate:   {type: 'api', url: '/article_pending_create', repositoryClass: ArticlePendingCreateRepository},
+  Content:                {type: 'factory', factory: () => new ContentRepository(api)},
+  Comment:                {type: 'factory', factory: () => new CommentsRepository(api)}
 };

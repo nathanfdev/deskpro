@@ -56,6 +56,14 @@ export class ApiRepository extends AbstractRepository {
 
   /**
    * @param record
+   * @returns {*}
+   */
+  create(record) {
+    return this.api.sendPost(`DP_API/${this.url}`, record);
+  }
+
+  /**
+   * @param record
    * @param id
    * @returns {*}
    */

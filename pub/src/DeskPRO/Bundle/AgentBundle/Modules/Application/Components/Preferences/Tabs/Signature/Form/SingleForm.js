@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
@@ -12,9 +12,6 @@ export class SingleForm extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log(this.props.settings);
-    console.log(this.props.settings.toJS());
 
     const settings = this.props.settings;
     const signature = settings && settings.get('signature') || Immutable.fromJS({});
@@ -37,9 +34,9 @@ export class SingleForm extends React.Component {
     let promise;
 
     if (settings && settings.get('signature')) {
-      promise = PersonSetting.put('signature', this.state.signature);
+      promise = repository('PersonSetting').update({name: 'signature', value: this.state.signature});
     } else {
-      promise = PersonSetting.post('signature', this.state.signature);
+      promise = repository('PersonSetting').create({name: 'signature', value: this.state.signature});
     }
 
     promise

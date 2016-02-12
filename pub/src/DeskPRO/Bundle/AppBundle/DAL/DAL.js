@@ -42,6 +42,9 @@ export function repository(record) {
         case 'api':
           repositories[record] = createApiRepository(config, record);
           break;
+        case 'factory':
+          repositories[record] = createRepositoryFromFactory(config, record);
+          break;
         default:
           throw new Error(`Unknown repository type ${config['type']} in the ${record} record definition`);
       }
@@ -66,6 +69,19 @@ function createApiRepository(config, record) {
   const repositoryClass = config.hasOwnProperty('repositoryClass') ? config['repositoryClass'] : ApiRepository;
 
   return new repositoryClass(api, url, allowAll);
+}
+
+/**
+ * @param config
+ * @param record
+ * @returns {*}
+ */
+function createRepositoryFromFactory(config, record) {
+  if (!config.hasOwnProperty('factory')) {
+    throw new Error(`${record} repository config must define its factory`);
+  }
+
+  return config.factory();
 }
 
 /**

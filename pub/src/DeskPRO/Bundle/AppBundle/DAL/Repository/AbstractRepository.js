@@ -6,6 +6,7 @@ export class AbstractRepository {
     const methods = [
       'load',
       'loadBatch',
+      'create',
       'update',
       'remove',
       'removeBatch'
