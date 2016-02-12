@@ -1,9 +1,9 @@
 import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 /**
- * ChatRepository
+ * UserChatRepository
  */
-export class ChatRepository extends ApiRepository {
+export class UserChatRepository extends ApiRepository {
   /**
    * @param groupBy
    * @param agent

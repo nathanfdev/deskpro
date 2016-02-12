@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
@@ -33,11 +33,11 @@ export const startChat = createAction(
         }
         let method;
         if (chatId) {
-          method = IM.loadChat.bind(null, chatId);
+          method = () => repository('AgentChat').load(chatId);
         } else {
-          method = IM.startChat.bind(null, targetId, targetType);
+          method = () => repository('AgentChat').startChat(targetId, targetType);
         }
-        return method.call()
+        return method()
           .success((response) => {
             const records = {};
             records[response.data.id] = response.data;

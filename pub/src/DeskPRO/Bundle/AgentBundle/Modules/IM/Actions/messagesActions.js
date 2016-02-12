@@ -1,10 +1,10 @@
 import { createAction } from 'Ampliflux';
-import * as IM from 'DeskPRO/Bundle/AgentBundle/Services/Api/IM';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
   (chatId, searchQuery = '', page = 1) => {
-    return IM.loadMessages(chatId, searchQuery, page).then(response => {
+    return repository('AgentChat').loadMessages(chatId, searchQuery, page).then(response => {
       const messages = response.data.data;
       const meta = response.data.meta.pagination;
       return new Promise((resolve) => {
@@ -39,7 +39,7 @@ export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
   (chatId, message, uuid, me) => (dispatch) => {
     dispatch(addMessageOptimistic(chatId, message, uuid, me));
-    IM.addMessage(chatId, message, uuid).then(response => {
+    repository('AgentChat').addMessage(chatId, message, uuid).then(response => {
       const responseMessage = response.data.data;
       return new Promise((resolve) => {
         resolve(responseMessage);
@@ -53,7 +53,7 @@ export const refreshCounts = createAction(
   () => {
     return new Promise(
       (resolve, reject) => {
-        return IM.loadMessagesCount()
+        return repository('AgentChat').loadMessagesCount()
           .success((response) => {
             return resolve(response.data);
           })
@@ -74,7 +74,7 @@ export const markMessages = createAction(
     dispatch(markMessagesOptimistic(uuids, chatId, status));
     return new Promise(
       (resolve, reject) => {
-        return IM.markMessages(ids, status)
+        return repository('AgentChat').markMessages(ids, status)
           .success(() => {
             return resolve({chatId: chatId, uuids: uuids, status: status});
           })
