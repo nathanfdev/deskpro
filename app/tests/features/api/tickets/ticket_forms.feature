@@ -204,6 +204,25 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
+  Scenario: I modify custom checkbox group
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "ticket_field_8": {
+    "field": ["9", "11"]
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.fields.8.value" should have 2 element
+    And the JSON node "data.fields.8.value[0]" should be equal to 11
+    And the JSON node "data.fields.8.value[1]" should be equal to 9
+    And the JSON node "data.fields.8.detail.9.title" should be equal to "Choice 1"
+    And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
+
   Scenario: I modify ticket person by unknown id
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
