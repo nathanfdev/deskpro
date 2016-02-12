@@ -26,48 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
+use DeskPRO\Bundle\AppBundle\Cache\Resolver\ResolverInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class ApiRequestIdListener.
+ * Class CacheWriteListener.
+ *
+ * @todo should think about how it will interact with ApiLogListener with x-deskpro-client-request-id headers and resend mode
  */
-class ApiRequestIdListener implements EventSubscriberInterface
+class CacheWriteListener implements EventSubscriberInterface
 {
-    /**
-     * @var LogHelper
-     */
-    protected $helper;
+    protected $resolver;
 
-    /**
-     * @param LogHelper $helper
-     */
-    public function __construct(LogHelper $helper)
+    public function __construct(ResolverInterface $resolver)
     {
-        $this->helper = $helper;
+        $this->resolver = $resolver;
     }
 
+    const X_DP_CACHE_STORE_HEADER = 'X-DeskPRO-Cache-Store';
+    const X_DP_CACHE_HEADER       = 'X-DeskPRO-Cache';
+
     /**
-     * @return array
+     *
      */
     public static function getSubscribedEvents()
     {
-        return [
-            KernelEvents::RESPONSE => ['onResponse', 512], //make sure this stuff will be trigger before log and perhaps something else
-        ];
+        return [KernelEvents::RESPONSE => ['onResponse', 1024]]; // should be called before request id was set
     }
 
-    /**
-     * @param FilterResponseEvent $event
-     */
     public function onResponse(FilterResponseEvent $event)
     {
-        $request  = $event->getRequest();
         $response = $event->getResponse();
-        $response->headers->add([LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId($request->headers)]);
+
+        if ($response->headers->has(self::X_DP_CACHE_STORE_HEADER)) {
+            $etag = $response->headers->get(self::X_DP_CACHE_STORE_HEADER);
+            $response->headers->remove(self::X_DP_CACHE_STORE_HEADER);
+            $response->setEtag($etag);
+            $response->headers->set(self::X_DP_CACHE_HEADER, 'store');
+            $this->resolver->write($event->getRequest(), $response);
+        } elseif ($response->headers->has(self::X_DP_CACHE_HEADER)) {
+            $response->headers->set(self::X_DP_CACHE_HEADER, 'hit');
+        }
     }
 }
