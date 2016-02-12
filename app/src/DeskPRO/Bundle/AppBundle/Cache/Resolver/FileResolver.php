@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Cache\Resolver;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\Store;
@@ -52,12 +53,16 @@ class FileResolver implements ResolverInterface
      */
     protected $resolve_status = 0;
 
+    /** @var bool */
+    protected $enabled;
+
     /**
      * @param string $cache_dir
      */
-    public function __construct($cache_dir)
+    public function __construct($cache_dir, SettingsResolver $settings_resolver)
     {
-        $this->store = new Store($cache_dir.'/http_cache/api');
+        $this->store   = new Store($cache_dir.'/http_cache/api');
+        $this->enabled = $settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
     }
 
     /**
@@ -67,7 +72,7 @@ class FileResolver implements ResolverInterface
      */
     public function resolve(Request $request)
     {
-        if (!$this->resolved_response && $this->resolve_status === 0) {
+        if ($this->enabled && !$this->resolved_response && $this->resolve_status === 0) {
             $this->resolved_response = $this->store->lookup($request);
             $this->resolve_status    = 1; // means lookup was performed
         }

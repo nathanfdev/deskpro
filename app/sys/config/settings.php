@@ -1097,5 +1097,7 @@ return array(
     'api_log.writer.file.serializer.type' => 'serialize',
 
     // global version id for Etag generating. Change this and whole your api cache would become stale.
-    'api.cache.global_version' => '7dedef53d7b6762e2ad984051e37638d',
+    'response.cache.global_version' => '7dedef53d7b6762e2ad984051e37638d',
+
+    'response.cache.enabled' => false,
 );

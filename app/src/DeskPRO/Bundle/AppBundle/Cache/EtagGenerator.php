@@ -60,7 +60,7 @@ class EtagGenerator
     {
         $segments = $this->createSegments($parameters);
         $segments = $this->flatten($segments);
-        array_unshift($segments, $this->resolver->getGlobalSettings()->get('api.cache.global_version'));
+        array_unshift($segments, $this->resolver->getGlobalSettings()->get('response.cache.global_version'));
 
         return $this->getHash($segments);
     }
