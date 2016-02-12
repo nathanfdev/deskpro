@@ -90,11 +90,7 @@ class PasswordPolicyValidator
      */
     public function checkPassword($password, Person $person = null, &$error = null)
     {
-        if ($person->is_agent) {
-            $policy = $this->agent_policy;
-        } else {
-            $policy = $this->user_policy;
-        }
+        $policy = $this->getPolicy($person);
 
         if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
             $error = 'min_length';
@@ -174,5 +170,14 @@ class PasswordPolicyValidator
         $days = floor((time() - $person->date_password_set->getTimestamp()) / 86400);
 
         return $days > $policy->max_age && ($person->hasDeskproUsersource('user') || $person->hasDeskproUsersource('agent'));
+    }
+
+    public function getPolicy(Person $person)
+    {
+        if (false && $person->is_agent) {
+            return $this->agent_policy;
+        } else {
+            return $this->user_policy;
+        }
     }
 }

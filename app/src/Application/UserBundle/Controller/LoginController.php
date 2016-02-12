@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,6 +39,7 @@ use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Application\DeskPRO\Service\RateLimit;
@@ -1128,15 +1128,20 @@ HTML;
             ));
         }
 
-        $errors = array();
+        /** @var PasswordPolicyValidator $password_validator */
+        $password_validator = $this->container->getSystemService('password_policy_validator');
+        $errors             = array();
         if ($this->in->getBool('process')) {
             $pass  = $this->in->getString('password');
             $pass2 = $this->in->getString('password2');
 
             if ($pass != $pass2) {
-                $errors['password.mismatch'] = 1;
-            } elseif (\Orb\Util\Strings::utf8_strlen($pass) < 5) {
-                $errors['password.short'] = 1;
+                $errors['mismatch'] = 1;
+            } else {
+                $error = null;
+                if (!$password_validator->checkPassword($pass, $person, $error)) {
+                    $errors[$error] = 1;
+                }
             }
 
             if (!$errors) {
@@ -1174,9 +1179,10 @@ HTML;
         }
 
         return $this->render($this->tpl_prefix.':reset-password-newpass.html.twig', array(
-            'code'         => $code_data->getCode(),
+            'code'         => 'abcdabcdabcdabcda', //$code_data->getCode(),
             'route_prefix' => $this->route_prefix,
             'errors'       => $errors,
+            'policy'       => $password_validator->getPolicy($person),
         ));
     }
 
