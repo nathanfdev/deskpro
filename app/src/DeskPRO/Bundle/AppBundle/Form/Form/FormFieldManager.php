@@ -216,16 +216,31 @@ class FormFieldManager
     {
         switch ($def->getType()) {
             case 'text':
-                return new FormField('data', 'text', $this->getGeneralOptionsForField($def, [], $is_agent));
+                return new FormField(
+                    'data',
+                    'text',
+                    $this->getGeneralOptionsForField($def, [], $is_agent)
+                );
+
             case 'textarea':
-                return new FormField('data', 'textarea', $this->getGeneralOptionsForField($def, [], $is_agent));
+                return new FormField(
+                    'data',
+                    'textarea',
+                    $this->getGeneralOptionsForField($def, [], $is_agent)
+                );
+
             case 'toggle':
                 $options = [
                     'checkbox_label' => $def->getOption('label_text') ?: '',
                     'force_boolean'  => true,
                 ];
 
-                return new FormField('data', 'single_checkbox', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'data',
+                    'single_checkbox',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             case 'display':
                 $options = [
                     'html'  => $def->getOption('html'),
@@ -233,7 +248,12 @@ class FormFieldManager
                     'label' => false,
                 ];
 
-                return new FormField('data', 'deskpro_display_html', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'data',
+                    'deskpro_display_html',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             case 'choice':
                 $options = [
                     'expanded'     => (bool) $def->getOption('expanded'),
@@ -241,7 +261,12 @@ class FormFieldManager
                     'custom_field' => $def,
                 ];
 
-                return new FormField('field', 'deskpro_custom_field_choice', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'field',
+                    'deskpro_custom_field_choice',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             case 'date':
                 $options = [
                     'input'  => 'string',
@@ -249,7 +274,12 @@ class FormFieldManager
                     'format' => 'y-M-d',
                 ];
 
-                return new FormField('data', 'deskpro_date', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'data',
+                    'deskpro_date',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             case 'datetime':
                 $options = [
                     'input'  => 'string',
@@ -257,7 +287,12 @@ class FormFieldManager
                     'format' => 'Y-m-d H:i',
                 ];
 
-                return new FormField('data', 'deskpro_datetime', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'data',
+                    'deskpro_datetime',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             case 'hidden':
                 $options = [
                     'auto_fill'          => false,
@@ -268,7 +303,12 @@ class FormFieldManager
                     'request_param_name' => $def->getOption('param_name'),
                 ];
 
-                return new FormField('data', 'deskpro_hidden', $this->getGeneralOptionsForField($def, $options, $is_agent));
+                return new FormField(
+                    'data',
+                    'deskpro_hidden',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
+
             default:
                 throw new \InvalidArgumentException('invalid field. cannot find handler for type: '.$def->getType());
         }
