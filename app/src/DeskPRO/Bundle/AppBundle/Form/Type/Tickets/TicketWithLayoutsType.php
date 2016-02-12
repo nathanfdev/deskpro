@@ -39,7 +39,6 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\Form\DefaultValueForTicketLayoutField;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Form\TicketFormContext;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -101,21 +100,15 @@ class TicketWithLayoutsType extends AbstractType
     private $custom_per_field_manager;
 
     /**
-     * @var DefaultValueForTicketLayoutField
-     */
-    private $default_value_finder;
-
-    /**
      * Constructor.
      *
-     * @param FormFieldManager                 $field_manager
-     * @param TicketLayoutFactory              $ticket_layout_factory
-     * @param TicketLayoutDiffer               $layout_differ
-     * @param HierarchyGenerator               $hierarchy_generator
-     * @param EntityManager                    $em
-     * @param LanguageManager                  $language_manager
-     * @param CustomPerFieldManager            $custom_per_field_manager
-     * @param DefaultValueForTicketLayoutField $default_value_finder
+     * @param FormFieldManager      $field_manager
+     * @param TicketLayoutFactory   $ticket_layout_factory
+     * @param TicketLayoutDiffer    $layout_differ
+     * @param HierarchyGenerator    $hierarchy_generator
+     * @param EntityManager         $em
+     * @param LanguageManager       $language_manager
+     * @param CustomPerFieldManager $custom_per_field_manager
      */
     public function __construct(
         FormFieldManager                 $field_manager,
@@ -124,8 +117,7 @@ class TicketWithLayoutsType extends AbstractType
         HierarchyGenerator               $hierarchy_generator,
         EntityManager                    $em,
         LanguageManager                  $language_manager,
-        CustomPerFieldManager            $custom_per_field_manager,
-        DefaultValueForTicketLayoutField $default_value_finder
+        CustomPerFieldManager            $custom_per_field_manager
     ) {
         $this->layout_differ            = $layout_differ;
         $this->field_manager            = $field_manager;
@@ -134,7 +126,6 @@ class TicketWithLayoutsType extends AbstractType
         $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
-        $this->default_value_finder     = $default_value_finder;
     }
 
     /**
@@ -329,16 +320,6 @@ class TicketWithLayoutsType extends AbstractType
 
             $new_fields_to_display[] = $field->getId();
             $field_requires_rerender = in_array($field, $fields_requiring_rerender) && $had_previous_layout;
-
-            // attach the default value to the submitted values of the form (to newly added fields that need a re-render)
-            if (count($submitted_data) && $field_requires_rerender) {
-                $ticket_field_id = $field->getId();
-                $default_value   = $this->default_value_finder->determineDefaultSubmitData($field);
-
-                if ($default_value) {
-                    $extra_data_to_submit[$ticket_field_id] = $default_value;
-                }
-            }
 
             $this->addField($context, $field, $field_requires_rerender);
         }
@@ -757,8 +738,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'owner'             => $context->getTicket(),
-            'property_path'     => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
+            'property_path'     => 'custom_data',
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
             'required'          => $field_def->isRequired(),
@@ -777,11 +757,7 @@ class TicketWithLayoutsType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $context->getForm()->add(
-            $field->getId(),
-            'deskpro_custom_data',
-            $options
-        );
+        $context->getForm()->add($field->getId(), 'deskpro_custom_data', $options);
     }
 
     /**
@@ -798,8 +774,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'owner'             => $context->getPerson(),
-            'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+            'property_path'     => 'person.custom_data',
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
             'inline'            => $context->forApi(),
@@ -810,11 +785,7 @@ class TicketWithLayoutsType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $context->getForm()->add(
-            $field->getId(),
-            'deskpro_custom_data',
-            $options
-        );
+        $context->getForm()->add($field->getId(), 'deskpro_custom_data', $options);
     }
 
     /**
@@ -848,8 +819,7 @@ class TicketWithLayoutsType extends AbstractType
 
         $options = [
             'custom_data_field' => $field_def,
-            'owner'             => $ticket_organization,
-            'property_path'     => sprintf('organization.getCustomDataCollection[%s]', $field->getFieldId()),
+            'property_path'     => 'organization.custom_data',
             'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
             'label'             => $field_def->getTitle(),
             'inline'            => $context->forApi(),
@@ -860,11 +830,7 @@ class TicketWithLayoutsType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        $context->getForm()->add(
-            $field->getId(),
-            'deskpro_custom_data',
-            $options
-        );
+        $context->getForm()->add($field->getId(), 'deskpro_custom_data', $options);
     }
 
     /**

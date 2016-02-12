@@ -118,7 +118,7 @@ class CustomDataTermIntegrationTest extends TermIntegrationTest
         $field_id = self::$fieldType1->getId();
         $term     = new CustomDataTerm(['field_id' => $field_id, 'custom_data_value' => 'foo']);
         $ticket   = $this->dummyTicket();
-        $ticket->setCustomData($field_id, 'input', 'foo');
+        $ticket->setCustomDataField($field_id, 'input', 'foo');
         $this->assertTermSatisfies($term, $ticket);
     }
 
@@ -130,7 +130,7 @@ class CustomDataTermIntegrationTest extends TermIntegrationTest
         $field_id = self::$fieldType2->getId();
         $term     = new CustomDataTerm(['field_id' => $field_id, 'custom_data_value' => 42]);
         $ticket   = $this->dummyTicket();
-        $ticket->setCustomData($field_id, 'value', 42);
+        $ticket->setCustomDataField($field_id, 'value', 42);
         $this->assertTermSatisfies($term, $ticket);
     }
 
@@ -142,7 +142,7 @@ class CustomDataTermIntegrationTest extends TermIntegrationTest
         $field_id = self::$fieldType1->getId();
         $term     = new CustomDataTerm(['field_id' => $field_id, 'custom_data_value' => 'foo']);
         $ticket   = $this->dummyTicket();
-        $ticket->setCustomData($field_id, 'input', 'bar');
+        $ticket->setCustomDataField($field_id, 'input', 'bar');
         $this->assertTermNotSatisfies($term, $ticket);
     }
 

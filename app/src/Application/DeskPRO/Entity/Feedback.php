@@ -31,12 +31,10 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
-use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -129,11 +127,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * @var array
      */
     protected $_search_highlights;
-
-    /**
-     * @var CustomDataCollection
-     */
-    protected $cdc;
 
     public function __construct()
     {
@@ -580,11 +573,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 }
             }
         }
-    }
-
-    public function getCustomDataCollection()
-    {
-        return $this->cdc = $this->cdc ?: new CustomDataCollection($this->custom_data, $this);
     }
 
     /**

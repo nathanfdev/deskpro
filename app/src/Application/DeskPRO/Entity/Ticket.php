@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -42,9 +41,9 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
-use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -577,11 +576,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var bool
      */
     public $_is_new = false;
-
-    /**
-     * @var CustomDataCollection
-     */
-    protected $_cdc;
 
     /**
      * @var array
@@ -1497,7 +1491,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $now = new \DateTime();
         if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
-            if (!!$this->_is_new) {
+            if ((bool) $this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
                     $this['date_last_agent_reply'] = $now;
                 }
@@ -1530,13 +1524,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', null, $attach);
-    }
-
-    public function getCustomDataCollection()
-    {
-        return $this->_cdc = ($this->_cdc ?: new CustomDataCollection(
-            $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
-        ));
     }
 
     /**
@@ -1617,6 +1604,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param Collection $custom_data
+     */
+    public function setCustomData(Collection $custom_data)
+    {
+        foreach ($custom_data as $cd) {
+            $cd->ticket = $this;
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
      * Set custom field data for a particular field.
      *
      * @param int   $field_id
@@ -1624,7 +1623,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return mixed
      */
-    public function setCustomData($field_id, $value_type, $value)
+    public function setCustomDataField($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
         $orig_data   = $custom_data;
@@ -3646,7 +3645,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getProperty($key, $default = null)
     {
-        return ($this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default);
+        return $this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default;
     }
 
     /**

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
 use Doctrine\ORM\EntityManager;
@@ -58,13 +59,20 @@ class FormFieldManager
     private $em;
 
     /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchy;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param HierarchyGenerator $hierarchy
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, HierarchyGenerator $hierarchy)
     {
-        $this->em = $em;
+        $this->em        = $em;
+        $this->hierarchy = $hierarchy;
     }
 
     /**
@@ -206,127 +214,72 @@ class FormFieldManager
     }
 
     /**
-     * @param CustomDefAbstract $field
+     * @param CustomDefAbstract $def
      * @param bool              $is_agent
      * @param bool              $is_inline
      *
-     * @return array
+     * @return FormField
      */
-    public function createCustomField(CustomDefAbstract $field, $is_agent = false, $is_inline = false)
+    public function createCustomField(CustomDefAbstract $def, $is_agent = false, $is_inline = false)
     {
-        list($type, $value_name, $options) = $this->getFormType($field, $is_agent, $is_inline);
-
-        // custom fields are implemented as a compound type
-        // and this label is for the 'data' attribute, whereas
-        // the real label will be on the parent form which is adding the field
-        $options['label'] = false;
-        $options['help']  = $field->getDescription();
-
-        return [$value_name, $type, $options];
-    }
-
-    /**
-     * @param CustomDefAbstract $field_type
-     * @param bool              $is_agent
-     * @param bool              $is_inline
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return array
-     */
-    private function getFormType(CustomDefAbstract $field_type, $is_agent, $is_inline)
-    {
-        switch ($field_type->getHandlerClass()) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-                return [
-                    'text',
-                    'input',
-                    $this->getGeneralOptionsForField($field_type, [], $is_agent),
+        switch ($def->getType()) {
+            case 'text':
+                return new FormField('data', 'text', $this->getGeneralOptionsForField($def, [], $is_agent));
+            case 'textarea':
+                return new FormField('data', 'textarea', $this->getGeneralOptionsForField($def, [], $is_agent));
+            case 'toggle':
+                $options = [
+                    'checkbox_label' => $def->getOption('label_text') ?: '',
+                    'force_boolean'  => true,
                 ];
 
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-                return [
-                    'textarea',
-                    'input',
-                    $this->getGeneralOptionsForField($field_type, [], $is_agent),
+                return new FormField('data', 'single_checkbox', $this->getGeneralOptionsForField($def, $options, $is_agent));
+            case 'display':
+                $options = [
+                    'html'  => $def->getOption('html'),
+                    'data'  => '',
+                    'label' => false,
                 ];
 
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
-                return [
-                    'single_checkbox',
-                    'value',
-                    $this->getGeneralOptionsForField($field_type, [
-                        'checkbox_label' => $field_type->getOption('label_text') ?: '',
-                        'force_boolean'  => true,
-                    ], $is_agent),
+                return new FormField('data', 'deskpro_display_html', $this->getGeneralOptionsForField($def, $options, $is_agent));
+            case 'choice':
+                $options = [
+                    'expanded'     => (bool) $def->getOption('expanded'),
+                    'multiple'     => (bool) $def->getOption('multiple'),
+                    'custom_field' => $def,
                 ];
 
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
-                return [
-                    'deskpro_display_html',
-                    'input',
-                    $this->getGeneralOptionsForField($field_type, [
-                        'html'  => $field_type->getOption('html'),
-                        'data'  => '',
-                        'label' => false,
-                    ], $is_agent),
+                return new FormField('field', 'deskpro_custom_field_choice', $this->getGeneralOptionsForField($def, $options, $is_agent));
+            case 'date':
+                $options = [
+                    'input'  => 'string',
+                    'widget' => 'choice',
+                    'format' => 'y-M-d',
                 ];
 
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
-                $multiple = (bool) $field_type->getOption('multiple');
-                $expanded = (bool) $field_type->getOption('expanded');
-
-                return [
-                    'deskpro_custom_field_choice',
-                    'data',
-                    $this->getGeneralOptionsForField($field_type, [
-                        'expanded'     => $expanded,
-                        'multiple'     => $multiple,
-                        'custom_field' => $field_type,
-                    ], $is_agent),
-                ];
-
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
-                return [
-                    'deskpro_date',
-                    'input',
-                    $this->getGeneralOptionsForField($field_type, [
-                        'input'  => 'string',
-                        'widget' => 'choice',
-                        'format' => 'y-M-d',
-                    ], $is_agent),
-                ];
-
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
-                $options = $this->getGeneralOptionsForField($field_type, [
+                return new FormField('data', 'deskpro_date', $this->getGeneralOptionsForField($def, $options, $is_agent));
+            case 'datetime':
+                $options = [
                     'input'  => 'string',
                     'widget' => 'choice',
                     'format' => 'Y-m-d H:i',
-                ], $is_agent);
-
-                return [
-                    'deskpro_datetime',
-                    'input',
-                    $options,
                 ];
 
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
+                return new FormField('data', 'deskpro_datetime', $this->getGeneralOptionsForField($def, $options, $is_agent));
+            case 'hidden':
                 $options = [
                     'auto_fill'          => false,
                     'hidden'             => true,
                     'label'              => false,
                     'help'               => false,
-                    'cookie_param_name'  => $field_type->getOption('cookie_name'),
-                    'request_param_name' => $field_type->getOption('param_name'),
+                    'cookie_param_name'  => $def->getOption('cookie_name'),
+                    'request_param_name' => $def->getOption('param_name'),
                 ];
 
-                return ['deskpro_hidden', 'input', $this->getGeneralOptionsForField($field_type, $options, $is_agent)];
-
+                return new FormField('data', 'deskpro_hidden', $this->getGeneralOptionsForField($def, $options, $is_agent));
             default:
-                break;
+                throw new \InvalidArgumentException('invalid field. cannot find handler for type: '.$def->getType());
         }
-
-        throw new \InvalidArgumentException('invalid field. cannot find type for handler class: '.$field_type->getHandlerClass());
     }
 
     /**

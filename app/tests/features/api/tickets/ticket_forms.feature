@@ -69,10 +69,10 @@ Feature: /tickets endpoint
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "ticket_field_1": {
-    "data": "2"
+    "field": "2"
   },
   "ticket_field_5": {
-    "input": {
+    "data": {
       "date": {
         "year": "2016",
         "month": "2",
@@ -85,19 +85,19 @@ Feature: /tickets endpoint
     }
   },
   "ticket_field_6": {
-    "input": "inline text"
+    "data": "inline text"
   },
   "ticket_field_7": {
-    "input": "textarea text"
+    "data": "textarea text"
   },
   "ticket_field_8": {
-    "data": ["10", "11"]
+    "field": ["10", "11"]
   },
   "user_field_1": {
-    "data": "2"
+    "field": "2"
   },
   "user_field_5": {
-    "input": {
+    "data": {
       "date": {
         "year": "2016",
         "month": "2",
@@ -110,16 +110,16 @@ Feature: /tickets endpoint
     }
   },
   "user_field_6": {
-    "input": "inline text"
+    "data": "inline text"
   },
   "user_field_7": {
-    "input": "textarea text"
+    "data": "textarea text"
   },
   "org_field_1": {
-    "data": "2"
+    "field": "2"
   },
   "org_field_5": {
-    "input": {
+    "data": {
       "date": {
         "year": "2016",
         "month": "2",
@@ -132,10 +132,10 @@ Feature: /tickets endpoint
     }
   },
   "org_field_6": {
-    "input": "inline text"
+    "data": "inline text"
   },
   "org_field_7": {
-    "input": "textarea text"
+    "data": "textarea text"
   },
   "message": {
     "message": "my text message",
@@ -166,11 +166,15 @@ Feature: /tickets endpoint
     And the JSON node "data.labels[1]" should be equal to "ticket label 2"
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
-    And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
     And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
-    And the JSON node "data.fields.8.detail.8.title" should be equal to "Multiple choice"
+    And the JSON node "data.fields.8.value" should have 2 element
+    And the JSON node "data.fields.8.value[0]" should be equal to 10
+    And the JSON node "data.fields.8.value[1]" should be equal to 11
+    And the JSON node "data.fields.8.detail.10.title" should be equal to "Choice 2"
+    And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
@@ -186,7 +190,7 @@ Feature: /tickets endpoint
     And the JSON node "data.name" should be equal to "Changed Name"
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
-    And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
     And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
@@ -195,7 +199,7 @@ Feature: /tickets endpoint
     Then the response status code should be 200
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
-    And the JSON node "data.fields.1.detail.1.title" should be equal to "Desired Sizes"
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
     And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"

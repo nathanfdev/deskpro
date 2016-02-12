@@ -37,8 +37,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
-use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -163,11 +163,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $_search_highlights;
 
     /**
-     * @var CustomDataCollection
-     */
-    protected $_cdc;
-
-    /**
      * @var Ticket[]|ArrayCollection
      */
     protected $tickets;
@@ -269,13 +264,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->custom_data;
     }
 
-    public function getCustomDataCollection()
-    {
-        return $this->_cdc = ($this->_cdc ?: new CustomDataCollection(
-            $this->custom_data ? $this->custom_data : new ArrayCollection(), $this
-        ));
-    }
-
     /**
      * Add contact data.
      *
@@ -341,6 +329,18 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @param Collection $custom_data
+     */
+    public function setCustomData(Collection $custom_data)
+    {
+        foreach ($custom_data as $cd) {
+            $cd->organization = $this;
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
      * Set custom field data for a particular field.
      *
      * @param int   $field_id
@@ -351,7 +351,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @return mixed
      */
-    public function setCustomData($field_id, $value_type, $value)
+    public function setCustomDataField($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
         $is_new      = false;

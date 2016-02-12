@@ -36,14 +36,17 @@ use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDataOrganization;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
@@ -100,100 +103,149 @@ class CustomDataType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
     }
 
     /**
+     * Generate form fields.
+     *
      * @param FormEvent $event
      */
-    public function onPreData(FormEvent $event)
+    public function onGenerateFields(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        /** @var \Application\DeskPRO\Entity\CustomDataAbstract $custom_data */
-        $custom_data = $event->getData();
-        /** @var \Application\DeskPRO\Entity\CustomDefAbstract $custom_data_field */
-        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
-
-        if (!$custom_data) {
-            $custom_data = $this->createCustomData($config);
-            $event->setData($custom_data);
-        }
-
-        if (!$custom_data->getData()) {
-            $custom_data->setData($custom_data_field->getDefaultValue());
-        }
-
-        list($value_name, $form_type, $options) = $this->field_manager->createCustomField(
-            $custom_data_field,
+        /** @var CustomDefAbstract $custom_def */
+        $custom_def = $config->getOption('custom_data_field');
+        $field      = $this->field_manager->createCustomField(
+            $custom_def,
             $config->getOption('agent_interface'),
             $config->getOption('inline')
         );
+
+        // custom fields are implemented as a compound type
+        // and this label is for the 'data' attribute, whereas
+        // the real label will be on the parent form which is adding the field
+        $options = array_merge($field->getOptions(), [
+            'label'          => false,
+            'help'           => $custom_def->getDescription(),
+            'error_bubbling' => true,
+            'mapped'         => false,
+        ]);
 
         if ($config->getOption('ignore_validation')) {
             $options = array_merge($options, [
                 'validation_groups' => [],
                 'constraints'       => null,
-                'error_bubbling'    => true,
             ]);
         }
 
-        $form->add($value_name, $form_type, $options);
-    }
+        $form->add($field->getName(), $field->getType(), $options);
 
-    /**
-     * @param FormEvent $event
-     */
-    public function onSubmit(FormEvent $event)
-    {
-        $config = $event->getForm()->getConfig();
+        $data = $this->filterCustomDefData($event->getData(), $custom_def);
+        if ($data->count()) {
+            $form_field_data = $data->first()->getData();
+            if ($custom_def->isChoiceType()) {
+                $form_field_data = $data
+                    ->map(function (CustomDataAbstract $custom_data) {
+                        return $custom_data->getFieldId();
+                    })
+                    ->toArray()
+                ;
 
-        /** @var \Application\DeskPRO\Entity\CustomDataAbstract $custom_data */
-        $custom_data = $event->getData();
-        if (!$custom_data) {
-            $custom_data = $this->createCustomData($config);
-            $event->setData($custom_data);
-        }
+                $form_field_data = implode(',', $form_field_data);
+            }
 
-        $custom_data->field = $config->getOption('custom_data_field');
-
-        if ($config->getOption('owner')) {
-            $property               = $this->getOwnerProperty($config);
-            $custom_data->$property = $config->getOption('owner');
+            $form_field = $form->get($field->getName());
+            $form_field->setData($form_field_data);
         }
     }
 
     /**
+     * Transforms form data to modified custom data collection.
+     *
      * @param FormEvent $event
      */
-    public function onPostSubmit(FormEvent $event)
+    public function onTransformToCustomData(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataAbstract $custom_data */
-        $custom_data = $event->getData();
-        $form        = $event->getForm();
-        $config      = $form->getConfig();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
 
-        if ($custom_data->getInput() === null) {
-            $custom_data->setInput('');
-        }
-        if ($custom_data->getInput()) {
-            $custom_data->setValue(0);
+        /** @var CustomDefAbstract $custom_def */
+        $custom_def = $config->getOption('custom_data_field');
+
+        /* @var CustomDataAbstract[]|ArrayCollection $all_custom_data */
+        $all_custom_data = $form->getData();
+        $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
+
+        if ($custom_def->isChoiceType()) {
+            $data = $form->get('field')->getNormData();
+            $data = is_array($data) ? $data : [$data];
+            $data = array_map(function (HierarchyNode $choice_custom_def) {
+                return $choice_custom_def->getData()->getId();
+            }, $data);
+
+            $exist = $custom_def_data
+                ->map(function (CustomDataAbstract $custom_data) {
+                    return $custom_data->field->getId();
+                })
+                ->toArray()
+            ;
+
+            // remove deleted items
+            foreach ($custom_def_data as $custom_data) {
+                if (!in_array($custom_data->field->getId(), $data)) {
+                    $custom_def_data->removeElement($custom_data);
+                }
+            }
+
+            // add new items
+            foreach ($data as $field_id) {
+                if (!in_array($field_id, $exist)) {
+                    $custom_data = $this->createCustomData($custom_def);
+                    $custom_data->setValue(1);
+                    $custom_data->setField($custom_def->getChildById($field_id));
+
+                    $custom_def_data->add($custom_data);
+                }
+            }
+        } else {
+            if ($custom_def_data->count()) {
+                $custom_data = $custom_def_data->first();
+                $custom_data->setData($form->get('data')->getNormData());
+            } else {
+                $custom_data = $this->createCustomData($custom_def);
+                $custom_data->setData($form->get('data')->getData());
+
+                $custom_def_data->add($custom_data);
+            }
         }
 
-        // if admin switched from multi select to single select, we need to fix the data object
-        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
-        list(, , $options) = $this->field_manager->createCustomField(
-            $custom_data_field,
-            $config->getOption('agent_interface'),
-            $config->getOption('inline')
-        );
+        // Set reference to custom def field.
+        foreach ($custom_def_data as $custom_data) {
+            $custom_data->root_field = $custom_def;
 
-        if (array_key_exists('multiple', $options) && !$options['multiple']) {
-            $custom_data->setInput('');
+            if ($custom_def->getType() !== 'choice') {
+                // for simple custom data field = root field
+                $custom_data->field = $custom_def;
+            }
         }
+
+        // Merge custom def data with existing owner custom data collection.
+        foreach ($custom_def_data as $custom_data) {
+            if (!$all_custom_data->contains($custom_data)) {
+                $all_custom_data->add($custom_data);
+            }
+        }
+        foreach ($all_custom_data as $custom_data) {
+            if ($custom_data->root_field === $custom_def && !$custom_def_data->contains($custom_data)) {
+                $all_custom_data->removeElement($custom_data);
+            }
+        }
+
+        $event->setData(clone $all_custom_data);
     }
 
     /**
@@ -204,7 +256,6 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'inline'            => false,
-                'owner'             => null,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
                 'fully_hidden'      => function (Options $options) {
@@ -219,7 +270,6 @@ class CustomDataType extends AbstractType
             ])
             ->setRequired([
                 'custom_data_field',
-                'owner',
                 'agent_interface',
             ])
             ->setAllowedTypes([
@@ -231,13 +281,12 @@ class CustomDataType extends AbstractType
     }
 
     /**
-     * @param FormConfigInterface $config
+     * @param CustomDefAbstract $custom_def
      *
      * @return CustomDataAbstract
      */
-    protected function createCustomData(FormConfigInterface $config)
+    protected function createCustomData(CustomDefAbstract $custom_def)
     {
-        $custom_def = $config->getOption('custom_data_field');
         if ($custom_def instanceof CustomDefTicket) {
             return new CustomDataTicket();
         } elseif ($custom_def instanceof CustomDefPerson) {
@@ -252,23 +301,27 @@ class CustomDataType extends AbstractType
     }
 
     /**
-     * @param FormConfigInterface $config
+     * @param Collection        $all_custom_data
+     * @param CustomDefAbstract $custom_def
      *
-     * @return string
+     * @return CustomDataAbstract[]|ArrayCollection
      */
-    protected function getOwnerProperty(FormConfigInterface $config)
+    protected function filterCustomDefData(Collection $all_custom_data, CustomDefAbstract $custom_def)
     {
-        $custom_def = $config->getOption('custom_data_field');
-        if ($custom_def instanceof CustomDefTicket) {
-            return 'ticket';
-        } elseif ($custom_def instanceof CustomDefPerson) {
-            return 'person';
-        } elseif ($custom_def instanceof CustomDefOrganization) {
-            return 'organization';
-        } elseif ($custom_def instanceof CustomDefFeedback) {
-            return 'feedback';
+        $custom_def_data = $all_custom_data->filter(function (CustomDataAbstract $custom_data) use ($custom_def) {
+            return $custom_data->root_field === $custom_def;
+        });
+
+        if (!$custom_def_data->count()) {
+            $default_value = $custom_def->getDefaultValue();
+            if ($default_value) {
+                $default_custom_data = $this->createCustomData($custom_def);
+                $default_custom_data->setData($default_value);
+
+                $custom_def_data->add($default_custom_data);
+            }
         }
 
-        throw new \RuntimeException('Unsupported custom data owner '.get_class($custom_def));
+        return $custom_def_data;
     }
 }

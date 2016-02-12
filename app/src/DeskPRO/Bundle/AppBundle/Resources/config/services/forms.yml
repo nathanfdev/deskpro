@@ -11,11 +11,7 @@ services:
 
   form_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
-    arguments: [@doctrine.orm.default_entity_manager]
-
-  default_value_for_ticket_layout_field:
-    class: DeskPRO\Bundle\AppBundle\Form\Form\DefaultValueForTicketLayoutField
-    arguments: [@doctrine.orm.default_entity_manager, @form_field_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @form_hierarchy_generator]
 
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
@@ -271,7 +267,6 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @tickets.custom_per_field_manager
-      - @default_value_for_ticket_layout_field
     tags:
       - { name: form.type, alias: ticket_with_layouts }
 

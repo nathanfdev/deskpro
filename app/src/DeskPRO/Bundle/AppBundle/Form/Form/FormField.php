@@ -29,54 +29,63 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
-
-use Symfony\Component\Form\DataTransformerInterface;
+namespace DeskPRO\Bundle\AppBundle\Form\Form;
 
 /**
- * Class StringToIntegerArrayTransformer.
+ * Class FormField.
  */
-class StringToIntegerArrayTransformer implements DataTransformerInterface
+class FormField
 {
     /**
      * @var string
      */
-    private $delimiter;
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var array
+     */
+    private $options;
 
     /**
      * Constructor.
      *
-     * @param string $delimiter
+     * @param string $name
+     * @param string $type
+     * @param array  $options
      */
-    public function __construct($delimiter = ',')
+    public function __construct($name, $type, array $options = [])
     {
-        $this->delimiter = $delimiter;
+        $this->name    = $name;
+        $this->type    = $type;
+        $this->options = $options;
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function transform($value)
+    public function getName()
     {
-        $val = explode($this->delimiter, $value);
-
-        $k = [];
-        foreach ($val as $v) {
-            $k[] = (int) $v;
-        }
-
-        return $k;
+        return $this->name;
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function reverseTransform($value)
+    public function getType()
     {
-        if (!$value) {
-            return '';
-        }
+        return $this->type;
+    }
 
-        return implode($this->delimiter, $value);
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }
