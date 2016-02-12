@@ -68,50 +68,6 @@ class FormFieldManager
     }
 
     /**
-     * @param CustomDefTicket $field
-     * @param bool            $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomTicketField(CustomDefTicket $field, $agent_interface)
-    {
-        return $this->createCustomField($field, $agent_interface);
-    }
-
-    /**
-     * @param CustomDefFeedback $field
-     * @param bool              $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomFeedbackField(CustomDefFeedback $field, $agent_interface)
-    {
-        return $this->createCustomField($field, $agent_interface);
-    }
-
-    /**
-     * @param CustomDefPerson $field
-     * @param bool            $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomPersonField(CustomDefPerson $field, $agent_interface)
-    {
-        return $this->createCustomField($field, $agent_interface);
-    }
-
-    /**
-     * @param CustomDefOrganization $field
-     * @param bool                  $agent_interface
-     *
-     * @return array
-     */
-    public function getCustomOrganizationField(CustomDefOrganization $field, $agent_interface)
-    {
-        return $this->createCustomField($field, $agent_interface);
-    }
-
-    /**
      * @param CustomFieldDefinition $field
      * @param bool                  $agent_interface
      *

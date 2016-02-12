@@ -66,17 +66,17 @@ class DefaultValueForTicketLayoutField
         switch ($field->getFieldType()) {
             case FormFields::TICKET_FIELD:
                 $def                                    = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
-                list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($def, false);
+                list($value_name, $form_type, $options) = $this->field_manager->createCustomField($def, false);
 
                 return $this->extractDefaultData($def, $value_name, $form_type, $options);
             case FormFields::ORG_FIELD:
                 $def                                    = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
-                list($value_name, $form_type, $options) = $this->field_manager->getCustomOrganizationField($def, false);
+                list($value_name, $form_type, $options) = $this->field_manager->createCustomField($def, false);
 
                 return $this->extractDefaultData($def, $value_name, $form_type, $options);
             case FormFields::USER_FIELD:
                 $def                                    = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
-                list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($def, false);
+                list($value_name, $form_type, $options) = $this->field_manager->createCustomField($def, false);
 
                 return $this->extractDefaultData($def, $value_name, $form_type, $options);
         }
