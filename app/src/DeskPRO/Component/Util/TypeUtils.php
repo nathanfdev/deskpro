@@ -82,4 +82,9 @@ class TypeUtils
 
         return array_pop($parts);
     }
+
+    public static function getSnakeCaseBaseTypeName($var)
+    {
+        return StringUtils::toSnakeCase(self::getBaseTypeName($var));
+    }
 }

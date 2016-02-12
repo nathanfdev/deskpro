@@ -87,15 +87,19 @@ class EtagGeneratorTest extends DeskProTestCase
         $mockEntity     = new MockEntity();
         $mockEntity->id = 2;
 
+        $object           = new \stdClass();
+        $object->id       = 5;
+        $object->property = 'some_string';
+
         return [
             [[], []],
             [[1, [2, 3]], [1, 2, 3]],
             [[1, [2, 3 => [3, 4]]], [1, 2, 3, 4]],
-            [[1, [$domainOjectEntity, 3]], [1, 'mock_domain_object-1', 3]],
-            [[1, [$domainOjectEntity, $mockEntity]], [1, 'mock_domain_object-1', 'mock_entity-2']],
+            [[$object], ['std_class(id=>5;property=>some_string)']],
+            [[1, [$domainOjectEntity, 3]], [1, 'mock_domain_object(id=>1)', 3]],
+            [[1, [$domainOjectEntity, $mockEntity]], [1, 'mock_domain_object(id=>1)', 'mock_entity(id=>2)']],
             [['a' => 'b'], ['a=>b']],
             [['a' => 'b', 'c'], ['a=>b', 'c']],
-            // Eeeeeehhhhhhhhhaaaaaaa
             [
                 [
                     1,
@@ -108,8 +112,24 @@ class EtagGeneratorTest extends DeskProTestCase
                 ],
                 [
                     1,
-                    'do=>mock_domain_object-1',
-                    'mock_entity-2',
+                    'do=>mock_domain_object(id=>1)',
+                    'mock_entity(id=>2)',
+                ],
+            ],
+            [
+                [
+                    1,
+                    [
+                        'do'       => $domainOjectEntity,
+                        'entities' => [
+                            $mockEntity,
+                        ],
+                    ],
+                ],
+                [
+                    1,
+                    'do=>mock_domain_object(id=>1)',
+                    'mock_entity(id=>2)',
                 ],
             ],
 
