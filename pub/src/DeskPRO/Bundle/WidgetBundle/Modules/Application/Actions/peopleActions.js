@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from './bootstrapActions';
-import { l } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
 import Immutable from 'immutable';
 

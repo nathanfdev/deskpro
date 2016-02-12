@@ -5,17 +5,15 @@ import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, ids, collectionName) => {
-    return {
+  (recordName, ids, collectionName) => ({
+    recordName,
+    collectionName,
+    promise: repository(recordName).loadBatch(ids).then(response => ({
       recordName,
       collectionName,
-      promise: repository(recordName).loadBatch(ids).then(response => ({
-        recordName,
-        collectionName,
-        records: response.getData().data
-      }))
-    }
-  }
+      records: response.getData().data
+    }))
+  })
 );
 export const loadAll = createAction(
   'RECORDS_STORE_LOAD',
