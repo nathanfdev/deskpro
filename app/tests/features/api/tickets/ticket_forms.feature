@@ -69,7 +69,7 @@ Feature: /tickets endpoint
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "ticket_field_1": {
-    "field": "2"
+    "data": "2"
   },
   "ticket_field_5": {
     "data": {
@@ -91,10 +91,10 @@ Feature: /tickets endpoint
     "data": "textarea text"
   },
   "ticket_field_8": {
-    "field": ["10", "11"]
+    "data": ["10", "11"]
   },
   "user_field_1": {
-    "field": "2"
+    "data": "2"
   },
   "user_field_5": {
     "data": {
@@ -116,7 +116,7 @@ Feature: /tickets endpoint
     "data": "textarea text"
   },
   "org_field_1": {
-    "field": "2"
+    "data": "2"
   },
   "org_field_5": {
     "data": {
@@ -209,7 +209,7 @@ Feature: /tickets endpoint
     """
 {
   "ticket_field_8": {
-    "field": ["9", "11"]
+    "data": ["9", "11"]
   }
 }
     """

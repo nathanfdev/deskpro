@@ -181,7 +181,7 @@ class CustomDataType extends AbstractType
         $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
 
         if ($custom_def->isChoiceType()) {
-            $data = $form->get('field')->getNormData();
+            $data = $form->get('data')->getNormData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
             $data = array_map(function (HierarchyNode $choice_custom_def) {
                 return $choice_custom_def->getData()->getId();
@@ -214,7 +214,7 @@ class CustomDataType extends AbstractType
         } else {
             if ($custom_def_data->count()) {
                 $custom_data = $custom_def_data->first();
-                $custom_data->setData($form->get('data')->getNormData());
+                $custom_data->setData($form->get('data')->getData());
             } else {
                 $custom_data = $this->createCustomData($custom_def);
                 $custom_data->setData($form->get('data')->getData());

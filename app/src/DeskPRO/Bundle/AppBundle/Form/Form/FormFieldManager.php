@@ -262,7 +262,7 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'field',
+                    'data',
                     'deskpro_custom_field_choice',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
