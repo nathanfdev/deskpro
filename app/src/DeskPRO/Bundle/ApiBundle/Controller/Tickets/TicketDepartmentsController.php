@@ -38,6 +38,8 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\EventListener\CacheWriteListener;
+use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -89,13 +91,24 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      */
     public function cgetAction(Request $request)
     {
+        $query  = $request->query->all();
+        $params = [
+            $this->getVersionService()->getVersion(TypeUtils::getBaseTypeName($this)),
+            $query,
+        ];
         if ($request->query->getBoolean('my', false)) {
+            $etag = $this->getEtagGenerator()->generate($params);
+            if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
+                return $cachedResponse;
+            }
             /** @var DepartmentDataService $departments_data_service */
             $departments_data_service = $this->get('data.departments');
             $departments              = $departments_data_service->getChatDepartmentsForPerson($this->getUser());
         } else {
-            $query = $request->query->all();
-
+            $etag = $this->getEtagGenerator()->generate($params);
+            if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
+                return $cachedResponse;
+            }
             if (!empty($query['ids'])) {
                 $departments = $this->selectDepartments(explode(',', $query['ids']));
             } else {
@@ -116,7 +129,8 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
         return View::create(
             $this->dataSerialize($pager),
-            Response::HTTP_OK
+            Response::HTTP_OK,
+            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
         );
     }
 
@@ -143,8 +157,13 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      *
      * @return View
      */
-    public function getAction($id)
+    public function getAction(Request $request, $id)
     {
+        $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
+        if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
+            return $cachedResponse;
+        }
+
         $department = $this->getDepartment($id);
 
         if (empty($department)) {
@@ -153,7 +172,8 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
 
         return View::create(
             $this->dataSerialize($department),
-            Response::HTTP_OK
+            Response::HTTP_OK,
+            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
         );
     }
 
@@ -182,13 +202,19 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      *
      * @return View
      */
-    public function getAgentsAction($id)
+    public function getAgentsAction(Request $request, $id)
     {
+        $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
+        if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
+            return $cachedResponse;
+        }
+
         $department = $this->findOr404(Department::class, $id);
 
         return View::create(
             $this->dataSerialize($department->getPersonList()),
-            Response::HTTP_OK
+            Response::HTTP_OK,
+            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
         );
     }
 
@@ -213,6 +239,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      */
     public function postAction(Request $request)
     {
+        $this->regenerateThisVersionId();
         $department = new Department($this->getUser());
 
         return $this->handleFormSubmission($request, $department);
@@ -247,6 +274,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      */
     public function putAction(Request $request, $id)
     {
+        $this->regenerateThisVersionId();
         $department = $this->getDepartment($id);
 
         return $this->handleFormSubmission($request, $department);
@@ -276,6 +304,7 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      */
     public function deleteAction($id)
     {
+        $this->regenerateThisVersionId();
         $department = $this->getDepartment($id);
         $this->getDoctrine()->getManager()->remove($department);
         $this->getDoctrine()->getManager()->flush();
@@ -351,12 +380,12 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      */
     protected function selectDepartments($departmentIds)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         // Clean the IDs
         $departmentIds = array_map(function ($value) {
             return (int) $value;
         }, $departmentIds);
+
+        $entityManager = $this->getDoctrine()->getManager();
 
         $query = $entityManager->createQueryBuilder()->select('d')->from('DeskPRO:Department', 'd')
             ->where('d.id IN (:departmentIds)')
