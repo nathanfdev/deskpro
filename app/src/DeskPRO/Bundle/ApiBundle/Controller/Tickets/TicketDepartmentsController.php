@@ -98,16 +98,16 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
         ];
         if ($request->query->getBoolean('my', false)) {
             $etag = $this->getEtagGenerator()->generate($params);
-            if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
-                return $cachedResponse;
+            if ($cached_response = $this->getCachedResponse($request, $etag)) {
+                return $cached_response;
             }
             /** @var DepartmentDataService $departments_data_service */
             $departments_data_service = $this->get('data.departments');
             $departments              = $departments_data_service->getChatDepartmentsForPerson($this->getUser());
         } else {
             $etag = $this->getEtagGenerator()->generate($params);
-            if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
-                return $cachedResponse;
+            if ($cached_response = $this->getCachedResponse($request, $etag)) {
+                return $cached_response;
             }
             if (!empty($query['ids'])) {
                 $departments = $this->selectDepartments(explode(',', $query['ids']));
@@ -160,8 +160,8 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
     public function getAction(Request $request, $id)
     {
         $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
-        if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
-            return $cachedResponse;
+        if ($cached_response = $this->getCachedResponse($request, $etag)) {
+            return $cached_response;
         }
 
         $department = $this->getDepartment($id);
@@ -205,8 +205,8 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
     public function getAgentsAction(Request $request, $id)
     {
         $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
-        if ($cachedResponse = $this->getCachedResponse($request, $etag)) {
-            return $cachedResponse;
+        if ($cached_response = $this->getCachedResponse($request, $etag)) {
+            return $cached_response;
         }
 
         $department = $this->findOr404(Department::class, $id);
