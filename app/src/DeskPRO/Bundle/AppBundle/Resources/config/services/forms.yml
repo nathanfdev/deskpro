@@ -11,7 +11,7 @@ services:
 
   form_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
-    arguments: [@doctrine.orm.default_entity_manager, @form_hierarchy_generator]
+    arguments: [@doctrine.orm.default_entity_manager]
 
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory

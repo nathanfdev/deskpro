@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
 use Doctrine\ORM\EntityManager;
@@ -59,20 +58,13 @@ class FormFieldManager
     private $em;
 
     /**
-     * @var HierarchyGenerator
-     */
-    private $hierarchy;
-
-    /**
      * Constructor.
      *
-     * @param EntityManager      $em
-     * @param HierarchyGenerator $hierarchy
+     * @param EntityManager $em
      */
-    public function __construct(EntityManager $em, HierarchyGenerator $hierarchy)
+    public function __construct(EntityManager $em)
     {
-        $this->em        = $em;
-        $this->hierarchy = $hierarchy;
+        $this->em = $em;
     }
 
     /**
