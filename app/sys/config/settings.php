@@ -1088,6 +1088,8 @@ return array(
     ####################################################################################################################
 
     'api_log.enabled'     => false,
+    'api_log.modes'       => ['key'],
+    'api_log.dupe.modes'  => ['key'],
     'api_log.writer.type' => 'db',
     'api_log.writer.file' => [
         'log_max_size'  => 5 * 1024 * 1024,
@@ -1100,4 +1102,5 @@ return array(
     'response.cache.global_version' => '7dedef53d7b6762e2ad984051e37638d',
 
     'response.cache.enabled' => false,
+
 );

@@ -197,7 +197,14 @@ class LogComposer
             && $options['failure_mode'] === LogHelper::FAILURE_MODE_SKIP && $options['eager'] !== LogHelper::EAGER_ON
             && !($response->isSuccessful() || $response->isRedirection());
 
-        $should_save = ($this->log_helper->isLoggingEnabled() || $this->getLogHelper()->isClientRequestedLog())
+        $should_save =
+            (
+                $this->log_helper->isLoggingEnabled() ||
+                (
+                    $this->getLogHelper()->isClientRequestedLog()
+                    && $this->getDupeHelper()->suitableMode($this->getLogHelper()->getMode())
+                )
+            )
             && !$this->request_processed;
 
         if ($skip_failed_client_request) {
