@@ -29,20 +29,30 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
+use Application\DeskPRO\Entity\Usergroup;
+use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LegacyFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class DefaultDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
     /**
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 100;
+    }
 
     /**
      * {@inheritdoc}
@@ -55,35 +65,9 @@ class LegacyFixture extends AbstractFixture implements ContainerAwareInterface, 
     /**
      * {@inheritdoc}
      */
-    public function getOrder()
-    {
-        return -10;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function load(ObjectManager $manager)
     {
-        $container = $this->container;
-        $em        = $container->get('doctrine.orm.default_entity_manager');
-        $translate = $container->get('deskpro.core.translate');
-
-        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
-
-        require DP_ROOT.'/src/Application/InstallBundle/Data/data.php';
-        $em->flush();
-
-        if (!empty($USERGROUP_EVERYONE)) {
-            $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-            foreach ($scanner->getNames() as $p_name) {
-                $p            = new \Application\DeskPRO\Entity\Permission();
-                $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name      = $p_name;
-                $p->value     = 1;
-                $em->persist($p);
-            }
-            $em->flush();
-        }
+        $data_proc = new DefaultDataProcessor($this->container);
+        $data_proc->runInstall();
     }
 }

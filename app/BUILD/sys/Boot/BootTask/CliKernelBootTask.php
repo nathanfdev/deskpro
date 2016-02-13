@@ -68,20 +68,20 @@ class CliKernelBootTask implements BootTaskInterface
 
         switch ($cmd_ns) {
             case 'dpdev':
-                $kernel = new Kernel\DevKernel($env);
+                $kernel = new Kernel\DevKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
             case 'install':
             case 'update':
-                $kernel = new Kernel\InstallKernel($env);
+                $kernel = new Kernel\InstallKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
             case 'portal':
-                $kernel = new Kernel\PortalKernel($env);
+                $kernel = new Kernel\PortalKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
             default:
-                $kernel = new Kernel\DpKernel($env);
+                $kernel = new Kernel\DpKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
         }
 

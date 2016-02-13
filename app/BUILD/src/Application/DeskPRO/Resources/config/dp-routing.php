@@ -47,19 +47,13 @@ $col = $loader->import(
 $col->addPrefix('/reports');
 $collection->addCollection($col);
 
-// TODO: FUTURE SELF: agent-routing.php is the old info, safe to delete. new-agent-routing is the new stuff.
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
 $col->addPrefix('/agent');
 $collection->addCollection($col);
 
-if (!defined('OLD_AGENT')) { // dont import the new agent routes if its an old agent request - new-agent overrides / via KernelBooter
-    // the way this works is that KernelBooter uses a different symfony env for old vs new agent (dev is new agent, dev_old_agent is old agent env)
-    // so when it constructs the container, this file is only inc. if it is NOT an old_agent request.
-    $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/new-agent-routing.php');
-    $col->addPrefix('/new-agent');
-    $collection->addCollection($col);
-}
-//
+$col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/new-agent-routing.php');
+$col->addPrefix('/new-agent');
+$collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/EmailBundle/Resources/config/email-routing.php');
 $col->addPrefix('/email');

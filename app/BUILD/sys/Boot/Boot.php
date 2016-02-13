@@ -140,12 +140,12 @@ class Boot
      */
     public static function bootWeb()
     {
+        /** @var \DpRun\DpEnv $env */
+        $env = $GLOBALS['DP_ENV'];
+
         // Makes sure the www path we have in cache
         // is the same as the path we are requesting
         if (defined('DESKPRO_WWW_PATH')) {
-            /** @var \DpRun\DpEnv $env */
-            $env = $GLOBALS['DP_ENV'];
-
             if ($env) {
                 // Check if its a non-default path...
                 if (DESKPRO_WWW_PATH !== $env->getDpRoot().DIRECTORY_SEPARATOR.'www') {
@@ -204,6 +204,9 @@ class Boot
      */
     public static function bootCli()
     {
+        /** @var \DpRun\DpEnv $env */
+        $env = $GLOBALS['DP_ENV'];
+
         $tasks = [
             'Loader',
             'Lib',
@@ -230,6 +233,9 @@ class Boot
     {
         //TODO
         exit;
+
+        /** @var \DpRun\DpEnv $env */
+        $env = $GLOBALS['DP_ENV'];
 
         $tasks = [
             'Loader',

@@ -40,7 +40,7 @@ class ConfigReader implements ConfigReaderInterface
         'database'          => 'DB_CONFIG',
         'logs'              => 'LOGS_CONFIG',
         'paths'             => 'PATHS_CONFIG',
-        'settings'          => 'SETTINGS_CONFIG',
+        'settings'          => 'SETTINGS',
         'database_advanced' => 'DB_CONFIG',
         'env'               => 'ENV_CONFIG',
     ];

@@ -156,7 +156,11 @@ class InstallerContext
         }
 
         $this->getDpEnv()->resetConfigCache();
-        $this->mainKernel = new DpKernel($this->getDpEnv());
+        $this->mainKernel = new DpKernel(
+            $this->getDpEnv()->getEnvId(),
+            $this->getDpEnv()->isDebug(),
+            $this->getDpEnv()
+        );
         $this->mainKernel->boot();
 
         return $this->mainKernel->getContainer();
