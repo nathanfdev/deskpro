@@ -175,8 +175,6 @@ class FeedbackController extends AbstractController
             }
         } elseif ($form->isSubmitted()) {
             $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
-
-            return $this->acceptNewFeedback($new_feedback, $person, $request);
         }
 
         $form_was_submitted = false;
