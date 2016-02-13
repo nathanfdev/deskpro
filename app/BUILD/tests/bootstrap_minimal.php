@@ -100,6 +100,8 @@ error_reporting(E_ALL);
 # Boot libs
 #------------------------------
 
+define('DP_INTERFACE', 'test');
+
 require DP_APP_DIR.'/sys/Boot/Boot.php';
 \DpSys\Boot\Boot::runBootTasks($DP_ENV, [
     'Loader',

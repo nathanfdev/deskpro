@@ -39,7 +39,9 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
 {
     public function rebootContext()
     {
-        $cache_dir = dp_get_cache_dir().DIRECTORY_SEPARATOR.'api_permissions';
+        /** \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $cache_dir = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'api_permissions';
         file_exists($cache_dir) ? rmdir($cache_dir) : null;
     }
 

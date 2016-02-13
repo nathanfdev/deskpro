@@ -26,136 +26,107 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    exit('No access');
-}
+use Composer\Autoload\ClassLoader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
+########################################################################################################################
+# Oldschool include paths
+########################################################################################################################
+
 set_include_path(
-    DP_ROOT.'/vendor-src/zend/library'
+    DP_APP_DIR.'/vendor-src/zend/library'
     .PATH_SEPARATOR.
-    DP_ROOT.'/vendor-src/ezcomponents'
+    DP_APP_DIR.'/vendor-src/ezcomponents'
     .PATH_SEPARATOR.
-    DP_ROOT.'/vendor-src/pear/lib'
+    DP_APP_DIR.'/vendor-src/pear/lib'
     .PATH_SEPARATOR.
     get_include_path()
 );
 
-// Composer-managed sources
-$composer_loader = require DP_ROOT.'/vendor/autoload.php';
-require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
+########################################################################################################################
+# Standard autoloader
+########################################################################################################################
 
-$loader = new \Orb\Util\ClassLoader();
+/** @var ClassLoader $loader */
+$loader = require DP_APP_DIR.'/vendor/autoload.php';
 
-$loader->registerNamespaces(
-    array(
-        'DeskPRO'            => DP_ROOT.'/src',
-        'Application'        => DP_ROOT.'/src',
-        'Cloud'              => DP_ROOT.'/src',
-        'Bundle'             => DP_ROOT.'/src',
-        'Orb'                => DP_ROOT.'/src',
-        'DpUnitTests'        => DP_ROOT.'/testing/tests/unit',
-        'DpTest'             => DP_ROOT.'/tests/phpunit',
-        'DpIntegrationTests' => DP_ROOT.'/testing/tests/integration',
-        'DpTestingMocks'     => DP_ROOT.'/testing/src',
-        'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
-        'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes',
-        'libphonenumber'     => DP_ROOT.'/vendor-src/libphonenumber/src',
-        'Bdt\\Clickatell'    => DP_ROOT.'/vendor-src/guzzle-clickatell/src',
-    )
-);
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-$loader->registerNamespaceFallbacks(array(DP_WEB_ROOT.'/plugins'));
+foreach ([
+    'DeskPRO' => DP_APP_DIR.'/src',
+    'Application' => DP_APP_DIR.'/src',
+    'Cloud' => DP_APP_DIR.'/src',
+    'Bundle' => DP_APP_DIR.'/src',
+    'Orb' => DP_APP_DIR.'/src',
+    'DpUnitTests' => DP_APP_DIR.'/testing/tests/unit',
+    'DpTest' => DP_APP_DIR.'/tests/phpunit',
+    'DpIntegrationTests' => DP_APP_DIR.'/testing/tests/integration',
+    'DpTestingMocks' => DP_APP_DIR.'/testing/src',
+    'Metadata' => DP_APP_DIR.'/vendor-src/metadata/src',
+    'Leth' => DP_APP_DIR.'/vendor-src/php-ipaddress/classes',
+    'libphonenumber' => DP_APP_DIR.'/vendor-src/libphonenumber/src',
+    'Bdt\\Clickatell' => DP_APP_DIR.'/vendor-src/guzzle-clickatell/src',
 
-$loader->registerPrefixes(
-    array(
-        'mPDF_'           => DP_ROOT.'/vendor-src/mpdf/lib',
-        'File_'           => DP_ROOT.'/vendor-src/pear/lib',
-        'PEAR_'           => DP_ROOT.'/vendor-src/pear/lib',
-        'EWSType_'        => DP_ROOT.'/vendor-src/php-ews',
-        'Services_Twilio' => DP_ROOT.'/vendor-src/twilio-php',
-    )
-);
+    'mPDF_' => DP_APP_DIR.'/vendor-src/mpdf/lib',
+    'File_' => DP_APP_DIR.'/vendor-src/pear/lib',
+    'PEAR_' => DP_APP_DIR.'/vendor-src/pear/lib',
+    'EWSType_' => DP_APP_DIR.'/vendor-src/php-ews',
+    'Services_Twilio' => DP_APP_DIR.'/vendor-src/twilio-php',
+] as $prefix => $dir) {
+    $loader->add($prefix, $dir);
+}
 
-$loader->registerClassNames(
-    array(
-        'Akismet'                       => DP_ROOT.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
-        'Browser'                       => DP_ROOT.'/vendor-src/Browser/Browser.php',
-        'CssMin'                        => DP_ROOT.'/vendor-src/cssmin/cssmin.php',
-        'LightOpenID'                   => DP_ROOT.'/vendor-src/lightopenid/openid.php',
-        'MimeMailParser'                => DP_ROOT.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
-        'MimeMailParser_attachment'     => DP_ROOT.'/vendor-src/php-mime-mail-parser/attachment.class.php',
-        'Phirehose'                     => DP_ROOT.'/vendor-src/phirehose/Phirehose.php',
-        'UserstreamPhirehose'           => DP_ROOT.'/vendor-src/phirehose/UserstreamPhirehose.php',
-        'HipChatApi'                    => DP_ROOT.'/vendor-src/hipchat/HipChatApi.php',
-        'Markdown_Parser'               => DP_ROOT.'/vendor-src/php-markdown/markdown.php',
-        'FineDiff'                      => DP_ROOT.'/vendor-src/PHP-FineDiff/finediff.php',
-        'GoogleOpenID'                  => DP_ROOT.'/vendor-src/googleopenid/GoogleOpenID.php',
-        'POParser'                      => DP_ROOT.'/vendor-src/simplepo/POParser.php',
-        'TempPoMsgStore'                => DP_ROOT.'/vendor-src/simplepo/POParser.php',
-        'Emogrifier'                    => DP_ROOT.'/vendor-src/emogrifier/emogrifier.php',
-        'Facebook'                      => DP_ROOT.'/vendor-src/facebook/php-sdk/src/facebook.php',
-        'Text_LanguageDetect'           => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
-        'Text_LanguageDetect_Exception' => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
-        'Text_LanguageDetect_ISO639'    => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
-        'Text_LanguageDetect_Parser'    => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
-        'EpiCurl'                       => DP_ROOT.'/vendor-src/twitter-async/EpiCurl.php',
-        'EpiOAuth'                      => DP_ROOT.'/vendor-src/twitter-async/EpiOAuth.php',
-        'EpiOSequence'                  => DP_ROOT.'/vendor-src/twitter-async/EpiOSequence.php',
-        'EpiTwitter'                    => DP_ROOT.'/vendor-src/twitter-async/EpiTwitter.php',
-        'phpthumb_ico'                  => DP_ROOT.'/vendor-src/phpthumb/phpthumb.ico.php',
-        'PasswordHash'                  => DP_ROOT.'/vendor-src/phpass/PasswordHash.php',
-        'EWS_Exception'                 => DP_ROOT.'/vendor-src/php-ews/EWS_Exception.php',
-        'EWSAutodiscover'               => DP_ROOT.'/vendor-src/php-ews/EWSAutodiscover.php',
-        'EWSType'                       => DP_ROOT.'/vendor-src/php-ews/EWSType.php',
-        'ExchangeWebServices'           => DP_ROOT.'/vendor-src/php-ews/ExchangeWebServices.php',
-        'NTLMSoapClient'                => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient.php',
-        'NTLMSoapClient_Exchange'       => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
-        'tnef'                          => DP_ROOT.'/vendor-src/tnef-decoder/tnef.php',
-        'PDODblibBundle'                => DP_ROOT.'/vendor-src/ouster',
-    )
-);
+$loader->addClassMap([
+    'DpShutdown' => DP_APP_DIR.'/sys/DpShutdown.php',
 
-spl_autoload_register(
-    function ($classname) {
-        if (strpos($classname, 'DeskproLanguages') !== 0) {
-            return false;
-        }
+    'Akismet'                       => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
+    'Browser'                       => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
+    'CssMin'                        => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
+    'LightOpenID'                   => DP_APP_DIR.'/vendor-src/lightopenid/openid.php',
+    'MimeMailParser'                => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
+    'MimeMailParser_attachment'     => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/attachment.class.php',
+    'Phirehose'                     => DP_APP_DIR.'/vendor-src/phirehose/Phirehose.php',
+    'UserstreamPhirehose'           => DP_APP_DIR.'/vendor-src/phirehose/UserstreamPhirehose.php',
+    'HipChatApi'                    => DP_APP_DIR.'/vendor-src/hipchat/HipChatApi.php',
+    'Markdown_Parser'               => DP_APP_DIR.'/vendor-src/php-markdown/markdown.php',
+    'FineDiff'                      => DP_APP_DIR.'/vendor-src/PHP-FineDiff/finediff.php',
+    'GoogleOpenID'                  => DP_APP_DIR.'/vendor-src/googleopenid/GoogleOpenID.php',
+    'POParser'                      => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
+    'TempPoMsgStore'                => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
+    'Emogrifier'                    => DP_APP_DIR.'/vendor-src/emogrifier/emogrifier.php',
+    'Facebook'                      => DP_APP_DIR.'/vendor-src/facebook/php-sdk/src/facebook.php',
+    'Text_LanguageDetect'           => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
+    'Text_LanguageDetect_Exception' => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
+    'Text_LanguageDetect_ISO639'    => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
+    'Text_LanguageDetect_Parser'    => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
+    'EpiCurl'                       => DP_APP_DIR.'/vendor-src/twitter-async/EpiCurl.php',
+    'EpiOAuth'                      => DP_APP_DIR.'/vendor-src/twitter-async/EpiOAuth.php',
+    'EpiOSequence'                  => DP_APP_DIR.'/vendor-src/twitter-async/EpiOSequence.php',
+    'EpiTwitter'                    => DP_APP_DIR.'/vendor-src/twitter-async/EpiTwitter.php',
+    'phpthumb_ico'                  => DP_APP_DIR.'/vendor-src/phpthumb/phpthumb.ico.php',
+    'PasswordHash'                  => DP_APP_DIR.'/vendor-src/phpass/PasswordHash.php',
+    'EWS_Exception'                 => DP_APP_DIR.'/vendor-src/php-ews/EWS_Exception.php',
+    'EWSAutodiscover'               => DP_APP_DIR.'/vendor-src/php-ews/EWSAutodiscover.php',
+    'EWSType'                       => DP_APP_DIR.'/vendor-src/php-ews/EWSType.php',
+    'ExchangeWebServices'           => DP_APP_DIR.'/vendor-src/php-ews/ExchangeWebServices.php',
+    'NTLMSoapClient'                => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient.php',
+    'NTLMSoapClient_Exchange'       => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
+    'tnef'                          => DP_APP_DIR.'/vendor-src/tnef-decoder/tnef.php',
+    'PDODblibBundle'                => DP_APP_DIR.'/vendor-src/ouster',
+]);
 
-        $classpath = str_replace('DeskproLanguages\\', '', $classname);
-        $classpath = str_replace('\\', DIRECTORY_SEPARATOR, $classpath);
-        $path = DP_ROOT.'/languages/'.$classpath.'.php';
+foreach ([
+    'DpBehat\\' => DP_APP_DIR.'/tests/features/bootstrap/',
+    'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
+    'DpSys\\' => DP_APP_DIR.'/sys/',
+    'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
+] as $prefix => $path) {
+    $loader->addPsr4($prefix, $path);
+}
 
-        require $path;
-
-        return true;
-    }
-);
-
-// psr-4 style autoloading for DpBehat\ and DpTestSrc\ namespace
-spl_autoload_register(
-    function ($class) {
-        $namespaces = array(
-            'DpBehat\\'       => DP_ROOT.'/tests/features/bootstrap/',
-            'DpTestSrc\\'     => DP_ROOT.'/tests/src/',
-            'DeskPRO\\Kernel' => DP_ROOT.'/sys/Kernel',
-        );
-
-        foreach ($namespaces as $prefix => $base_dir) {
-            $len = strlen($prefix);
-            if (strncmp($prefix, $class, $len) !== 0) {
-                continue;
-            }
-            $relative_class = substr($class, $len);
-            $file = $base_dir.str_replace('\\', '/', $relative_class).'.php';
-            if (file_exists($file)) {
-                require $file;
-            }
-        }
-
-        return;
-    }
-);
-
-require_once 'DpShutdown.php';
+########################################################################################################################
+# Native apps
+########################################################################################################################
 
 spl_autoload_register(
     function ($classname) {
@@ -172,7 +143,7 @@ spl_autoload_register(
             } else {
                 $paths = array();
             }
-            $paths['default'] = DP_ROOT.'/apps';
+            $paths['default'] = DP_APP_DIR.'/apps';
         }
 
         $appname = array_shift($parts);
@@ -192,17 +163,14 @@ spl_autoload_register(
     }
 );
 
-$loader->register();
+########################################################################################################################
+# ezC
+########################################################################################################################
 
-define('QP_NO_AUTOLOADER', true);
-
-$GLOBALS['DP_AUTOLOADER'] = $loader;
-
-// ezC autoloading
-require DP_ROOT.'/vendor-src/ezcomponents/Base/src/ezc_bootstrap.php';
+require DP_APP_DIR.'/vendor-src/ezcomponents/Base/src/ezc_bootstrap.php';
 spl_autoload_register(
     function ($classname) {
-        if (strpos($classname, 'ezc') !== 0) {
+        if ($classname[0] !== 'e' || substr($classname, 0, 3) !== 'ezc') {
             return false;
         }
 
@@ -210,46 +178,26 @@ spl_autoload_register(
     }
 );
 
-if (!defined('GEOIP_API_INC_PATH')) {
-    define('GEOIP_API_INC_PATH', DP_ROOT.'/vendor-src/geoip-api');
-}
+########################################################################################################################
+# Swiftmailer
+########################################################################################################################
 
-// Needed for assetic build to work
-class_exists('CssMin');
-
-use Doctrine\Common\Annotations\AnnotationRegistry;
-
-AnnotationRegistry::registerLoader(
-    function ($class) use ($loader) {
-        $loader->loadClass($class);
-
-        return class_exists($class, false);
-    }
-);
-AnnotationRegistry::registerFile(
-    DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
-);
-if (is_callable(array($composer_loader, 'loadClass'))) {
-    AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
-}
-
-require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
+require DP_APP_DIR.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')->asSharedInstanceOf(
     'Orb\\Mail\\KeyCache\\DiskKeyCache'
 )->withDependencies(array('cache.inputstream', 'tempdir'));
 
-require DP_ROOT.'/vendor-src/querypath/src/qp.php';
+########################################################################################################################
+# Misc
+########################################################################################################################
 
-$annotation_mappings = array(
-    'Sensio\Bundle\FrameworkExtraBundle'               => DP_ROOT.'/vendor/sensio/framework-extra-bundle',
-    'FOS\RestBundle'                                   => DP_ROOT.'/vendor/friendsofsymfony/rest-bundle',
-    'JMS\Serializer\Annotation'                        => DP_ROOT.'/vendor/jms/serializer/src',
-    'Nelmio\ApiDocBundle\Annotation'                   => DP_ROOT.'/vendor/nelmio/api-doc-bundle',
-    'Symfony\Component\Validator\Constraints'          => DP_ROOT.'/vendor/symfony/symfony/src',
-    'Hateoas\Configuration\Annotation'                 => DP_ROOT.'/vendor/willdurand/hateoas/src',
-    'DeskPRO\Bundle\AppBundle\ObjectRouter\Annotation' => DP_ROOT.'/src',
-);
+define('QP_NO_AUTOLOADER', true);
+require DP_APP_DIR.'/vendor-src/querypath/src/qp.php';
+$GLOBALS['DP_AUTOLOADER'] = $loader;
 
-foreach ($annotation_mappings as $namespace => $dir) {
-    AnnotationRegistry::registerAutoloadNamespace($namespace, $dir);
+if (!defined('GEOIP_API_INC_PATH')) {
+    define('GEOIP_API_INC_PATH', DP_APP_DIR.'/vendor-src/geoip-api');
 }
+
+// Needed for assetic build to work
+class_exists('CssMin');

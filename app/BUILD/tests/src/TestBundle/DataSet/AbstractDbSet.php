@@ -387,7 +387,7 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     protected function getLicenseKey()
     {
-        return file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt');
+        return file_get_contents(DP_DIR.'/dev/dev-lic-key.txt');
     }
 
     /**

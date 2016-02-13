@@ -38,7 +38,9 @@ class ActionPermissionsCacheTest extends ApiTestCase
 
     public static function setUpBeforeClass()
     {
-        self::$cache = new ActionPermissionsCache(dp_get_cache_dir());
+        /** \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        self::$cache = new ActionPermissionsCache($DP_ENV->getAppBaseKernelCacheDir());
     }
 
     /**
@@ -75,6 +77,8 @@ class ActionPermissionsCacheTest extends ApiTestCase
 
     public static function tearDownAfterClass()
     {
-        rmdir(dp_get_cache_dir().'/api_permissions');
+        /** \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        rmdir($DP_ENV->getAppBaseKernelCacheDir().'/api_permissions');
     }
 }

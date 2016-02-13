@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class TagProcessor.
@@ -81,7 +81,7 @@ class TagProcessor
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
             $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
-            KernelErrorHandler::logException($e);
+            SystemErrorHandler::logException($e);
 
             return ''; // be passive and default to blank
         }
