@@ -263,28 +263,52 @@ class FormFieldManager
                 );
 
             case 'date':
-                $options = [
-                    'input'  => 'string',
-                    'widget' => 'choice',
-                    'format' => 'y-M-d',
-                ];
+                if ($is_inline) {
+                    $options = [
+                        'input'  => 'string',
+                        'widget' => 'single_text',
+                    ];
 
-                return new FormField(
-                    'deskpro_date',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
-                );
+                    return new FormField(
+                        'date',
+                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    );
+                } else {
+                    $options = [
+                        'input'  => 'string',
+                        'widget' => 'choice',
+                        'format' => 'y-M-d',
+                    ];
+
+                    return new FormField(
+                        'deskpro_date',
+                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    );
+                }
 
             case 'datetime':
-                $options = [
-                    'input'  => 'string',
-                    'widget' => 'choice',
-                    'format' => 'Y-m-d H:i',
-                ];
+                if ($is_inline) {
+                    $options = [
+                        'input'  => 'string',
+                        'widget' => 'single_text',
+                    ];
 
-                return new FormField(
-                    'deskpro_datetime',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
-                );
+                    return new FormField(
+                        'datetime',
+                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    );
+                } else {
+                    $options = [
+                        'input'  => 'string',
+                        'widget' => 'choice',
+                        'format' => 'Y-m-d H:i',
+                    ];
+
+                    return new FormField(
+                        'deskpro_datetime',
+                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    );
+                }
 
             case 'hidden':
                 $options = [

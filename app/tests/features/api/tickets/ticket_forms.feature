@@ -69,46 +69,16 @@ Feature: /tickets endpoint
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "ticket_field_1": "2",
-  "ticket_field_5": {
-    "date": {
-      "year": "2016",
-      "month": "2",
-      "day": "9"
-    },
-    "time": {
-      "hour": "17",
-      "minute": "28"
-    }
-  },
+  "ticket_field_5": "2016-02-09 17:28:00",
   "ticket_field_6": "inline text",
   "ticket_field_7": "textarea text",
   "ticket_field_8": ["10", "11"],
   "user_field_1": "2",
-  "user_field_5": {
-    "date": {
-      "year": "2016",
-      "month": "2",
-      "day": "9"
-    },
-    "time": {
-      "hour": "17",
-      "minute": "28"
-    }
-  },
+  "user_field_5": "2016-02-09 17:28:00",
   "user_field_6": "inline text",
   "user_field_7": "textarea text",
   "org_field_1": "2",
-  "org_field_5": {
-    "date": {
-      "year": "2016",
-      "month": "2",
-      "day": "9"
-    },
-    "time": {
-      "hour": "17",
-      "minute": "28"
-    }
-  },
+  "org_field_5": "2016-02-09 17:28:00",
   "org_field_6": "inline text",
   "org_field_7": "textarea text",
   "message": {
