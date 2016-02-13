@@ -117,7 +117,9 @@ class ApiLogContext extends BaseContext
             ->setRequestedUri($url)
             ->setRequestId($id)
             ->setRequestData([])
-            ->setStartTime(time());
+            ->setStartTime(time())
+            ->setMode('test')
+            ->setCredentials('test');
         $this->persistAndFlush($log);
     }
 }
