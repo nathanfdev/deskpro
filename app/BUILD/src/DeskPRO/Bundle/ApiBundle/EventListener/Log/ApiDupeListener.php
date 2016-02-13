@@ -49,7 +49,7 @@ class ApiDupeListener extends AbstractLogListener
             // the priority doesn't make sense because we are using DP_START_TIME, that defined
             // at the very beginning of request handling
             // so you have to be sure, that it will run AFTER Auth
-            KernelEvents::REQUEST => ['onRequest', -33],
+            KernelEvents::REQUEST => ['onRequest', 4],
         );
     }
 
@@ -58,7 +58,11 @@ class ApiDupeListener extends AbstractLogListener
         $request = $event->getRequest();
         $this->composer->getRequestId($request);
 
-        if ($this->composer->getLogHelper()->isClientRequestedLog() && $event->isMasterRequest()) {
+        $should_process = $this->composer->getLogHelper()->isClientRequestedLog()
+            && $event->isMasterRequest()
+            && $this->composer->getDupeHelper()->suitableMode($this->composer->getLogHelper()->getMode());
+
+        if ($should_process) {
             $options = $this->composer->getDupeHelper()->getRequestOptions($request->headers);
             $this->composer->createApiLog($request);
             $this->processRequestDupe($event, $options);
@@ -74,12 +78,11 @@ class ApiDupeListener extends AbstractLogListener
     protected function processRequestDupe(GetResponseEvent $event, $options)
     {
         $response = new Response();
-        $request  = $event->getRequest();
 
         $log_helper = $this->composer->getLogHelper();
 
         if ($log_helper->isClientRequestedLog()
-            && $api_log = $log_helper->findRequest($log_helper->getRequestId($request->headers))) {
+            && $api_log = $log_helper->findRequest($log_helper->getRequestId())) {
             $this->composer->setRequestProcessed(true);
             /** @var ApiLog $api_log */
             if ($api_log->getId() > 0 && !$api_log->getStatus()) {

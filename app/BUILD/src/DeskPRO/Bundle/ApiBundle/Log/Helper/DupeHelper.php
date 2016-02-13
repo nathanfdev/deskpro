@@ -49,6 +49,11 @@ class DupeHelper extends AbstractLogHelper
         return $this->request_options;
     }
 
+    public function suitableMode($mode)
+    {
+        return in_array($mode, $this->resolver->getGlobalSettings()->get('api_log.dupe.modes'));
+    }
+
     /**
      * @return array
      */

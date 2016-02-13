@@ -133,5 +133,6 @@ services:
     class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiRequestIdListener
     arguments:
       - @api_log.helper
+      - @security.token_storage
     tags:
       - { name: kernel.event_subscriber }

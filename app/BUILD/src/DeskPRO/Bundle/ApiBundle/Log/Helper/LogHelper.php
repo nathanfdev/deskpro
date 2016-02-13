@@ -43,11 +43,16 @@ class LogHelper extends AbstractLogHelper
     protected $client_generated_request_id = false;
 
     /**
-     * @param array|HeaderBag $headers
+     * @var string
+     */
+    protected $mode;
+
+    /**
+     * @param null|array|HeaderBag $headers
      *
      * @return string|null
      */
-    public function getRequestId($headers)
+    public function getRequestId($headers = null)
     {
         if (!$this->request_id) {
             $headers          = $this->mutateHeaders($headers);
@@ -94,7 +99,9 @@ class LogHelper extends AbstractLogHelper
      */
     public function isLoggingEnabled()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.enabled');
+        return
+            $this->resolver->getGlobalSettings()->get('api_log.enabled')
+            && in_array($this->mode, $this->resolver->getGlobalSettings()->get('api_log.modes'));
     }
 
     /**
@@ -103,5 +110,25 @@ class LogHelper extends AbstractLogHelper
     public function isClientRequestedLog()
     {
         return $this->client_generated_request_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param string $mode
+     *
+     * @return $this
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+
+        return $this;
     }
 }

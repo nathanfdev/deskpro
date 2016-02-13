@@ -50,7 +50,7 @@ class ApiLogListener extends AbstractLogListener
             KernelEvents::RESPONSE => array('onResponse', 32),
             // the priority doesn't make sense because we are using DP_START_TIME, that defined
             // at the very beginning of request handling
-            // so you have to be sure, that it will run AFTER Auth
+            // so you have to be sure, that it will run AFTER Auth and RequestIdListener
             KernelEvents::REQUEST => array('onRequest', -32),
         );
     }
@@ -61,7 +61,6 @@ class ApiLogListener extends AbstractLogListener
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        $this->getLogHelper()->getRequestId($request->headers);
 
         if ($this->getLogHelper()->isLoggingEnabled() && $event->isMasterRequest()) {
             $this->composer->createApiLog($request);
