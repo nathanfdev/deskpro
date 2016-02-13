@@ -144,11 +144,13 @@ class CustomDataType extends AbstractType
 
         $form->add($field->getName(), $field->getType(), $options);
 
-        $data = $this->filterCustomDefData($event->getData(), $custom_def);
-        if ($data->count()) {
-            $form_field_data = $data->first()->getData();
+        $all_custom_data = $event->getData() ?: new ArrayCollection();
+        $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
+
+        if ($custom_def_data->count()) {
+            $form_field_data = $custom_def_data->first()->getData();
             if ($custom_def->isChoiceType()) {
-                $form_field_data = $data
+                $form_field_data = $custom_def_data
                     ->map(function (CustomDataAbstract $custom_data) {
                         return $custom_data->getFieldId();
                     })
@@ -177,7 +179,7 @@ class CustomDataType extends AbstractType
         $custom_def = $config->getOption('custom_data_field');
 
         /* @var CustomDataAbstract[]|ArrayCollection $all_custom_data */
-        $all_custom_data = $form->getData();
+        $all_custom_data = $form->getData() ?: new ArrayCollection();
         $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
 
         if ($custom_def->isChoiceType()) {
