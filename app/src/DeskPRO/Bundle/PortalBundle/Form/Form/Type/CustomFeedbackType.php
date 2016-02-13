@@ -83,7 +83,6 @@ class CustomFeedbackType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'      => 'DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection',
             'agent_interface' => false,
             'label'           => false,
         ]);

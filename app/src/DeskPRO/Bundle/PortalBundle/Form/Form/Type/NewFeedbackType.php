@@ -95,7 +95,7 @@ class NewFeedbackType extends AbstractType
                     new NotNull(['message' => 'portal.forms.error_required']),
                 ],
             ])
-            ->add('custom_data_collection', 'custom_feedback_fields')
+            ->add('custom_data', 'custom_feedback_fields')
             ->add('attachments', 'feedback_attachment_collection', [
                 'person' => $options['person'],
             ])
