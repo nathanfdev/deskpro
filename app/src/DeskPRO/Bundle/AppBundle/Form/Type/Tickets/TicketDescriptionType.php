@@ -65,26 +65,16 @@ class TicketDescriptionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (count($options['message_constraints'])) {
-            $constraints = $options['message_constraints'];
-        } else {
-            $constraints = [
-                new Assert\NotNull(['message' => 'portal.forms.error_ticket_msg_required']),
-                new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
-            ];
-        }
-
-        // message is not mapped because
-        // we manually call our setters onPostSubmit so we can
-        // set text or html, depending on what the users browser submitted
-
         $builder
             ->add('message', 'html_textarea', [
-                'label'       => $options['message_label'],
-                'required'    => $options['required'],
-                'attr'        => ['data-rte-field' => 'message'],
-                'constraints' => $constraints,
-                'mapped'      => false,
+                'property_path' => 'message_html',
+                'label'         => $options['message_label'],
+                'required'      => $options['required'],
+                'attr'          => ['data-rte-field' => 'message'],
+                'constraints'   => [
+                    new Assert\NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
+                    new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
+                ],
             ])
             ->add('format', 'hidden', [
                 'data'        => 'text',
@@ -97,7 +87,6 @@ class TicketDescriptionType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -121,18 +110,6 @@ class TicketDescriptionType extends AbstractType
     }
 
     /**
-     * @param FormEvent $event
-     */
-    public function onPostSubmit(FormEvent $event)
-    {
-        $form = $event->getForm();
-
-        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-        $message = $event->getData();
-        $message->setMessageHtml($form->get('message')->getData());
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -147,10 +124,9 @@ class TicketDescriptionType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
-                'message_constraints' => [],
-                'attr'                => ['data-rte' => '1'],
+                'data_class'    => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'message_label' => $this->language_manager->phrase('portal.forms.label_message'),
+                'attr'          => ['data-rte' => '1'],
             ])
             ->setRequired([
                 'person',
