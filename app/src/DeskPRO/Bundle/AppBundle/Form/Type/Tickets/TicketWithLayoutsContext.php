@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Form;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -43,7 +43,7 @@ use Symfony\Component\Form\FormInterface;
 /**
  * Often times there is a significant amount of data surrounding a form that needs to be kept in context.
  */
-class TicketFormContext
+class TicketWithLayoutsContext
 {
     /**
      * visibilities.
