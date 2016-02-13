@@ -26,48 +26,55 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\EventListener;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\ApiBundle\Log\LogHelper;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+namespace DeskPRO\Bundle\ApiBundle\EventListener\Log;
+
+use DeskPRO\Bundle\ApiBundle\Log\Helper\LogHelper;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class ApiRequestIdListener.
+ * Class ApiLogListener.
  */
-class ApiRequestIdListener implements EventSubscriberInterface
+class ApiLogListener extends AbstractLogListener
 {
-    /**
-     * @var LogHelper
-     */
-    protected $helper;
-
-    /**
-     * @param LogHelper $helper
-     */
-    public function __construct(LogHelper $helper)
-    {
-        $this->helper = $helper;
-    }
-
     /**
      * @return array
      */
     public static function getSubscribedEvents()
     {
-        return [
-            KernelEvents::RESPONSE => ['onResponse', 512], //make sure this stuff will be trigger before log and perhaps something else
-        ];
+        return array(
+            KernelEvents::RESPONSE => array('onResponse', 32),
+            // the priority doesn't make sense because we are using DP_START_TIME, that defined
+            // at the very beginning of request handling
+            // so you have to be sure, that it will run AFTER Auth
+            KernelEvents::REQUEST => array('onRequest', -32),
+        );
     }
 
     /**
-     * @param FilterResponseEvent $event
+     * @param GetResponseEvent $event
      */
-    public function onResponse(FilterResponseEvent $event)
+    public function onRequest(GetResponseEvent $event)
     {
-        $request  = $event->getRequest();
-        $response = $event->getResponse();
-        $response->headers->add([LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId($request->headers)]);
+        $request = $event->getRequest();
+        $this->getLogHelper()->getRequestId($request->headers);
+
+        if ($this->getLogHelper()->isLoggingEnabled() && $event->isMasterRequest()) {
+            $this->composer->createApiLog($request);
+        }
+
+        return;
+    }
+
+    /**
+     * @return LogHelper
+     */
+    protected function getLogHelper()
+    {
+        return $this->composer->getLogHelper();
     }
 }

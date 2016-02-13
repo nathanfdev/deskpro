@@ -95,23 +95,42 @@ services:
       - @doctrine.orm.default_entity_manager
 
   api_log.listener:
-      class: DeskPRO\Bundle\ApiBundle\EventListener\ApiLogListener
+      class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiLogListener
       arguments:
-          - @api_log.writer
-          - @security.token_storage
-          - @doctrine.orm.default_entity_manager
-          - @api_log.helper
+          - @api_log.composer
+      tags:
+          - { name: kernel.event_subscriber }
+
+  api_log.dupe.listener:
+      class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiDupeListener
+      arguments:
+          - @api_log.composer
       tags:
           - { name: kernel.event_subscriber }
 
   api_log.helper:
-    class: DeskPRO\Bundle\ApiBundle\Log\LogHelper
+    class: DeskPRO\Bundle\ApiBundle\Log\Helper\LogHelper
     arguments:
       - @settings_resolver
       - @api_log.finder
 
+  api_log.dupe_helper:
+    class: DeskPRO\Bundle\ApiBundle\Log\Helper\DupeHelper
+    arguments:
+      - @settings_resolver
+      - @api_log.finder
+
+  api_log.composer:
+    class: DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer
+    arguments:
+      - @api_log.writer
+      - @api_log.helper
+      - @api_log.dupe_helper
+      - @security.token_storage
+      - @doctrine.orm.default_entity_manager
+
   api_request_id_listener:
-    class: DeskPRO\Bundle\ApiBundle\EventListener\ApiRequestIdListener
+    class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiRequestIdListener
     arguments:
       - @api_log.helper
     tags:
