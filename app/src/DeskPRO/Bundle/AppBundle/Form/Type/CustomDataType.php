@@ -105,6 +105,10 @@ class CustomDataType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
+
+        if ($options['inline']) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
+        }
     }
 
     /**
@@ -162,6 +166,23 @@ class CustomDataType extends AbstractType
 
             $form->get('data')->setData($form_field_data);
         }
+    }
+
+    /**
+     * Set form data from inline value.
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInlineData(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['data'])) {
+            return;
+        }
+
+        $event->setData([
+            'data' => $event->getData(),
+        ]);
     }
 
     /**

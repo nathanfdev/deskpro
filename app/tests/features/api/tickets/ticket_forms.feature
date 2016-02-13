@@ -68,75 +68,49 @@ Feature: /tickets endpoint
   "priority": 3,
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
-  "ticket_field_1": {
-    "data": "2"
-  },
+  "ticket_field_1": "2",
   "ticket_field_5": {
-    "data": {
-      "date": {
-        "year": "2016",
-        "month": "2",
-        "day": "9"
-      },
-      "time": {
-        "hour": "17",
-        "minute": "28"
-      }
+    "date": {
+      "year": "2016",
+      "month": "2",
+      "day": "9"
+    },
+    "time": {
+      "hour": "17",
+      "minute": "28"
     }
   },
-  "ticket_field_6": {
-    "data": "inline text"
-  },
-  "ticket_field_7": {
-    "data": "textarea text"
-  },
-  "ticket_field_8": {
-    "data": ["10", "11"]
-  },
-  "user_field_1": {
-    "data": "2"
-  },
+  "ticket_field_6": "inline text",
+  "ticket_field_7": "textarea text",
+  "ticket_field_8": ["10", "11"],
+  "user_field_1": "2",
   "user_field_5": {
-    "data": {
-      "date": {
-        "year": "2016",
-        "month": "2",
-        "day": "9"
-      },
-      "time": {
-        "hour": "17",
-        "minute": "28"
-      }
+    "date": {
+      "year": "2016",
+      "month": "2",
+      "day": "9"
+    },
+    "time": {
+      "hour": "17",
+      "minute": "28"
     }
   },
-  "user_field_6": {
-    "data": "inline text"
-  },
-  "user_field_7": {
-    "data": "textarea text"
-  },
-  "org_field_1": {
-    "data": "2"
-  },
+  "user_field_6": "inline text",
+  "user_field_7": "textarea text",
+  "org_field_1": "2",
   "org_field_5": {
-    "data": {
-      "date": {
-        "year": "2016",
-        "month": "2",
-        "day": "9"
-      },
-      "time": {
-        "hour": "17",
-        "minute": "28"
-      }
+    "date": {
+      "year": "2016",
+      "month": "2",
+      "day": "9"
+    },
+    "time": {
+      "hour": "17",
+      "minute": "28"
     }
   },
-  "org_field_6": {
-    "data": "inline text"
-  },
-  "org_field_7": {
-    "data": "textarea text"
-  },
+  "org_field_6": "inline text",
+  "org_field_7": "textarea text",
   "message": {
     "message": "my text message",
     "format": "text"
@@ -208,9 +182,7 @@ Feature: /tickets endpoint
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
-  "ticket_field_8": {
-    "data": ["9", "11"]
-  }
+  "ticket_field_8": ["9", "11"]
 }
     """
     Then the response status code should be 204
