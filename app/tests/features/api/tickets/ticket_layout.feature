@@ -15,12 +15,12 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/unknown_context"
     Then the response status code should be 404
 
-  Scenario Outline: I want to see all ticket layouts
-    When I send a GET request to "/api/v2/ticket_layouts/<context>"
+  Scenario: I want to see all ticket layouts
+    When I send a GET request to "/api/v2/ticket_layouts/agent"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "[0].department" should be equal to 0
-    And the JSON node "[0].context" should be equal to <context>
+    And the JSON node "[0].context" should be equal to agent
     And the JSON node "[0].fields" should have 2 elements
     And the JSON node "[0].fields[0].field_type" should be equal to "department"
     And the JSON node "[0].fields[0].options.on_newticket" should be equal to 1
@@ -30,17 +30,12 @@ Feature: /ticket_layouts endpoint
     And the JSON node "[0].fields[1].field_type" should be equal to "message"
 
     And the JSON node "[1].department" should be equal to 2
-    And the JSON node "[1].context" should be equal to <context>
-    And the JSON node "[1].fields" should have 10 elements
+    And the JSON node "[1].context" should be equal to agent
+    And the JSON node "[1].fields" should have 22 elements
     And the JSON node "[1].fields[0].field_type" should be equal to "person"
     And the JSON node "[1].fields[1].field_type" should be equal to "department"
     And the JSON node "[1].fields[2].field_type" should be equal to "message"
-    And the JSON node "[1].fields[3].field_type" should be equal to "attach"
-
-    Examples:
-      | context |
-      | user    |
-      | agent   |
+    And the JSON node "[1].fields[3].field_type" should be equal to "attachments"
 
   Scenario Outline: I want to see ticket layout with unknown context or wrong department id
     When I send a GET request to "/api/v2/ticket_layouts/<context>/<department_id>"
@@ -65,8 +60,8 @@ Feature: /ticket_layouts endpoint
     Examples:
       | context | department_id | expected_department_id | expected_fields_count |
       | agent   |  1            | 1                      | 2                     |
-      | agent   |  2            | 2                      | 10                    |
+      | agent   |  2            | 2                      | 22                    |
       | agent   |  default      | 0                      | 2                     |
-      | user    |  1            | 1                      | 2                     |
-      | user    |  2            | 2                      | 10                    |
-      | user    |  default      | 0                      | 2                     |
+      | user    |  1            | 1                      | 0                     |
+      | user    |  2            | 2                      | 0                     |
+      | user    |  default      | 0                      | 0                     |
