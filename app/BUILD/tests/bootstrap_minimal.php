@@ -26,22 +26,80 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!defined('DP_ROOT')) {
-    define('DP_ROOT', dirname(__FILE__).'/../../app');
-}
-if (!defined('DP_WEB_ROOT')) {
-    define('DP_WEB_ROOT', DP_ROOT.'/..');
-}
-define('DP_CONFIG_FILE', __DIR__.'/config.test.php');
-define('DP_TESTS_RUNNING', true);
-define('DP_INTERFACE', 'user');
-define('DP_TESTS_START_TIME', time());
+#------------------------------
+# Normalize env
+#------------------------------
 
-require_once DP_ROOT.'/sys/bootstrap-dev.php';
-require_once DP_ROOT.'/sys/preboot.php';
+@setlocale(LC_CTYPE, 'C');
+@date_default_timezone_set('UTC');
+@ini_set('default_charset', 'UTF-8');
+@ini_set('zlib.output_compression', '0');
+@ini_set('xdebug.max_nesting_level', 1000000);
+libxml_disable_entity_loader(true);
 
-set_time_limit(0);
-ini_set('max_execution_time', 0);
-ini_set('memory_limit', '-1');
+#------------------------------
+# Paths
+#------------------------------
 
-\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor-src/php-utf8/');
+require __DIR__.'/../../../app/run/lib/DpRun/DpEnv.php';
+$config_reader = new \DpRun\ConfigReader([__DIR__.'/config']);
+$DP_ENV        = new \DpRun\DpEnv(__DIR__.'/../../../', [], $config_reader);
+
+/*
+ * The root path to DeskPRO.
+ */
+define('DP_DIR', $DP_ENV->getDpRoot());
+
+/*
+ * The path to the currently active build.
+ */
+define('DP_APP_DIR', $DP_ENV->getAppDir());
+
+/*
+ * The name of the currently active build.
+ */
+define('DP_ACTIVE_BUILD', $DP_ENV->getAppName());
+
+/*
+ * The name of the currently active env (prod, dev, test)
+ */
+define('DP_ENV_ID', $DP_ENV->getEnvId());
+
+#------------------------------
+# Legacy path defs
+#------------------------------
+
+/*
+ * This is the path to the currently active build.
+ * Use DP_APP_DIR instead.
+ *
+ * @deprecated
+ */
+define('DP_ROOT', $DP_ENV->getAppDir());
+
+/*
+ * This is the path to the currently active build within the www dir.
+ * This should NOT be necessary.
+ *
+ * @deprecated
+ */
+define('DP_WEB_ROOT', $DP_ENV->getWwwRoot());
+
+#------------------------------
+# Erorr handling
+#------------------------------
+
+@ini_set('log_errors', true);
+@ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
+#------------------------------
+# Boot libs
+#------------------------------
+
+require DP_APP_DIR.'/sys/Boot/Boot.php';
+\DpSys\Boot\Boot::runBootTasks([
+    'Loader',
+    'Lib',
+    'PreparePaths',
+]);

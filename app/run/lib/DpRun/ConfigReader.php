@@ -115,22 +115,27 @@ class ConfigReader implements ConfigReaderInterface
         $parts   = explode('.', $id);
         $file_id = array_shift($parts);
 
+        // Special 'all' is a file keyed by $id
+        // for other files (mainly as an easier way to define
+        // config in a single file, like testing)
+        if ($id !== 'all' && !array_key_exists('all', $this->config_values)) {
+            $this->getConfig('all');// load all file
+        }
+
         if (!isset($this->config_values[$file_id])) {
             foreach ($this->config_dirs as $config_dir) {
-                if (is_string($config_dir)) {
-                    $config_file_path = $config_dir
-                        . DIRECTORY_SEPARATOR
-                        . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
-                        . 'config.' . $file_id . '.php';
+                $config_file_path = $config_dir
+                    . DIRECTORY_SEPARATOR
+                    . (isset(self::$id_to_path[$file_id]) ? self::$id_to_path[$file_id] . DIRECTORY_SEPARATOR : '')
+                    . 'config.' . $file_id . '.php';
 
-                    if (file_exists($config_file_path)) {
-                        $array = $this->_loadConfigFile(
-                            $config_file_path,
-                            isset(self::$id_to_varnames[$file_id]) ? self::$id_to_varnames[$file_id] : 'CONFIG'
-                        );
-                    } else {
-                        $array = [ ];
-                    }
+                if (file_exists($config_file_path)) {
+                    $array = $this->_loadConfigFile(
+                        $config_file_path,
+                        isset(self::$id_to_varnames[$file_id]) ? self::$id_to_varnames[$file_id] : 'CONFIG'
+                    );
+                } else {
+                    $array = [ ];
                 }
 
                 if (!isset($this->config_values[$file_id])) {
@@ -147,6 +152,11 @@ class ConfigReader implements ConfigReaderInterface
                 } else if ($array) {
                     $this->config_values[$file_id] = array_merge($this->config_values[$file_id], $array);
                 }
+            }
+
+            // merge in 'all' file
+            if ($id !== 'all') {
+                $this->config_values[$file_id] = array_merge($this->config_values['all'], $this->config_values[$file_id]);
             }
         }
 

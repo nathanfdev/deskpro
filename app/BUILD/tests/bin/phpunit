@@ -1,18 +1,5 @@
 #!/usr/bin/env php
 <?php
 
-if (!ini_get('date.timezone')) {
-    ini_set('date.timezone', 'UTC');
-}
-
-define('DP_ROOT', getcwd() . '/../.');
-define('DP_WEB_ROOT', getcwd() . '/../../.');
-$dir = getcwd() . '/../sys/autoload.php';
-require_once $dir;
-
-require_once(getcwd() . '/../sys/Kernel/BaseKernel.php');
-require_once(getcwd() . '/../sys/system.php');
-
-define('PHPUNIT_COMPOSER_INSTALL', $dir);
-
+require_once __DIR__.'/../bootstrap_minimal.php';
 PHPUnit_TextUI_Command::main();

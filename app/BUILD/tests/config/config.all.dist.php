@@ -26,4 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-require_once __DIR__.'/../../bootstrap_minimal.php';
+# Test Config
+#
+# The tests need this config file to run.
+#
+# To run the tests, you need to do the following:
+#
+# 1. rename this file to "config.php"
+# 2. ensure the database config below are correct
+# 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
+# 3. Remember that the test db will be deleted and
+#    reconstructed on every test run. Make sure it
+#    is NOT set to your dev database.
+#
+
+$CONFIG = [];
+
+$CONFIG['database'] = [
+    'host'     => 'localhost',
+    'user'     => 'root',
+    'password' => '',
+    'dbname'   => 'deskpro_test',
+];
+
+$CONFIG['paths'] = [
+    'php_path'       => 'php',
+    'mysqldump_path' => 'mysqldump',
+    'mysql_path'     => 'mysql',
+];
+
+$CONFIG['logs'] = [
+    'log_level'           => 'debug',
+    'log_level_threshold' => 'debug',
+];
+
+$CONFIG['env'] = [
+    'set_umask'   => 0000,
+    'environment' => 'test',
+    'debug_mode'  => true,
+];
+
+$CONFIG['settings'] = [
+    'disable_outgoing_email' => true,
+];
