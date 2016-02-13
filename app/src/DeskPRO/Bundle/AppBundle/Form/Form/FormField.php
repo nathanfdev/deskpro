@@ -39,11 +39,6 @@ class FormField
     /**
      * @var string
      */
-    private $name;
-
-    /**
-     * @var string
-     */
     private $type;
 
     /**
@@ -54,23 +49,13 @@ class FormField
     /**
      * Constructor.
      *
-     * @param string $name
      * @param string $type
      * @param array  $options
      */
-    public function __construct($name, $type, array $options = [])
+    public function __construct($type, array $options = [])
     {
-        $this->name    = $name;
         $this->type    = $type;
         $this->options = $options;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**

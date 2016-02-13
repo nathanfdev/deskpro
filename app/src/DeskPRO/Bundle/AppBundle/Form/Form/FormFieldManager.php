@@ -217,14 +217,12 @@ class FormFieldManager
         switch ($def->getType()) {
             case 'text':
                 return new FormField(
-                    'data',
                     'text',
                     $this->getGeneralOptionsForField($def, [], $is_agent)
                 );
 
             case 'textarea':
                 return new FormField(
-                    'data',
                     'textarea',
                     $this->getGeneralOptionsForField($def, [], $is_agent)
                 );
@@ -236,7 +234,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'single_checkbox',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
@@ -249,7 +246,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'deskpro_display_html',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
@@ -262,7 +258,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'deskpro_custom_field_choice',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
@@ -275,7 +270,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'deskpro_date',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
@@ -288,7 +282,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'deskpro_datetime',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
@@ -304,7 +297,6 @@ class FormFieldManager
                 ];
 
                 return new FormField(
-                    'data',
                     'deskpro_hidden',
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );

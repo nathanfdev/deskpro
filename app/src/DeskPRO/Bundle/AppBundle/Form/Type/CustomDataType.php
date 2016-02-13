@@ -142,7 +142,7 @@ class CustomDataType extends AbstractType
             ]);
         }
 
-        $form->add($field->getName(), $field->getType(), $options);
+        $form->add('data', $field->getType(), $options);
 
         $all_custom_data = $event->getData() ?: new ArrayCollection();
         $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
@@ -160,8 +160,7 @@ class CustomDataType extends AbstractType
                 $form_field_data = implode(',', $form_field_data);
             }
 
-            $form_field = $form->get($field->getName());
-            $form_field->setData($form_field_data);
+            $form->get('data')->setData($form_field_data);
         }
     }
 
