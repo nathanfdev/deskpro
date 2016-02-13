@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
@@ -67,7 +67,7 @@ class TicketTableDataService extends AbstractDataService
     private $ticket_layout_factory;
 
     /**
-     * @var FormFieldManager
+     * @var CustomFieldManager
      */
     private $form_field_manager;
 
@@ -82,7 +82,7 @@ class TicketTableDataService extends AbstractDataService
         LanguageManager $language_manager,
         DepartmentDataService $department_data_service,
         TicketLayoutFactory $ticket_layout_factory,
-        FormFieldManager $form_field_manager,
+        CustomFieldManager $form_field_manager,
         BrandAwareSettingsResolver $brand_aware_settings
     ) {
         parent::__construct($em);

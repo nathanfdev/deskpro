@@ -9,8 +9,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
 
-  form_field_manager:
-    class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+  custom_field_manager:
+    class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
 
   ticket_layout_factory:
@@ -89,13 +89,13 @@ services:
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
-    arguments: [@form_field_manager]
+    arguments: [@custom_field_manager]
     tags:
       - { name: form.type, alias: deskpro_custom_data }
 
   form.deskpro_custom_per_field_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
-    arguments: [@tickets.custom_per_field_manager, @form_field_manager]
+    arguments: [@tickets.custom_per_field_manager, @custom_field_manager]
     tags:
       - { name: form.type, alias: deskpro_custom_per_field_data }
 
@@ -260,7 +260,7 @@ services:
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayoutsType
     arguments:
-      - @form_field_manager
+      - @custom_field_manager
       - @ticket_layout_factory
       - @ticket_layout_differ
       - @form_hierarchy_generator

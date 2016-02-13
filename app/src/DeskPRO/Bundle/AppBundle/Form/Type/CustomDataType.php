@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -60,16 +60,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CustomDataType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
     protected $field_manager;
 
     /**
      * Constructor.
      *
-     * @param FormFieldManager $field_manager
+     * @param CustomFieldManager $field_manager
      */
-    public function __construct(FormFieldManager $field_manager)
+    public function __construct(CustomFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
     }

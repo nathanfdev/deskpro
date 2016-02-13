@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
@@ -60,18 +60,18 @@ class NewFeedbackType extends AbstractType
     private $language_manager;
 
     /**
-     * @var FormFieldManager
+     * @var CustomFieldManager
      */
     private $field_manager;
 
     /**
      * Constructor.
      *
-     * @param CaptchaDecider   $captcha_decider
-     * @param LanguageManager  $language_manager
-     * @param FormFieldManager $field_manager
+     * @param CaptchaDecider     $captcha_decider
+     * @param LanguageManager    $language_manager
+     * @param CustomFieldManager $field_manager
      */
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager, FormFieldManager $field_manager)
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager, CustomFieldManager $field_manager)
     {
         $this->captcha_decider  = $captcha_decider;
         $this->language_manager = $language_manager;

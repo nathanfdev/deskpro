@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -49,7 +49,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class PersonRegistrationType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
     private $field_manager;
 
@@ -66,11 +66,11 @@ class PersonRegistrationType extends AbstractType
     /**
      * Constructor.
      *
-     * @param FormFieldManager $field_manager
-     * @param LanguageManager  $language_manager
-     * @param CaptchaDecider   $captcha_decider
+     * @param CustomFieldManager $field_manager
+     * @param LanguageManager    $language_manager
+     * @param CaptchaDecider     $captcha_decider
      */
-    public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
+    public function __construct(CustomFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
     {
         $this->field_manager    = $field_manager;
         $this->language_manager = $language_manager;

@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -48,7 +48,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class PersonEditProfileType extends AbstractType
 {
     /**
-     * @var FormFieldManager
+     * @var CustomFieldManager
      */
     private $field_manager;
 
@@ -70,12 +70,12 @@ class PersonEditProfileType extends AbstractType
     /**
      * Constructor.
      *
-     * @param FormFieldManager   $field_manager
+     * @param CustomFieldManager $field_manager
      * @param LanguageManager    $language_manager
      * @param DeskproBlobStorage $blob_storage
      * @param EntityManager      $em
      */
-    public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, DeskproBlobStorage $blob_storage, EntityManager $em)
+    public function __construct(CustomFieldManager $field_manager, LanguageManager $language_manager, DeskproBlobStorage $blob_storage, EntityManager $em)
     {
         $this->field_manager    = $field_manager;
         $this->language_manager = $language_manager;

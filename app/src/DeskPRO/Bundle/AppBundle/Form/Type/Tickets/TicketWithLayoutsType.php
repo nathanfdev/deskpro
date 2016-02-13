@@ -39,7 +39,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -64,7 +64,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 class TicketWithLayoutsType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
     private $field_manager;
 
@@ -101,7 +101,7 @@ class TicketWithLayoutsType extends AbstractType
     /**
      * Constructor.
      *
-     * @param FormFieldManager      $field_manager
+     * @param CustomFieldManager    $field_manager
      * @param TicketLayoutFactory   $ticket_layout_factory
      * @param TicketLayoutDiffer    $layout_differ
      * @param HierarchyGenerator    $hierarchy_generator
@@ -110,7 +110,7 @@ class TicketWithLayoutsType extends AbstractType
      * @param CustomPerFieldManager $custom_per_field_manager
      */
     public function __construct(
-        FormFieldManager                 $field_manager,
+        CustomFieldManager               $field_manager,
         TicketLayoutFactory              $ticket_layout_factory,
         TicketLayoutDiffer               $layout_differ,
         HierarchyGenerator               $hierarchy_generator,

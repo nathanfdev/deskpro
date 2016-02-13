@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Form;
+namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -50,7 +50,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
  * expanded into more information or fetched from the database.
  */
-class FormFieldManager
+class CustomFieldManager
 {
     /**
      * @var \Doctrine\ORM\EntityManager

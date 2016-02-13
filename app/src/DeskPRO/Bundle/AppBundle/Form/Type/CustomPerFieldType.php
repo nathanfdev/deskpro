@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -50,7 +50,7 @@ class CustomPerFieldType extends AbstractType
     private $custom_per_field_manager;
 
     /**
-     * @var FormFieldManager
+     * @var CustomFieldManager
      */
     private $field_manager;
 
@@ -58,9 +58,9 @@ class CustomPerFieldType extends AbstractType
      * Constructor.
      *
      * @param CustomPerFieldManager $custom_per_field_manager
-     * @param FormFieldManager      $field_manager
+     * @param CustomFieldManager    $field_manager
      */
-    public function __construct(CustomPerFieldManager $custom_per_field_manager, FormFieldManager $field_manager)
+    public function __construct(CustomPerFieldManager $custom_per_field_manager, CustomFieldManager $field_manager)
     {
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->field_manager            = $field_manager;
