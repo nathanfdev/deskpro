@@ -42,6 +42,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class PersonEditProfileType.
+ */
 class PersonEditProfileType extends AbstractType
 {
     /**
@@ -63,6 +66,14 @@ class PersonEditProfileType extends AbstractType
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param FormFieldManager   $field_manager
+     * @param LanguageManager    $language_manager
+     * @param DeskproBlobStorage $blob_storage
+     * @param EntityManager      $em
+     */
     public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, DeskproBlobStorage $blob_storage, EntityManager $em)
     {
         $this->field_manager    = $field_manager;
@@ -71,17 +82,25 @@ class PersonEditProfileType extends AbstractType
         $this->em               = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('label' => $this->phrase('portal.forms.label_name')));
-
-        $builder->add('timezone', 'timezone', array('label' => $this->phrase('portal.forms.label_timezone')));
+        $builder
+            ->add('name', 'text', [
+                'label' => $this->phrase('portal.forms.label_name'),
+            ])
+            ->add('timezone', 'timezone', [
+                'label' => $this->phrase('portal.forms.label_timezone'),
+            ])
+        ;
 
         if ($this->language_manager->isMultiLanguagePortal()) {
-            $builder->add('language_id', 'deskpro_language', array(
+            $builder->add('language_id', 'deskpro_language', [
                 'view_context' => 'user',
                 'label'        => $this->phrase('portal.forms.label_language'),
-            ));
+            ]);
         }
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
@@ -116,8 +135,12 @@ class PersonEditProfileType extends AbstractType
 
                 $person->setPictureBlob($blob);
                 $em->persist($blob);
+
                 $form->remove('upload_picture');
-                $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
+                $form->add('delete_picture', 'checkbox', [
+                    'required' => false,
+                    'mapped'   => false,
+                ]);
             }
         }
 
@@ -167,70 +190,75 @@ class PersonEditProfileType extends AbstractType
         $form   = $event->getForm();
 
         if ($person->organization && $person->organization_manager) {
-            $form->add('manager_auto_add', 'checkbox', array(
+            $form->add('manager_auto_add', 'checkbox', [
                 'required'       => false,
                 'mapped'         => false,
                 'label'          => false,
-                'checkbox_label' => $this->phrase('portal.account.automatically_join_org_tickets', ['org_name' => $person->organization->getName()]),
-            ));
+                'checkbox_label' => $this->phrase('portal.account.automatically_join_org_tickets', [
+                    'org_name' => $person->organization->getName(),
+                ]),
+            ]);
         }
 
         if ($person->picture_blob) {
-            $form->add('delete_picture', 'checkbox', array('required' => false, 'mapped' => false));
+            $form->add('delete_picture', 'checkbox', [
+                'required' => false,
+                'mapped'   => false,
+            ]);
         } else {
-            $form->add('upload_picture', 'file', array('required' => false, 'mapped' => false));
+            $form->add('upload_picture', 'file', [
+                'required' => false,
+                'mapped'   => false,
+            ]);
         }
 
         foreach ($field_manager->getAvailablePersonFields() as $field_def) {
-            if (!$field_def->is_enabled) {
+            if (!$field_def->isEnabled()) {
                 continue;
             }
 
             $id = $field_def->getId();
-            $form->add(
-                $id,
-                'deskpro_custom_data',
-                array(
-                    'custom_def'      => $field_def,
-                    'owner'           => $event->getData(),
-                    'agent_interface' => false,
-                    'label'           => false,
-                )
-            );
+            $form->add($id, 'deskpro_custom_data', [
+                'custom_def'      => $field_def,
+                'owner'           => $event->getData(),
+                'agent_interface' => false,
+                'label'           => false,
+            ]);
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
+        $resolver
+            ->setDefaults([
                 'data_class' => 'Application\DeskPRO\Entity\Person',
-            )
-        );
-
-        $resolver->setRequired(
-            array('settings')
-        );
-
-        $resolver->setAllowedTypes(
-            array(
+            ])
+            ->setRequired(['settings'])
+            ->setAllowedTypes([
                 'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
-            )
-        );
-    }
-
-    private function phrase($name, array $vars = array())
-    {
-        return $this->language_manager->phrase($name, $vars);
+            ])
+        ;
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {
         return 'person_profile';
+    }
+
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string
+     */
+    private function phrase($name, array $vars = [])
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }
