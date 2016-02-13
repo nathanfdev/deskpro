@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
 use Symfony\Component\Form\FormError;

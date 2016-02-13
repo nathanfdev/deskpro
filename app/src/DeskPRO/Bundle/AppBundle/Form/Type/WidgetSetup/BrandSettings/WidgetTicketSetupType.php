@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;

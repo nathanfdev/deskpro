@@ -29,17 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\AppBundle\Error;
+namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
-use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Error\ExceptionErrorCodeFactory
+ * @mixin \DeskPRO\Bundle\AppBundle\Form\Error\ExceptionErrorCodeFactory
  */
 class ExceptionErrorCodeFactorySpec extends ObjectBehavior
 {

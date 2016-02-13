@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Error;
+namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
  * Class ExceptionErrorCodeFactory.
@@ -37,11 +37,11 @@ namespace DeskPRO\Bundle\AppBundle\Error;
 class ExceptionErrorCodeFactory
 {
     public static $exceptions_to_error_codes_map = [
-        'DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException'     => ApiErrors::BAD_REQUEST,
-        'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'    => ApiErrors::BAD_REQUEST,
-        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'  => ApiErrors::UNAUTHORIZED,
-        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'      => ApiErrors::NOT_FOUND,
-        'Symfony\Component\Security\Core\Exception\BadCredentialsException' => ApiErrors::BAD_CREDENTIALS,
+        'DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException' => ApiErrors::BAD_REQUEST,
+        'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'     => ApiErrors::BAD_REQUEST,
+        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'   => ApiErrors::UNAUTHORIZED,
+        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'       => ApiErrors::NOT_FOUND,
+        'Symfony\Component\Security\Core\Exception\BadCredentialsException'  => ApiErrors::BAD_CREDENTIALS,
     ];
 
     public static $exception_messages_to_error_codes_map = [

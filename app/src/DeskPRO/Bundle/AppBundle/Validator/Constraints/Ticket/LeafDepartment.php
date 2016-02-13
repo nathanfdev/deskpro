@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
-use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**

@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-namespace spec\DeskPRO\Bundle\AppBundle\Error;
+namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Form\Extension\Validator\Constraints\Form;
@@ -40,7 +40,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
- * @mixin \DeskPRO\Bundle\AppBundle\Error\ErrorMessageFactory
+ * @mixin \DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory
  */
 class ErrorMessageFactorySpec extends ObjectBehavior
 {
