@@ -46,9 +46,9 @@ class DpKernel extends BaseKernel
      */
     protected $container;
 
-    public function __construct(\DpRun\DpEnv $env)
+    public function __construct($environment, $debug, \DpRun\DpEnv $env = null)
     {
-        parent::__construct($env);
+        parent::__construct($environment, $debug, $env);
 
         $this->interface = DP_INTERFACE;
 

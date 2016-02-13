@@ -77,9 +77,9 @@ class HttpKernelBootTask implements BootTaskInterface
     {
         switch ($interface_id) {
             case 'apiv2':
-                return new Kernel\ApiKernel($env);
+                return new Kernel\ApiKernel($env->getEnvId(), $env->isDebug(), $env);
             case 'user':
-                $kernel = new Kernel\PortalKernel($env);
+                $kernel = new Kernel\PortalKernel($env->getEnvId(), $env->isDebug(), $env);
 
                 if (!$env->getConfig('settings.disable_portal_http_cache')) {
                     require_once DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php';
@@ -90,9 +90,9 @@ class HttpKernelBootTask implements BootTaskInterface
                 return $kernel;
 
             case 'install':
-                return new Kernel\InstallKernel($env);
+                return new Kernel\InstallKernel($env->getEnvId(), $env->isDebug(), $env);
             default:
-                return new Kernel\DpKernel($env);
+                return new Kernel\DpKernel($env->getEnvId(), $env->isDebug(), $env);
         }
     }
 

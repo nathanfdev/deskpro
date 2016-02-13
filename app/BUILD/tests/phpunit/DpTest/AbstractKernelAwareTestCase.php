@@ -107,7 +107,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             $kernel = self::$portal_kernel;
         } else {
             require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
-            $kernel = new ApiKernel($GLOBALS['DP_ENV']);
+            $kernel = new ApiKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);
         }
 
         $kernel->boot();
@@ -138,7 +138,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             $kernel = self::$portal_kernel;
         } else {
             require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-            $kernel = new PortalKernel($GLOBALS['DP_ENV']);
+            $kernel = new PortalKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);
         }
 
         $kernel->boot();

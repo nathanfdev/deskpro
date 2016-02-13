@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -213,14 +212,14 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function dumpToCache()
     {
-        if (strlen(DP_DATABASE_PASSWORD)) {
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
             $cmd = sprintf(
                 '%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s',
                 $this->mysqldump_bin_path,
-                escapeshellarg(DP_DATABASE_HOST),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
                 escapeshellarg(3306),
-                escapeshellarg(DP_DATABASE_USER),
-                escapeshellarg(DP_DATABASE_PASSWORD),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.password')),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );
@@ -228,9 +227,9 @@ abstract class AbstractDbSet implements DataSetInterface
             $cmd = sprintf(
                 '%s --opt -Q -h%s --port=%s -u%s %s > %s',
                 $this->mysqldump_bin_path,
-                escapeshellarg(DP_DATABASE_HOST),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
                 escapeshellarg(3306),
-                escapeshellarg(DP_DATABASE_USER),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );
@@ -254,13 +253,13 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function installFromCache()
     {
-        if (strlen(DP_DATABASE_PASSWORD)) {
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
             $cmd = sprintf(
                 '%s -h%s -u%s -p%s %s < %s',
                 $this->mysql_bin_path,
-                escapeshellarg(DP_DATABASE_HOST),
-                escapeshellarg(DP_DATABASE_USER),
-                escapeshellarg(DP_DATABASE_PASSWORD),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.password')),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );
@@ -268,8 +267,8 @@ abstract class AbstractDbSet implements DataSetInterface
             $cmd = sprintf(
                 '%s -h%s -u%s %s < %s',
                 $this->mysql_bin_path,
-                escapeshellarg(DP_DATABASE_HOST),
-                escapeshellarg(DP_DATABASE_USER),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
                 escapeshellarg($this->getDatabaseName()),
                 escapeshellarg($this->getCachePath())
             );
@@ -380,7 +379,7 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function getDatabaseName()
     {
-        return DP_DATABASE_NAME;
+        return $GLOBALS['DP_ENV']->getConfig('database.dbname');
     }
 
     /**

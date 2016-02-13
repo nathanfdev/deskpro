@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -153,6 +152,9 @@ class ObjectTranslatable
         $langs = is_array($lang) ? $lang : array($lang);
 
         foreach ($langs as $lang) {
+            if (!$lang) {
+                continue;
+            }
             if (!is_object($lang)) {
                 $lang = App::getContainer()->getLanguageData()->get($lang);
                 if (!$lang) {
@@ -160,7 +162,7 @@ class ObjectTranslatable
                 }
             }
 
-            if ($this->with_lang_prop && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
+            if ($this->with_lang_prop && $this->entity[$this->with_lang_prop] && $this->entity[$this->with_lang_prop]->getId() == $lang->getId()) {
                 $method = "getReal$prop";
 
                 return $this->entity->$method();

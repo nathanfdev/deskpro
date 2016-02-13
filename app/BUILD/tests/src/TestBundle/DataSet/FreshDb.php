@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
@@ -94,51 +93,16 @@ class FreshDb extends AbstractDbSet
 
         $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
 
-        // Install data stuff
-        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
-        $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT              = $admin; // can be used in data.php
-        $WEB_INSTALL        = true;
-        $IMPORT_INSTALL     = false;
-
-        $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $translate    = $this->getContainer()->get('deskpro.core.translate');
-
-        foreach ($install_data as $php) {
-            eval($php);
-        }
-
-        $em->flush();
-
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
         $data_proc = new DefaultDataProcessor($this->getContainer());
         $data_proc->runInstall();
 
-        // For the all agent group, fetch permissions from the template
-        if ($AGENTGROUP_ALL) {
-            $ch = new \Application\DeskPRO\ORM\CollectionHelper($admin, 'usergroups');
-            $ch->setCollection(array($AGENTGROUP_ALL));
-            $em->persist($admin);
-            $em->flush();
-        }
-
-        if ($USERGROUP_EVERYONE) {
-            $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-            foreach ($scanner->getNames() as $p_name) {
-                $p            = new \Application\DeskPRO\Entity\Permission();
-                $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name      = $p_name;
-                $p->value     = 1;
-                $em->persist($p);
-            }
-            $em->flush();
-        }
-
+        // For the all ag
         $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $admin;
         $data_init->run();
-// initial settings so we are "installed"
+        // initial settings so we are "installed"
         $this->getDb()->exec("
             REPLACE INTO `settings` (`name`, `value`)
             VALUES

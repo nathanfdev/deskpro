@@ -35,16 +35,14 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 class Boot
 {
     /**
-     * @param array $tasks
-     * @param array $resources
+     * @param \DpRun\DpEnv $env
+     * @param array        $tasks
+     * @param array        $resources
      *
      * @return array
      */
-    public static function runBootTasks(array $tasks, array $resources = [])
+    public static function runBootTasks(\DpRun\DpEnv $env, array $tasks, array $resources = [])
     {
-        /** @var \DpRun\DpEnv $env */
-        $env = $GLOBALS['DP_ENV'];
-
         $tasks = array_map(function ($t) {
             if (is_array($t)) {
                 $classname = $t[0];
@@ -177,7 +175,7 @@ class Boot
             'Request',
         ];
 
-        $res = self::runBootTasks($tasks);
+        $res = self::runBootTasks($env, $tasks);
 
         /** @var \Symfony\Component\HttpFoundation\Request $request */
         $request = $res['request'];
@@ -191,7 +189,7 @@ class Boot
             return;
         }
 
-        $res = self::runBootTasks(['HttpKernel'], $res);
+        $res = self::runBootTasks($env, ['HttpKernel'], $res);
 
         /** @var \Symfony\Component\HttpKernel\HttpKernel $kernel */
         $kernel = $res['http_kernel'];
@@ -213,7 +211,7 @@ class Boot
             'CliKernel',
         ];
 
-        $res = self::runBootTasks($tasks);
+        $res = self::runBootTasks($env, $tasks);
 
         /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
         $kernel = $res['cli_kernel'];
@@ -240,7 +238,7 @@ class Boot
             'CliKernel',
         ];
 
-        $res = self::runBootTasks($tasks);
+        $res = self::runBootTasks($env, $tasks);
 
         /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
         $kernel = $res['cli_kernel'];

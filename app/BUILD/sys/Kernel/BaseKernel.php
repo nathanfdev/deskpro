@@ -54,12 +54,19 @@ abstract class BaseKernel extends Kernel
     /**
      * BaseKernel constructor.
      *
-     * @param \DpRun\DpEnv $env
+     * @param string            $environment
+     * @param bool              $debug
+     * @param \DpRun\DpEnv|null $env
      */
-    public function __construct(\DpRun\DpEnv $env)
+    public function __construct($environment, $debug, \DpRun\DpEnv $env = null)
     {
+        if ($env === null) {
+            if ($GLOBALS['DP_ENV']) {
+                $env = $GLOBALS['DP_ENV'];
+            }
+        }
         $this->dpEnv = $env;
-        parent::__construct($env->getEnvId(), $env->isDebug());
+        parent::__construct($environment, $debug);
     }
 
     /**
