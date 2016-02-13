@@ -737,12 +737,12 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         $options = [
-            'custom_data_field' => $field_def,
-            'property_path'     => 'custom_data',
-            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => $field_def->getTitle(),
-            'required'          => $field_def->isRequired(),
-            'inline'            => $context->forApi(),
+            'custom_def'      => $field_def,
+            'property_path'   => 'custom_data',
+            'agent_interface' => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'           => $field_def->getTitle(),
+            'required'        => $field_def->isRequired(),
+            'inline'          => $context->forApi(),
         ];
 
         if (in_array($field_def->getHandlerClass(), [
@@ -773,11 +773,11 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         $options = [
-            'custom_data_field' => $field_def,
-            'property_path'     => 'person.custom_data',
-            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => $field_def->getTitle(),
-            'inline'            => $context->forApi(),
+            'custom_def'      => $field_def,
+            'property_path'   => 'person.custom_data',
+            'agent_interface' => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'           => $field_def->getTitle(),
+            'inline'          => $context->forApi(),
         ];
 
         if ($ignore_validation) {
@@ -818,11 +818,11 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         $options = [
-            'custom_data_field' => $field_def,
-            'property_path'     => 'organization.custom_data',
-            'agent_interface'   => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
-            'label'             => $field_def->getTitle(),
-            'inline'            => $context->forApi(),
+            'custom_def'      => $field_def,
+            'property_path'   => 'organization.custom_data',
+            'agent_interface' => $context->getViewContext() === TicketFormContext::VIEW_AGENT,
+            'label'           => $field_def->getTitle(),
+            'inline'          => $context->forApi(),
         ];
 
         if ($ignore_validation) {

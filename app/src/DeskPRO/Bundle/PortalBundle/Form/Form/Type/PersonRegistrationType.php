@@ -119,10 +119,10 @@ class PersonRegistrationType extends AbstractType
                     $id,
                     'deskpro_custom_data',
                     array(
-                        'custom_data_field' => $field_def,
-                        'owner'             => $event->getData(),
-                        'agent_interface'   => false,
-                        'label'             => $field_def->getTitle(),
+                        'custom_def'      => $field_def,
+                        'owner'           => $event->getData(),
+                        'agent_interface' => false,
+                        'label'           => $field_def->getTitle(),
                     )
                 );
             }

@@ -186,10 +186,10 @@ class NewFeedbackType extends AbstractType
                 'name'    => 'custom_feedback_def_'.$field_def->getId(),
                 'type'    => 'deskpro_custom_data',
                 'options' => [
-                    'custom_data_field' => $field_def,
-                    'property_path'     => 'custom_data',
-                    'agent_interface'   => $options['agent_interface'],
-                    'label'             => $field_def->title,
+                    'custom_def'      => $field_def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'label'           => $field_def->title,
                 ],
             ];
         }

@@ -118,7 +118,7 @@ class CustomDataType extends AbstractType
         $config = $form->getConfig();
 
         /** @var CustomDefAbstract $custom_def */
-        $custom_def = $config->getOption('custom_data_field');
+        $custom_def = $config->getOption('custom_def');
         $field      = $this->field_manager->createCustomField(
             $custom_def,
             $config->getOption('agent_interface'),
@@ -175,7 +175,7 @@ class CustomDataType extends AbstractType
         $config = $form->getConfig();
 
         /** @var CustomDefAbstract $custom_def */
-        $custom_def = $config->getOption('custom_data_field');
+        $custom_def = $config->getOption('custom_def');
 
         /* @var CustomDataAbstract[]|ArrayCollection $all_custom_data */
         $all_custom_data = $form->getData() ?: new ArrayCollection();
@@ -261,7 +261,7 @@ class CustomDataType extends AbstractType
                 'ignore_validation' => false,
                 'fully_hidden'      => function (Options $options) {
                     /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_data_field'];
+                    $field = $options['custom_def'];
                     if ($field) {
                         return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
                     }
@@ -270,13 +270,13 @@ class CustomDataType extends AbstractType
                 },
             ])
             ->setRequired([
-                'custom_data_field',
+                'custom_def',
                 'agent_interface',
             ])
             ->setAllowedTypes([
-                'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefAbstract',
-                'agent_interface'   => 'bool',
-                'inline'            => 'bool',
+                'custom_def'      => 'Application\DeskPRO\Entity\CustomDefAbstract',
+                'agent_interface' => 'bool',
+                'inline'          => 'bool',
             ])
         ;
     }
