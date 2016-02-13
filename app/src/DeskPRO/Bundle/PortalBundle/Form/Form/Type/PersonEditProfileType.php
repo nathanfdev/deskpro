@@ -61,6 +61,7 @@ class PersonEditProfileType extends AbstractType
      * @var DeskproBlobStorage
      */
     private $blob_storage;
+
     /**
      * @var EntityManager
      */
