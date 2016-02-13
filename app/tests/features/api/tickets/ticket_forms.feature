@@ -1,7 +1,7 @@
-Feature: /tickets endpoint
-  To CRUD DeskPRO tickets
+Feature: /ticket_forms endpoint
+  To ticket with layouts form
   As a developer
-  I want an API endpoint
+  I want to check creating/updating tickets via form with layouts
 
   Background:
     Given I install the api data set
@@ -165,16 +165,6 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.8.detail.9.title" should be equal to "Choice 1"
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
-  Scenario: I modify ticket person by unknown id
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "person": 10000
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_found"
-
   Scenario: I modify ticket person by id
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
@@ -207,27 +197,6 @@ Feature: /tickets endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].person" should be equal to 3
 
-  Scenario: I modify ticket person by unknown email
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "person": "unknown-email@deskpro.dev"
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
-
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "person": {
-    "email": "unknown-email@deskpro.dev"
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
-
   Scenario: I modify ticket person by creating a new person using name and email fields
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
@@ -249,28 +218,6 @@ Feature: /tickets endpoint
     And the JSON node "data.name" should be equal to "Some NewUser"
     And the JSON node "data.primary_email" should be equal to "new-user@deskpro.dev"
     And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
-
-  Scenario: I modify ticket person with incorrect email
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "person": {
-    "email": "incorrect - emaildeskpro.dev",
-    "name": "Some NewUser"
-  }
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
-
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "person": "incorrect - emaildeskpro.dev"
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
 
   Scenario: I modify ticket using user layout (doesn't have product and priority fields)
     When I send a PUT request to "/api/v2/ticket_forms/user/5" with body:
