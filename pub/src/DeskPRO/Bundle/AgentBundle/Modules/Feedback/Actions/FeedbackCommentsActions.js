@@ -1,10 +1,7 @@
 import { createAction } from 'Ampliflux';
-import { deleteFeedbackComment, editFeedbackComment, approveFeedbackComment, commentsToReviewList, commentsToReview }
-  from 'DeskPRO/Bundle/AgentBundle/Services/Api/FeedbackComment';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { applyParams } from './FeedbackListActions';
-import { setFeedbackCommentsRequest } from '../RecordStores/Actions/feedbackCommentsActions.js';
-import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
 
 /**
  * Used to identify requests within record stores
@@ -24,13 +21,13 @@ const prepareLinkedData = (linked) => {
 
 export const commentsToReviewCounter = createAction(
   'FEEDBACK_COMMENTS_TO_REVIEW_COUNTER',
-  () => commentsToReview().then(promise => promise.getData())
+  () => repository('FeedbackComment').commentsToReview().then(promise => promise.getData())
 );
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
   (ids) => dispatch => {
-    deleteFeedbackComment(ids).then(()=> {
+    repository('FeedbackComment').removeBatch(ids).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -41,7 +38,7 @@ export const deleteComment = createAction(
 export const approveComment = createAction(
   'FEEDBACK_COMMENTS_APPROVE',
   (ids) => dispatch => {
-    approveFeedbackComment(ids).then(()=> {
+    repository('FeedbackComment').approveFeedbackComment(ids).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -52,9 +49,7 @@ export const approveComment = createAction(
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
   (data) => dispatch => {
-    const commentId = data.commentId;
-    delete data.commentId;
-    editFeedbackComment(commentId, data).then(()=> {
+    repository('FeedbackComment').update(data).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -63,13 +58,13 @@ export const editComment = createAction(
 
 export const loadFeedbackCommentsList = createAction(
   'FEEDBACK_LIST_OF_COMMENTS',
-    params => (dispatch) => commentsToReviewList(params).then(promise => {
+    params => (dispatch) => repository('FeedbackComment').commentsToReviewList(params).then(promise => {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 
-      dispatch(setFeedbackCommentsRequest(recordStoresId, res.data));
-      dispatch(setFeedbackRequest(recordStoresId, prepareLinkedData(res.linked.feedback)));
-      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setCollection('FeedbackComment', recordStoresId, res.data));
+      dispatch(setCollection('Feedback', recordStoresId, prepareLinkedData(res.linked.feedback)));
+      dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
 
       return { ids: ids, pagination: res.meta.pagination };
     }

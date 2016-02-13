@@ -11,6 +11,8 @@ import { DpAppContainer } from './Modules/Application/Components/DpAppContainer'
 import { IntlProvider } from 'react-intl';
 import Immutable from 'immutable';
 window.Immutable = Immutable;
+import { loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 
 /**
  * ---------------------------------------------------------------------------------------------------------------------
@@ -42,6 +44,9 @@ export class AgentApp {
 
       return reducer;
     };
+
+    // Bootstrap DAL
+    loadRepositoriesConfig(repositoriesConfig);
 
     const reducer = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
     const middleware = applyMiddleware(

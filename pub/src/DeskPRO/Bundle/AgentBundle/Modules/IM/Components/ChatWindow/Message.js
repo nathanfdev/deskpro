@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import moment from 'moment';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 
@@ -22,16 +22,16 @@ export class Message extends React.Component {
   };
 
   dateSep() {
-    const date = moment(this.props.message.date_created);
+    const date = moment.unix(this.props.message.timestamp);
 
-    const previousDate = moment(this.props.previousMessage.date_created);
+    const previousDate = moment.unix(this.props.previousMessage.timestamp);
     if (this.props.previousMessage && previousDate.dayOfYear() !== date.dayOfYear()) {
-      return this.renderSeparator(this.props.previousMessage.date_created);
+      return this.renderSeparator(this.props.previousMessage.timestamp);
     }
   }
 
-  renderSeparator(dateString) {
-    const date = moment(dateString);
+  renderSeparator(timestamp) {
+    const date = moment.unix(timestamp);
     let fromNow;
     if (date.fromNow(true) === 'a day') {
       fromNow = 'yesterday';
@@ -57,7 +57,7 @@ export class Message extends React.Component {
           {(this.props.message.status > 0) ? <i className="fa fa-check"></i> : null}
           {(this.props.message.status > 1) ? <i className="fa fa-check"></i> : null}
         </div>
-        <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
+        <span className="time"><TimeAgo date={this.props.message.timestamp * 1000}/> <i className="fa fa-clock-o"></i></span>
         <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
       </li>
     );

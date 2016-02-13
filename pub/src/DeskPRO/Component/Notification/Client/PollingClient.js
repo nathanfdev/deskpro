@@ -2,9 +2,10 @@
  * wrapper for pusher-app client
  */
 import { AbstractClient } from './AbstractClient';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-export default class PollingClient extends AbstractClient {
+export class PollingClient extends AbstractClient {
+
   getDefaultOptions() {
     return {
       polling_interval: 25000,
@@ -21,7 +22,7 @@ export default class PollingClient extends AbstractClient {
 
   sendPoll() {
     const that = this;
-    DpApi.sendGet('DP_API/notify/action-alerts/' + that.options.last_alert)
+    api.sendGet('DP_API/notify/action-alerts/' + that.options.last_alert)
       .success((response) => that.handlePoll(response));
   }
 

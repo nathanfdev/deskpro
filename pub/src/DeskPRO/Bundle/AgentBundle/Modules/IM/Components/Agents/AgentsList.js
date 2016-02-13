@@ -1,22 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import { AgentsListItem } from './AgentsListItem';
 import { connect } from 'react-redux';
-
-// agents
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 
 @connect(state => ({
   me: meSelector(state),
-  agents: agentsSelector(state),
-  agentsStatus: agentsStatusSelector(state)
+  agents: agentsSelector(state)
 }))
 export class AgentsList extends Component {
-
   static propTypes = {
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    agentsStatus: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -55,8 +50,7 @@ export class AgentsList extends Component {
   }
 
   render() {
-    return (this.props.agentsStatus.get('isDone'))
-    ? (
+    return (
       <div className="bucket left">
         <h1>Agents</h1>
 
@@ -96,7 +90,6 @@ export class AgentsList extends Component {
           </ul>
         </div>
       </div>
-    )
-    : null;
+    );
   }
 }

@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -44,6 +46,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketCountsController.
+ *
+ * @ApiModes("all")
  */
 class TicketCountsController extends BaseController
 {

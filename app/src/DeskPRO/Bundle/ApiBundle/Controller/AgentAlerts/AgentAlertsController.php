@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -45,6 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class OrganizationsController.
  *
+ * @ApiModes("all")
  * @Route("/me/notifications")
  */
 class AgentAlertsController extends CrudController

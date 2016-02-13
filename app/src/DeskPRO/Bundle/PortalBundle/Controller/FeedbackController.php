@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -54,8 +53,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
 
+/**
+ * Class FeedbackController.
+ */
 class FeedbackController extends AbstractController
 {
     /**
@@ -63,6 +64,11 @@ class FeedbackController extends AbstractController
      * @Route("/feedback", name="user_feedback_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     * @param string  $_format
+     *
+     * @return Response
      */
     public function indexAction(Request $request, $_format)
     {
@@ -73,13 +79,13 @@ class FeedbackController extends AbstractController
         // RSS
         //
         if ('rss' === $_format) {
-            $filter = new FeedbackFilter(array(
+            $filter = new FeedbackFilter([
                 'status'            => $request->query->get('status', 'all'),
-                'status_categories' => $request->query->get('status_categories', array()),
-                'types'             => $request->query->get('types', array()),
+                'status_categories' => $request->query->get('status_categories', []),
+                'types'             => $request->query->get('types', []),
                 'sort'              => $request->query->get('sort', 'date'),
                 'sort_direction'    => $request->query->get('sort_direction', 'desc'),
-            ));
+            ]);
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
@@ -88,13 +94,13 @@ class FeedbackController extends AbstractController
                 $person
             );
 
-            return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
+            return $this->render('PortalBundle:Feedback:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => null,
                 'page_title' => $this->createPageTitle()->feedback(),
-            ));
+            ]);
         }
-        $rss_link = $this->generateUrl('portal_feedback', array('_format' => 'rss'));
+        $rss_link = $this->generateUrl('portal_feedback', ['_format' => 'rss']);
 
         //
         // NEW FEEDBACK FORM
@@ -110,11 +116,11 @@ class FeedbackController extends AbstractController
         }
         $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
         $new_feedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $new_feedback, array(
+        $form = $this->createForm('new_feedback', $new_feedback, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_feedback'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
-        ));
+        ]);
 
         $form->handleRequest($request);
 
@@ -190,7 +196,7 @@ class FeedbackController extends AbstractController
         // JS INITIAL DATA
         //
         $filter               = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
-        $allowed_types_parsed = array();
+        $allowed_types_parsed = [];
         foreach ($feedback_types as $cat) {
             $allowed_types_parsed[] = $cat->getId();
         }
@@ -202,7 +208,7 @@ class FeedbackController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
-            array(
+            [
                 'page'               => $page,
                 'feedback_types'     => $feedback_types,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
@@ -220,10 +226,17 @@ class FeedbackController extends AbstractController
                 'page_title'         => $this->createPageTitle()->feedback(),
                 'rss_link'           => $rss_link,
                 'filter_js'          => $filter_js,
-            )
+            ]
         );
     }
 
+    /**
+     * @param Feedback $new_feedback
+     * @param Person   $person
+     * @param Request  $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     protected function acceptNewFeedback(Feedback $new_feedback, Person $person, Request $request)
     {
         $this->persistAndFlushEntity($new_feedback);
@@ -238,13 +251,18 @@ class FeedbackController extends AbstractController
 
         $this->getEmailSender()->sendNewFeedbackEmail($new_feedback);
 
-        if ($redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination)) {
+        $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
+        if ($redirect) {
             return $redirect;
         }
 
         return $this->redirect($destination);
     }
 
+    /**
+     * @param mixed  $person
+     * @param string $ip
+     */
     public function submitNewFeedbackAbuseCheck($person, $ip)
     {
         $check = new SubmitFeedbackAbuseCheck($person, $ip);
@@ -292,10 +310,10 @@ class FeedbackController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('portal_feedback_browse', array(
+            return $this->redirectToRoute('portal_feedback_browse', [
                 'filter_uri' => $generated_uri,
                 'page'       => $page,
-            ), Response::HTTP_MOVED_PERMANENTLY);
+            ], Response::HTTP_MOVED_PERMANENTLY);
         }
 
         //
@@ -309,7 +327,7 @@ class FeedbackController extends AbstractController
         $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
         $filter_js      = $this->generateFilterJs($filter, $feedback_types, $page);
 
-        $page_options = array(
+        $page_options = [
             'page'              => $page,
             'feedback_types'    => $feedback_types,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
@@ -323,7 +341,7 @@ class FeedbackController extends AbstractController
             'page_title'        => $this->createPageTitle()->feedback(),
             'filter_js'         => $filter_js,
             'rerendering_saved' => false, // wont happen here because we always rerender on index
-        );
+        ];
 
         if ($request->isXmlHttpRequest()) {
             return $this->renderThemeView(
@@ -336,16 +354,16 @@ class FeedbackController extends AbstractController
         $person       = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
         $new_feedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $new_feedback, array(
+        $form = $this->createForm('new_feedback', $new_feedback, [
             'person' => $person,
             'action' => $this->generateUrl('portal_feedback'),
-        ));
+        ]);
 
-        $page_options = array_merge($page_options, array(
+        $page_options = array_merge($page_options, [
             'form'               => $form->createView(),
             'form_was_submitted' => false,
             'user'               => $this->getUser(),
-        ));
+        ]);
 
         //
         // RENDER THEME
@@ -362,6 +380,12 @@ class FeedbackController extends AbstractController
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
+     *
+     * @param Request  $request
+     * @param Feedback $item
+     * @param string   $visitor_id
+     *
+     * @return Response
      */
     public function viewAction(Request $request, Feedback $item, $visitor_id)
     {
@@ -417,7 +441,7 @@ class FeedbackController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
-            array(
+            [
                 'item'               => $item,
                 'is_subscribed'      => $is_subscribed,
                 'content_id'         => $item->getId(),
@@ -428,7 +452,7 @@ class FeedbackController extends AbstractController
                 'rating'             => $rating,
                 'show_rating_counts' => $show_rating_counts,
                 'rating_counts'      => $rating_counts,
-            )
+            ]
         );
     }
 
@@ -438,6 +462,12 @@ class FeedbackController extends AbstractController
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('RATE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Feedback $item
+     * @param string   $visitor_id
+     * @param string   $up_or_down
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
     {
@@ -455,7 +485,7 @@ class FeedbackController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-        return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+        return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
     }
 
     /**
@@ -481,7 +511,7 @@ class FeedbackController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+        return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
     }
 
     /**
@@ -520,34 +550,35 @@ class FeedbackController extends AbstractController
      */
     public function generateFilterJs(FeedbackFilter $filter, array $feedback_types, $page)
     {
-        $allowed_types_parsed = array();
+        $allowed_types_parsed = [];
         foreach ($feedback_types as $cat) {
             $allowed_types_parsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 
-        $status_categories        = array();
-        $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(array('status_type' => FeedbackFilter::$statuses));
+        $status_categories        = [];
+        $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(['status_type' => FeedbackFilter::$statuses]);
         foreach ($status_categories_entity as $status_category) {
             $status_type = $status_category->getStatusType();
             if (!array_key_exists($status_type, $status_categories)) {
-                $status_categories[$status_type] = array();
+                $status_categories[$status_type] = [];
             }
-            $status_categories[$status_type][] = array(
+
+            $status_categories[$status_type][] = [
                 'id'    => $status_category->getId(),
                 'title' => $this->objectPhrase($status_category),
-            );
+            ];
         }
 
-        $the_array = array(
-            'filter'    => array_merge($filter->toArray(), array('page' => $page)),
-            'available' => array(
+        $the_array = [
+            'filter'    => array_merge($filter->toArray(), ['page' => $page]),
+            'available' => [
                 'status'            => $this->transArray(FeedbackFilter::$statuses_translated),
                 'status_categories' => $status_categories,
                 'types'             => $allowed_types_parsed,
                 'sorts'             => $this->transArray(FeedbackFilter::$sorts_translated),
                 'sort_directions'   => $this->transArray(FeedbackFilter::$sort_directions_translated),
-            ),
-        );
+            ],
+        ];
 
         $filter_js = json_encode(
             $the_array,
@@ -557,6 +588,11 @@ class FeedbackController extends AbstractController
         return $filter_js;
     }
 
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
     protected function transArray(array $array)
     {
         $new_array = [];

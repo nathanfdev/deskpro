@@ -1,23 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  PersonAvatar,
-  DepartmentAvatar,
-  AgentTeamAvatar
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
-
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { agentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-import { allDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { PersonAvatar, DepartmentAvatar, AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   agents: agentsSelector(state),
-  agentTeams: agentTeamsSelector(state),
-  departments: allDepartmentsSelector(state)
+  agentTeams: allSelectorFactory('AgentTeam')(state),
+  departments: allSelectorFactory('Department')(state)
 }))
-
 export class AssigneeAvatar extends React.Component {
-
   static propTypes = {
     task: PropTypes.object.isRequired
   };

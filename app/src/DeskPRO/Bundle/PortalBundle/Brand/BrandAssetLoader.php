@@ -56,6 +56,8 @@ class BrandAssetLoader
     private $bs;
 
     /**
+     * Constructor.
+     *
      * @param Brand              $brand
      * @param EntityManager      $em
      * @param DeskproBlobStorage $bs
@@ -74,7 +76,7 @@ class BrandAssetLoader
      */
     public function getStylesheets()
     {
-        $all = array();
+        $all = [];
 
         foreach ($this->em->createQuery("
             SELECT a

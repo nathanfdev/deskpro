@@ -9,11 +9,10 @@ import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
-import { updateProfile } from '../../../../../Actions/profileActions';
+import { updateMyProfile } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/profile';
 import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     languages: PropTypes.object.isRequired,
@@ -149,7 +148,7 @@ export class ProfileForm extends React.Component {
 
     delete submitData.avatar;
 
-    const promise = dispatch(updateProfile(submitData));
+    const promise = dispatch(updateMyProfile(submitData));
     promise
       .success(() => this.setState({
         submit: false

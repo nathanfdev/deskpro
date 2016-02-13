@@ -5,7 +5,7 @@ import { TaskCard } from './TaskCard/TaskCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
-import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 
 export class TableView extends React.Component {
 

@@ -1,16 +1,20 @@
 import Immutable from 'immutable';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import { merge } from 'lodash'
+import $ from 'jquery';
 
-export function renderInRedux(state, element) {
+export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
   const createStore = require('redux').createStore;
   const store = createStore(() => state, state);
 
+  if (dispatch) {
+    store.dispatch = dispatch;
+  }
+
   return TestUtils.renderIntoDocument(
     <Provider store={store}>
-      {element}
+      {jsx}
     </Provider>
   );
 }
@@ -20,21 +24,28 @@ export function toImmutable(data) {
 }
 
 export function fakeState(additional = {}) {
-  const frs = fakeRecordStoreState;
-
   const base = {
+    Agent: {
+      settings: toImmutable({tickets: {filter_groupings: {}}})
+    },
     Application: {
       routing: toImmutable({hash: {}}),
-      dpWindow: toImmutable({activeAppId: 'whatever'}),
+      dpWindow: toImmutable({
+        activeAppId: 'whatever',
+        winDims: {}
+      }),
       massActions: toImmutable({selected: []})
     },
     RecordStores: {
-      CRM: {people: frs()},
-      Agent: {departments: frs()}
+      CRM: {people: fakeRecordStoreState()},
+      Agent: {departments: fakeRecordStoreState()}
+    },
+    RecordsStore: {
+      store: toImmutable({})
     }
   };
 
-  return merge(base, additional);
+  return $.extend(true, {}, base, additional);
 }
 
 export function fakeRecordStoreState(records = {}, requests = {}) {
@@ -43,4 +54,8 @@ export function fakeRecordStoreState(records = {}, requests = {}) {
     requests,
     status: ''
   });
+}
+
+export function getState() {
+  return reduxStore.getState();
 }

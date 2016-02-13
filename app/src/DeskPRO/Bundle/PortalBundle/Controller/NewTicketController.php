@@ -64,9 +64,8 @@ class NewTicketController extends AbstractController
         $ticket_message = $ticket->messages[0];
 
         // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
-            'ticket_message'    => $ticket_message,
             'method'            => 'GET',
             'validation_groups' => false,
             'settings'          => $this->getBrandContainer()->getSettings(),
@@ -80,12 +79,10 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'                => $person,
-            'ticket_message'        => $ticket_message,
             'settings'              => $this->getBrandContainer()->getSettings(),
             'action'                => $this->generateUrl('portal_new_ticket'),
-            'attr'                  => ['data-save-draft' => 'new_ticket'],
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'allow_extra_fields'    => true,
         ]);
@@ -111,11 +108,6 @@ class NewTicketController extends AbstractController
                             $ticket->setPerson($person);
                             $ticket_message->setPerson($person);
                             foreach ($ticket_message->getAttachments() as $attachment) {
-                                $blob = $attachment->getBlob();
-                                if ($blob) {
-                                    $blob->is_temp = false;
-                                }
-
                                 $attachment->setPerson($person);
                             }
 
@@ -162,12 +154,11 @@ class NewTicketController extends AbstractController
             $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
-        $form_full = $this->createForm('ticket', $ticket, [
-            'person'         => $person,
-            'ticket_message' => null,
-            'settings'       => $this->getBrandContainer()->getSettings(),
-            'full_version'   => true,
-            'action'         => $this->generateUrl('portal_new_ticket'),
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
+            'person'       => $person,
+            'settings'     => $this->getBrandContainer()->getSettings(),
+            'full_version' => true,
+            'action'       => $this->generateUrl('portal_new_ticket'),
         ]);
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */

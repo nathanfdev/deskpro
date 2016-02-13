@@ -4,7 +4,8 @@
 import Pusher from 'pusher-js';
 import { AbstractClient } from './AbstractClient';
 
-export default class PusherClient extends AbstractClient {
+export class PusherClient extends AbstractClient {
+
   constructor(props) {
     super(props);
     const that = this;

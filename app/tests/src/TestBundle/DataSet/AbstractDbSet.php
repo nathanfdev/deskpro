@@ -377,9 +377,17 @@ abstract class AbstractDbSet implements DataSetInterface
     /**
      * @return string
      */
-    private function getDatabaseName()
+    protected function getDatabaseName()
     {
         return $GLOBALS['DP_ENV']->getConfig('database.dbname');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getLicenseKey()
+    {
+        return file_get_contents(DP_WEB_ROOT.'/dev/dev-lic-key.txt');
     }
 
     /**

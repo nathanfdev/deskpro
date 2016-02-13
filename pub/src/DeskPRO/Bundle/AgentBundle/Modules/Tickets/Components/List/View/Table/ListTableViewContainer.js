@@ -1,15 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Th, Td, TdId, TdTitle, TableCheckbox }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { connect } from 'react-redux';
-import { elementsSelector, selectedSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
+import { elementsSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelected } from '../../../../Actions/listActions';
-import { ticketsSelector }
-  from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+
+// @todo Extract Row component (to omit selecting all tickets from record store + better structure + easier to test)
 
 @connect(state => ({
   ids: elementsSelector(state),
-  tickets: ticketsSelector(state),
+  tickets: collectionSelectorFactory('Ticket', 'list')(state),
   selected: selectedSelector(state),
   fields: tableVisibleFieldsSelector(state)
 }))
@@ -33,6 +35,7 @@ export class ListTableViewContainer extends Component {
   renderRow(id) {
     const { tickets, selected, dispatch } = this.props;
     const ticket = tickets.get(id);
+
     const isSelected = selected.includes(id);
     const onClick = () => {
       dispatch(toggleSelected(id));

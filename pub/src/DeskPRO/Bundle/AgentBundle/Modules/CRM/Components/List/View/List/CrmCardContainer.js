@@ -5,23 +5,19 @@ import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
 import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
-import { peopleSelector, organizationsSelector, userGroupsSelector, languagesSelector }
-  from '../../../../Selectors/recordStores';
+import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { selectedSelector} from '../../../../../Application/Selectors/massActions';
-
 import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    elements: elementsSelector(state),
-    people: peopleSelector(state),
-    organizations: organizationsSelector(state),
-    selected: selectedSelector(state),
-    usergroups: userGroupsSelector(state),
-    languages: languagesSelector(state),
-    content: currentContentSelector(state)
-  });
-})
 
+@connect(state => ({
+  elements: elementsSelector(state),
+  people: collectionSelectorFactory('Person', 'crm')(state),
+  organizations: collectionSelectorFactory('Organization', 'crm')(state),
+  selected: selectedSelector(state),
+  usergroups: allSelectorFactory('UserGroup')(state),
+  languages: collectionSelectorFactory('Language', 'crm')(state),
+  content: currentContentSelector(state)
+}))
 export class CrmCardContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

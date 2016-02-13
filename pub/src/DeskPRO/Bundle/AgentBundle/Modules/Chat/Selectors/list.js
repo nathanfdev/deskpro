@@ -18,19 +18,9 @@ export const listOrderSelector = createSelector(
     params => params.get('order')
 );
 
-export const elementsSelector = createSelector(
-  stateSelector,
-  list => list.get('elements')
-);
-
 export const paginationSelector = createSelector(
   stateSelector,
   list => list.get('pagination')
-);
-
-export const isLoadedSelector = createSelector(
-  stateSelector,
-    list => list.getIn(['async', 'done'])
 );
 
 export const viewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');

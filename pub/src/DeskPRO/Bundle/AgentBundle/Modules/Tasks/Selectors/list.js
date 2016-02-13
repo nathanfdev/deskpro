@@ -54,7 +54,7 @@ export const elementsSelector = createSelector(
   state => state.get('elements')
 );
 
-export const isDoneSelector = createSelector(
+export const isLoadedSelector = createSelector(
   stateSelector,
   state => state.getIn(['async', 'done'])
 );

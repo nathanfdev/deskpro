@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { currentSortSelector, currentOrderSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { applySort, applyOrder } from '../../../../Actions/listActions';
 

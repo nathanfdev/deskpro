@@ -1,9 +1,8 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
-import { setFeedbackTypesRequest } from '../RecordStores/Actions/feedbackTypesActions';
-import { setFeedbackCategoriesRequest } from '../RecordStores/Actions/feedbackCategoriesActions';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { setDisplayFields } from './FeedbackListActions';
 import { defaultCardFields, defaultTableFields, defaultCommentTableFields }
   from '../Components/List/ControlBar/FeedbackViewOptions';
@@ -31,7 +30,7 @@ export const initialLoad = createAction(
           + '&get[rsTypes]=DP_API/feedback_types'
           + '&get[rsCategories]=DP_API/feedback_categories'
         ;
-      DpApi.sendGet(batch)
+      api.sendGet(batch)
         .success(({responses}) => {
           const payload = flattenBatchResponses(responses);
           payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
@@ -54,8 +53,8 @@ export const initialLoad = createAction(
               }
             }));
           }
-          dispatch(setFeedbackTypesRequest(recordStoresId, payload.rsTypes));
-          dispatch(setFeedbackCategoriesRequest(recordStoresId, payload.rsCategories));
+          dispatch(setCollection('FeedbackType', recordStoresId, payload.rsTypes));
+          dispatch(setCollection('FeedbackCategory', recordStoresId, payload.rsCategories));
           delete payload.rsTypes;
           delete payload.rsCategories;
           delete payload.active;
@@ -71,10 +70,10 @@ export const initialLoad = createAction(
 
 export const feedbackToValidateCounter = createAction(
   'FEEDBACK_TO_VALIDATE_COUNTER',
-  () => Feedback.feedbackToValidate().then(promise => promise.getData())
+  () => repository('Feedback').loadFeedbackToValidate().then(response => response.getData())
 );
 
 export const feedbackCustomCategories = createAction(
   'FEEDBACK_CUSTOM_CATEGORIES',
-  () => Feedback.getCustomCategories().then(promise => promise.getData())
+  () => repository('Feedback').loadCustomCategories().then(response => response.getData())
 );

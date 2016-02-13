@@ -7,14 +7,14 @@ export class Content extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     settings: PropTypes.object.isRequired,
-    settingStatus: PropTypes.object.isRequired
+    settingsLoaded: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, settings, settingStatus } = this.props;
+    const { dispatch, settings, settingsLoaded } = this.props;
 
     return (
-      <Loader loaded={settingStatus.get('isDone')}
+      <Loader loaded={settingsLoaded}
               opacity={0}
               width={3}>
 

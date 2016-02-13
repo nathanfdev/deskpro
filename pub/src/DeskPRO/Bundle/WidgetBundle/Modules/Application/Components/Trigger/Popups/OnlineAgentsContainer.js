@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { onlineAgentsSelector, primaryAgentSelector } from '../../../../Application/RecordStores/Selectors/peopleSelectors';
+import { onlineAgentsSelector, primaryAgentSelector } from '../../../../Application/Selectors/peopleSelectors';
 
 @connect(state => ({
   onlineAgents: onlineAgentsSelector(state),

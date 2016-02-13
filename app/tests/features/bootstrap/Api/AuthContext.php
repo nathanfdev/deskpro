@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
 use DpBehat\RebootableContextInterface;
@@ -93,7 +94,12 @@ class AuthContext extends BaseContext implements RebootableContextInterface
         $key->code   = $code;
         $key->person = $this->user_details->getWho($who);
 
+        $key_action = new ApiKeyAction();
+        $key_action->setAction('*');
+        $key->addApiKeyAction($key_action);
+
         $this->persistAndFlush($key);
+        $this->persistAndFlush($key_action);
 
         if ($key->id != $id) {
             throw new \Exception('expected api key id ('.$id.') does not match ('.$key->id.'). please check database.');

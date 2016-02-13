@@ -39,9 +39,9 @@ use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -151,11 +151,6 @@ class NewTicket
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
         foreach ($ticket_message->getAttachments() as $attachment) {
-            $blob = $attachment->getBlob();
-            if ($blob) {
-                $blob->is_temp = false;
-            }
-
             $attachment->setPerson($person);
         }
 
@@ -200,15 +195,6 @@ class NewTicket
 
         try {
             // allow all blobs for a new ticket
-            foreach ($ticket->messages as $message) {
-                foreach ($message->getAttachments() as $attachment) {
-                    $blob = $attachment->getBlob();
-                    if ($blob) {
-                        $blob->is_temp = false;
-                    }
-                }
-            }
-
             $this->em->persist($ticket);
 
             // we handle this the new way (TicketManager), so disable the doctrine auto ticket process

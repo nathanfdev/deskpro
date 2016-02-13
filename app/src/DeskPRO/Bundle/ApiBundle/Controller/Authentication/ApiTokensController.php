@@ -37,8 +37,9 @@ use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
-use DeskPRO\Bundle\AppBundle\Error\ApiErrors;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -50,6 +51,8 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Class ApiTokensController.
+ *
+ * @ApiModes("all")
  */
 class ApiTokensController extends BaseController
 {

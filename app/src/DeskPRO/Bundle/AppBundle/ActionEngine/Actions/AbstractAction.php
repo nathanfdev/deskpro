@@ -32,33 +32,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
 abstract class AbstractAction
 {
     const APPROVE_ACTION             = 'approve';
     const DELETE_ACTION              = 'delete';
-    const SET_STATUS_CATEGORY_ACTION = 'status_category';
-    const SET_TYPE_ACTION            = 'type';
-    const SET_CATEGORY_ACTION        = 'category';
+    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
+    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
+    const SET_TYPE_ACTION            = 'set_type';
+    const SET_CATEGORY_ACTION        = 'set_category';
     const ADD_LABELS_ACTION          = 'add_labels';
     const REMOVE_LABELS_ACTION       = 'remove_labels';
 
-    protected $em;
+    const OPTION_LABELS = 'labels';
+    const OPTION_INPUT  = 'input';
+    const OPTION_ID     = 'id';
+
     protected $options;
-
-    public function __construct(EntityManager $em = null, array $options = [])
-    {
-        $this->em = $em;
-        if (!empty($options)) {
-            $resolver = new OptionsResolver();
-            $this->configureOptions($resolver);
-
-            $this->options = $resolver->resolve($options);
-        }
-        $this->init();
-    }
-
-    abstract public function init();
 }

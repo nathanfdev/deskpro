@@ -208,7 +208,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
                     }
 
                     foreach ($field->getHandler()->getDataFromForm($value) as $info) {
-                        $person->setCustomData($info[0], $info[1], $info[2]);
+                        $person->setCustomDataField($info[0], $info[1], $info[2]);
                     }
 
                     $did_change = true;

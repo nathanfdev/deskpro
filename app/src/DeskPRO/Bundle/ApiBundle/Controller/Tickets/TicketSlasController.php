@@ -29,15 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Sla;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
  * Class TicketSlaController.
  *
+ * @ApiModes("all")
  * @Route("/ticket_slas")
  */
 class TicketSlasController extends CrudController

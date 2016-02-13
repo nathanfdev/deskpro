@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { KBTab } from './Tabs/KBTab';
 import { NewsTab } from './Tabs/NewsTab';
 import { DownloadsTab } from './Tabs/DownloadsTab';

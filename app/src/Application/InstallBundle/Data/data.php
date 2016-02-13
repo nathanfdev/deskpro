@@ -554,17 +554,18 @@ for ($i = 0; $i < 15; ++$i) {
 //////////////////////////////////////////////////////////////
 
 if (!function_exists('make_blob')) {
-    function make_blob(\Doctrine\ORM\EntityManager $em)
+    function make_blob(\Symfony\Component\DependencyInjection\ContainerInterface $container = null)
     {
-        $storage = new \Application\DeskPRO\BlobStorage\DeskproBlobStorage($em);
+        if (!$container) {
+            return;
+        }
 
-        $blob = $storage->createBlobRecordFromFile(
+        $storage = $container->get('blob.storage');
+        $blob    = $storage->createBlobRecordFromFile(
             realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
             'dp-logo-130.png',
             'image/png'
         );
-
-        $blob->authcode = rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18).rand(0, 18);
 
         return $blob;
     }
@@ -576,7 +577,7 @@ $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($em);
+    $blob = make_blob($container);
     $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
     $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
@@ -593,7 +594,7 @@ $ac->addUsergroup($USERGROUP_EVERYONE);
 $em->persist($ac);
 
 for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($em);
+    $blob = make_blob($container);
     $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
     $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
@@ -607,7 +608,7 @@ for ($i = 0; $i < 15; ++$i) {
 $ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($em);
+    $blob = make_blob($container);
     $a    = new \Application\DeskPRO\Entity\Download();
     $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
     $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));

@@ -104,7 +104,7 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
         if (self::$api_kernel) {
             self::$api_kernel->shutdown();
-            $kernel = self::$portal_kernel;
+            $kernel = self::$api_kernel;
         } else {
             require_once DP_ROOT.'/sys/Kernel/ApiKernel.php';
             $kernel = new ApiKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);

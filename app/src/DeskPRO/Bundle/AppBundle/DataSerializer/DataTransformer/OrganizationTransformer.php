@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 
@@ -79,6 +79,7 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
             'employees_count' => $organization->getEmployeesCount(),
             'tickets_count'   => $organization->getTicketsCount(),
             'chats_count'     => $chatsCount,
+            'fields'          => new CustomDataCollection($organization->getCustomData()),
         ];
     }
 }

@@ -34,8 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -44,6 +44,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class ChatsController.
+ *
+ * @ApiModes("all")
+ */
 class ChatsController extends AbstractController
 {
     /**
@@ -239,10 +244,6 @@ class ChatsController extends AbstractController
     }
 
     /**
-     * This is just a stub to make possible start or find tet-a-tet chats.
-     * In current UI implementation there is no way to know about chats id - only agent pictures,
-     * department pictures and teams pictures. So the main point is that you can start chat with agent only.
-     *
      * @ApiDoc(
      *      description="create an agent-chat with agent",
      *      statusCodes={
@@ -264,16 +265,27 @@ class ChatsController extends AbstractController
     {
         $status = Response::HTTP_CREATED;
 
-        $submitted = $request->request->all();
-        if (!isset($submitted['type']) || !isset($submitted['id'])) {
-            throw new BadRequestHttpException();
+        $form = $this->submitForm('api_agent_chat_start_chat', $request->request);
+        if (!$form->isValid()) {
+            $errors = $this->createFormErrorsData($form);
+            $status = Response::HTTP_BAD_REQUEST;
+
+            return View::create(
+                $this->createErrorRepresentation($status, $status, "Couldn't start chat", $errors),
+                $status
+            );
         }
 
         /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
 
-        if (!$entity = $messenger->findParticipant($submitted['type'], $submitted['id'])) {
-            throw new BadRequestHttpException();
+        if (!$entity = $messenger->findParticipant($form->get('type')->getData(), $form->get('id')->getData())) {
+            $status = Response::HTTP_BAD_REQUEST;
+
+            return View::create(
+                $this->createErrorRepresentation($status, $status, "Couldn't start chat", ['Target not found!']),
+                $status
+            );
         }
 
         $user = $this->getUser();

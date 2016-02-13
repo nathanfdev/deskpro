@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 /**
@@ -66,13 +65,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     protected $input = '';
 
-    public function __construct()
-    {
-        $this->input = '';
-
-        return $this;
-    }
-
     /**
      * @return int
      */
@@ -82,7 +74,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * @return int
+     * @param int $value
+     *
      * @return $this
      */
     public function setValue($value)
@@ -93,6 +86,13 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
+     * @return int
+     */
+    public function getValue()
+    {
+        return (int) $this->value;
+    }
+    /**
      * @param string $input
      *
      * @return $this
@@ -102,6 +102,14 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         $this->setModelField('input', $input);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     /**
@@ -161,16 +169,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         }
     }
 
-    public function getValue()
-    {
-        return (int) $this->value;
-    }
-
-    public function getInput()
-    {
-        return $this->input;
-    }
-
+    /**
+     * @return int
+     */
     public function getFieldId()
     {
         return $this->field->getId();

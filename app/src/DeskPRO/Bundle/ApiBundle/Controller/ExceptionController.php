@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -98,7 +99,7 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Error\FormErrorsGenerator
+     * @return \DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator
      */
     protected function getFormErrorsGenerator()
     {
@@ -106,7 +107,7 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Error\ErrorCodeFactory
+     * @return \DeskPRO\Bundle\AppBundle\Form\Error\ErrorCodeFactory
      */
     protected function getErrorCodeFactory()
     {
@@ -114,7 +115,7 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Error\ErrorMessageFactory
+     * @return \DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory
      */
     protected function getErrorMessageFactory()
     {

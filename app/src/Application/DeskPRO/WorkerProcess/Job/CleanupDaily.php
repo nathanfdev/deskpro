@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;

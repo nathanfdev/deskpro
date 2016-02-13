@@ -26,20 +26,17 @@ export class DateFilter extends Component {
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, unsetParams, setActiveItem, activeItem } = this.props;
+    const { dispatch, setParamsAction, stateValue, filter, unsetParams, activeItem } = this.props;
     const {fromParam, toParam, icon, label} = filter;
     const from = stateValue(fromParam);
     const to = stateValue(toParam);
     const isActive = Boolean(from || to);
-
     return (
       <FilterItem activeItem={activeItem}
                   icon={icon || 'calendar-o'}
                   label={label}
                   isActive={isActive}
-                  setActiveItem={setActiveItem}
                   resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
-
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
           <div

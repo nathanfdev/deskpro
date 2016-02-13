@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import * as actions from '../../Actions/chatsActions';
-import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
+import { AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 
 export class TeamsListItem extends React.Component {
   static propTypes = {

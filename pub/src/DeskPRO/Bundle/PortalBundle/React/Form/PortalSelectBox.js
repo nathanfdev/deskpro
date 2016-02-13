@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import FormActionStore from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 import { PortalSimpleSelectBox } from './PortalSimpleSelectBox';
 import _ from 'lodash';
 import $ from 'jquery';
@@ -66,32 +66,43 @@ export class PortalSelectBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.actionStore = props.actionStore;
     this.updateOptions();
 
-    const value = this.actionStore.getValue();
+    const value = props.actionStore.getValue();
     const valuePath = this.getValuePath(value);
+
     this.state = {
       value: value,
       valuePath: valuePath,
       expanded: false
     };
+  }
 
-    this.actionStore.on('formChanged', (data) => {
+  componentDidMount() {
+    const { actionStore } = this.props;
+    const $el = actionStore.el;
+
+    actionStore.on('formChanged', (data) => {
       this.setState({
         value: data.value,
         valuePath: this.getValuePath(data.value)
       });
     });
+
+    $el.closest('form').on('reset', () => {
+      actionStore.setValue(null);
+    });
   }
 
-  onClickOption(option) {
-    this.actionStore.setValue(option.id);
-  }
+  onClickOption = option => {
+    this.props.actionStore.setValue(option.id);
+  };
 
   getValuePath(value) {
     let path = [];
-    if (!value) return path;
+    if (!value) {
+      return path;
+    }
 
     const opt = _.find(this.optionData.options, o => o.id === value);
     if (opt) {
@@ -106,7 +117,7 @@ export class PortalSelectBox extends React.Component {
   }
 
   updateOptions() {
-    this.optionData = this.actionStore.getOptionData();
+    this.optionData = this.props.actionStore.getOptionData();
   }
 
   renderSelect(group, parentId = null, level = 1) {
@@ -129,9 +140,9 @@ export class PortalSelectBox extends React.Component {
         <PortalSimpleSelectBox
           widgetOptions={widgetOptions}
           options={options}
-          value={subGroup ? subGroup : null}
+          value={subGroup}
           level={level}
-          onChange={this.onClickOption.bind(this)} />
+          onChange={this.onClickOption} />
 
         {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>
@@ -148,11 +159,10 @@ export class PortalSelectBox extends React.Component {
  *
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
- * @param {FormActionStore}    actionStore
  * @param {Object}             widgetOptions
- * @returns {FormActionStore}
+ * @returns {LevelSelectActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
+export function createComponent(select, renderTo, widgetOptions = {}) {
   const $select = $(select);
 
   // We need to rewrite opt-groups into normal options or else our widget
@@ -190,11 +200,10 @@ export function createComponent(select, renderTo, actionStore = null, widgetOpti
     }
   });
 
-  if (!actionStore) {
-    actionStore = new LevelSelectActionStore($select);
-  }
+  const actionStore = new LevelSelectActionStore($select);
+  const component = React.createElement(PortalSelectBox, { actionStore, widgetOptions });
 
-  ReactDOM.render(React.createElement(PortalSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
+  ReactDOM.render(component, $(renderTo).get(0));
 
   return actionStore;
 }

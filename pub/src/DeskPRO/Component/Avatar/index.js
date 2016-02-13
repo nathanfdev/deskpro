@@ -1,9 +1,3 @@
-import { ImageAvatar } from './ImageAvatar';
-import { Gravatar } from './Gravatar';
-import { TextAvatar } from './TextAvatar';
-
-export {
-  ImageAvatar,
-  Gravatar,
-  TextAvatar
-};
+export { ImageAvatar } from './ImageAvatar';
+export { Gravatar } from './Gravatar';
+export { TextAvatar } from './TextAvatar';

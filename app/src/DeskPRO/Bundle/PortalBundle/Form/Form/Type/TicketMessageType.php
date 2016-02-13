@@ -41,6 +41,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketMessageType.
+ */
 class TicketMessageType extends AbstractType
 {
     /**
@@ -48,54 +51,65 @@ class TicketMessageType extends AbstractType
      */
     private $language_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param LanguageManager $language_manager
+     */
     public function __construct(LanguageManager $language_manager)
     {
         $this->language_manager = $language_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (count($options['message_constraints'])) {
             $constraints = $options['message_constraints'];
         } else {
-            $constraints = array(
-                new Assert\NotNull(array('message' => 'portal.forms.error_ticket_msg_required')),
-                new Assert\Length(array('min'      => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length')),
-            );
+            $constraints = [
+                new Assert\NotNull(['message' => 'portal.forms.error_ticket_msg_required']),
+                new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
+            ];
         }
 
         // message_text and message_html are not mapped because
         // we manually call our setters onPostSubmit so we can
         // set text or html, depending on what the users browser submitted
 
-        $builder->add('message_text', 'textarea', array(
-            'label'       => $options['message_label'],
-            'required'    => $options['required'],
-            'attr'        => ['data-rte-field' => 'text'],
-            'constraints' => $constraints,
-            'mapped'      => false,
-        ));
+        $builder
+            ->add('message_text', 'textarea', [
+                'label'       => $options['message_label'],
+                'required'    => $options['required'],
+                'attr'        => ['data-rte-field' => 'text'],
+                'constraints' => $constraints,
+                'mapped'      => false,
+            ])
+            ->add('message_html', 'html_textarea', [
+                'attr'   => ['data-rte-field' => 'html', 'style' => 'display:none'], // style is hidden by default, we show with JS
+                'label'  => false,
+                'mapped' => false,
+            ])
+            ->add('message_format', 'hidden', [
+                'data'        => 'text',
+                'attr'        => ['data-rte-field' => 'format'],
+                'constraints' => [
+                    new Assert\Choice(['choices' => ['text', 'html']]),
+                ],
+                'mapped' => false,
+            ])
+        ;
 
-        $builder->add('message_html', 'html_textarea', array(
-            'attr'         => ['data-rte-field' => 'html', 'style' => 'display:none'], // style is hidden by default, we show with JS
-            'label'        => false,
-            'mapped'       => false,
-        ));
-
-        $builder->add('message_format', 'hidden', array(
-            'data'        => 'text',
-            'attr'        => ['data-rte-field' => 'format'],
-            'constraints' => [
-                new Assert\Choice(['choices' => ['text', 'html']])
-            ],
-            'mapped'      => false,
-        ));
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPreData(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketMessage $message */
@@ -113,6 +127,9 @@ class TicketMessageType extends AbstractType
         $message->setPerson($person);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPreSubmit(FormEvent $event)
     {
         $messageData = $event->getData();
@@ -132,6 +149,9 @@ class TicketMessageType extends AbstractType
         }
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPostSubmit(FormEvent $event)
     {
         $form = $event->getForm();
@@ -151,26 +171,34 @@ class TicketMessageType extends AbstractType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'ticket_message';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
-            'message_constraints' => [],
-            'attr'                => ['data-rte' => '1'],
-        ));
-        $resolver->setRequired(array(
-            'person',
-            'ticket',
-        ));
-        $resolver->setAllowedTypes(array(
-            'person' => 'Application\\DeskPRO\\Entity\\Person',
-            'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
-        ));
+        $resolver
+            ->setDefaults([
+                'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
+                'message_constraints' => [],
+                'attr'                => ['data-rte' => '1'],
+            ])
+            ->setRequired([
+                'person',
+                'ticket',
+            ])
+            ->setAllowedTypes([
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
+            ])
+        ;
     }
 }

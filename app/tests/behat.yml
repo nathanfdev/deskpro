@@ -14,8 +14,10 @@ api:
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
                 - DpBehat\PermissionContext
+                - DpBehat\Api\ModesAndTagsContext
+                - DpBehat\Api\ApiLogContext
                 - DpBehat\Portal\GenericContext
-                - DpBehat\ElasticContext
+                - DpBehat\BlobContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

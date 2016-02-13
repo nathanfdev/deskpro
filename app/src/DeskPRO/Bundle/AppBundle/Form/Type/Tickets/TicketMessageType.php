@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -67,6 +66,7 @@ class TicketMessageType extends ApiType
             ])
         ;
 
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetAttachments']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetMessage']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
@@ -76,9 +76,30 @@ class TicketMessageType extends ApiType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'ticket' => null,
-            'person' => null,
+        $resolver
+            ->setDefaults([
+                'ticket' => null,
+                'person' => null,
+            ])
+            ->setRequired([
+                'ticket',
+                'person',
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetAttachments(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        $form->add('attachments', 'ticket_message_attachment_collection', [
+            'required'       => false,
+            'person'         => $person,
+            'ticket_message' => $form->getData(),
         ]);
     }
 

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -44,6 +45,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class PeopleCountsController.
+ *
+ * @ApiModes("all")
+ */
 class PeopleCountsController extends BaseController implements ClassResourceInterface
 {
     /**

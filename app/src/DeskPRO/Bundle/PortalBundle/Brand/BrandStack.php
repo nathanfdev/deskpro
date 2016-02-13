@@ -108,6 +108,9 @@ class BrandStack
         return;
     }
 
+    /**
+     * @return array
+     */
     public function getStack()
     {
         return $this->stack;

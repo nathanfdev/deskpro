@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -41,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -349,7 +349,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
     {
         foreach ($this->dep_to_fields as $depId => $fields) {
             $layout = new Layout();
-            $layout->add(new LayoutField('user_name_and_email'));
+            $layout->add(new LayoutField('person'));
             $layout->add(new LayoutField('department'));
             $layout->add(new LayoutField('department'));
             $layout->add(new LayoutField('subject'));
@@ -359,7 +359,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
             }
 
             $layout->add(new LayoutField('message'));
-            $layout->add(new LayoutField('attach'));
+            $layout->add(new LayoutField(FormFields::ATTACH));
 
             $enc = JsonObjectSerializer::serialize($layout);
 

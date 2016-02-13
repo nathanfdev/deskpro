@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import FormActionStore from 'DeskPRO/Component/React/Standalone/FormActionStore';
+import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 import { PortalSimpleSelectBox } from './PortalSimpleSelectBox';
 import _ from 'lodash';
 import $ from 'jquery';
@@ -73,50 +73,32 @@ export class PortalMultipleSelectBox extends React.Component {
 
   constructor(props) {
     super(props);
-    this.actionStore = props.actionStore;
-    this.updateOptions();
 
-    const value = this.actionStore.getValue();
-    const valuePath = this.getValuePath(value);
+    this.optionData = this.props.actionStore.getOptionData();
     this.state = {
-      value: value,
-      valuePath: valuePath,
-      expanded: false
+      value: props.actionStore.getValue()
     };
+  }
 
-    this.actionStore.on('formChanged', (data) => {
+  componentDidMount() {
+    const { actionStore } = this.props;
+    const $el = actionStore.el;
+
+    actionStore.on('formChanged', data => {
       this.setState({
-        value: data.value,
-        valuePath: this.getValuePath(data.value)
+        value: data.value
       });
+    });
+
+    $el.closest('form').on('reset', () => {
+      actionStore.setValue([]);
     });
   }
 
   onClickOption = options => {
-    this.actionStore.setValue(options ? options.map((opt) => opt.id) : []);
+    const { actionStore } = this.props;
+    actionStore.setValue(options ? options.map((opt) => opt.id) : []);
   };
-
-  getValuePath(value) {
-    let path = [];
-    if (!value) {
-      return path;
-    }
-
-    const opt = _.find(this.optionData.options, o => o.id === value);
-    if (opt) {
-      path = _.clone(opt.path);
-    } else {
-      path = [];
-    }
-
-    path.push(value);
-
-    return path;
-  }
-
-  updateOptions() {
-    this.optionData = this.actionStore.getOptionData();
-  }
 
   renderSelect() {
     const { widgetOptions } = this.props;
@@ -138,7 +120,8 @@ export class PortalMultipleSelectBox extends React.Component {
 
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
-    const values = this.actionStore.getValue().map(selectedId => {
+
+    const values = this.state.value.map(selectedId => {
       return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
     });
 
@@ -163,11 +146,10 @@ export class PortalMultipleSelectBox extends React.Component {
  *
  * @param {jQuery/HTMLElement} select
  * @param {jQuery/HTMLElement} renderTo
- * @param {FormActionStore}    actionStore
  * @param {Object}             widgetOptions
- * @returns {FormActionStore}
+ * @returns {LevelSelectActionStore}
  */
-export function createComponent(select, renderTo, actionStore = null, widgetOptions = {}) {
+export function createComponent(select, renderTo, widgetOptions = {}) {
   const $select = $(select);
   $select.find('option').each((x, opt) => {
     const $opt = $(opt);
@@ -176,10 +158,7 @@ export function createComponent(select, renderTo, actionStore = null, widgetOpti
     }
   });
 
-  if (!actionStore) {
-    actionStore = new LevelSelectActionStore($select);
-  }
-
+  const actionStore = new LevelSelectActionStore($select);
   ReactDOM.render(React.createElement(PortalMultipleSelectBox, { actionStore, widgetOptions }), $(renderTo).get(0));
 
   return actionStore;

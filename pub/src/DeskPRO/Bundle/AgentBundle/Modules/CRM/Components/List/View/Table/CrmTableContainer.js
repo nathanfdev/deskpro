@@ -1,22 +1,19 @@
 import React, {Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import { OrganizationsTable } from './OrganizationsTable';
 import { PeopleTable } from './PeopleTable';
 import { currentContentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { peopleSelector, organizationsSelector }
-  from '../../../../Selectors/recordStores';
-import { applyParams} from '../../../../Actions/crmListActions';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { applyParams } from '../../../../Actions/crmListActions';
 
-import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    content: currentContentSelector(state),
-    people: peopleSelector(state),
-    organizations: organizationsSelector(state),
-    currentOrder: currentListOrderSelector(state),
-    currentSort: currentListSortSelector(state)
-  });
-})
+@connect(state => ({
+  content: currentContentSelector(state),
+  people: collectionSelectorFactory('Person', 'crm')(state),
+  organizations: collectionSelectorFactory('Organization', 'crm')(state),
+  currentOrder: currentListOrderSelector(state),
+  currentSort: currentListSortSelector(state)
+}))
 export class CrmTableContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

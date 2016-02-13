@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -44,9 +43,12 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class PortalRouter.
+ */
 class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcherInterface
 {
-    public static $generating_ignored_routes = array(
+    public static $generating_ignored_routes = [
         'saml_sls',
         'saml_metadata',
         'portal_agent_login',
@@ -68,9 +70,9 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'serve_brand_asset',
         '_wdt',
         '_profiler',
-    );
+    ];
 
-    public static $legacy_portal_routes = array(
+    public static $legacy_portal_routes = [
         'user_admin_rendertpl',
         'user_comment_form_login_partial',
         'user_test',
@@ -152,7 +154,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'admin_portaleditor_save_editor',
         'admin_portaleditor_twitter_oauth',
         'admin_portaleditor_accept_upload',
-    );
+    ];
 
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
@@ -174,6 +176,14 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      */
     private $mode_factory;
 
+    /**
+     * Constructor.
+     *
+     * @param BaseRouter        $router
+     * @param LanguageManager   $language_manager
+     * @param PortalModeStorage $mode_store
+     * @param PortalModeFactory $mode_factory
+     */
     public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store, PortalModeFactory $mode_factory)
     {
         $this->router           = $router;
@@ -183,12 +193,18 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
+    /**
+     * @return BaseRouter
+     */
     public function getBaseRouter()
     {
         return $this->router;
     }
 
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
         // ignore legacy routes that we delete to prevent random 500s (return a blank string)
         if (in_array($name, self::$legacy_portal_routes)) {
@@ -244,12 +260,13 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
             || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
         ) {
             $url = $this->buildUrl($request_info->getRoutablePath());
-            if ($query_params = $request->query->all()) {
+
+            $query_params = $request->query->all();
+            if ($query_params) {
                 $url .= '?'.http_build_query($query_params);
             }
-            throw new RedirectToUrlException(
-                $url
-            );
+
+            throw new RedirectToUrlException($url);
         }
 
         $routable_path = $request_info->getRoutablePath();
@@ -258,6 +275,11 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         return $params;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
     protected function buildUrl($path)
     {
         $url_builder = new PortalUrlBuilder(
@@ -282,7 +304,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      *
      * @deprecated use generate()
      */
-    public function generateUrl($name, $parameters = array())
+    public function generateUrl($name, $parameters = [])
     {
         return $this->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
@@ -299,16 +321,25 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         return $this;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Language
+     */
     protected function getActiveLanguage()
     {
         return $this->language_manager->getLanguageStack()->getActive();
     }
 
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Mode\PortalMode
+     */
     protected function getPortalMode()
     {
         return $this->mode_store->getMode();
     }
 
+    /**
+     * @return bool
+     */
     protected function isMultiLanguage()
     {
         return $this->language_manager->isMultiLanguagePortal();

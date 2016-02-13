@@ -4,8 +4,6 @@ import { pureRender } from 'Ampliflux';
 import * as actions from '../../Actions/chatNavActions';
 import { isLoadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
 import { Nav } from './Nav';
-import { createDepartmentsRequestSelectors }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
 
 @connect(state => ({
   isLoaded: isLoadedSelector(state),

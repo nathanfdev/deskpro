@@ -1,9 +1,11 @@
 import * as actions from '../Actions/messagesActions';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
-import { refreshCounts } from '../Actions/messagesActions';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
 import Immutable from 'immutable';
+import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
+
+const messagesHelper = new MessagesHelper();
 
 const initialState = {
   chatMessages: {},
@@ -11,7 +13,8 @@ const initialState = {
   counts: {},
   loadingMessages: true,
   loadingCounts: true,
-  updatingMessages: false
+  updatingMessages: false,
+  searching: false
 };
 
 export default createReducer(initialState, {
@@ -19,75 +22,61 @@ export default createReducer(initialState, {
     {
       start: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
-        let path;
-        if (payload.searchQuery) {
-          path = ['searchMessages', payload.chat_id];
-        } else {
-          path = ['chatMessages', payload.chat_id];
-        }
-        if (!state.getIn(path) || (payload.searchQuery && state.getIn(path).searchQuery !== payload.searchQuery)) {
-          return state.setIn(path, payload);
+        const newState = state.set('searching', Boolean(payload.searchQuery));
+        const transformed = {chatId: payload.chat_id};
+        const chat = messagesHelper.getChat(newState, transformed);
+
+        if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
+          const messages = {};
+          payload.messages.map((message) => {messages[message.uuid] = message;});
+          payload.messages = Immutable.Map(messages);
+          return newState.setIn(messagesHelper.getPath(newState, transformed), payload);
         }
 
-        const chat = state.getIn(path);
-        let union = {};
-        chat.messages.map((message) => union[message.id] = message);
-        payload.messages.map((message) => union[message.id] = message);
-        union = Immutable.Map(union);
-        chat.messages = union.toArray();
+        payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
         chat.page = Math.max(chat.page, payload.page);
-        return state.setIn(path, {...chat});
+
+        return newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
       },
       done: (state) => state.set('loadingMessages', false)
     }
   ),
+  [actions.addMessageOptimistic]: messagesHelper.addMessageOptimistic.bind(messagesHelper),
+  [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
   [actions.markMessages]: async({
-    start: state => state.set('updatingMessages', true),
-    success: (state, payload) => {
-      const path = ['chatMessages', payload.chatId];
-      const chat = state.getIn(path);
-      const msg = {};
-      payload.messages.map(message => {
-        msg[message] = true;
-      });
-      chat.messages.map((message, index) => {
-        if (msg[message.id]) {
-          chat.messages[index].status = payload.status;
-        }
-      });
-      return state.setIn(path, {...chat});
-    },
+    success: messagesHelper.markMessages.bind(messagesHelper),
     done: state => state.set('updatingMessages', false)
   }),
-  [newActionAlerts]: (state, payload) => {
-    let newState = state;
-    if (payload.type === 'notification.agent_chat.new_message') {
-      const path = ['chatMessages', payload.data.agent_chat_id];
-      const chat = newState.getIn(path);
-      if (chat) {
-        chat.messages.push(payload.data);
-        newState = newState.setIn(path, {...chat});
-      }
-    } else if (payload.type === 'refresh_counts') {
-      newState = newState.set('counts', payload.data);
-    } else if (payload.type === 'notification.agent_chat.mark_message') {
-      const path = ['chatMessages', payload.data.chat_id];
-      const chat = state.getIn(path);
-      chat.messages.map((message, index) => {
-        if (message.id === payload.data.message_id) {
-          chat.messages[index].status = payload.data.status;
-        }
-      });
-      newState = newState.setIn(path, {...chat});
-    }
-    return newState;
-  },
-  [refreshCounts]: async(
+  [actions.refreshCounts]: async(
     {
       success: (state, payload) => {
         return state.set('counts', payload);
       },
       done: (state) => state.set('loadingCounts', false)
     }
-  )
+  ),
+  [newActionAlerts]: (state, payload) => {
+    let newState = state;
+    if (payload.type === 'notification.agent_chat.new_message') {
+      const transformed = {
+        chatId: payload.data.agent_chat_id
+      };
+      const chat = messagesHelper.getChat(newState, transformed);
+      if (chat) {
+        chat.messages = chat.messages.set(payload.data.uuid, payload.data);
+        newState = newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
+      }
+    } else if (payload.type === 'refresh_counts') {
+      newState = newState.set('counts', payload.data);
+    } else if (payload.type === 'notification.agent_chat.mark_message') {
+      const transformed = {
+        chatId: payload.data.chat_id,
+        uuids: [payload.data.message_uuid],
+        status: payload.data.status
+      };
+      newState = messagesHelper.markMessages(state, transformed);
+    }
+    return newState;
+  }
+
 });

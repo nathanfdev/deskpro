@@ -56,26 +56,34 @@ class PortalPermissionsLoader
     /**
      * @var \Application\DeskPRO\DBAL\Connection
      */
-    private $conn;
+    private $connection;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
-        $this->conn = $connection;
+        $this->connection = $connection;
     }
 
+    /**
+     * @param array $usergroupIds
+     *
+     * @return mixed
+     */
     public function loadPermissions(array $usergroupIds)
     {
-        $that = $this;
-
         return $this->generateAndCache(
-            array(
+            [
                 'loadPermissionsForGroupSet',
                 $usergroupIds,
-            ),
-            function () use ($that, $usergroupIds) {
-                $perms = $that->getUsergroupsPermissions($usergroupIds);
+            ],
+            function () use ($usergroupIds) {
+                $perms = $this->getUsergroupsPermissions($usergroupIds);
 
-                $result = array();
+                $result = [];
                 foreach ($perms as $permissionGroup) {
                     foreach ($permissionGroup as $p) {
                         $result[] = $p;
@@ -87,114 +95,113 @@ class PortalPermissionsLoader
         );
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
     public function loadAllowedDepartments(Person $person)
     {
-        $that = $this;
-
         return $this->generateAndCache(
-            array(
+            [
                 'loadAllowedDepartments',
                 $person,
-            ),
-            function () use ($that, $person) {
-                $person->loadHelper('PermissionsManager');
-
-                return $person->PermissionsManager->Departments->getAllAllowed();
-            }
-        );
-    }
-
-    public function loadAllowedFeedbackCategories(Person $person)
-    {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'loadAllowedFeedbackCategories',
-                $person,
-            ),
-            function () use ($that, $person) {
-                $person->loadHelper('PermissionsManager');
-
-                return $person->PermissionsManager->FeedbackCategories->getAllowedCategories();
-            }
-        );
-    }
-
-    public function loadAllowedNewsCategories(Person $person)
-    {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'loadAllowedNewsCategories',
-                $person,
-            ),
-            function () use ($that, $person) {
-                $person->loadHelper('PermissionsManager');
-
-                return $person->PermissionsManager->NewsCategories->getAllowedCategories();
-            }
-        );
-    }
-
-    public function loadAllowedArticleCategories(Person $person)
-    {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'loadAllowedArticleCategories',
-                $person,
-            ),
-            function () use ($that, $person) {
-                $person->loadHelper('PermissionsManager');
-
-                return $person->PermissionsManager->ArticleCategories->getAllowedCategories();
-            }
-        );
-    }
-
-    public function loadAllowedDownloadCategories(Person $person)
-    {
-        $that = $this;
-
-        return $this->generateAndCache(
-            array(
-                'loadAllowedDownloadCategories',
-                $person,
-            ),
-            function () use ($that, $person) {
-                $person->loadHelper('PermissionsManager');
-
-                return $person->PermissionsManager->DownloadCategories->getAllowedCategories();
+            ],
+            function () use ($person) {
+                return $person->getPermissionsManager()->Departments->getAllAllowed();
             }
         );
     }
 
     /**
-     * FOR INTERNAL USE (public method because of closures).
+     * @param Person $person
      *
+     * @return mixed
+     */
+    public function loadAllowedFeedbackCategories(Person $person)
+    {
+        return $this->generateAndCache(
+            [
+                'loadAllowedFeedbackCategories',
+                $person,
+            ],
+            function () use ($person) {
+                return $person->getPermissionsManager()->FeedbackCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
+    public function loadAllowedNewsCategories(Person $person)
+    {
+        return $this->generateAndCache(
+            [
+                'loadAllowedNewsCategories',
+                $person,
+            ],
+            function () use ($person) {
+                return $person->getPermissionsManager()->NewsCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
+    public function loadAllowedArticleCategories(Person $person)
+    {
+        return $this->generateAndCache(
+            [
+                'loadAllowedArticleCategories',
+                $person,
+            ],
+            function () use ($person) {
+                return $person->getPermissionsManager()->ArticleCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return mixed
+     */
+    public function loadAllowedDownloadCategories(Person $person)
+    {
+        return $this->generateAndCache(
+            [
+                'loadAllowedDownloadCategories',
+                $person,
+            ],
+            function () use ($person) {
+                return $person->getPermissionsManager()->DownloadCategories->getAllowedCategories();
+            }
+        );
+    }
+
+    /**
      * @param $usergroupIds
      *
      * @return mixed|null
-     *
-     * @internal
      */
-    public function getUsergroupsPermissions($usergroupIds)
+    protected function getUsergroupsPermissions($usergroupIds)
     {
-        $that = $this;
-
         return $this->generateAndCache(
-            array(
+            [
                 'getUsergroupsPermissions',
                 $usergroupIds,
-            ),
-            function () use ($that, $usergroupIds) {
+            ],
+            function () use ($usergroupIds) {
                 $usergroupIds = array_fill_keys($usergroupIds, true);
 
-                $result = array();
-                foreach ($that->getAllPermissions() as $id => $permission) {
+                $result = [];
+                foreach ($this->getAllPermissions() as $id => $permission) {
                     if (isset($usergroupIds[$id])) {
                         $result[$id] = $permission;
                     }
@@ -206,29 +213,22 @@ class PortalPermissionsLoader
     }
 
     /**
-     * FOR INTERNAL USE (public method because of closures)
-     * returns a list of all permissions for the usergroups.
-     *
      * @return mixed|null
-     *
-     * @internal
      */
-    public function getAllPermissions()
+    protected function getAllPermissions()
     {
-        $conn = $this->conn;
-
         return $this->generateAndCache(
-            array(
+            [
                 'getAllPermissions',
-            ),
-            function () use ($conn) {
-                return $conn->fetchAllGrouped(
+            ],
+            function () {
+                return $this->connection->fetchAllGrouped(
                     '
                     SELECT usergroup_id, name, value
                     FROM permissions
                     WHERE person_id IS NULL
                     ',
-                    array(),
+                    [],
                     'usergroup_id'
                 );
             }

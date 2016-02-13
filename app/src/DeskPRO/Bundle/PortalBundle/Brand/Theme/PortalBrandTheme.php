@@ -32,6 +32,9 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
+/**
+ * Class PortalBrandTheme.
+ */
 class PortalBrandTheme
 {
     /**
@@ -50,7 +53,7 @@ class PortalBrandTheme
     private $portalModeStorage;
 
     /**
-     * PortalBrandTheme constructor.
+     * Constructor.
      *
      * @param BrandContainer    $brandContainer
      * @param ThemeResolver     $themeResolver

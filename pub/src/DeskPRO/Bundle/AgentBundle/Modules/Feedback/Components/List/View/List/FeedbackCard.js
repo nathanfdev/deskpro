@@ -37,9 +37,9 @@ export class FeedbackCard extends Component {
   renderStatus() {
     const { feedback, feedbackStatusCategory } = this.props;
     var realStatus = '';
-    if (feedback.status === 'new') {
+    if (feedback.get('status') === 'new') {
       realStatus = 'New';
-    } else if (feedback.status === 'hidden') {
+    } else if (feedback.get('status') === 'hidden') {
       realStatus = feedback.get('hidden_status');
     } else if (feedbackStatusCategory) {
       realStatus = feedbackStatusCategory.get('title');

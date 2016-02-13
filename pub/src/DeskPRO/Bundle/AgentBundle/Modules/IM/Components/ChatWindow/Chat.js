@@ -3,6 +3,7 @@ import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as chatsActions from '../../Actions/chatsActions';
+import uuid from 'node-uuid';
 
 // components
 import { Footer } from './Footer';
@@ -12,10 +13,9 @@ import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 
 // messages
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 import { addMessage } from '../../Actions/messagesActions';
-
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
 
 @connect(state => ({
   me: meSelector(state),
@@ -24,7 +24,6 @@ import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle
   agents: agentsSelector(state)
 }))
 export class Chat extends React.Component {
-
   static propTypes = {
     me: PropTypes.object.isRequired,
     current: PropTypes.object.isRequired,
@@ -68,11 +67,22 @@ export class Chat extends React.Component {
     );
   };
 
-  handleType = event => {
+  handleType = (event) => {
+    event.preventDefault();
     this.setState({
       searchTyped: event.target.value
     });
+    if (event.target.value === '') {
+      this.handleSearch(event);
+    }
   };
+
+  handleClear() {
+    this.setState({
+      searchTyped: '',
+      searchQuery: ''
+    });
+  }
 
   handleOnClose = () => {
     this.props.dispatch(chatsActions.closeChat(this.props.current.id));
@@ -98,14 +108,14 @@ export class Chat extends React.Component {
 
   handleAddMessage = message => {
     const { dispatch, current, me } = this.props;
-    dispatch(addMessage(current.id, message, me));
+    dispatch(addMessage(current.id, message, uuid(), me));
   };
 
   searchForm() {
     return (this.state.searchShown)
       ?
       <SearchForm
-        handleClear={this.handleClear}
+        handleClear={this.handleClear.bind(this)}
         handleType={this.handleType}
         handleSearch={this.handleSearch}
         searching={this.state.searchTyped}/>

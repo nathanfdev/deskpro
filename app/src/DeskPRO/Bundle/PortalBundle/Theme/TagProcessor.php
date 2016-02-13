@@ -32,7 +32,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use DeskPRO\Kernel\KernelErrorHandler;
 
+/**
+ * Class TagProcessor.
+ */
 class TagProcessor
 {
     /**
@@ -45,13 +49,25 @@ class TagProcessor
      */
     private $tag_handlers;
 
+    /**
+     * Constructor.
+     *
+     * @param TagRequestFactory $tag_request_factory
+     * @param array             $tag_handlers
+     */
     public function __construct(TagRequestFactory $tag_request_factory, array $tag_handlers)
     {
         $this->tag_request_factory = $tag_request_factory;
         $this->tag_handlers        = $tag_handlers;
     }
 
-    public function process(Tag $tag, array $arguments = array())
+    /**
+     * @param Tag   $tag
+     * @param array $arguments
+     *
+     * @return string
+     */
+    public function process(Tag $tag, array $arguments = [])
     {
         $tag_request = $this->tag_request_factory->create($tag, $arguments);
 
@@ -61,7 +77,12 @@ class TagProcessor
 
         $response = $handler->handle($tag, $tag_request);
 
-        if (!$response || !$response->isSuccessful()) {
+        if (!$response) {
+            return ''; // be passive and default to blank
+        } elseif (!$response->isSuccessful()) {
+            $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
+            KernelErrorHandler::logException($e);
+
             return ''; // be passive and default to blank
         }
 

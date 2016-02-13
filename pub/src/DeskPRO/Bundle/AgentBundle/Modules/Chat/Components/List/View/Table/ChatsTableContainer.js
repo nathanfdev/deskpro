@@ -1,33 +1,27 @@
 import React, {Component, PropTypes} from 'react';
-import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/index';
+import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
-import { elementsSelector } from '../../../../Selectors/list';
-import { chatsSelector, peopleSelector, departmentsSelector } from '../../../../Selectors/recordStores';
-
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    ids: elementsSelector(state),
-    chats: chatsSelector(state),
-    people: peopleSelector(state),
-    departments: departmentsSelector(state)
-  });
-})
+
+@connect(state => ({
+  chats: collectionSelectorFactory('UserChat', 'chats')(state),
+  people: collectionSelectorFactory('Person', 'chats')(state),
+  departments: collectionSelectorFactory('Department', 'chats')(state)
+}))
 export class ChatsTableContainer extends Component {
   static propTypes = {
-    ids: PropTypes.array.isRequired,
     people: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
     chats: PropTypes.object.isRequired
   };
 
-  renderRow(id) {
-    const { chats, people, departments } = this.props;
-    const element = chats.get(id);
+  renderRow(element) {
+    const { people, departments } = this.props;
 
     return (
-      <Row key={id}
+      <Row key={element.get('id')}
            element={element}
            author={people.get(element.get('person'))}
            agent={people.get(element.get('agent'))}
@@ -40,7 +34,7 @@ export class ChatsTableContainer extends Component {
       <Table>
         <TableHeader />
         <tbody>
-        {this.props.ids.map(id => this.renderRow(id))}
+        {this.props.chats.map(chat => this.renderRow(chat))}
         </tbody>
       </Table>
     );

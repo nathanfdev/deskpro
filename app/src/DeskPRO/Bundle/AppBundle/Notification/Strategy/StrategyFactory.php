@@ -160,7 +160,7 @@ class StrategyFactory
     }
 
     /**
-     * assume that we always have tow notify handlers for system events (just a stub mb)
+     * assume that we always have two notify handlers for system events (just a stub mb)
      * this is UserNotificationHandler and ActionAlertHandler.
      *
      * @return NotifyHandlerInterface[]

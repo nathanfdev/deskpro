@@ -34,12 +34,14 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
  * Class GlossaryController.
  *
+ * @ApiModes("all")
  * @Route("/glossary")
  */
 class GlossaryController extends CrudController

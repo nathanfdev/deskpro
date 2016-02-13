@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import SimplePositioned from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
-import { ChatHelper } from '../ChatHelper';
-import { meSelector } from '../../Application/RecordStores/Selectors/meSelectors';
+import { ChatHelper } from '../../../Services/Helpers/ChatHelper';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
 
 @connect(state => ({
   current: state.IM.chats.get('current'),
@@ -25,12 +25,11 @@ export class IMContainer extends React.Component {
   constructor(props) {
     super(props);
     this.helper = new ChatHelper();
-
   }
 
   renderOverlay = () => {
     return (
-      <SimplePositioned
+      <Simple
         positionMy="left-25 top+1"
         positionAt="center bottom"
         collision="none"
@@ -38,14 +37,14 @@ export class IMContainer extends React.Component {
         isOpen={this.props.overlayShown}
         >
         <IMOverlay dispatch={this.props.dispatch}/>
-      </SimplePositioned>
+      </Simple>
     );
   };
 
   renderChat = () => {
     const node = this.helper.getChatNode(this.props.current, this.props.user.get('id'));
     return (
-      <SimplePositioned
+      <Simple
         positionMy="left-25 top+1"
         positionAt="center bottom"
         collision="none"
@@ -53,7 +52,7 @@ export class IMContainer extends React.Component {
         isOpen={this.props.chating}
       >
         <Chat />
-      </SimplePositioned>
+      </Simple>
       );
   };
 

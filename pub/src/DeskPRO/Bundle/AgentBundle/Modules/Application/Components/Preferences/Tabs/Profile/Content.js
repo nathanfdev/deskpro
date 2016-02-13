@@ -9,15 +9,15 @@ export class Content extends React.Component {
     languages: PropTypes.object.isRequired,
     timezones: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
-    profileStatus: PropTypes.object.isRequired
+    profileLoaded: PropTypes.bool.isRequired
   };
 
   render() {
-    const { dispatch, languages, timezones, profile, profileStatus } = this.props;
+    const { dispatch, languages, timezones, profile, profileLoaded } = this.props;
 
     return (
       <div>
-        <Loader loaded={profileStatus.get('isDone')}
+        <Loader loaded={profileLoaded}
                 opacity={0}
                 width={3}>
 

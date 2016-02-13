@@ -13,13 +13,28 @@ export class PortalCheckbox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      $checkbox: props.$checkbox,
-      $label: props.$label,
       checked: props.$checkbox.prop('checked'),
-      label: props.$label.text(),
       isClickFocus: false
     };
   }
+
+  componentDidMount() {
+    const { $checkbox } = this.props;
+
+    $checkbox.closest('form').on('reset', this.onReset);
+    $checkbox.on('change', () => {
+      this.setState({
+        checked: $checkbox.prop('checked')
+      });
+    });
+  }
+
+  onReset = () => {
+    this.setState({
+      checked: false,
+      isClickFocus: false
+    });
+  };
 
   onBlur = () => {
     this.setState({
@@ -47,23 +62,19 @@ export class PortalCheckbox extends React.Component {
     }
   };
 
-  getLabel() {
-    return this.state.label;
-  }
-
-  isChecked() {
-    return this.state.checked;
-  }
-
   toggleState(otherState = {}) {
-    this.state.$checkbox.prop('checked', !this.isChecked());
+    const { $checkbox } = this.props;
+    $checkbox.prop('checked', !this.state.checked).trigger('change');
+
     this.setState({
-      checked: this.state.$checkbox.prop('checked'),
+      checked: $checkbox.prop('checked'),
       ...otherState
     });
   }
 
   render() {
+    const { $label } = this.props;
+
     return (
       <div className={classNames('checkbox-container', {'no-focus-border': this.state.isClickFocus})}
            tabIndex={0}
@@ -73,11 +84,11 @@ export class PortalCheckbox extends React.Component {
            onKeyDown={this.onKeyDown}
            onBlur={this.onBlur}>
 
-        <span className={classNames('checkbox', {'checked': this.isChecked()})}>
+        <span className={classNames('checkbox', {'checked': this.state.checked})}>
           <i className="fa fa-check"></i>
         </span>
 
-        { this.getLabel() }
+        {$label.text()}
       </div>
     );
   }

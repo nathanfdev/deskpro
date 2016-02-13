@@ -1,20 +1,19 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { paginationSelector, viewModeSelector, isLoadedSelector } from '../../Selectors/list';
+import { paginationSelector, viewModeSelector } from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
+import { isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  loaded: isLoadedSelector(state),
+  isLoaded: isLoadedCollectionSelectorFactory('UserChat', 'chats')(state)
+            && isLoadedCollectionSelectorFactory('Department', 'chats')(state),
   pagination: paginationSelector(state),
   viewMode: viewModeSelector(state)
 }))
 export class ListContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isComments: PropTypes.bool,
-    loaded: PropTypes.bool.isRequired,
-    currentViewMode: PropTypes.string.isRequired
+    dispatch: PropTypes.func.isRequired
   };
 
   render() {

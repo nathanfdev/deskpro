@@ -1,4 +1,5 @@
-export default class HttpInterceptor {
+export class HttpInterceptor {
+
   /**
    * Called before the AJAX request is sent. Can return a config object
    * or a promise that resolves to a config object.
@@ -26,11 +27,11 @@ export default class HttpInterceptor {
   /**
    * Called when the response comes back. The return value should be an HttpResponse or a promise.
    *
-   * @param {HttpResponse} http_response
+   * @param {HttpResponse} httpResponse
    * @returns {HttpResponse/Promise}
    */
-  response(http_response) {
-    return http_response;
+  response(httpResponse) {
+    return httpResponse;
   }
 
   /**

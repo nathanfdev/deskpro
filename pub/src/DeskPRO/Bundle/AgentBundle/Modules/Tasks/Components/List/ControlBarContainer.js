@@ -4,8 +4,8 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { applySort, applyOrder, applyFilters } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { allTaskLabelsSelector } from '../../RecordStores/Selectors/taskLabelSelectors';
-import { loadAllTaskLabels } from '../../RecordStores/Actions/taskLabelActions';
+import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+
 import {
   currentViewModeSelector,
   currentSortSelector,
@@ -33,7 +33,7 @@ import {
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
   listFilters: listParamsFiltersSelector(state),
-  labels: allTaskLabelsSelector(state)
+  labels: allSelectorFactory('TaskLabel')(state)
 }))
 export class ControlBarContainer extends React.Component {
 
@@ -52,7 +52,7 @@ export class ControlBarContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    props.dispatch(loadAllTaskLabels());
+    props.dispatch(loadAll('TaskLabel'));
   }
 
   render() {

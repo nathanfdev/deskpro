@@ -75,12 +75,10 @@ class TicketController extends AbstractApiController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'                        => $person,
-            'ticket_message'                => $ticket_message,
             'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
-            'attr'                          => ['data-save-draft' => 'new_ticket'],
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
             'allow_extra_fields'            => true,
@@ -112,13 +110,12 @@ class TicketController extends AbstractApiController
             return new View();
         }
 
-        $form_full = $this->createForm('ticket', $ticket, [
-            'person'         => $person,
-            'ticket_message' => null,
-            'settings'       => $this->getBrandContainer()->getSettings(),
-            'full_version'   => true,
-            'action'         => $this->generateUrl('portal_api_ticket_new'),
-            'use_captcha'    => false,
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
+            'person'       => $person,
+            'settings'     => $this->getBrandContainer()->getSettings(),
+            'full_version' => true,
+            'action'       => $this->generateUrl('portal_api_ticket_new'),
+            'use_captcha'  => false,
         ]);
 
         $params = [

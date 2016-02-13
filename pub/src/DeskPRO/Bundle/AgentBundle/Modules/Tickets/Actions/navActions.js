@@ -1,13 +1,9 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
-import { loadPeople as rsLoadPeople, releasePeopleRequest as rsReleasePeopleRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadOrganizations as rsLoadOrganizations, releaseOrganizationsRequest as rsReleaseOrganizationsRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/organizationsActions';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 // Private -------------------------------------------------------------------------------------------------------------
@@ -22,9 +18,7 @@ const loadFilterCount = createAction(
   'TICKETS_NAV_LOAD_FILTER_COUNT',
   id => (dispatch, getState) => new Promise(resolve => {
     const groupBy = filterSetGroupingsSettingsSelector(getState()).get(String(id), '');
-    DpApi
-      .sendGet(`DP_API/ticket_filters/${id}/count?group_by=` + groupBy)
-      .success(response => resolve(response.data));
+    repository('TicketFilter').loadFilterCounts(id, groupBy).success(response => resolve(response.data));
   })
 );
 
@@ -45,7 +39,7 @@ export const applyFilterEditing = createAction(
       dispatch(markFilterLoading(id));
     }
 
-    DpApi.sendPut(`DP_API/ticket_filters/${id}`, {group_by: groupBy}).success(() => {
+    repository('TicketFilter').update({id, group_by: groupBy}).success(() => {
       dispatch(updateFilterGrouping(id, groupBy));
 
       // reload filter counts if grouping is applied
@@ -68,7 +62,8 @@ export const initialLoad = createAction(
           + '&get[starsCount]=DP_API/ticket_stars_counts'
           + '&get[filters]=DP_API/ticket_filters'
         ;
-        DpApi.sendGet(batch).success(({responses}) => {
+
+        api.sendGet(batch).success(({responses}) => {
           const payload = flattenBatchResponses(responses);
           payload.starsCount = payload.starsCount.nested;
           resolve(payload);

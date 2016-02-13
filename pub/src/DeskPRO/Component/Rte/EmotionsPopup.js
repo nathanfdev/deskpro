@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import * as Emotions from './Emotions';
+import { smiles, spriteMap } from './Emotions';
 
 export class EmotionsPopup extends React.Component {
 
@@ -11,7 +11,7 @@ export class EmotionsPopup extends React.Component {
   renderItem(code) {
     return (
       <a onClick={() => this.props.onClick(code)} className="emoticon-link" title={code}>
-        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${Emotions.SPRITE_MAP[code]}`)} />
+        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${spriteMap[code]}`)} />
       </a>
     );
   }
@@ -20,35 +20,35 @@ export class EmotionsPopup extends React.Component {
     return (
         <div id="emoticon-panel" className="emoticon-panel">
           <div>
-            {this.renderItem(Emotions.ICON_SMILE)}
-            {this.renderItem(Emotions.ICON_BLUSHING)}
-            {this.renderItem(Emotions.ICON_WINKING)}
-            {this.renderItem(Emotions.ICON_TONGUE)}
-            {this.renderItem(Emotions.ICON_TONGUE_2)}
+            {this.renderItem(smiles.ICON_SMILE)}
+            {this.renderItem(smiles.ICON_BLUSHING)}
+            {this.renderItem(smiles.ICON_WINKING)}
+            {this.renderItem(smiles.ICON_TONGUE)}
+            {this.renderItem(smiles.ICON_TONGUE_2)}
           </div>
 
           <div>
-            {this.renderItem(Emotions.ICON_LAUGHING)}
-            {this.renderItem(Emotions.ICON_GRIN)}
-            {this.renderItem(Emotions.ICON_EVIL_GREEN)}
-            {this.renderItem(Emotions.ICON_DEVIL)}
-            {this.renderItem(Emotions.ICON_KIKI)}
+            {this.renderItem(smiles.ICON_LAUGHING)}
+            {this.renderItem(smiles.ICON_GRIN)}
+            {this.renderItem(smiles.ICON_EVIL_GREEN)}
+            {this.renderItem(smiles.ICON_DEVIL)}
+            {this.renderItem(smiles.ICON_KIKI)}
           </div>
 
           <div>
-            {this.renderItem(Emotions.ICON_YAWN)}
-            {this.renderItem(Emotions.ICON_HEART)}
-            {this.renderItem(Emotions.ICON_INLOVE)}
-            {this.renderItem(Emotions.ICON_KISS)}
-            {this.renderItem(Emotions.ICON_ANGEL)}
+            {this.renderItem(smiles.ICON_YAWN)}
+            {this.renderItem(smiles.ICON_HEART)}
+            {this.renderItem(smiles.ICON_INLOVE)}
+            {this.renderItem(smiles.ICON_KISS)}
+            {this.renderItem(smiles.ICON_ANGEL)}
           </div>
 
           <div>
-            {this.renderItem(Emotions.ICON_SAD)}
-            {this.renderItem(Emotions.ICON_CRY)}
-            {this.renderItem(Emotions.ICON_SUPRISED)}
-            {this.renderItem(Emotions.ICON_CONFUSED)}
-            {this.renderItem(Emotions.ICON_DISAPPOINTED)}
+            {this.renderItem(smiles.ICON_SAD)}
+            {this.renderItem(smiles.ICON_CRY)}
+            {this.renderItem(smiles.ICON_SUPRISED)}
+            {this.renderItem(smiles.ICON_CONFUSED)}
+            {this.renderItem(smiles.ICON_DISAPPOINTED)}
           </div>
         </div>
     );

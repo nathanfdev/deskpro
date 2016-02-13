@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -40,6 +42,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AgentsController.
+ *
+ * @ApiModes("all")
  */
 class AgentsController extends CrudController
 {
@@ -61,6 +65,26 @@ class AgentsController extends CrudController
         return View::create(
             $this->dataSerialize($agents),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get a list of online",
+     *      statusCodes={
+     *          200="Success"
+     *      }
+     * )
+     * @Get("/agents/online", name="api_agents_online")
+     *
+     * @return View
+     */
+    public function getAgentsOnline()
+    {
+        $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
+
+        return View::create(
+            $this->createRepresentation($agent_ids)
         );
     }
 }

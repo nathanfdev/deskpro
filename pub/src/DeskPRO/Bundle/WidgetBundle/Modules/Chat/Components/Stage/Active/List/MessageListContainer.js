@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { chatLoadedSelector, messagesSelector, lastMessageIdSelector, muteSelector } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, widgetHeightSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
-import { peopleSelector } from '../../../../../Application/RecordStores/Selectors/peopleSelectors';
+import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
 import $ from 'jquery';

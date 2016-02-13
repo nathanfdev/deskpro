@@ -9,7 +9,7 @@ import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
 import { phraseTranslationsSelector, authorNameSelector } from '../../../../Selectors/chat';
-import { peopleSelector } from '../../../../../Application/RecordStores/Selectors/peopleSelectors';
+import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
 import Immutable from 'immutable';
 
 @connect(state => ({

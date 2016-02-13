@@ -33,8 +33,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -47,6 +48,11 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class TaskAttachmentsController.
+ *
+ * @ApiModes("all")
+ */
 class TaskAttachmentsController extends BaseController implements ClassResourceInterface
 {
     /**

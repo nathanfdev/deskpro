@@ -1,22 +1,16 @@
 import { createReducer } from 'Ampliflux';
+import { async } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatsActions';
 
 const initialState = {
   current: {},
   overlayShown: false,
   chating: false,
-  currentUI: {},
   manuallyClosed: {}
 };
 
 export default createReducer(initialState, {
-  [actions.startChat]: (state, payload) => {
-    if(payload) {
-      return state.set('current', payload);
-    } else {
-      return state;
-    }
-  },
+  [actions.startChat]: async({success: (state, payload) => state.set('current', payload)}),
   [actions.toggleOverlay]: (state) => {
     return state.set('overlayShown', !state.get('overlayShown'));
   },

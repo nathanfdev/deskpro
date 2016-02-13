@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\CustomFields\Handler\Date;
@@ -38,20 +37,20 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
+use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
+use DeskPRO\Bundle\AppBundle\CustomField\CustomFieldUtil;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomFieldTicketContext;
-use DeskPRO\Bundle\PortalBundle\CustomField\Context\CustomPerFieldManager;
-use DeskPRO\Bundle\PortalBundle\CustomField\CustomFieldUtil;
-use DeskPRO\Bundle\PortalBundle\Form\FormFields;
 use Doctrine\ORM\EntityManager;
 
 class TicketViewDataService extends AbstractDataService
 {
     /**
-     * @var FormFieldManager
+     * @var CustomFieldManager
      */
     private $form_field_manager;
 
@@ -77,7 +76,7 @@ class TicketViewDataService extends AbstractDataService
 
     public function __construct(
         EntityManager $em,
-        FormFieldManager $form_field_manager,
+        CustomFieldManager $form_field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         Translate $translate,
         CustomPerFieldManager $custom_per_field_manager,

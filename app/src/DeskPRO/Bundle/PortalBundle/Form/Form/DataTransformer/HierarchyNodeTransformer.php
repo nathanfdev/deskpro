@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -70,7 +69,7 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             return '';
         }
 
-        /** @var \DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyNode $choice */
+        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
         foreach ($choices as $choice) {
             if (!$choice instanceof HierarchyNode) {
                 continue;

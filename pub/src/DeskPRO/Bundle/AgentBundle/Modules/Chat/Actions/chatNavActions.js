@@ -1,9 +1,8 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { loadCounts as loadChatCounts } from 'DeskPRO/Bundle/AgentBundle/Services/Api/Chat';
-import { loadDepartments, releaseDepartmentsRequest }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { loadBatch, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -19,7 +18,7 @@ export const initialLoad = createAction(
           + '?get[my]=DP_API/user_chats/counts?group_by%3Ddate_period'
           + '&get[all]=DP_API/user_chats/counts?group_by%3Dagent'
         ;
-      DpApi.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         resolve(payload);
       });
@@ -30,10 +29,10 @@ export const initialLoad = createAction(
 export const loadCounts = createAction(
   'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
   (list, groupBy) =>
-    (dispatch) => loadChatCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+    (dispatch) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       const res = promise.getData();
       if (groupBy === 'department') {
-        dispatch(loadDepartments(recordStoresId, res.data.nested.map(count => count.group)));
+        dispatch(loadBatch('Department', recordStoresId, res.data.nested.map(count => count.group)));
       }
 
       return {
@@ -58,6 +57,6 @@ export const changeListGrouping = createAction(
 export const unmount = createAction(
   'CHAT_NAV_UNMOUNT',
   () => dispatch => {
-    dispatch(releaseDepartmentsRequest(recordStoresId));
+    dispatch(releaseCollection('Department', recordStoresId));
   }
 );

@@ -53,7 +53,7 @@ export class NavFrameHeaderContainer extends React.Component {
   }
 }
 
-class NavFrameHeader extends React.Component {
+export class NavFrameHeader extends React.Component {
 
   static propTypes = {
     children: PropTypes.any.isRequired,

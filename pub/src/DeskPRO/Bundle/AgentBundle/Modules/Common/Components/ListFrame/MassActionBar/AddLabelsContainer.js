@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 @connect()
 export class AddLabelsContainer extends Component {
   static propTypes = {
+    currentParams: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,
     unsetParams: PropTypes.func.isRequired,
@@ -14,16 +15,14 @@ export class AddLabelsContainer extends Component {
   };
 
   render() {
-    const {dispatch, option, activeItem, setActiveItem, stateValue, setParams, unsetParams} = this.props;
+    const {dispatch, option, stateValue, setParams, unsetParams} = this.props;
 
     return (
       <LabelsFilter dispatch={dispatch}
                     filter={option}
                     setParamsAction={setParams}
-                    activeItem={activeItem}
                     icon={option.icon || 'tags'}
                     label={option.label}
-                    setActiveItem={setActiveItem}
                     stateValue={stateValue}
                     unsetParams={unsetParams}/>
     );

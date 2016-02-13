@@ -1,12 +1,13 @@
-export default class ResultResolver {
+export class ResultResolver {
+
   /**
    * Called when the response comes back.
    *
-   * @param {HttpResponse} http_response
+   * @param {HttpResponse} httpResponse
    * @returns {*}
    */
-  response(http_response) {
-    return http_response;
+  response(httpResponse) {
+    return httpResponse;
   }
 
   /**

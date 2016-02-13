@@ -55,6 +55,13 @@ class BrandContainer
      */
     private $asset_loader;
 
+    /**
+     * Constructor.
+     *
+     * @param Brand            $brand
+     * @param SettingsBag      $settings
+     * @param BrandAssetLoader $asset_loader
+     */
     public function __construct(
         Brand $brand,
         SettingsBag $settings,
@@ -66,8 +73,8 @@ class BrandContainer
     }
 
     /**
-     * @param $setting_name
-     * @param $default
+     * @param string $setting_name
+     * @param mixed  $default
      *
      * @return mixed
      */

@@ -32,12 +32,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
+use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
@@ -51,14 +51,14 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 /**
  * Class TicketsController.
  *
+ * @ApiModes("all")
  * @Route("/tickets")
  */
-class TicketsController extends CrudController
+class TicketsController extends AbstractTicketsController
 {
     use LabelsHelper;
 
-    public static $entity = Ticket::class;
-    public static $type   = TicketType::class;
+    public static $type = TicketType::class;
 
     /**
      * @param HttpKernelInterface $kernel
@@ -275,36 +275,20 @@ class TicketsController extends CrudController
         return $tickets;
     }
 
-    // Override CRUD callbacks to use TicketManager --------------------------------------------------------------------
-
     /**
+     * @Delete("/{id}", requirements={"id"="\d+"})
+     *
      * {@inheritdoc}
      */
-    protected function instantiateEntity(Request $request)
+    public function deleteAction($id, Request $request)
     {
-        return $this->getTicketManager()->createTicket();
-    }
+        /** @var Ticket $entity */
+        $entity = $this->findEntity($id);
+        $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function findEntity($id)
-    {
-        return $this->getTicketManager()->getTicket($id);
-    }
+        $this->persistModel($entity);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function persistModel($entity)
-    {
-        /* @var Ticket $entity */
-        $tm      = $this->getTicketManager();
-        $action  = $entity->getId() ? 'update' : 'new';
-        $context = $tm->createAgentExecutorContext($this->getUser(), $action, 'api');
-        $tm->saveTicket($entity, $context);
-
-        return $entity;
+        return View::create([], Response::HTTP_OK);
     }
 
     /**
@@ -319,14 +303,4 @@ class TicketsController extends CrudController
         $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
         $tm->saveTicket($entity, $context);
     }
-
-    /**
-     * @return TicketManager
-     */
-    private function getTicketManager()
-    {
-        return $this->container->getTicketManager();
-    }
-
-    // End of CRUD callbacks -------------------------------------------------------------------------------------------
 }

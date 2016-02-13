@@ -70,9 +70,4 @@ abstract class AbstractMessageEvent extends AbstractSystemEvent
     {
         return ['message_id'];
     }
-
-    public function __wakeup($array)
-    {
-        $this->message_id = $array['message_id'];
-    }
 }

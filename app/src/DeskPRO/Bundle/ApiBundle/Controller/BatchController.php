@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -42,6 +44,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class BatchController.
+ *
+ * @ApiModes("all")
  */
 class BatchController extends BaseController
 {

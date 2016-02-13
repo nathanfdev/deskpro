@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateCriteria;
 use Doctrine\ORM\QueryBuilder;
@@ -49,6 +50,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ArticlePendingCreateController.
+ *
+ * @ApiModes("all")
  */
 class ArticlePendingCreateController extends BaseController
 {

@@ -1,15 +1,10 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
-import * as Feedback from 'DeskPRO/Bundle/AgentBundle/Services/Api/Feedback';
-import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { loadFeedbackCategories } from 'DeskPRO/Bundle/AgentBundle/Modules/Feedback/RecordStores/Actions/feedbackCategoriesActions';
 import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
-import { setFeedbackStatusCategoriesRequest } from '../RecordStores/Actions/feedbackStatusCategoriesActions';
-import { loadFeedbackCommentsCounter } from '../RecordStores/Actions/feedbackCommentsActions';
-import { setFeedbackRequest } from '../RecordStores/Actions/feedbackActions';
 import { toggleMassAction } from '../../Application/Actions/massActions';
+import { loadBatch, setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -30,12 +25,12 @@ const prepareLinkedData = (linked) => {
 export const loadLabels = createAction(
   'FEEDBACK_LOAD_LABELS',
   () => new Promise(resolve =>
-    DpApi.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
+    api.sendGet('DP_API/feedback_labels').success(response => resolve(response.data.map(def => def.label))))
 );
 
 export const getCategories = createAction(
   'FEEDBACK_GET_CATEGORIES',
-    ids => dispatch => dispatch(loadFeedbackCategories(recordStoresId, ids))
+    ids => dispatch => dispatch(loadBatch('FeedbackCategory', ids, recordStoresId))
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
@@ -43,7 +38,7 @@ export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
-    ids => dispatch => dispatch(loadFeedbackCommentsCounter(recordStoresId, ids))
+    ids => dispatch => dispatch(loadBatch('FeedbackCommentCounter', recordStoresId, ids))
 );
 
 export const setDisplayFields = createAction(
@@ -53,13 +48,13 @@ export const setDisplayFields = createAction(
 
 export const loadFeedbackList = createAction(
   'FEEDBACK_LIST_OF_FEEDBACK',
-    params => (dispatch) => Feedback.getList(params).then(promise => {
+    params => (dispatch) => repository('Feedback').search(params).then(promise => {
       const res = promise.getData();
       const ids = res.data.map(item=>item.id);
 
-      dispatch(setFeedbackRequest(recordStoresId, res.data));
-      dispatch(setPeopleRequest(recordStoresId, prepareLinkedData(res.linked.person)));
-      dispatch(setFeedbackStatusCategoriesRequest(recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
+      dispatch(setCollection('Feedback', recordStoresId, res.data));
+      dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
+      dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
       dispatch(getCommentsCounter(ids));
 
       return { ids: ids, pagination: res.meta.pagination };
@@ -90,7 +85,7 @@ export const loadList = createAction(
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
-  () => PersonSetting.get('feedback_display_fields').then(value => value.getData())
+  () => repository('PersonSetting').load('feedback_display_fields').then(value => value.getData())
 );
 
 export const setViewFieldsSettingStoredFlag = createAction(
@@ -102,7 +97,7 @@ export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    PersonSetting.post('feedback_display_fields', displayFields);
+    repository('PersonSetting').create({name: 'feedback_display_fields', value: displayFields});
     dispatch(setViewFieldsSettingStoredFlag(true));
     return displayFields;
   }
@@ -112,7 +107,7 @@ export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    PersonSetting.put('feedback_display_fields', displayFields);
+    repository('PersonSetting').update({name: 'feedback_display_fields', value: displayFields});
     return displayFields;
   }
 );

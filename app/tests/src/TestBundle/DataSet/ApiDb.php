@@ -38,9 +38,13 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -117,6 +121,73 @@ class ApiDb extends AbstractDbSet
         $ticket_def        = new CustomDefTicket();
         $ticket_def->title = 'def';
 
+        // Create ticket layouts
+        // prepare custom defs for people, organizations and tickets
+        foreach (['custom_def_people', 'custom_def_organizations', 'custom_def_ticket'] as $custom_def_table) {
+            $this->getDb()->exec(
+                "
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('5', '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', '?', '1', '1', '10', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('7', '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('8', '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:\"multiple\";b:1;s:8:\"expanded\";b:1;}', '1', '1', '12', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('9', '8', '', '0', '0', 'Choice 1', '', '?', '1', '1', '13', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('10', '8', '', '0', '0', 'Choice 2', '', '?', '1', '1', '14', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('11', '8', '', '0', '0', 'Choice 3', '', '?', '1', '1', '15', '0');
+            "
+            );
+        }
+
+        $layout = new Layout();
+        $layout
+            ->add(new LayoutField(FormFields::DEPARTMENT))
+            ->add(new LayoutField(FormFields::MESSAGE))
+        ;
+
+        $ticket_layout1               = new TicketLayout();
+        $ticket_layout1->is_enabled   = true;
+        $ticket_layout1->agent_layout = $layout;
+        $ticket_layout1->user_layout  = new Layout();
+
+        $layout = new Layout();
+        $layout
+            ->add(new LayoutField(FormFields::PERSON))
+            ->add(new LayoutField(FormFields::DEPARTMENT))
+            ->add(new LayoutField(FormFields::MESSAGE))
+            ->add(new LayoutField(FormFields::ATTACH))
+            ->add(new LayoutField(FormFields::CAPTCHA))
+            ->add(new LayoutField(FormFields::PRODUCT))
+            ->add(new LayoutField(FormFields::CC))
+            ->add(new LayoutField(FormFields::PRIORITY))
+            ->add(new LayoutField(FormFields::LABEL))
+
+            ->add(new LayoutField('ticket_field', 1)) // Select box
+            ->add(new LayoutField('ticket_field', 5)) // Datetime
+            ->add(new LayoutField('ticket_field', 6)) // Text
+            ->add(new LayoutField('ticket_field', 7)) // Textarea
+            ->add(new LayoutField('ticket_field', 8)) // Checkbox group
+
+            ->add(new LayoutField('user_field', 1)) // Select box
+            ->add(new LayoutField('user_field', 5)) // Datetime
+            ->add(new LayoutField('user_field', 6)) // Text
+            ->add(new LayoutField('user_field', 7)) // Textarea
+            ->add(new LayoutField('user_field', 8)) // Checkbox group
+
+            ->add(new LayoutField('org_field', 1)) // Select box
+            ->add(new LayoutField('org_field', 5)) // Datetime
+            ->add(new LayoutField('org_field', 6)) // Text
+            ->add(new LayoutField('org_field', 7)) // Textarea
+            ->add(new LayoutField('org_field', 8)) // Checkbox group
+        ;
+
+        $ticket_layout2               = new TicketLayout($dep2);
+        $ticket_layout2->is_enabled   = true;
+        $ticket_layout2->agent_layout = $layout;
+        $ticket_layout2->user_layout  = new Layout();
+
         // Create a basic task
         $task = new Task($admin);
         $task->setTitle('A demo task');
@@ -144,6 +215,8 @@ class ApiDb extends AbstractDbSet
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
+        $em->persist($ticket_layout1);
+        $em->persist($ticket_layout2);
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
@@ -235,7 +308,8 @@ class ApiDb extends AbstractDbSet
                 ('core.install_token', 'PUGYIA9E82Z8JCPKO0NKGC957HITHNZRFHY4CQ3V1380214398'),
                 ('core.last_cron_run', '".time()."'),
                 ('core.last_cron_start', '".time()."'),
-                ('core.license', 'TlZNVi0wMTEyLUZVVVNFVEJHVFJNRU9KQlNHVlJNUVNTUgERC3\r\nlkZGRncEQKPwB2IyU+LiJjOgZ9FhE8ARdRIQ4OCR8seUR0ZRUZ\r\nJi9+cQB4eTF5ZjQ3P2J5TXYxdREHWzB/a1xiVQ0KeQdqMS5Qf1\r\nYtWXwZagd5DX9OCxASXzAzNGJmGTE7HhAKEBBnODZiGyYGAXVt\r\nLh8TKxcMQyFbKiAhP08aEFoECSM4TQkmMS8mEXJ1UQQINRcsAG\r\noHPBBxZxcFP1l7Uw8TJwseDn1IXAI5WwxLfVQoASkUClloBy93\r\nUEF2XFMQCwYFSC9aewFYHwJVeV0RAAonCEkhIzkjHn8WWSkRPn\r\ncpVyxrMQw6fARnIk8TDQcQCGcZRSombUhedVMENwhxUmpTLUIV\r\nZHRUflZ5UAhnAVs0CyhTZgspTkUIfQVdNWA'),
+                ('core.license', '".$this->getLicenseKey()."'),
+                ('core.rewrite_urls', '1'),
                 ('core.setup_initial', '1'),
                 ('core.task_completed_add_ticketfield', '".time()."'),
                 ('core.twitter_last_cleanup', '".time()."'),
@@ -526,6 +600,35 @@ class ApiDb extends AbstractDbSet
         "
         );
         // end of "/user_groups"
+
+        // Department permissions test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('1', '1', '1', 'tickets', 'full', '1');
+            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('2', '2', '1', 'tickets', 'full', '1');
+        "
+        );
+        // end of department permissions
+
+        // Products test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('1', 'Product 1', '10', '0');
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('2', 'Product 2', '20', '0');
+            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('3', 'Product 3', '30', '0');
+        "
+        );
+        // end of products
+
+        // Ticket priorities test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('1', 'Priority 1', '10');
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('2', 'Priority 2', '20');
+            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('3', 'Priority 3', '30');
+        "
+        );
+        // end of ticket priorities
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(

@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
+use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -190,5 +191,68 @@ class BaseController extends FOSRestController
     protected function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Cache\EtagGenerator
+     */
+    protected function getEtagGenerator()
+    {
+        return $this->get('etag_generator');
+    }
+
+    /**
+     * @param $parameters
+     *
+     * @return string
+     */
+    protected function generateEtag($parameters)
+    {
+        return $this->getEtagGenerator()->generate($parameters);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Cache\VersionService
+     */
+    protected function getVersionService()
+    {
+        return $this->get('cache.version_service');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getThisVersionId()
+    {
+        return $this->getVersionService()
+            ->getVersion(TypeUtils::getBaseTypeName($this));
+    }
+
+    /**
+     *
+     */
+    protected function regenerateThisVersionId()
+    {
+        $this->getVersionService()->newVersion(TypeUtils::getBaseTypeName($this));
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Cache\Resolver\FileResolver
+     */
+    protected function getCacheResolver()
+    {
+        return $this->get('cache.resolver');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return null|\Symfony\Component\HttpFoundation\Response
+     */
+    protected function getCachedResponse(Request $request, $etag)
+    {
+        if ($response = $this->get('cache.resolver')->resolve($request)) {
+            return $response->getEtag() === $etag ? $this->getCacheResolver()->restoreResponseBody($response) : null;
+        }
     }
 }

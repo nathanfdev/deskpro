@@ -32,53 +32,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 class SetCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    private $customDef;
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function __construct(array $options)
     {
-        $resolver->setRequired('input');
+        $resolver = new ActionOptionsResolver();
+        self::configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
+
+    public static function configureOptions(ActionOptionsResolver $resolver)
+    {
+        $resolver->setRequired(self::OPTION_INPUT);
+        $resolver->setAllowedTypes(self::OPTION_INPUT, 'string');
         $resolver->setAllowedValues(
-            'input',
+            self::OPTION_INPUT,
             function ($value) {
-                return is_string($value);
+                return !empty($value);
             }
         );
     }
 
-    /**
-     * Fetch CustomDef.
-     */
-    public function init()
-    {
-        $this->customDef = $this->em
-            ->getRepository('DeskPRO:CustomDefFeedback')
-            ->findOneBy(['title' => 'Category']);
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        $feedback->resetCustomData();
-        $customCategory = new CustomDataFeedback();
-        $customCategory->setInput($this->options['input']);
-        $customCategory->setField($this->customDef);
-        $feedback->addCustomData($customCategory);
-    }
-
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::SET_CATEGORY_ACTION => ['input' => $this->options['input']]];
+        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
     }
 }

@@ -54,8 +54,14 @@ class TicketLinkGenerator implements LinkGeneratorInterface
      */
     private $ticket_public_id_resolver;
 
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface  $url_generator
+     * @param TicketPublicIdResolver $ticket_public_id_resolver
+     */
     public function __construct(
-        UrlGeneratorInterface $url_generator,
+        UrlGeneratorInterface  $url_generator,
         TicketPublicIdResolver $ticket_public_id_resolver
     ) {
         $this->url_generator             = $url_generator;
@@ -65,17 +71,16 @@ class TicketLinkGenerator implements LinkGeneratorInterface
     /**
      * Supports all TICKETs. We only get here if it's a CUSTOM link request.
      *
-     * @param $object
-     * @param $type
-     * @param $context
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function supports($object, $type, $context)
     {
         return $object instanceof Ticket || $object instanceof TicketView;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate($ticket, $type, $context, $extra_params, $reference_type)
     {
         if ($ticket instanceof TicketView) {
@@ -95,31 +100,31 @@ class TicketLinkGenerator implements LinkGeneratorInterface
             case 'edit':
                 return $this->url_generator->generate(
                     'portal_tickets_edit',
-                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    array_merge(['ticket_ref' => $ref], $extra_params),
                     $reference_type
                 );
             case 'resolve':
                 return $this->url_generator->generate(
                     'portal_tickets_resolve',
-                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    array_merge(['ticket_ref' => $ref], $extra_params),
                     $reference_type
                 );
             case 'unresolve':
                 return $this->url_generator->generate(
                     'portal_tickets_unresolve',
-                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    array_merge(['ticket_ref' => $ref], $extra_params),
                     $reference_type
                 );
             case 'add-cc':
                 return $this->url_generator->generate(
                     'portal_tickets_cc_add',
-                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    array_merge(['ticket_ref' => $ref], $extra_params),
                     $reference_type
                 );
             default:
                 return $this->url_generator->generate(
                     'portal_tickets_view',
-                    array_merge(array('ticket_ref' => $ref), $extra_params),
+                    array_merge(['ticket_ref' => $ref], $extra_params),
                     $reference_type
                 );
         }

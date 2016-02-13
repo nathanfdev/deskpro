@@ -1,0 +1,86 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\Form\Error;
+
+/**
+ * Class ApiErrors.
+ */
+class ApiErrors
+{
+    /** The absolute last fallback error code for thrown exceptions */
+    const EXCEPTION_FALLBACK = 'error';
+
+    /** The absolute last fallback error code for form/validator errors */
+    const CONSTRAINT_FALLBACK = 'invalid';
+
+    /** General purpose error codes */
+    const INTERNAL_ERROR            = 'internal_error';
+    const BAD_REQUEST               = 'bad_request';
+    const INVALID_INPUT             = 'invalid_input';
+    const FORBIDDEN                 = 'unauthorized';
+    const UNAUTHORIZED              = 'unauthorized';
+    const UNAUTHORIZED_CHECK_APACHE = 'unauthorized_check_server';
+    const NOT_FOUND                 = 'not_found';
+    const INVALID_JSONP_CALLBACK    = 'invalid_jsonp_callback';
+    const INVALID_JSON_BODY         = 'invalid_json_body';
+    const INVALID_DATA_TYPE         = 'invalid_data_type';
+    const EXTRA_FIELDS              = 'extra_fields';
+
+    /** Some specific authentication codes */
+    const INVALID_SESSION_ID             = 'invalid_session_id';
+    const INVALID_API_KEY                = 'invalid_api_key';
+    const INVALID_API_TOKEN              = 'invalid_api_token';
+    const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
+    const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
+    const BAD_CREDENTIALS                = 'bad_credentials';
+    const NO_PERSON                      = 'no_person';
+
+    /** Validator/Constraint specific error codes */
+    const NOT_NULL                    = 'required';
+    const NOT_BLANK                   = 'required';
+    const WRONG_LENGTH                = 'wrong_length';
+    const BAD_CHOICE                  = 'bad_choice';
+    const INVALID_EMAIL               = 'invalid_email';
+    const RESOURCE_NOT_FOUND          = 'resource_not_found';
+    const INVALID_PHONE_NUMBER        = 'invalid_phone_number_format';
+    const DUPE_EMAIL                  = 'dupe_email';
+    const SYSTEM_EMAIL                = 'system_email';
+    const BANNED_EMAIL                = 'banned_email';
+    const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
+    const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
+
+    /** Term Engine Specific */
+    const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
+
+    /** Ticket specific */
+    const NOT_ASSIGNABLE_TICKET_DEPARTMENT = 'not_assignable_ticket_department';
+}

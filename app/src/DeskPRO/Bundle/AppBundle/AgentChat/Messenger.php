@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -49,6 +48,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class Messenger.
+ */
 class Messenger
 {
     /**
@@ -74,27 +76,6 @@ class Messenger
         $this->em                      = $em;
         $this->department_data_service = $department_data_service;
         $this->event_dispatcher        = $event_dispatcher;
-    }
-
-    /**
-     * @param AgentChat $chat
-     * @param Person    $person
-     * @param           $message
-     *
-     * @return AgentChatMessage
-     */
-    public function addMessage(AgentChat $chat, Person $person, $message)
-    {
-        $agentMessage = new AgentChatMessage();
-        $agentMessage->setPerson($person)
-            ->setMessage($message)
-            ->setMetadata(array());
-        $chat->addMessage($agentMessage);
-        $this->em->persist($chat);
-        $this->em->persist($agentMessage);
-        $this->em->flush();
-
-        return $agentMessage;
     }
 
     /**
@@ -176,6 +157,9 @@ class Messenger
         return $this->createChat([$department], Chatable::PARTICIPANT_TYPE_DEPARTMENT);
     }
 
+    /**
+     * @return AgentChat
+     */
     public function createEveryoneChat()
     {
         return $this->createChat([], Chatable::PARTICIPANT_TYPE_EVERYONE);
@@ -185,7 +169,7 @@ class Messenger
      * @param            $id
      * @param bool|false $forceReload
      *
-     * @return null|object
+     * @return null|AgentChat
      */
     public function getChat($id, $forceReload = false)
     {
@@ -195,6 +179,11 @@ class Messenger
         return !$forceReload ? $agentChatRepository->find($id) : $agentChatRepository->findOneBy(['id' => $id]);
     }
 
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
     public function getChats(array $ids)
     {
         /** @var AgentChatRepository $agentChatRepository */
@@ -326,14 +315,16 @@ class Messenger
                 if ($this->isPersonInvolvedInChat($user, $message->getChat())) {
                     $message->setStatus($status);
                     $this->em->persist($message);
-                    $this->event_dispatcher->dispatch(
-                        MarkMessageEvent::EVENT_NAME,
-                        new MarkMessageEvent($message->getId(), $status)
-                    );
                 }
                 // TODO handle not-mine access violation
             }
+            $this->em->flush();
+            foreach ($messages as $message) {
+                $this->event_dispatcher->dispatch(
+                    MarkMessageEvent::EVENT_NAME,
+                    new MarkMessageEvent($message->getId(), $status)
+                );
+            }
         }
-        $this->em->flush();
     }
 }

@@ -56,6 +56,13 @@ class BrandContainerFactory
      */
     private $bs;
 
+    /**
+     * Constructor.
+     *
+     * @param SettingsResolver   $settings_resolver
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $bs
+     */
     public function __construct(
         SettingsResolver $settings_resolver,
         EntityManager $em,
@@ -66,6 +73,11 @@ class BrandContainerFactory
         $this->bs                = $bs;
     }
 
+    /**
+     * @param Brand $brand
+     *
+     * @return BrandContainer
+     */
     public function create(Brand $brand)
     {
         return new BrandContainer(

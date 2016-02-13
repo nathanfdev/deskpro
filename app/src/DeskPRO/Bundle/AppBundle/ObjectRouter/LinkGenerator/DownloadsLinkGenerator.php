@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\ArticleAttachment;
@@ -50,11 +49,19 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
      */
     private $url_generator;
 
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $url_generator
+     */
     public function __construct(UrlGeneratorInterface $url_generator)
     {
         $this->url_generator = $url_generator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports($object, $type, $context)
     {
         return
@@ -64,17 +71,20 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
         ;
     }
 
-    public function generate($download_or_article_attachment, $type, $context, $extra_params, $reference_type)
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $download_or_article_attachment */
-        $blob = $download_or_article_attachment->getBlob();
+        /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $object */
+        $blob = $object->getBlob();
 
         return $this->url_generator->generate(
             'serve_blob',
-            array_merge(array(
+            array_merge([
                 'blob_auth_id' => $blob->getAuthcode(),
                 'filename'     => $blob->getFilenameSafe(),
-            ), $extra_params),
+            ], $extra_params),
             $reference_type
         );
     }

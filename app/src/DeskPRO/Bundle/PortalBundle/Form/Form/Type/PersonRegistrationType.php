@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -44,10 +43,13 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class PersonRegistrationType.
+ */
 class PersonRegistrationType extends AbstractType
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+     * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
     private $field_manager;
 
@@ -61,72 +63,75 @@ class PersonRegistrationType extends AbstractType
      */
     private $captcha_decider;
 
-    public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
+    /**
+     * Constructor.
+     *
+     * @param CustomFieldManager $field_manager
+     * @param LanguageManager    $language_manager
+     * @param CaptchaDecider     $captcha_decider
+     */
+    public function __construct(CustomFieldManager $field_manager, LanguageManager $language_manager, CaptchaDecider $captcha_decider)
     {
         $this->field_manager    = $field_manager;
         $this->language_manager = $language_manager;
         $this->captcha_decider  = $captcha_decider;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array(
-            'label'       => $this->language_manager->phrase('portal.forms.label_name'),
-            'required'    => true,
-            'constraints' => array(
-                new NotBlank(['message' => 'portal.forms.error_required']),
-            ),
-        ));
-
-        $builder->add('primary_email', 'deskpro_person_email', array(
-            'required' => true,
-            'label'    => false,
-        ));
-
-        $builder->add('password', 'repeated', array(
-            'first_name'    => 'password',
-            'first_options' => array(
-                'label' => $this->language_manager->phrase('portal.forms.label_password'),
-            ),
-            'second_name'    => 'confirm',
-            'second_options' => array(
-                'label' => $this->language_manager->phrase('portal.forms.label_password_confirm'),
-            ),
-            'type'        => 'password',
-            'mapped'      => false,
-            'required'    => true,
-            'constraints' => array(
-                new NotBlank(['message' => 'portal.forms.error_required']),
-                new DpPassword(['person' => new PersonGuest()]),
-            ),
-        ));
-
-        $builder->add('timezone', 'timezone', array(
-            'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
-            )
-        );
+        $builder
+            ->add('name', 'text', [
+                'label'       => $this->language_manager->phrase('portal.forms.label_name'),
+                'required'    => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'portal.forms.error_required']),
+                ],
+            ])
+            ->add('primary_email', 'deskpro_person_email', [
+                'required' => true,
+                'label'    => false,
+            ])
+            ->add('password', 'repeated', [
+                'first_name'    => 'password',
+                'first_options' => [
+                    'label' => $this->language_manager->phrase('portal.forms.label_password'),
+                ],
+                'second_name'    => 'confirm',
+                'second_options' => [
+                    'label' => $this->language_manager->phrase('portal.forms.label_password_confirm'),
+                ],
+                'type'        => 'password',
+                'mapped'      => false,
+                'required'    => true,
+                'constraints' => [
+                    new NotBlank(['message' => 'portal.forms.error_required']),
+                    new DpPassword(['person' => new PersonGuest()]),
+                ],
+            ])
+            ->add('timezone', 'timezone', [
+                'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
+                ])
+        ;
 
         $field_manager   = $this->field_manager;
         $captcha_decider = $this->captcha_decider;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {
             $form = $event->getForm();
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
-                if (!$field_def->is_enabled) {
+                if (!$field_def->isEnabled()) {
                     continue;
                 }
 
                 $id = $field_def->getId();
-                $form->add(
-                    $id,
-                    'deskpro_custom_data_person',
-                    array(
-                        'custom_data_field' => $field_def,
-                        'person'            => $event->getData(),
-                        'property_path'     => sprintf('getCustomDataCollection[%s]', $id),
-                        'agent_interface'   => false,
-                        'label'             => $field_def->getTitle(),
-                    )
-                );
+                $form->add($id, 'deskpro_custom_data', [
+                    'custom_def'      => $field_def,
+                    'owner'           => $event->getData(),
+                    'agent_interface' => false,
+                    'label'           => $field_def->getTitle(),
+                ]);
             }
 
             if ($captcha_decider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
@@ -138,30 +143,24 @@ class PersonRegistrationType extends AbstractType
             $event->getData()->setPassword($event->getForm()->get('password')->getData());
         });
     }
-
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
+        $resolver
+            ->setDefaults([
                 'data_class' => 'Application\DeskPRO\Entity\Person',
-            )
-        );
-
-        $resolver->setRequired(
-            array('settings')
-        );
-
-        $resolver->setAllowedTypes(
-            array(
+            ])
+            ->setRequired(['settings'])
+            ->setAllowedTypes([
                 'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
-            )
-        );
+            ])
+        ;
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

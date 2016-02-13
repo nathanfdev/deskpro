@@ -34,7 +34,7 @@ use DeskPRO\Bundle\AppBundle\Security\Permissions\Agent\AgentPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 
 /**
- * This serivce should be the only entry point into accessing permissions. Use this service and get the correct
+ * This service should be the only entry point into accessing permissions. Use this service and get the correct
  * "permissions bag" for either the portal or the agent side, whichever you need.
  */
 class PermissionsManager
@@ -49,6 +49,12 @@ class PermissionsManager
      */
     private $agent_permissions;
 
+    /**
+     * Constructor.
+     *
+     * @param PortalPermissionsManager $portal_permissions
+     * @param AgentPermissionsManager  $agent_permissions
+     */
     public function __construct(PortalPermissionsManager $portal_permissions, AgentPermissionsManager $agent_permissions)
     {
         $this->portal_permissions = $portal_permissions;

@@ -350,7 +350,7 @@ class TicketEdit implements PersonContextInterface
                     }
                     $field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
                     foreach ($field->getHandler()->getDataFromForm($action['value']) as $info) {
-                        $this->ticket->setCustomData($info[0], $info[1], $info[2]);
+                        $this->ticket->setCustomDataField($info[0], $info[1], $info[2]);
                     }
 
                     break;
@@ -382,7 +382,7 @@ class TicketEdit implements PersonContextInterface
     public function setCustomDataAll(array $ticket_field_datas)
     {
         foreach ($ticket_field_datas as $info) {
-            $this->ticket->setCustomData($info[0], $info[1], $info[2]);
+            $this->ticket->setCustomDataField($info[0], $info[1], $info[2]);
         }
     }
 

@@ -1,11 +1,7 @@
 import { createAction } from 'Ampliflux';
-import * as People from 'DeskPRO/Bundle/AgentBundle/Services/Api/People';
-import * as Organizations from 'DeskPRO/Bundle/AgentBundle/Services/Api/Organizations';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from '../Selectors/list';
-import { setPeopleRequest } from '../RecordStores/Actions/peopleActions';
-import { setOrganizationsRequest } from '../RecordStores/Actions/organizationsActions';
-import { setUserGroupsRequest } from '../RecordStores/Actions/userGroupsActions';
-import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'crm';
@@ -22,14 +18,15 @@ const prepareLinkedData = (linked) => {
 
 export const setParams = createAction('CRM_LIST_SET_CURRENT_PARAMS');
 
+const include = 'organization,usergroup,language';
 export const loadPeople = createAction(
   'CRM_LIST_LOAD_DATA',
-  (params) => dispatch => People.loadPeople(params).then(promise => {
+  (params) => dispatch => repository('Person').search(params, include).then(promise => {
     const res = promise.getData();
-    dispatch(setOrganizationsRequest(recordStoresId, prepareLinkedData(res.linked.organization)));
-    dispatch(setUserGroupsRequest(recordStoresId, prepareLinkedData(res.linked.usergroup)));
-    dispatch(setLanguagesRequest(recordStoresId, prepareLinkedData(res.linked.language)));
-    dispatch(setPeopleRequest(recordStoresId, res.data));
+    dispatch(setCollection('Organization', recordStoresId, prepareLinkedData(res.linked.organization)));
+    dispatch(setCollection('UserGroup', recordStoresId, prepareLinkedData(res.linked.usergroup)));
+    dispatch(setCollection('Language', recordStoresId, prepareLinkedData(res.linked.language)));
+    dispatch(setCollection('Person', recordStoresId, res.data));
     const ids = res.data.map(item=>item.id);
     return { ids: ids, pagination: res.meta.pagination };
   })
@@ -37,9 +34,9 @@ export const loadPeople = createAction(
 
 export const loadOrganizations = createAction(
   'CRM_LIST_LOAD_DATA',
-  (params) => dispatch => Organizations.load(params).then(promise => {
+  (params) => dispatch => repository('Organization').search(params).then(promise => {
     const res = promise.getData();
-    dispatch(setOrganizationsRequest(recordStoresId, res.data));
+    dispatch(setCollection('Organization', recordStoresId, res.data));
     const ids = res.data.map(item=>item.id);
     return { ids: ids, pagination: res.meta.pagination };
   })

@@ -8,7 +8,6 @@ export class MultipleChoiceFilter extends Component {
     dispatch: PropTypes.func.isRequired,
     stateValue: PropTypes.func.isRequired,
     setParamsAction: PropTypes.func.isRequired,
-    setActiveItem: PropTypes.func,
     unsetParams: PropTypes.func.isRequired,
     activeItem: PropTypes.object,
     state: PropTypes.object.isRequired,
@@ -35,7 +34,7 @@ export class MultipleChoiceFilter extends Component {
   }
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, activeItem, setActiveItem, unsetParams } = this.props;
+    const { dispatch, setParamsAction, stateValue, filter, activeItem, unsetParams } = this.props;
     const { label, icon, param, multiple, quickFilter, options } = filter;
     const params = [param];
     options.map(option=> {
@@ -72,7 +71,6 @@ export class MultipleChoiceFilter extends Component {
     return (
       <FilterItem activeItem={activeItem}
                   selected={this.getSelected(options, filterValue)}
-                  setActiveItem={setActiveItem}
                   icon={icon || 'filter'}
                   label={label}
                   isActive={isActive}

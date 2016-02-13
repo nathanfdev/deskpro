@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FieldWrapper } from './FieldWrapper';
-import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 
 export class Password extends React.Component {
 

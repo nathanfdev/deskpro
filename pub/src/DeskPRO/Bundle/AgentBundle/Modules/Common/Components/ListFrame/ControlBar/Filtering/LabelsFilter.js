@@ -22,7 +22,8 @@ export class LabelsFilter extends Component {
     const mode = stateValue(modeParam);
     const isActive = Boolean(selected.length);
 
-    const selectLabel = selectedLabel => {
+    const selectLabel = (selectedLabel, event) => {
+      event.preventDefault();
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
         dispatch(setParamsAction({ [param]: selected, delayReload: true }));
@@ -45,13 +46,15 @@ export class LabelsFilter extends Component {
                   setActiveItem={setActiveItem}
                   selected={selected}
                   resetFilter={unsetParams.bind(this, param)}>
-        <LabelsForm matchMode={matchMode}
-                    params={{'get': () => mode}}
-                    changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
-                    allLabels={labels}
-                    selectedLabels={selected}
-                    selectLabel={selectLabel}
-                    deselectLabel={deselectLabel}/>
+        <Menu>
+          <LabelsForm matchMode={matchMode}
+                      params={{'get': () => mode}}
+                      changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
+                      allLabels={labels}
+                      selectedLabels={selected}
+                      selectLabel={selectLabel}
+                      deselectLabel={deselectLabel}/>
+        </Menu>
       </FilterItem>
     );
   }

@@ -29,14 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * API access to languages.
+ * API access to ticket slas.
+ *
+ * @ApiModes("all")
  */
 class TicketSlasController extends BaseController
 {

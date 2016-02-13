@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 /**
  * A FormActionStore facilitates communication between
@@ -8,7 +8,7 @@ import $ from "jquery";
  * For example, replacing a select box with a rich select box. The value from the
  * component is synced with a real form element.
  */
-export default class FormActionStore {
+export class FormActionStore {
   constructor(el) {
     this.el = $(el);
     this.listeners = {};
@@ -22,9 +22,10 @@ export default class FormActionStore {
 
   initSync() {
     // Used to notify component
-    this.el.on('change', (event) => {
-      let oldValue = this.value;
-      let value = this.readValueFromForm();
+    this.el.on('change', event => {
+      const oldValue = this.value;
+      const value = this.readValueFromForm();
+
       this.emit('formChanged', { event: event, value: value, oldValue: oldValue });
     });
 
@@ -54,7 +55,6 @@ export default class FormActionStore {
     }
 
     data.actionType = actionType;
-
     this.listeners[actionType].forEach(cb => cb(data));
   }
 
@@ -93,7 +93,7 @@ export default class FormActionStore {
    * @param value
    */
   setValue(value) {
-    let oldValue = this.value;
+    const oldValue = this.value;
     this.value = value;
     this.emit('valueChanged', { value: value, oldValue: oldValue });
   }

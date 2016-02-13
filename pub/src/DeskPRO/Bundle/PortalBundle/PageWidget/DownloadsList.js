@@ -4,32 +4,32 @@ import $ from 'jquery';
 export class DownloadsList extends PageWidget {
 
   renderWidget() {
-    const me = this;
-    this.$element.find('.as-vote-btn').on('click', function(ev) {
-      const $voteBtn = $(this);
-      const $widget = $voteBtn.closest('.as-vote-widget');
+    this.$element.find('.as-vote-widget').each((i, node) => {
+      const $widget = $(node);
+      const $btn = $widget.find('.as-vote-btn');
       const $count = $widget.find('.as-vote-count');
 
-      ev.preventDefault();
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
+      $widget.on('vote', () => {
+        const votes = parseInt($count.data('votes'), 10) || 0;
 
-      if ($voteBtn.hasClass('with-voted')) {
-        $voteBtn.toggleClassClass('with-voted');
-        $voteBtn.toggleClassClass('with-voted');
-        return;
-      }
+        $count.text(votes + 1);
+        $widget.addClass('with-voted');
+      });
 
-      me.handleVote($widget, $voteBtn, $count);
+      $btn.on('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        if ($btn.hasClass('with-voted')) {
+          $btn.toggleClass('with-voted');
+          $btn.toggleClass('with-voted');
+          return;
+        }
+
+        $.post($btn.attr('href'));
+        $widget.trigger('vote');
+      });
     });
-  }
-
-  handleVote($widget, $voteBtn, $count) {
-    const votes = parseInt($count.data('votes'), 10) || 0;
-    $count.text(votes + 1);
-    $widget.addClass('with-voted');
-
-    const action = $voteBtn.attr('href');
-    $.post(action);
   }
 }

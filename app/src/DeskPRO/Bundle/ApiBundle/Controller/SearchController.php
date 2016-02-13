@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -38,11 +39,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class SearchController.
+ *
+ * @ApiModes("all")
  */
 class SearchController extends BaseController
 {
     /**
-     * @Annotations\Get("/search", name="api_languages")
+     * @Annotations\Get("/search", name="api_quick_search")
      *
      * @param Request $request
      *

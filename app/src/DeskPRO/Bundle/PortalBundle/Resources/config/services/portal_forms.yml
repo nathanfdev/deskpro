@@ -41,10 +41,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: [@brand_stack, @security.authorization_checker, @security.token_storage, @request_stack, @anti_abuse]
 
-  form_hierarchy_generator:
-    class: DeskPRO\Bundle\PortalBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
-
   deskpro.validator.valid_recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
     arguments: [@brand_stack, @request_stack]
@@ -58,21 +54,6 @@ services:
   #
   # Types
   #
-
-  form.ticket:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketType
-    arguments:
-      - @form_field_manager
-      - @ticket_layout_factory
-      - @ticket_layout_differ
-      - @form_hierarchy_generator
-      - @doctrine.orm.default_entity_manager
-      - @language_manager
-      - @tickets.custom_per_field_manager
-      - @default_value_for_ticket_layout_field
-    tags:
-      - { name: form.type, alias: ticket }
-
 
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
@@ -90,14 +71,14 @@ services:
 
   form.person_registration:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
-    arguments: [@form_field_manager, @language_manager, @captcha_decider]
+    arguments: [@custom_field_manager, @language_manager, @captcha_decider]
     tags:
       - { name: form.type, alias: person_registration }
 
 
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
-    arguments: [@form_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]
+    arguments: [@custom_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: person_profile }
 
@@ -113,15 +94,9 @@ services:
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
-    arguments: [@captcha_decider, @language_manager]
+    arguments: [@captcha_decider, @language_manager, @custom_field_manager]
     tags:
       - { name: form.type, alias: new_feedback }
-
-  form.custom_feedback_fields:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomFeedbackType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: custom_feedback_fields }
 
 
   form.feedback_attachment:
@@ -160,66 +135,11 @@ services:
       - @deskpro.core.translate
 
 
-  form.deskpro_custom_per_field_data:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomPerFieldType
-    arguments: [@tickets.custom_per_field_manager, @form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_per_field_data }
-
-
-  form.custom_data_ticket:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataTicketType
-    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_ticket }
-
-
-  form.custom_data_person:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataPersonType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_person }
-
-
-  form.custom_data_organization:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataOrganizationType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_organization }
-
-
-  form.custom_data_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomDataFeedbackType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_feedback }
-
-
   form.ticket_message:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageType
     arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_message }
-
-
-  form.ticket_message_attachment:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
-    tags:
-      - { name: form.type, alias: ticket_message_attachment }
-
-
-  form.ticket_message_attachment_collection:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageAttachmentCollectionType
-    tags:
-      - { name: form.type, alias: ticket_message_attachment_collection }
-
-
-  form.custom_field_choice:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomFieldChoiceType
-    arguments: [@form_hierarchy_generator]
-    tags:
-      - { name: form.type, alias: deskpro_custom_field_choice }
 
 
   form.deskpro_contextual_per_field_choice:
@@ -233,69 +153,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\LanguageType
     tags:
       - { name: form.type, alias: deskpro_language }
-
-
-  form.person_email:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailType
-    tags:
-      - { name: form.type, alias: deskpro_person_email }
-
-
-  form.person_email_choice:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEmailChoiceType
-    arguments:
-      - @doctrine.orm.default_entity_manager
-    tags:
-      - { name: form.type, alias: deskpro_person_email_choice }
-
-
-  form.display_html:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DisplayHtmlType
-    tags:
-      - { name: form.type, alias: deskpro_display_html }
-
-
-  form.hidden:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HiddenType
-    arguments: [@request_stack]
-    tags:
-      - { name: form.type, alias: deskpro_hidden }
-
-
-  form.department:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DepartmentType
-    tags:
-      - { name: form.type, alias: deskpro_department }
-
-
-  form.combined:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CombinedType
-    tags:
-      - { name: form.type, alias: deskpro_combined_type }
-
-
-  form.product:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ProductType
-    tags:
-      - { name: form.type, alias: deskpro_product }
-
-
-  form.category:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CategoryType
-    tags:
-      - { name: form.type, alias: deskpro_category }
-
-
-  form.workflow:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\WorkflowType
-    tags:
-      - { name: form.type, alias: deskpro_workflow }
-
-
-  form.priority:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PriorityType
-    tags:
-      - { name: form.type, alias: deskpro_priority }
 
 
   form.captcha:
@@ -319,36 +176,10 @@ services:
       - { name: form.type, alias: deskpro_blob }
 
 
-  form.cc:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CcType
-    arguments: [@person_factory]
-    tags:
-      - { name: form.type, alias: deskpro_cc }
-
-
-  form.date:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateType
-    tags:
-      - { name: form.type, alias: deskpro_date }
-
-
-  form.datetime:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DateTimeType
-    tags:
-      - { name: form.type, alias: deskpro_datetime }
-
-
   form.heirarchical_entity:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }
-
-
-  form.entity_hierarchy:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\EntityHeirarchyType
-    arguments: [@form_hierarchy_generator]
-    tags:
-      - { name: form.type, alias: entity_hierarchy }
 
 
   form.api.chat_create:

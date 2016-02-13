@@ -57,4 +57,9 @@ class MarkMessageEvent extends AbstractMessageEvent
     {
         return $this->status;
     }
+
+    public function __sleep()
+    {
+        return array_merge(parent::__sleep(), ['status']);
+    }
 }

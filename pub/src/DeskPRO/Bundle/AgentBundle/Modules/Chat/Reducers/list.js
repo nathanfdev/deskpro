@@ -4,23 +4,16 @@ import * as actions from '../Actions/chatListActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
-  async: {
-    done: true
-  },
   viewMode: constants.VIEW_MODE_CARD,
   currentListParams: {
     sort: 'date_created',
     order: constants.ORDER_DESC
-  },
-  elements: []
+  }
 };
 
 export default createReducer(initialState, {
-
   [actions.load]: async({
-    success: (state, payload) => state.set('elements', payload.ids).set('pagination', payload.pagination),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
+    success: (state, payload) => state.set('pagination', payload.pagination)
   }),
-  [actions.updateCurrentListParams]: setFullPayload('currentListParams'),
+  [actions.updateCurrentListParams]: setFullPayload('currentListParams')
 });

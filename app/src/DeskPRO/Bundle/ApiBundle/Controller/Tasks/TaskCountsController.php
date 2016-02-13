@@ -29,15 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskGroupsController.
+ *
+ * @ApiModes("all")
  */
 class TaskCountsController extends BaseController
 {

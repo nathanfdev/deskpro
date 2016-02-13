@@ -28,12 +28,6 @@ services:
       class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
       arguments: [@object_router, @icon_factory]
 
-  attachment_accepter:
-    class: Application\DeskPRO\Attachments\AcceptAttachment
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
-    factory_method: create
-    arguments: [@service_container]
-
   tickets.new_ticket:
     class: DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
     arguments:

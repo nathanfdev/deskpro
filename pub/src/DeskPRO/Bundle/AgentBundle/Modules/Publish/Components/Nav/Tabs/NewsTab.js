@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { SectionsPane, Section, SectionGroupedHeader }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
 import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
 

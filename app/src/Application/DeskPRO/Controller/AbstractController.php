@@ -231,7 +231,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      *
      * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
      *
-     * @list.html.twig will get SomeBundle:MyController:list.html.
+     * @ list.html.twig will get SomeBundle:MyController:list.html.
      *
      * @param string                                     $view
      * @param array                                      $parameters

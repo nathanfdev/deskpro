@@ -7,11 +7,10 @@
  * }))
  */
 
-export default function async(run) {
+export function async(run) {
   return () => {
     var done = false;
     waitsFor(() => { return done; });
     run(() => { done = true; });
   };
 }
-

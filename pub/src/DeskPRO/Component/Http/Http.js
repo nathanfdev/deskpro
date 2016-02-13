@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import HttpResponse from './HttpResponse';
+import { HttpResponse } from './HttpResponse';
 
-export default class Http {
+export class Http {
+
   constructor(ajaxFn) {
     this.ajaxFn = ajaxFn;
 

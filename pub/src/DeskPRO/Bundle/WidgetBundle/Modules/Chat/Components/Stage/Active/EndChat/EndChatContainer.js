@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Simple from 'DeskPRO/Component/Positioned/Simple';
+import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { EndChatConfirmPopup } from './EndChatConfirmPopup';
 import { endChat } from '../../../../Actions/chatActions';

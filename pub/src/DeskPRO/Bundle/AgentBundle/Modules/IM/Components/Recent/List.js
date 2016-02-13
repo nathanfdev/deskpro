@@ -1,47 +1,30 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-
 import Loader from 'react-loader';
-
 import { Item } from './Item';
-
-// chats
 import * as actions from '../../Actions/chatsActions';
-import * as chatActions from '../../RecordStores/Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
-import { recentChatsSelector, recentChatsStatusSelector } from '../../RecordStores/Selectors/chats';
-
-// agents
-import { agentsSelector, agentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentsSelectors';
-import { meSelector, meStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/RecordStores/Selectors/meSelectors';
-
-// teams
-import { myAgentTeamsSelector, myAgentTeamsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/agentTeamsSelectors';
-
-// departmetns
-import { myDepartmentsSelector, myDepartmentsStatusSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Selectors/departmentsSelectors';
+import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
+import { myDepartmentsSelector, myAgentTeamsSelector, setCollection, loadFromApi, isLoadedCollectionSelectorFactory,
+  collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),
-  meStatus: meStatusSelector(state),
   agents: agentsSelector(state),
   teams: myAgentTeamsSelector(state),
   departments: myDepartmentsSelector(state),
-  recentChats: recentChatsSelector(state),
+  recentChats: collectionSelectorFactory('AgentChat', 'recent')(state),
   current: state.IM.chats.get('current'),
   chating: state.IM.chats.get('chating'),
   counts: state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  teamsStatus: myAgentTeamsStatusSelector(state),
-  agentsStatus: agentsStatusSelector(state),
-  departmentsStatus: myDepartmentsStatusSelector(state),
-  recentChatsStatus: recentChatsStatusSelector(state)
+  loaded: isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
 }))
 export class List extends React.Component {
 
   static propTypes = {
     me: PropTypes.object.isRequired,
-    meStatus: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
     teams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
@@ -49,10 +32,7 @@ export class List extends React.Component {
     current: PropTypes.object.isRequired,
     counts: PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    teamsStatus: PropTypes.object.isRequired,
-    agentsStatus: PropTypes.object.isRequired,
-    departmentsStatus: PropTypes.object.isRequired,
-    recentChatsStatus: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -64,7 +44,7 @@ export class List extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(chatActions.loadRecentChats());
+    this.props.dispatch(loadFromApi('AgentChat', 'DP_API/agent_chats/recent', 'recent'));
     this.refreshCounts();
   }
 
@@ -80,14 +60,13 @@ export class List extends React.Component {
         ids.push(parseInt(item.chat_id, 10));
         records[item.chat_id] = item.chat;
       });
-      dispatch(chatActions.releaseChats('recent', ids));
-      dispatch(chatActions.setChatsRequest('recent', records, ids));
+      dispatch(setCollection('AgentChat', 'recent', records));
     }
     this.props = props;
   }
 
   refreshCounts() {
-    if (this.props.recentChatsStatus.get('isDone')) {
+    if (this.props.loaded) {
       this.props.dispatch(messagesActions.refreshCounts());
     } else {
       setTimeout(this.refreshCounts.bind(this), 2000);
@@ -99,14 +78,7 @@ export class List extends React.Component {
   };
 
   render() {
-    const { recentChatsStatus, agentsStatus, teamsStatus, departmentsStatus, meStatus, loadingCounts, chating } = this.props;
-    const loaded = (
-      recentChatsStatus.get('isDone')
-      && agentsStatus.get('isDone')
-      && teamsStatus.get('isDone')
-      && departmentsStatus.get('isDone')
-      && meStatus.get('isDone')
-    );
+    const { loaded, loadingCounts, chating } = this.props;
     const { agents, teams, departments, recentChats, me, dispatch, counts, current } = this.props;
     const sortedChats = recentChats.sort((first, second) => {
       const fDate = Date.parse(first.get('date_last_message'));

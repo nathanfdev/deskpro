@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
@@ -49,6 +50,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketFiltersController.
+ *
+ * @ApiModes("all")
  */
 class TicketFiltersController extends BaseController
 {

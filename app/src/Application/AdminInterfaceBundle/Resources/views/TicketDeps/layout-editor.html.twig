@@ -44,7 +44,7 @@
 					</header>
 					<article>
 						<ul>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name_and_email"><span>Name & Email</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="person"><span>Name & Email</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_email"><span>Email</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
@@ -116,6 +116,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.category}" data-field-type="category"><span>Category</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.workflow}" data-field-type="workflow"><span>Workflow</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.priority}" data-field-type="priority"><span>Priority</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.label}" data-field-type="label"><span>Labels</span></li>
 							<li
 								ng-repeat="field in custom_ticket_fields"
 								ng-class="{'disabled': !field.is_enabled }"

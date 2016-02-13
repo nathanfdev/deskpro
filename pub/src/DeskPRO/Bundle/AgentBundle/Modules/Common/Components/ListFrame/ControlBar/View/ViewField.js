@@ -8,7 +8,6 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const cardSource = {
   beginDrag({ value }, {}, component) {
-    console.log('HERE WE GO', value);
     return {
       id: value,
       width: jQuery(findDOMNode(component)).width()

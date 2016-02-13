@@ -1,68 +1,31 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { showWelcomePage, doneInitialLoad } from '../../Application/Actions/bootstrapActions';
 import { DpApp } from './DpApp';
-import { DpAppLoading } from './DpAppLoading';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
-import { meSelector, meStateSelector } from '../RecordStores/Selectors/meSelectors';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
 import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer.js';
 import { coverShownSelector } from '../Selectors/dpWindow';
-import { isPreloadingSelector } from '../Selectors/bootstrap';
-import { showWelcomePageSelector } from '../Selectors/bootstrap';
-import { loadMe } from '../RecordStores/Actions/meActions';
-import { releasePeopleRequest } from '../../CRM/RecordStores/Actions/peopleActions';
+import { isBootstrappedSelector } from '../Selectors/bootstrap';
 
 @connect(state => ({
-  welcomePageShown: showWelcomePageSelector(state),
-  coverShown: coverShownSelector(state),
-  userStatus: meStateSelector.statusSel(state),
-  user: meSelector(state),
-  isPreloading: isPreloadingSelector(state)
+  isBootstrapped: isBootstrappedSelector(state),
+  coverShown: coverShownSelector(state)
 }))
 export class DpAppRouteContainer extends React.Component {
 
   static propTypes = {
     children: PropTypes.node.isRequired,
-    welcomePageShown: PropTypes.bool.isRequired,
+    isBootstrapped: PropTypes.bool.isRequired,
     coverShown: PropTypes.bool.isRequired,
-    isPreloading: PropTypes.bool.isRequired,
-    userStatus: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
-    this.props.dispatch(releasePeopleRequest('me'));
-    this.props.dispatch(loadMe());
-    this.props.dispatch(showWelcomePage());
-    this.hideWelcomePage();
-  }
-
-  componentDidUpdate() {
-    this.hideWelcomePage();
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.welcomePageTimer);
-  }
-
-  hideWelcomePage() {
-    const { userStatus, dispatch, isPreloading } = this.props;
-    if (!this.welcomePageTimer && userStatus.get('isDone') && !isPreloading) {
-      this.welcomePageTimer = setTimeout(() => dispatch(doneInitialLoad()), 3000);
-    }
-  }
-
   render() {
-    const { userStatus, welcomePageShown, coverShown, children } = this.props;
+    const { isBootstrapped, coverShown, children } = this.props;
 
-    if (userStatus.get('isLoading') || userStatus.get('isError')) {
-      return <DpAppLoading />;
-    }
-    if (welcomePageShown) {
-      return <WelcomeBack/>;
+    if (!isBootstrapped) {
+      return <WelcomeBack />;
     }
 
     return (

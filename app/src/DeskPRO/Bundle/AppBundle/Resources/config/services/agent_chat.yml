@@ -23,3 +23,24 @@ services:
   deskpro.agentchat.searcher:
     class: DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine
     arguments: [@doctrine.orm.default_entity_manager]
+
+  form.api.agent_chat.message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\MessageType
+    tags:
+      - { name: form.type, alias: api_agent_chat_message }
+
+  form.api.agent_chat.mark_messages:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\MarkMessageType
+    tags:
+      - { name: form.type, alias: api_agent_chat_mark_message }
+
+  form.api.agent_chat.start_chat:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\StartChatType
+    tags:
+      - { name: form.type, alias: api_agent_chat_start_chat }
+
+  form.api.agent_chat.search_message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\SearchMessagesType
+    tags:
+      - { name: form.type, alias: api_agent_chat_search_messages }
+

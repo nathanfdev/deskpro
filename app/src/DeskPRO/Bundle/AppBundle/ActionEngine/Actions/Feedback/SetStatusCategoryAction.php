@@ -32,47 +32,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 class SetStatusCategoryAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    private $statusCategory;
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function __construct(array $options)
     {
-        $resolver->setRequired('id');
+        $resolver = new ActionOptionsResolver();
+        self::configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
+
+    public static function configureOptions(ActionOptionsResolver $resolver)
+    {
+        $resolver->setRequired(self::OPTION_ID);
+        $resolver->setAllowedTypes(self::OPTION_ID, ['string', 'int']);
         $resolver->setAllowedValues(
-            'id',
+            self::OPTION_ID,
             function ($value) {
-                return is_int($value) || ctype_digit($value);
+                return (is_int($value) && $value > 0) || ctype_digit($value);
             }
         );
     }
 
-    /**
-     * Fetch status category (FeedbackStatusCategory).
-     */
-    public function init()
-    {
-        $id                   = $this->options['id'];
-        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($id);
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function run($feedback)
-    {
-        $feedback->setStatusCategory($this->statusCategory);
-    }
-
     /** @return array */
-    public function getSerialized()
+    public function serialize()
     {
-        return [self::SET_STATUS_CATEGORY_ACTION => ['id' => $this->options['id']]];
+        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
     }
 }

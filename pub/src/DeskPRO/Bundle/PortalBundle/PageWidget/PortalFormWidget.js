@@ -6,7 +6,7 @@ import { DpxDateWidget } from './Common/Form/DpxDateWidget';
 import { DpxAttach } from './Common/Form/DpxAttach';
 import { DpxRte } from './Common/Form/DpxRte';
 import { DpxRadio } from './Common/Form/DpxRadio';
-import { FormSaveDraft } from './Common/Form/FormSaveDraft';
+import { DpxFormDraft } from './Common/Form/Draft/DpxFormDraft';
 
 export class PortalFormWidget extends PageWidget {
 
@@ -19,6 +19,6 @@ export class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxAttach, '.dpx-attach');
     this.addWidgetDef(DpxRte, '[data-rte]');
     this.addWidgetDef(DpxRadio, '.dpx-radio-button');
-    this.addWidgetDef(FormSaveDraft, 'form[data-save-draft]');
+    this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
   }
 }

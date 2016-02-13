@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -40,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -88,7 +90,8 @@ class ChatDataService
         $criteria->applyFilters($qb);
         $criteria->applySorting($qb);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $result = $qb->getQuery()->getResult();
+        $pager  = new Pagerfanta(new ArrayAdapter($result));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 

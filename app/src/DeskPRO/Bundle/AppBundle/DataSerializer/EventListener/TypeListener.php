@@ -46,11 +46,19 @@ class TypeListener implements EventSubscriberInterface
      */
     private $type_map;
 
+    /**
+     * Constructor.
+     *
+     * @param DataTypeMap $type_map
+     */
     public function __construct(DataTypeMap $type_map)
     {
         $this->type_map = $type_map;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [

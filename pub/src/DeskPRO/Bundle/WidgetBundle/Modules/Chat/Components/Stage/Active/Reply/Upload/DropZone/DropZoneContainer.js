@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
-import { DropZoneOverlay } from './DropZoneOverlay';
 import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
 import {
   addAttachment,
@@ -16,7 +14,8 @@ import {
 export class DropZoneContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    children: PropTypes.node
   };
 
   onUploadStarted = (event, data) => {
@@ -37,15 +36,15 @@ export class DropZoneContainer extends React.Component {
   };
 
   render() {
-    return (
-      <DropZone uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}
-                context={[window.widgetFrame.document, parent.window.document]}
-                onSend={this.onUploadStarted}
-                onSuccess={this.onUploadSuccess}
-                onFail={this.onUploadFail} {...this.props}>
+    const { children } = this.props;
+    const childProps = children.props;
 
-        <DropZoneOverlay />
-      </DropZone>
-    );
+    return React.cloneElement(children, {
+      ...childProps,
+
+      onSend: this.onUploadStarted,
+      onSuccess: this.onUploadSuccess,
+      onFail: this.onUploadFail
+    });
   }
 }

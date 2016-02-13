@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Kanban/index';
+import { KanbanCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Kanban';
 import {
   BaseTaskCard,
   Title,
@@ -7,7 +7,7 @@ import {
   SubTasks,
   Comments,
   AssigneeName
-} from '../../../TaskCard/index';
+} from '../../../TaskCard';
 import classNames from 'classnames';
 
 export class TaskCard extends BaseTaskCard {

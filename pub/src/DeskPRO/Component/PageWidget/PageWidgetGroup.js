@@ -11,7 +11,7 @@ import { PageWidget } from './PageWidget';
  * you should use PageWidgetGroup. This ensures that in an error case, the children dont get instantiated.
  * And hopefully you've added a nice fallback for non-JS users that 'just works'.
  */
-export default class PageWidgetGroup extends PageWidget {
+export class PageWidgetGroup extends PageWidget {
 
   /**
    * Called to a request to render itself.

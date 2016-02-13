@@ -1,18 +1,17 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
-import { currentViewModeSelector, listParamsNavSelector, isDoneSelector, selectedCountSelector }
+import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector, selectedCountSelector }
   from '../../Selectors/list';
 import { unload } from '../../Actions/listActions';
 
 @connect(state => ({
-  loaded: isDoneSelector(state),
+  isLoaded: isLoadedSelector(state),
   currentView: currentViewModeSelector(state),
   selectedCount: selectedCountSelector(state),
   currentNav: listParamsNavSelector(state)
 }))
 export class ListContainer extends React.Component {
-
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };

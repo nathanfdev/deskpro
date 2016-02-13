@@ -109,7 +109,7 @@ export class NestedList extends React.Component {
     const depth = this.props.depth || 1;
     const className = depth > 1
       ? 'with-connectors depth-' + (depth - 1)
-      : '';
+      : 'depth-0';
 
     return (
       <ul className={className}>

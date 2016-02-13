@@ -88,6 +88,7 @@ class TagProcessorSpec extends ObjectBehavior
         $esi_handler->handle($tag, $tag_request)->willReturn($response);
 
         $response->isSuccessful()->willReturn(false);
+        $response->getContent()->willReturn('');
 
         $this->process($tag, $arguments)->shouldReturn('');
     }

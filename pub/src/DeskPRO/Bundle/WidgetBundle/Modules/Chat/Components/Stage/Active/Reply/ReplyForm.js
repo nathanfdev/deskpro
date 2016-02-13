@@ -2,13 +2,17 @@ import React, { PropTypes } from 'react';
 import { EndChatContainer } from '../EndChat/EndChatContainer';
 import { EndChatButton } from './EndChatButton';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
-import { RteInput } from 'DeskPRO/Component/Rte/RteInput';
+import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { UploadingFilesContainer } from './Upload/Uploading/UploadingFilesContainer';
 import { UploadingFiles } from './Upload/Uploading/UploadingFiles';
 import { AttachmentContainer } from './Upload/Attachment/AttachmentContainer';
 import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
+import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
+import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
 import ScrollArea from 'react-scrollbar-iframe';
 
@@ -48,6 +52,10 @@ export class ReplyForm extends React.Component {
     }
   };
 
+  onPasteImage = file => {
+    this.refs.dropZone.pushFileToQueue(file);
+  };
+
   onScreenShare = event => {
     event.preventDefault();
     console.log('onScreenShare');
@@ -65,13 +73,14 @@ export class ReplyForm extends React.Component {
   renderRte() {
     return (
       <ScrollArea vertical>
-        <RteInput
+        <RteEditor
           inline
           ref="editor"
           value={this.state.message}
           onChange={this.onChangeMessage}
           onSubmit={this.onSubmit}
           className="textarea"
+          onPasteImage={this.onPasteImage}
           options={{
             contentWindow: window.widgetFrame.window,
             ownerDocument: window.widgetFrame.document,
@@ -83,11 +92,6 @@ export class ReplyForm extends React.Component {
             toolbar: {
               buttons: ['bold', 'italic', 'underline'],
               updateOnEmptySelection: true
-            },
-            paste: {
-              forcePlainText: false,
-              cleanPastedHTML: false,
-              cleanAttrs: ['style', 'dir']
             }
           }}
           />
@@ -151,7 +155,7 @@ export class ReplyForm extends React.Component {
             <EmotionButton
               buttonClassName="img"
               context={[parent.document, window.widgetFrame.document]}
-              getEditor={() => this.refs.editor.getMediumEditor()}
+              getEditor={() => this.refs.editor}
               popupPositionAt="center top-15"
               popupPositionMy="center bottom"
             />
@@ -162,7 +166,18 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer getExternalInput={() => this.refs.fileUpload} />
+        <DropZoneContainer>
+          <DropZone ref="dropZone"
+                    getExternalInput={() => this.refs.fileUpload}
+                    uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}>
+
+            <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
+              <DropZoneOverlay />
+            </DragOverlayListener>
+          </DropZone>
+        </DropZoneContainer>
+
+        <PasteCatcher context={window.widgetFrame.document} onPasteImage={this.onPasteImage} />
       </div>
     );
   }

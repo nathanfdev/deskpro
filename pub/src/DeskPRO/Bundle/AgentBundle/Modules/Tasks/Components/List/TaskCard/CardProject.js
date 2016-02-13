@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { allProjectsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/RecordStores/Selectors/projectSelectors';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
@@ -17,10 +17,10 @@ import {
   AgentsList,
   AgentTeamsList,
   DepartmentsList
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/index';
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form';
 
 @connect(state => ({
-  projects: allProjectsSelector(state)
+  projects: allSelectorFactory('Project')(state)
 }))
 
 export class CardProject extends React.Component {

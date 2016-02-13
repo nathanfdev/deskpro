@@ -1,9 +1,6 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import * as Content from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Content';
-import * as ArticlePendingCreates from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/ArticlePendingCreates';
-import * as Comments from 'DeskPRO/Bundle/AgentBundle/Services/Api/Content/Comments';
 
 export const initialLoad = createAction(
   'PUBLISH_NAV_INITIAL_LOAD',
@@ -24,7 +21,7 @@ export const initialLoad = createAction(
           + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
         ;
 
-      DpApi.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({responses}) => {
         const payload = flattenBatchResponses(responses);
         payload.todo = { articles: {}, comments: { validate: {}, review: {} } };
         payload.todo.articles.draft = payload.articlesDraftsCount.count;
@@ -51,7 +48,7 @@ export const initialLoad = createAction(
 
 export const loadCounts = createAction(
   'PUBLISH_NAV_LOAD_CONTENT_COUNTS',
-  (content, groupBy) => Content.loadCounts(content, groupBy).then(promise => {
+  (content, groupBy) => repository('Content').loadCounts(content, groupBy).then(promise => {
     const counts = promise.getData().data;
 
     return { content, counts };
@@ -60,31 +57,31 @@ export const loadCounts = createAction(
 
 export const loadDraftsCount = createAction(
   'PUBLISH_NAV_LOAD_DRAFTS_COUNT',
-  (mine) => Content.loadDraftsCount('articles', mine ? 'me' : null)
+  (mine) => repository('Content').loadDraftsCount('articles', mine ? 'me' : null)
     .then(promise => promise.getData().data.count)
 );
 
 export const loadPendingCount = createAction(
   'PUBLISH_NAV_LOAD_PENDING_COUNT',
-  (mine) => ArticlePendingCreates.loadCount(mine ? 'me' : null)
+  (mine) => repository('ArticlePendingCreate').loadCount(mine ? 'me' : null)
     .then(promise => promise.getData().data.count)
 );
 
 export const loadCommentsToValidateCounts = createAction(
   'PUBLISH_NAV_LOAD_COMMENTS_TO_VALIDATE_COUNTS',
-  () => Comments.loadCommentsToValidateCounts('articles')
+  () => repository('Comment').loadCommentsToValidateCounts('articles')
     .then(promise => promise.getData().data)
 );
 
 export const loadCommentsToReviewCount = createAction(
   'PUBLISH_NAV_LOAD_COMMENTS_TO_REVIEW_COUNT',
-  () => Comments.loadCommentsToReviewCount('articles')
+  () => repository('Comment').loadCommentsToReviewCount('articles')
     .then(promise => promise.getData().data.count)
 );
 
 export const loadCategories = createAction(
   'PUBLISH_NAV_LOAD_CATEGORIES',
-  () => Content.loadCategories().then(promise => promise.getData().data)
+  () => repository('Content').loadCategories().then(promise => promise.getData().data)
 );
 
 export const changeListGrouping = createAction(

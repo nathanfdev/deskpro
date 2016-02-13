@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
@@ -39,11 +40,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
+/**
+ * Class NewFeedbackType.
+ */
 class NewFeedbackType extends AbstractType
 {
     /**
@@ -56,53 +59,75 @@ class NewFeedbackType extends AbstractType
      */
     private $language_manager;
 
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
+    /**
+     * @var CustomFieldManager
+     */
+    private $field_manager;
+
+    /**
+     * Constructor.
+     *
+     * @param CaptchaDecider     $captcha_decider
+     * @param LanguageManager    $language_manager
+     * @param CustomFieldManager $field_manager
+     */
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager, CustomFieldManager $field_manager)
     {
         $this->captcha_decider  = $captcha_decider;
         $this->language_manager = $language_manager;
+        $this->field_manager    = $field_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array(
-            'label'       => $this->phrase('portal.forms.label_title'),
-            'constraints' => array(
-                new NotBlank(array('message' => 'portal.forms.error_required')),
-            ),
-        ));
-        $builder->add('content', 'textarea', array(
-            'label'       => 'portal.forms.label_content',
-            'constraints' => array(
-                new NotBlank(array('message' => 'portal.forms.error_required')),
-            ),
-        ));
-        $builder->add('category', 'feedback_category', array(
-            'person'      => $options['person'],
-            'empty_value' => $this->phrase('portal.forms.label_select'),
-            'constraints' => array(
-                new NotNull(array('message' => 'portal.forms.error_required')),
-            ),
-        ));
-        $builder->add('custom_data_collection', 'custom_feedback_fields');
-        $builder->add('attachments', 'feedback_attachment_collection', array(
-            'person' => $options['person'],
-        ));
-        $builder->add('more_attachments', 'submit', array(
-            'validation_groups' => false,
-            'label'             => $this->phrase('portal.forms.label_add_attachment'),
-        ));
+        $builder
+            ->add('title', 'text', [
+                'label'       => $this->phrase('portal.forms.label_title'),
+                'constraints' => [
+                    new NotBlank(['message' => 'portal.forms.error_required']),
+                ],
+            ])
+            ->add('content', 'textarea', [
+                'label'       => 'portal.forms.label_content',
+                'constraints' => [
+                    new NotBlank(['message' => 'portal.forms.error_required']),
+                ],
+            ])
+            ->add('category', 'feedback_category', [
+                'person'      => $options['person'],
+                'empty_value' => $this->phrase('portal.forms.label_select'),
+                'constraints' => [
+                    new NotNull(['message' => 'portal.forms.error_required']),
+                ],
+            ])
+            ->add('custom_data', 'deskpro_combined_type', [
+                'forms' => $this->getCustomDataForms($options),
+            ])
+            ->add('attachments', 'feedback_attachment_collection', [
+                'person' => $options['person'],
+            ])
+            ->add('more_attachments', 'submit', [
+                'validation_groups' => false,
+                'label'             => $this->phrase('portal.forms.label_add_attachment'),
+            ])
+        ;
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
-            $builder->add('name', 'text', array(
-                'constraints'   => new Length(array('minMessage' => 'portal.forms.error_length_min', 'min' => 2)),
-                'property_path' => 'person.name',
-                'label'         => $this->phrase('portal.forms.label_name'),
-            ));
-            $builder->add('email', 'deskpro_person_email', array(
-                'label'         => false,
-                'property_path' => 'person.primary_email',
-                'constraints'   => array(), // ignore the "unqiue entity" constraint here
-            ));
+            $builder
+                ->add('name', 'text', [
+                    'constraints'   => new Length(['minMessage' => 'portal.forms.error_length_min', 'min' => 2]),
+                    'property_path' => 'person.name',
+                    'label'         => $this->phrase('portal.forms.label_name'),
+                ])
+                ->add('email', 'deskpro_person_email', [
+                    'label'         => false,
+                    'property_path' => 'person.primary_email',
+                    'constraints'   => [], // ignore the "unqiue entity" constraint here
+                ])
+            ;
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -110,45 +135,76 @@ class NewFeedbackType extends AbstractType
                 $event->getForm()->add(
                     'captcha',
                     'deskpro_captcha',
-                    array(
+                    [
                         'mapped'         => false,
                         'error_bubbling' => false,
-                    )
+                    ]
                 );
             }
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setRequired(
-                array(
-                    'person',
-                )
-
-            )
-            ->setAllowedTypes(
-                array(
-                    'person' => 'Application\DeskPRO\Entity\Person',
-                )
-            )
-            ->setDefaults(
-                array(
-                    'data_class'      => 'Application\DeskPRO\Entity\Feedback',
-                    'agent_interface' => false,
-                )
-            )
+            ->setRequired([
+                'person',
+            ])
+            ->setAllowedTypes([
+                'person' => 'Application\DeskPRO\Entity\Person',
+            ])
+            ->setDefaults([
+                'data_class'      => 'Application\DeskPRO\Entity\Feedback',
+                'agent_interface' => false,
+            ])
         ;
     }
 
-    private function phrase($name, array $vars = array())
-    {
-        return $this->language_manager->phrase($name, $vars);
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'new_feedback';
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function getCustomDataForms(array $options)
+    {
+        $forms      = [];
+        $field_defs = $this->field_manager->getFeedbackFields();
+
+        foreach ($field_defs as $field_def) {
+            $forms[] = [
+                'name'    => 'custom_feedback_def_'.$field_def->getId(),
+                'type'    => 'deskpro_custom_data',
+                'options' => [
+                    'custom_def'      => $field_def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'label'           => $field_def->title,
+                ],
+            ];
+        }
+
+        return $forms;
+    }
+
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string
+     */
+    protected function phrase($name, array $vars = [])
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }

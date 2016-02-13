@@ -29,15 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketPriority;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
  * Class TicketPrioritiesController.
  *
+ * @ApiModes("all")
  * @Route("/ticket_priorities")
  */
 class TicketPrioritiesController extends CrudController

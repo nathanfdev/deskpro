@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState, fakeRecordStoreState, toImmutable } from 'Helpers/redux';
+import { renderInRedux, fakeState, toImmutable } from 'Helpers/redux';
 
 /**
  * Creates fake chat app state
@@ -9,17 +9,14 @@ import { renderInRedux, fakeState, fakeRecordStoreState, toImmutable } from 'Hel
 export function fakeChatsState(num = 0) {
   const records = {};
   const ids = [];
-  for (let i = 1; i <= num; i++) {
-    const id = '' + i;
-    records[i] = {id};
-    ids.push(id);
+  for (let id = 1; id <= num; id++) {
+    records[id] = {id};
+    ids.push('' + id);
   }
 
-  console.log('fakeState', fakeState);
-
   return fakeState({
-    Chat: {list: toImmutable({elements: ids, currentListParams: {}})},
-    RecordStores: {Chat: {chats: fakeRecordStoreState(records, {chats: ids})}}
+    Chat: {list: toImmutable({currentListParams: {}})},
+    RecordsStore: {store: toImmutable({UserChat: {records, collections: {chats: ids}, statuses: {chats: {isDone: true}}}})}
   });
 }
 

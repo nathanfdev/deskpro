@@ -1,18 +1,11 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { setDepartmentsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/departmentsActions';
-import { setPeopleRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/peopleActions';
-import { setAgentTeamsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/RecordStores/Actions/agentTeamsActions';
-import { setLanguagesRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/RecordStores/Actions/languagesActions';
-import { setUserGroupsRequest } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/userGroupsActions';
+import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
-export const showWelcomePage = createAction('APP_SHOW_WELCOME_PAGE');
-
-export const doneInitialLoad = createAction('APP_DONE_INITIAL_LOAD');
-
+export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
   () => dispatch => new Promise(
@@ -27,19 +20,26 @@ export const preloadData = createAction(
         + ',DP_API/user_groups'
         + ',DP_API/helpdesk/agent-client/settings'
         + ',DP_API/notify/setup/action-alerts'
+        + ',DP_API/me'
       ;
-      DpApi.sendGet(batch).success(({responses}) => {
-        const data = flattenBatchResponses(responses);
-        dispatch(setDepartmentsRequest('all', data[0]));
-        dispatch(setDepartmentsRequest('my', data[1]));
-        dispatch(setPeopleRequest('agents', data[2]));
-        dispatch(setAgentTeamsRequest('all', data[3]));
-        dispatch(setAgentTeamsRequest('my', data[4]));
-        dispatch(setLanguagesRequest('all', data[5]));
-        dispatch(setUserGroupsRequest('all', data[6]));
-        dispatch(setAgentSettings(data[7]));
-        dispatch(setupActionAlerts(data[8]));
-      });
+      api.sendGet(batch)
+        .success(({responses}) => {
+          const data = flattenBatchResponses(responses);
+          dispatch(setCollection('Department', 'all', data[0]));
+          dispatch(setCollection('Department', 'my', data[1]));
+          dispatch(setCollection('Person', 'agents', data[2]));
+          dispatch(setCollection('AgentTeam', 'all', data[3]));
+          dispatch(setCollection('AgentTeam', 'my', data[4]));
+          dispatch(setCollection('Language', 'all', data[5]));
+          dispatch(setCollection('UserGroup', 'all', data[6]));
+          dispatch(setAgentSettings(data[7]));
+          dispatch(setupActionAlerts(data[8]));
+          dispatch(setCollection('Person', 'me', [data[9].person]));
+
+          dispatch(donePreloading());
+        })
+      ;
+
       return resolve();
     }
   )

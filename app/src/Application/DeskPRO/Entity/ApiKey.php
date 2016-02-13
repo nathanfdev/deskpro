@@ -31,9 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -85,10 +88,25 @@ class ApiKey extends DomainObject
      */
     protected $logs;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $api_logs;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $actions;
+
+    /**
+     *
+     */
     public function __construct()
     {
         $this->regenerateApiKey();
-        $this->logs = new ArrayCollection();
+        $this->logs     = new ArrayCollection();
+        $this->actions  = new ArrayCollection();
+        $this->api_logs = new ArrayCollection();
     }
 
     /**
@@ -137,6 +155,32 @@ class ApiKey extends DomainObject
         }
 
         return $data;
+    }
+
+    /**
+     * @param ApiKeyAction $action
+     *
+     * @return $this
+     */
+    public function addApiKeyAction(ApiKeyAction $action)
+    {
+        $this->actions->add($action);
+        $action->setKey($this);
+
+        return $this;
+    }
+
+    /**
+     * @param ApiLog $log
+     *
+     * @return $this
+     */
+    public function addApiLog(ApiLog $log)
+    {
+        $this->actions->add($log);
+        $log->setKey($this);
+
+        return $this;
     }
 
     ############################################################################
@@ -198,6 +242,24 @@ class ApiKey extends DomainObject
         $metadata->mapOneToMany(array(
             'fieldName'    => 'logs',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+            'mappedBy'     => 'key',
+            'inversedBy'   => null,
+            'orderBy'      => array('id' => 'DESC'),
+            'cascade'      => array('persist', 'remove'), // doesn't work
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'actions',
+            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiKeyAction',
+            'mappedBy'     => 'key',
+            'inversedBy'   => null,
+            'orderBy'      => array('id' => 'DESC'),
+            'cascade'      => array('persist', 'remove'), // doesn't work
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'api_logs',
+            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiLog',
             'mappedBy'     => 'key',
             'inversedBy'   => null,
             'orderBy'      => array('id' => 'DESC'),

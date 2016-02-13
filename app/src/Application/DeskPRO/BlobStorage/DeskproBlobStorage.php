@@ -548,12 +548,12 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
-     * @param       $source_data
-     * @param       $filename
-     * @param       $content_type
-     * @param array $props
+     * @param string $source_data
+     * @param string $filename
+     * @param string $content_type
+     * @param array  $props
      *
-     * @return null|object
+     * @return BlobEntity
      */
     public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
     {

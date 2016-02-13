@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Labels } from './Labels';
-import { allTaskLabelsSelector } from '../../../RecordStores/Selectors/taskLabelSelectors';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
 @connect(state => ({
-  labels: allTaskLabelsSelector(state)
+  labels: allSelectorFactory('TaskLabel')(state)
 }))
 export class LabelsContainer extends React.Component {
 

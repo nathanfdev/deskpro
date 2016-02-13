@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedListContainer } from './NestedListContainer';
 
 export class FiltersTab extends Component {

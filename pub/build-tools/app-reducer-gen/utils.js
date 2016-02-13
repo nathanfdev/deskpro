@@ -35,7 +35,7 @@ function handleBundle(appName, bundlePath, readReducers) {
     readReducers = [];
   }
 
-  glob.sync('{**/Modules/*/,**/Modules/*/RecordStores/}', { cwd: bundlePath, root: bundlePath }).forEach(function(d) {
+  glob.sync('**/Modules/*/', { cwd: bundlePath, root: bundlePath }).forEach(function(d) {
     var modulePath = bundlePath + '/' + d;
     var moduleName = path.basename(modulePath);
 
@@ -57,12 +57,6 @@ function handleBundle(appName, bundlePath, readReducers) {
       }
 
       var names = [moduleName];
-
-      // Create additional hierarchy level equal to enclosing directory name within RecordStores
-      if (moduleName === 'RecordStores') {
-        var dirs = modulePath.split(path.sep);
-        names.push(dirs[dirs.length - 3]);
-      }
 
       // Legacy modules have all their reducers in root level
       if (legacyModules[moduleName]) {

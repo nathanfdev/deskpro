@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -40,6 +42,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to ticket labels.
+ *
+ * @ApiModes("all")
  */
 class TicketStatusesController extends BaseController
 {

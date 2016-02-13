@@ -1032,16 +1032,16 @@ return array(
         'notification.agent_chat.new_message' => [
             'strategy' => 'immediate',
             'delivery' => [
-                'pusher',
-            ],
-        ],
-        'notification.yet.another.system.event' => [
-            'strategy' => 'deferred',
-            'delivery' => [
                 'db',
             ],
-            'persistance' => 'db',
         ],
+//        'notification.yet.another.system.event' => [
+//            'strategy' => 'deferred',
+//            'delivery' => [
+//                'db',
+//            ],
+//            'persistance' => 'db',
+//        ],
     ],
     # Also you MUST provide default strategy. It will be used to handle events that was not described.
     'notification.settings.default_strategy' => [
@@ -1067,4 +1067,22 @@ return array(
 
     'portal.chat.email_validation' => false,
     'portal.chat.require_login'    => false,
+
+    ####################################################################################################################
+    # api_logger.settings
+    ####################################################################################################################
+
+    'api_log.enabled'     => false,
+    'api_log.writer.type' => 'db',
+    'api_log.writer.file' => [
+        'log_max_size'  => 5 * 1024 * 1024,
+        'log_max_files' => 5,
+        'log_name'      => 'api_log.log',
+    ],
+    'api_log.writer.file.serializer.type' => 'serialize',
+
+    // global version id for Etag generating. Change this and whole your api cache would become stale.
+    'response.cache.global_version' => '7dedef53d7b6762e2ad984051e37638d',
+
+    'response.cache.enabled' => false,
 );

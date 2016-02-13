@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -43,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class AgentChatMessage.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage")
- * @ORM\Table(name="agent_chat_message")
+ * @ORM\Table(name="agent_chat_message", uniqueConstraints={@ORM\UniqueConstraint(name="uuid_unique",columns={"uuid"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
  */
@@ -64,6 +63,15 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=36)
+     *
+     * @Assert\NotNull()
+     * @Assert\Uuid()
+     */
+    protected $uuid;
+
+    /**
      * @var AgentChat
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChat", inversedBy="messages")
      * @ORM\JoinColumn(name="agent_chat_id", referencedColumnName="id", onDelete="CASCADE")
@@ -80,6 +88,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $person_name;
@@ -87,20 +96,24 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="text", nullable=false)
+     *
      * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
     protected $message;
 
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=false)
+     *
      * @Assert\NotNull()
      */
-    protected $metadata;
+    protected $metadata = [];
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $date_created;
@@ -108,10 +121,14 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var int
      * @ORM\Column(type="integer", nullable=false)
+     *
      * @Assert\NotNull()
      */
     protected $status = 0;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->date_created = new \DateTime();
@@ -123,6 +140,26 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return $this
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**
@@ -141,6 +178,11 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
         return $this->person;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
     public function setPerson(Person $person)
     {
         $this->person      = $person;
@@ -149,6 +191,9 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getPersonName()
     {
         return $this->person_name;

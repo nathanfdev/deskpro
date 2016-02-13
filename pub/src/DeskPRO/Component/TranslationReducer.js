@@ -2,7 +2,7 @@ import { Reducer } from 'Ampliflux/reducers';
 
 // TODO this should be in DeskPRO/Component/Ampliflux/common/components
 // @ToDo seems like never used class
-export default class TranslationReducer extends Reducer {
+export class TranslationReducer extends Reducer {
   constructor() {
     super();
 

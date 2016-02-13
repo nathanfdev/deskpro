@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import * as PersonSetting from 'DeskPRO/Bundle/AgentBundle/Services/Api/PersonSetting';
-import * as SettingsActions from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/RecordStores/Actions/settingsActions';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
 export class SingleForm extends React.Component {
@@ -34,18 +34,15 @@ export class SingleForm extends React.Component {
     let promise;
 
     if (settings && settings.get('signature')) {
-      promise = PersonSetting.put('signature', this.state.signature);
+      promise = repository('PersonSetting').update({name: 'signature', value: this.state.signature});
     } else {
-      promise = PersonSetting.post('signature', this.state.signature);
+      promise = repository('PersonSetting').create({name: 'signature', value: this.state.signature});
     }
 
     promise
       .success(response => {
-        const records = {};
-        records[response.data.id] = response.data;
-
-        dispatch(SettingsActions.releaseSettings('my'));
-        dispatch(SettingsActions.setSettingsRequest('my', records, [response.data.id]));
+        dispatch(releaseCollection('Settings', 'my'));
+        dispatch(setCollection('Settings', 'my', {[response.data.id]: response.data}));
       });
   };
 

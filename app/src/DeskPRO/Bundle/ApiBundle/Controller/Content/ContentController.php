@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -49,6 +50,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ContentController.
+ *
+ * @ApiModes("all")
  */
 class ContentController extends BaseController
 {

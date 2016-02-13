@@ -29,12 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
-use DeskPRO\Bundle\AppBundle\AgentChat\History;
-use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
-use DeskPRO\Bundle\AppBundle\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -45,6 +44,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class MessagesController.
+ *
+ * @ApiModes("all")
+ */
 class MessagesController extends AbstractController
 {
     /**
@@ -56,10 +60,10 @@ class MessagesController extends AbstractController
      *
      * @return View
      * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
+     * @ApiModes("all")
      */
     public function getMessagesAction($id, Request $request)
     {
-        /** @var Messenger $messenger */
         $messenger = $this->get('deskpro.agentchat.messenger');
         $user      = $this->getUser();
         $chat      = $this->getChat($id);
@@ -68,16 +72,28 @@ class MessagesController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $search_string = $request->query->get('search', '');
-        $orderBy       = $request->query->get('order', 'date_created');
-        $page          = $request->query->getInt('page', 1);
-        /** @var History $search_service */
+        $form = $this->submitForm('api_agent_chat_search_messages', $request->query);
+        if (!$form->isValid()) {
+            $errors = $this->createFormErrorsData($form);
+            $status = Response::HTTP_BAD_REQUEST;
+
+            return View::create(
+                $this->createErrorRepresentation(
+                    $status,
+                    'request_error',
+                    "Couldn't process your request",
+                    $errors
+                ),
+                $status
+            );
+        }
+
         $search_service = $this->get('deskpro.agentchat.history');
-        $messages       = $search_service->searchInChat($chat, $search_string, $orderBy);
+        $messages       = $search_service->searchInChat($chat, $form->get('search')->getData(), $form->get('order')->getData());
 
         $pager = new Pagerfanta(new ArrayAdapter($messages));
         $pager->setMaxPerPage(9);
-        $pager->setCurrentPage($page);
+        $pager->setCurrentPage($request->query->getInt('page', 1));
 
         return View::create(
             $this->dataSerialize($pager),
@@ -86,46 +102,44 @@ class MessagesController extends AbstractController
     }
 
     /**
-     * @param $id
-     * @param Request $request
-     *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     * @throws InvalidFormException
+     * @param AgentChat $chat
+     * @param Request   $request
      *
      * @return View
-     * @Annotations\Post("/agent_chats/{id}/messages", name="agent_chats_add_chat_message")
+     * @Annotations\Post("/agent_chats/{chat}/messages", name="agent_chats_add_chat_message")
      */
-    public function postMessagesAction($id, Request $request)
+    public function postMessagesAction(AgentChat $chat, Request $request)
     {
-        $form = $this->createFormBuilder(array('message' => null))
-            ->add('message', 'text')
-            ->getForm();
+        $user = $this->getUser();
+        if (!$user || !$this->get('deskpro.agentchat.messenger')->isPersonInvolvedInChat($user, $chat)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $form = $this
+            ->get('form.factory')
+            ->createNamedBuilder(null, 'api_agent_chat_message', null, [
+                'person' => $user,
+                'chat'   => $chat,
+            ])
+            ->getForm()
+        ;
+
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        $user      = $this->getUser();
-        $chat      = $this->getChat($id);
 
-        if (!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
-            throw new AccessDeniedHttpException();
-        }
+        $this->em()->persist($chat);
+        $this->em()->flush();
 
-        $data    = $form->getData();
-        $message = $messenger->addMessage($chat, $user, $data['message']);
+        $message = $form->getData();
 
         $this->container->get('event_dispatcher')->dispatch(
             NewMessageEvent::EVENT_NAME,
             new NewMessageEvent($message->getId())
         );
 
-        return View::create(
-            $this->dataSerialize($message),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->dataSerialize($message), Response::HTTP_CREATED);
     }
 
     /**
@@ -134,18 +148,12 @@ class MessagesController extends AbstractController
      */
     public function countsAction()
     {
-        /** @var History $search_service */
-        /* @var Messenger $messenger */
-
         $search_service = $this->get('deskpro.agentchat.history');
         $helper_service = $this->get('deskpro.agentchat.helper');
         $count          = $search_service->countMessages($this->getUser());
         $data           = $helper_service->createCountResponse($count);
 
-        return View::create(
-            $this->createRepresentation($data),
-            Response::HTTP_OK
-        );
+        return View::create($this->createRepresentation($data), Response::HTTP_OK);
     }
 
     /**
@@ -156,12 +164,29 @@ class MessagesController extends AbstractController
      */
     public function markAction(Request $request)
     {
-        $status          = Response::HTTP_ACCEPTED;
-        $ids             = $request->request->get('ids');
-        $messages_status = $request->request->get('status');
-        /** @var Messenger $messenger */
+        $status = Response::HTTP_ACCEPTED;
+        $form   = $this->submitForm('api_agent_chat_mark_message', $request->request);
+        if (!$form->isValid()) {
+            $status = Response::HTTP_BAD_REQUEST;
+            $errors = $this->createFormErrorsData($form);
+
+            return View::create(
+                $this->createErrorRepresentation(
+                    $status,
+                    'form_error',
+                    "Couldn't mark messages",
+                    $errors
+                ),
+                $status
+            );
+        }
+
         $messenger = $this->get('deskpro.agentchat.messenger');
-        $messenger->markMessages($ids, $messages_status, $this->getUser());
+        $messenger->markMessages(
+            $form->get('ids')->getData(),
+            $form->get('status')->getData(),
+            $this->getUser()
+        );
 
         return View::create(
             $this->createRepresentation([]),

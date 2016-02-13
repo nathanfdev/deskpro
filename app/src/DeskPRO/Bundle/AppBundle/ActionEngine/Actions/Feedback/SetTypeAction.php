@@ -32,49 +32,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionWithOptionsInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
-    public function configureOptions(OptionsResolver $resolver)
+    public function __construct(array $options)
     {
-        $resolver->setRequired('id');
+        $resolver = new ActionOptionsResolver();
+        self::configureOptions($resolver);
+        $this->options = $resolver->resolve($options);
+    }
+
+    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
+    public static function configureOptions(ActionOptionsResolver $resolver)
+    {
+        $resolver->setRequired(self::OPTION_ID);
+        $resolver->setAllowedTypes(self::OPTION_ID, ['string', 'int']);
         $resolver->setAllowedValues(
-            'id',
+            self::OPTION_ID,
             function ($value) {
-                return is_int($value) || ctype_digit($value);
+                return (is_int($value) && $value > 0) || ctype_digit($value);
             }
         );
     }
 
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    public function init()
+    public function serialize()
     {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
-    }
-
-    /**
-     * @param Feedback $feedback
-     *
-     * @return Feedback
-     */
-    public function run($feedback)
-    {
-        $feedback->setCategory($this->type);
-    }
-
-    public function getSerialized()
-    {
-        return [self::SET_TYPE_ACTION => ['id' => $this->options['id']]];
+        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
     }
 }

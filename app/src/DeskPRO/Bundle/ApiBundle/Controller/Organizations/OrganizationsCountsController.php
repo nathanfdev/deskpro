@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
@@ -40,6 +42,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class OrganizationsCountsController.
+ *
+ * @ApiModes("all")
  */
 class OrganizationsCountsController extends BaseController
 {

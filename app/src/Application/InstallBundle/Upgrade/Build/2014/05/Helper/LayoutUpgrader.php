@@ -34,6 +34,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DpSys\LowError\SystemErrorHandler;
 
 class LayoutUpgrader
@@ -275,7 +276,7 @@ class LayoutUpgrader
             case 'message':
                 return new TicketLayout\LayoutField('message');
             case 'attachments':
-                return new TicketLayout\LayoutField('attach');
+                return new TicketLayout\LayoutField(FormFields::ATTACH);
             case 'ticket_cc_emails':
                 return new TicketLayout\LayoutField('cc');
             case 'captcha':

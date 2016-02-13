@@ -1,18 +1,17 @@
 services:
 
-  form.html_textarea:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
-    arguments: [@deskpro.core.input_cleaner]
+  form.form_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
     tags:
-      - { name: form.type, alias: html_textarea }
+      - { name: form.type_extension, alias: form }
 
-  form_field_manager:
-    class: DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager
+  form_hierarchy_generator:
+    class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback, @language_manager]
+
+  custom_field_manager:
+    class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
-
-  default_value_for_ticket_layout_field:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\DefaultValueForTicketLayoutField
-    arguments: [@doctrine.orm.default_entity_manager, @form_field_manager]
 
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
@@ -20,6 +19,112 @@ services:
 
   ticket_layout_differ:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
+
+  form.html_textarea:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
+    arguments: [@deskpro.core.input_cleaner]
+    tags:
+      - { name: form.type, alias: html_textarea }
+
+  form.combined:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CombinedType
+    tags:
+      - { name: form.type, alias: deskpro_combined_type }
+
+  form.person_identity:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_identity }
+
+  form.person_email_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
+    arguments:
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: form.type, alias: deskpro_person_email_choice }
+
+  form.entity_hierarchy:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: entity_hierarchy }
+
+  form.department:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
+    tags:
+      - { name: form.type, alias: deskpro_department }
+
+  form.cc:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CcType
+    arguments: [@person_factory]
+    tags:
+      - { name: form.type, alias: deskpro_cc }
+
+  form.workflow:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\WorkflowType
+    tags:
+      - { name: form.type, alias: deskpro_workflow }
+
+  form.product:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ProductType
+    tags:
+      - { name: form.type, alias: deskpro_product }
+
+  form.priority:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PriorityType
+    tags:
+      - { name: form.type, alias: deskpro_priority }
+
+  form.category:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CategoryType
+    tags:
+      - { name: form.type, alias: deskpro_category }
+
+  form.person_email:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType
+    tags:
+      - { name: form.type, alias: deskpro_person_email }
+
+  form.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
+    arguments: [@custom_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data }
+
+  form.deskpro_custom_per_field_data:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
+    arguments: [@tickets.custom_per_field_manager, @custom_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_per_field_data }
+
+  form.custom_field_choice:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFieldChoiceType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: deskpro_custom_field_choice }
+
+  form.date:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DateType
+    tags:
+      - { name: form.type, alias: deskpro_date }
+
+  form.datetime:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType
+    tags:
+      - { name: form.type, alias: deskpro_datetime }
+
+  form.display_html:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType
+    tags:
+      - { name: form.type, alias: deskpro_display_html }
+
+  form.hidden:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\HiddenType
+    arguments: [@request_stack]
+    tags:
+      - { name: form.type, alias: deskpro_hidden }
 
   form.api_date:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiDateType
@@ -140,3 +245,33 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType
     tags:
        - { name: form.type, alias: widget_setup }
+
+  form.ticket_message_attachment:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType
+    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
+    tags:
+      - { name: form.type, alias: ticket_message_attachment }
+
+  form.ticket_message_attachment_collection:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentCollectionType
+    tags:
+      - { name: form.type, alias: ticket_message_attachment_collection }
+
+  form.ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayoutsType
+    arguments:
+      - @custom_field_manager
+      - @ticket_layout_factory
+      - @ticket_layout_differ
+      - @form_hierarchy_generator
+      - @doctrine.orm.default_entity_manager
+      - @language_manager
+      - @tickets.custom_per_field_manager
+    tags:
+      - { name: form.type, alias: ticket_with_layouts }
+
+  form.ticket_description:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType
+    arguments: [@language_manager]
+    tags:
+      - { name: form.type, alias: ticket_description }

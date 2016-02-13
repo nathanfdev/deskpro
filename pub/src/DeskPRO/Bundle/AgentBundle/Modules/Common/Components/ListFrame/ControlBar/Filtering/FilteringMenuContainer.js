@@ -108,7 +108,7 @@ export class FilteringMenuContainer extends Component {
                   positionAt="left bottom"
                   positionTarget={this.refs.button}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <FilteringMenu dispatch={dispatch}
                            filters={filters}

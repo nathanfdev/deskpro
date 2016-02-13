@@ -3,6 +3,7 @@ Feature: Editing portal templates
   Background: Fresh database
     Given I install the fresh data set
 
+  @reinstall
   Scenario: I get custom logo data
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/templates"
@@ -12,6 +13,7 @@ Feature: Editing portal templates
   Scenario: I get source of the Theme::layout.html.twig template
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig"
+    Then print last JSON response
     Then the response status code should be 200
     And the response should contain "{% show section alerts %}"
 

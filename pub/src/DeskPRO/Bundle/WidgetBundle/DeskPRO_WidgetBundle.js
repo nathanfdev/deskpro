@@ -1,3 +1,3 @@
-import WidgetApp from "DeskPRO/Bundle/WidgetBundle/WidgetApp";
+import { WidgetApp } from './WidgetApp';
 const app = new WidgetApp;
 app.run();

@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Component\Util;
 
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
  * Utility methods working with types.
@@ -82,5 +82,10 @@ class TypeUtils
         $parts = self::getTypeNameParts($var);
 
         return array_pop($parts);
+    }
+
+    public static function getSnakeCaseBaseTypeName($var)
+    {
+        return StringUtils::toSnakeCase(self::getBaseTypeName($var));
     }
 }

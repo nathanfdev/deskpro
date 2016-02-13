@@ -7,6 +7,7 @@ Feature: /tickets/{id}/messages endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I retrieve a ticket messages
     When I send a GET request to "/api/v2/tickets/1/messages"
     Then the response status code should be 200
@@ -69,7 +70,7 @@ Feature: /tickets/{id}/messages endpoint
       "is_note": true
     }
     """
-    And the JSON node "data.id" should be equal to 4
+    Then the JSON node "data.id" should be equal to 4
     And the JSON node "data.ticket" should be equal to 1
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 1
@@ -90,3 +91,23 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/1/messages/4"
     Then the response status code should be 200
     And the JSON node "data.message" should contain "my note"
+
+  Scenario: I create a message with attachments
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
+    When I send a POST request to "/api/v2/tickets/1/messages" with body:
+    """
+    {
+      "message": "<span>my message with attachments</span>",
+      "format": "html",
+      "attachments": [
+        {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+        {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
+      ]
+    }
+    """
+    Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 5
+    And the JSON node "data.attachments" should have 2 elements
+    And the JSON node "data.attachments[0]" should be equal to 1
+    And the JSON node "data.attachments[1]" should be equal to 2

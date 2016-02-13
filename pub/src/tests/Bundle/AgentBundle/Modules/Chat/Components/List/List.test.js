@@ -8,8 +8,6 @@ jest.dontMock('~List/List');
 jest.dontMock('~List/View/List/ChatsCardsContainer');
 jest.dontMock('~List/View/Table/ChatsTableContainer');
 jest.dontMock('~List/ControlBar/ControlBarContainer');
-jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents');
-jest.dontMock('DeskPRO/Component/LoadIndicator');
 
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';

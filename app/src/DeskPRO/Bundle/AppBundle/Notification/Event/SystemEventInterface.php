@@ -33,5 +33,13 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Event;
  */
 interface SystemEventInterface
 {
+    /**
+     * @return string
+     */
     public function getName();
+
+    /**
+     * @return array
+     */
+    public function __sleep();
 }

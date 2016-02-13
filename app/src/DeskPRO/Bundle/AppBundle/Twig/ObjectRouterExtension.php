@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\Twig;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 
+/**
+ * Class ObjectRouterExtension.
+ */
 class ObjectRouterExtension extends \Twig_Extension
 {
     /**
@@ -41,6 +44,8 @@ class ObjectRouterExtension extends \Twig_Extension
     private $object_router;
 
     /**
+     * Constructor.
+     *
      * @param ObjectRouter $object_router
      */
     public function __construct(ObjectRouter $object_router)
@@ -49,52 +54,52 @@ class ObjectRouterExtension extends \Twig_Extension
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
-        return array(
+        return [
             new \Twig_SimpleFunction(
                 'portal_path',
-                array($this, 'generatePortalPath')
+                [$this, 'generatePortalPath']
             ),
             new \Twig_SimpleFunction(
                 'portal_url',
-                array($this, 'generatePortalUrl')
+                [$this, 'generatePortalUrl']
             ),
             new \Twig_SimpleFunction(
                 'agent_path',
-                array($this, 'generateAgentPath')
+                [$this, 'generateAgentPath']
             ),
             new \Twig_SimpleFunction(
                 'agent_url',
-                array($this, 'generateAgentUrl')
+                [$this, 'generateAgentUrl']
             ),
-        );
+        ];
     }
 
-    public function generatePortalPath($object, $type = null, array $extra_params = array())
+    public function generatePortalPath($object, $type = null, array $extra_params = [])
     {
         return $this->object_router->getPortalPath($object, $type, $extra_params);
     }
 
-    public function generatePortalUrl($object, $type = null, array $extra_params = array())
+    public function generatePortalUrl($object, $type = null, array $extra_params = [])
     {
         return $this->object_router->getPortalUrl($object, $type, $extra_params);
     }
 
-    public function generateAgentPath($object, $type = null, array $extra_params = array())
+    public function generateAgentPath($object, $type = null, array $extra_params = [])
     {
         return $this->object_router->getAgentPath($object, $type, $extra_params);
     }
 
-    public function generateAgentUrl($object, $type = null, array $extra_params = array())
+    public function generateAgentUrl($object, $type = null, array $extra_params = [])
     {
         return $this->object_router->getAgentUrl($object, $type, $extra_params);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {

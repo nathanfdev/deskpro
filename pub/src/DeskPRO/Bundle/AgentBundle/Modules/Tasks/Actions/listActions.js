@@ -1,13 +1,12 @@
 import { createAction } from 'Ampliflux';
-import DpApi from 'DeskPRO/Bundle/AgentBundle/Services/DpApi';
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
 import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector, elementsSelector }
   from '../Selectors/list';
-import { tasksSelector } from '../Selectors/recordStores';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
-import { compileParams } from 'DeskPRO/Bundle/AgentBundle/Services/ApiHelpers';
-import { setTaskListsRequest } from '../RecordStores/Actions/taskListActions.js';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
+import { setCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -51,13 +50,13 @@ export const loadList = createAction(
       order: currentOrderSelector(state)
     };
 
-    return DpApi
+    return api
       .sendGet('DP_API/tasks?' + compileParams(params))
       .then(promise => {
         const res = promise.getData();
         const ids = res.data.map(item=>item.id);
 
-        dispatch(setTaskListsRequest(recordStoresId, res.data));
+        dispatch(setCollection('Task', recordStoresId, res.data));
 
         return { ids: ids, pagination: res.meta.pagination };
       }
@@ -92,7 +91,7 @@ export const applyFilters = createAction(
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
   (data) => new Promise(resolve => {
-    return DpApi
+    return api
       .sendPost(`DP_API/tasks`, data)
       .success(response => resolve(response.data));
   })
@@ -103,7 +102,7 @@ export const editTask = createAction(
   (taskId, data) => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
     const ids = elementsSelector(state);
-    const tasks = tasksSelector(state);
+    const tasks = collectionSelectorFactory('TaskList', 'tasks')(state);
     const task = tasks.get(taskId);
     const taskIndex = ids.indexOf(taskId);
 
@@ -128,6 +127,6 @@ export const editTask = createAction(
     });
 
     updatedTasks = updatedTasks.set(taskIndex, updatedTask);
-    DpApi.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
+    api.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
   })
 );

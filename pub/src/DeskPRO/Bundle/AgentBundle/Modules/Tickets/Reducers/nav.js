@@ -2,7 +2,7 @@ import { createReducer } from 'Ampliflux';
 import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import { startFilterEditing, applyFilterEditing, closeFilterEditing, initialLoad, unload } from '../Actions/navActions';
 
-const initialState = {
+export const ticketsNavInitialState = {
   filterSetsCount: {},
   filters: [],
   labels: [],
@@ -17,7 +17,7 @@ const initialState = {
   }
 };
 
-export default createReducer(initialState, {
+export default createReducer(ticketsNavInitialState, {
 
   // Private -----------------------------------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListGroupingControl } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/index';
+import { ListGroupingControl } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { changeListGrouping } from '../../Actions/chatNavActions.js';
 import { connect } from 'react-redux';
 @connect()

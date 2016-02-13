@@ -1,0 +1,17 @@
+import React, { PropTypes } from 'react';
+
+export class UploadingFile extends React.Component {
+
+  static propTypes = {
+    file: PropTypes.object.isRequired
+  };
+
+  render() {
+    const { file } = this.props;
+    return (
+      <li>
+        {file.file.name} (uploading...)
+      </li>
+    );
+  }
+}
