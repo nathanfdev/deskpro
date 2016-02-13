@@ -35,8 +35,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class CombinedType.
+ */
 class CombinedType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         foreach ($options['forms'] as $form) {
@@ -44,22 +50,28 @@ class CombinedType extends AbstractType
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_combined_type';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(['forms']);
-
-        $resolver->setAllowedTypes([
-            'forms' => 'array', // an array of form types with their option sets
-        ]);
-
-        $resolver->setDefaults([
-            'mapped'       => false,
-            'inherit_data' => true,
-        ]);
+        $resolver
+            ->setRequired(['forms'])
+            ->setAllowedTypes([
+                'forms' => 'array', // an array of form types with their option sets
+            ])
+            ->setDefaults([
+                'mapped'       => false,
+                'inherit_data' => true,
+            ])
+        ;
     }
 }

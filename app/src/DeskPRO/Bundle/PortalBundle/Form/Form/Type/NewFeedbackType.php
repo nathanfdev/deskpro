@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Form\Form\FormFieldManager;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
@@ -59,15 +60,22 @@ class NewFeedbackType extends AbstractType
     private $language_manager;
 
     /**
+     * @var FormFieldManager
+     */
+    private $field_manager;
+
+    /**
      * Constructor.
      *
-     * @param CaptchaDecider  $captcha_decider
-     * @param LanguageManager $language_manager
+     * @param CaptchaDecider   $captcha_decider
+     * @param LanguageManager  $language_manager
+     * @param FormFieldManager $field_manager
      */
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager, FormFieldManager $field_manager)
     {
         $this->captcha_decider  = $captcha_decider;
         $this->language_manager = $language_manager;
+        $this->field_manager    = $field_manager;
     }
 
     /**
@@ -95,7 +103,9 @@ class NewFeedbackType extends AbstractType
                     new NotNull(['message' => 'portal.forms.error_required']),
                 ],
             ])
-            ->add('custom_data', 'custom_feedback_fields')
+            ->add('custom_data', 'deskpro_combined_type', [
+                'forms' => $this->getCustomDataForms($options),
+            ])
             ->add('attachments', 'feedback_attachment_collection', [
                 'person' => $options['person'],
             ])
@@ -154,21 +164,47 @@ class NewFeedbackType extends AbstractType
     }
 
     /**
-     * @param string $name
-     * @param array  $vars
-     *
-     * @return string
-     */
-    private function phrase($name, array $vars = [])
-    {
-        return $this->language_manager->phrase($name, $vars);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'new_feedback';
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function getCustomDataForms(array $options)
+    {
+        $forms      = [];
+        $field_defs = $this->field_manager->getFeedbackFields();
+
+        foreach ($field_defs as $field_def) {
+            $forms[] = [
+                'name'    => 'custom_feedback_def_'.$field_def->getId(),
+                'type'    => 'deskpro_custom_data',
+                'options' => [
+                    'custom_data_field' => $field_def,
+                    'property_path'     => 'custom_data',
+                    'agent_interface'   => $options['agent_interface'],
+                    'label'             => $field_def->title,
+                ],
+            ];
+        }
+
+        return $forms;
+    }
+
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string
+     */
+    protected function phrase($name, array $vars = [])
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }

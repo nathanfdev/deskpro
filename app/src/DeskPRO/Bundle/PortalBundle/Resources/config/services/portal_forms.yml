@@ -94,15 +94,9 @@ services:
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
-    arguments: [@captcha_decider, @language_manager]
+    arguments: [@captcha_decider, @language_manager, @form_field_manager]
     tags:
       - { name: form.type, alias: new_feedback }
-
-  form.custom_feedback_fields:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CustomFeedbackType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: custom_feedback_fields }
 
 
   form.feedback_attachment:
