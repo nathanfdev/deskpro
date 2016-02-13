@@ -43,11 +43,11 @@ class LogHelper extends AbstractLogHelper
     protected $client_generated_request_id = false;
 
     /**
-     * @param array|HeaderBag $headers
+     * @param null|array|HeaderBag $headers
      *
      * @return string|null
      */
-    public function getRequestId($headers)
+    public function getRequestId($headers = null)
     {
         if (!$this->request_id) {
             $headers          = $this->mutateHeaders($headers);
