@@ -9,16 +9,16 @@ cd $ROOT_DIR
 
 DATABASE_NAME=$DATABASE_PREFIX
 
-echo "Init project deps"
-$ROOT_DIR/dev/bin/init-project
-echo "--> Done"
-
-echo "Creating test databases"
-mysql -e "CREATE DATABASE ${DATABASE_NAME};"
-mysql -e "CREATE DATABASE ${DATABASE_NAME}_test;"
-mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
-mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}_test.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
-echo "--> Done"
+#echo "Init project deps"
+#$ROOT_DIR/dev/bin/init-project
+#echo "--> Done"
+#
+#echo "Creating test databases"
+#mysql -e "CREATE DATABASE ${DATABASE_NAME};"
+#mysql -e "CREATE DATABASE ${DATABASE_NAME}_test;"
+#mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
+#mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}_test.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
+#echo "--> Done"
 
 echo "Creating config.all.php"
 cp app/BUILD/tests/config/config.all.dist.php app/BUILD/tests/config/config.all.php
