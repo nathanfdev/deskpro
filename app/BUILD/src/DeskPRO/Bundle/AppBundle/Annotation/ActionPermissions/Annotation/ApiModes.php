@@ -66,6 +66,7 @@ class ApiModes
 
             $this->modes = array_merge($this->modes, $this->mode_alias[$mode]);
         }
+        $this->modes = array_unique($this->modes);
     }
 
     /**

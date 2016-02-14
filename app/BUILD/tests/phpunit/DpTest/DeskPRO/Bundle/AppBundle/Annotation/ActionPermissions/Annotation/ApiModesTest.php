@@ -44,7 +44,11 @@ class ApiModesTest extends DeskProTestCase
     public function testConstruction($params, $expected)
     {
         $api_modes = new ApiModes($params);
-        $this->assertEquals(sort($expected), sort($api_modes->getModes()));
+        $exp       = $expected;
+        sort($exp);
+        $modes = $api_modes->getModes();
+        sort($modes);
+        $this->assertEquals($exp, $modes);
     }
 
     /**
