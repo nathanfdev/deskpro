@@ -10,7 +10,7 @@ cd $ROOT_DIR
 DATABASE_NAME=$DATABASE_PREFIX
 
 echo "Init project deps"
-$ROOT_DIR/app/BUILD/bin/init-project.sh
+$ROOT_DIR/app/BUILD/dev/bin/init-project.sh
 echo "--> Done"
 
 echo "Creating test databases"
