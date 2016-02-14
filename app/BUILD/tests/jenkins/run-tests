@@ -10,7 +10,7 @@ cd $ROOT_DIR
 DATABASE_NAME=$DATABASE_PREFIX
 
 echo "Init project deps"
-$ROOT_DIR/app/bin/init-project.sh
+$ROOT_DIR/app/BUILD/bin/init-project.sh
 echo "--> Done"
 
 echo "Creating test databases"
@@ -22,28 +22,28 @@ echo "--> Done"
 
 echo "Creating config.php"
 rm config.php
-cp app/tests/jenkins/test-config.php config.php
+cp app/BUILD/tests/jenkins/test-config.php config.php
 echo "--> Done"
 
 echo "Creating config.testing.php"
-cp app/tests/jenkins/config.test.php.dist app/tests/config.test.php
+cp app/BUILD/tests/jenkins/config.test.php.dist app/BUILD/tests/config.test.php
 echo "--> Done"
 
 echo "Ensuring permissions"
 chmod -R 0777 data
-chmod -R 0777 app/sys/cache
+chmod -R 0777 app/BUILD/sys/cache
 echo "--> Done"
 
 if [ "$1" = "quick" ]; then
     echo "Running quick tests"
-    app/tests/bin/run-tests-quick
+    app/BUILD/tests/bin/run-tests-quick
 else
     echo "Running full tests suite"
-	app/tests/bin/run-tests coverage
+    app/BUILD/tests/bin/run-tests coverage
 fi
 
 if [[ $? -eq 0 ]]; then
-	TESTS_ERROR=0
+    TESTS_ERROR=0
 fi
 
 echo "Removing test databases"
