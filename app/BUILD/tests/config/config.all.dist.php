@@ -32,7 +32,7 @@
 #
 # To run the tests, you need to do the following:
 #
-# 1. rename this file to "config.php"
+# 1. rename this file to "config.all.php"
 # 2. ensure the database config below are correct
 # 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
 # 3. Remember that the test db will be deleted and
@@ -43,10 +43,10 @@
 $CONFIG = [];
 
 $CONFIG['database'] = [
-    'host'     => 'localhost',
-    'user'     => 'root',
-    'password' => '',
-    'dbname'   => 'deskpro_test',
+    'host'     => DP_DATABASE_HOST,
+    'user'     => DP_DATABASE_USER,
+    'password' => DP_DATABASE_PASSWORD,
+    'dbname'   => DP_DATABASE_NAME,
 ];
 
 $CONFIG['paths'] = [

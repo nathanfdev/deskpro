@@ -90,7 +90,7 @@ config/advanced/*
 !/config/.gitkeep
 !/config/advanced/.gitkeep
 
-/app/BUILD/tests/config.test.php
+/app/BUILD/tests/config/config.test.php
 
 ###################### Legacy
 

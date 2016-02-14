@@ -42,8 +42,10 @@ libxml_disable_entity_loader(true);
 #------------------------------
 
 require __DIR__.'/../../../app/run/lib/DpRun/DpEnv.php';
+require __DIR__.'/../../tests/config.test.php';
 $config_reader = new \DpRun\ConfigReader([__DIR__.'/config']);
-$DP_ENV        = new \DpRun\DpEnv(__DIR__.'/../../../', [], $config_reader);
+$config_reader->getConfig('all');
+$DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../../', [], $config_reader);
 
 // needed for behat
 $GLOBALS['DP_ENV'] = $DP_ENV;
