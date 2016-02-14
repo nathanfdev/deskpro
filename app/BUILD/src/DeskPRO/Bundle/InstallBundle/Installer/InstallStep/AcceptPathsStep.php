@@ -158,11 +158,11 @@ class AcceptPathsStep extends AbstractStep
         $res   = $proc->getOutput();
         $match = 0;
 
-        if (!preg_match('#^PHP\s+([\d\.]+)\s+\((.*?)\)#m', $res, $match)) {
+        if (!preg_match('#^PHP\s+([\d\.]+)(.*?)?\s+\((.*?)\)#m', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 
-        $sapi    = $match[2];
+        $sapi    = $match[3];
         $version = $match[1];
 
         if ($sapi !== 'cli') {
