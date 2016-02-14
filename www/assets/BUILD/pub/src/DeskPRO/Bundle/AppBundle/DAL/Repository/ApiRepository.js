@@ -1,10 +1,9 @@
-import { AbstractRepository } from './AbstractRepository';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 
 /**
  * DeskPRO API record repository
  */
-export class ApiRepository extends AbstractRepository {
+export class ApiRepository {
 
   /**
    * @param api
@@ -12,7 +11,6 @@ export class ApiRepository extends AbstractRepository {
    * @param supportsLoadAll
    */
   constructor(api, url, supportsLoadAll = false) {
-    super();
     this.api = api;
     this.url = url.replace(/^\/+/, '');
     this.supportsLoadAll = supportsLoadAll;
