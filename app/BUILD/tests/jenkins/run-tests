@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR=$SCRIPT_DIR/../../../
+ROOT_DIR=$SCRIPT_DIR/../../../../
 
 TESTS_ERROR=1
 
@@ -10,7 +10,7 @@ cd $ROOT_DIR
 DATABASE_NAME=$DATABASE_PREFIX
 
 echo "Init project deps"
-$ROOT_DIR/app/BUILD/dev/bin/init-project.sh
+$ROOT_DIR/dev/bin/init-project.sh
 echo "--> Done"
 
 echo "Creating test databases"
