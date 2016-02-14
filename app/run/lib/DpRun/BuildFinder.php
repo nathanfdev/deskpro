@@ -115,7 +115,7 @@ class BuildFinder
      * So for a short time during an uodate, every pageload will be doing 'extra work' to connect to the db to check the
      * current build.
      *
-     * Note: During development, the build is always BUILD.
+     * Note: During development and testing, the build is always BUILD.
      *
      * @param string $active_build_file Path to the file that contains the current build name
      * @param bool   $force_update
@@ -123,7 +123,10 @@ class BuildFinder
      */
     public function getActiveBuildDir($active_build_file, $force_update = false)
     {
-        if ($this->config_reader->getConfig('env.environment') === 'dev') {
+        if (
+            $this->config_reader->getConfig('env.environment') === 'dev'
+            || $this->config_reader->getConfig('env.environment') === 'test'
+        ) {
             return 'BUILD';
         }
 
