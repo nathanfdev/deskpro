@@ -26,19 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Log\Finder;
-
-use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
-
 /**
- * Interface FinderInterface.
+ * DeskPRO.
  */
-interface FinderInterface
+
+namespace DeskPRO\Bundle\ApiBundle\Command;
+
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class ReplayLogCommand extends ContainerAwareCommand
 {
     /**
-     * @param $request_id
-     *
-     * @return ApiLog
+     * {@inheritdoc}
      */
-    public function find($request_id);
+    protected function configure()
+    {
+        $this->setName('dpdev:replay-log')
+            ->setDescription('Replays log already stored in DB')
+            ->addArgument('request_id', InputArgument::REQUIRED, 'Id of request to replay (string)');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $replayer = $this->getContainer()->get('api_log.replayer');
+
+        $output->writeln($replayer->replayWithCrawler($input->getArgument('request_id')));
+    }
 }

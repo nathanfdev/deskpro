@@ -29,6 +29,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Log;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\ApiBundle\Log\Finder\FinderInterface;
+use DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializerInterface;
+use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -59,25 +62,51 @@ class LogServiceFactory
         $this->settings_resolver->getGlobalSettings(true);
     }
 
-    public function createWriter()
+    /**
+     * @param null $type
+     *
+     * @return WriterInterface
+     */
+    public function createWriter($type = null)
     {
-        return $this->create('api_log.writer', 'writer');
+        return $this->create('api_log.writer', 'writer', $type);
     }
 
-    public function createFinder()
+    /**
+     * @param null $type
+     *
+     * @return FinderInterface
+     */
+    public function createFinder($type = null)
     {
-        return $this->create('api_log.finder', 'finder');
+        return $this->create('api_log.finder', 'finder', $type);
     }
 
-    public function createSerializer()
+    /**
+     * @param null $type
+     *
+     * @return SerializerInterface
+     */
+    public function createSerializer($type = null)
     {
-        return $this->create('api_log.writer.file.serializer', 'serializer');
+        return $this->create('api_log.writer.file.serializer', 'serializer', $type);
     }
 
-    protected function create($prefix, $object_type)
+    /**
+     * @param $prefix
+     * @param $object_type
+     * @param string $type
+     *
+     * @return FinderInterface|WriterInterface|SerializerInterface
+     */
+    protected function create($prefix, $object_type, $type = null)
     {
-        $type = $this->settings_resolver->getGlobalSettings()->get(sprintf('%s.type', $prefix));
+        if (!$type) {
+            $type = $this->settings_resolver->getGlobalSettings()->get(sprintf('%s.type', $prefix));
+        }
+
         $name = sprintf('%s.%s', $prefix, $type);
+
         if ($this->container->has($name)) {
             return $this->container->get($name);
         } else {

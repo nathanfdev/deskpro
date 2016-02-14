@@ -279,8 +279,14 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
-    public function getRequestData()
+    public function getRequestData($key = null)
     {
+        if ($key && isset($this->request_data[$key])) {
+            return $this->request_data[$key];
+        } elseif ($key) {
+            throw new \InvalidArgumentException(sprintf('Request [ %s ] key was not found in request_data property', $key));
+        }
+
         return $this->request_data;
     }
 

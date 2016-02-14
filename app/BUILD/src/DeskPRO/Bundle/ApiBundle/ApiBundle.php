@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle;
 
+use DeskPRO\Bundle\ApiBundle\Command\ReplayLogCommand;
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\ApiDocPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,6 +48,7 @@ class ApiBundle extends Bundle
 
     public function registerCommands(Application $application)
     {
+        $application->add(new ReplayLogCommand());
     }
 
     public function getNamespace()

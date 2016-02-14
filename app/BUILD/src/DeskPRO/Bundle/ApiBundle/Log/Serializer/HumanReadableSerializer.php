@@ -69,7 +69,7 @@ api_key_id: %d
             var_export($log->getRequestData()['query'], true),
             var_export($log->getResponseData(), true),
             $log->getStatus(),
-            $log->getKey()->getId()
+            $log->getKey() ? $log->getKey()->getId() : 'none'
         );
     }
 }

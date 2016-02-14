@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Log\Helper;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Log\Finder\FinderInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 abstract class AbstractLogHelper
@@ -101,7 +102,7 @@ abstract class AbstractLogHelper
     /**
      * @param $request_id
      *
-     * @return mixed
+     * @return ApiLog
      */
     public function findRequest($request_id)
     {

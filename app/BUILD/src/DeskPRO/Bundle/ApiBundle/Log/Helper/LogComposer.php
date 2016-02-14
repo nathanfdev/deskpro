@@ -94,7 +94,7 @@ class LogComposer
     }
 
     /**
-     * @return mixed
+     * @return ApiLog
      */
     public function getLog()
     {
@@ -147,26 +147,37 @@ class LogComposer
     public function createApiLog(Request $request)
     {
         if (!$this->log) {
-            $this->log = new ApiLog();
-
-            $request_data = [
-                'headers' => $request->headers->all(),
-                'body'    => $request->getContent(),
-                'query'   => $request->query->all(),
-                'post'    => $request->request->all(),
-                'files'   => $request->files->all(),
-                'server'  => $request->server->all(),
-            ];
-
-            $this->log
-                ->setStartTime(defined('DP_START_TIME') ? DP_START_TIME : time())
-                ->setRequestedUri($request->getPathInfo())
-                ->setRequestData($request_data)
-                ->setRequestId($this->getRequestId($request));
-            $this->setApiLogAuthData();
+            $this->log = $this->internalCreate($request);
         }
 
         return $this->log;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return ApiLog
+     */
+    public function internalCreate(Request $request)
+    {
+        $log          = new ApiLog();
+        $request_data = [
+            'headers' => $request->headers->all(),
+            'body'    => $request->getContent(),
+            'query'   => $request->query->all(),
+            'post'    => $request->request->all(),
+            'files'   => $request->files->all(),
+            'server'  => $request->server->all(),
+        ];
+
+        $log
+            ->setStartTime(defined('DP_START_TIME') ? DP_START_TIME : time())
+            ->setRequestedUri($request->getPathInfo())
+            ->setRequestData($request_data)
+            ->setRequestId($this->getRequestId($request));
+        $this->setApiLogAuthData($log);
+
+        return $log;
     }
 
     /**
@@ -174,13 +185,22 @@ class LogComposer
      */
     public function finishApiLog(Response $response)
     {
+        $this->internalFinish($response, $this->log);
+    }
+
+    /**
+     * @param Response $response
+     * @param ApiLog   $log
+     */
+    public function internalFinish(Response $response, ApiLog $log)
+    {
         $response_data = [
             'headers' => $response->headers->all(),
             'body'    => $response->getContent(),
         ];
-        $this->log->setEndTime(time())
-        ->setResponseData($response_data)
-        ->setStatus($response->getStatusCode());
+        $log->setEndTime(time())
+            ->setResponseData($response_data)
+            ->setStatus($response->getStatusCode());
     }
 
     /**
@@ -216,19 +236,23 @@ class LogComposer
         return true;
     }
 
+    /**
+     *
+     */
     public function saveLog()
     {
         $this->writer->write($this->log);
     }
 
     /**
+     * @param ApiLog $log
      */
-    protected function setApiLogAuthData()
+    protected function setApiLogAuthData(ApiLog $log)
     {
         if ($this->getToken() && $this->getToken() instanceof AbstractApiSecurityToken) {
-            $this->addKey($this->log);
-            $this->log->setCredentials($this->getToken()->getCredentials());
-            $this->log->setMode(ApiUtil::getMode($this->getToken()->getName()));
+            $this->addKey($log);
+            $log->setCredentials($this->getToken()->getCredentials());
+            $log->setMode(ApiUtil::getMode($this->getToken()->getName()));
         }
     }
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -61,8 +62,11 @@ class DevKernel extends BaseKernel
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
+            new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\DevBundle\DevBundle(),
         );
 
