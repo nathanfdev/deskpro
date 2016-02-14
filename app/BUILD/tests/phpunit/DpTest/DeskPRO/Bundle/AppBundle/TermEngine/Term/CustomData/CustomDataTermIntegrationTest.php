@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -65,6 +66,7 @@ class CustomDataTermIntegrationTest extends TermIntegrationTest
             $this->em->persist($ticket);
             self::$tickets[] = $ticket;
         }
+
         $this->em->flush();
 
         $this->em->persist($this->dummyCustomDataTicket(self::$tickets[0], self::$fieldType1, 'input', 'foo'));

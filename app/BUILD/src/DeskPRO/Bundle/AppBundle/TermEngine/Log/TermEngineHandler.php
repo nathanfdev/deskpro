@@ -29,10 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Log;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Monolog\Handler\AbstractProcessingHandler;
 
+/**
+ * Class TermEngineHandler.
+ */
 class TermEngineHandler extends AbstractProcessingHandler
 {
     /**
@@ -55,24 +60,32 @@ class TermEngineHandler extends AbstractProcessingHandler
      */
     private $stream;
 
-    public function __construct($kernel_log_dir, $file_name)
+    /**
+     * @param int              $kernel_log_dir
+     * @param bool             $file_name
+     * @param SettingsResolver $resolver
+     */
+    public function __construct($kernel_log_dir, $file_name, SettingsResolver $resolver)
     {
-        global $DP_CONFIG;
-        if (!array_key_exists('enable_termengine_log', $DP_CONFIG)) {
-            $this->enabled = false;
-        } else {
-            $this->enabled = (bool) $DP_CONFIG['enable_termengine_log'];
-        }
+        $this->enabled = (bool) $resolver->getGlobalSettings()->get('enable_termengine_log', false);
 
         $this->kernel_log_dir = $kernel_log_dir;
         $this->file_name      = $file_name;
     }
 
+    /**
+     * @param array $record
+     *
+     * @return bool
+     */
     public function isHandling(array $record)
     {
         return true; // already filtered by channel for us
     }
 
+    /**
+     * @param array $record
+     */
     public function write(array $record)
     {
         if (!$this->enabled) {

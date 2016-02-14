@@ -1,3 +1,4 @@
+@basic
 Feature: Api Caching
   This is feature to have some perfomance increase
 

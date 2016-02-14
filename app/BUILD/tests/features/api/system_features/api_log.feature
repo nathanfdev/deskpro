@@ -1,8 +1,9 @@
+@basic
 Feature: Api should log any request
 
   Background:
     Given I install the api data set
-    And I have enabled api log feature
+    And the setting "api_log.enabled" is set to 1
     And my request is authenticated
 
   Scenario: I send some request to API

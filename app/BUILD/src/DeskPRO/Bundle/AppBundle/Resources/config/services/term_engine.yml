@@ -12,6 +12,7 @@ services:
     arguments:
       - %kernel.logs_dir%
       - "termengine.log"
+      - @settings_resolver
 
   dp.app.term_engine.tickets_select_criteria:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketsSelectCriteria
