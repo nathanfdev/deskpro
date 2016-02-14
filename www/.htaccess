@@ -1,7 +1,7 @@
 <IfModule rewrite_module>
 	RewriteEngine On
 	#RewriteBase /deskpro
-	RewriteCond %{REQUEST_FILENAME} -f [OR]
-	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteCond %{REQUEST_FILENAME} !-f [OR]
+	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^.*$ index.php [NC,L]
 </IfModule>
