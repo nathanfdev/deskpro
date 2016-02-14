@@ -74,6 +74,7 @@ phantomjsdriver.log
 
 # tests
 /app/BUILD/tests/config/config.all.php
+/app/BUILD/tests/config/config.test.php
 
 # Dev
 /www/assets/BUILD/web/sassdoc/vars.json
@@ -90,7 +91,7 @@ config/advanced/*
 !/config/.gitkeep
 !/config/advanced/.gitkeep
 
-/app/BUILD/tests/config/config.test.php
+
 
 ###################### Legacy
 
