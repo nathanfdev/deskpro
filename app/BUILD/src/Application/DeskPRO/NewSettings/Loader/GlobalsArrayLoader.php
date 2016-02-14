@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
+use DpRun\DpEnv;
 
 /**
  * Gets the returned array from the global array.
@@ -75,8 +77,8 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
         return $this->cache->get(
             $this->cacheKey,
             function () {
-                if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-                    return $GLOBALS['DP_CONFIG']['SETTINGS'];
+                if (isset($GLOBALS['DP_ENV']) && $GLOBALS['DP_ENV'] instanceof DpEnv) {
+                    return $GLOBALS['DP_ENV']->getConfig('settings');
                 }
 
                 return [];

@@ -1072,7 +1072,7 @@ return array(
     # api_logger.settings
     ####################################################################################################################
 
-    'api_log.enabled'     => false,
+    'api_log.enabled'     => true,
     'api_log.modes'       => ['key'],
     'api_log.dupe.modes'  => ['key'],
     'api_log.writer.type' => 'db',
