@@ -216,7 +216,7 @@ class ChatController extends AbstractController
     public function validateCustomFieldsAction($session_code, Request $request)
     {
         if ($chat_manager = $this->getChatManager($session_code)) {
-            $result = $$chat_manager->validateCustomFields($request->get('chat_fields'));
+            $result = $chat_manager->validateCustomFields($request->get('chat_fields'));
         }
 
         return $this->createJsonResponse(@$result);
