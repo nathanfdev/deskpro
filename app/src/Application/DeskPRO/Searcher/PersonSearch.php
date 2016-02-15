@@ -736,6 +736,12 @@ class PersonSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
                                 break;
 
@@ -795,6 +801,20 @@ class PersonSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_person',
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_person',
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

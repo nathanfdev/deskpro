@@ -2136,6 +2136,12 @@ class TicketSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
 
                                 break;
@@ -2209,6 +2215,20 @@ class TicketSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_ticket',
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_ticket',
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

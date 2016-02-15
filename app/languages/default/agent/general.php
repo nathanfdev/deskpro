@@ -397,6 +397,7 @@ return array(
     'agent.general.is_not_a_new_user'                       => 'Is not a new user',
     'agent.general.is_not_published'                        => 'Is Not Published',
     'agent.general.is_not_set'                              => 'Is not set',
+    'agent.general.is_set'                                  => 'Is set',
     'agent.general.is_not_x'                                => 'is not {{field}}',
     'agent.general.is_published'                            => 'Is Published',
     'agent.general.is_x'                                    => 'is {{field}}',

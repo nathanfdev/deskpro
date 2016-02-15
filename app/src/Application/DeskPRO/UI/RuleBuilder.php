@@ -167,7 +167,7 @@ class RuleBuilder
                 }
             }
 
-            if ($is_blank) {
+            if ($is_blank && @$data_item['op'] != 'not_isset' && @$data_item['op'] != 'isset') {
                 continue;
             }
 

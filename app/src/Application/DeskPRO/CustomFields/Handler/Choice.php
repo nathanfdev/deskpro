@@ -389,7 +389,7 @@ class Choice extends HandlerAbstract
 
     public function getSearchCapabilities()
     {
-        return array('is', 'not', 'not_isset');
+        return array('is', 'not', 'isset', 'not_isset');
     }
 
     public function getFilterCapabilities()

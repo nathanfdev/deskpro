@@ -458,6 +458,12 @@ class OrganizationSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
                                 break;
 
@@ -517,6 +523,20 @@ class OrganizationSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;
