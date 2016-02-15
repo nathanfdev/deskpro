@@ -100,9 +100,12 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
      */
     public function save(EntityManager $em)
     {
+        $is_new = false;
+
         // New, we should set a proper display order
         if (!$this->department->id) {
-            $do = $em->getConnection()->fetchColumn('
+            $is_new = true;
+            $do     = $em->getConnection()->fetchColumn('
                 SELECT display_order
                 FROM departments
                 WHERE is_tickets_enabled = 1
@@ -116,8 +119,22 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         $em->flush();
 
         // Make sure parent doesnt have a trigger
+        // and doesnt that the parent doesnt contain tickets
         if ($this->department->parent) {
             $em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
+
+            if ($is_new) {
+                $em->getConnection()->update(
+                    'tickets',
+                    array('department_id' => $this->department->id),
+                    array('department_id' => $this->department->parent->id)
+                );
+                $em->getConnection()->update(
+                    'tickets_search_active',
+                    array('department_id' => $this->department->id),
+                    array('department_id' => $this->department->parent->id)
+                );
+            }
         }
     }
 
