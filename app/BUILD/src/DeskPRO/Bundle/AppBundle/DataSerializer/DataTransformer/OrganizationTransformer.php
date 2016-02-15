@@ -62,7 +62,6 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
             'importance',
             'date_created',
             'email_domains',
-            'labels',
         ];
     }
 
@@ -79,6 +78,7 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
             'employees_count' => $organization->getEmployeesCount(),
             'tickets_count'   => $organization->getTicketsCount(),
             'chats_count'     => $chatsCount,
+            'labels'          => new LabelsCollection($organization->getLabels()),
             'fields'          => new CustomDataCollection($organization->getCustomData()),
         ];
     }

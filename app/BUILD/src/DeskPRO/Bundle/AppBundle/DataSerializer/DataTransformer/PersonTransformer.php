@@ -143,7 +143,7 @@ class PersonTransformer extends AbstractDataSerializerTransformer
         }
 
         // Labels
-        $ret['labels'] = $person->getLabelsArray();
+        $ret['labels'] = new LabelsCollection($person->getLabels());
 
         // Phone numbers
         $ret['phone_numbers'] = $person->getPhoneNumbersArray();
