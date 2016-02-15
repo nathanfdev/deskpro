@@ -132,39 +132,6 @@ class LabelManager
         $labelobj['label'] = $label;
         $this->entity->addLabel($labelobj);
 
-        $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)).'s';
-        if ($type_name == 'chatconversations') {
-            $type_name = 'chat';
-        }
-
-        if ($type_name == 'persons') {
-            $type_name = 'people';
-        }
-
-        if ($type_name == 'feedbacks') {
-            $type_name = 'feedback';
-        }
-
-        if ($type_name == 'newss') {
-            $type_name = 'news';
-        }
-
-        /** @var LabelDef $rep */
-        $rep = $this->em->getRepository('DeskPRO:LabelDef');
-        if ('chat_conversations' === $type_name) {
-            $type_name = 'chat';
-        }
-        if (!$definition = $rep->getDefinition($type_name, $label)) {
-            $definition = new \Application\DeskPRO\Entity\LabelDef(array(
-                'label_type' => $type_name,
-                'label'      => $label,
-                'color'      => $rep->getColorForLabel($label),
-            ));
-            $this->em->persist($definition);
-            $rep->updateDefinitionUsages($definition);
-            $this->em->flush();
-        }
-
         if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
             $this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
         }
