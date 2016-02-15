@@ -197,7 +197,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		fields = fields['default'];
 		this.currentDisplayModify = fields;
 
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+		this.display.find('tbody.item.item-on').hide().removeClass('item-on').removeClass('always-display');
 		var last = this.display.find('tbody.always-bottom');
 
 		Array.each(this.currentDisplayModify, function(f) {
