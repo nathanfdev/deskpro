@@ -127,6 +127,7 @@
     "testDirectoryName": "tests",
     "cacheDirectory": "./.jest-cache",
     "scriptPreprocessor": "./jest-preprocessor",
+    "setupEnvScriptFile": "./jest-env",
     "unmockedModulePathPatterns": [
       "react",
       "/node_modules/",
@@ -139,6 +140,9 @@
       "/Application/Components/",
       "/Common/Components/",
       "/DeskPRO/Component/",
+      "/DAL/",
+      "/RecordsStore/",
+      "App_Reducers.js",
       ".test-helper.js"
     ],
     "testFileExtensions": [
