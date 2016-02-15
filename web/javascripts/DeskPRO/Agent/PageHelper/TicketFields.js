@@ -214,14 +214,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 
 			var item = this.display.find('.item.' + classname);
-			$('input, select', item).each(function(){
-				var prevId = $(this).attr('id');
-				$('label[for="' + prevId + '"]', item).attr('for', baseId + '_' + prevId);
-				$(this)
-					.attr('name', baseId + '_' + $(this).attr('name'))
-					.attr('id', baseId + '_' + prevId)
-				;
-			});
 			item.detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 

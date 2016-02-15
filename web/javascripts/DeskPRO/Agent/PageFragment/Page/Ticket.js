@@ -48,6 +48,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
+	prepareWrapper: function(wrapper) {
+		var baseId = this.meta.baseId;
+
+		// we need to rename custom radio fields or else they are all
+		// part of the same 'group' within the page
+		wrapper.find('input[type="radio"]').each(function(){
+			$(this).attr('name', baseId + '_' + $(this).attr('name'));
+		});
+
+		// the name will be replaced on submit in TicketFields.js
+	},
+
 	initPage: function(el) {
 		this.wrapper = el;
 		var self = this;

@@ -58,8 +58,10 @@
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
-	    <label for="{{ child.vars.id }}">
-		    {{ form_widget(child) }} {{ child.vars.label }}
+        {# The DP_BASE_ID_ bit is a hack to get unique IDs used for ids/label-fors with expanded choices #}
+        {# See Application/DeskPRO/CustomFields/Handler/Choice.php - renderFormHtml() #}
+	    <label for="DP_BASE_ID_{{ child.vars.id }}">
+		    {{ form_widget(child, {id: 'DP_BASE_ID_' ~ child.vars.id}) }} {{ child.vars.label }}
 	    </label>
     {% endfor %}
     </div>

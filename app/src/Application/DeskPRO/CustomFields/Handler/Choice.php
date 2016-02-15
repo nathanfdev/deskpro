@@ -368,6 +368,25 @@ class Choice extends HandlerAbstract
         return array();
     }
 
+    public function renderFormHtml($formView, array $template_vars = array())
+    {
+        // In the agent interface, we render single instances of forms many times
+        // and that screws up the IDs used in the markup
+
+        // we need this hack to generate unique IDs for expanded choice fields
+        // see also Application/DeskPRO/Resources/views/Form/form_div_layout.html.twig - choice_widget_expanded
+
+        $html = parent::renderFormHtml($formView, $template_vars);
+
+        if ($this->expanded) {
+            $rand_id = uniqid('dp_').'_';
+            $html    = preg_replace('#<label([^>]+)for="DP_BASE_ID_#', '<label$1for="'.$rand_id, $html);
+            $html    = preg_replace('#<input([^>]+)id="DP_BASE_ID_#', '<input$1id="'.$rand_id, $html);
+        }
+
+        return $html;
+    }
+
     public function getSearchCapabilities()
     {
         return array('is', 'not', 'not_isset');
