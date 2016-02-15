@@ -7,7 +7,7 @@ jest.mock('~common/Lists/ListItemStatefulContainer');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
 describe('Tickets Navigation: ListItemContainer component', () => {

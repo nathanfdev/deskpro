@@ -1,8 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
 import * as massActions from '../Actions/massActions';
-import { togglePayloadInCollection, handleMassAction, mergeFullPayload }
-  from 'Ampliflux/reducers/handlers';
+import { togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 
 const initialState = {
   selected: Immutable.fromJS([]) // array of IDs

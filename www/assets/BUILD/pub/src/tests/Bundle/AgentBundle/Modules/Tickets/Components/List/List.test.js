@@ -6,7 +6,6 @@ jest.dontMock('~List/List');
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
-import { fakeRecordStoreState } from 'Helpers/redux';
 
 describe('List', () => {
   const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
@@ -15,9 +14,7 @@ describe('List', () => {
   const ListCardViewContainer = require('~List/View/Card/ListCardViewContainer').ListCardViewContainer;
   const ListTableViewContainer = require('~List/View/Table/ListTableViewContainer').ListTableViewContainer;
 
-  const fakeState = {
-    RecordStores: {Tickets: {tickets: fakeRecordStoreState({}, {tickets: []})}}
-  };
+  const fakeState = {};
 
   const renderList = (viewMode = 'card') => {
     renderInTicketsApp(fakeState, <List elements={[]} viewMode={viewMode} loaded={true} />);

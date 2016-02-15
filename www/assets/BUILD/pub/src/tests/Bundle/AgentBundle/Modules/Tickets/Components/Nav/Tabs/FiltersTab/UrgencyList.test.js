@@ -3,7 +3,7 @@ jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/Tabs/Fi
 import React from 'react';
 import TestUtilAdditions from 'react-testutils-additions';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 
 describe('Tickets Navigation: UrgencyList component', () => {
   const UrgencyList =

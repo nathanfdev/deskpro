@@ -3,7 +3,7 @@
 jest.dontMock('~components/TicketsApp');
 
 import React from 'react';
-import { renderInRedux, toImmutable, fakeState } from 'Helpers/redux';
+import { renderInRedux, toImmutable, fakeState } from 'Helpers';
 
 describe('Ticket: TicketsApp component', () => {
   const TicketsApp    = require('~components/TicketsApp').TicketsApp;

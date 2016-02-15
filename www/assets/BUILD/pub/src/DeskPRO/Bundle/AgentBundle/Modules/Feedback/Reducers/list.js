@@ -1,6 +1,5 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload }
-  from 'Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';

@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState, fakeRecordStoreState, toImmutable } from 'Helpers/redux';
+import { renderInRedux, fakeState, toImmutable } from 'Helpers';
 import { ticketsNavInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/nav';
 import { ticketsListInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Reducers/list';
 

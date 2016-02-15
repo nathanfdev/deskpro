@@ -6,7 +6,7 @@ jest.dontMock('~nav/Nav');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { renderInTicketsApp } from '../../tickets.test-helper';
-import { getState } from 'Helpers/redux';
+import { getState } from 'Helpers';
 
 describe('Tickets Navigation: Nav component', () => {
   const Nav                 = require('~nav/Nav').Nav;

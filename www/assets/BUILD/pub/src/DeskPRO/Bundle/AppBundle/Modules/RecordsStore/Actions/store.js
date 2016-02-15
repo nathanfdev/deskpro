@@ -1,17 +1,31 @@
 import { createAction } from 'Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import Immutable from 'immutable';
+
 
 // loadAll(), loadBatch() and loadFromApi() have the same ID because they share reducer --------------------------------
 
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, ids, collectionName) => {
+  (recordName, ids, collectionName) => (dispatch, getState) => {
     const recordRepository = repository(recordName);
+
+    const recordStore = getState().RecordsStore.store.get(recordName);
+    const loaded = recordStore && recordStore.has('records')
+                 ? recordStore.get('records').keySeq().toArray()
+                 : [];
+
+    const targets = [];
+    ids.forEach(id => {
+      if (loaded.indexOf(id) + loaded.indexOf('' + id) == -2) {
+        targets.push(id);
+      }
+    });
 
     return {
       recordName,
       collectionName,
-      promise: recordRepository.loadBatch(ids).then(response => ({
+      promise: recordRepository.loadBatch(targets).then(response => ({
         recordName,
         collectionName,
         records: response.getData().data

@@ -3,7 +3,7 @@ jest.mock('react-intl');
 
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { renderInRedux, fakeState, fakeRecordStoreState, toImmutable } from 'Helpers/redux';
+import { renderInRedux, fakeState, toImmutable } from 'Helpers';
 
 describe('ChatCard', () => {
   const ChatCard = require('DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/List/View/List/ChatCard').ChatCard;

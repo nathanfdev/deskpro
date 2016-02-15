@@ -3,7 +3,7 @@
 jest.autoMockOff();
 
 import 'babel/polyfill';
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 
 describe('Ampliflux combineReducerHierarchy()', () => {
   const { combineReducerHierarchy } = require('~/combineReducerHierarchy');

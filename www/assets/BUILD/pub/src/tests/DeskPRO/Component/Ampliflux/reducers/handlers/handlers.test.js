@@ -1,6 +1,6 @@
 jest.dontMock('DeskPRO/Component/Ampliflux/reducers/handlers');
 
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 import Immutable from 'immutable';
 
 describe('Ampliflux actions handlers', () => {

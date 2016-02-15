@@ -1,7 +1,7 @@
 jest.dontMock('DeskPRO/Component/Ampliflux/actions/actionUtils');
 jest.dontMock('DeskPRO/Component/Ampliflux/reducers/createReducer');
 
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 
 describe('Ampliflux createReducer()', () => {
   const { createReducer } = require('DeskPRO/Component/Ampliflux/reducers/createReducer');

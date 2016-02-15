@@ -1,6 +1,6 @@
 jest.dontMock('DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing');
 
-import { toImmutable } from 'Helpers/redux';
+import { toImmutable } from 'Helpers';
 
 describe('Application module: routing service', () => {
   const routing = require('DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing');

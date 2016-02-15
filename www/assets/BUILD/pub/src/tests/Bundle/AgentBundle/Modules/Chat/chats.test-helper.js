@@ -1,4 +1,4 @@
-import { renderInRedux, fakeState, toImmutable } from 'Helpers/redux';
+import { renderInRedux, fakeState, toImmutable } from 'Helpers';
 
 /**
  * Creates fake chat app state
