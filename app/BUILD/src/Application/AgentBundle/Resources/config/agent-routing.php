@@ -37,13 +37,10 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create(
-    'agent',
-    array(
-        'path'       => '/',
-        'controller' => 'AgentBundle:Main:index',
-    )
-);
+$collection->create('old_agent', array(
+    'path'       => '/',
+    'controller' => 'AgentBundle:Main:index',
+));
 
 $collection->create('geoip', array(
     'path'       => '/geoip',
