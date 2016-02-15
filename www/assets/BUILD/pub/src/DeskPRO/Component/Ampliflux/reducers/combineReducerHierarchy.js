@@ -33,12 +33,13 @@ function getReducer(val, builderFn) {
  */
 export function combineReducerHierarchy(reducersObj, builderFn) {
   const finalMap = {};
-  for (const [name, val] of Object.entries(reducersObj)) {
+  Object.keys(reducersObj).forEach(name => {
+    const val = reducersObj[name];
     const r = getReducer(val, builderFn);
     if (r) {
       finalMap[name] = r;
     }
-  }
+  });
 
   return combineReducers(finalMap);
 }
