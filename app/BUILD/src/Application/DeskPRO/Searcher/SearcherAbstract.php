@@ -120,7 +120,7 @@ abstract class SearcherAbstract implements PersonContextInterface
             $this->logger = new Logger();
 
             $search_name = strtolower(\Orb\Util\Util::getBaseClassname($this));
-            if ($this->get('deskpro.app_env')->getConfig('logs.enable_'.$search_name.'_log')) {
+            if (App::$container->get('deskpro.app_env')->getConfig('logs.enable_'.$search_name.'_log')) {
                 $wr = new \Orb\Log\Writer\Stream($this->get('deskpro.app_env')->getUserLogsDir().'/'.$search_name.'.log');
                 $this->logger->addWriter($wr);
             }
