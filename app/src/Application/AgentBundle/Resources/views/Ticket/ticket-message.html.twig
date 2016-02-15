@@ -145,6 +145,7 @@
 		</header>
 		{% set message_translated = ticket_messages_translated[message.id] %}
 		<div class="body-text {% if message_translated %}with-translated{% endif %}">
+			{% if message.is_agent_note %}<div class="note-tag" title="Agent note: This message will NOT appear to end-users.">Note</div>{% endif %}
 			<div class="body-text-container">
 				<div class="body-message-translated" {% if not message_translated %}style="display: none;"{% endif %} data-from-lang-code="{{ message_translated.from_lang_code }}" data-to-lang-code="{{ message_translated.lang_code }}">
 					{% if message_translated %}{{ message_translated.message|raw }}{% endif %}

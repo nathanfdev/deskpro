@@ -3450,9 +3450,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var showFn = function() {
 					var pos = me.offset();
+					var left = pos.left;
+					var winW = $(window).width();
+					var w = target.width();
+					if (left + w + 15 > winW) {
+						left = winW-w-30;
+					}
 					target.css({
-						left: pos.left,
-						top: pos.top + 15
+						left: left,
+						top: pos.top + 20
 					});
 					target.show();
 				};
