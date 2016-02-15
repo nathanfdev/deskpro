@@ -158,6 +158,7 @@ function refreshPortalDesignerVariables() {
 }
 
 gulp.task('bundle', callback => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader();
@@ -167,6 +168,7 @@ gulp.task('bundle', callback => {
 });
 
 gulp.task('bundle:agent', callback => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
@@ -177,6 +179,7 @@ gulp.task('bundle:portal', callback => {
 });
 
 gulp.task('bundle:widget', callback => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   refreshWidgetLoader();
   refreshHitRecorder();
@@ -187,12 +190,14 @@ gulp.task('bundle:dev-server', () => {
   refreshPortalDesignerVariables();
   refreshWidgetLoader();
   refreshHitRecorder();
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   startWebpackServer(getWebpackConfig('all', true, false));
 });
 
 gulp.task('bundle:dev-server:agent', () => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshPortalDesignerVariables();
   startWebpackServer(getWebpackConfig('agent', true, false));
@@ -203,6 +208,7 @@ gulp.task('bundle:dev-server:portal', () => {
 });
 
 gulp.task('bundle:dev-server:widget', () => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
   startWebpackServer(getWebpackConfig('widget', true, false));
 });
@@ -253,6 +259,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
         {
           test: /\/Reducers\/.*?\.js$/,
           include: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
           ],

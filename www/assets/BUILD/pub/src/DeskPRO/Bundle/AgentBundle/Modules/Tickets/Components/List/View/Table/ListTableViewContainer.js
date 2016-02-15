@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { elementsSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelected } from '../../../../Actions/listActions';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 // @todo Extract Row component (to omit selecting all tickets from record store + better structure + easier to test)
 

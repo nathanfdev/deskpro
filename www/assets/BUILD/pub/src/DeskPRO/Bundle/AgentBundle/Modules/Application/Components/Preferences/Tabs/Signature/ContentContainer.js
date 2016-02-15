@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
 import { loadFromApi, isLoadedCollectionSelectorFactory, collectionSelectorFactory }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+  from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   settings: collectionSelectorFactory('Settings', 'my')(state),

@@ -5,7 +5,7 @@ import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
 import { idsSelector, currentListSortSelector, currentListOrderSelector } from '../../../../Selectors/list';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   ids: idsSelector(state),

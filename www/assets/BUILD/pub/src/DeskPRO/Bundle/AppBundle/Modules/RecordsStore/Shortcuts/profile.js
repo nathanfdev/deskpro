@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { collectionSelectorFactory, isLoadedCollectionSelectorFactory } from '../index';
-import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const loadMyProfile = createAction(
   'PROFILE_LOAD',

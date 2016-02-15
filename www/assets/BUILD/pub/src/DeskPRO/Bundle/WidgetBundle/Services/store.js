@@ -1,9 +1,10 @@
-import AppReducers from '../WidgetApp_Reducers.js';
+import WidgetAppReducers from '../WidgetApp_Reducers.js';
+import AppReducers from '../../AppBundle/AppApp_Reducers';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 
-const reducer = combineReducerHierarchy(AppReducers);
+const reducer = combineReducerHierarchy(Object.assign({}, WidgetAppReducers, AppReducers));
 const middleware = applyMiddleware(
   ampMiddleware.intervalMiddleware,
   ampMiddleware.timeoutMiddleware,

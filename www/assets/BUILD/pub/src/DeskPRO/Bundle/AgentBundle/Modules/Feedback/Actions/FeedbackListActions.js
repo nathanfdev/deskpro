@@ -4,7 +4,7 @@ import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { loadFeedbackCommentsList } from './FeedbackCommentsActions';
 import { currentListParamsSelector, visibleFieldsSelector } from '../Selectors/list';
 import { toggleMassAction } from '../../Application/Actions/massActions';
-import { loadBatch, setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadBatch, setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores

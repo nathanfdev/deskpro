@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { applyParams } from './FeedbackListActions';
 
 /**

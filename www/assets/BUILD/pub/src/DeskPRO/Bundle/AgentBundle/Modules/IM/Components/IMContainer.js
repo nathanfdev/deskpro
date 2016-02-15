@@ -4,7 +4,7 @@ import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import { IMOverlay } from './IMOverlay';
 import { Chat } from './ChatWindow/Chat';
 import { ChatHelper } from '../../../Services/Helpers/ChatHelper';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
 @connect(state => ({
   current: state.IM.chats.get('current'),

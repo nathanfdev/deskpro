@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { DepartmentsListItem } from './DepartmentsListItem';
 import { connect } from 'react-redux';
-import { myDepartmentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   departments: myDepartmentsSelector(state),

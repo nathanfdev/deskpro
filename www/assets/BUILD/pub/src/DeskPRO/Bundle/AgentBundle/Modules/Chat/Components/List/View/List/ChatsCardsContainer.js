@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ChatCard } from './ChatCard';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
 
 @connect(state => ({

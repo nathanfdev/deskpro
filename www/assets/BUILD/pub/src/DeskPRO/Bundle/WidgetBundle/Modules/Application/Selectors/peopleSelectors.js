@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const peopleSelector = function(state) {
   return state.RecordsStore.store.Person.records;

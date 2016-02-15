@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
 import { ActionAlertsHandler } from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';
 import { connect } from 'react-redux';

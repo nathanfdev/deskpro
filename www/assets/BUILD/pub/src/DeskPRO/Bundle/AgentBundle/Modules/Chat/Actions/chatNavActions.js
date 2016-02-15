@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { loadBatch, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadBatch, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores

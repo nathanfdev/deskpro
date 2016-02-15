@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { TableHeader } from './TableHeader';
 import { Row } from './Row';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
 
 @connect(state => ({

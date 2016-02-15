@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { TeamsListItem } from './TeamsListItem';
 import { connect } from 'react-redux';
-import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   teams: myAgentTeamsSelector(state)

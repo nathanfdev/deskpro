@@ -6,7 +6,8 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
-import AppReducers from './AgentApp_Reducers.js';
+import AgentReducers from './AgentApp_Reducers';
+import AppReducers from '../AppBundle/AppApp_Reducers';
 import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 import { IntlProvider } from 'react-intl';
 import Immutable from 'immutable';
@@ -48,7 +49,7 @@ export class AgentApp {
     // Bootstrap DAL
     loadRepositoriesConfig(repositoriesConfig);
 
-    const reducer = combineReducerHierarchy(AppReducers, legacyReducerBuilder);
+    const reducer = combineReducerHierarchy(Object.assign({}, AgentReducers, AppReducers), legacyReducerBuilder);
     const middleware = applyMiddleware(
       ampMiddleware.timerMiddleware('startTime'),
       ampMiddleware.intervalMiddleware,

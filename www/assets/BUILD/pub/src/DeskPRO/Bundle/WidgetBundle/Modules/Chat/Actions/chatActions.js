@@ -3,7 +3,7 @@ import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
-import { loadBatch } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';

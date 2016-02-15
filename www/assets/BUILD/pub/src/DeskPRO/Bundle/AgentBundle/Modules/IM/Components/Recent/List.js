@@ -4,10 +4,10 @@ import Loader from 'react-loader';
 import { Item } from './Item';
 import * as actions from '../../Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { myDepartmentsSelector, myAgentTeamsSelector, setCollection, loadFromApi, isLoadedCollectionSelectorFactory,
-  collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+  collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me: meSelector(state),

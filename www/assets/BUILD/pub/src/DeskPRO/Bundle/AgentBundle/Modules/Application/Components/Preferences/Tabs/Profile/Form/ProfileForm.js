@@ -9,7 +9,7 @@ import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
-import { updateMyProfile } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/profile';
+import { updateMyProfile } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
 import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {

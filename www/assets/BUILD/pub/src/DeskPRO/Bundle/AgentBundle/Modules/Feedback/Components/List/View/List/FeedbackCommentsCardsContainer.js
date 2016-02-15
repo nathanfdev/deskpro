@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { FeedbackCommentCard } from './FeedbackCommentCard';
 import { idsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   ids: idsSelector(state),

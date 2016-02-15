@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Content } from './Content';
-import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadMyProfile, myProfileSelector, isMyProfileLoadedSelector }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/profile';
+  from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
 
 @connect(state => ({
   languages: allSelectorFactory('Language')(state),

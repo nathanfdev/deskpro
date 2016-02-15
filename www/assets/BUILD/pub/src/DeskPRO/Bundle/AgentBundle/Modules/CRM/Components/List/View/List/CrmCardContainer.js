@@ -5,7 +5,7 @@ import { OrganizationCard } from './OrganizationCard';
 import { PersonCard } from './PersonCard';
 import { currentContentSelector, elementsSelector }
   from '../../../../Selectors/list';
-import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { selectedSelector} from '../../../../../Application/Selectors/massActions';
 import { connect } from 'react-redux';
 

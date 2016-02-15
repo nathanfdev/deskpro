@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { paginationSelector, viewModeSelector } from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
-import { isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   isLoaded: isLoadedCollectionSelectorFactory('UserChat', 'chats')(state)

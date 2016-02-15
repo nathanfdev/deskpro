@@ -4,7 +4,7 @@ import { OrganizationsTable } from './OrganizationsTable';
 import { PeopleTable } from './PeopleTable';
 import { currentContentSelector, currentListSortSelector, currentListOrderSelector }
   from '../../../../Selectors/list';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { applyParams } from '../../../../Actions/crmListActions';
 
 @connect(state => ({

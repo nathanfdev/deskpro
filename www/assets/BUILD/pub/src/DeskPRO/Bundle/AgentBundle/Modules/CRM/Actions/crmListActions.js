@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { currentListParamsSelector } from '../Selectors/list';
-import { setCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'crm';

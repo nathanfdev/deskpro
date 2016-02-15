@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
 export class SingleForm extends React.Component {

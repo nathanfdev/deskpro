@@ -13,9 +13,9 @@ import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
 
 // messages
-import { meSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/me';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { addMessage } from '../../Actions/messagesActions';
-import { agentsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore/Shortcuts/agents';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 
 @connect(state => ({
   me: meSelector(state),

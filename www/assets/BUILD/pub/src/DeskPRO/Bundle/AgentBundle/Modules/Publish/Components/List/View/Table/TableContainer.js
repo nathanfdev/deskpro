@@ -9,7 +9,7 @@ import { applyParams } from '../../../../Actions/publishListActions';
 import { ContentTable } from './ContentTable';
 import { CommentTable } from './CommentTable';
 import { APCTable } from './APCTable';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 
 @connect(state => ({

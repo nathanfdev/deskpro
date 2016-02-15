@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { loadAll } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { loadAll } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { Nav } from './Nav';
 import { initialLoad } from '../../Actions/navActions';
 import { isLoadedSelector } from '../../Selectors/nav';

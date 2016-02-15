@@ -10,7 +10,7 @@ from '../../../../Selectors/list';
 import { articlesSelector, newsSelector, downloadsSelector,
 articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
 from '../../../../Selectors/recordStores';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   content: contentSelector(state),

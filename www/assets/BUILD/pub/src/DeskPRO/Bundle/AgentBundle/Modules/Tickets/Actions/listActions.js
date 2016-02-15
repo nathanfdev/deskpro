@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { listParamsSelector } from '../Selectors/list';
-import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 // Private -------------------------------------------------------------------------------------------------------------

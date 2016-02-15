@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const articlesSelector = collectionSelectorFactory('Article', 'publish');
 export const newsSelector = collectionSelectorFactory('News', 'publish');
