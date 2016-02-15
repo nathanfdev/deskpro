@@ -5,6 +5,12 @@
 
 <div id="dp_inline_login_row" class="dp-inline-login dp-inline-login-email {% if login_error %}open{% endif %}">
 	{% if app.user.is_guest %}
+
+		{% set am = app.authenticationManager %}
+		{% set um = app.usersourceManager %}
+		{% set dpUsEnabled = um.getById(1).is_enabled %}
+		{% set hasAnyLogin = dpUsEnabled or am.hasLoginTextButtonUsersources %}
+
 		{% if login_error %}
 		<div class="alert-message error dp-inline-login-err">
 			{{ phrase('user.profile.login_error') }}
@@ -24,12 +30,14 @@
 			</div>
 			<div class="dp-controls dp-fill-half">
 				<input type="text" id="dp_inline_login_email" name="{{ email_form_name }}" value="{{ initial_value }}" data-field-validators="DeskPRO.Form.LengthValidator" />
-				<div style="font-size: 11px;">
-					{%- set phrase_link -%}
-						<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
-					{%- endset -%}
-					{{ phrase('user.profile.login_if_registered', {'link': phrase_link}, true) }}
-				</div>
+				{% if hasAnyLogin %}
+					<div style="font-size: 11px;">
+						{%- set phrase_link -%}
+							<a href="{{path('user_login')}}" class="dp-inline-login-open">{{ phrase('user.general.log_in') }}</a>
+						{%- endset -%}
+						{{ phrase('user.profile.login_if_registered', {'link': phrase_link}, true) }}
+					</div>
+				{% endif %}
 				<div class="dp-help-inline dp-error-explain">
 					{% if errors[form_key_prefix ~ 'email.account_disabled'] is not empty %}
 						{{ phrase('user.profile.account_disabled_message') }}
@@ -39,10 +47,6 @@
 				</div>
 			</div>
 		</div>
-
-		{% set am = app.authenticationManager %}
-		{% set um = app.usersourceManager %}
-		{% set dpUsEnabled = um.getById(1).is_enabled %}
 
 		<div class="dp-control-group dp-inline-login-pass" style="display: none">
 
