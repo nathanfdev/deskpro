@@ -31,7 +31,6 @@
  *
  * @category DependencyInjection
  */
-
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\App;
@@ -41,9 +40,14 @@ class AsseticManagerService
 {
     public static function create(DeskproContainer $container, array $options = array())
     {
+        $package_manager = $container->get('assets.packages.factory');
+        $packages        = $package_manager->createPackages();
+
+        $app_env = $container->get('deskpro.app_env');
+
         $manager = new \Application\DeskPRO\Assetic\AsseticManager(
             App::getConfigFromFile('assets'),
-            realpath(DP_ROOT.'/../web'),
+            rtrim($app_env->getWwwRoot().$packages->getUrl('/', 'legacy_web'), '/'),
             'build'
         );
 
