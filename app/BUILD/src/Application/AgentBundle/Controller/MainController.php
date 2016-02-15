@@ -94,12 +94,6 @@ class MainController extends AbstractController
         // Countr code
         $phone_country_info = \Orb\Data\CountryCallingCodes::getData();
 
-        if (App::getConfig('debug.raw_assets')) {
-            $has_raw_assets = true;
-        } else {
-            $has_raw_assets = false;
-        }
-
         // Auto-load chats in tabs if assigned to an agent
         $open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
 
@@ -160,7 +154,7 @@ class MainController extends AbstractController
             $is_first_login_name = $this->person->getPref('agent.first_login_name');
         }
 
-        if (App::getConfig('debug.raw_assets')) {
+        if ($this->container->get('settings_resolver')->getGlobalSettings()->get('raw_assets')) {
             $has_raw_assets = true;
         } else {
             $has_raw_assets = false;
