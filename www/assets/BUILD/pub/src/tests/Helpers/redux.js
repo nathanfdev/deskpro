@@ -1,7 +1,5 @@
-import Immutable from 'immutable';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import $ from 'jquery';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
@@ -17,45 +15,4 @@ export function renderInRedux(state, jsx, dispatch = null) {
       {jsx}
     </Provider>
   );
-}
-
-export function toImmutable(data) {
-  return Immutable.fromJS(data);
-}
-
-export function fakeState(additional = {}) {
-  const base = {
-    Agent: {
-      settings: toImmutable({tickets: {filter_groupings: {}}})
-    },
-    Application: {
-      routing: toImmutable({hash: {}}),
-      dpWindow: toImmutable({
-        activeAppId: 'whatever',
-        winDims: {}
-      }),
-      massActions: toImmutable({selected: []})
-    },
-    RecordStores: {
-      CRM: {people: fakeRecordStoreState()},
-      Agent: {departments: fakeRecordStoreState()}
-    },
-    RecordsStore: {
-      store: toImmutable({})
-    }
-  };
-
-  return $.extend(true, {}, base, additional);
-}
-
-export function fakeRecordStoreState(records = {}, requests = {}) {
-  return toImmutable({
-    records,
-    requests,
-    status: ''
-  });
-}
-
-export function getState() {
-  return reduxStore.getState();
 }
