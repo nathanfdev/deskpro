@@ -721,7 +721,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.getEl('send_loading').show();
 
 		$.ajax({
-			url: BASE_URL + 'old-agent/tickets/new/save',
+			url: BASE_URL + 'agent/tickets/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -735,7 +735,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				if (data.error) {
 					if (data.is_dupe) {
 						DeskPRO_Window.showConfirm('The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.', function() {
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'old-agent/tickets/' + data.dupe_ticket_id)
+							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id)
 						}, function() {}, 'View Existing Ticket', 'hidden');
 					} else {
 						Array.each(data.error_codes, function(code) {
@@ -766,7 +766,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}
 
 					if (data.can_view && this.getEl('opt_open_tab').is(':checked')) {
-						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'old-agent/tickets/' + data.ticket_id);
+						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					}
 					this.closeSelf();
 					this.draft.reset();
@@ -930,7 +930,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		} else {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'old-agent/tickets/new/get-person-row/0',
+				url: BASE_URL + 'agent/tickets/new/get-person-row/0',
 				data: { 'email': data.email },
 				dataType: 'html',
 				context: this,
@@ -998,7 +998,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			$.ajax({
 				type: 'GET',
-				url: BASE_URL + 'old-agent/tickets/new/get-person-row/' + personId,
+				url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
 				dataType: 'html',
 				context: this,
 				success: function(html) {
@@ -1021,7 +1021,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			searchbox.bind('personsearchboxclicknew personsearchenter', function(ev, term, sb) {
 				$.ajax({
 					type: 'GET',
-					url: BASE_URL + 'old-agent/tickets/new/get-person-row/0',
+					url: BASE_URL + 'agent/tickets/new/get-person-row/0',
 					data: { 'email': term },
 					dataType: 'html',
 					context: this,
@@ -1064,7 +1064,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var deferred = DeskPRO_Window.$q.defer();
 		$.ajax({
 			type: 'GET',
-			url: BASE_URL + 'old-agent/tickets/new/get-person-row/0',
+			url: BASE_URL + 'agent/tickets/new/get-person-row/0',
 			data: data,
 			dataType: 'html',
 			success: function(html) {
@@ -1098,7 +1098,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		$.ajax({
 			type: 'GET',
-			url: BASE_URL + 'old-agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
+			url: BASE_URL + 'agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
 			dataType: 'html',
 			context: this,
 			success: function(html) {
@@ -1874,7 +1874,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         window.localStorage.removeItem(this.key());
 
 		  // reload self
-		  DeskPRO_Window.loadPage(BASE_URL + 'old-agent/tickets/new', {ignoreExist:true});
+		  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist:true});
 		  self.closeSelf();
       },
       isEmpty: function() {
