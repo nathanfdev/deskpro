@@ -35,6 +35,22 @@ export class AgentApp {
     window.DP_ENABLE_ACTION_LOGGER = true;
     window.DP_DEV_MODE = true;
 
+    loadRepositoriesConfig(repositoriesConfig);
+    const store = AgentApp.createStore();
+
+    ReactDOM.render(
+      <div>
+        <Provider store={store}>
+          <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
+            <DpAppContainer />
+          </IntlProvider>
+        </Provider>
+      </div>,
+      document.getElementById('deskpro_app_window')
+    );
+  }
+
+  static createStore() {
     // This builder calls compile on old-style reducers
     // created via the Reducer class
     const legacyReducerBuilder = function(reducer) {
@@ -45,9 +61,6 @@ export class AgentApp {
 
       return reducer;
     };
-
-    // Bootstrap DAL
-    loadRepositoriesConfig(repositoriesConfig);
 
     const reducer = combineReducerHierarchy(Object.assign({}, AgentReducers, AppReducers), legacyReducerBuilder);
     const middleware = applyMiddleware(
@@ -61,17 +74,7 @@ export class AgentApp {
       ,ampMiddleware.loggerMiddleware
     );
     const makeStore = compose(middleware)(createStore);
-    const store = makeStore(reducer);
 
-    ReactDOM.render(
-      <div>
-        <Provider store={store}>
-          <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer />
-          </IntlProvider>
-        </Provider>
-      </div>,
-      document.getElementById('deskpro_app_window')
-    );
+    return makeStore(reducer);
   }
 }
