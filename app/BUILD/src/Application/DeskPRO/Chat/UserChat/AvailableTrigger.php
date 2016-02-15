@@ -103,7 +103,7 @@ class AvailableTrigger
             }
         }
 
-        $trigger_File = App::$container->getParameter('kernel.dp_cache_dir').'/chat_is_available.trigger';
+        $trigger_File = App::$container->getParameter('dp.user.cache_dir').'/chat_is_available.trigger';
         if ($is_chat_available) {
             file_put_contents($trigger_File, time());
             @chmod($trigger_File, 0777);
