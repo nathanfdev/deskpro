@@ -32,7 +32,7 @@ use DpSys\Kernel;
 use Symfony\Component\Console\Input\ArgvInput;
 
 /**
- * This creates a HttpKernel based on the currrent CLI command.
+ * This creates a HttpKernel based on the current CLI command.
  */
 class CliKernelBootTask implements BootTaskInterface
 {
@@ -59,9 +59,9 @@ class CliKernelBootTask implements BootTaskInterface
             $argv = array_values($argv);
         }
 
-        if (!$cmd_ns && (count($argv) < 2 || empty($argv[1]) || !($cmd_ns = $this->getNamespace($argv[1])))) {
-            echo "Usage: console NAMESPACE:CMD [options...]\n";
-            exit(1);
+        if (!$cmd_ns && !empty($argv[1])) {
+            // try to get namespace from command name
+            $cmd_ns = $this->getNamespace($argv[1]);
         }
 
         define('DP_INTERFACE', 'cli');
