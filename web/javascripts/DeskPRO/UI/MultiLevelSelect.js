@@ -88,7 +88,7 @@
 
       $select.on('change', function () {
         var val = parseInt($(this).val());
-        NaN === val && $el.val('');
+        isNaN(val) && $el.val('');
 
         var process = function (node) {
           if (!node.children) return;
