@@ -60,7 +60,6 @@ class ApiKernel extends BaseKernel
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
