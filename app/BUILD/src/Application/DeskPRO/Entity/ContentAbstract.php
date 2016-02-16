@@ -651,22 +651,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return array
-     */
-    public function getLabelsArray()
-    {
-        $labels = array_map(
-            function ($label) {
-                return $label->getLabel();
-            },
-            $this->labels->toArray()
-        );
-        sort($labels);
-
-        return $labels;
-    }
-
-    /**
      * @return string
      */
     public static function getContentType()

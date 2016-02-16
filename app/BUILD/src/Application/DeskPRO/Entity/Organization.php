@@ -47,7 +47,7 @@ use Orb\Util\Numbers;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  */
-class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner
+class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner
 {
     /**
      * The unique ID.
@@ -570,7 +570,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @return $this
      */
-    public function resetLabels()
+    public function clearLabels()
     {
         foreach ($this->labels as $data) {
             $this->labels->removeElement($data);
@@ -582,7 +582,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
-     * @return Entity\LabelOrganization[]
+     * {@inheritdoc}
      */
     public function getLabels()
     {
@@ -590,15 +590,24 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
-     * Add a label.
-     *
-     * @param Entity\LabelOrganization $label
+     * {@inheritdoc}
      */
-    public function addLabel(Entity\LabelOrganization $label)
+    public function addLabel(Entity\Labels\Label $label)
     {
         $label['organization'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeLabel(Entity\Labels\Label $label)
+    {
+        if ($this->labels->contains($label)) {
+            $this->labels->removeElement($label);
+            $this->_onPropertyChanged('labels', null, $this->labels);
+        }
     }
 
     public function getLabelManager()

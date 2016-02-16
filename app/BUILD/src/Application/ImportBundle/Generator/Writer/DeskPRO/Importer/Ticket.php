@@ -99,7 +99,7 @@ final class Ticket extends AbstractImporter
             ->setDateArchived($entity->getDateArchived())
             ->setIsHold($entity->isHold())
             ->resetParticipants()
-            ->resetLabels()
+            ->clearLabels()
             ->resetCustomData()
         ;
 

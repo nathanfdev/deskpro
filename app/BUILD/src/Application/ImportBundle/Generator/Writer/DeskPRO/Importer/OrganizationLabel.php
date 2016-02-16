@@ -56,7 +56,7 @@ final class OrganizationLabel extends AbstractImporter
         }
 
         $organization = $this->getOrganizationMapper()->findOneByTitle($entity->getName());
-        $organization->resetLabels();
+        $organization->clearLabels();
 
         foreach ($entity->getLabels() as $label_name) {
             $label = new DeskPROEntity\LabelOrganization();

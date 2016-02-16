@@ -56,7 +56,7 @@ final class ArticleLabel extends AbstractImporter
         }
 
         $article = $this->getArticleMapper()->findOneBy(array('id' => $entity_id));
-        $article->resetLabels();
+        $article->clearLabels();
 
         foreach ($entity->getLabels() as $label_name) {
             $label = new DeskPROEntity\LabelArticle();

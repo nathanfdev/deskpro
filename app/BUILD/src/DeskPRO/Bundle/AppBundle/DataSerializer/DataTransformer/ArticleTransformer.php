@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
@@ -75,7 +74,7 @@ class ArticleTransformer extends AbstractDataSerializerTransformer
         return [
             'last_author_id' => $lastAuthorId,
             'vote_stats'     => $article->getVoteStats(),
-            'labels'         => $article->getLabelsArray(),
+            'labels'         => new LabelsCollection($article->getLabels()),
         ];
     }
 }

@@ -56,7 +56,7 @@ final class TicketLabel extends AbstractImporter
         }
 
         $ticket = $this->getTicketMapper()->findOneByRef($entity->getRef());
-        $ticket->resetLabels();
+        $ticket->clearLabels();
 
         foreach ($entity->getLabels() as $label_name) {
             $label = new DeskPROEntity\LabelTicket();

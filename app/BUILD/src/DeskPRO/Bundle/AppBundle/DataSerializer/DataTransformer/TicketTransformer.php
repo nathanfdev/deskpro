@@ -188,7 +188,7 @@ class TicketTransformer extends AbstractDataSerializerTransformer
         }
 
         $props['fields']       = new CustomDataCollection($ticket->getCustomData());
-        $props['labels']       = $ticket->getLabelsArray();
+        $props['labels']       = new LabelsCollection($ticket->getLabels());
         $props['participants'] = $this->selectIds($ticket->getUserParticipants());
         $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
 

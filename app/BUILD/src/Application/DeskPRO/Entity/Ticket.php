@@ -41,7 +41,6 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
-use DeskPRO\Bundle\PortalBundle\Form\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -1798,22 +1797,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * Reset labels.
-     *
-     * @return $this
-     */
-    public function resetLabels()
-    {
-        foreach ($this->labels as $data) {
-            $this->labels->removeElement($data);
-        }
-
-        $this->_onPropertyChanged('labels', null, $this->labels);
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function addLabel(Label $label)
@@ -1845,7 +1828,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getLabels()
     {
-        return $this->labels->toArray();
+        return $this->labels;
     }
 
     /**
@@ -1855,22 +1838,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $this->labels->clear();
         $this->_onPropertyChanged('labels', null, $this->labels);
-    }
-
-    /**
-     * @return array
-     */
-    public function getLabelsArray()
-    {
-        $labels = array_map(
-            function ($label) {
-                return $label->getLabel();
-            },
-            $this->labels->toArray()
-        );
-        sort($labels);
-
-        return $labels;
     }
 
     /**

@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\LabelAssocAbstract;
+use Application\DeskPRO\Entity\Labels\Label;
 
 /**
  * Class LabelsCollection.
@@ -39,14 +39,14 @@ use Application\DeskPRO\Entity\LabelAssocAbstract;
 class LabelsCollection
 {
     /**
-     * @var LabelAssocAbstract[]
+     * @var Label[]
      */
     private $labels;
 
     /**
      * Constructor.
      *
-     * @param LabelAssocAbstract[] $labels
+     * @param Label[] $labels
      */
     public function __construct($labels)
     {
@@ -54,7 +54,7 @@ class LabelsCollection
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\LabelAssocAbstract[]
+     * @return Label[]
      */
     public function getLabels()
     {
