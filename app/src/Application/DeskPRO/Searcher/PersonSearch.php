@@ -648,6 +648,8 @@ class PersonSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field_def = $field;
+
                         $search_type = $field->getHandler()->getSearchType();
 
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
@@ -791,7 +793,7 @@ class PersonSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_person',
-                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                         } else {
@@ -805,16 +807,16 @@ class PersonSearch extends SearcherAbstract
                                     case 'not_isset':
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         );
-                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         break;
                                     case 'isset':
                                         $joins[] = array(
                                             'custom_data_person',
-                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         );
-                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+                                        $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

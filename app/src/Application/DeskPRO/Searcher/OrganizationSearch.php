@@ -378,6 +378,8 @@ class OrganizationSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field_def = $field;
+
                         $search_type = $field->getHandler()->getSearchType();
 
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
@@ -496,7 +498,7 @@ class OrganizationSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_organizations',
-                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         } else {
@@ -513,7 +515,7 @@ class OrganizationSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_organizations',
-                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
                                         } else {
@@ -527,16 +529,16 @@ class OrganizationSearch extends SearcherAbstract
                                     case 'not_isset':
                                         $joins[] = array(
                                             'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                         );
-                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         break;
                                     case 'isset':
                                         $joins[] = array(
                                             'custom_data_organizations',
-                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                         );
-                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;
