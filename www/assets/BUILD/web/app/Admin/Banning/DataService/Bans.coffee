@@ -12,8 +12,8 @@ define [
     @type = 'ip'
 
     ###
-  #
-  ###
+    #
+    ###
 
     init: ->
       @setSubLists ['ip_bans', 'email_bans']

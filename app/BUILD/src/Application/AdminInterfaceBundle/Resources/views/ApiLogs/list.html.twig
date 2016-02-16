@@ -1,0 +1,84 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+
+		<section class="dp-paneblock dp-editpane">
+
+			<nav class="dp-blocktabs responsive">
+				<ul>
+					<li class="active"><a href="#"><i class="fa fa-table"></i> {{ phrase('adm.api_logs.title') }}</a></li>
+				</ul>
+			</nav>
+
+			<article>
+				<div class="dp-tabletabs-contentwrap">
+					<table class="table table-hover">
+						<thead>
+						<tr>
+							<th> {{ phrase('adm.api_logs.request_id') }}</th>
+							<th>
+                                <select
+                                    ng-model="LogsCtrl.filtration.mode"
+                                    ui-select2="{allowClear: true}"
+                                    data-placeholder = "{{ phrase('adm.api_logs.mode') }}"
+                                    style="width: 130px;">
+                                    <option></option>
+                                    <option ng-repeat="mode in LogsCtrl.modes" value="{{ ng_var('mode') }}">
+                                        {{ ng_var('mode') }}
+                                    </option>
+                                </select>
+                            </th>
+                            <th> {{ phrase('adm.api_logs.request_uri') }}</th>
+                            <th>
+                                <select
+                                    ng-model="LogsCtrl.filtration.method"
+                                    ui-select2="{allowClear: true}"
+                                    data-placeholder = "{{ phrase('adm.api_logs.request_method') }}">
+                                    <option></option>
+                                    <option ng-repeat="method in LogsCtrl.methods" value="{{ ng_var('method') }}">
+                                        {{ ng_var('method') }}
+                                    </option>
+                                </select>
+
+                            </th>
+                            <th> {{ phrase('adm.api_logs.response_status') }}</th>
+                            <th> {{ phrase('admin.api_logs.start_time') }}</th>
+                            <th> {{ phrase('admin.api_logs.end_time') }}</th>
+                        </tr>
+						</thead>
+						<tbody>
+
+						<tr ng-repeat="log in LogsCtrl.list | filter:LogsCtrl.filtration">
+							<td><a href="#">{{ ng_var('log.request_id') }}</a></td>
+							<td>{{ ng_var('log.mode') }}</td>
+							<td>{{ ng_var('log.requested_uri') }}</td>
+							<td>{{ ng_var('log.method') }}</td>
+							<td>{{ ng_var('log.status') }}</td>
+							<td>{{ ng_var('log.start_time') }}</td>
+							<td>{{ ng_var('log.end_time') }}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</article>
+
+			<footer>
+                <div class="dp-btn-pagination">
+                    <select
+                            ng-model="LogsCtrl.pagination.page"
+                            ui-select2
+                            style="width: 130px;"
+                            >
+                        <option ng-selected="page == LogsCtrl.pagination.page"
+                                ng-repeat="page in LogsCtrl.pagination.page_nums "
+                                value="{{ ng_var('page') }}">
+                            Page {{ ng_var('page') }}
+                        </option>
+                    </select>
+                </div>
+			</footer>
+
+		</section>
+
+{% endblock %}

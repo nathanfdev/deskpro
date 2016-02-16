@@ -155,6 +155,7 @@ define([
   'Admin/ChatDeps/Ctrl/Edit',
   'Admin/ApiKeys/Ctrl/List',
   'Admin/ApiKeys/Ctrl/Edit',
+  'Admin/ApiKeys/Ctrl/Logs',
   'Admin/UserFields/Ctrl/List',
   'Admin/OrgFields/Ctrl/List',
   'Admin/Banning/Ctrl/List',

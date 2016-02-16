@@ -2134,6 +2134,17 @@ define(function() {
 		controller: 'Admin_ApiKeys_Ctrl_Edit'
 	});
 
+	//###
+	//# Api Logs
+	//###
+
+  routes.push({
+    id: 'apps.api_keys.logs',
+    url: '/api_logs',
+    templateName: 'ApiLogs/list.html',
+    controller: 'Admin_ApiKeys_Ctrl_Logs'
+  });
+
 	//##################################################################################################################
 	// Tasks
 	//##################################################################################################################

@@ -26,15 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'adm.api_keys.keys_title' => 'API Key Info',
-    'adm.api_keys.logs_title' => 'API Key Logs (v1)',
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-    'adm.api_keys.request' => 'Request',
-    'adm.api_keys.path'    => 'Path',
-    'adm.api_keys.method'  => 'Method',
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
-    'adm.api_keys.response' => 'Response',
-    'adm.api_keys.status'   => 'Status',
-    'adm.api_keys.content'  => 'Content',
-);
+/**
+ * Class ApiLogTransformer.
+ */
+class ApiLogTransformer extends AbstractDataSerializerTransformer
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    {
+        return [
+            'id',
+            'request_id',
+            'credentials',
+            'mode',
+            'requested_uri',
+            'status',
+            'request_data',
+            'response_data',
+            'start_time',
+            'end_time',
+            'method',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        return [];
+    }
+}

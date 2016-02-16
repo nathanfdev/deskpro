@@ -26,15 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
-    'adm.api_keys.keys_title' => 'API Key Info',
-    'adm.api_keys.logs_title' => 'API Key Logs (v1)',
-
-    'adm.api_keys.request' => 'Request',
-    'adm.api_keys.path'    => 'Path',
-    'adm.api_keys.method'  => 'Method',
-
-    'adm.api_keys.response' => 'Response',
-    'adm.api_keys.status'   => 'Status',
-    'adm.api_keys.content'  => 'Content',
-);
+return [
+    'adm.api_logs.title'           => 'API Logs',
+    'adm.api_logs.filter'          => 'Filter list',
+    'adm.api_logs.mode'            => 'Auth mode',
+    'adm.api_logs.request_id'      => 'Request ID',
+    'adm.api_logs.request_data'    => 'Request data',
+    'adm.api_logs.request_uri'     => 'Request URI',
+    'adm.api_logs.request_method'  => 'Request method',
+    'adm.api_logs.response_status' => 'Response status',
+    'adm.api_logs.response_data'   => 'Response data',
+    'admin.api_logs.start_time'    => 'Start time',
+    'admin.api_logs.end_time'      => 'End time',
+];
