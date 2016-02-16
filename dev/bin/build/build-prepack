@@ -7,7 +7,7 @@ fi
 
 DP_DIR=$1
 
-if [ ! -d $DP_DIR/app/BUILD]; then
+if [ ! -d $DP_DIR/app/BUILD ]; then
     echo "ERROR: This script expects the path to a DeskPRO directory. The path specified seems to be invalid."
     exit 1
 fi
@@ -32,7 +32,7 @@ find . -type d \( \
 
 find . -type f \( \
     -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" -o -name ".gitkeep" -o -name ".editorconfig" \
-    -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore"
+    -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
 \) -exec rm -rf {} \;
 
 ########################################################################################################################
@@ -172,12 +172,6 @@ cd $DIR_VENDOR/aws/aws-sdk-php
 rm -rf build/
 rm -rf test_services.json.dist
 
-cd $DIR_VENDOR/codeception/codeception
-rm -rf package/
-
-cd $DIR_VENDOR/codeception/codeception
-rm -rf package/
-
 cd $DIR_VENDOR/doctrine/common
 rm -rf UPGRADE_TO_2_1 UPGRADE_TO_2_2
 
@@ -187,18 +181,12 @@ rm -rf run-all.sh
 cd $DIR_VENDOR/fabpot/goutte
 rm -rf box.json
 
-cd $DIR_VENDOR/facebook/webdriver
-rm -rf example.php
-
 cd $DIR_VENDOR/guzzle/guzzle
 rm -rf phing/
 rm -rf phar-stub.php
 
 cd $DIR_VENDOR/kriswallsmith/assetic
 rm -rf CHANGELOG-1.0.md CHANGELOG-1.1.md
-
-cd $DIR_VENDOR/lightopenid/lightopenid
-rm -rf provider/example-mysql.php provider/example.php example-google.php example.php
 
 cd $DIR_VENDOR/pda/pheanstalk
 rm -rf scripts/
@@ -375,9 +363,10 @@ rm -rf $DP_DIR/var/kernel_cache/BUILD/test
 # If we wrote the active build version, move it from BUILD to that version
 ########################################################################################################################
 
-if [ -f $DP_DIR/app/BUILD/sys/config/build-time.txt ];
-    DP_VER=`cat $DP_DIR/app/BUILD/sys/config/build-time.txt`
+if [ -f $DP_DIR/app/BUILD/sys/config/build-num.txt ]; then
+    DP_VER=`cat $DP_DIR/app/BUILD/sys/config/build-num.txt`
     mv $DP_DIR/app/BUILD $DP_DIR/app/$DP_VER
+    mv $DP_DIR/www/assets/BUILD $DP_DIR/www/assets/$DP_VER
     mv $DP_DIR/var/kernel_cache/BUILD $DP_DIR/var/kernel_cache/$DP_VER
 fi
 
