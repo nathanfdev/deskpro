@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -52,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @Hateoas\Relation(
  *      "self",
- *      href=@Hateoas\Route("api_tasks_get", parameters={"id" = "expr(object.getId())"})
+ *      href=@Hateoas\Route("deskpro_api_tasks_tasks_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
 class Task implements EntityInterface, NotifyPropertyChanged
