@@ -37,17 +37,11 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_attachments")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_task_attachments_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 {

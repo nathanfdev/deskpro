@@ -41,18 +41,12 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\HasLifecycleCallbacks
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("deskpro_api_tasks_tasks_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class Task implements EntityInterface, NotifyPropertyChanged
 {

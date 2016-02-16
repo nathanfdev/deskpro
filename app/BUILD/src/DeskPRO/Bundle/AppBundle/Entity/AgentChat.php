@@ -42,7 +42,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -50,11 +49,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agent_chat")
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("get_agent_chats", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 {

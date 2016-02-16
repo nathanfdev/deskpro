@@ -64,7 +64,6 @@
     "jms/serializer-bundle": "~1.0",
     "behatch/contexts": "dev-master",
     "nelmio/api-doc-bundle": "~2.10",
-    "willdurand/hateoas-bundle": "~1.0",
     "phpspec/prophecy-phpunit": "~1.0",
     "leafo/scssphp": "0.6.2",
     "beberlei/DoctrineExtensions": "^1.0",

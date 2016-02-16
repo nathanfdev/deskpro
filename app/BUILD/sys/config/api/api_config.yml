@@ -8,7 +8,6 @@ parameters:
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/doctrine-proxies
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
-  hateoas.serializer.json_hal.class: DeskPRO\Bundle\ApiBundle\Serializer\HateoasJsonApiSerializer
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
