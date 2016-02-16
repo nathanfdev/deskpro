@@ -351,7 +351,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		last.detach();
 
 		var old = this.display;
-		this.display = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		this.page.rewriteRadioNames(newDisplay);
+		this.display = newDisplay;
 		old.after(this.display);
 		old.remove();
 		this.display.append(last);
