@@ -34,7 +34,8 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
 
 /**
- * Transforms data using child data transformers. Incoming data are associated to a particular DataTypeTransfomer via the DataTypeMap, which is configurable.
+ * Transforms data using child data transformers.
+ * Incoming data are associated to a particular DataTypeTransformer via the DataTypeMap, which is configurable.
  */
 class DataTransformer
 {
@@ -68,9 +69,9 @@ class DataTransformer
      */
     public function __construct(
         DataTransformerRegistry $transformed_registry,
-        DataTransformerFactory $transformer_factory,
-        DataTypeMap $type_map,
-        DataTypeIdFinder $id_finder
+        DataTransformerFactory  $transformer_factory,
+        DataTypeMap             $type_map,
+        DataTypeIdFinder        $id_finder
     ) {
         $this->transformed_registry = $transformed_registry;
         $this->type_map             = $type_map;
