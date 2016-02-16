@@ -439,7 +439,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var string
-     * @Assert\NotNull
+     *
+     * @Assert\NotBlank
      */
     protected $subject;
 
@@ -2661,6 +2662,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this['date_status'] = new \DateTime();
 
+        if (!$status) {
+            $status = 'awaiting_agent';
+        }
         if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
             $this->setModelField(
                 'total_user_waiting',
