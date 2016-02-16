@@ -40,12 +40,12 @@ class InstallKernel extends BaseKernel
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        );
+        ];
 
         if ('dev' === $this->getEnvironment()) {
             $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
@@ -54,6 +54,9 @@ class InstallKernel extends BaseKernel
         return $bundles;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(DP_ROOT.'/sys/config/install/config.yml');

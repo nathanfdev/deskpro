@@ -32,20 +32,15 @@
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class PortalKernel extends BaseKernel
 {
     /**
-     * Returns an array of bundles to register.
-     *
-     * @return BundleInterface[] An array of bundle instances.
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -68,7 +63,7 @@ class PortalKernel extends BaseKernel
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
-        );
+        ];
 
         if ('dev' === $this->getEnvironment()
             or
@@ -86,11 +81,7 @@ class PortalKernel extends BaseKernel
     }
 
     /**
-     * Loads the container configuration.
-     *
-     * @param LoaderInterface $loader A LoaderInterface instance
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

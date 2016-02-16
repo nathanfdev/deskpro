@@ -46,6 +46,13 @@ class DpKernel extends BaseKernel
      */
     protected $container;
 
+    /**
+     * Constructor.
+     *
+     * @param string       $environment
+     * @param bool         $debug
+     * @param \DpRun\DpEnv $env
+     */
     public function __construct($environment, $debug, \DpRun\DpEnv $env = null)
     {
         parent::__construct($environment, $debug, $env);
@@ -74,10 +81,10 @@ class DpKernel extends BaseKernel
      */
     public function registerBundleDirs()
     {
-        $bundle_dirs = array(
+        $bundle_dirs = [
             'Application' => DP_ROOT.'/src/Application',
             'Bundle'      => DP_ROOT.'/src/Bundle',
-        );
+        ];
 
         if (defined('DPC_IS_CLOUD')) {
             $bundle_dirs['Cloud'] = DP_ROOT.'/src/Cloud';
@@ -87,7 +94,7 @@ class DpKernel extends BaseKernel
     }
 
     /**
-     * @param LoaderInterface $loader
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
@@ -101,7 +108,7 @@ class DpKernel extends BaseKernel
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -128,13 +135,13 @@ class DpKernel extends BaseKernel
             new \Application\ImportBundle\ImportBundle(),
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
-        );
+        ];
 
         if (defined('DPC_IS_CLOUD')) {
-            $bundles = array_merge($bundles, array(
+            $bundles = array_merge($bundles, [
                 new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
                 new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
-            ));
+            ]);
         }
 
         return $bundles;

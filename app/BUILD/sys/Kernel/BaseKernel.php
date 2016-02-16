@@ -49,7 +49,10 @@ abstract class BaseKernel extends Kernel
      */
     private $dpEnv;
 
-    private $instantied_but_not_used_bundles = array();
+    /**
+     * @var array
+     */
+    private $instantied_but_not_used_bundles = [];
 
     /**
      * BaseKernel constructor.
@@ -70,7 +73,7 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
-     * @return mixed|string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -146,18 +149,18 @@ abstract class BaseKernel extends Kernel
                 case 'PortalBundle':
                     // ApiKernel does not have PortalBundle
                     // DpKernel does not have PortalBundle
-                    return array($this->getUnusedBundle('PortalBundle'));
+                    return [$this->getUnusedBundle('PortalBundle')];
                 case 'ApiBundle':
                     // PortalKernel does not have ApiBundle
                     // DpKernel does not have ApiBundle
-                    return array($this->getUnusedBundle('ApiBundle'));
+                    return [$this->getUnusedBundle('ApiBundle')];
                 case 'AppBundle':
                     // DpKernel does not have AppBundle
-                    return array($this->getUnusedBundle('AppBundle'));
+                    return [$this->getUnusedBundle('AppBundle')];
                 case 'AgentBundle':
                     // PortalKernel does not have AgentBundle
                     // ApiKernel does not have AgentBundle
-                    return array($this->getUnusedBundle('AgentBundle'));
+                    return [$this->getUnusedBundle('AgentBundle')];
                 default:
                     break;
             }
@@ -277,7 +280,7 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getRootDir()
     {
@@ -285,7 +288,7 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getCacheDir()
     {
@@ -293,7 +296,7 @@ abstract class BaseKernel extends Kernel
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLogDir()
     {
