@@ -1179,7 +1179,7 @@ HTML;
         }
 
         return $this->render($this->tpl_prefix.':reset-password-newpass.html.twig', array(
-            'code'         => 'abcdabcdabcdabcda', //$code_data->getCode(),
+            'code'         => $code_data->getCode(),
             'route_prefix' => $this->route_prefix,
             'errors'       => $errors,
             'policy'       => $password_validator->getPolicy($person),
