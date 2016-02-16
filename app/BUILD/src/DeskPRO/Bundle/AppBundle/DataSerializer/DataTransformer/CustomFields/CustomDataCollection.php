@@ -26,13 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CustomFields;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * Class CustomDataCollection.
+ */
 class CustomDataCollection implements \IteratorAggregate, \Countable
 {
     /**

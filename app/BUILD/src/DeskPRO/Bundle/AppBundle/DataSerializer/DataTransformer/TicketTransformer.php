@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
-use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;

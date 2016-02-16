@@ -53,7 +53,7 @@ services:
       - @avatar_resolver
 
   data_serializer.transformer.custom_data_collection:
-    class: DeskPRO\Bundle\AppBundle\CustomFields\DataTransformer\CustomDataCollectionTransformer
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollectionTransformer
     arguments: ~
 
   data_serializer.transformer.article_revision:

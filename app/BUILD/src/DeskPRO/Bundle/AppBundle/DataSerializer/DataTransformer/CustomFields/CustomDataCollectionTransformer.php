@@ -26,9 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CustomFields\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields;
 
-use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AbstractDataSerializerTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 

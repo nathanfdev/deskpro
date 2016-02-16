@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use DeskPRO\Bundle\AppBundle\CustomFields\CustomDataCollection;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 
