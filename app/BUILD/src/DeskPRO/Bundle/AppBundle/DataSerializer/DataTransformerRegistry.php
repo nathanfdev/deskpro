@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 
 /**
@@ -38,13 +37,14 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer;
  */
 class DataTransformerRegistry
 {
-    private $transformed_data;
+    private $transformed_data = [];
 
-    public function __construct()
-    {
-        $this->transformed_data = [];
-    }
-
+    /**
+     * @param string $type
+     * @param int    $id
+     * @param mixed  $transformed
+     * @param string $view
+     */
     public function registerTransformed($type, $id, $transformed, $view = DataTransformerRequest::DEFAULT_VIEW)
     {
         if (!array_key_exists($view, $this->transformed_data)) {
@@ -58,6 +58,13 @@ class DataTransformerRegistry
         $this->transformed_data[$view][$type][$id] = $transformed;
     }
 
+    /**
+     * @param string $type
+     * @param int    $id
+     * @param string $view
+     *
+     * @return mixed
+     */
     public function getTransformed($type, $id, $view = DataTransformerRequest::DEFAULT_VIEW)
     {
         if (!array_key_exists($view, $this->transformed_data)) {

@@ -138,22 +138,6 @@ class DataTransformer
     }
 
     /**
-     * @param DataTransformerRequest $transformation_request
-     * @param $type
-     *
-     * @throws Exception\DataSerializerException
-     *
-     * @return array
-     */
-    public function doTransform(DataTransformerRequest $transformation_request, $type)
-    {
-        $transformer = $this->transformer_factory->findByType($type);
-        $transformed = $transformer->transform($transformation_request);
-
-        return $transformed;
-    }
-
-    /**
      * @param mixed                 $data
      * @param DataSerializerContext $context
      *
@@ -177,5 +161,21 @@ class DataTransformer
         }
 
         return $data;
+    }
+
+    /**
+     * @param DataTransformerRequest $transformation_request
+     * @param $type
+     *
+     * @throws Exception\DataSerializerException
+     *
+     * @return array
+     */
+    protected function doTransform(DataTransformerRequest $transformation_request, $type)
+    {
+        $transformer = $this->transformer_factory->findByType($type);
+        $transformed = $transformer->transform($transformation_request);
+
+        return $transformed;
     }
 }
