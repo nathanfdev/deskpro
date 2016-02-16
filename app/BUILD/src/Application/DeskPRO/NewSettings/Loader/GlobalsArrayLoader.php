@@ -35,7 +35,7 @@ namespace Application\DeskPRO\NewSettings\Loader;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
-use DpRun\DpEnv;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 
 /**
  * Gets the returned array from the global array.
@@ -55,14 +55,21 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
     private $cache;
 
     /**
+     * @var AppEnvInterface
+     */
+    private $env;
+
+    /**
      * Constructor.
      *
      * @param CacheAdapterInterface $cache
+     * @param AppEnvInterface       $env
      */
-    public function __construct(CacheAdapterInterface $cache)
+    public function __construct(AppEnvInterface $env, CacheAdapterInterface $cache)
     {
         $this->cacheKey = static::CACHE_KEY;
         $this->cache    = new ConvenientCache($cache);
+        $this->env      = $env;
     }
 
     /**
@@ -77,11 +84,7 @@ class GlobalsArrayLoader implements SettingsLoaderInterface
         return $this->cache->get(
             $this->cacheKey,
             function () {
-                if (isset($GLOBALS['DP_ENV']) && $GLOBALS['DP_ENV'] instanceof DpEnv) {
-                    return $GLOBALS['DP_ENV']->getConfig('settings');
-                }
-
-                return [];
+                return $this->env->getConfig('settings', []);
             }
         );
     }
