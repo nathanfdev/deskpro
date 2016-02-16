@@ -92,6 +92,13 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     protected $requested_uri;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotNull()
+     */
+    protected $method;
+
+    /**
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -252,6 +259,26 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function setRequestedUri($requested_uri)
     {
         $this->requested_uri = $requested_uri;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return $this
+     */
+    public function setMethod($method)
+    {
+        $this->method = strtoupper($method);
 
         return $this;
     }

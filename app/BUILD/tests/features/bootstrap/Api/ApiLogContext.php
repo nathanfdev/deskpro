@@ -119,6 +119,7 @@ class ApiLogContext extends BaseContext
             ->setRequestData([])
             ->setStartTime(time())
             ->setMode('test')
+            ->setMethod('get')
             ->setCredentials('test');
         $this->persistAndFlush($log);
     }

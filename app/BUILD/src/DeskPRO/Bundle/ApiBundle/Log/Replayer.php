@@ -117,10 +117,8 @@ class Replayer
             'allow_redirects' => true,
         ]);
 
-        $server = $log->getRequestData('server');
-
         $request = new \GuzzleHttp\Psr7\Request(
-            $server['REQUEST_METHOD'],
+            $log->getMethod(),
             $log->getRequestedUri().'?'.http_build_query($log->getRequestData('query')),
             $log->getRequestData('headers'),
             $log->getRequestData('body')
