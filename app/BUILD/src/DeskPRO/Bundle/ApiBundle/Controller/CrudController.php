@@ -366,7 +366,7 @@ abstract class CrudController extends BaseController
         // we use POST request for creating and updating entities (including partial updates)
         // so $clearMissing should depends on $model id (switch for POST and PATCH request)
 
-        // we can't use $clearMissing always = false (for partial updates) because of:
+        // we can't always use $clearMissing = false (for partial updates) because of:
         // https://github.com/symfony/symfony/pull/10567
         // https://github.com/symfony/symfony/issues/11493
 
