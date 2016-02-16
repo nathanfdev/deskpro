@@ -236,12 +236,10 @@ abstract class BaseKernel extends Kernel
             @unlink($dql_cache);
         }
 
-        // cache the container
-        $dumper  = new PhpDumper($container);
-        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
-        if (!$this->debug) {
-            $content = self::stripComments($content);
-        }
+        parent::dumpContainer($cache, $container, $class, $baseClass);
+
+        $cacheFile = (string) $cache;
+        $content   = file_get_contents($cacheFile);
 
         // Re-write absolute paths to use DP_ROOT instead
         $content = str_replace("'".DP_APP_DIR, 'DP_APP_DIR.\'', $content);
