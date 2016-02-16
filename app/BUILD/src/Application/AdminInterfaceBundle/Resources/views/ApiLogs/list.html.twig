@@ -28,7 +28,7 @@
                                     </option>
                                 </select>
                             </th>
-                            <th> {{ phrase('adm.api_logs.request_uri') }}</th>
+                            <th> {{ phrase('adm.api_logs.requested_uri') }}</th>
                             <th>
                                 <select
                                     ng-model="LogsCtrl.filtration.method"
@@ -49,7 +49,7 @@
 						<tbody>
 
 						<tr ng-repeat="log in LogsCtrl.list | filter:LogsCtrl.filtration">
-							<td><a href="#">{{ ng_var('log.request_id') }}</a></td>
+							<td><a href="{{ ng_href('apps.api_keys.logs_view', '{id: log.id}') }}">{{ ng_var('log.request_id') }}</a></td>
 							<td>{{ ng_var('log.mode') }}</td>
 							<td>{{ ng_var('log.requested_uri') }}</td>
 							<td>{{ ng_var('log.method') }}</td>

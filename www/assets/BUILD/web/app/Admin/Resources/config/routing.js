@@ -2145,6 +2145,13 @@ define(function() {
     controller: 'Admin_ApiKeys_Ctrl_Logs'
   });
 
+	routes.push({
+		id: 'apps.api_keys.logs_view',
+		url: '/api_logs/{id:[0-9]+}',
+		templateName: 'ApiLogs/view.html',
+		controller: 'Admin_ApiKeys_Ctrl_LogsView'
+	});
+
 	//##################################################################################################################
 	// Tasks
 	//##################################################################################################################

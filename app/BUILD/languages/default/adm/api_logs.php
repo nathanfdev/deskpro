@@ -28,14 +28,16 @@
 
 return [
     'adm.api_logs.title'           => 'API Logs',
+    'adm.api_logs.single_title'    => 'API Log #',
     'adm.api_logs.filter'          => 'Filter list',
     'adm.api_logs.mode'            => 'Auth mode',
+    'adm.api_logs.credentials'     => 'Credentials',
     'adm.api_logs.request_id'      => 'Request ID',
     'adm.api_logs.request_data'    => 'Request data',
-    'adm.api_logs.request_uri'     => 'Request URI',
+    'adm.api_logs.requested_uri'   => 'Requested URI',
     'adm.api_logs.request_method'  => 'Request method',
     'adm.api_logs.response_status' => 'Response status',
     'adm.api_logs.response_data'   => 'Response data',
-    'admin.api_logs.start_time'    => 'Start time',
-    'admin.api_logs.end_time'      => 'End time',
+    'adm.api_logs.start_time'      => 'Start time',
+    'adm.api_logs.end_time'        => 'End time',
 ];

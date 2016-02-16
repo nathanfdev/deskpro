@@ -81,7 +81,6 @@ define [
       @loadListPromise = deferred.promise
 
       @_doRefreshList().then((models) =>
-        console.log(models)
         @_setListData(models)
         @_setPaginationData(models)
         deferred.resolve(@listModels)

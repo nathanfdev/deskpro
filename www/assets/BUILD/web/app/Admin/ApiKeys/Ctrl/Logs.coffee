@@ -6,7 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     init: ->
       @service = @DataService.get 'ApiLogs'
       @list = []
-      @filtration = @service.getFiltrations()
+      @filtration = @service.getFiltration()
       @modes = ['session', 'key', 'token']
       @methods = ['GET', 'POST', 'PUT', 'DELETE'] # I know, I know, but we use only listed
 
@@ -15,10 +15,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     ###
     initialLoad: ->
       @service.loadList(null, {page: 1}).then( (data) =>
-        @list = data.logs
-        @pagination = @service.getPagination().logs
+        @list = data
+        @pagination = @service.getPagination()
+        @initializeScopeWatching()
       )
-      @initializeScopeWatching()
 
     initializeScopeWatching: ->
 
@@ -31,8 +31,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           return undefined
 
         @service.refreshList().then( (data) =>
-          @list = data.logs
-          @pagination = @service.getPagination().logs
+          @list = data
+          @pagination = @service.getPagination()
         )
       , true)
 

@@ -47,8 +47,6 @@ class ApiLogTransformer extends AbstractDataSerializerTransformer
             'mode',
             'requested_uri',
             'status',
-            'request_data',
-            'response_data',
             'start_time',
             'end_time',
             'method',
@@ -60,6 +58,11 @@ class ApiLogTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        $data = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'request_data'  => $data->getRequestData(),
+            'response_data' => $data->getResponseData(),
+        ];
     }
 }

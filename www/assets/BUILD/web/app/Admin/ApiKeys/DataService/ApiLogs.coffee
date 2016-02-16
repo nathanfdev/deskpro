@@ -7,19 +7,21 @@ define [
     @$inject = ['Api2', '$q']
 
     init: ->
-      @setSubLists(['logs'])
       @filtration = {
         mode: ''
         method: ''
       }
+      @pagination = {
+        page: 1
+      }
 
     getFiltration: ->
-      @filtration
+      return @filtration
 
-    _doLoadList: (params) ->
+    _doLoadList: () ->
       deferred = @$q.defer()
 
-      @Api2.sendGet('/api_logs?page=' + params.page)
+      @Api2.sendGet('/api_logs?page=' + @pagination.page)
       .success((data) =>
         models = @mutateData(data)
         deferred.resolve models
@@ -32,7 +34,7 @@ define [
       deferred = @$q.defer()
       pagination = @getPagination()
       @Api2.sendGet('/api_logs', {
-        page: pagination.logs.page
+        page: pagination.page
       }).success((data) =>
           models = @mutateData(data)
           deferred.resolve(models)
@@ -43,8 +45,9 @@ define [
       return deferred.promise
 
     mutateData: (data) =>
-      models = {logs: data.data, pagination: {logs: {}}}
-      models.pagination.logs = {
+      models = []
+      models.push model for model in data.data
+      models.pagination = {
         total: data.meta.pagination.total
         num_pages: data.meta.pagination.total_pages
         page: data.meta.pagination.current_page

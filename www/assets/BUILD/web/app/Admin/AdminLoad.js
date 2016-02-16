@@ -156,6 +156,7 @@ define([
   'Admin/ApiKeys/Ctrl/List',
   'Admin/ApiKeys/Ctrl/Edit',
   'Admin/ApiKeys/Ctrl/Logs',
+  'Admin/ApiKeys/Ctrl/LogsView',
   'Admin/UserFields/Ctrl/List',
   'Admin/OrgFields/Ctrl/List',
   'Admin/Banning/Ctrl/List',
