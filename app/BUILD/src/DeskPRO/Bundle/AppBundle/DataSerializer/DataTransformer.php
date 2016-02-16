@@ -152,4 +152,30 @@ class DataTransformer
 
         return $transformed;
     }
+
+    /**
+     * @param mixed                 $data
+     * @param DataSerializerContext $context
+     *
+     * @return array|\Traversable
+     */
+    public function recursiveTransform($data, DataSerializerContext $context)
+    {
+        if (is_object($data) && $this->canTransformData($data)) {
+            $transformation_request = new DataTransformerRequest(
+                $data,
+                $context,
+                $context->getMainView() ?: DataTransformerRequest::DEFAULT_VIEW
+            );
+
+            $transformed = $this->transform($transformation_request);
+            $data        = $this->recursiveTransform($transformed->getTransformed(), $context);
+        } elseif (is_array($data) || $data instanceof \Traversable) {
+            foreach ($data as &$value) {
+                $value = $this->recursiveTransform($value, $context);
+            }
+        }
+
+        return $data;
+    }
 }

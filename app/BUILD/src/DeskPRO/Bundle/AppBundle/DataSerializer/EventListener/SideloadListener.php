@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvents;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerFactory;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -131,9 +130,7 @@ class SideloadListener implements EventSubscriberInterface
             $processing            = $sideloads->getSideloadData();
             foreach ($processing as $type => $datas) {
                 foreach ($datas as $id => $data) {
-                    $transformation_request            = new DataTransformerRequest($data, $context);
-                    $transformer_response              = $this->data_transformer->transform($transformation_request);
-                    $sideloads_transformed[$type][$id] = $transformer_response->getTransformed();
+                    $sideloads_transformed[$type][$id] = $this->data_transformer->recursiveTransform($data, $context);
                 }
             }
 

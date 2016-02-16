@@ -31,11 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\EventListener;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerContext;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvent;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializerEvents;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -87,60 +85,9 @@ class TransformerListener implements EventSubscriberInterface
     {
         $context = $event->getContext();
 
-        $main_data = $context->getMainData();
-
-        if (is_array($main_data) || $main_data instanceof \Traversable) {
-            $main_transformed = [];
-            foreach ($main_data as $k => $this_data) {
-                $transformation_response = $this->doTransform($this_data, $context);
-                $main_transformed[$k]    = $this->recursiveTransform($transformation_response->getTransformed(), $context);
-            }
-        } else {
-            $transformation_response = $this->doTransform($main_data, $context);
-            $main_transformed        = $this->recursiveTransform($transformation_response->getTransformed(), $context);
-        }
+        $main_data        = $context->getMainData();
+        $main_transformed = $this->data_transformer->recursiveTransform($main_data, $context);
 
         $context->setMainTransformed($main_transformed);
-    }
-
-    /**
-     * @param mixed                 $data
-     * @param DataSerializerContext $context
-     *
-     * @return array|\Traversable
-     */
-    protected function recursiveTransform($data, DataSerializerContext $context)
-    {
-        if (!is_array($data) && !$data instanceof \Traversable) {
-            return $data;
-        }
-
-        foreach ($data as $k => $v) {
-            if (is_object($v) && $this->data_transformer->canTransformData($v)) {
-                $tr       = $this->doTransform($v, $context);
-                $data[$k] = $this->recursiveTransform($tr->getTransformed(), $context);
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param                       $data
-     * @param DataSerializerContext $context
-     *
-     * @throws \DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException
-     *
-     * @return \DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerResponse
-     */
-    protected function doTransform($data, DataSerializerContext $context)
-    {
-        $transformation_request = new DataTransformerRequest(
-            $data,
-            $context,
-            $context->getMainView() ?: DataTransformerRequest::DEFAULT_VIEW
-        );
-
-        return $this->data_transformer->transform($transformation_request);
     }
 }

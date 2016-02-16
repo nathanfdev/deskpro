@@ -55,7 +55,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
@@ -559,9 +558,6 @@ class TicketWithLayoutsType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
-                new NotBlank([
-                    'message' => 'portal.forms.error_ticket_subject_required',
-                ]),
                 new Length([
                     'min'        => 5,
                     'minMessage' => 'portal.forms.error_ticket_subject_length',
