@@ -27,204 +27,6 @@
  */
 
 ################################################################################
-# Feedback
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-      INSERT INTO `feedback` (`id`, `status_category_id`, `category_id`, `person_id`, `language_id`, `hidden_status`, `is_reviewed`, `popularity`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`, `num_ratings`, `status`, `date_created`, `date_published`, `date_updated`, `date_last_comment`)
-        VALUES
-            (1, 5, 1, 1, NULL, NULL, 1, 0, '_slug-to-feedback-1', 'Test feedback 1', 'Content of test feedback 1. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'closed', '2015-09-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (2, 5, 1, 1, NULL, NULL, 1, 0, '_slug-to-feedback-2', 'Test feedback 2', 'Content of test feedback 2', 0, 3, 0, 4, 'closed', '2015-09-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (3, 5, 2, 1, NULL, NULL, 1, 0, '_slug-to-feedback-3', 'Test feedback 3', 'Content of test feedback 3', 0, 5, 0, 6, 'closed', '2015-09-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (4, 5, 3, 1, NULL, NULL, 1, 0, '_slug-to-feedback-4', 'Test feedback 4', 'Content of test feedback 4', 0, 0, 0, 0, 'closed', '2015-09-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (5, 5, 1, 1, NULL, NULL, 1, 0, '_slug-to-feedback-5', 'Test feedback 5', 'Content of test feedback 5', 0, 1, 0, 1, 'closed', '2015-09-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (6, 5, 1, 1, NULL, NULL, 1, 0, '_slug-to-feedback-6', 'Test feedback 6', 'Content of test feedback 6', 0, 2, 0, 1, 'closed', '2015-09-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (7, 5, 2, 1, NULL, NULL, 1, 15, '_slug-to-feedback-7', 'Test feedback 7', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'closed', '2015-09-19 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (8, 5, 1, 1, NULL, NULL, 1, 0, '_slug-to-feedback-8', 'Test feedback 8', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'closed', '2015-09-19 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (9, 5, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-9', 'Test feedback 9', 'Content of test feedback 9. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'closed', '2015-09-20 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (10, 5, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-10', 'Test feedback 10', 'Content of test feedback 10', 0, 3, 0, 4, 'closed', '2015-09-21 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (11, 6, 2, 1, NULL, NULL, 1, 0, 'slug-to-feedback-11', 'Test feedback 11', 'Content of test feedback 11', 0, 5, 0, 6, 'closed', '2015-09-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (12, 6, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-12', 'Test feedback 12', 'Content of test feedback 12', 0, 0, 0, 0, 'closed', '2015-09-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (13, 6, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-13', 'Test feedback 13', 'Content of test feedback 13', 0, 1, 0, 1, 'closed', '2015-09-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (14, 6, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-14', 'Test feedback 14', 'Content of test feedback 14', 0, 2, 0, 1, 'closed', '2015-09-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (15, 6, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-15', 'Test feedback 15', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'closed', '2015-09-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (16, 6, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-16', 'Test feedback 16', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'closed', '2015-09-27 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (17, 6, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-17', 'Test feedback 17', 'Content of test feedback 17', 0, 3, 0, 4, 'closed', '2015-09-27 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (18, 6, 2, 1, NULL, NULL, 1, 0, 'slug-to-feedback-18', 'Test feedback 18', 'Content of test feedback 18', 0, 5, 0, 6, 'closed', '2015-09-28 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (19, 6, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-19', 'Test feedback 19', 'Content of test feedback 3', 0, 0, 0, 0, 'closed', '2015-09-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (20, 6, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-20', 'Test feedback 20', 'Content of test feedback 20', 0, 1, 0, 1, 'closed', '2015-09-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (21, 1, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-21', 'Test feedback 21', 'Content of test feedback 21', 0, 2, 0, 1, 'active', '2015-10-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (22, 1, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-22', 'Test feedback 22', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-10-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (23, 1, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-23', 'Test feedback 23', 'Content of test feedback 23. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'active', '2015-10-02 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (24, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-24', 'Test feedback 24', 'Content of test feedback 24', 0, 3, 0, 4, 'hidden', '2015-10-03 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (25, 1, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-25', 'Test feedback 25', 'Content of test feedback 25', 0, 5, 0, 6, 'active', '2015-10-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (26, 1, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-26', 'Test feedback 26', 'Content of test feedback 26', 0, 0, 0, 0, 'active', '2015-10-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (27, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-27', 'Test feedback 27', 'Content of test feedback 27', 0, 1, 0, 1, 'hidden', '2015-10-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (28, 1, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-28', 'Test feedback 28', 'Content of test feedback 28', 0, 2, 0, 1, 'active', '2015-10-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (29, 1, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-29', 'Test feedback 29', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-10-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (30, 1, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-30', 'Test feedback 30', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'active', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (31, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-31', 'Test feedback 31', 'Content of test feedback 31', 0, 3, 0, 4, 'hidden', '2015-10-09 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (32, 2, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-32', 'Test feedback 32', 'Content of test feedback 32', 0, 5, 0, 6, 'active', '2015-10-10 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (33, 2, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-33', 'Test feedback 33', 'Content of test feedback 33', 0, 0, 0, 0, 'active', '2015-10-11 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (34, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-34', 'Test feedback 34', 'Content of test feedback 34', 0, 1, 0, 1, 'hidden', '2015-10-12 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (35, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-35', 'Test feedback 35', 'Content of test feedback 35', 0, 2, 0, 1, 'active', '2015-10-13 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (36, 2, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-36', 'Test feedback 36', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-10-14 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (37, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-37', 'Test feedback 37', 'Content of test feedback 37. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'active', '2015-10-14 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (38, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-38', 'Test feedback 38', 'Content of test feedback 38', 0, 3, 0, 4, 'hidden', '2015-10-15 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (39, 2, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-39', 'Test feedback 39', 'Content of test feedback 39', 0, 5, 0, 6, 'active', '2015-06-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (40, 2, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-40', 'Test feedback 40', 'Content of test feedback 40', 0, 0, 0, 0, 'active', '2015-10-16 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (41, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-41', 'Test feedback 41', 'Content of test feedback 41', 0, 1, 0, 1, 'hidden', '2015-10-17 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (42, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-42', 'Test feedback 42', 'Content of test feedback 42', 0, 2, 0, 1, 'active', '2015-10-18 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (43, 2, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-43', 'Test feedback 43', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-10-20 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (44, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-44', 'Test feedback 44', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'active', '2015-10-21 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (45, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-45', 'Test feedback 45', 'Content of test feedback 45', 0, 3, 0, 4, 'hidden', '2015-10-22 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (46, 2, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-46', 'Test feedback 46', 'Content of test feedback 46', 0, 5, 0, 6, 'active', '2015-10-23 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (47, 2, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-47', 'Test feedback 47', 'Content of test feedback 47', 0, 0, 0, 0, 'active', '2015-10-24 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (48, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-48', 'Test feedback 48', 'Content of test feedback 48', 0, 1, 0, 1, 'hidden', '2015-10-25 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (49, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-49', 'Test feedback 49', 'Content of test feedback 49', 0, 2, 0, 1, 'active', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (50, 2, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-50', 'Test feedback 50', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-10-26 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (51, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-51', 'Test feedback 51', 'Content of test feedback 51. This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 1, 0, 2, 'active', '2015-10-28 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (52, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-52', 'Test feedback 52', 'Content of test feedback 52', 0, 3, 0, 4, 'hidden', '2015-10-29 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (53, 2, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-53', 'Test feedback 53', 'Content of test feedback 53', 0, 5, 0, 6, 'active', '2015-10-30 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (54, 2, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-54', 'Test feedback 54', 'Content of test feedback 54', 0, 0, 0, 0, 'active', '2015-10-31 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (55, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-55', 'Test feedback 55', 'Content of test feedback 55', 0, 1, 0, 1, 'hidden', '2015-11-01 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (56, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-56', 'Test feedback 56', 'Content of test feedback 56', 0, 2, 0, 1, 'active', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (57, 2, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-57', 'Test feedback 57', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-11-02 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (58, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-58', 'Test feedback 58', 'This is an example suggestion. Feel free to edit or delete it from the agent interface.', 0, 0, 0, 2, 'active', '2015-04-13 11:33:33', '2015-04-13 11:33:33', '0000-00-00 00:00:00', NULL),
-            (59, NULL, 1, 1, NULL, 'deleted', 0, 0, 'slug-to-feedback-59', 'Test feedback 59', 'Content of test feedback 59', 0, 3, 0, 4, 'hidden', '2015-11-04 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (60, 2, 2, 1, NULL, NULL, 0, 0, 'slug-to-feedback-60', 'Test feedback 60', 'Content of test feedback 60', 0, 5, 0, 6, 'active', '2015-11-05 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (61, 2, 3, 1, NULL, NULL, 1, 0, 'slug-to-feedback-61', 'Test feedback 61', 'Content of test feedback 61', 0, 0, 0, 0, 'active', '2015-11-06 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (62, NULL, 1, 1, NULL, 'spam', 0, 0, 'slug-to-feedback-62', 'Test feedback 62', 'Content of test feedback 62', 0, 1, 0, 1, 'hidden', '2015-11-07 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (63, 2, 1, 1, NULL, NULL, 1, 0, 'slug-to-feedback-63', 'Test feedback 63', 'Content of test feedback 63', 0, 2, 0, 1, 'active', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL),
-            (64, 2, 2, 1, NULL, NULL, 1, 15, 'slug-to-feedback-64', 'Test feedback 64', 'I am trying to implement Infinite Scrolling on a gridview to speed up my web application, since the gridview is being bound to a sql query that returns thousands of records at start (its the clients wish, and I cant change that.)', 0, 3, 0, 1, 'active', '2015-11-08 00:00:00', NULL, '0000-00-00 00:00:00', NULL);
-    "
-);
-
-$em->getConnection()->executeUpdate(
-    "
-      INSERT INTO `labels_feedback` (`feedback_id`, `label`)
-        VALUES
-          (1, 'First feedback label'),
-          (1, 'Second feedback label'),
-          (2, 'First feedback label'),
-          (3, 'Third feedback label');
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `custom_data_feedback` (`id`, `feedback_id`, `field_id`, `root_field_id`, `value`, `input`)
-      VALUES
-        (1, 1, 1, NULL, 0, 'Windows'),
-        (2, 2, 1, NULL, 0, 'Linux'),
-        (3, 3, 1, NULL, 0, 'Linux'),
-        (4, 4, 1, NULL, 0, 'Mac');
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: People
-################################################################################
-
-if (!function_exists('create_user')) {
-    function create_user($fname, $lname, $email, $pass, $agent = false, $admin = false, $is_deleted = false)
-    {
-        $user             = new \Application\DeskPRO\Entity\Person();
-        $user->first_name = $fname;
-        $user->last_name  = $lname;
-        $user->setEmail($email, true);
-        $user->setPassword($pass);
-        $user->is_user      = true;
-        $user->is_confirmed = true;
-        $user->is_deleted   = $is_deleted;
-
-        if ($agent || $admin) {
-            $user->is_agent  = true;
-            $user->can_agent = true;
-        }
-
-        if ($admin) {
-            $user->can_admin   = true;
-            $user->can_billing = true;
-            $user->can_reports = true;
-        }
-
-        return $user;
-    }
-}
-
-$em->persist(create_user('John', 'Doe', 'john@doe.lo', '11111111', true, true));
-$em->persist(create_user('Jane', 'Doe', 'jane@doe.lo', '11111111', true, false));
-$em->persist(create_user('Jack', 'Doe', 'jack@doe.lo', '11111111', false, false));
-$em->persist(create_user('Friedrich', 'Doe', 'fred@doe.lo', '11111111', true, false, true));
-$em->flush();
-
-################################################################################
-# TEMPORARY TEST DATA: Organizations
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `organizations`
-        (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
-    VALUES
-        (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
-        (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00')
-    ;
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: Groups
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `usergroups`
-        (`title`, `note`, `is_agent_group`, `sys_name`, `is_enabled`)
-    VALUES
-        ('Group 1', 'test', 0, 'g1', 1),
-        ('Group 2 (disabled)', 'test', 0, 'g2', 0),
-        ('Group 3', 'test', 0, 'g3', 1),
-        ('Group 4', 'test', 0, 'g4', 1)
-    ;
-
-    INSERT INTO `person2usergroups`
-        (`person_id`, `usergroup_id`)
-    VALUES
-        (1, 1),
-        (1, 2),
-        (2, 2),
-        (2, 3),
-        (3, 3),
-        (4, 4)
-    ;
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: Chats
-################################################################################
-
-//$em->getConnection()->executeUpdate(
-//    "
-//    INSERT INTO `chat_conversations`
-//        (`department_id`, `agent_id`, `subject`, `status`, `person_name`, `person_email`, `rating_comment`,
-//         `is_agent`, `is_window`, `date_created`, `should_send_transcript`, `total_to_ended`, `ended_by`)
-//
-//    VALUES
-//
-//        (1, 1, 'Test chat 1', 'test', 'test', 'test', '', 1, 1, '2010-08-01 10:19:00', 1, 1, 'test'),
-//        (1, 1, 'Test chat 2', 'test', 'test', 'test', '', 1, 1, '2011-08-02 10:19:00', 1, 1, 'test'),
-//        (1, 2, 'Test chat 3', 'test', 'test', 'test', '', 1, 1, '2015-08-03 10:19:00', 1, 1, 'test'),
-//        (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 1, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
-//        (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
-//    ;
-//"
-//);
-
-################################################################################
 # TEMPORARY TEST DATA: Articles, News, Downloads and their Categories
 ################################################################################
 
@@ -397,62 +199,12 @@ $em->getConnection()->executeUpdate(
 "
 );
 
-################################################################################
-# TEMPORARY TEST DATA: Blobs
-################################################################################
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `blobs`
-        (`id`, `original_blob_id`, `sys_name`, `storage_loc`, `storage_loc_pref`, `storage_loc_specific`, `save_path`, `file_url`, `filename`, `filesize`, `content_type`, `authcode`, `blob_hash`, `is_media_upload`, `title`, `dim_w`, `dim_h`, `date_created`, `is_temp`)
-    VALUES
-        (1, NULL, NULL, 'db', NULL, NULL, '1/1WCRRCQJQMCXWXMJ0', NULL, 'app_256.png', 55189, 'image/png', '1WCRRCQJQMCXWXMJ0', '9ace9725e1eddb81702043db2522374c', 0, '', 256, 256, '2015-07-07 11:11:47', 0);
-"
-);
-
 ########################################################
 # TEMP DATA
 ########################################################
 
 $faker = \Faker\Factory::create();
 
-// the content publisher agent guy
-$publisher            = new \Application\DeskPRO\Entity\Person();
-$publisher->name      = 'Corporate Content';
-$publisher->can_agent = true;
-$publisher->is_agent  = true;
-$publisher->addEmailAddressString('content.publisher@deskprodemo.com');
-$publisher->setPassword('publisher');
-
-$em->persist($publisher);
-$em->flush($publisher);
-
-// an org
-$organization = new \Application\DeskPRO\Entity\Organization();
-$organization->setName('Mana Publishing');
-$organization->setImportance(5);
-
-// a regular dude
-$person       = new \Application\DeskPRO\Entity\Person();
-$person->name = 'Joe Kool';
-$person->addEmailAddressString('joe@deskprodemo.com');
-$person->setPassword('joe');
-$person->setOrganization($organization);
-
-// an organization
-$mana       = new \Application\DeskPRO\Entity\Person();
-$mana->name = 'Mana Ger';
-$mana->addEmailAddressString('manager@deskprodemo.com');
-$mana->setPassword('manager');
-$mana->setOrganization($organization);
-$mana->organization_manager = true;
-$mana->setOrganizationPosition('MANAGER');
-
-$em->persist($mana);
-$em->persist($organization);
-$em->flush($mana);
-$em->flush($organization);
-$em->persist($person);
-$em->flush($person);
 
 //////////////////////////////////////////////////////////////
 // articles
@@ -679,7 +431,6 @@ for ($i = 0; $i < 30; ++$i) {
     $em->persist($a);
 }
 
-$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
 
 for ($i = 0; $i < 30; ++$i) {
     $a = new \Application\DeskPRO\Entity\Feedback();
@@ -717,18 +468,6 @@ VALUES
 	(4, 'Workflow 1', 10),
 	(5, 'Workflow 2', 20),
 	(6, 'Workflow 3', 30);
-"
-);
-
-$em->getConnection()->executeUpdate(
-    "
-INSERT INTO `department_permissions` (`department_id`, `usergroup_id`, `person_id`, `app`, `name`, `value`)
-VALUES
-	(1, 1, NULL, 'tickets', 'full', '1'),
-	(2, 1, NULL, 'tickets', 'full', '1'),
-	(3, 1, NULL, 'chat', 'full', '1'),
-	(4, 1, NULL, 'chat', 'full', '1');
-
 "
 );
 
