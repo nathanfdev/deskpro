@@ -67,6 +67,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string")
+     *
      * @Assert\NotBlank()
      */
     protected $title;
@@ -88,6 +89,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     *
      * @Assert\NotNull()
      */
     protected $date_created;
@@ -97,6 +99,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
      */
     protected $task_type = self::TYPE_TASK;
 
