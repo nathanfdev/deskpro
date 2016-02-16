@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\LabelPerson;
@@ -79,7 +78,7 @@ class PersonType extends ApiType
 
         $builder
             ->add('name', 'text')
-            ->add('title_prefix', 'text')
+            ->add('title_prefix')
             ->add('first_name', 'text')
             ->add('last_name', 'text')
             ->add('summary', 'text')
@@ -103,15 +102,48 @@ class PersonType extends ApiType
             ])
         ;
 
-        // Normalize input: copy primary_email into emails if it's provided and it doesn't contain the primary email
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $data = $event->getData();
-            if (array_key_exists('primary_email', $data) && array_key_exists('emails', $data)) {
-                if (!in_array($data['primary_email'], $data['emails'])) {
-                    $data['emails'][] = $data['primary_email'];
-                    $event->setData($data);
-                }
-            }
-        });
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSyncEmails(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['primary_email'])) {
+            $data['primary_email'] = '';
+        }
+        if (!isset($data['emails'])) {
+            $data['emails'] = [];
+        }
+
+        if (!in_array($data['primary_email'], $data['emails'])) {
+            $data['emails'][] = $data['primary_email'];
+        }
+        if (!$data['primary_email'] && !empty($data['emails'])) {
+            $data['primary_email'] = $data['emails'][0];
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSyncName(FormEvent $event)
+    {
+        /** @var Person $person */
+        $person = $event->getForm()->getData();
+        $data   = $event->getData();
+
+        if (!empty($data['name'])) {
+            $person->setName($data['name']);
+            $event->setData(array_merge($data, [
+                'first_name' => $person->first_name,
+                'last_name'  => $person->last_name,
+            ]));
+        }
     }
 }
