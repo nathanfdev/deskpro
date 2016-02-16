@@ -167,4 +167,31 @@ interface AppEnvInterface
      * @return null|string
      */
     public function findConfigFile($f);
+
+    /**
+     * Set a runtime var. Note that using this should normally be avoided
+     * if possible because they are little better than simply using globals.
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setRuntimeVar($name, $value);
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasRuntimeVar($name);
+
+    /**
+     * @param string $name
+     */
+    public function unsetRuntimeVar($name);
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     * @return \OutOfRangeException|string
+     */
+    public function getRuntimeVar($name, $default = '__throw__');
 }

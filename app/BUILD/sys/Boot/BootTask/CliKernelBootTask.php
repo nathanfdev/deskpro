@@ -52,11 +52,21 @@ class CliKernelBootTask implements BootTaskInterface
             $cmd_ns = null;
         }
 
-        // another virtual arg
-        if (($idx = array_search('--fake-db-connection', $argv, true)) !== false) {
-            define('DP_USE_FAKE_DB_CONNECTION', true);
+        // barg -- boot args
+        while (($idx = array_search('--barg', $argv, true)) !== false) {
+            $val = $argv[$idx+1];
+            unset($argv[$idx+1]);
             unset($argv[$idx]);
             $argv = array_values($argv);
+
+            if (strpos($val, '=') !== false) {
+                list ($name, $val) = explode('=', $val, 2);
+            } else {
+                $name = $val;
+                $val = true;
+            }
+
+            $this->handleBootArg($env, $name, $val);
         }
 
         if (!$cmd_ns && !empty($argv[1])) {
@@ -89,6 +99,15 @@ class CliKernelBootTask implements BootTaskInterface
             'cli_input'  => new ArgvInput($argv),
             'cli_kernel' => $kernel,
         ];
+    }
+
+    private function handleBootArg(\DpRun\DpEnv $env, $name, $value)
+    {
+        switch ($name) {
+            case 'is-building':
+                $env->setRuntimeVar('is_building', true);
+                break;
+        }
     }
 
     /**

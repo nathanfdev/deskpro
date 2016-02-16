@@ -56,7 +56,7 @@ class GenTemplateMapCommand extends ContainerAwareCommand
 
         TemplatesScanner::dump();
 
-        $output->writeln(sprintf('Done in %.3fs', $gen->count(), microtime(true) - $startTime));
+        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
         $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
     }
 }

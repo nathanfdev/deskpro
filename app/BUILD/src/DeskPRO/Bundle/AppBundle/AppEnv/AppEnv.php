@@ -175,4 +175,37 @@ class AppEnv implements AppEnvInterface
     {
         return $this->dpEnv->findConfigFile($f);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function setRuntimeVar($name, $value)
+    {
+        $this->dpEnv->setRuntimeVar($name, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasRuntimeVar($name)
+    {
+        return $this->dpEnv->hasRuntimeVar($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function unsetRuntimeVar($name)
+    {
+        $this->dpEnv->unsetRuntimeVar($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRuntimeVar($name, $default = '__throw__')
+    {
+        return $this->dpEnv->getRuntimeVar($name, $default);
+    }
+
 }
