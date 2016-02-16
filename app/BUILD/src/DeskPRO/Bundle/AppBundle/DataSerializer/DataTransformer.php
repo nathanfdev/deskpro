@@ -42,6 +42,7 @@ class DataTransformer
      * @var DataTransformerRegistry
      */
     private $transformed_registry;
+
     /**
      * @var DataTypeMap
      */
@@ -155,9 +156,12 @@ class DataTransformer
             $transformed = $this->transform($transformation_request);
             $data        = $this->recursiveTransform($transformed->getTransformed(), $context);
         } elseif (is_array($data) || $data instanceof \Traversable) {
-            foreach ($data as &$value) {
-                $value = $this->recursiveTransform($value, $context);
+            $transformed = [];
+            foreach ($data as $key => $value) {
+                $transformed[$key] = $this->recursiveTransform($value, $context);
             }
+
+            $data = $transformed;
         }
 
         return $data;
