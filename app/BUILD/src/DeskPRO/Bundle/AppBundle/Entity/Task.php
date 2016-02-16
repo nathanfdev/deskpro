@@ -53,8 +53,11 @@ class Task implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     const VISIBILITY_PRIVATE = 'private';
+    const VISIBILITY_PUBLIC  = 'public';
+    const VISIBILITY_PROJECT = 'project';
 
-    const TYPE_TASK = 'task';
+    const TYPE_TASK  = 'task';
+    const TYPE_EVENT = 'event';
 
     /**
      * @var int
@@ -134,6 +137,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
      */
     protected $visibility = self::VISIBILITY_PRIVATE;
 
@@ -156,6 +161,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      * @ORM\Column(type="integer")
+     *
+     * @Assert\NotNull()
      */
     protected $urgency = 5;
 
