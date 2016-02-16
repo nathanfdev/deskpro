@@ -141,7 +141,7 @@ class DataTransformer
      * @param mixed                 $data
      * @param DataSerializerContext $context
      *
-     * @return array|\Traversable
+     * @return mixed
      */
     public function recursiveTransform($data, DataSerializerContext $context)
     {
@@ -166,8 +166,6 @@ class DataTransformer
     /**
      * @param DataTransformerRequest $transformation_request
      * @param $type
-     *
-     * @throws Exception\DataSerializerException
      *
      * @return array
      */
