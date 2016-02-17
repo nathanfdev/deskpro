@@ -19,17 +19,17 @@ export class ListItemContainer extends Component {
     notDoneFilters: PropTypes.object.isRequired,
     count: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
+    parentTitle: PropTypes.string.isRequired,
     isTopLevel: PropTypes.bool.isRequired,
     listFilters: PropTypes.object.isRequired,
     type: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    parentIsLoading: PropTypes.bool,
     children: PropTypes.node
   };
 
   constructor(props) {
     super(props);
-    this.itemId = urlSanitize(props.title);
+    this.itemId = urlSanitize(props.parentTitle ? `${props.parentTitle}~${props.title}` : props.title);
   }
 
   componentDidMount() {
@@ -45,12 +45,7 @@ export class ListItemContainer extends Component {
    * @return {string} Label
    */
   getItemLabel() {
-    const { type, id, parentIsLoading, title } = this.props;
-
-    if (parentIsLoading) {
-      return <ListItemLabelSpinner />;
-    }
-
+    const { type, id, title } = this.props;
     const useIdAsLabel = ['waiting_time', 'all_waiting_time', 'open_time'].indexOf(type) > -1;
     const label = useIdAsLabel ? id : title;
 
