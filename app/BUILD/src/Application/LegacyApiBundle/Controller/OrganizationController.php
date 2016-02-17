@@ -36,7 +36,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -49,7 +48,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class OrganizationController extends AbstractController
 {

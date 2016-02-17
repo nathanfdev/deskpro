@@ -40,12 +40,10 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {

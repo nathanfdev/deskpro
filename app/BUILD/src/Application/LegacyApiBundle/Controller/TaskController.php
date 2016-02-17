@@ -36,7 +36,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Searcher\TaskSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 
 /**
@@ -47,7 +46,6 @@ use Orb\Util\Numbers;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TaskController extends AbstractController
 {

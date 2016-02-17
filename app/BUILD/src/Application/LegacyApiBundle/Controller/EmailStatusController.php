@@ -39,14 +39,12 @@ use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinde
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {

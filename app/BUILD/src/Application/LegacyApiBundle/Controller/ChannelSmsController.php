@@ -39,7 +39,6 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
 use Orb\Util\DpStrings;
@@ -49,7 +48,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Class ChannelSmsController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
 {

@@ -33,12 +33,10 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ReportsAgentActivityController extends AbstractController
 {

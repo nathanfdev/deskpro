@@ -33,13 +33,11 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Docs API Controller.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class DocsController extends AbstractController
 {

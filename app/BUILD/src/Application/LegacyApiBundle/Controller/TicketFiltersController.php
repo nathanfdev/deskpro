@@ -37,7 +37,6 @@ use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\CheckedOptionsException;
 
 /**
@@ -51,7 +50,6 @@ use Orb\Util\CheckedOptionsException;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {

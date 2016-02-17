@@ -35,7 +35,6 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -47,7 +46,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ChatController extends AbstractController
 {

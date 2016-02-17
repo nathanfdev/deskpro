@@ -35,13 +35,11 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Class ChatFieldsController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ChatFieldsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -83,8 +81,8 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getCustomFieldAction($id)
     {
@@ -110,8 +108,8 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function saveCustomFieldAction($id)
     {
@@ -159,8 +157,8 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function deleteCustomFieldAction($id)
     {

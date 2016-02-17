@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Simple ticket macros CRUD.
@@ -48,7 +47,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {

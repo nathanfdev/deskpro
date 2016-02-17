@@ -42,7 +42,6 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -51,7 +50,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * Class BanningController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class BanningController extends AbstractController implements ProtectedControllerInterface
 {

@@ -41,12 +41,10 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class LanguagesController extends AbstractController implements ProtectedControllerInterface
 {

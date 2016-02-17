@@ -37,11 +37,9 @@ use Application\DeskPRO\UserRules\Form\Type\UserRuleType;
 use Application\DeskPRO\UserRules\UserRuleEdit;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class UserRulesController extends AbstractController implements ProtectedControllerInterface
 {

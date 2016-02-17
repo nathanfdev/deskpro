@@ -41,7 +41,6 @@ use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +56,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class PersonController extends AbstractController implements ProtectedControllerInterface
 {

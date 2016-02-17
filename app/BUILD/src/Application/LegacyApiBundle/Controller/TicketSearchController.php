@@ -35,7 +35,6 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +49,6 @@ use Symfony\Component\HttpFoundation\Response;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TicketSearchController extends AbstractController
 {

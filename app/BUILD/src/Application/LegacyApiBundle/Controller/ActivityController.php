@@ -33,7 +33,6 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -47,7 +46,6 @@ use Symfony\Component\HttpFoundation\Response;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ActivityController extends AbstractController
 {

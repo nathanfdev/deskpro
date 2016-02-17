@@ -161,6 +161,13 @@ class ActionPermissionsDriver implements DriverInterface
         }
         $tag = implode('.', $tag);
 
-        return [$tag];
+        $tags = [$tag];
+
+        // such a spike
+        if (false !== strpos($metadata->class, 'LegacyApiBundle')) {
+            $tags[] = 'apiv1';
+        }
+
+        return $tags;
     }
 }

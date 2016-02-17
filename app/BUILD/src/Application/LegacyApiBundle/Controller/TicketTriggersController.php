@@ -39,7 +39,6 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -52,7 +51,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TicketTriggersController extends AbstractController implements ProtectedControllerInterface
 {

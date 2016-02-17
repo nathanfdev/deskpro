@@ -37,13 +37,11 @@ use Application\DeskPRO\EntityRepository\TaskQueue;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Class CsvExportController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class CsvExportController extends AbstractController implements ProtectedControllerInterface
 {

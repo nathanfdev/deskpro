@@ -37,11 +37,9 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Form\Type\ReportType;
 use Application\DeskPRO\Reports\ReportEdit;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ReportsBuilderController extends AbstractController
 {

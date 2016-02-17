@@ -33,7 +33,6 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * A remote resource pings this script to notify the system that some record was updated.
@@ -42,7 +41,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
  * later (hopefully in a few seconds).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ResourcePingController extends AbstractController
 {

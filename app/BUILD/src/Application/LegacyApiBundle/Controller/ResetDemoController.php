@@ -35,12 +35,10 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ResetDemoController extends AbstractController implements ProtectedControllerInterface
 {

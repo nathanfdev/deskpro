@@ -33,11 +33,9 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ReportsOverviewController extends AbstractController
 {

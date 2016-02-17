@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 
 /**
@@ -49,7 +48,6 @@ use Orb\Util\Arrays;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {

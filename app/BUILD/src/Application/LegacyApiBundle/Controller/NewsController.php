@@ -38,7 +38,6 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -50,7 +49,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class NewsController extends AbstractController
 {

@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
@@ -52,7 +51,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class AppsController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class AppsController extends AbstractController
 {

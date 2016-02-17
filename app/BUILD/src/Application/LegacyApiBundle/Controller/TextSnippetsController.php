@@ -35,12 +35,10 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Strings;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TextSnippetsController extends AbstractController
 {

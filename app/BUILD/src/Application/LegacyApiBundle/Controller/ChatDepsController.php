@@ -41,13 +41,11 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Class ChatDepsController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -177,8 +175,8 @@ class ChatDepsController extends AbstractController implements ProtectedControll
      * @param $id
      *
      * @throws ValidationException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function saveAction($id)
     {
@@ -234,8 +232,8 @@ class ChatDepsController extends AbstractController implements ProtectedControll
      *
      * @throws ValidationException
      * @throws \Exception
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function removeAction($id)
     {

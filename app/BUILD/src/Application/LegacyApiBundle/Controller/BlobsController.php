@@ -36,14 +36,12 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class BlobsController.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class BlobsController extends AbstractController
 {

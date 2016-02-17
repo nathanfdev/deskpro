@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\ExtraDetailsInterface;
@@ -48,7 +47,6 @@ use Orb\Auth\Adapter\SsoLoginActionInterface;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class UsersourcesController extends AbstractController
 {

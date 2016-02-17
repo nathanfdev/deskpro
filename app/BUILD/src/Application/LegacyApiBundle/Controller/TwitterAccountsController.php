@@ -37,11 +37,9 @@ use Application\DeskPRO\TwitterAccounts\Form\Type\TwitterAccountType;
 use Application\DeskPRO\TwitterAccounts\TwitterAccountEdit;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
 {

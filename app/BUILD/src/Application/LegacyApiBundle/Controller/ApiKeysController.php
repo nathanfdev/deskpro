@@ -39,7 +39,6 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -51,7 +50,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * ).
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {

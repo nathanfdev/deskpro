@@ -49,7 +49,6 @@ use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -67,7 +66,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * )
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {

@@ -34,13 +34,11 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * A Test API resource.
  *
  * @ApiModes("all")
- * @ApiTags("apiv1")
  */
 class TestController extends AbstractController
 {
