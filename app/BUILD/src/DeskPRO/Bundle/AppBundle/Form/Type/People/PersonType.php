@@ -115,18 +115,19 @@ class PersonType extends ApiType
         $person = $event->getForm()->getData();
         $data   = $event->getData();
 
-        if (!isset($data['primary_email'])) {
-            $data['primary_email'] = $person->getPrimaryEmailAddress();
-        }
-        if (!isset($data['emails'])) {
-            $data['emails'] = $person->getEmailAddresses();
-        }
-
-        if (!in_array($data['primary_email'], $data['emails'])) {
-            $data['emails'][] = $data['primary_email'];
-        }
-        if (!$data['primary_email'] && !empty($data['emails'])) {
-            $data['primary_email'] = $data['emails'][0];
+        if (isset($data['primary_email'])) {
+            if (!isset($data['emails'])) {
+                $data['emails'] = $person->getEmailAddresses();
+            }
+            if (!in_array($data['primary_email'], $data['emails'])) {
+                $data['emails'][] = $data['primary_email'];
+            }
+        } else {
+            if (!empty($data['emails'])) {
+                $data['primary_email'] = $data['emails'][0];
+            } elseif (isset($data['emails'])) {
+                $data['primary_email'] = '';
+            }
         }
 
         $event->setData($data);
