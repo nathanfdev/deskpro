@@ -348,8 +348,7 @@ class GetMsgScript extends LowScriptAbstract
             header('Content-Type: application/json');
             echo json_encode($data);
         } catch (\Exception $exception) {
-            global $DP_CONFIG;
-            if (isset($DP_CONFIG['debug']['dev'])) {
+            if ($this->dpEnv->isDebug()) {
                 echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
                 $backtrace = $exception->getTrace();

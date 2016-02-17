@@ -57,7 +57,7 @@ class DpScript extends LowScriptAbstract
                 echo 'Action not found. (1)';
             }
         } catch (\Exception $exception) {
-            if (isset($DP_CONFIG['debug']['dev'])) {
+            if ($this->dpEnv->isDebug()) {
                 echo "\n\n[{$exception->getCode()}] {$exception->getMessage()}\n\n";
 
                 $backtrace = $exception->getTrace();

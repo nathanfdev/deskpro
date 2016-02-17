@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Incoming\ProcQueue;
 
 use Symfony\Component\DependencyInjection\Container;
@@ -38,16 +37,17 @@ class DeskproProcQueueFactory
 {
     public static function create(Container $container)
     {
-        global $DP_CONFIG;
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        if (empty($DP_CONFIG) || empty($DP_CONFIG['adv_email_process'])) {
+        if (!$DP_ENV->getConfig('adv_email_process')) {
             return new NoopProcQueue();
         } else {
-            $client = new \Predis\Client($DP_CONFIG['adv_email_process']['redis_params']);
+            $client = new \Predis\Client($DP_ENV->getConfig('adv_email_process.redis_params'));
 
             return new RedisProcQueue(
                 $client,
-                $DP_CONFIG['adv_email_process']['redis_key']
+                $DP_ENV->getConfig('adv_email_process.redis_key')
             );
         }
     }

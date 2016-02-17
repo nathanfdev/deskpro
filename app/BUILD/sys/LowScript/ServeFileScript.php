@@ -684,7 +684,7 @@ class ServeFileScript extends LowScriptAbstract
         header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
         header('X-Robots-Tag: noindex, nofollow');
 
-        if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+        if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
             header("X-Sendfile: $path");
         } else {
             readfile($path);
@@ -734,8 +734,6 @@ class ServeFileScript extends LowScriptAbstract
         # If its a simple file request we
         # can serve it without a db connection
         #------------------------------
-
-        global $DP_CONFIG;
 
         $base_path = dp_get_blob_dir();
 
@@ -848,15 +846,8 @@ class ServeFileScript extends LowScriptAbstract
         header('Cache-Control: max-age=31556926,private');
         header('X-Robots-Tag: noindex, nofollow');
 
-        if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+        if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
             header("X-Sendfile: $filepath");
-        } elseif (isset($DP_CONFIG['filestorage_use_xaccel_redirect']) && $DP_CONFIG['filestorage_use_xaccel_redirect']) {
-            $redirect_path = str_replace(
-                array('{path}', '{fullpath}'),
-                array("/$filepath_part", $filepath),
-                $DP_CONFIG['filestorage_use_xaccel_redirect']
-            );
-            header("X-Accel-Redirect: $redirect_path");
         } else {
             readfile($filepath);
         }
@@ -982,20 +973,9 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         if (!empty($blob['file_url']) && $blob['file_url']) {
-            if (isset($DP_CONFIG['filestorage_use_xaccel_redirect_url']) && $DP_CONFIG['filestorage_use_xaccel_redirect_url'] && ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) && ($pathinfo = @parse_url($blob['file_url']))) {
-                $redirect_path = str_replace(
-                    array('{scheme}', '{domain}', '{path}'),
-                    array(strtolower($pathinfo['scheme']) ?: 'http', $pathinfo['domain'], $pathinfo['path']),
-                    $DP_CONFIG['filestorage_use_xaccel_redirect_url']
-                );
-                $this->sendHeaders($blob);
-                header("X-Accel-Redirect: $redirect_path");
-                exit;
-            }
-
             // Need to send through this controller if its a download
             // request and the file is usually stored with an inline disposition
-            if ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) {
+            if ($this->local_mode || $this->dpEnv->getConfig('settings.remote_blobs_proxy_local')) {
                 $context = stream_context_create(array(
                     'http' => array('timeout' => 10.0), // read timeout. we do it in chunks, so this is rather low
                 ));
@@ -1072,8 +1052,6 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected function sendFromFilesystem($blob)
     {
-        global $DP_CONFIG;
-
         $this->sendHeaders($blob);
 
         // folder we store blobs in
@@ -1094,15 +1072,8 @@ class ServeFileScript extends LowScriptAbstract
             return;
         }
 
-        if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
+        if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
             header("X-Sendfile: $filepath");
-        } elseif (isset($DP_CONFIG['filestorage_use_xaccel_redirect']) && $DP_CONFIG['filestorage_use_xaccel_redirect']) {
-            $redirect_path = str_replace(
-                array('{path}', '{fullpath}'),
-                array("/$filepath_part", $filepath),
-                $DP_CONFIG['filestorage_use_xaccel_redirect']
-            );
-            header("X-Accel-Redirect: $redirect_path");
         } else {
             readfile($filepath);
         }

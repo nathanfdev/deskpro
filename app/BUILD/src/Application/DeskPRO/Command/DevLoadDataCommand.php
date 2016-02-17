@@ -38,24 +38,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/*
-Usage: php cmd.php dpdev:load-data --count=# --types=a,b,c --range="3 years"
-Count defaults to 100, types must be explicitly specified. If no
-types are specified, a list of available ones is given. If you want
-to insert into everything, use --types=*
-
-To use the --wordlist="database" option, enter this in to config.php:
-
-$DP_CONFIG['load_data_database'] = array(
-    'db_host' => 'localhost',
-    'db_user' => 'root',
-    'db_password' => '',
-    'db_name' => 'wordlist',
-    'db_query' => 'SELECT content FROM pages WHERE id = (FLOOR(RAND() * (500000)) + 1) LIMIT 1'
-);
-
-*/
-
 class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
     protected function configure()

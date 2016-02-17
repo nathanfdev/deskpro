@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Runs basic checks to determine if we should go to the install screen.
@@ -80,12 +81,11 @@ class PreflightChecksListener implements EventSubscriberInterface
         try {
             $settings = $this->container->get('settings_resolver')->getGlobalSettings(true);
         } catch (\Doctrine\DBAL\DBALException $e) {
-            global $DP_CONFIG;
-            if ($e->getCode() == '42S02' || @$DP_CONFIG['db']['user'] == 'YOUR_DATABASE_USER' || @$DP_CONFIG['db']['password'] == 'YOUR_DATABASE_PASS' || @$DP_CONFIG['db']['dbname'] == 'YOUR_DATABASE_NAME') {
-                // This will show an error page if already installed, so the redirect to install wont happen
-                deskpro_handle_boot_db_exception($e);
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
 
-                $r = new RedirectResponse($request->getBasePath().'/index.php/install/');
+            if (!$DP_ENV->getConfig('database.host') && !$DP_ENV->getConfig('database.0.host')) {
+                $r = new Response('DeskPRO is not installed.');
                 $r->headers->set('X-DeskPRO-InstallRedirectReason', 'Database error: '.$e->getMessage().' -- '.$e->getCode());
                 $event->setResponse($r);
                 $event->stopPropagation();

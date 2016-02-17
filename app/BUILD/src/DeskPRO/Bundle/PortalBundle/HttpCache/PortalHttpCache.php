@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
@@ -74,9 +73,10 @@ class PortalHttpCache extends EventDispatchingHttpCache
 
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
-        global $DP_CONFIG;
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        $cache_disabled = isset($DP_CONFIG['portal_disable_cache']) && $DP_CONFIG['portal_disable_cache'];
+        $cache_disabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
 
         if ($cache_disabled) {
             return $this->kernel->handle($request, $type, $catch);

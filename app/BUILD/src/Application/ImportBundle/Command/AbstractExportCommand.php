@@ -221,7 +221,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $out = $this->checkRequirements();
         if ($out !== true) {
             $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
-            $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
             return 1;
         }
