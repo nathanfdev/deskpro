@@ -69,7 +69,20 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
 
     public function getBool($key, $default = false)
     {
-        return $this->has($key) ? (bool) $this->settings[$key] : $default;
+        return $this->has($key) ? (bool) $this->settings[$key] : (bool) $default;
+    }
+
+    public function getSerializedArray($key, $default = [])
+    {
+        if (!$this->has($key)) {
+            return $default;
+        }
+        $arr = is_array($this->get($key)) ? $this->get($key) : @unserialize($this->get($key));
+        if (!is_array($arr)) {
+            return $default;
+        }
+
+        return $arr;
     }
 
     /**
