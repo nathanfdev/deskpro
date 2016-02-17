@@ -147,6 +147,14 @@ class PersonAssignType extends AbstractType
         } elseif (!$form->getData() && $default_person) {
             $form->setData($default_person);
         }
+
+        /** @var Person $person */
+        $person = $form->getData();
+        if (!isset($data['name']) && $person) {
+            $data['name'] = $person->name;
+
+            $event->setData($data);
+        }
     }
 
     /**
