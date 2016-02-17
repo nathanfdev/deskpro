@@ -191,7 +191,6 @@ class InternalUpgradeRunnerCommand extends \Symfony\Bundle\FrameworkBundle\Comma
             $write_status('error_php_binary_failcheck');
             $write_status('error_basic_checks_fail', str_replace("\n", ' ', trim($out)));
             $output->write('<error>PHP sub-command binary fails server checks: '.$out.'</error>');
-            $output->write('<error>Check your config.php file to make sure $DP_CONFIG[\'php_path\'] is set to the correct PHP path.</error>');
 
             // Failed before we could actually do anything, dont keep helpdesk offline
             $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', time());

@@ -56,7 +56,10 @@ class RoutingExtension extends BaseRoutingExtension
         try {
             return parent::getPath($name, $parameters, $relative);
         } catch (\Exception $e) {
-            if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if ($DP_ENV->isDebug()) {
                 throw $e;
             }
 

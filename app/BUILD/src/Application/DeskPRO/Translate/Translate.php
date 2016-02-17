@@ -840,10 +840,6 @@ class Translate implements PersonContextInterface
             }
         }
 
-        if ((empty($phrase_text) && @$DP_CONFIG['debug']['dev'])) {
-            return '[missing translation: "'.$phrase_name.'""]';
-        }
-
         if ($debug === 'dev_blankout') {
             $output = '';
 

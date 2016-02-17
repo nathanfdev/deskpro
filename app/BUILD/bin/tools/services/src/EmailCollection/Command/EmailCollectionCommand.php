@@ -64,15 +64,17 @@ class EmailCollectionCommand extends Command
         $max_tasks    = $input->getOption('max-processes') ?: 999;
 
         if ($input->getOption('load-config')) {
-            global $DP_CONFIG;
-            if (!$input->getOption('max-time') && isset($DP_CONFIG['adv_email_collect']['max_time'])) {
-                $stop_time = (int) $DP_CONFIG['adv_email_collect']['max_time'];
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if (!$input->getOption('max-time') && $DP_ENV->getConfig('adv_email_collect.max_time')) {
+                $stop_time = (int) $DP_ENV->getConfig('adv_email_collect.max_time');
             }
-            if (!$input->getOption('max-processes') && isset($DP_CONFIG['adv_email_process']['max_processes'])) {
-                $max_tasks = (int) $DP_CONFIG['adv_email_collect']['max_processes'];
+            if (!$input->getOption('max-processes') && $DP_ENV->getConfig('adv_email_collect.max_processes')) {
+                $max_tasks = (int) $DP_ENV->getConfig('adv_email_collect.max_processes');
             }
-            if (!$input->getOption('connect-interval') && isset($DP_CONFIG['adv_email_collect']['connect_interval'])) {
-                $interval = (int) $DP_CONFIG['adv_email_collect']['connect_interval'];
+            if (!$input->getOption('connect-interval') && $DP_ENV->getConfig('adv_email_collect.connect_interval')) {
+                $interval = (int) $DP_ENV->getConfig('adv_email_collect.connect_interval');
             }
         }
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -1601,25 +1600,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
     protected function _getRandomTextDb()
     {
-        global $DP_CONFIG;
-        if ($this->_word_db === null) {
-            $this->_word_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-                'driver'   => 'pdo_mysql',
-                'host'     => $DP_CONFIG['load_data_database']['db_host'],
-                'user'     => $DP_CONFIG['load_data_database']['db_user'],
-                'password' => $DP_CONFIG['load_data_database']['db_password'],
-                'dbname'   => $DP_CONFIG['load_data_database']['db_name'],
-            ));
-        }
-
-        do {
-            $words = trim($this->_word_db->fetchColumn($DP_CONFIG['load_data_database']['db_query']));
-            if (preg_match('/\s*#REDIRECT/i', $words)) {
-                $words = null;
-            }
-        } while (!$words);
-
-        return $words;
+        throw new \RuntimeException('Unsupported');
     }
 
     protected function _getRandomWordlist($word_length = 1)

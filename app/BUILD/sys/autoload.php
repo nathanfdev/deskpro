@@ -130,6 +130,9 @@ foreach ([
 
 spl_autoload_register(
     function ($classname) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         // Fallback to checking native apps
         $parts = explode('\\', $classname);
         if (count($parts) < 2) {
@@ -138,10 +141,10 @@ spl_autoload_register(
 
         static $paths = null;
         if (!$paths) {
-            if (isset($GLOBALS['DP_CONFIG']['app_paths'])) {
-                $paths = $GLOBALS['DP_CONFIG']['app_paths'];
+            if ($DP_ENV) {
+                $paths = $DP_ENV->getConfig('paths.app_paths', []);
             } else {
-                $paths = array();
+                $paths = [];
             }
             $paths['default'] = DP_APP_DIR.'/apps';
         }

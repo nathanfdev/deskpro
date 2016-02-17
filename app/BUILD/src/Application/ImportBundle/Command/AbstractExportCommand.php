@@ -214,7 +214,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $out = $this->checkPhpInfo();
         if ($out !== true) {
             $output->write('<error>Could not find path to PHP (Detected PHP appears different than running PHP)</error>');
-            $output->write('<error>Specify path to PHP in config.php by setting the $DP_CONFIG[\'php_path\'] option.</error>');
 
             return 1;
         }

@@ -102,16 +102,11 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                     $db_brand_settings = [];
                 }
 
-                // USE THE $DP_CONFIG['BRAND_X_SETTINGS']
+                /* @var \DpRun\DpEnv $DP_ENV */
+                global $DP_ENV;
+
                 $global_settings_key = 'BRAND_'.$brand_id.'_SETTINGS';
-                if (
-                    isset($GLOBALS['DP_CONFIG'][$global_settings_key])
-                    && is_array($GLOBALS['DP_CONFIG'][$global_settings_key])
-                ) {
-                    $global_settings = $GLOBALS['DP_CONFIG'][$global_settings_key];
-                } else {
-                    $global_settings = [];
-                }
+                $global_settings = $DP_ENV->getConfig('settings.'.$global_settings_key, []);
 
                 return array_merge($db_brand_settings, $global_settings);
             }

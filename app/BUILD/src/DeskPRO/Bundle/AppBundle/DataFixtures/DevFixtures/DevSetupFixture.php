@@ -86,14 +86,6 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
             ['name' => 'core.license',               'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
         ];
 
-        if (!empty($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-            foreach ($ins as $k => $v) {
-                if (isset($GLOBALS['DP_CONFIG']['SETTINGS'][$k])) {
-                    $ins[$k] = $GLOBALS['DP_CONFIG']['SETTINGS'][$k];
-                }
-            }
-        }
-
         $db->batchInsert('settings', $ins);
 
         $db->insert('email_accounts', [

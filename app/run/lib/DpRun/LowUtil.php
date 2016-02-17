@@ -41,6 +41,12 @@ class LowUtil
      */
     public static function getMysqlInfoFromConfigArray(array $config)
     {
+        // numeric index array, means an array of arrays,
+        // choose one at random
+        if (isset($config[0]) && !isset($config['host'])) {
+            $config = $config[array_rand($config)];
+        }
+
         $config = array_merge([
             'user'     => null,
             'password' => null,
@@ -90,5 +96,24 @@ class LowUtil
         }
 
         return $info;
+    }
+
+    /**
+     * Get a PDO connection from info array.
+     *
+     * @param array $conn_info Array of db config, or result of getMysqlInfoFromConfigArray()
+     * @return \PDO
+     */
+    public static function getPdoFromMysqlInfo(array $conn_info)
+    {
+        if (!isset($conn_info['dsn'])) {
+            $conn_info = self::getMysqlInfoFromConfigArray($conn_info);
+        }
+
+        $pdo = new \PDO($conn_info['dsn'], $conn_info['user'], $conn_info['password']);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo->exec("SET sql_mode=''");
+
+        return $pdo;
     }
 }

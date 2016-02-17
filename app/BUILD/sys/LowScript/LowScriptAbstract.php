@@ -1,0 +1,322 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DpSys\LowScript;
+
+use DpRun\LowUtil;
+use DpSys\LowError\SystemErrorHandler;
+
+abstract class LowScriptAbstract
+{
+    /**
+     * @var \DpRun\DpEnv
+     */
+    protected $dpEnv;
+
+    /**
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    protected $request;
+
+    /**
+     * @var string
+     */
+    protected $base_url;
+
+    /**
+     * @var string
+     */
+    protected $path_info;
+
+    /**
+     * @var string
+     */
+    protected $request_uri;
+
+    /**
+     * @var \PDO
+     */
+    protected $pdo;
+
+    /**
+     * @var \PDO
+     */
+    protected $pdo_read;
+
+    /**
+     * @var array
+     */
+    protected $settings;
+
+    /**
+     * serve_abstract constructor.
+     *
+     * @param \DpRun\DpEnv                              $dpEnv
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function __construct(\DpRun\DpEnv $dpEnv, \Symfony\Component\HttpFoundation\Request $request)
+    {
+        $this->dpEnv   = $dpEnv;
+        $this->request = $request;
+    }
+
+    public function run()
+    {
+        $this->runAction();
+
+        if (session_id() != '') {
+            session_write_close();
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract protected function runAction();
+
+    /**
+     * Handle a fatal exception.
+     *
+     * @param \Exception $e
+     */
+    protected function handleException(\Exception $e)
+    {
+        try {
+            $container = $this->bootFullSystem();
+        } catch (\Exception $e) {
+            error_log("Error handling error: {$e->getMessage()}");
+            echo 'Error while processing error';
+            exit(1);
+        }
+
+        SystemErrorHandler::handleException($e);
+
+        header('HTTP/1.1 500 Internal Server Error');
+        echo 'There was an error while processing your request.';
+        exit(1);
+    }
+
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected function bootFullSystem()
+    {
+        static $container;
+
+        if (!$container) {
+            $res = \DpSys\Boot\Boot::runBootTasks($this->dpEnv, [
+                'HttpKernel',
+            ], [
+                'request'      => $this->request,
+                'interface_id' => 'sys',
+            ]);
+
+            $kernel = $res['http_kernel'];
+            $kernel->boot();
+
+            /** @var $container \Application\DeskPRO\DependencyInjection\DeskproContainer */
+            $container = $kernel->getContainer();
+
+            // Set PDO now that we are connected...
+            $this->pdo      = $container->getDb();
+            $this->pdo_read = $container->getDb();
+        }
+
+        return $container;
+    }
+
+    /**
+     * @return \PDO
+     */
+    public function getPdo()
+    {
+        if ($this->pdo) {
+            return $this->pdo;
+        }
+
+        $this->pdo = LowUtil::getPdoFromMysqlInfo($this->dpEnv->getConfig('database'));
+
+        return $this->pdo;
+    }
+
+    /**
+     * @return \PDO
+     */
+    public function getPdoRead()
+    {
+        if ($this->pdo_read) {
+            return $this->pdo_read;
+        }
+
+        $read_config = $this->dpEnv->getConfig('database_advanced.read');
+        if ($read_config) {
+            $this->pdo_read = LowUtil::getPdoFromMysqlInfo($read_config);
+        } else {
+            $this->pdo_read = $this->getPdo();
+        }
+
+        return $this->pdo_read;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllSettings()
+    {
+        if ($this->settings !== null) {
+            return $this->settings;
+        }
+
+        $this->settings = array();
+
+        $q = $this->getPdo()->prepare('
+            SELECT name, value
+            FROM settings
+        ');
+        $q->execute();
+        while ($row = $q->fetch(\PDO::FETCH_NUM)) {
+            $this->settings[$row[0]] = $row[1];
+        }
+
+        return $this->settings;
+    }
+
+    /**
+     * @param string $name
+     * @param null   $default
+     *
+     * @return mixed
+     */
+    public function getSetting($name, $default = null)
+    {
+        if ($this->settings === null) {
+            $this->getAllSettings();
+        }
+
+        return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+    }
+
+    ####################################################################################################################
+    # Request Helpers
+    ####################################################################################################################
+
+    public function getPathInfo()
+    {
+        return $this->request->getPathInfo();
+    }
+
+    public function getBaseUrl()
+    {
+        return $this->request->getBaseUrl();
+    }
+
+    public function getRequestUri()
+    {
+        return $this->request->getRequestUri();
+    }
+
+    public function getScheme()
+    {
+        return $this->request->getScheme();
+    }
+
+    public function isSecure()
+    {
+        return $this->request->isSecure();
+    }
+
+    public function getHttpHost()
+    {
+        return $this->request->getHttpHost();
+    }
+
+    public function getPort()
+    {
+        return isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : null;
+    }
+
+    public function getHost()
+    {
+        return $this->request->getHost();
+    }
+
+    public static function formatBacktrace(array $backtrace)
+    {
+        $trace = '';
+        foreach ($backtrace as $k => $v) {
+            $line = "#$k ";
+
+            if (isset($v['object'])) {
+                $line .= get_class($v['object']).'::';
+            } elseif (isset($v['class'])) {
+                $line .= $v['class'].'::';
+            }
+
+            $line .= "{$v['function']}(";
+
+            if (!empty($v['args'])) {
+                $line .= self::varToString($v['args']);
+            }
+
+            $line .= ')';
+
+            if (!empty($v['file'])) {
+                $line .= " called at [{$v['file']}:{$v['line']}]";
+            }
+
+            $line .= "\n";
+
+            $trace .= $line;
+        }
+
+        return $trace;
+    }
+
+    public static function varToString($var)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+                $a[] = sprintf('%s => %s', $k, self::varToString($v));
+            }
+
+            return sprintf('[array](%s)', implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+
+        return str_replace("\n", '', var_export((string) $var, true));
+    }
+}

@@ -73,7 +73,7 @@ class Boot
         return $resources;
     }
 
-    public static function bootServerInfoChecks($reqName)
+    private static function bootServerInfoChecks($reqName)
     {
         /** @var \DpRun\DpEnv $env */
         $env = $GLOBALS['DP_ENV'];
@@ -138,10 +138,11 @@ class Boot
     /**
      * Boot a web request.
      */
-    public static function bootWeb()
+    public static function bootWeb(\DpRun\DpEnv $env)
     {
-        /** @var \DpRun\DpEnv $env */
-        $env = $GLOBALS['DP_ENV'];
+        #------------------------------
+        # verify www path
+        #------------------------------
 
         // Makes sure the www path we have in cache
         // is the same as the path we are requesting
@@ -160,6 +161,10 @@ class Boot
                 }
             }
         }
+
+        #------------------------------
+        # Boot request and handle serverinfo reqs
+        #------------------------------
 
         // An 'early' serverinfo request
         if (isset($_GET['__serverinfo'])) {
@@ -189,6 +194,31 @@ class Boot
             return;
         }
 
+        #------------------------------
+        # Boot to low scripts
+        #------------------------------
+
+        $lowClass = null;
+        if (substr($path, 0, 7) === '/dp.php' && (!isset($path[7]) || $path[7] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\DpScript';
+        } elseif (substr($path, 0, 9) === '/file.php' && (!isset($path[9]) || $path[9] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\ServeFileScript';
+        } elseif (substr($path, 0, 17) === '/get_messages.php' && (!isset($path[17]) || $path[17] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\GetMsgScript';
+        }
+
+        if ($lowClass) {
+            /** @var \DpSys\LowScript\LowScriptAbstract $lowScript */
+            $lowScript = new $lowClass($env, $request);
+            $lowScript->run();
+
+            return;
+        }
+
+        #------------------------------
+        # Boot to a normal symfony request
+        #------------------------------
+
         $res = self::runBootTasks($env, ['HttpKernel'], $res);
 
         /** @var \Symfony\Component\HttpKernel\HttpKernel $kernel */
@@ -202,11 +232,8 @@ class Boot
     /**
      * Boot a CLI app.
      */
-    public static function bootCli()
+    public static function bootCli(\DpRun\DpEnv $env)
     {
-        /** @var \DpRun\DpEnv $env */
-        $env = $GLOBALS['DP_ENV'];
-
         $tasks = [
             'Loader',
             'Lib',
@@ -229,13 +256,10 @@ class Boot
     /**
      * Boot cron app.
      */
-    public static function bootCron()
+    public static function bootCron(\DpRun\DpEnv $env)
     {
         //TODO
         exit;
-
-        /** @var \DpRun\DpEnv $env */
-        $env = $GLOBALS['DP_ENV'];
 
         $tasks = [
             'Loader',
