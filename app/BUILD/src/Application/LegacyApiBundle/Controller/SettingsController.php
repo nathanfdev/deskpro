@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -43,12 +44,18 @@ use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
 use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\License;
 use Orb\Util\Env;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class SettingsController extends AbstractController implements ProtectedControllerInterface
 {
     /**

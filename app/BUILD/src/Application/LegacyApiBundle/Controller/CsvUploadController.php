@@ -29,14 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface
 {
     /**

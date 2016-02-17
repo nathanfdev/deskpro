@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Form\Type\ApiKeyType;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -45,6 +49,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * 	description="Operations about API Keys",
  * 	basePath="/api/api_keys"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {
@@ -204,7 +211,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function replayLogEntryAction($logEntryId)
     {

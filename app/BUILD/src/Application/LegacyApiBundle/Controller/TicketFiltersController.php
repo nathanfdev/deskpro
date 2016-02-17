@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\CheckedOptionsException;
 
 /**
@@ -46,6 +49,9 @@ use Orb\Util\CheckedOptionsException;
  * 	description="Operations about Ticket urgencies",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {

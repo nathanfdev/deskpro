@@ -29,14 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ProblemsController extends AbstractController implements ProtectedControllerInterface
 {
     const KEY_ENABLED = 'core.problems.enabled';
@@ -52,7 +60,7 @@ class ProblemsController extends AbstractController implements ProtectedControll
     /**
      * get problems settings.
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function settingsAction()
     {

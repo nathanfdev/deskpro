@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -36,8 +37,16 @@ use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 
+/**
+ * Class AgentTeamsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -58,7 +67,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
     public function listTeamsAction()
     {
-        $data = array('agent_teams' => array());
+        $data = ['agent_teams' => []];
 
         foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
             $data['agent_teams'][] = $agent_team->toApiData();
@@ -80,13 +89,13 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         }
 
         $data            = $team->toApiData();
-        $data['members'] = array();
+        $data['members'] = [];
 
         foreach ($team->members as $agent) {
             $data['members'][] = $agent->toBasicApiData();
         }
 
-        return $this->createApiResponse(array('team' => $data));
+        return $this->createApiResponse(['team' => $data]);
     }
 
     ####################################################################################################################
@@ -105,9 +114,11 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $this->em->remove($team);
         $this->em->flush();
 
-        return $this->createApiDeleteResponse(array(
-            'old_team_id' => $old_id,
-        ));
+        return $this->createApiDeleteResponse(
+            [
+                'old_team_id' => $old_id,
+            ]
+        );
     }
 
     ####################################################################################################################
@@ -158,12 +169,15 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         if ($new_members) {
             $agent_data  = $this->container->getAgentData();
-            $new_members = array_filter($new_members, function ($a) use ($agent_data) {
-                return $agent_data->get($a) ? true : false;
-            });
+            $new_members = array_filter(
+                $new_members,
+                function ($a) use ($agent_data) {
+                    return $agent_data->get($a) ? true : false;
+                }
+            );
         }
 
-        $members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
+        $members = $this->em->getRepository('DeskPRO:Person')->findBy(['id' => $new_members]);
         $team->members->clear();
         foreach ($members as $person) {
             /* @var $person Person */
@@ -175,11 +189,11 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         if ($is_new) {
             return $this->createApiCreateResponse(
-                array('team_id' => $team->id),
-                $this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
+                ['team_id' => $team->id],
+                $this->generateUrl('api_agent_teams_get', ['id' => $team->id], true)
             );
         } else {
-            return $this->createApiSuccessResponse(array('team_id' => $team->id));
+            return $this->createApiSuccessResponse(['team_id' => $team->id]);
         }
     }
 }

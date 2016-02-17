@@ -22,17 +22,7 @@ services:
     tags:
       - {name: kernel.event_subscriber }
 
-  api_authorization.action_permissions_helper:
-    class: DeskPRO\Bundle\ApiBundle\Security\Authorization\ActionPermissionsHelper
 
-  api_authorization.action_permissions_voter:
-    class: DeskPRO\Bundle\ApiBundle\Security\Authorization\ActionPermissionsVoter
-    arguments:
-      - @api_authorization.action_permissions.metadata_factory
-      - @api_authorization.action_permissions_helper
-      - @doctrine.orm.default_entity_manager
-    tags:
-      - { name: security.voter }
 
 parameters:
   security.authentication.manager.erase_credentials: false

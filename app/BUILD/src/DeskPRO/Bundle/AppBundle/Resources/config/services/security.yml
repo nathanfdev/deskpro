@@ -98,5 +98,16 @@ services:
     tags:
       - { name: 'kernel.cache_warmer' }
 
+  api_authorization.action_permissions_voter:
+    class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsVoter
+    arguments:
+      - @api_authorization.action_permissions.metadata_factory
+      - @api_authorization.action_permissions_helper
+      - @doctrine.orm.default_entity_manager
+    tags:
+      - { name: security.voter }
+
+  api_authorization.action_permissions_helper:
+    class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper
 
 

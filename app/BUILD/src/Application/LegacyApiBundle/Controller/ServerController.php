@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
@@ -42,8 +43,14 @@ use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Util;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ServerController extends AbstractController implements ProtectedControllerInterface
 {
     /**

@@ -29,13 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
+/**
+ * Class AuditLogController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class AuditLogController extends AbstractController implements ProtectedControllerInterface
 {
     /**

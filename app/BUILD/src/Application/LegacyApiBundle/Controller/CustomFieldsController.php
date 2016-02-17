@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields\CustomDataPersister;
@@ -39,15 +40,22 @@ use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
 {
     protected $allowed = array(
@@ -101,7 +109,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function listAction(Request $request)
     {
@@ -129,7 +137,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      * @param Request $request
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function childrenAction(Request $request, $id)
     {
@@ -158,7 +166,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function addChildAction(Request $request, $id)
     {

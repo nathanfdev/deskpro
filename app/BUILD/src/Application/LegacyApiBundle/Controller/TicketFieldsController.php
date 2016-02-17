@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Product;
@@ -38,9 +39,12 @@ use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -51,6 +55,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * 	description="Operations about Ticket fields",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -71,7 +78,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     ####################################################################################################################
 
     /**
-     * @return Response;
+     * @return JsonResponse;
      *
      * SWG\Api(
      * 	path="/ticket_fields",
@@ -112,7 +119,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
+     * @return JsonResponse
      *
      *
      * SWG\Api(
@@ -159,7 +166,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return Response
+     * @return JsonResponse
      *
      *
      * SWG\Api(
@@ -231,7 +238,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
+     * @return JsonResponse
      *
      *
      * SWG\Api(
@@ -274,7 +281,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @param $field_id
      * @param $is_enabled
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",

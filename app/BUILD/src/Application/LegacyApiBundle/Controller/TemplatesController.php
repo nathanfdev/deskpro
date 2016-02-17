@@ -37,8 +37,14 @@ use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Strings;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class TemplatesController extends AbstractController implements ProtectedControllerInterface
 {
     /**

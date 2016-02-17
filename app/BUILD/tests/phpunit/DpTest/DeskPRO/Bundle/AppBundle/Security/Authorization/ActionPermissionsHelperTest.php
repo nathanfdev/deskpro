@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 
+use DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper;
 use DpTest\ApiTestCase;
 
 class ActionPermissionsHelperTest extends ApiTestCase

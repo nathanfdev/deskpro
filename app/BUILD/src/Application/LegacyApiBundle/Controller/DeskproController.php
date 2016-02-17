@@ -29,11 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
+
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * A misc resource for doing things like testing if the system is up, or fetching
  * statistics etc.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class DeskproController extends AbstractController
 {

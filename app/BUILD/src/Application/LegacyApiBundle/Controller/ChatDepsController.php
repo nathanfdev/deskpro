@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Departments\ChatDepartmentEdit;
@@ -39,7 +40,15 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * Class ChatDepsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -58,6 +67,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     # list
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction()
     {
         $data = array();
@@ -129,6 +141,11 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     # get
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getAction($id)
     {
         /*
@@ -156,6 +173,13 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     # save
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws ValidationException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function saveAction($id)
     {
         if ($id) {
@@ -205,6 +229,14 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     # remove
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws ValidationException
+     * @throws \Exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function removeAction($id)
     {
         /*
@@ -233,6 +265,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     # save-display-order
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveDisplayOrderAction()
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');

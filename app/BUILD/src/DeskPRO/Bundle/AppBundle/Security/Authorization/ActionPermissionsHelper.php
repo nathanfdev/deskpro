@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
+namespace DeskPRO\Bundle\AppBundle\Security\Authorization;
 
 /**
  * Class ActionPermissionsHelper.

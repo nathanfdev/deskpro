@@ -29,15 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Simple ticket layouts CRUD.
@@ -47,6 +51,9 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
  * 	description="Operations about Ticket layouts",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -69,7 +76,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     /**
      * @param int $dep_id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
@@ -145,7 +152,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     ####################################################################################################################
 
     /**
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_layouts/stats",
@@ -197,8 +204,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @throws \Exception
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function saveAction($dep_id = 0)
     {
@@ -274,8 +280,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @throws \Exception
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function deleteAction($dep_id)
     {
@@ -298,7 +303,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @param $field_id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",
@@ -382,7 +387,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     /**
      * @param $field_id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",

@@ -29,10 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * Class ApiCombinerController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ApiCombinerController extends AbstractController implements ProtectedControllerInterface
 {
     /**

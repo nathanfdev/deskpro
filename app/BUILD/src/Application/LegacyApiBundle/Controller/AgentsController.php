@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -47,6 +48,8 @@ use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -58,10 +61,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Operations about agents.
  *
  * SWG\Resource(
- * 	resourcePath="/agents",
- * 	description="Operations about agents",
- * 	basePath="/api"
+ *    resourcePath="/agents",
+ *    description="Operations about agents",
+ *    basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -78,7 +84,7 @@ class AgentsController extends AbstractController implements ProtectedController
     ####################################################################################################################
 
     /**
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/agents",
@@ -160,7 +166,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * Return list of deleted agents.
      *
-     * @return Response
+     * @return JsonResponse
      *
      * @todo we have deprecated method here
      *
@@ -234,7 +240,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/agents/{id}",
@@ -269,8 +275,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function getDeletedAgentAction($id)
     {
@@ -303,7 +308,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param null|int $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/agents/{id}",
@@ -509,7 +514,7 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @throws \Exception
      *
-     * @return Response
+     * @return JsonResponse
      */
     protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
         $other_subs = array(), $quick_add = false, $perm_overrides = array(),
@@ -774,6 +779,9 @@ class AgentsController extends AbstractController implements ProtectedController
         ), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
     }
 
+    /**
+     * @param Person $agent
+     */
     protected function sendWelcomeEmail(Person $agent)
     {
         $message = $this->container->getMailer()->createMessage();
@@ -788,7 +796,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param int $num
      *
-     * @return Response|null
+     * @return JsonResponse|null
      */
     protected function preNewAgent($num)
     {
@@ -811,7 +819,7 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @todo really? No id and no new profile just exception?
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/agents/{id}/profile",
@@ -886,6 +894,10 @@ class AgentsController extends AbstractController implements ProtectedController
         return $this->createApiSuccessResponse();
     }
 
+    /**
+     * @param Person $person
+     * @param array  $data
+     */
     private function _saveProfileData(Person $person, array $data)
     {
         if (isset($data['signature_html'])) {
@@ -947,24 +959,24 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param $id
      *
-     * @return Response
-     *                  SWG\Api(
-     *                  path="/agents/{id}/reset-password",
-     *                  SWG\Operation(
-     *                  method="POST",
-     *                  summary="Reset agent profile by ID",
-     *                  type="array",
-     *                  SWG\Parameters (
-     *                  SWG\Parameter(
-     *                  name="id",
-     *                  description="Agent ID",
-     *                  paramType="path",
-     *                  required=true,
-     *                  type="integer",
-     *                  ),
-     *                  )
-     *                  )
-     *                  )
+     * @return JsonResponse
+     *                      SWG\Api(
+     *                      path="/agents/{id}/reset-password",
+     *                      SWG\Operation(
+     *                      method="POST",
+     *                      summary="Reset agent profile by ID",
+     *                      type="array",
+     *                      SWG\Parameters (
+     *                      SWG\Parameter(
+     *                      name="id",
+     *                      description="Agent ID",
+     *                      paramType="path",
+     *                      required=true,
+     *                      type="integer",
+     *                      ),
+     *                      )
+     *                      )
+     *                      )
      */
     public function resetPasswordAction($id)
     {
@@ -1029,25 +1041,25 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
-     * 	path="/agents/{id}/delete",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Delete agent and move it to deleted list",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Agent ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
+     * 	  path="/agents/{id}/delete",
+     * 	  SWG\Operation(
+     * 	      method="DELETE",
+     * 		  summary="Delete agent and move it to deleted list",
+     * 		  notes="",
+     *		  type="array",
+     *        SWG\Parameters (
+     *            SWG\Parameter(
+     *                name="id",
+     *                description="Agent ID",
+     *                paramType="path",
+     *                required=true,
+     *			      type="integer",
+     *            ),
+     *       )
+     *    )
      * )
      
      * SWG\Api(
@@ -1068,7 +1080,7 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return Response
+     * @return JsonResponse
      */
     public function deleteAgentAction($id, $mode)
     {
@@ -1111,8 +1123,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function undeleteAgentAction($id)
     {
@@ -1151,7 +1162,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/agents/{id}/login-token",
@@ -1198,8 +1209,7 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @throws \Exception
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function getNotifyPrefsAction($id)
     {
@@ -1289,6 +1299,13 @@ class AgentsController extends AbstractController implements ProtectedController
         ));
     }
 
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function bulkLicenseCheckAction()
     {
         $max_agents = License::getLicense()->getMaxAgents();
@@ -1376,6 +1393,9 @@ class AgentsController extends AbstractController implements ProtectedController
         ));
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function bulkCreateAgentsAction()
     {
         if ($filename = $this->in->getString('filename')) {
@@ -1398,7 +1418,7 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @param $blobId
      *
-     * @return Response
+     * @return JsonResponse
      */
     protected function bulkCreateAgentsFromFile($blobId)
     {

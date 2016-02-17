@@ -29,12 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\TaskQueue;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * Class CsvExportController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class CsvExportController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -46,7 +56,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function startAction()
     {
@@ -65,7 +75,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function stopAction()
     {
@@ -84,7 +94,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function statusAction()
     {
@@ -110,7 +120,7 @@ class CsvExportController extends AbstractController implements ProtectedControl
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      */
     public function listAction()
     {

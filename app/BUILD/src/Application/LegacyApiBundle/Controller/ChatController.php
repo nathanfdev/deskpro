@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -42,6 +45,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	description="Operations about Chats",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class ChatController extends AbstractController
 {
@@ -139,12 +145,12 @@ class ChatController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
+                'date1' => $date_created_start,
             ));
         }
 

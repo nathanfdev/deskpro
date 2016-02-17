@@ -29,7 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
+
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * SWG\Resource(
@@ -37,6 +41,9 @@ namespace Application\LegacyApiBundle\Controller;
  * 	description="Operations about Glossary Words",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class GlossaryController extends AbstractController
 {

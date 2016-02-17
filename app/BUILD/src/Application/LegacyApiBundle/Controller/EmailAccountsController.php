@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Email\EmailAccount\EditEmailAccount\EditEmailAccount;
@@ -42,9 +43,15 @@ use Application\EmailBundle\Queue\QueueProc;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
     /** @var array|null */

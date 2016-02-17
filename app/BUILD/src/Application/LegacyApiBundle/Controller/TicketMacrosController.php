@@ -29,10 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketMacro;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
  * Simple ticket macros CRUD.
@@ -42,6 +46,9 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
  * 	description="Operations about Ticket macros",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {
@@ -58,7 +65,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     ####################################################################################################################
 
     /**
-     * @return Response;
+     * @return JsonResponse;
      *
      * SWG\Api(
      * 	path="/ticket_triggers",
@@ -105,8 +112,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function getAction($id)
     {
@@ -133,7 +139,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
+     * @return JsonResponse
      *
      *
      *
@@ -217,8 +223,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
      */
     public function removeAction($id)
     {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -37,11 +38,19 @@ use Application\DeskPRO\Sms\SmsProviderFactory;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
 use Orb\Util\DpStrings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Class ChannelSmsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -60,6 +69,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     # list sms accounts
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction()
     {
         $accounts = $this->getSmsAccountRepo()->findAll();
@@ -73,6 +85,11 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     # get sms account
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function getAction($id)
     {
         $account = $this->getSmsAccountRepo()->find($id);
@@ -90,6 +107,11 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     # save sms account
     ####################################################################################################################
 
+    /**
+     * @param null $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveAction($id = null)
     {
         if ($id) {
@@ -139,6 +161,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     # connect to a provider and return provider specific info
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function connectProviderAction()
     {
         $accountData = $this->in->getValue('account');
@@ -184,6 +209,9 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
         }
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function setupAndTestTwilioAction()
     {
         $request = $this->request;
@@ -222,6 +250,11 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     # delete sms accounts
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function deleteAction($id)
     {
         $account = $this->getSmsAccountRepo()->find($id);

@@ -29,12 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\EntityRepository\LabelDef;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
     /**

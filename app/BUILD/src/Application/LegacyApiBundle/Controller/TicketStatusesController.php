@@ -35,6 +35,8 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
 
 /**
@@ -45,6 +47,9 @@ use Orb\Util\Arrays;
  * 	description="Operations about Ticket status",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
@@ -72,7 +77,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * )
      *
-     * @return Response
+     * @return response
      */
     public function getStatsAction()
     {
@@ -111,7 +116,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * ).
      *
-     * @return Response
+     * @return response
      */
     public function getArchivedInfoAction()
     {
@@ -130,7 +135,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * @return Response
+     * @return response
      *
      * SWG\Api(
      *  path="/ticket_statuses/archived/settings",
@@ -186,7 +191,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * ).
      *
-     * @return Response
+     * @return response
      */
     public function resetSearchTablesAction()
     {
@@ -209,7 +214,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * ).
      *
-     * @return Response
+     * @return response
      */
     public function getDeletedInfoAction()
     {
@@ -225,7 +230,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * Purge deleted tickets manually.
      *
-     * @return Response
+     * @return response
      *
      * SWG\Api(
      * 	path="/ticket_statuses/deleted/purge",
@@ -251,7 +256,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * @return Response
+     * @return response
      *
      * SWG\Api(
      *  path="/ticket_statuses/deleted/settings",
@@ -292,7 +297,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *  )
      * ).
      *
-     * @return Response
+     * @return response
      */
     public function getSpamInfoAction()
     {
@@ -308,7 +313,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * Purge spam tickets manually.
      *
-     * @return Response
+     * @return response
      *
      * SWG\Api(
      * 	path="/ticket_statuses/spam/purge",
@@ -334,7 +339,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * @return Response
+     * @return response
      *
      * SWG\Api(
      *  path="/ticket_statuses/spam/settings",

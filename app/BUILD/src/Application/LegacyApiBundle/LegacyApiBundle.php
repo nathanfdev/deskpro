@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle;
 
+use Application\LegacyApiBundle\DependencyInjection\AccessDecisionPass;
 use Application\LegacyApiBundle\DependencyInjection\AuditWriterPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -47,6 +49,7 @@ class LegacyApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 
         $container->registerExtension(new \Application\LegacyApiBundle\DependencyInjection\CoreExtension());
         $container->addCompilerPass(new AuditWriterPass());
+        $container->addCompilerPass(new AccessDecisionPass());
     }
 
     public function getNamespace()

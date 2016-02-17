@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Banning\EmailBanEdit;
@@ -38,11 +39,20 @@ use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\Exception\ValidationException;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * Class BanningController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class BanningController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -356,7 +366,7 @@ class BanningController extends AbstractController implements ProtectedControlle
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function importEmailsAction()
     {

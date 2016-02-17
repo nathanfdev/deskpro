@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +47,9 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Base API controller.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {

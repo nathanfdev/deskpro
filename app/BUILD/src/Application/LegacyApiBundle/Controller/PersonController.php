@@ -37,6 +37,9 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Searcher\PersonSearch;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +53,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 	description="Operations about People/Persons",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class PersonController extends AbstractController implements ProtectedControllerInterface
 {
@@ -2476,7 +2482,7 @@ class PersonController extends AbstractController implements ProtectedController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function quickSearchAction(Request $request)
     {

@@ -36,9 +36,12 @@ use Application\DeskPRO\Entity\TicketEscalation;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -49,6 +52,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * 	description="Operations about Ticket escalations",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -65,7 +71,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_escalations",
@@ -94,7 +100,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     /**
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_escalations/{id}",
@@ -141,7 +147,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     /**
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_escalations/{id}",
@@ -319,7 +325,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     /**
      * @param $id
      *
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_escalations/{id}",
@@ -366,8 +372,8 @@ class TicketEscalationsController extends AbstractController implements Protecte
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return Response
-     * @return Response
+     * @return JsonResponse
+     * @return JsonResponse
      */
     public function toggleEscalationAction($id, $is_enabled)
     {
@@ -386,7 +392,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      *
      * SWG\Api(
      * 	path="/ticket_escalations/run_order",

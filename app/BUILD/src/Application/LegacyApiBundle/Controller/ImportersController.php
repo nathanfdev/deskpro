@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Generator;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +46,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ImportersController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class ImportersController extends AbstractController implements ProtectedControllerInterface
 {

@@ -28,19 +28,25 @@
 
 /**
  * DeskPRO.
- *
- * @category Entities
  */
 
-namespace Application\LegacyApiBundle\Controller;
+namespace Application\LegacyApiBundle\DependencyInjection;
 
-/**
- * Interface ProtectedControllerInterface.
- */
-interface ProtectedControllerInterface
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
+
+class AccessDecisionPass implements CompilerPassInterface
 {
-    /**
-     * @return \Application\LegacyApiBundle\PermissionStrategy\PermissionStrategyInterface
-     */
-    public function getPermissionStrategy();
+    public function process(ContainerBuilder $container)
+    {
+        $container->getDefinition('security.access.decision_manager')->setArguments(
+            [
+                [],
+                AccessDecisionManager::STRATEGY_CONSENSUS,
+                true,
+                true,
+            ]
+        );
+    }
 }

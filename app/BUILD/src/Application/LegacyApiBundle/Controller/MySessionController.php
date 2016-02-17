@@ -29,10 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\RequireSessionPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class MySessionController extends AbstractController implements ProtectedControllerInterface
 {
     const TOKEN_LIFETIME = 420;

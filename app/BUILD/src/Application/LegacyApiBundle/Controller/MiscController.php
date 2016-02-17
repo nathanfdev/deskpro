@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -38,10 +39,16 @@ use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\File\File;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class MiscController extends AbstractController
 {
     public function preAction($action, $arguments = null)

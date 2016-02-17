@@ -250,5 +250,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
     sendRequest: (http_params) ->
       result = @$http http_params
-      result.error (data, status, headers, config) -> window.location.reload(true) if 403 == status
+      result.error (data, status, headers, config) ->
+        if 403 == status and data.error_code != 'insufficient_rights'
+          window.location.reload(true)
+        else if console
+          console.error data
       result

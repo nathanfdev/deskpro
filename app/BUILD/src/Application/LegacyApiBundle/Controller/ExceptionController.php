@@ -29,10 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Symfony\Component\Debug\Exception\FlattenException;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ExceptionController extends AbstractController
 {
     public function showAction(FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')

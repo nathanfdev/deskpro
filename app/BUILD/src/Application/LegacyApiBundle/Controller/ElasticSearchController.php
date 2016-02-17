@@ -29,15 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Elastica\Response;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Orb\Util\Numbers;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ElasticSearchController extends AbstractController implements ProtectedControllerInterface
 {
     /**

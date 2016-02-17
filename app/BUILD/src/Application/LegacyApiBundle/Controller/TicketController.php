@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -39,6 +40,8 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -50,6 +53,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * 	description="Operations about Tickets",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class TicketController extends AbstractController implements ProtectedControllerInterface
 {

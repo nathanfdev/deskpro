@@ -29,10 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * Class BrandController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class BrandController extends AbstractController
 {
     public function listAction()

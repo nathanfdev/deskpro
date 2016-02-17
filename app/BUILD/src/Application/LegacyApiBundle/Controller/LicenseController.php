@@ -29,15 +29,22 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Service\LicenseService;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
     /**

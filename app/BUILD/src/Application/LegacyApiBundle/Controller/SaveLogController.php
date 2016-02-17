@@ -29,10 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpSys\LowError\SystemErrorHandler;
 
+/**
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class SaveLogController extends AbstractController
 {
     public function logJsErrorAction()

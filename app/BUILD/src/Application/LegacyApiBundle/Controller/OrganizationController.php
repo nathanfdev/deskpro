@@ -35,9 +35,10 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Searcher\OrganizationSearch;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -46,6 +47,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	description="Operations about Organization",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class OrganizationController extends AbstractController
 {
@@ -1955,7 +1959,7 @@ class OrganizationController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function quickSearchAction(Request $request)
     {

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -36,6 +37,8 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -45,6 +48,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * 	description="Operations about Knowledgebase",
  * 	basePath="/api"
  * ).
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class KbController extends AbstractController
 {
@@ -162,12 +168,12 @@ class KbController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => ArticleSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ArticleSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
+                'date1' => $date_created_start,
             ));
         }
 

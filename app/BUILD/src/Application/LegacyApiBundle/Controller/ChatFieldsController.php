@@ -29,11 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
+/**
+ * Class ChatFieldsController.
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
+ */
 class ChatFieldsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -48,6 +57,9 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # list
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction()
     {
         $data = array();
@@ -65,6 +77,15 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # get-custom-field
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function getCustomFieldAction($id)
     {
         $field = $this->em->find('DeskPRO:CustomDefChat', $id);
@@ -82,6 +103,16 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # save-custom-field
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function saveCustomFieldAction($id)
     {
         /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
@@ -122,6 +153,15 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # delete-custom-field
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function deleteCustomFieldAction($id)
     {
         $field = $this->em->find('DeskPRO:CustomDefChat', $id);
@@ -139,6 +179,12 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # toggleField
     ####################################################################################################################
 
+    /**
+     * @param $field_id
+     * @param $is_enabled
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function toggleFieldAction($field_id, $is_enabled)
     {
         /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
@@ -152,6 +198,9 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     # save-display-order
     ####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function saveDisplayOrderAction()
     {
         $display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');

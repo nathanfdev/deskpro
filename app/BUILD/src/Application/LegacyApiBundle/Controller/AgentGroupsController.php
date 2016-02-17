@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Usergroup;
@@ -38,7 +39,10 @@ use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Operations about agent groups
@@ -49,6 +53,9 @@ use Orb\Util\Arrays;
  * 	description="Operations about agent groups",
  * 	basePath="/api"
  * )
+ *
+ * @ApiModes("all")
+ * @ApiTags("apiv1")
  */
 class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
 {
