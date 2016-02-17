@@ -101,6 +101,9 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     {
         $fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());
 
-        return @$fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller');
+        return array_merge(
+            @$fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller'),
+            @$fqcn_repo->findIn(DP_ROOT.'/src/Application/LegacyApiBundle/Controller')
+        );
     }
 }

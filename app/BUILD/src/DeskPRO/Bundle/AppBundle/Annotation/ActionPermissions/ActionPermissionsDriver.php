@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
 use DeskPRO\Component\Util\StringUtils;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
@@ -43,16 +44,21 @@ use Metadata\MergeableClassMetadata;
 class ActionPermissionsDriver implements DriverInterface
 {
     /**
-     * @var Reader
+     * @var AnnotationReader
      */
     private $reader;
 
     /**
-     * @param Reader $reader
+     * @param AnnotationReader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(AnnotationReader $reader)
     {
         $this->reader = $reader;
+        $this->reader->addGlobalIgnoredName('SWG\Api');
+        $this->reader->addGlobalIgnoredName('SWG\Operation');
+        $this->reader->addGlobalIgnoredName('SWG\Parameters');
+        $this->reader->addGlobalIgnoredName('SWG\Parameter');
+        $this->reader->addGlobalIgnoredName('SWG\ResponseMessage');
     }
 
     /**

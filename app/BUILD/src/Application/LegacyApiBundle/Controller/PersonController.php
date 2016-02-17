@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use Orb\Util\Numbers;
