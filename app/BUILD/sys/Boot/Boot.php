@@ -31,6 +31,7 @@ namespace DpSys\Boot;
 require_once __DIR__.'/BootTask/BootTaskInterface.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 
 class Boot
 {
@@ -270,8 +271,11 @@ class Boot
         /** @var \Symfony\Component\HttpKernel\KernelInterface $kernel */
         $kernel = $res['cli_kernel'];
 
-        /** @var \Symfony\Component\Console\Input\ArgvInput $input */
-        $input = $res['cli_input'];
+        $argv    = $_SERVER['argv'];
+        $argv[0] = 'console';
+        array_splice($argv, 1, 0, ['dp:worker-job']);
+
+        $input = new ArgvInput($argv);
 
         $app = new Application($kernel);
         $app->run($input);

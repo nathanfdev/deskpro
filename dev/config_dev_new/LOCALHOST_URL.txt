@@ -1,2 +1,0 @@
-# Enter your localhost URL here.
-http://deskpro-dev/

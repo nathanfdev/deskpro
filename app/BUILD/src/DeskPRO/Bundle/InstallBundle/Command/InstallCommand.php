@@ -57,6 +57,8 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
+            ->addOption('dev', null, InputOption::VALUE_NONE, 'Shortcut for --restart, --skip-wizard, --opt_skip_recommendations, --install-source dev')
+            ->addOption('user', null, InputOption::VALUE_REQUIRED, 'Shortcut for specifying all user info at once. It must be a comma-separated value of "name, email, password" or "email, password". Ex: --user "John Doe, foo@bar.com, mypassword"')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
 
         foreach (InstallProfile::getQuestionIds() as $qid) {
@@ -74,6 +76,50 @@ class InstallCommand extends ContainerAwareCommand
 
         $force_restart = false;
         $profile       = new InstallProfile();
+
+        if ($input->getOption('dev')) {
+            $input->setOption('restart', true);
+            $input->setOption('skip-wizard', true);
+            $input->setOption('opt_skip_recommendations', 'yes');
+            $input->setOption('install-source', 'dev');
+
+            if (!$input->getOption('opt_path_php')) {
+                $input->setOption('opt_path_php', 'auto');
+            }
+            if (!$input->getOption('opt_path_mysql')) {
+                $input->setOption('opt_path_mysql', 'auto');
+            }
+            if (!$input->getOption('opt_path_mysqldump')) {
+                $input->setOption('opt_path_mysqldump', 'auto');
+            }
+        }
+
+        if ($opt = $input->getOption('user')) {
+            $opt = explode(',', $opt, 3);
+            $opt = array_map('trim', $opt);
+
+            if (count($opt) === 3) {
+                $input->setOption('opt_user_name', $opt[0]);
+                $input->setOption('opt_user_email', $opt[1]);
+                $input->setOption('opt_user_password', $opt[3]);
+            } elseif (count($opt) === 2) {
+                $input->setOption('opt_user_email', $opt[0]);
+                $input->setOption('opt_user_password', $opt[1]);
+
+                list($name) = explode('@', $opt[0], 2);
+
+                $name = str_replace('_', ' ', $name);
+                $name = str_replace('.', ' ', $name);
+                $name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+                $name = ucwords($name);
+                $input->setOption('opt_user_name', $name);
+            } else {
+                $output->writeln('<error>Format must be: name, email, password</error>');
+                $output->writeln('<error>Or: email, password</error>');
+
+                return 1;
+            }
+        }
 
         if ($input->getOption('profile')) {
             $force_restart = true;
