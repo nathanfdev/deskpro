@@ -29,17 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class TasksFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class TasksFixture extends DeskProAbstractFixture
 {
+    /**
+     * @var int
+     */
+    protected $fixtureOrder = 80;
+
     private $num_tasks       = 100;
     private $num_links       = 60;
     private $num_subtasks    = 30;
@@ -51,26 +53,6 @@ class TasksFixture extends AbstractFixture implements ContainerAwareInterface, O
 
     private $min_labels_per_task = 1;
     private $max_labels_per_task = 5;
-
-    /**
-     * @var \Faker\Generator
-     */
-    private $faker;
-
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var Connection
-     */
-    private $db;
 
     /**
      * @var string[]
@@ -108,28 +90,9 @@ class TasksFixture extends AbstractFixture implements ContainerAwareInterface, O
     private $department_ids = [];
 
     /**
-     * {@inheritdoc}
+     * @var int[]
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * DpFixture constructor.
-     */
-    public function __construct()
-    {
-        $this->faker = \Faker\Factory::create();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 80;
-    }
+    private $blob_ids = [];
 
     /**
      * {@inheritdoc}
@@ -139,13 +102,18 @@ class TasksFixture extends AbstractFixture implements ContainerAwareInterface, O
         $this->manager = $manager;
         $this->db      = $this->container->get('database_connection');
 
-        $this->agent_ids      = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
-        $this->department_ids = $this->db->fetchAllCol('SELECT id FROM departments where is_tickets_enabled = 1');
-        $this->team_ids       = $this->db->fetchAllCol('SELECT id FROM agent_teams');
-
-        if (!$this->agent_ids) {
-            throw new \RuntimeException('Please import agents first');
-        }
+        $this->team_ids  = $this->fetchRelatedEntitiesIds('id', self::TABLE_AGENT_TEAMS);
+        $this->blob_ids  = $this->fetchRelatedEntitiesIds('id', self::TABLE_BLOBS);
+        $this->agent_ids = $this->fetchRelatedEntitiesIds(
+            'id',
+            self::TABLE_PEOPLE,
+            [['field' => 'is_agent', 'value' => 1]]
+        );
+        $this->department_ids = $this->fetchRelatedEntitiesIds(
+            'id',
+            self::TABLE_DEPARTMENTS,
+            [['field' => 'is_tickets_enabled', 'value' => 1]]
+        );
 
         $this->loadProjects();
         $this->loadLists();
@@ -345,7 +313,7 @@ class TasksFixture extends AbstractFixture implements ContainerAwareInterface, O
                 'person_id'    => $this->agent_ids[array_rand($this->agent_ids)],
                 'date_created' => $dateCreated,
                 'task_id'      => $this->task_ids[array_rand($this->task_ids)],
-                'blob_id'      => 1,
+                'blob_id'      => $this->blob_ids[0],
             ];
         }
 

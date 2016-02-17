@@ -29,42 +29,99 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PublishFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class PublishFixture extends DeskProAbstractFixture
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    const NUM_PUBLISH    = 100;
+    const NUM_CATEGORIES = 10;
+    const NUM_COMMENTS   = 30;
+    const MIN_CATEGORIES = 0;
+    const MAX_CATEGORIES = 3;
 
     /**
-     * {@inheritdoc}
+     * @var int
      */
-    public function getOrder()
-    {
-        return 0;
-    }
+    protected $fixtureOrder = 80;
+
+    /** @var \Application\DeskPRO\Translate\Translate */
+    private $tr;
+
+    /** @var \Application\DeskPRO\Entity\Person */
+    private $admin;
 
     /**
-     * {@inheritdoc}
+     * @var int[]
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
+    private $people = [];
+
+    /**
+     * @var int[]
+     */
+    private $languages = [];
+
+    /**
+     * @var string[]
+     */
+    private $statuses = [
+        ContentAbstract::STATUS_PUBLISHED,
+        ContentAbstract::STATUS_HIDDEN,
+        ContentAbstract::STATUS_ARCHIVED,
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $hiddenStatuses = [
+        ContentAbstract::HIDDEN_STATUS_DELETED,
+        ContentAbstract::HIDDEN_STATUS_DRAFT,
+        ContentAbstract::HIDDEN_STATUS_SPAM,
+        ContentAbstract::HIDDEN_STATUS_UNPUBLISHED,
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $commentStatuses = [
+        CommentAbstract::STATUS_HIDDEN,
+        CommentAbstract::STATUS_DELETED,
+        CommentAbstract::STATUS_VISIBLE,
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $content = [
+        self::TABLE_ARTICLES => [
+            'ids'            => [],
+            'category_table' => self::TABLE_ARTICLE_CATEGORIES,
+            'comments_table' => self::TABLE_ARTICLE_COMMENTS,
+            'categories'     => [],
+        ],
+        self::TABLE_NEWS => [
+            'ids'            => [],
+            'category_table' => self::TABLE_NEWS_CATEGORIES,
+            'comments_table' => self::TABLE_NEWS_COMMENTS,
+            'categories'     => [],
+        ],
+        self::TABLE_DOWNLOADS => [
+            'ids'            => [],
+            'category_table' => self::TABLE_DOWNLOAD_CATEGORIES,
+            'comments_table' => self::TABLE_DOWNLOAD_COMMENTS,
+            'categories'     => [],
+        ],
+    ];
 
     /**
      * {@inheritdoc}
@@ -81,83 +138,201 @@ class PublishFixture extends AbstractFixture implements ContainerAwareInterface,
      */
     public function load(ObjectManager $manager)
     {
-        /** @var \Application\DeskPRO\Translate\Translate $tr */
-        $tr = $this->container->get('deskpro.core.translate');
+        $this->manager   = $manager;
+        $this->tr        = $this->container->get('deskpro.core.translate');
+        $this->admin     = $this->getReference('admin');
+        $this->people    = $this->fetchRelatedEntitiesIds('id', self::TABLE_PEOPLE);
+        $this->languages = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
 
-        /** @var \Application\DeskPRO\Entity\Person $admin */
-        $admin = $this->getReference('admin');
+        $this->loadExampleArticle();
+        $this->loadExampleDownload();
+        $this->loadExampleNew();
+        $manager->flush();
 
-        #------------------------------
-        # KB
-        #------------------------------
+        foreach ($this->content as $content => $params) {
+            $this->loadGeneratedCategories($content);
+            $this->loadGenerated($content);
+            $this->loadComments($content);
+        }
+        $this->linkArticlesWithCategories();
+    }
 
+    private function loadExampleArticle()
+    {
         $cat        = new ArticleCategory();
-        $cat->title = $tr->phrase('user.defaults.article_category_general');
-        $manager->persist($cat);
+        $cat->title = $this->tr->phrase('user.defaults.article_category_general');
+        $this->manager->persist($cat);
 
-        $content          = new \Application\DeskPRO\Entity\Article();
-        $content->person  = $admin;
-        $content->title   = $tr->phrase('user.defaults.article_example_title');
-        $content->content = $tr->phrase('user.defaults.article_example_content');
-        $content->status  = 'published';
+        $content          = new Article();
+        $content->person  = $this->admin;
+        $content->title   = $this->tr->phrase('user.defaults.article_example_title');
+        $content->content = $this->tr->phrase('user.defaults.article_example_content');
+        $content->status  = ContentAbstract::STATUS_PUBLISHED;
         $content->addToCategory($cat);
-        $manager->persist($content);
+        $this->manager->persist($content);
+    }
 
-        #------------------------------
-        # Downloads
-        #------------------------------
-
+    private function loadExampleDownload()
+    {
         $cat        = new DownloadCategory();
-        $cat->title = $tr->phrase('user.defaults.downloads_category_general');
-        $manager->persist($cat);
+        $cat->title = $this->tr->phrase('user.defaults.downloads_category_general');
+        $this->manager->persist($cat);
+    }
 
-        #------------------------------
-        # News
-        #------------------------------
-
+    private function loadExampleNew()
+    {
         $cat        = new NewsCategory();
-        $cat->title = $tr->phrase('user.defaults.news_category_general');
-        $manager->persist($cat);
+        $cat->title = $this->tr->phrase('user.defaults.news_category_general');
+        $this->manager->persist($cat);
 
-        $content          = new \Application\DeskPRO\Entity\News();
-        $content->person  = $admin;
-        $content->title   = $tr->phrase('user.defaults.news_example_title');
-        $content->content = $tr->phrase('user.defaults.news_example_content');
-        $content->status  = 'published';
+        $content          = new News();
+        $content->person  = $this->admin;
+        $content->title   = $this->tr->phrase('user.defaults.news_example_title');
+        $content->content = $this->tr->phrase('user.defaults.news_example_content');
+        $content->status  = ContentAbstract::STATUS_PUBLISHED;
         $content->setCategory($cat);
-        $manager->persist($content);
+        $this->manager->persist($content);
+    }
 
-        #------------------------------
-        # Feedback
-        #------------------------------
-
-        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $cat        = new FeedbackCategory();
-            $cat->title = $title;
-            $manager->persist($cat);
+    private function setStatus(array $values)
+    {
+        $date                    = $this->dateTimeBetween('-10 days', '-1 days');
+        $values['status']        = $this->randomArrayValue($this->statuses);
+        $values['hidden_status'] = $values['status'] === ContentAbstract::STATUS_HIDDEN
+            ? $this->randomArrayValue($this->hiddenStatuses) : null;
+        if ($values['hidden_status'] !== ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
+            $values['view_count']     = rand(0, 100);
+            $values['num_comments']   = rand(0, 100);
+            $values['num_ratings']    = rand(0, 20);
+            $values['total_rating']   = rand(0, 20);
+            $values['date_published'] = $date;
+            $values['date_updated']   = $date;
+        } else {
+            $values['view_count']     = 0;
+            $values['num_comments']   = 0;
+            $values['num_ratings']    = 0;
+            $values['total_rating']   = 0;
+            $values['date_published'] = null;
+            $values['date_updated']   = null;
         }
 
-        $cat_field                = new CustomDefFeedback();
-        $cat_field->sys_name      = 'cat';
-        $cat_field->title         = 'Category';
-        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
-        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
-        $manager->persist($cat_field);
+        return $values;
+    }
 
-        foreach ([
-            'active' => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
-            'closed' => ['Completed', 'Duplicate', 'Declined'],
-                 ] as $status => $titles) {
-            foreach ($titles as $title) {
-                $cat              = new FeedbackStatusCategory();
-                $cat->status_type = $status;
-                $cat->title       = $title;
-                $manager->persist($cat);
+    private function loadGeneratedCategories($content)
+    {
+        $i             = 0;
+        $batch         = [];
+        $categoryTable = $this->content[$content]['category_table'];
+        while ($i++ < self::NUM_CATEGORIES) {
+            $values = [
+//                'parent_id'     => $this->generateParentId($i),
+'display_order' => rand(1, 2),
+'depth'         => 1,
+            ];
+            if ($categoryTable === self::TABLE_ARTICLE_CATEGORIES) {
+                $values['is_agent'] = rand(0, 1);
+                $values['is_book']  = rand(0, 1);
+            }
+            $values  = $this->setTitleAndSlug($values, 15);
+            $batch[] = $values;
+        }
+        $this->db->batchInsert($categoryTable, $batch, true);
+        $this->content[$content]['categories'] = $this->fetchRelatedEntitiesIds('id', $categoryTable);
+    }
+
+    private function generateParentId($i)
+    {
+        echo "\nIndex: $i";
+        if ($i > 2) {
+            $parentId = rand(0, $i - 1);
+
+            return $parentId ? $parentId : null;
+        }
+
+        return;
+    }
+
+    private function loadGenerated($content)
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_PUBLISH) {
+            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
+            $values      = [
+                'content'      => $this->faker->realText(300),
+                'person_id'    => $this->randomArrayValue($this->people),
+                'language_id'  => $this->randomArrayValue($this->languages),
+                'date_created' => $dateCreated,
+            ];
+            $values = $this->setStatus($values);
+            $values = $this->setTitleAndSlug($values);
+            if ($content !== self::TABLE_ARTICLES) {
+                $values['category_id'] = $this->randomArrayValue($this->content[$content]['categories']);
+            }
+            $batch[] = $values;
+        }
+        $this->db->batchInsert($content, $batch, true);
+        $this->content[$content]['ids'] = $this->fetchRelatedEntitiesIds('id', $content);
+    }
+
+    private function loadComments($content)
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_COMMENTS) {
+            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
+            $values      = [
+                'content'      => $this->faker->realText(300),
+                'person_id'    => $this->randomArrayValue($this->people),
+                'ip_address'   => '',
+                'status'       => $this->randomArrayValue($this->commentStatuses),
+                'is_reviewed'  => rand(0, 1),
+                'date_created' => $dateCreated,
+            ];
+            if ($content === self::TABLE_ARTICLES) {
+                $values['article_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+            } elseif ($content === self::TABLE_NEWS) {
+                $values['news_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+            } elseif ($content === self::TABLE_DOWNLOADS) {
+                $values['download_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+            }
+            $batch[] = $values;
+        }
+        $this->db->batchInsert($this->content[$content]['comments_table'], $batch, true);
+    }
+
+    private function linkArticlesWithCategories()
+    {
+        $batch = [];
+        /** @var array $ids */
+        $ids = $this->content[self::TABLE_ARTICLES]['ids'];
+        foreach ($ids as $id) {
+            $num = rand(self::MIN_CATEGORIES, self::MAX_CATEGORIES);
+            if ($num) {
+                $batch = $this->generateLinks($num, $id, $batch);
             }
         }
+        $this->db->batchInsert(self::TABLE_ARTICLE_TO_CATEGORIES, $batch, true);
+    }
 
-        #------------------------------
+    /**
+     * @param       $num
+     * @param       $id
+     * @param array $batch
+     *
+     * @return array
+     */
+    private function generateLinks($num, $id, array $batch)
+    {
+        $categories = $this->randomArrayValue(
+            $this->content[self::TABLE_ARTICLES]['categories'],
+            $num
+        );
+        foreach ($categories as $category) {
+            $batch[] = ['article_id' => $id, 'category_id' => $category];
+        }
 
-        $manager->flush();
+        return $batch;
     }
 }

@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Organization;
@@ -39,15 +39,12 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
 use Orb\Types\JsonObjectSerializer;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * This inserts some ticket fields, a test profile, and some test tickets. This is useful
@@ -63,30 +60,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * - 3 orgs (5 users per org, 1 of them is a manager)
  * - 6 tickets per user
  */
-class TicketProfileFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class TicketProfileFixture extends DeskProAbstractFixture
 {
     private static $cnt     = 1;
     private static $ref_cnt = 1;
 
     /**
-     * @var \Faker\Generator
+     * @var int
      */
-    private $faker;
-
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var Connection
-     */
-    private $db;
+    protected $fixtureOrder = 60;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -102,6 +84,11 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
      * @var int[]
      */
     private $agent_teams;
+
+    /**
+     * @var int[]
+     */
+    private $usergroups;
 
     /**
      * @var \Application\DeskPRO\Entity\Department[]
@@ -164,37 +151,14 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * DpFixture constructor.
-     */
-    public function __construct()
-    {
-        $this->faker = \Faker\Factory::create();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 60;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
         $this->db      = $this->container->get('database_connection');
         $this->em      = $this->container->get('doctrine.orm.entity_manager');
 
-        $this->ava_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
+        $this->ava_files  = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
+        $this->usergroups = $this->fetchRelatedEntitiesIds('id', self::TABLE_USERGROUPS);
 
         $this->initRecords();
         $this->initDeps();
@@ -205,7 +169,8 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
 
     private function initRecords()
     {
-        $this->agents      = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true')->execute();
+        $this->agents = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true')->execute(
+        );
         $this->agent_teams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
     }
 
@@ -257,7 +222,7 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         foreach ($this->all_departments as $d) {
             $perms[] = [
                 'department_id' => $d->getId(),
-                'usergroup_id'  => 1, // everyone
+                'usergroup_id'  => $this->usergroups[0], // everyone
                 'app'           => 'tickets',
                 'name'          => 'full',
                 'value'         => 1,
@@ -279,7 +244,11 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         $depId                       = 0;
         $this->dep_to_fields[$depId] = [];
 
-        $f                             = $this->createField('select', 'Flumdiggler', ['Agree', 'Disagree', 'I\'d rather not say']);
+        $f = $this->createField(
+            'select',
+            'Flumdiggler',
+            ['Agree', 'Disagree', 'I\'d rather not say']
+        );
         $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
@@ -315,12 +284,20 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         $this->dep_to_fields[$depIda] = [];
         $this->dep_to_fields[$depIdb] = [];
 
-        $f                              = $this->createField('radio', 'Reason for Complaint', ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']);
+        $f = $this->createField(
+            'radio',
+            'Reason for Complaint',
+            ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']
+        );
         $this->fields[]                 = $f;
         $this->dep_to_fields[$depIda][] = $f;
         $this->dep_to_fields[$depIdb][] = $f;
 
-        $f                              = $this->createField('multiselect', 'Suggested Actions', ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']);
+        $f = $this->createField(
+            'multiselect',
+            'Suggested Actions',
+            ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']
+        );
         $this->fields[]                 = $f;
         $this->dep_to_fields[$depIda][] = $f;
         $this->dep_to_fields[$depIdb][] = $f;
@@ -332,11 +309,15 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
         $depId                       = $this->dep3->getId();
         $this->dep_to_fields[$depId] = [];
 
-        $f = $this->createField('select', 'Hotdog Kind', [
-            'Normal',
-            ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
-            'Large',
-        ]);
+        $f = $this->createField(
+            'select',
+            'Hotdog Kind',
+            [
+                'Normal',
+                ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
+                'Large',
+            ]
+        );
         $this->fields[]                = $f;
         $this->dep_to_fields[$depId][] = $f;
 
@@ -489,9 +470,12 @@ class TicketProfileFixture extends AbstractFixture implements ContainerAwareInte
             $is_note = ($as_agent && $this->faker->boolean(10));
 
             $batch[] = array(
-                'ticket_id'       => $ticket->getId(),
-                'person_id'       => $author->getId(),
-                'date_created'    => date('Y-m-d H:i:s', $ticket->date_created->getTimestamp() + $this->faker->numberBetween(900, 14400)),
+                'ticket_id'    => $ticket->getId(),
+                'person_id'    => $author->getId(),
+                'date_created' => date(
+                    'Y-m-d H:i:s',
+                    $ticket->date_created->getTimestamp() + $this->faker->numberBetween(900, 14400)
+                ),
                 'creation_system' => 'web',
                 'is_agent_note'   => (int) $is_note,
                 'ip_address'      => $this->faker->ipv4,

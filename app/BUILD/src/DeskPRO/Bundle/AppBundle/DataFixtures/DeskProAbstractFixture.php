@@ -29,26 +29,43 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class DeskProAbstractFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    const FIXTURE_ORDER                    = 0;
+    const TABLE_AGENT_TEAMS                = 'agent_teams';
+    const TABLE_ARTICLES                   = 'articles';
+    const TABLE_ARTICLE_CATEGORIES         = 'article_categories';
+    const TABLE_ARTICLE_COMMENTS           = 'article_comments';
+    const TABLE_ARTICLE_TO_CATEGORIES      = 'article_to_categories';
+    const TABLE_BLOBS                      = 'blobs';
     const TABLE_CUSTOM_DATA_FEEDBACK       = 'custom_data_feedback';
     const TABLE_CUSTOM_DEF_FEEDBACK        = 'custom_def_feedback';
+    const TABLE_DEPARTMENTS                = 'departments';
+    const TABLE_DOWNLOADS                  = 'downloads';
+    const TABLE_DOWNLOAD_CATEGORIES        = 'download_categories';
+    const TABLE_DOWNLOAD_COMMENTS          = 'download_comments';
     const TABLE_FEEDBACK                   = 'feedback';
     const TABLE_FEEDBACK_CATEGORIES        = 'feedback_categories';
     const TABLE_FEEDBACK_STATUS_CATEGORIES = 'feedback_status_categories';
     const TABLE_LABELS_FEEDBACK            = 'labels_feedback';
     const TABLE_LANGUAGES                  = 'languages';
+    const TABLE_NEWS                       = 'news';
+    const TABLE_NEWS_CATEGORIES            = 'news_categories';
+    const TABLE_NEWS_COMMENTS              = 'news_comments';
     const TABLE_PEOPLE                     = 'people';
+    const TABLE_USERGROUPS                 = 'usergroups';
+
     /**
      * @var \Faker\Generator
      */
@@ -63,6 +80,16 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
      * @var Connection
      */
     protected $db;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $manager;
+
+    /**
+     * @var int
+     */
+    protected $fixtureOrder = 0;
 
     /**
      * DpFixture constructor.
@@ -84,22 +111,32 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     }
 
     /**
-     * Get the order of this fixture
+     * Get the order of this fixture.
      *
-     * @return integer
+     * @return int
      */
     public function getOrder()
     {
-        return self::FIXTURE_ORDER;
+        return $this->fixtureOrder;
     }
 
-    protected function randomArrayValue(array $array)
+    protected function randomArrayValue(array $array, $num = null)
     {
+        if ($num > 1) {
+            $res  = [];
+            $keys = array_rand($array, $num);
+            foreach ($keys as $key) {
+                $res[] = $array[$key];
+            }
+
+            return $res;
+        }
+
         return $array[array_rand($array)];
     }
 
     /**
-     * @param string       $table Table name for fetching
+     * @param string       $table  Table name for fetching
      * @param string|array $fields
      * @param array        $where
      *
@@ -130,5 +167,19 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
         }
 
         return $ids;
+    }
+
+    protected function dateTimeBetween($from, $to)
+    {
+        return $this->faker->dateTimeBetween($from, $to)->format('Y-m-d H:i:s');
+    }
+
+    protected function setTitleAndSlug(array $values, $maxLength = 100)
+    {
+        $title           = $this->faker->realText($maxLength);
+        $values['title'] = $title;
+        $values['slug']  = Strings::slugifyTitle($title);
+
+        return $values;
     }
 }
