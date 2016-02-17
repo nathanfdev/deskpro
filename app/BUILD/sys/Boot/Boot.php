@@ -258,9 +258,6 @@ class Boot
      */
     public static function bootCron(\DpRun\DpEnv $env)
     {
-        //TODO
-        exit;
-
         $tasks = [
             'Loader',
             'Lib',

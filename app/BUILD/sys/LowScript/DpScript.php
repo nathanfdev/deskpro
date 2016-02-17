@@ -216,13 +216,6 @@ class DpScript extends LowScriptAbstract
                 $js_phrases[$k] = $tr->getPhraseText($k);
             }
 
-            if (dp_get_config('debug.language_test_mode')) {
-                foreach ($js_phrases as &$p) {
-                    $p = $p;
-                }
-                unset($p);
-            }
-
             $js = 'window.DESKPRO_LANG = '.json_encode($js_phrases).';';
             if (defined('DP_BUILD_TIME')) {
                 $js .= "\n/* DP_BUILD(".DP_BUILD_TIME.") */\n";

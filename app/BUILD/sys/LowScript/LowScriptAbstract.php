@@ -228,9 +228,20 @@ abstract class LowScriptAbstract
     # Request Helpers
     ####################################################################################################################
 
-    public function getPathInfo()
+    /**
+     * @param bool $own Own pathinfo means we dont consider ourselfs as part of the path. In other
+     *                  words, we shift off the first segment of the URL.
+     *
+     * @return string
+     */
+    public function getPathInfo($own = true)
     {
-        return $this->request->getPathInfo();
+        $pathinfo = $this->request->getPathInfo();
+        if ($own) {
+            $pathinfo = preg_replace('#^/.*?/#', '/', $pathinfo);
+        }
+
+        return $pathinfo;
     }
 
     public function getBaseUrl()
