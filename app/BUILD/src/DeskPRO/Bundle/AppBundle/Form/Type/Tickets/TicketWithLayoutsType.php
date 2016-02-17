@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
@@ -727,32 +728,8 @@ class TicketWithLayoutsType extends AbstractType
     private function addCustomTicketField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
-        if (!$field_def || !$field_def->isEnabled()) {
-            return;
-        }
 
-        $options = [
-            'custom_def'      => $field_def,
-            'property_path'   => 'custom_data',
-            'agent_interface' => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
-            'label'           => $field_def->getTitle(),
-            'required'        => $field_def->isRequired(),
-            'inline'          => $context->forApi(),
-        ];
-
-        if (in_array($field_def->getHandlerClass(), [
-            'Application\DeskPRO\CustomFields\Handler\Hidden',
-            'Application\DeskPRO\CustomFields\Handler\Display',
-        ])) {
-            $options['label'] = false;
-        }
-
-        if ($ignore_validation) {
-            $options                      = $this->markNoValidation($options);
-            $options['ignore_validation'] = true;
-        }
-
-        $context->getForm()->add($field->getId(), 'deskpro_custom_data', $options);
+        $this->addCustomField($context, $field, 'custom_data', $field_def, $ignore_validation);
     }
 
     /**
@@ -763,24 +740,8 @@ class TicketWithLayoutsType extends AbstractType
     private function addCustomUserField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
-        if (!$field_def->isEnabled()) {
-            return;
-        }
 
-        $options = [
-            'custom_def'      => $field_def,
-            'property_path'   => 'person.custom_data',
-            'agent_interface' => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
-            'label'           => $field_def->getTitle(),
-            'inline'          => $context->forApi(),
-        ];
-
-        if ($ignore_validation) {
-            $options                      = $this->markNoValidation($options);
-            $options['ignore_validation'] = true;
-        }
-
-        $context->getForm()->add($field->getId(), 'deskpro_custom_data', $options);
+        $this->addCustomField($context, $field, 'person.custom_data', $field_def, $ignore_validation);
     }
 
     /**
@@ -790,11 +751,6 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
-        $field_def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
-        if (!$field_def->isEnabled()) {
-            return;
-        }
-
         $person_organization = $context->getPerson()->getOrganization();
         $ticket_organization = $context->getTicket()->getOrganization();
 
@@ -812,13 +768,39 @@ class TicketWithLayoutsType extends AbstractType
             return;
         }
 
+        $field_def = $this->field_manager->getCustomOrganizationFieldById($field->getFieldId());
+
+        $this->addCustomField($context, $field, 'organization.custom_data', $field_def, $ignore_validation);
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
+     * @param string                   $property_path
+     * @param CustomDefAbstract        $field_def
+     * @param bool                     $ignore_validation
+     */
+    private function addCustomField(TicketWithLayoutsContext $context, LayoutField $field, $property_path, CustomDefAbstract $field_def = null, $ignore_validation = false)
+    {
+        if (!$field_def || !$field_def->isEnabled()) {
+            return;
+        }
+
         $options = [
             'custom_def'      => $field_def,
-            'property_path'   => 'organization.custom_data',
+            'property_path'   => $property_path,
             'agent_interface' => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
             'label'           => $field_def->getTitle(),
+            'required'        => $field_def->isRequired(),
             'inline'          => $context->forApi(),
         ];
+
+        if (in_array($field_def->getHandlerClass(), [
+            'Application\DeskPRO\CustomFields\Handler\Hidden',
+            'Application\DeskPRO\CustomFields\Handler\Display',
+        ])) {
+            $options['label'] = false;
+        }
 
         if ($ignore_validation) {
             $options                      = $this->markNoValidation($options);
