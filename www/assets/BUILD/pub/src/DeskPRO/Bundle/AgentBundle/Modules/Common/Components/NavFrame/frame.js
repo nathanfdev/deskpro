@@ -92,7 +92,7 @@ export class NavFrameBody extends React.Component {
                    : true;
 
     return (
-      <LoadIndicator loaded={isLoaded} top="20%">
+      <LoadIndicator loaded={isLoaded} top="100px">
         <div className="dp-nav-frame-body">
           <Scrollable vertical>
             {this.props.children}
