@@ -82,7 +82,7 @@ class TicketMessageType extends ApiType
                 'person'        => null,
                 'error_mapping' => [
                     // we use custom setters to modify message,
-                    // so we need map entity property with the form field
+                    // so we need to map entity property with the form field
                     'message' => 'message',
                 ],
             ])
