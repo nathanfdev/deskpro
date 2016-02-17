@@ -42,7 +42,11 @@ class HttpKernelBootTask implements BootTaskInterface
         /** @var Request $request */
         $request = $resources['request'];
 
-        $interface_id = $this->detectInterfaceId($request);
+        if (isset($resources['interface_id'])) {
+            $interface_id = $resources['interface_id'];
+        } else {
+            $interface_id = $this->detectInterfaceId($request);
+        }
 
         switch ($interface_id) {
             case 'agent':

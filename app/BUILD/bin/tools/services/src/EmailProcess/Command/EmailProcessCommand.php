@@ -78,18 +78,20 @@ class EmailProcessCommand extends Command
         }
 
         if ($input->getOption('load-config')) {
-            global $DP_CONFIG;
-            if (!$input->getOption('max-time') && isset($DP_CONFIG['adv_email_process']['max_time'])) {
-                $stop_time = (int) $DP_CONFIG['adv_email_process']['max_time'];
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if (!$input->getOption('max-time') && $DP_ENV->getConfig('adv_email_process.max_time')) {
+                $stop_time = (int) $DP_ENV->getConfig('adv_email_process.max_time');
             }
-            if (!$input->getOption('max-processes') && isset($DP_CONFIG['adv_email_process']['max_processes'])) {
-                $max_tasks = (int) $DP_CONFIG['adv_email_process']['max_processes'];
+            if (!$input->getOption('max-processes') && $DP_ENV->getConfig('adv_email_process.max_processes')) {
+                $max_tasks = (int) $DP_ENV->getConfig('adv_email_process.max_processes');
             }
-            if (!$input->getOption('redis-key') && isset($DP_CONFIG['adv_email_process']['redis_key'])) {
-                $redis_key = $DP_CONFIG['adv_email_process']['redis_key'];
+            if (!$input->getOption('redis-key') && $DP_ENV->getConfig('adv_email_process.redis_key')) {
+                $redis_key = $DP_ENV->getConfig('adv_email_process.redis_key');
             }
-            if (!$input->getOption('redis') && isset($DP_CONFIG['adv_email_process']['redis_params'])) {
-                $redis = $DP_CONFIG['adv_email_process']['redis_params'];
+            if (!$input->getOption('redis') && $DP_ENV->getConfig('adv_email_process.redis_params')) {
+                $redis = $DP_ENV->getConfig('adv_email_process.redis_params');
             }
         }
 

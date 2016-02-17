@@ -73,16 +73,6 @@ class SystemErrorHandler
      */
     public static function handleError($errno, $errstr, $errfile, $errline)
     {
-        if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
-            // NFS can sometimes be a little slow and result in these stat failures during dev
-            // but they are distracting to fill error log with a giant stack trace. so just log a single line
-            if (strpos($errstr, 'filemtime(): stat failed for') !== false) {
-                error_log("$errstr ($errfile:$errline)");
-
-                return;
-            }
-        }
-
         if (!(error_reporting() & $errno)) {
             return;
         }
@@ -369,6 +359,9 @@ class SystemErrorHandler
      */
     public static function logToFile(array $errinfo)
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         self::$wrote_log_file = false;
 
         $str = array();
@@ -462,7 +455,7 @@ class SystemErrorHandler
             && $errinfo['email']
             && defined('DP_TECHNICAL_EMAIL')
             && DP_TECHNICAL_EMAIL
-            && !isset($GLOBALS['DP_CONFIG']['debug']['no_report_errors'])
+            && (!$DP_ENV || !$DP_ENV->getConfig('settings.no_report_errors'))
             && function_exists('dp_should_throttle_action')
             && self::shouldThrottle($throttle_id, 300)
         ) {

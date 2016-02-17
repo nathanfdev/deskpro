@@ -29,27 +29,36 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Setting;
-use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
+
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BrandFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class DevFinishFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function getOrder()
     {
-        return 0;
+        return 99999;
     }
 
     /**
@@ -57,32 +66,6 @@ class BrandFixture extends AbstractFixture implements ContainerAwareInterface, O
      */
     public function load(ObjectManager $manager)
     {
-        // Insert themes
-        $std_theme = new ThemeSet();
-        $std_theme->setThemeId('standard');
-        $manager->persist($std_theme);
-        $this->setReference('std_theme', $std_theme);
-
-        $sidebar_theme = new ThemeSet();
-        $sidebar_theme->setThemeId('sidebar');
-        $manager->persist($sidebar_theme);
-        $this->setReference('sidebar_theme', $sidebar_theme);
-
-        // Insert brand
-        $brand = new Brand();
-        $brand->setName('Default');
-        $brand->setThemeSet($std_theme);
-        $manager->persist($brand);
-        $this->setReference('brand', $brand);
-
-        $manager->flush();
-
-        // Set default brand
-        $setting        = new Setting();
-        $setting->name  = 'portal.default_brand';
-        $setting->value = $brand->getId();
-        $manager->persist($brand);
-
-        $manager->flush();
+        $manager->getRepository('DeskPRO:Ticket')->fillSearchTable();
     }
 }

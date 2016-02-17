@@ -50,11 +50,11 @@ class DbWriter implements WriterInterface
     }
 
     /**
-     * @param ApiLog $log
+     * {@inheritdoc}
      */
     public function write(ApiLog $log)
     {
         $this->em->persist($log);
-        $this->em->flush();
+        $this->em->flush($log);
     }
 }

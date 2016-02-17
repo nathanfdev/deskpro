@@ -32,7 +32,7 @@ export const loadCounts = createAction(
     (dispatch) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       const res = promise.getData();
       if (groupBy === 'department') {
-        dispatch(loadBatch('Department', recordStoresId, res.data.nested.map(count => count.group)));
+        dispatch(loadBatch('Department', res.data.nested.map(count => count.group), recordStoresId));
       }
 
       return {

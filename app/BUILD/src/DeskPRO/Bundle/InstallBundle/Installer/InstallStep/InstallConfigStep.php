@@ -39,9 +39,15 @@ class InstallConfigStep extends AbstractStep
 
         $fs = new Filesystem();
 
+        $new_config_path = $this->getContext()->getDpEnv()->getAppDir().'/config_new';
+
+        if ($this->getSession()->getSource() === 'dev') {
+            $new_config_path = DP_DIR.'/dev/config_dev_new';
+        }
+
         $dir = Finder::create()
             ->files()
-            ->in($this->getContext()->getDpEnv()->getAppDir().'/config_new');
+            ->in($new_config_path);
 
         $config_path = $this->getConfigPath();
 
@@ -61,7 +67,7 @@ class InstallConfigStep extends AbstractStep
         /** @var \SplFileInfo $f */
         foreach ($dir as $f) {
             $path    = str_replace('\\', '/', $f->getRealPath());
-            $relPath = preg_replace('#^.*?/config_new/#', '/', $path);
+            $relPath = str_replace($new_config_path, '', $path);
             $relPath = str_replace('/', DIRECTORY_SEPARATOR, $relPath);
 
             $fs->copy(

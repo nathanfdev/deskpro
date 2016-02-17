@@ -33,7 +33,6 @@
  */
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
 use Orb\Doctrine\Common\Cache\ArrayFileCache;
 
 class ArrayFileCacheFactory
@@ -44,17 +43,11 @@ class ArrayFileCacheFactory
             return self::createNull();
         }
 
-        if (isset($GLOBALS['DP_CONFIG']['disable_caches']) && in_array($cache_name, $GLOBALS['DP_CONFIG']['disable_caches'])) {
-            return self::createNull();
-        }
-
         $cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
-        if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-            $path = App::$container->getParameter('kernel.cache_dir');
-        } else {
-            $path = dp_get_tmp_dir();
-        }
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $path = $DP_ENV->getAppBaseKernelCacheDir();
 
         $version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
         $cache      = new ArrayFileCache($path, $version_id);

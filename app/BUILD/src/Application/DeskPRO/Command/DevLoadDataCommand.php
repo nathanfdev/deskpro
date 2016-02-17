@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -38,24 +37,6 @@ use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
-/*
-Usage: php cmd.php dpdev:load-data --count=# --types=a,b,c --range="3 years"
-Count defaults to 100, types must be explicitly specified. If no
-types are specified, a list of available ones is given. If you want
-to insert into everything, use --types=*
-
-To use the --wordlist="database" option, enter this in to config.php:
-
-$DP_CONFIG['load_data_database'] = array(
-    'db_host' => 'localhost',
-    'db_user' => 'root',
-    'db_password' => '',
-    'db_name' => 'wordlist',
-    'db_query' => 'SELECT content FROM pages WHERE id = (FLOOR(RAND() * (500000)) + 1) LIMIT 1'
-);
-
-*/
 
 class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -1601,25 +1582,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
     protected function _getRandomTextDb()
     {
-        global $DP_CONFIG;
-        if ($this->_word_db === null) {
-            $this->_word_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
-                'driver'   => 'pdo_mysql',
-                'host'     => $DP_CONFIG['load_data_database']['db_host'],
-                'user'     => $DP_CONFIG['load_data_database']['db_user'],
-                'password' => $DP_CONFIG['load_data_database']['db_password'],
-                'dbname'   => $DP_CONFIG['load_data_database']['db_name'],
-            ));
-        }
-
-        do {
-            $words = trim($this->_word_db->fetchColumn($DP_CONFIG['load_data_database']['db_query']));
-            if (preg_match('/\s*#REDIRECT/i', $words)) {
-                $words = null;
-            }
-        } while (!$words);
-
-        return $words;
+        throw new \RuntimeException('Unsupported');
     }
 
     protected function _getRandomWordlist($word_length = 1)

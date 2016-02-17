@@ -164,8 +164,11 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
             return true;
         }
 
-        if (isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections']) {
-            $this->logger->info('[UrlCorrector] Skip: disable_url_corrections in config');
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        if ($DP_ENV->getConfig('settings.disable_url_corrections')) {
+            $this->logger->info('[UrlCorrector] Skip: settings.disable_url_corrections');
 
             return true;
         }

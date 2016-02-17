@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { List } from './List';
 import { connect } from 'react-redux';
 import { viewModeSelector } from '../../Selectors/list';
-import { isLoadedCollectionSelectorFactory, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   isLoaded: isLoadedCollectionSelectorFactory('Ticket', 'list')(state),
@@ -12,6 +12,10 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.dispatch(setCollection('Ticket', 'list', []));
+  }
 
   componentWillUnmount() {
     this.props.dispatch(releaseCollection('Ticket', 'list'));

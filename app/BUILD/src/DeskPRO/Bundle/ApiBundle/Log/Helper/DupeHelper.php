@@ -51,7 +51,12 @@ class DupeHelper extends AbstractLogHelper
 
     public function suitableMode($mode)
     {
-        return in_array($mode, $this->resolver->getGlobalSettings()->get('api_log.dupe.modes'));
+        return in_array($mode, $this->getModes());
+    }
+
+    public function getModes()
+    {
+        return $this->resolver->getGlobalSettings()->getSerializedArray('api_log.dupe.modes', []);
     }
 
     /**

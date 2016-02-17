@@ -39,7 +39,10 @@ class CloudCallController extends AbstractController
 {
     public function preAction($action, $arguments = null)
     {
-        if (!isset($_REQUEST['DPC_CALL_KEY']) || !isset($GLOBALS['DP_CONFIG']['DPC_CALL_KEY']) || $GLOBALS['DP_CONFIG']['DPC_CALL_KEY'] != $_REQUEST['DPC_CALL_KEY']) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        if (!isset($_REQUEST['DPC_CALL_KEY']) || !$DP_ENV->getConfig('cloud.DPC_CALL_KEY') || $DP_ENV->getConfig('cloud.DPC_CALL_KEY') != $_REQUEST['DPC_CALL_KEY']) {
             return $this->createApiErrorResponse('invalid_call_key', 'Invalid call key', 403);
         }
 

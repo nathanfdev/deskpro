@@ -44,8 +44,9 @@ class ProcessEmailGateways extends AbstractJob
     public function run()
     {
         // Using adv_email_collect (daemon)
-        global $DP_CONFIG;
-        if (!empty($DP_CONFIG['adv_email_collect'])) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        if ($DP_ENV->getConfig('adv_email_collect')) {
             return;
         }
 

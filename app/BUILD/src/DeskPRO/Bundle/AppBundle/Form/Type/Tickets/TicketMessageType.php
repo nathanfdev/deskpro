@@ -51,8 +51,8 @@ class TicketMessageType extends ApiType
     {
         $builder
             ->add('message', 'html_textarea', [
-                'mapped'   => false,
-                'required' => true,
+                'property_path' => 'message_html',
+                'required'      => true,
             ])
             ->add('format', 'choice', [
                 'choices' => [
@@ -67,7 +67,7 @@ class TicketMessageType extends ApiType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetAttachments']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetMessage']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
@@ -78,8 +78,13 @@ class TicketMessageType extends ApiType
     {
         $resolver
             ->setDefaults([
-                'ticket' => null,
-                'person' => null,
+                'ticket'        => null,
+                'person'        => null,
+                'error_mapping' => [
+                    // we use custom setters to modify message,
+                    // so we need to map entity property with the form field
+                    'message' => 'message',
+                ],
             ])
             ->setRequired([
                 'ticket',
@@ -106,19 +111,19 @@ class TicketMessageType extends ApiType
     /**
      * @param FormEvent $event
      */
-    public function onSetMessage(FormEvent $event)
+    public function onChangeMessageFormat(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
-        if (empty($data['message'])) {
-            return;
-        }
 
-        /** @var TicketMessage $message */
-        $message = $event->getForm()->getData();
         if (isset($data['format']) && $data['format'] === 'text') {
-            $message->setMessageText($data['message']);
-        } else {
-            $message->setMessageHtml($data['message']);
+            $form
+                ->remove('message')
+                ->add('message', 'html_textarea', [
+                    'property_path' => 'message_text',
+                    'required'      => true,
+                ])
+            ;
         }
     }
 

@@ -59,12 +59,14 @@ class ActionPermissionsHelperTest extends ApiTestCase
             [['test.tag'], [], false],
             // two tags was received from annotation, one global restriction
             [['test.test2.test3', 'test.test2.test4'], ['-test.test2.*'], false],
+            [['test.test2.test3', 'test.test2.test4'], ['test.test2.test3', '-test.test2.test4'], false],
             // two tags, one restricted, one allowed
             [['test.test2.test3', 'test.test2.test4'], ['-test.test2.test3', 'test.test2.test4'], false],
             // same case, but tags has different roots
             [['test.test2.test3', 'test1.test2.test4'], ['-test.test2.test3', 'test1.test2.test4'], false],
             // two tags, one allowed and one wasn't described in store. Deny.
-            [['test.test2.test3', 'test1.test2.test4'], ['test1.test2.test4'], false],
+            [['test.test2.test3', 'test1.test2.test4'], ['test1.test2.test4'], true],
+            [['test.test2.test3', 'test1.test2.test4'], ['test.test2.test3'], true],
             // one tag received, one tag was allowed
             [['test.test2'], ['test.test2'], true],
             // one tag received, global allowed

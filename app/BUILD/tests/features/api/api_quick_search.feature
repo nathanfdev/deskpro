@@ -3,6 +3,8 @@ Feature: Quick Search
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
 
   # Doctrine search adapter
   @reinstall

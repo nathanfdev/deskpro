@@ -135,8 +135,6 @@ class ZenDeskImporter extends AbstractImporter
      */
     public function preRunStep($step)
     {
-        global $DP_CONFIG;
-
         #------------------------------
         # logger for db connection
         #------------------------------
@@ -148,9 +146,7 @@ class ZenDeskImporter extends AbstractImporter
         $this->logger->addFilter(new \Application\InstallBundle\Logger\Filter\InstallQueryLogFormatter());
         $qlog->setLogger($this->logger);
 
-        if (!(isset($DP_CONFIG['import']['nolog']) && $DP_CONFIG['import']['nolog'])) {
-            $qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
-        }
+        $qlog->addSlowLogRule(QueryLogger::TYPE_ALL, 0);
 
         $this->qlog_db = $qlog;
         $this->db->getConfiguration()->setSQLLogger($qlog);

@@ -31,18 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\LabelDef;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
- * TODO
+ * TODO.
  *
  * Goals:
  * - couple departments so we can test permissions
@@ -51,33 +47,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class TicketPermProfileFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @var \Faker\Generator
      */
     private $faker;
-
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * DpFixture constructor.

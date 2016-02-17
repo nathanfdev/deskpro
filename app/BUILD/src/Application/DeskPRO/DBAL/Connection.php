@@ -483,10 +483,6 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     public function executeUpdate($query, array $params = array(), array $types = array(), $is_retry = 0)
     {
-        if (!$is_retry && isset($GLOBALS['DP_CONFIG']['debug']['log_delete_queries']) && $GLOBALS['DP_CONFIG']['debug']['log_delete_queries'] && preg_match('#^\s*DELETE|TRUNCATE|DROP#', $query)) {
-            $this->_writeDeleteQuery($query, $params);
-        }
-
         $level = $this->getTransactionNestingLevel();
         if ($level && !$is_retry) {
             $this->writes_in_tx[] = array($query, $params, $types);

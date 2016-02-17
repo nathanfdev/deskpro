@@ -31,57 +31,50 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Setting;
-use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\NewsCategory;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class BrandFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class CategoriesFixture extends AbstractFixture implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
      */
-    public function getOrder()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function load(ObjectManager $manager)
     {
-        // Insert themes
-        $std_theme = new ThemeSet();
-        $std_theme->setThemeId('standard');
-        $manager->persist($std_theme);
-        $this->setReference('std_theme', $std_theme);
+        $translate = $this->container->get('deskpro.core.translate');
 
-        $sidebar_theme = new ThemeSet();
-        $sidebar_theme->setThemeId('sidebar');
-        $manager->persist($sidebar_theme);
-        $this->setReference('sidebar_theme', $sidebar_theme);
+        $cat        = new ArticleCategory();
+        $cat->title = $translate->phrase('user.defaults.article_category_general');
 
-        // Insert brand
-        $brand = new Brand();
-        $brand->setName('Default');
-        $brand->setThemeSet($std_theme);
-        $manager->persist($brand);
-        $this->setReference('brand', $brand);
+        $this->setReference('article_category_general', $cat);
+        $manager->persist($cat);
 
-        $manager->flush();
+        $cat        = new NewsCategory();
+        $cat->title = $translate->phrase('user.defaults.news_category_general');
+        $manager->persist($cat);
 
-        // Set default brand
-        $setting        = new Setting();
-        $setting->name  = 'portal.default_brand';
-        $setting->value = $brand->getId();
-        $manager->persist($brand);
+        $this->setReference('news_category_general', $cat);
+        $manager->persist($cat);
+
+        $cat        = new DownloadCategory();
+        $cat->title = $translate->phrase('user.defaults.downloads_category_general');
+
+        $this->setReference('downloads_category_general', $cat);
+        $manager->persist($cat);
+
+        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
+            $cat        = new FeedbackCategory();
+            $cat->title = $title;
+            $manager->persist($cat);
+        }
 
         $manager->flush();
     }

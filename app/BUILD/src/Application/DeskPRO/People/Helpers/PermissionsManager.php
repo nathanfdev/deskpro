@@ -109,15 +109,15 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
      */
     protected $is_loaded = false;
 
+    // TODO: Implement a better caching system. At the moment caching actually *hurts* performance
+    // which is why it's being disabled here:
+    protected $enable_caching = false;
+
     /**
      * @param \Application\DeskPRO\Entity\Person $person
      */
     public function __construct(Person $person)
     {
-        // TODO: Implement a better caching system. At the moment caching actually *hurts* performance
-        // which is why it's being disabled here:
-        $GLOBALS['DP_CONFIG']['disable_permissions_cache'] = true;
-
         $this->person = $person;
 
         $agent_data = App::$container->getAgentData();
@@ -245,7 +245,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         # Fetch from the cache first
         #-------------------------
 
-        if (!$this->is_loaded && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
+        if (!$this->is_loaded && $this->enable_caching) {
             $caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId());
 
             foreach ($caches as $cache) {
@@ -290,7 +290,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
             $this->loaders[strtolower($name)] = $loader;
 
-            if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache) && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
+            if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache) && $this->enable_caching) {
                 $this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
             }
         }

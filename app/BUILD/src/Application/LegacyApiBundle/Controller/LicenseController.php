@@ -246,16 +246,10 @@ FILE;
 
     public function getLatestVersionAction()
     {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['debug']['disable_version_check'])) {
+        try {
+            $version_info = LicenseService::compareVersion();
+        } catch (\Exception $e) {
             $version_info = null;
-        } else {
-            try {
-                $version_info = LicenseService::compareVersion();
-            } catch (\Exception $e) {
-                $version_info = null;
-            }
         }
 
         return $this->createJsonResponse(array(
@@ -269,16 +263,10 @@ FILE;
 
     public function getNewsAction()
     {
-        global $DP_CONFIG;
-
-        if (isset($DP_CONFIG['debug']['disable_version_check'])) {
+        try {
+            $news = LicenseService::getNews();
+        } catch (\Exception $e) {
             $news = null;
-        } else {
-            try {
-                $news = LicenseService::getNews();
-            } catch (\Exception $e) {
-                $news = null;
-            }
         }
 
         return $this->createJsonResponse(array(

@@ -33,14 +33,18 @@
  */
 function get_db()
 {
-    global $DP_CONFIG;
+    /* @var \DpRun\DpEnv $DP_ENV */
+    global $DP_ENV;
+
+    $db_info = \Dprun\LowUtil::getMysqlInfoFromConfigArray($DP_ENV->getConfig('database'));
 
     $connectionParams = array(
         'driver'       => 'pdo_mysql',
-        'host'         => $DP_CONFIG['db']['host'],
-        'user'         => $DP_CONFIG['db']['user'],
-        'password'     => $DP_CONFIG['db']['password'],
-        'dbname'       => $DP_CONFIG['db']['dbname'],
+        'host'         => $db_info['host'],
+        'port'         => $db_info['port'],
+        'user'         => $db_info['user'],
+        'password'     => $db_info['password'],
+        'dbname'       => $db_info['dbname'],
         'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection',
     );
     $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -286,8 +285,10 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 return 1;
             }
         } else {
-            global $DP_CONFIG;
-            if (!empty($DP_CONFIG['adv_email_process'])) {
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if (!$DP_ENV->getConfig('adv_email_process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 $proc->enqueueNewEmail($source);

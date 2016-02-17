@@ -276,8 +276,8 @@ abstract class AbstractBuild
                 '{db_host}' => escapeshellarg($dbhost),
                 '{db_port}' => escapeshellarg($port ?: 3306),
                 '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
-                '{db_user}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_user'] ?: DP_DATABASE_USER),
-                '{db_pass}' => escapeshellarg(@$GLOBALS['DP_CONFIG']['online_schema_upgrade_password'] ?: DP_DATABASE_PASSWORD),
+                '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: DP_DATABASE_USER),
+                '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: DP_DATABASE_PASSWORD),
                 '{dsn}'     => "t=$table",
             );
 

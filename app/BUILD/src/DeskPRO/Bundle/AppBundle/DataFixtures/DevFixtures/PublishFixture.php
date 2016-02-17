@@ -29,22 +29,17 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
-use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Data\ContentTypes;
 
-class PublishFixture extends DeskProAbstractFixture
+class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_PUBLISH    = 100;
     const NUM_CATEGORIES = 10;
@@ -53,14 +48,13 @@ class PublishFixture extends DeskProAbstractFixture
     const MAX_CATEGORIES = 3;
 
     /**
-     * @var int
+     * @var \Application\DeskPRO\Translate\Translate
      */
-    protected $fixtureOrder = 80;
-
-    /** @var \Application\DeskPRO\Translate\Translate */
     private $tr;
 
-    /** @var \Application\DeskPRO\Entity\Person */
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
     private $admin;
 
     /**
@@ -105,13 +99,13 @@ class PublishFixture extends DeskProAbstractFixture
      * @var string[]
      */
     private $content = [
-        self::TABLE_ARTICLES  => [
+        self::TABLE_ARTICLES => [
             'ids'            => [],
             'category_table' => self::TABLE_ARTICLE_CATEGORIES,
             'comments_table' => self::TABLE_ARTICLE_COMMENTS,
             'categories'     => [],
         ],
-        self::TABLE_NEWS      => [
+        self::TABLE_NEWS => [
             'ids'            => [],
             'category_table' => self::TABLE_NEWS_CATEGORIES,
             'comments_table' => self::TABLE_NEWS_COMMENTS,
@@ -125,17 +119,12 @@ class PublishFixture extends DeskProAbstractFixture
         ],
     ];
 
-    /** @var  RandomFileFromDir */
-    private $files;
-
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getOrder()
     {
-        return [
-            'DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\FirstAdminFixture',
-        ];
+        return 90;
     }
 
     /**
@@ -148,11 +137,8 @@ class PublishFixture extends DeskProAbstractFixture
         $this->admin     = $this->getReference('admin');
         $this->people    = $this->fetchRelatedEntitiesIds('id', self::TABLE_PEOPLE);
         $this->languages = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
-        $this->files     = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
-
 
         $this->loadExampleArticle();
-        $this->loadExampleDownload();
         $this->loadExampleNew();
         $manager->flush();
 
@@ -166,38 +152,23 @@ class PublishFixture extends DeskProAbstractFixture
 
     private function loadExampleArticle()
     {
-        $cat        = new ArticleCategory();
-        $cat->title = $this->tr->phrase('user.defaults.article_category_general');
-        $this->manager->persist($cat);
-
         $content          = new Article();
         $content->person  = $this->admin;
         $content->title   = $this->tr->phrase('user.defaults.article_example_title');
         $content->content = $this->tr->phrase('user.defaults.article_example_content');
         $content->status  = ContentAbstract::STATUS_PUBLISHED;
-        $content->addToCategory($cat);
+        $content->addToCategory($this->getReference('article_category_general'));
         $this->manager->persist($content);
-    }
-
-    private function loadExampleDownload()
-    {
-        $cat        = new DownloadCategory();
-        $cat->title = $this->tr->phrase('user.defaults.downloads_category_general');
-        $this->manager->persist($cat);
     }
 
     private function loadExampleNew()
     {
-        $cat        = new NewsCategory();
-        $cat->title = $this->tr->phrase('user.defaults.news_category_general');
-        $this->manager->persist($cat);
-
         $content          = new News();
         $content->person  = $this->admin;
         $content->title   = $this->tr->phrase('user.defaults.news_example_title');
         $content->content = $this->tr->phrase('user.defaults.news_example_content');
         $content->status  = ContentAbstract::STATUS_PUBLISHED;
-        $content->setCategory($cat);
+        $content->setCategory($this->getReference('news_category_general'));
         $this->manager->persist($content);
     }
 
@@ -272,20 +243,10 @@ class PublishFixture extends DeskProAbstractFixture
                 'language_id'  => $this->randomArrayValue($this->languages),
                 'date_created' => $dateCreated,
             ];
-            $values      = $this->setStatus($values);
-            $values      = $this->setTitleAndSlug($values);
+            $values = $this->setStatus($values);
+            $values = $this->setTitleAndSlug($values);
             if ($content !== self::TABLE_ARTICLES) {
                 $values['category_id'] = $this->randomArrayValue($this->content[$content]['categories']);
-            }
-            if ($content === self::TABLE_DOWNLOADS) {
-                $file              = $this->files->next();
-                $blob              = $this->container->get('deskpro.blob_storage')
-                    ->createBlobRowFromFile(
-                        $file->getRealPath(),
-                        $file->getFilename(),
-                        ContentTypes::getContentTypeFromFilename($file->getFilename())
-                    );
-                $values['blob_id'] = $blob['id'];
             }
             $batch[] = $values;
         }
@@ -351,21 +312,5 @@ class PublishFixture extends DeskProAbstractFixture
         }
 
         return $batch;
-    }
-
-    private function loadArticlePendings()
-    {
-        $i     = 0;
-        $batch = [];
-        while ($i++ < self::NUM_COMMENTS) {
-            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
-            $batch[]     = [
-                'person_id'          => $this->randomArrayValue($this->people),
-                'assigned_person_id' => $this->randomArrayValue($this->people),
-                'comment'            => $this->faker->realText(300),
-                'date_created'       => $dateCreated,
-            ];
-        }
-        $this->db->batchInsert(self::TABLE_ARTICLE_PENDING_CREATE, $batch, true);
     }
 }

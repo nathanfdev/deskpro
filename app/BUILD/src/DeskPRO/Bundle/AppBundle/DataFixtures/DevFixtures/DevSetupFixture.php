@@ -35,25 +35,14 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * This inserts some default settings so you dont have to waste time going through the welcome wizard.
  */
 class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
+    use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -96,14 +85,6 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
             ['name' => 'core.deskpro_url',           'value' => $url],
             ['name' => 'core.license',               'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
         ];
-
-        if (!empty($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-            foreach ($ins as $k => $v) {
-                if (isset($GLOBALS['DP_CONFIG']['SETTINGS'][$k])) {
-                    $ins[$k] = $GLOBALS['DP_CONFIG']['SETTINGS'][$k];
-                }
-            }
-        }
 
         $db->batchInsert('settings', $ins);
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Application\NewSettings;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
@@ -48,11 +49,15 @@ class SettingsBagTest extends DeskProTestCase
 
     public function testEverythingAtOnceBecauseThisIsTrivial()
     {
-        $inputArray = array(
-            'key'           => 'value',
-            'setting'       => 2,
-            'extra_setting' => 0.9,
-        );
+        $inputArray = [
+            'key'            => 'value',
+            'setting'        => 2,
+            'extra_setting'  => 0.9,
+            't_bool_setting' => '1',
+            'f_bool_setting' => '0',
+            'serialized'     => serialize(['some']),
+            'just_array'     => ['some'],
+        ];
 
         $bag = new SettingsBag($inputArray);
 
@@ -67,11 +72,19 @@ class SettingsBagTest extends DeskProTestCase
         $this->assertEquals(2, $bag['setting']);
         $this->assertEquals(0.9, $bag['extra_setting']);
 
-        $this->assertSame(3, $bag->count());
-        $this->assertSame(3, count($bag));
+        $this->assertSame(7, $bag->count());
+        $this->assertSame(7, count($bag));
 
         $this->assertTrue($bag->has('key'));
         $this->assertFalse($bag->has('non_existant-key'));
+
+        $this->assertTrue($bag->getBool('t_bool_setting'));
+        $this->assertFalse($bag->getBool('f_bool_setting'));
+        $this->assertFalse($bag->getBool('non_existant-key'));
+        $this->assertTrue($bag->getBool('non_existant-key', '1'));
+
+        $this->assertSame($bag->getSerializedArray('serialized'), ['some']);
+        $this->assertSame($bag->getSerializedArray('just_array'), ['some']);
 
         $this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
     }

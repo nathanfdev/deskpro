@@ -360,6 +360,18 @@ rm -rf $DP_DIR/var/kernel_cache/BUILD/dev
 rm -rf $DP_DIR/var/kernel_cache/BUILD/test
 
 ########################################################################################################################
+# Set permissions
+########################################################################################################################
+
+cd $DP_DIR
+find . -type d -print0 | xargs -0 chmod 755
+find . -type f -not -path "*/bin/*" -print0 | xargs -0 chmod 644
+
+chmod -R 0777 var/
+chmod -R 0777 backups/
+chmod -R 0777 attachments/
+
+########################################################################################################################
 # If we wrote the active build version, move it from BUILD to that version
 ########################################################################################################################
 
@@ -369,15 +381,3 @@ if [ -f $DP_DIR/app/BUILD/sys/config/build-num.txt ]; then
     mv $DP_DIR/www/assets/BUILD $DP_DIR/www/assets/$DP_VER
     mv $DP_DIR/var/kernel_cache/BUILD $DP_DIR/var/kernel_cache/$DP_VER
 fi
-
-########################################################################################################################
-# Set permissions
-########################################################################################################################
-
-cd $DP_DIR
-find . -type d -print0 | xargs -0 chmod 755
-find . -type f -print0 | xargs -0 chmod 644
-
-chmod -R 0777 var/
-chmod -R 0777 backups/
-chmod -R 0777 attachments/

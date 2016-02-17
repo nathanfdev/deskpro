@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
 use Application\DeskPRO\App;
@@ -156,9 +155,12 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         $this->preprocessMessage($message);
 
-        if (@$GLOBALS['DP_CONFIG']['debug']['mail']['disable_send']) {
+        if ($DP_ENV->getConfig('settings.disable_outgoing_email')) {
             $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
             $this->logger->info(sprintf('Message %d queued as aborted (disable_send is enabled in config)', $r['id']), array('sendmail_source_id' => $r['id']));
             $r = $this->source_mapper->setLogText($r);

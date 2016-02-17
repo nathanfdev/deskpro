@@ -1,3 +1,4 @@
+@basic
 Feature: /me/notifications endpoint
   To retrieve DeskPRO agent alerts
   As a developer
@@ -6,6 +7,7 @@ Feature: /me/notifications endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I prepare notifications data
 
   @reinstall
   Scenario: I get notifications
@@ -56,14 +58,20 @@ Feature: /me/notifications endpoint
     When I send a GET request to "/api/v2/me/notifications?include=person,ticket"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "linked.person" should have 3 elements
-    And the JSON node "linked.person.530" should exist
-    And the JSON node "linked.person.529" should exist
-    And the JSON node "linked.person.528" should exist
+    And the JSON node "linked.person" should have 6 elements
+    And the JSON node "linked.person.530.id" should be equal to 530
+    And the JSON node "linked.person.529.id" should be equal to 529
+    And the JSON node "linked.person.528.id" should be equal to 528
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.2.id" should be equal to 2
+    And the JSON node "linked.person.3.id" should be equal to 3
     And the JSON node "linked.ticket" should have 3 elements
-    And the JSON node "linked.ticket.569" should exist
-    And the JSON node "linked.ticket.568" should exist
-    And the JSON node "linked.ticket.567" should exist
+    And the JSON node "linked.ticket.569.id" should be equal to 569
+    And the JSON node "linked.ticket.569.subject" should be equal to "Ticket #569"
+    And the JSON node "linked.ticket.568.id" should be equal to 568
+    And the JSON node "linked.ticket.568.subject" should be equal to "Ticket #568"
+    And the JSON node "linked.ticket.567.id" should be equal to 567
+    And the JSON node "linked.ticket.567.subject" should be equal to "Ticket #567"
 
   Scenario: I dismiss set of alerts
     When I send a POST request to "/api/v2/me/notifications/dismiss" with body:

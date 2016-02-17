@@ -37,6 +37,29 @@ namespace DpBehat;
 class PermissionContext extends BaseContext
 {
     /**
+     * @Given I remove :person usergroup relation :sys_name
+     *
+     * @param string $who
+     * @param string $sys_name
+     */
+    public function iRemoveUserGroup($who, $sys_name)
+    {
+        $person = $this->getContainer()->get('user_details')->getWho($who);
+        if (!$person) {
+            throw new \RuntimeException('Unable to get person '.$who);
+        }
+
+        foreach ($person->usergroups as $usergroup) {
+            if ($usergroup->sys_name === $sys_name) {
+                $person->usergroups->removeElement($usergroup);
+            }
+        }
+
+        $this->em()->persist($person);
+        $this->em()->flush();
+    }
+
+    /**
      * @Given I set permission :permission_name = :value for :sys_name usergroup
      *
      * @param string $permission_name

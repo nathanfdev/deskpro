@@ -14,7 +14,7 @@ export class ListFrameContents extends React.Component {
                    : true;
 
     return (
-      <LoadIndicator loaded={isLoaded} opacity={0} width={3} top="20%">
+      <LoadIndicator loaded={isLoaded} opacity={0} width={3} top="100px">
         <div className="dp-list-frame-contents">
           <Scrollable vertical>
             {this.props.children}

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -50,9 +49,10 @@ class IncomingEmailSupervisor extends AbstractJob
 
     public function run()
     {
-        global $DP_CONFIG;
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        if (empty($DP_CONFIG['adv_email_collect']) || empty($DP_CONFIG['adv_email_process'])) {
+        if (!$DP_ENV->getConfig('adv_email_collect') || !$DP_ENV->getConfig('adv_email_process')) {
             return;
         }
 

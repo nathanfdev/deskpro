@@ -31,20 +31,16 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class DefaultDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -52,14 +48,6 @@ class DefaultDataFixture extends AbstractFixture implements ContainerAwareInterf
     public function getOrder()
     {
         return 100;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 
     /**

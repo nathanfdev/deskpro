@@ -123,7 +123,10 @@ class ErrorReporter
 
         $info['url'] = $url;
 
-        if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        if ($DP_ENV->isDebug()) {
             $info['DEV_MODE'] = 1;
         }
 

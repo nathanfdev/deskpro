@@ -69,7 +69,7 @@ class FileWriter implements WriterInterface
      */
     public function __construct($logs_dir, SettingsResolver $settings_resolver, SerializerInterface $serializer)
     {
-        $this->setup($settings_resolver->getGlobalSettings()->get('api_log.writer.file'));
+        $this->setup($settings_resolver->getGlobalSettings()->getSerializedArray('api_log.writer.file'));
         $this->file       = new \SplFileObject($logs_dir.DIRECTORY_SEPARATOR.$this->log_name, 'a');
         $this->serializer = $serializer;
     }

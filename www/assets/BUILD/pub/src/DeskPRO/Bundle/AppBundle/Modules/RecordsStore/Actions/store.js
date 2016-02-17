@@ -14,6 +14,7 @@ export const loadBatch = createAction(
                  : Immutable.fromJS({});
 
     const targets = [];
+
     ids.forEach(id => {
       if (!loaded.has(id) && !loaded.has('' + id)) {
         targets.push(id);
@@ -100,7 +101,11 @@ export const loadFromApi = createAction(
 
 export const setCollection = createAction(
   'RECORDS_STORE_SET_COLLECTION',
-  (recordName, collectionName, records) => ({recordName, collectionName, records, ids: records.map(r => r.id)})
+  (recordName, collectionName, records) => {
+    const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
+
+    return {recordName, collectionName, records: recordsArray, ids: recordsArray.map(record => record.id)};
+  }
 );
 
 export const releaseCollection = createAction(

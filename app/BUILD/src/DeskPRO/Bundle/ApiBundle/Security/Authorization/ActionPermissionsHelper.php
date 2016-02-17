@@ -31,11 +31,15 @@ namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 /**
  * Class ActionPermissionsHelper.
  */
+/**
+ * Class ActionPermissionsHelper.
+ */
 class ActionPermissionsHelper
 {
     /**
      * @param $action_tags
      * @param $gathered_tags
+     * Please don't ask me how does it work
      *
      * @return array|mixed
      */
@@ -65,7 +69,7 @@ class ActionPermissionsHelper
      */
     protected function createActionTagsHierarchy($tags)
     {
-        return $this->createTagsHierarchy($tags, false);
+        return $this->createTagsHierarchy($tags);
     }
 
     /**
@@ -75,18 +79,22 @@ class ActionPermissionsHelper
      */
     protected function createGatheredTagsHierarchy($tags)
     {
-        return $this->createTagsHierarchy($tags);
+        return $this->createTagsHierarchy($tags, true);
     }
 
     /**
+     * null means deny by default
+     * false meet strict deny
+     * true means allow.
+     *
      * @param $tags
-     * @param null $base_permission
+     * @param bool $calc_permission
      *
      * @return mixed
      */
-    protected function createTagsHierarchy($tags, $base_permission = null)
+    protected function createTagsHierarchy($tags, $calc_permission = false)
     {
-        $permit    = is_null($base_permission) ? !(0 === strpos($tags, '-')) : $base_permission;
+        $permit    = $calc_permission ? !(0 === strpos($tags, '-')) : null;
         $tags      = explode('.', str_replace('-', '', $tags));
         $hierarchy = $this->recursion($tags, $permit);
 
@@ -131,6 +139,23 @@ class ActionPermissionsHelper
      */
     protected function reduce($permit, $item)
     {
-        return is_array($item) ? array_reduce($item, [$this, 'reduce'], $permit) : ($permit !== null ? $permit && $item : $item);
+        return is_array($item) ? array_reduce($item, [$this, 'reduce'], $permit) : $this->calculatePermission($permit, $item);
+    }
+
+    /**
+     * @param $permit
+     * @param $item
+     *
+     * @return bool
+     */
+    protected function calculatePermission($permit, $item)
+    {
+        if ($permit === null) {
+            return $item;
+        } elseif ($item === null && $permit === true) {
+            return $permit;
+        } else {
+            return $permit && $item;
+        }
     }
 }

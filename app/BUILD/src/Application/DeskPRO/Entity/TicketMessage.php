@@ -163,7 +163,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      *
      * @Assert\NotBlank()
      */
-    protected $message;
+    protected $message = '';
 
     /**
      * This is the full message, including all quotes/cut content.

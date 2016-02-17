@@ -55,6 +55,8 @@ Feature: /people endpoint
   "name": "Modified Name"
 }
     """
+    And the response status code should be 204
+
     And I retrieve the person data
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
