@@ -9,22 +9,12 @@ Feature: /ticket_forms endpoint
     Given the setting "core.use_ticket_priority" is set to 1
     And my request is authenticated
 
-  # Subject
   Scenario: I try to create a ticket with empty subject (empty request)
     When I send a POST request to "/api/v2/ticket_forms/agent"
-    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value should not be blank."
-
-  Scenario: I try to create a ticket with empty subject (empty subject)
-    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
-    """
-{
-  "subject": ""
-}
-    """
     Then the response status code should be 400
-    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value should not be blank."
+
 
   Scenario: I try to create a ticket with empty subject (too short)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -37,7 +27,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.subject.errors[0].code" should be equal to "wrong_length"
     And the JSON node "errors.fields.subject.errors[0].message" should be equal to "The value must be at least 5 characters in length."
 
-  # Person
   Scenario: I try to create a ticket with person by unknown id
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
@@ -56,7 +45,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
+    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.person.fields.name.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I try to create a ticket with person by unknown email (email key)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -68,7 +58,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "not_blank"
+    And the JSON node "errors.fields.person.fields.name.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.person.fields.name.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I try to create a ticket with person with incorrect email (email key)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

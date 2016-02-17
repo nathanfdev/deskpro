@@ -130,10 +130,6 @@ class PersonAssignType extends AbstractType
         if (!empty($data['email'])) {
             $person = $person_repository->findOneByEmail($data['email']);
             if (!$person) {
-                if (empty($data['name'])) {
-                    $form->get('name')->addError(new FormError('not_blank'));
-                }
-
                 $person = new Person();
                 $person->addEmailAddressString($data['email']);
             }

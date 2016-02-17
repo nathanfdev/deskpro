@@ -255,6 +255,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      *
      * @var string
      * @Serializer\Expose()
+     *
+     * @Assert\NotBlank()
      */
     protected $name = '';
 

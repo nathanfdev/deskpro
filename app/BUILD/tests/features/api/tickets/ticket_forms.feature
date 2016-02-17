@@ -234,3 +234,13 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.department" should be equal to 2
     And the JSON node "data.product" should be equal to 2
     And the JSON node "data.priority" should be equal to 3
+
+  Scenario: I try to create a ticket with empty subject (empty subject)
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "subject": ""
+}
+    """
+    Then the response status code should be 204
+    And the JSON node "data.subject" should be equal to "(No Subject)"
