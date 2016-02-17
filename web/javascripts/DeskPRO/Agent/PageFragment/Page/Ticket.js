@@ -1145,6 +1145,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.clearAlerts();
 
+		console.info('ajax-save-reply.start', Date.now());
 		this.replySaveAjax = $.ajax({
 			url: reply_form.attr('action'),
 			type: 'POST',
@@ -1153,12 +1154,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			context: this,
 			noErrorOverride: true,
 			complete: function() {
+				console.time('ajax-save-reply.onComplete');
 				this.replySaveAjax = null;
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 
 				this.getReplyTextArea().data('disable-autosave', false);
+				console.timeEnd('ajax-save-reply.onComplete');
 			},
 			error: function(event, xhr, ajaxOptions, errorThrown, force) {
+				console.info('ajax-save-reply.error', Date.now());
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 				var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
 				loadingEl.hide();
@@ -1166,18 +1170,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
 			},
 			success: function(result) {
-
+				console.info('ajax-save-reply.success', Date.now());
+				console.time('ajax-save-reply.onSuccess');
 				nextTicketId = findNextTicketId();
 
 				// Always perform CM processing right now
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
 
+				console.info('ajax-save-reply.client_messages', result.client_messages, Date.now());
 				if (result.client_messages) {
+					console.time('ajax-save-reply.client_messages');
 					DeskPRO_Window.getMessageChanneler().handleMessageAjax(result.client_messages);
+					console.timeEnd('ajax-save-reply.client_messages');
 
 					// null out so handleTicketUpdate called in hitDone doesnt re-process them
 					result.client_messages = null;
 				}
+				console.info('ajax-save-reply.client_messages.done', Date.now());
 
 				if (result.error_messages) {
 
@@ -1230,7 +1239,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           self.changeManager.updateDataholders();
         }
         ajaxHit = result;
+				console.timeEnd('ajax-save-reply.onSuccess');
+				console.time('ajax-save-reply.hitDone');
         hitDone();
+				console.timeEnd('ajax-save-reply.hitDone');
 			}
 		});
 	},
@@ -2801,6 +2813,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	doTicketUpdate: function() {
     var self = this;
+		console.info('doTicketUpdateRunning', this.doTicketUpdateRunning, Date.now());
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
