@@ -234,8 +234,9 @@ class TicketIncomingEmailMessage
                         if ($this->body) {
                             $this->body = Strings::text2html($this->body, 'plaintext-email');
                         } else {
-                            $this->body = strip_tags($ticket_email->email_body_html);
-                            $this->body = Strings::text2html($this->body, 'plaintext-email');
+                            $this->body                    = Strings::html2Text($ticket_email->email_body_html);
+                            $ticket_email->email_body_text = $this->body;
+                            $this->body                    = nl2br($this->body);
                         }
                         $this->body_is_html = false;
 
