@@ -32,13 +32,18 @@ export class DpAppContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch(preloadData());
-    const myRe = new RegExp('\/'+DP_AGENT_INTERFACE_PATH_NAMESPACE+'\/(\w+)$');
-    const myArr = myRe.exec(window.location.pathname);
+
     // dispatch setActiveApp() to store activeApp in Application.dpWindow.state
-    dispatch(setActiveApp(myArr[1]));
+    const urlParts = window.location.pathname.split('/');
+    if (urlParts.length > 1) {
+      dispatch(setActiveApp(urlParts[2]));
+    }
+
     // dispatch hashChanged() when hash is changed to bind it to the redux state
     window.onhashchange = () => dispatch(hashChanged(window.location.hash));
+
     // dispatch hashChanged() to track the initial hash value
     dispatch(hashChanged(window.location.hash));
   }
