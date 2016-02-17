@@ -47,6 +47,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_ARTICLES                   = 'articles';
     const TABLE_ARTICLE_CATEGORIES         = 'article_categories';
     const TABLE_ARTICLE_COMMENTS           = 'article_comments';
+    const TABLE_ARTICLE_PENDING_CREATE     = 'article_pending_create';
     const TABLE_ARTICLE_TO_CATEGORIES      = 'article_to_categories';
     const TABLE_BLOBS                      = 'blobs';
     const TABLE_CUSTOM_DATA_FEEDBACK       = 'custom_data_feedback';
@@ -58,6 +59,8 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_FEEDBACK                   = 'feedback';
     const TABLE_FEEDBACK_CATEGORIES        = 'feedback_categories';
     const TABLE_FEEDBACK_STATUS_CATEGORIES = 'feedback_status_categories';
+    const TABLE_GLOSSARY_WORD_DEFINITIONS  = 'glossary_word_definitions';
+    const TABLE_GLOSSARY_WORDS             = 'glossary_words';
     const TABLE_LABELS_FEEDBACK            = 'labels_feedback';
     const TABLE_LANGUAGES                  = 'languages';
     const TABLE_NEWS                       = 'news';
@@ -136,7 +139,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     }
 
     /**
-     * @param string       $table  Table name for fetching
+     * @param string       $table Table name for fetching
      * @param string|array $fields
      * @param array        $where
      *
