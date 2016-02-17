@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -128,7 +127,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->loadTypes();
         $this->loadCustomDefFeedback();
         $this->loadStatusCategories();
         $this->manager->flush();
@@ -150,18 +148,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->loadFeedback();
         $this->loadFeedbackCategories();
         $this->loadFeedbackLabels();
-    }
-
-    /**
-     * @return array
-     */
-    private function loadTypes()
-    {
-        foreach ($this->typeValues as $title) {
-            $cat        = new FeedbackCategory();
-            $cat->title = $title;
-            $this->manager->persist($cat);
-        }
     }
 
     private function loadCustomDefFeedback()

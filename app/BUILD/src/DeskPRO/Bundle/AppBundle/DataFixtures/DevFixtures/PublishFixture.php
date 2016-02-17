@@ -32,12 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
-use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -142,7 +139,6 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->languages = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
 
         $this->loadExampleArticle();
-        $this->loadExampleDownload();
         $this->loadExampleNew();
         $manager->flush();
 
@@ -156,38 +152,23 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function loadExampleArticle()
     {
-        $cat        = new ArticleCategory();
-        $cat->title = $this->tr->phrase('user.defaults.article_category_general');
-        $this->manager->persist($cat);
-
         $content          = new Article();
         $content->person  = $this->admin;
         $content->title   = $this->tr->phrase('user.defaults.article_example_title');
         $content->content = $this->tr->phrase('user.defaults.article_example_content');
         $content->status  = ContentAbstract::STATUS_PUBLISHED;
-        $content->addToCategory($cat);
+        $content->addToCategory($this->getReference('article_category_general'));
         $this->manager->persist($content);
-    }
-
-    private function loadExampleDownload()
-    {
-        $cat        = new DownloadCategory();
-        $cat->title = $this->tr->phrase('user.defaults.downloads_category_general');
-        $this->manager->persist($cat);
     }
 
     private function loadExampleNew()
     {
-        $cat        = new NewsCategory();
-        $cat->title = $this->tr->phrase('user.defaults.news_category_general');
-        $this->manager->persist($cat);
-
         $content          = new News();
         $content->person  = $this->admin;
         $content->title   = $this->tr->phrase('user.defaults.news_example_title');
         $content->content = $this->tr->phrase('user.defaults.news_example_content');
         $content->status  = ContentAbstract::STATUS_PUBLISHED;
-        $content->setCategory($cat);
+        $content->setCategory($this->getReference('news_category_general'));
         $this->manager->persist($content);
     }
 
