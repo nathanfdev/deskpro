@@ -20,7 +20,7 @@ export class PaginationContainer extends Component {
   render() {
     const pagination = this.props.pagination.toJS();
 
-    if (pagination.total_pages < 2) {
+    if (!pagination.total_pages || pagination.total_pages < 2) {
       return null;
     }
 

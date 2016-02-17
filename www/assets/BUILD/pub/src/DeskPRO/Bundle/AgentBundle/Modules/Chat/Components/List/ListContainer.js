@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { paginationSelector, viewModeSelector } from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
-import { isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { isLoadedCollectionSelectorFactory, setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   isLoaded: isLoadedCollectionSelectorFactory('UserChat', 'chats')(state)
@@ -15,6 +15,16 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
+
+  componentDidMount() {
+    this.props.dispatch(setCollection('UserChat', 'chats', []));
+    this.props.dispatch(setCollection('Department', 'chats', []));
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(releaseCollection('UserChat', 'chats'));
+    this.props.dispatch(releaseCollection('Department', 'chats'));
+  }
 
   render() {
     const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
