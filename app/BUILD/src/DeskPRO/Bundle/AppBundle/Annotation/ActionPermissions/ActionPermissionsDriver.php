@@ -34,7 +34,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadat
 use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\Reader;
 use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
 
