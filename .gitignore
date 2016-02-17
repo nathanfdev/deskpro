@@ -86,8 +86,7 @@ phantomjsdriver.log
 
 # Config
 /config/*
-config/advanced/*
-!/config/advanced
+/config/advanced/*
 !/config/.gitkeep
 !/config/advanced/.gitkeep
 
