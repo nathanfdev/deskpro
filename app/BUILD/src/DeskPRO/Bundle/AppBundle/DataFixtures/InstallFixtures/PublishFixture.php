@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Article;
@@ -40,9 +39,10 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class PublishFixture extends DeskProAbstractFixture
+class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_PUBLISH    = 100;
     const NUM_CATEGORIES = 10;
@@ -155,6 +155,14 @@ class PublishFixture extends DeskProAbstractFixture
             $this->loadComments($content);
         }
         $this->linkArticlesWithCategories();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 90;
     }
 
     private function loadExampleArticle()
