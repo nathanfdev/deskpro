@@ -26,37 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command\Gen;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class GenTemplateMapCommand extends ContainerAwareCommand
+class Build1455612405 extends AbstractBuild
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public function run()
     {
-        $this->setName('dpdev:gen:template-map');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln('Generating map... This might take a while.');
-        $startTime = microtime(true);
-
-        TemplatesScanner::dump();
-
-        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
+        $this->out('My Upgrade Class');
+        $this->execMutateSql('ALTER TABLE import_datastore CHANGE typename typename VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE import_map CHANGE typename typename VARBINARY(80) NOT NULL, CHANGE old_id old_id VARBINARY(80) NOT NULL, CHANGE new_id new_id VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE blobs_storage CHANGE data data LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE tickets_messages_raw CHANGE raw raw LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE settings CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE settings_brand CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE api_log ADD method VARCHAR(255) NOT NULL');
     }
 }

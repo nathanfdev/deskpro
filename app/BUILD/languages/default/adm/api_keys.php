@@ -28,7 +28,7 @@
 
 return array(
     'adm.api_keys.keys_title' => 'API Key Info',
-    'adm.api_keys.logs_title' => 'API Key Logs',
+    'adm.api_keys.logs_title' => 'API Key Logs (v1)',
 
     'adm.api_keys.request' => 'Request',
     'adm.api_keys.path'    => 'Path',

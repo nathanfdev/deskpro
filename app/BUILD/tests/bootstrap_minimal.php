@@ -110,3 +110,4 @@ require DP_APP_DIR.'/sys/Boot/Boot.php';
     'Lib',
     'PreparePaths',
 ]);
+libxml_disable_entity_loader(false);

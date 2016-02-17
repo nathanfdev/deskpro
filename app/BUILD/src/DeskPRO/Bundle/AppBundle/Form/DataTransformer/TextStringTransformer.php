@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
@@ -44,7 +43,11 @@ class TextStringTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        return (string) $value;
+        if ($value === null) {
+            return '';
+        }
+
+        return $value;
     }
 
     /**
@@ -52,6 +55,10 @@ class TextStringTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        return (string) $value;
+        if ($value === null) {
+            return '';
+        }
+
+        return $value;
     }
 }

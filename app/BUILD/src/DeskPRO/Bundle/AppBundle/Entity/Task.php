@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -42,26 +41,23 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TaskRepository")
  * @ORM\Table(name="tasks_new")
  * @ORM\HasLifecycleCallbacks
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_tasks_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class Task implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     const VISIBILITY_PRIVATE = 'private';
+    const VISIBILITY_PUBLIC  = 'public';
+    const VISIBILITY_PROJECT = 'project';
 
-    const TYPE_TASK = 'task';
+    const TYPE_TASK  = 'task';
+    const TYPE_EVENT = 'event';
 
     /**
      * @var int
@@ -74,6 +70,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string")
+     *
      * @Assert\NotBlank()
      */
     protected $title;
@@ -95,6 +92,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime")
+     *
      * @Assert\NotNull()
      */
     protected $date_created;
@@ -104,6 +102,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
      */
     protected $task_type = self::TYPE_TASK;
 
@@ -137,6 +137,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string")
+     *
+     * @Assert\NotNull()
      */
     protected $visibility = self::VISIBILITY_PRIVATE;
 
@@ -159,6 +161,8 @@ class Task implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      * @ORM\Column(type="integer")
+     *
+     * @Assert\NotNull()
      */
     protected $urgency = 5;
 

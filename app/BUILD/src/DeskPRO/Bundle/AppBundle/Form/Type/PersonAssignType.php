@@ -130,10 +130,6 @@ class PersonAssignType extends AbstractType
         if (!empty($data['email'])) {
             $person = $person_repository->findOneByEmail($data['email']);
             if (!$person) {
-                if (empty($data['name'])) {
-                    $form->get('name')->addError(new FormError('not_blank'));
-                }
-
                 $person = new Person();
                 $person->addEmailAddressString($data['email']);
             }
@@ -150,6 +146,14 @@ class PersonAssignType extends AbstractType
         // Use config person entity as default
         } elseif (!$form->getData() && $default_person) {
             $form->setData($default_person);
+        }
+
+        /** @var Person $person */
+        $person = $form->getData();
+        if (!isset($data['name']) && $person) {
+            $data['name'] = $person->name;
+
+            $event->setData($data);
         }
     }
 

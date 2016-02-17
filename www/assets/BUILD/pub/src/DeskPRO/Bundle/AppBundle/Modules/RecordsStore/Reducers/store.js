@@ -6,14 +6,15 @@ import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const storeInitialState = {};
 
-function handleSetCollection(state, {recordName, collectionName, records}) {
-  const recordsMap = mapKeyedFromArray(records, 'id');
-  const recordIds = recordsMap.keySeq().toArray();
+function handleSetCollection(state, {recordName, collectionName, records, ids, noUpdates}) {
+  if (noUpdates) {
+    return state;
+  }
 
   return state.mergeDeep({
     [recordName]: {
-      records: recordsMap,
-      collections: {[collectionName]: recordIds},
+      records: mapKeyedFromArray(records, 'id'),
+      collections: {[collectionName]: ids},
       statuses: {[collectionName]: {success: true, loading: false}}
     }
   });

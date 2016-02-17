@@ -25,8 +25,8 @@ Feature: /tickets endpoint
   Scenario: I try to create a ticket providing empty data
     When I send a POST request to "/api/v2/tickets"
     Then the response should be in JSON
-    And the response status code should be 400
-    And the JSON node "errors.fields.subject" should exist
+    And the response status code should be 201
+    And the JSON node "data.subject" should be equal to "(No Subject)"
 
   @basic
   Scenario: I create a ticket

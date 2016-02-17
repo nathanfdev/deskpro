@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,11 +46,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository")
  * @ORM\Table(name="custom_ticket_filters")
  * @Serializer\ExclusionPolicy("ALL")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_ticket_filters_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyChanged
 {

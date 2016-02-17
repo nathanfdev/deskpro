@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -54,8 +55,8 @@ class SettingsResolverService
         // loaders, in proper order. first loader is treated as the default settings.
         $loaders = array(
             $container->getSystemService('default_settings_loader'),
+            new GlobalsArrayLoader($container->get('deskpro.app_env'), $simple_array_cache),
             new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
-            new GlobalsArrayLoader($simple_array_cache),
         );
 
         // brand settings loader is a special loader, injected directly

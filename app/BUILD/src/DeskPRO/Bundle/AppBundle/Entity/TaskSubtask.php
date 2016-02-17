@@ -31,23 +31,16 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_subtask")
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_subtasks_get", parameters={"id" = "expr(object.getId())"})
- * )
  */
 class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 {

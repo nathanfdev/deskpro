@@ -1,0 +1,32 @@
+define [
+  'Admin/Main/Ctrl/Base'
+  'angular'
+], (
+  Admin_Ctrl_Base
+  angular
+  ) ->
+
+  class Admin_ApiKeys_Ctrl_LogsView extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_ApiKeys_Ctrl_LogsView'
+    @CTRL_AS = 'ViewCtrl'
+    @DEPS = ['$stateParams']
+
+    init: ->
+      @service = @DataService.get 'ApiLogs'
+      @model = {}
+
+    ###
+    # Loads the list
+    ###
+    initialLoad: ->
+      @service.get(@$stateParams.id).then( (model) =>
+        @model = model
+      )
+
+    getResponseData: ->
+      return angular.toJson(@model.response_data, true)
+
+    getRequestData: ->
+      return angular.toJson(@model.request_data, true)
+
+  Admin_ApiKeys_Ctrl_LogsView.EXPORT_CTRL()

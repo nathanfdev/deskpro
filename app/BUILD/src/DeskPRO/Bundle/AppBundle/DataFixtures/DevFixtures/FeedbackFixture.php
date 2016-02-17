@@ -37,9 +37,10 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class FeedbackFixture extends DeskProAbstractFixture
+class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_FEEDBACK            = 100;
     const NUM_LABELS              = 30;
@@ -183,6 +184,14 @@ class FeedbackFixture extends DeskProAbstractFixture
                 $this->manager->persist($cat);
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 90;
     }
 
     private function loadFeedback()

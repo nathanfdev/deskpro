@@ -20,6 +20,7 @@ define [
   'Admin/TicketProblems/DataService/Problems'
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
   'Admin/ApiKeys/DataService/ApiKeys',
+  'Admin/ApiKeys/DataService/ApiLogs',
   'Admin/Banning/DataService/Bans',
   'Admin/UserGroups/DataService/UserGroups',
   'Admin/UserRules/DataService/UserRules',
@@ -52,6 +53,7 @@ define [
   DataService_Problems
   DataService_TwitterAccounts,
   DataService_ApiKeys,
+  DataService_ApiLogs,
   DataService_Bans,
   DataService_UserGroups,
   DataService_UserRules,

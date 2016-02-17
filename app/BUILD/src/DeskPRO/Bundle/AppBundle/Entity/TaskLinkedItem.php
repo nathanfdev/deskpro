@@ -38,7 +38,6 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -48,11 +47,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="chat_unique", columns={"task_id", "chat_id"}),
  *      @ORM\UniqueConstraint(name="article_unique", columns={"task_id", "article_id"})
  *  }
- * )
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_task_links_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
 class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged

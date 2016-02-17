@@ -41,7 +41,10 @@ class ConnectionFactory extends BaseConnectionFactory
     public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
     {
         // This is used by some build scrpts to allow building without a real db connection
-        if ((!empty($_SERVER['argv']) && in_array('--fake-db-connection', $_SERVER['argv'])) || defined('DP_USE_FAKE_DB_CONNECTION')) {
+        /** @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        if ($DP_ENV && $DP_ENV->getRuntimeVar('is_building', false)) {
             $mock = \Mockery::mock(new PDOStub());
             $mock->shouldReceive('setAttribute')->andReturn();
             $mock->shouldReceive('getAttribute')->andReturn();

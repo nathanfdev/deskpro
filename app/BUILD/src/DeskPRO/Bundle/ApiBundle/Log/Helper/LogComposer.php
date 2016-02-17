@@ -173,6 +173,7 @@ class LogComposer
         $log
             ->setStartTime(defined('DP_START_TIME') ? DP_START_TIME : time())
             ->setRequestedUri($request->getPathInfo())
+            ->setMethod($request->getMethod())
             ->setRequestData($request_data)
             ->setRequestId($this->getRequestId($request));
         $this->setApiLogAuthData($log);

@@ -29,13 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class DevKernel extends BaseKernel
 {
+    /**
+     * {@inheritdoc}
+     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
@@ -48,7 +50,7 @@ class DevKernel extends BaseKernel
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -68,7 +70,7 @@ class DevKernel extends BaseKernel
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\DevBundle\DevBundle(),
-        );
+        ];
 
         return $bundles;
     }

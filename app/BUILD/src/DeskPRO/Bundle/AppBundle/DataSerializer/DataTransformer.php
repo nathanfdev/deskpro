@@ -34,7 +34,8 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer;
 use DeskPRO\Bundle\AppBundle\DataSerializer\Exception\DataSerializerException;
 
 /**
- * Transforms data using child data transformers. Incoming data are associated to a particular DataTypeTransfomer via the DataTypeMap, which is configurable.
+ * Transforms data using child data transformers.
+ * Incoming data are associated to a particular DataTypeTransformer via the DataTypeMap, which is configurable.
  */
 class DataTransformer
 {
@@ -42,6 +43,7 @@ class DataTransformer
      * @var DataTransformerRegistry
      */
     private $transformed_registry;
+
     /**
      * @var DataTypeMap
      */
@@ -67,9 +69,9 @@ class DataTransformer
      */
     public function __construct(
         DataTransformerRegistry $transformed_registry,
-        DataTransformerFactory $transformer_factory,
-        DataTypeMap $type_map,
-        DataTypeIdFinder $id_finder
+        DataTransformerFactory  $transformer_factory,
+        DataTypeMap             $type_map,
+        DataTypeIdFinder        $id_finder
     ) {
         $this->transformed_registry = $transformed_registry;
         $this->type_map             = $type_map;
@@ -138,14 +140,41 @@ class DataTransformer
     }
 
     /**
+     * @param mixed                 $data
+     * @param DataSerializerContext $context
+     *
+     * @return mixed
+     */
+    public function recursiveTransform($data, DataSerializerContext $context)
+    {
+        if (is_object($data) && $this->canTransformData($data)) {
+            $transformation_request = new DataTransformerRequest(
+                $data,
+                $context,
+                $context->getMainView() ?: DataTransformerRequest::DEFAULT_VIEW
+            );
+
+            $transformed = $this->transform($transformation_request);
+            $data        = $this->recursiveTransform($transformed->getTransformed(), $context);
+        } elseif (is_array($data) || $data instanceof \Traversable) {
+            $transformed = [];
+            foreach ($data as $key => $value) {
+                $transformed[$key] = $this->recursiveTransform($value, $context);
+            }
+
+            $data = $transformed;
+        }
+
+        return $data;
+    }
+
+    /**
      * @param DataTransformerRequest $transformation_request
      * @param $type
      *
-     * @throws Exception\DataSerializerException
-     *
      * @return array
      */
-    public function doTransform(DataTransformerRequest $transformation_request, $type)
+    protected function doTransform(DataTransformerRequest $transformation_request, $type)
     {
         $transformer = $this->transformer_factory->findByType($type);
         $transformed = $transformer->transform($transformation_request);

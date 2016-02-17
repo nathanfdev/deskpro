@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -575,7 +574,10 @@ class ApiDb extends AbstractDbSet
                 (3, 'Group 1', 'test', 0, 'g1', 1),
                 (4, 'Group 2 (disabled)', 'test', 0, 'g2', 0),
                 (5, 'Group 3', 'test', 0, 'g3', 1),
-                (6, 'Group 4', 'test', 0, 'g4', 1)
+                (6, 'Group 4', 'test', 0, 'g4', 1),
+
+                (7, 'usergroup_agent_all_perms', 'usergroup_agent_all_perms', 1, 'agent_all_perms', 1),
+                (8, 'agent_all_non_destructive', 'agent_all_non_destructive', 1, 'agent_all_safe_perms', 1)
             ;
 
             INSERT INTO `person2usergroups`
@@ -595,7 +597,10 @@ class ApiDb extends AbstractDbSet
                 (1, 5),
                 (2, 5),
                 (3, 5),
-                (4, 6)
+                (4, 6),
+
+                (1, 7),
+                (1, 8)
             ;
         "
         );

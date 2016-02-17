@@ -101,7 +101,20 @@ class LogHelper extends AbstractLogHelper
     {
         return
             $this->resolver->getGlobalSettings()->get('api_log.enabled')
-            && in_array($this->mode, $this->resolver->getGlobalSettings()->get('api_log.modes'));
+            && in_array($this->mode, $this->getModes());
+    }
+
+    public function getModes()
+    {
+        $modes = $this->resolver->getGlobalSettings()->get('api_log.modes');
+        if (!is_array($modes)) {
+            $modes = @unserialize($modes);
+            if (!is_array($modes)) {
+                $modes = [];
+            }
+        }
+
+        return $modes;
     }
 
     /**

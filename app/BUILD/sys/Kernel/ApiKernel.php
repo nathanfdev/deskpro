@@ -32,20 +32,15 @@
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class ApiKernel extends BaseKernel
 {
     /**
-     * Returns an array of bundles to register.
-     *
-     * @return BundleInterface[] An array of bundle instances.
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
-        $bundles = array(
+        $bundles = [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -60,13 +55,12 @@ class ApiKernel extends BaseKernel
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new \Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
-        );
+        ];
 
         if ('dev' === $this->getEnvironment()
             or
@@ -83,11 +77,7 @@ class ApiKernel extends BaseKernel
     }
 
     /**
-     * Loads the container configuration.
-     *
-     * @param LoaderInterface $loader A LoaderInterface instance
-     *
-     * @api
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {

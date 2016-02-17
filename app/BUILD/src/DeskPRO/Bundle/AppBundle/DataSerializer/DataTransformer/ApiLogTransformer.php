@@ -26,37 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+
 /**
- * DeskPRO.
+ * Class ApiLogTransformer.
  */
-namespace DeskPRO\Bundle\DevBundle\Command\Gen;
-
-use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class GenTemplateMapCommand extends ContainerAwareCommand
+class ApiLogTransformer extends AbstractDataSerializerTransformer
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        $this->setName('dpdev:gen:template-map');
+        return [
+            'id',
+            'request_id',
+            'credentials',
+            'mode',
+            'requested_uri',
+            'status',
+            'start_time',
+            'end_time',
+            'method',
+        ];
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        $output->writeln('Generating map... This might take a while.');
-        $startTime = microtime(true);
+        $data = $transformation_request->getDataToBeTransformed();
 
-        TemplatesScanner::dump();
-
-        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
+        return [
+            'request_data'  => $data->getRequestData(),
+            'response_data' => $data->getResponseData(),
+        ];
     }
 }

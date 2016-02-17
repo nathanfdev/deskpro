@@ -6,6 +6,8 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import AgentReducers from 'DeskPRO/Bundle/AgentBundle/AgentApp_Reducers';
 import AppReducers from 'DeskPRO/Bundle/AppBundle/AppApp_Reducers';
 
+let reduxStore;
+
 export function dispatchInAgent(action, state) {
 
   // Bootstrap DAL
@@ -28,7 +30,11 @@ export function dispatchInAgent(action, state) {
     ampMiddleware.promiseMiddleware
   );
   const makeStore = compose(middleware)(createStore);
-  const store = makeStore(reducer, state);
+  reduxStore = makeStore(reducer, state);
 
-  store.dispatch(action)
+  return reduxStore.dispatch(action)
+}
+
+export function getReduxState() {
+  return reduxStore.getState();
 }

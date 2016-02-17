@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
@@ -303,9 +304,9 @@ class ChatsController extends AbstractController
         return View::create(
             $this->dataSerialize($chat),
             $status,
-            array(
-                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId())),
-            )
+            [
+                'Location' => $this->generateUrl('agent_chats_view_chat', ['id' => $chat->getId()]),
+            ]
         );
     }
 }

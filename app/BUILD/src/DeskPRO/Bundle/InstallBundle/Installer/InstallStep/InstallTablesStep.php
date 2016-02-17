@@ -68,7 +68,6 @@ class InstallTablesStep extends AbstractStep
                 $this->getSession()->getPaths()->php_path,
                 $this->getContext()->getDpEnv()->getDpRoot().'/bin/console',
                 'dpdev:gen:schema-file',
-                '--fake-db-connection',
             ]);
 
             $proc = $builder->getProcess();

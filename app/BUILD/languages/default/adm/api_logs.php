@@ -26,37 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command\Gen;
-
-use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class GenTemplateMapCommand extends ContainerAwareCommand
-{
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $this->setName('dpdev:gen:template-map');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln('Generating map... This might take a while.');
-        $startTime = microtime(true);
-
-        TemplatesScanner::dump();
-
-        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
-    }
-}
+return [
+    'adm.api_logs.title'           => 'API Logs',
+    'adm.api_logs.config'          => 'API Logs Configuration',
+    'adm.api_logs.single_title'    => 'API Log #',
+    'adm.api_logs.filter'          => 'Filter list',
+    'adm.api_logs.mode'            => 'Auth mode',
+    'adm.api_logs.credentials'     => 'Credentials',
+    'adm.api_logs.request_id'      => 'Request ID',
+    'adm.api_logs.request_data'    => 'Request data',
+    'adm.api_logs.requested_uri'   => 'Requested URI',
+    'adm.api_logs.request_method'  => 'Request method',
+    'adm.api_logs.response_status' => 'Response status',
+    'adm.api_logs.response_data'   => 'Response data',
+    'adm.api_logs.start_time'      => 'Start time',
+    'adm.api_logs.end_time'        => 'End time',
+];

@@ -41,12 +41,9 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Exception\OutOfBoundsException;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class CrudController.
@@ -366,12 +363,17 @@ abstract class CrudController extends BaseController
             true // convert to assoc arrays instead of stdClass instances
         );
 
-        $form->submit(
-            $decoded,
-            false // clear missing = false to perform partial updates
-        );
+        // we use POST request for creating and updating entities (including partial updates)
+        // so $clearMissing should depends on $model id (switch for POST and PATCH request)
 
-        if ($this->isValid($form)) {
+        // we can't always use $clearMissing = false (for partial updates) because of:
+        // https://github.com/symfony/symfony/pull/10567
+        // https://github.com/symfony/symfony/issues/11493
+
+        // in this case form ViolationMapper should applies entity validation errors on the submitted form
+
+        $form->submit($decoded, !$model->getId());
+        if ($form->isValid()) {
             return View::create($this->dataSerialize($this->persistModel($model)), $status);
         }
 
@@ -401,42 +403,5 @@ abstract class CrudController extends BaseController
         if (!in_array($action, static::$exposeOnly)) {
             throw $this->createAccessDeniedException('Action is restricted');
         }
-    }
-
-    /**
-     * Check form and its' underlying data are valid.
-     *
-     * Even though Symfony form component should call validate on the underlying model, for some reason
-     * $form->isValid() is true even if the model isn't valid. This method fixes the issue by calling validator
-     * on form's model and adding violations to the form if there are any.
-     *
-     * @todo
-     * @fixme
-     *
-     * @param Form $form
-     *
-     * @return bool
-     */
-    private function isValid(Form $form)
-    {
-        $model = $form->getData();
-
-        /** @var ValidatorInterface $validator */
-        $validator  = $this->get('validator');
-        $violations = $validator->validate($model);
-        if ($violations->count()) {
-
-            /** @var \Symfony\Component\Validator\ConstraintViolation $violation */
-            foreach ($violations as $violation) {
-                try {
-                    $targetForm = $form->get($violation->getPropertyPath());
-                } catch (OutOfBoundsException $e) {
-                    $targetForm = $form;
-                }
-                $targetForm->addError(new FormError($violation->getMessage()));
-            }
-        }
-
-        return $form->isValid();
     }
 }

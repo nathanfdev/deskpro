@@ -207,6 +207,11 @@ class DpEnv
     private $dat_manager;
 
     /**
+     * @var array
+     */
+    private $runtime_vars = [];
+
+    /**
      * DpEnv constructor.
      *
      * @param string $dp_root
@@ -536,5 +541,51 @@ class DpEnv
     public function getDatManager()
     {
         return $this->dat_manager;
+    }
+
+    /**
+     * Set a runtime var. Note that using this should normally be avoided
+     * if possible because they are little better than simply using globals.
+     *
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setRuntimeVar($name, $value)
+    {
+        $this->runtime_vars[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasRuntimeVar($name)
+    {
+        return array_key_exists($name, $this->runtime_vars);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function unsetRuntimeVar($name)
+    {
+        unset($this->runtime_vars[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     * @return \OutOfRangeException|string
+     */
+    public function getRuntimeVar($name, $default = '__throw__')
+    {
+        if (!array_key_exists($name, $this->runtime_vars)) {
+            if ($default === '__throw__') {
+                return new \OutOfRangeException();
+            }
+            return $default;
+        }
+
+        return $this->runtime_vars[$name];
     }
 }

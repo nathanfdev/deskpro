@@ -1,9 +1,14 @@
 services:
 
   form.form_extension:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\DeskproFormExtension
     tags:
       - { name: form.type_extension, alias: form }
+
+  form.text_transformer_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\TextTransformerExtension
+    tags:
+      - { name: form.type_extension, alias: text }
 
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator

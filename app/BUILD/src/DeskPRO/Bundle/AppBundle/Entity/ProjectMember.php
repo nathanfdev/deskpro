@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -49,11 +48,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="team_unique", columns={"project_id", "team_id"}),
  *      @ORM\UniqueConstraint(name="department_unique", columns={"project_id", "department_id"})
  *  }
- * )
- *
- * @Hateoas\Relation(
- *      "self",
- *      href=@Hateoas\Route("api_project_members_get", parameters={"id" = "expr(object.getId())"})
  * )
  */
 class ProjectMember implements EntityInterface, NotifyPropertyChanged

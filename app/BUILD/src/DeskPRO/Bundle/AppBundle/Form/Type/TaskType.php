@@ -67,9 +67,10 @@ class TaskType extends AbstractType
             ->add('task_type', 'choice', [
                 'description' => 'the type of task',
                 'required'    => false,
+                'empty_data'  => Task::TYPE_TASK,
                 'choices'     => [
-                    'task'  => 'Task',
-                    'event' => 'Event',
+                    Task::TYPE_TASK  => 'Task',
+                    Task::TYPE_EVENT => 'Event',
                 ],
             ])
             ->add('date_due', 'datetime', [
@@ -93,14 +94,16 @@ class TaskType extends AbstractType
             ->add('visibility', 'choice', [
                 'required'    => false,
                 'description' => 'the task visibility',
+                'empty_data'  => Task::VISIBILITY_PRIVATE,
                 'choices'     => [
-                    'public'  => 'Public',
-                    'project' => 'Project',
-                    'private' => 'Private',
+                    Task::VISIBILITY_PUBLIC  => 'Public',
+                    Task::VISIBILITY_PROJECT => 'Project',
+                    Task::VISIBILITY_PRIVATE => 'Private',
                 ],
             ])
             ->add('urgency', 'integer', [
                 'required'    => false,
+                'empty_data'  => '5',
                 'description' => 'the task urgency',
             ])
             ->add('display_order', 'integer', [

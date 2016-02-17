@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\NewSettings;
 
 /**
@@ -64,6 +65,11 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
     public function get($key, $default = null)
     {
         return $this->has($key) ? $this->settings[$key] : $default;
+    }
+
+    public function getBool($key, $default = false)
+    {
+        return $this->has($key) ? (bool) $this->settings[$key] : $default;
     }
 
     /**

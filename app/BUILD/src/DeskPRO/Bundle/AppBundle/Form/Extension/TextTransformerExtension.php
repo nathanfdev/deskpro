@@ -29,34 +29,30 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\DevBundle\Command\Gen;
+namespace DeskPRO\Bundle\AppBundle\Form\Extension;
 
-use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
+use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\FormBuilderInterface;
 
-class GenTemplateMapCommand extends ContainerAwareCommand
+/**
+ * Class TextTransformerExtension.
+ */
+class TextTransformerExtension extends AbstractTypeExtension
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->setName('dpdev:gen:template-map');
+        $builder->addModelTransformer(new TextStringTransformer());
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getExtendedType()
     {
-        $output->writeln('Generating map... This might take a while.');
-        $startTime = microtime(true);
-
-        TemplatesScanner::dump();
-
-        $output->writeln(sprintf('Done in %.3fs', microtime(true) - $startTime));
-        $output->writeln(sprintf('Wrote map to: <info>%s</info>', DP_APP_DIR.TemplatesScanner::DUMP_PATH));
+        return 'text';
     }
 }

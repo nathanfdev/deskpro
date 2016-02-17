@@ -35,6 +35,7 @@ Feature: /people endpoint
     Then the response status code should be 201
     And the JSON node "data.name" should be equal to "Sample Person"
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
+    And the JSON node "data.primary_email" should be equal to "sample.person@deskpro.com"
 
   Scenario: I try to create a person providing empty data
     When I send a POST request to "/api/v2/people" with body:

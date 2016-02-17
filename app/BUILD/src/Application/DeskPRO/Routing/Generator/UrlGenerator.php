@@ -43,9 +43,17 @@ class UrlGenerator extends BaseUrlGenerator
     /** @var ObjectUrlGenerator|null */
     protected $object_url_generator = null;
 
+    /**
+     * @return \DpRun\DpEnv
+     */
+    private function getDpEnv()
+    {
+        return $GLOBALS['DP_ENV'];
+    }
+
     public function setContext(RequestContext $context)
     {
-        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli' && !defined('DP_USE_FAKE_DB_CONNECTION')) {
+        if (php_sapi_name() === 'cli' && !$this->getDpEnv()->hasRuntimeVar('is_building')) {
             $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
 
             $info = parse_url($deskpro_url);
@@ -65,14 +73,9 @@ class UrlGenerator extends BaseUrlGenerator
         $this->context = $context;
     }
 
-    public function getEnvMode()
-    {
-        return 'dev';
-    }
-
     public function generate($name, $parameters = array(), $absolute = false)
     {
-        if ($this->getEnvMode() == 'dev') {
+        if ($this->getDpEnv()->isDebug()) {
             return parent::generate($name, $parameters, $absolute);
         }
 
