@@ -16,6 +16,7 @@ api:
                 - DpBehat\PermissionContext
                 - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Api\ApiLogContext
+                - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
     extensions:
