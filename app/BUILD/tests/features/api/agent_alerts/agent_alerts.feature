@@ -1,3 +1,4 @@
+@basic
 Feature: /me/notifications endpoint
   To retrieve DeskPRO agent alerts
   As a developer

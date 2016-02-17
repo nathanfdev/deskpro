@@ -1,4 +1,4 @@
-@basic @log_n_dupe
+@basic
 Feature: Api should log any request
 
   Background:
