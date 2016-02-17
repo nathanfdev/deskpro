@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -314,13 +315,7 @@ class ApiDb extends AbstractDbSet
                 ('core.twitter_last_cleanup', '".time()."'),
                 ('core.use_agent_team', '1'),
                 ('core_tickets.enable_like_search_auto', '1'),
-                ('user.kb_subscriptions_last', '".time()."'),
-                ('api_log.writer.type', 'db'),
-                ('api_log.enabled', 0),
-                ('api_log.writer.file.serializer.type', 'human_readable'),
-                ('api_log.dupe.modes', 'a:1:{i:0;s:3:\"key\";}'),
-                ('api_log.modes', 'a:1:{i:0;s:3:\"key\";}'),
-                ('api_log.writer.file', 'a:3:{s:12:\"log_max_size\";i:5242880;s:13:\"log_max_files\";i:5;s:8:\"log_name\";s:11:\"api_log.log\";}');
+                ('user.kb_subscriptions_last', '".time()."');
         "
         );
 

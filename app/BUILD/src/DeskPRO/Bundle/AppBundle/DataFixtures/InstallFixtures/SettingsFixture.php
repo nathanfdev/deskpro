@@ -61,18 +61,6 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             'core.install_timestamp' => time(),
             'core.install_key' => RandUtils::randomStringFormat('%25An'),
             'core.app_secret' => RandUtils::randomStringFormat('%75An'),
-
-            'api_log.enabled' => false,
-            'api_log.modes' => serialize(['key']),
-            'api_log.writer.type' => 'db',
-            'api_log.writer.file.serializer.type' => 'human_readable',
-            'api_log.writer.file' => serialize([
-                'log_max_size' => 5 * 1024 * 1024,
-                'log_max_files' => 5,
-                'log_name' => 'api_log.log',
-            ]),
-            'api_log.dupe.modes' => serialize(['key']),
-
         ) as $name => $value) {
             $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;
