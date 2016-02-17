@@ -18,6 +18,23 @@ define [
     getFiltration: ->
       return @filtration
 
+    getOptions: ->
+      deferred = @$q.defer()
+      @Api2.sendGet('/api_logs/options')
+      .success((data) =>
+        deferred.resolve data.data
+      )
+      .error( (data, status, headers, config) => deferred.reject() )
+
+      deferred.promise
+
+    updateOptions: (options)->
+      @Api2.sendPutJson('/api_logs/options', options)
+      .success((data) =>
+        deferred.resolve data.data
+      )
+      .error( (data, status, headers, config) => deferred.reject() )
+
     _doLoadList: () ->
       deferred = @$q.defer()
 

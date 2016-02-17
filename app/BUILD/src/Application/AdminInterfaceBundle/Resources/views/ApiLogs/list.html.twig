@@ -6,12 +6,27 @@
 
 			<nav class="dp-blocktabs responsive">
 				<ul>
-					<li class="active"><a href="#"><i class="fa fa-table"></i> {{ phrase('adm.api_logs.title') }}</a></li>
+					<li class="active" dp-tab-btn="logs.list"><a href="#"><i class="fa fa-table"></i> {{ phrase('adm.api_logs.title') }}</a></li>
+                    <li class="pipe">|</li>
+					<li class="active" dp-tab-btn="logs.config"><a href="#"><i class="fa fa-settings"></i> {{ phrase('adm.api_logs.config') }}</a></li>
 				</ul>
 			</nav>
 
 			<article>
-				<div class="dp-tabletabs-contentwrap">
+				<div dp-tab-body="logs.list" class="dp-tabletabs-contentwrap">
+                    <div class="dp-btn-pagination">
+                        <select
+                                ng-model="LogsCtrl.pagination.page"
+                                ui-select2
+                                style="width: 130px;"
+                                >
+                            <option ng-selected="page == LogsCtrl.pagination.page"
+                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
+                                    value="{{ ng_var('page') }}">
+                                Page {{ ng_var('page') }}
+                            </option>
+                        </select>
+                    </div>
 					<table class="table table-hover">
 						<thead>
 						<tr>
@@ -42,8 +57,8 @@
 
                             </th>
                             <th> {{ phrase('adm.api_logs.response_status') }}</th>
-                            <th> {{ phrase('admin.api_logs.start_time') }}</th>
-                            <th> {{ phrase('admin.api_logs.end_time') }}</th>
+                            <th> {{ phrase('adm.api_logs.start_time') }}</th>
+                            <th> {{ phrase('adm.api_logs.end_time') }}</th>
                         </tr>
 						</thead>
 						<tbody>
@@ -59,26 +74,53 @@
 						</tr>
 						</tbody>
 					</table>
+                    <div class="dp-btn-pagination">
+                        <select
+                                ng-model="LogsCtrl.pagination.page"
+                                ui-select2
+                                style="width: 130px;"
+                                >
+                            <option ng-selected="page == LogsCtrl.pagination.page"
+                                    ng-repeat="page in LogsCtrl.pagination.page_nums "
+                                    value="{{ ng_var('page') }}">
+                                Page {{ ng_var('page') }}
+                            </option>
+                        </select>
+                    </div>
 				</div>
-
-			</article>
-
-			<footer>
-                <div class="dp-btn-pagination">
-                    <select
-                            ng-model="LogsCtrl.pagination.page"
-                            ui-select2
-                            style="width: 130px;"
-                            >
-                        <option ng-selected="page == LogsCtrl.pagination.page"
-                                ng-repeat="page in LogsCtrl.pagination.page_nums "
-                                value="{{ ng_var('page') }}">
-                            Page {{ ng_var('page') }}
-                        </option>
-                    </select>
+                <div dp-tab-body="logs.config" class="panel panel-fill indent">
+                    <div class="panel-body">
+                        <div class="form-horizontal dp-form">
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Enabled</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <label>
+                                        <input type="checkbox" ng-checked="LogsCtrl.options.enabled" dp-change="LogsCtrl.toggleLogs()" />
+                                        <em>{{ ng_var('mode') }}</em>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-3">
+                                    <h3>Modes</h3>
+                                </div>
+                                <div class="col-lg-9">
+                                    <ul class="checkbox-list" style="min-width: 250px">
+                                        <li ng-repeat="mode in LogsCtrl.modes">
+                                            <label>
+                                                <input type="checkbox" ng-checked="LogsCtrl.options.modes.indexOf(mode) > -1" dp-change="LogsCtrl.toggleMode(mode)" />
+                                                <em>{{ ng_var('mode') }}</em>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-			</footer>
-
+			</article>
 		</section>
 
 {% endblock %}

@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
   class Admin_ApiKeys_Ctrl_Logs extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_ApiKeys_Ctrl_Logs'
     @CTRL_AS = 'LogsCtrl'
@@ -9,16 +9,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @filtration = @service.getFiltration()
       @modes = ['session', 'key', 'token']
       @methods = ['GET', 'POST', 'PUT', 'DELETE'] # I know, I know, but we use only listed
+      @options = {
+        enabled: false,
+        modes: ['key'],
+      }
 
     ###
     # Loads the list
     ###
     initialLoad: ->
+      @service.getOptions().then((data) =>
+        @options = data
+      )
+
       @service.loadList(null, {page: 1}).then( (data) =>
         @list = data
         @pagination = @service.getPagination()
         @initializeScopeWatching()
       )
+
+    toggleLogs: ->
+      @options.enabled = !@options.enabled
+      @updateOptions()
+
+    toggleMode: (mode) ->
+      if Arrays.findIndex(@options.modes, (v) -> v == mode) >= 0
+        Arrays.findAndRemove(@options.modes, (v) -> v == mode)
+      else
+        @options.modes.push(mode)
+      @updateOptions()
+
+    updateOptions: ->
+      @service.updateOptions(@options).then((data) @options => data)
 
     initializeScopeWatching: ->
 

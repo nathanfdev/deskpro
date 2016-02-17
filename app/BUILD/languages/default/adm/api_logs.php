@@ -28,6 +28,7 @@
 
 return [
     'adm.api_logs.title'           => 'API Logs',
+    'adm.api_logs.config'          => 'API Logs Configuration',
     'adm.api_logs.single_title'    => 'API Log #',
     'adm.api_logs.filter'          => 'Filter list',
     'adm.api_logs.mode'            => 'Auth mode',
