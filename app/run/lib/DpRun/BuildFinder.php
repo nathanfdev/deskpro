@@ -214,7 +214,8 @@ class BuildFinder
 
         try {
             $pdo = new \PDO($dbinfo['dsn'], $dbinfo['user'], $dbinfo['password']);
-            $build_id = $pdo->query("SELECT value FROM settings WHERE id = 'core.deskpro_build' LIMIT 1")->fetchColumn();
+            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $build_id = $pdo->query("SELECT value FROM settings WHERE name = 'core.deskpro_build' LIMIT 1")->fetchColumn();
             $pdo = null;
 
             return $build_id ?: 0;
