@@ -111,12 +111,15 @@ class PersonType extends ApiType
      */
     public function onSyncEmails(FormEvent $event)
     {
-        $data = $event->getData();
+        /** @var Person $person */
+        $person = $event->getForm()->getData();
+        $data   = $event->getData();
+
         if (!isset($data['primary_email'])) {
-            $data['primary_email'] = '';
+            $data['primary_email'] = $person->getPrimaryEmailAddress();
         }
         if (!isset($data['emails'])) {
-            $data['emails'] = [];
+            $data['emails'] = $person->getEmailAddresses();
         }
 
         if (!in_array($data['primary_email'], $data['emails'])) {
