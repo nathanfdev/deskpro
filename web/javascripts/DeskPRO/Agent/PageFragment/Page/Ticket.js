@@ -1141,6 +1141,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.sections.tickets_section.listPage.refreshTicketResults([self.meta.ticket_id]);
 				}
 			}
+
+			self.handleTicketUpdate(result);
 		};
 
 		this.clearAlerts();
@@ -2799,8 +2801,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 
-	doTicketUpdate: function() {
-    var self = this;
+	doTicketUpdate: function(isOwnUpdate) {
+    	var self = this;
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
@@ -2823,7 +2825,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			success: function(result) {
-				this.alertTab();
+				if (!isOwnUpdate) {
+					this.alertTab();
+				}
 				// this needs to happen instantly now, dont put this in any other promise
 				// or else it makes the ui feel slow
 				self.handleTicketUpdate(result);

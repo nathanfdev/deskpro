@@ -1116,6 +1116,7 @@ class TicketController extends AbstractController
         }
 
         $ticket_context = $this->container->getTicketManager()->createAgentExecutorContext($this->person, 'newreply', 'web');
+        $ticket_context->getVars()->set('is_via_replybox', true);
         $this->container->getTicketManager()->markAsManaged($ticket);
 
         $action_type = $this->in->getString('options.action');
