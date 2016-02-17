@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -55,10 +55,14 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     protected $fixtureOrder = 80;
 
-    /** @var \Application\DeskPRO\Translate\Translate */
+    /**
+     * @var \Application\DeskPRO\Translate\Translate
+     */
     private $tr;
 
-    /** @var \Application\DeskPRO\Entity\Person */
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
     private $admin;
 
     /**
