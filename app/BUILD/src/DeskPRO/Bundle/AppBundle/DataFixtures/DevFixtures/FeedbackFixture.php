@@ -29,25 +29,27 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Util\Strings;
 
 class FeedbackFixture extends DeskProAbstractFixture
 {
-    const FIXTURE_ORDER           = 80;
     const NUM_FEEDBACK            = 100;
     const NUM_LABELS              = 30;
     const MIN_LABELS_PER_FEEDBACK = 0;
     const MAX_LABELS_PER_FEEDBACK = 5;
 
     /**
-     * @var ObjectManager
+     * @var int
      */
-    private $manager;
+    protected $fixtureOrder = 80;
 
     /**
      * @var int[]
@@ -58,6 +60,11 @@ class FeedbackFixture extends DeskProAbstractFixture
      * @var int[]
      */
     private $types = [];
+
+    /**
+     * @var int[]
+     */
+    private $typeValues = ['Suggestion', 'Feature Request', 'Bug Report'];
 
     /**
      * @var int[]
@@ -75,13 +82,21 @@ class FeedbackFixture extends DeskProAbstractFixture
     private $statuses = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
 
     /**
+     * @var array
+     */
+    private $statusesCategories = [
+        Feedback::STATUS_ACTIVE => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
+        Feedback::STATUS_CLOSED => ['Completed', 'Duplicate', 'Declined'],
+    ];
+
+    /**
      * @var string[]
      */
     private $hiddenStatuses = [
         Feedback::HIDDEN_STATUS_DELETED,
         Feedback::HIDDEN_STATUS_UNPUBLISHED,
         Feedback::HIDDEN_STATUS_SPAM,
-        Feedback::HIDDEN_STATUS_DRAFT
+        Feedback::HIDDEN_STATUS_DRAFT,
     ];
 
     /**
@@ -104,15 +119,19 @@ class FeedbackFixture extends DeskProAbstractFixture
      */
     private $closedStatuses = [];
 
-
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
-        $this->manager        = $manager;
+        $this->manager = $manager;
+        $this->loadTypes();
+        $this->loadCustomDefFeedback();
+        $this->loadStatusCategories();
+        $this->manager->flush();
+
         $this->people         = $this->fetchRelatedEntitiesIds('id', self::TABLE_PEOPLE);
         $this->types          = $this->fetchRelatedEntitiesIds('id', self::TABLE_FEEDBACK_CATEGORIES);
         $this->languages      = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
@@ -129,7 +148,41 @@ class FeedbackFixture extends DeskProAbstractFixture
 
         $this->loadFeedback();
         $this->loadFeedbackCategories();
-        $this->loadLabels();
+        $this->loadFeedbackLabels();
+    }
+
+    /**
+     * @return array
+     */
+    private function loadTypes()
+    {
+        foreach ($this->typeValues as $title) {
+            $cat        = new FeedbackCategory();
+            $cat->title = $title;
+            $this->manager->persist($cat);
+        }
+    }
+
+    private function loadCustomDefFeedback()
+    {
+        $cat_field                = new CustomDefFeedback();
+        $cat_field->sys_name      = 'cat';
+        $cat_field->title         = 'Category';
+        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
+        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+        $this->manager->persist($cat_field);
+    }
+
+    private function loadStatusCategories()
+    {
+        foreach ($this->statusesCategories as $status => $titles) {
+            foreach ($titles as $title) {
+                $cat              = new FeedbackStatusCategory();
+                $cat->status_type = $status;
+                $cat->title       = $title;
+                $this->manager->persist($cat);
+            }
+        }
     }
 
     private function loadFeedback()
@@ -137,7 +190,7 @@ class FeedbackFixture extends DeskProAbstractFixture
         $i     = 0;
         $batch = [];
         while ($i++ < self::NUM_FEEDBACK) {
-            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
             $values      = [
                 'content'      => $this->faker->realText(300),
                 'person_id'    => $this->randomArrayValue($this->people),
@@ -145,10 +198,10 @@ class FeedbackFixture extends DeskProAbstractFixture
                 'language_id'  => $this->randomArrayValue($this->languages),
                 'date_created' => $dateCreated,
             ];
-            $values      = $this->setStatus($values);
-            $values      = $this->setTitleAndSlug($values);
-            $values      = $this->setReviewed($values);
-            $batch[]     = $values;
+            $values  = $this->setStatus($values);
+            $values  = $this->setTitleAndSlug($values);
+            $values  = $this->setReviewed($values);
+            $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_FEEDBACK, $batch, true);
         $this->feedback = $this->fetchRelatedEntitiesIds('id', self::TABLE_FEEDBACK);
@@ -175,18 +228,9 @@ class FeedbackFixture extends DeskProAbstractFixture
         return $values;
     }
 
-    private function setTitleAndSlug(array $values)
-    {
-        $title           = $this->faker->realText(100);
-        $values['title'] = $title;
-        $values['slug']  = Strings::slugifyTitle($title);
-
-        return $values;
-    }
-
     private function setReviewed(array $values)
     {
-        $date                  = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
+        $date                  = $this->dateTimeBetween('-10 days', '-1 days');
         $isReviewed            = rand(0, 1);
         $values['is_reviewed'] = $isReviewed;
         if ($isReviewed) {
@@ -230,18 +274,18 @@ class FeedbackFixture extends DeskProAbstractFixture
             [['field' => 'title', 'value' => 'Category']]
         );
         foreach ($this->feedback as $feedbackId) {
-            $values  = [
+            $values = [
                 'feedback_id' => $feedbackId,
                 'field_id'    => $categoryDefId[0],
                 'value'       => 0,
-                'input'       => $this->randomArrayValue($this->categories)
+                'input'       => $this->randomArrayValue($this->categories),
             ];
             $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_CUSTOM_DATA_FEEDBACK, $batch, true);
     }
 
-    private function loadLabels()
+    private function loadFeedbackLabels()
     {
         $this->faker->unique(true);
         while (count($this->labels) < self::NUM_LABELS) {
@@ -253,7 +297,7 @@ class FeedbackFixture extends DeskProAbstractFixture
         foreach ($this->feedback as $id) {
             $num = rand(self::MIN_LABELS_PER_FEEDBACK, self::MAX_LABELS_PER_FEEDBACK);
             if ($num) {
-                $labels = (array)array_rand($this->labels, $num);
+                $labels = (array) array_rand($this->labels, $num);
                 foreach ($labels as $key) {
                     $batch[] = [
                         'feedback_id' => $id,
