@@ -29,19 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class TasksFixture extends DeskProAbstractFixture
+class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    /**
-     * @var int
-     */
-    protected $fixtureOrder = 80;
-
     private $num_tasks       = 100;
     private $num_links       = 60;
     private $num_subtasks    = 30;
@@ -93,6 +88,14 @@ class TasksFixture extends DeskProAbstractFixture
      * @var int[]
      */
     private $blob_ids = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 90;
+    }
 
     /**
      * {@inheritdoc}

@@ -29,38 +29,20 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * This enables a few langs and the two dev langs.
  */
 class DevLangsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var \Application\DeskPRO\DBAL\Connection
-     */
-    private $db;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-        $this->db        = $this->container->get('database_connection');
-    }
+    use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -138,6 +120,6 @@ class DevLangsFixture extends AbstractFixture implements ContainerAwareInterface
             ],
         ];
 
-        $this->db->batchInsert('languages', $batch);
+        $this->container->get('database_connection')->batchInsert('languages', $batch);
     }
 }

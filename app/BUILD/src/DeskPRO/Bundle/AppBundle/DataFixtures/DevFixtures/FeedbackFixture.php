@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -46,11 +45,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     const NUM_LABELS              = 30;
     const MIN_LABELS_PER_FEEDBACK = 0;
     const MAX_LABELS_PER_FEEDBACK = 5;
-
-    /**
-     * @var int
-     */
-    protected $fixtureOrder = 80;
 
     /**
      * @var int[]
@@ -121,9 +115,15 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     private $closedStatuses = [];
 
     /**
-     * Load data fixtures with the passed EntityManager.
-     *
-     * @param ObjectManager $manager
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 90;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function load(ObjectManager $manager)
     {
@@ -184,14 +184,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 $this->manager->persist($cat);
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 90;
     }
 
     private function loadFeedback()

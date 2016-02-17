@@ -29,19 +29,17 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class DeskProAbstractFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+abstract class DeskProAbstractFixture extends AbstractFixture implements ContainerAwareInterface
 {
     const TABLE_AGENT_TEAMS                = 'agent_teams';
     const TABLE_ARTICLES                   = 'articles';
@@ -87,11 +85,6 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     protected $manager;
 
     /**
-     * @var int
-     */
-    protected $fixtureOrder = 0;
-
-    /**
      * DpFixture constructor.
      */
     public function __construct()
@@ -108,16 +101,6 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     {
         $this->container = $container;
         $this->db        = $this->container->get('database_connection');
-    }
-
-    /**
-     * Get the order of this fixture.
-     *
-     * @return int
-     */
-    public function getOrder()
-    {
-        return $this->fixtureOrder;
     }
 
     protected function randomArrayValue(array $array, $num = null)

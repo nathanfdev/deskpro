@@ -40,10 +40,12 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class TicketsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
 {
+    use ContainerAwareTrait;
+
     private $num_problems        = 100;
     private $num_labels          = 100;
     private $ticket_max_messages = 10;
@@ -59,11 +61,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
      * @var ObjectManager
      */
     private $manager;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * @var Connection
@@ -124,14 +121,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
      * @var \Application\DeskPRO\Entity\CustomDefTicket[]
      */
     private $fields;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * DpFixture constructor.

@@ -51,11 +51,6 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     const MAX_CATEGORIES = 3;
 
     /**
-     * @var int
-     */
-    protected $fixtureOrder = 80;
-
-    /**
      * @var \Application\DeskPRO\Translate\Translate
      */
     private $tr;
@@ -130,11 +125,9 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getOrder()
     {
-        return [
-            'DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\FirstAdminFixture',
-        ];
+        return 90;
     }
 
     /**
@@ -159,14 +152,6 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $this->loadComments($content);
         }
         $this->linkArticlesWithCategories();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 90;
     }
 
     private function loadExampleArticle()

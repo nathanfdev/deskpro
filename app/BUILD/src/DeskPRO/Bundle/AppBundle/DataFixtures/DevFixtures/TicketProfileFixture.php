@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -42,6 +41,7 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
 use Orb\Types\JsonObjectSerializer;
@@ -60,15 +60,10 @@ use Orb\Types\JsonObjectSerializer;
  * - 3 orgs (5 users per org, 1 of them is a manager)
  * - 6 tickets per user
  */
-class TicketProfileFixture extends DeskProAbstractFixture
+class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     private static $cnt     = 1;
     private static $ref_cnt = 1;
-
-    /**
-     * @var int
-     */
-    protected $fixtureOrder = 60;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -147,6 +142,14 @@ class TicketProfileFixture extends DeskProAbstractFixture
         ['first_name' => 'Serena', 'last_name' => 'Meadows', 'email' => 'demo-user19@example.com'],
         ['first_name' => 'Buffy', 'last_name' => 'Hebert', 'email' => 'demo-user20@example.com'],
     ];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 60;
+    }
 
     /**
      * {@inheritdoc}
