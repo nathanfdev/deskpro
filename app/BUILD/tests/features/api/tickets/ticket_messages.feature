@@ -114,3 +114,42 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 2 elements
     And the JSON node "data.attachments[0]" should be equal to 1
     And the JSON node "data.attachments[1]" should be equal to 2
+
+  Scenario: I create a text message with is_note = false
+    When I send a POST request to "/api/v2/tickets/1/messages" with body:
+    """
+    {
+      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+      "format": "html",
+      "is_note": false
+    }
+    """
+    Then the response status code should be 201
+    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.is_agent_note" should be equal to 0
+
+  Scenario: I create a text message with is_note = 0
+    When I send a POST request to "/api/v2/tickets/1/messages" with body:
+    """
+    {
+      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+      "format": "html",
+      "is_note": 0
+    }
+    """
+    Then the response status code should be 201
+    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.is_agent_note" should be equal to 0
+
+  Scenario: I create a note with is_note = 1
+    When I send a POST request to "/api/v2/tickets/1/messages" with body:
+    """
+    {
+      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+      "format": "html",
+      "is_note": 1
+    }
+    """
+    Then the response status code should be 201
+    And the JSON node "data.message" should contain "Test Note"
+    And the JSON node "data.is_agent_note" should be equal to 1
