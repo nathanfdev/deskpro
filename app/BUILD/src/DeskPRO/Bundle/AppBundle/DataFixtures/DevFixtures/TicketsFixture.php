@@ -39,12 +39,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
-
     private $num_problems        = 100;
     private $num_labels          = 100;
     private $ticket_max_messages = 10;

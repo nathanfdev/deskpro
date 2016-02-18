@@ -213,7 +213,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 $values['is_agent'] = rand(0, 1);
                 $values['is_book']  = rand(0, 1);
             }
-            $values  = $this->setTitleAndSlug($values, 15);
+            $values  = $this->setTitleAndSlug($values, 3);
             $batch[] = $values;
         }
         $this->db->batchInsert($categoryTable, $batch, true);

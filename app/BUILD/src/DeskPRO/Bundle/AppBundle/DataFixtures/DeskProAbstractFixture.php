@@ -108,7 +108,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     }
 
     /**
-     * Sets the container.
+     * Sets the container and db (Connection).
      *
      * @param ContainerInterface|null $container A ContainerInterface instance or null
      */
@@ -145,9 +145,15 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
         return $ids;
     }
 
-    protected function setTitleAndSlug(array $values, $maxLength = 100)
+    /**
+     * @param array $values
+     * @param int   $nbWords
+     *
+     * @return array
+     */
+    protected function setTitleAndSlug(array $values, $nbWords = 5)
     {
-        $title           = $this->faker->realText($maxLength);
+        $title           = $this->faker->sentence($nbWords);
         $values['title'] = $title;
         $values['slug']  = Strings::slugifyTitle($title);
 
