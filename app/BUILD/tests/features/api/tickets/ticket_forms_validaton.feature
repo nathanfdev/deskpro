@@ -73,6 +73,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
+    And the JSON node "errors.fields.person.fields.email.errors[0].message" should contain "is not a valid email address."
 
   Scenario: I try to create a ticket with person with incorrect email (inline)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -83,3 +84,4 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
+    And the JSON node "errors.fields.person.fields.email.errors[0].message" should contain "is not a valid email address."

@@ -442,7 +442,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var string
      *
-     * @Assert\NotBlank
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $subject;
 
@@ -782,10 +783,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $subject = '';
         }
 
-        $subject = Strings::standardEol($subject);
-        $subject = Strings::trimLines($subject);
-        $subject = preg_replace("#\n+#", ' ', $subject);
-
+        if (is_string($subject)) {
+            $subject = Strings::standardEol($subject);
+            $subject = Strings::trimLines($subject);
+            $subject = preg_replace("#\n+#", ' ', $subject);
+        }
         if (!$subject) {
             $subject = '(No Subject)';
         }

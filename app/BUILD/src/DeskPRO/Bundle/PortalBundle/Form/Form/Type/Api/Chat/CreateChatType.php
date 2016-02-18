@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
@@ -102,9 +101,6 @@ class CreateChatType extends AbstractType
                 'constraints'   => $email_constraints,
             ])
         ;
-
-        $builder->get('name')->addModelTransformer(new TextStringTransformer());
-        $builder->get('email')->addModelTransformer(new TextStringTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);

@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TextStringTransformer;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
@@ -99,8 +98,6 @@ class ChatTranscriptInfoType extends AbstractType
             ])
         ;
 
-        $builder->get('name')->addModelTransformer(new TextStringTransformer());
-        $builder->get('email')->addModelTransformer(new TextStringTransformer());
         $builder->get('email')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckEmailValidation']);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->set_person_listener, 'onSetPerson']);

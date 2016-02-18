@@ -53,8 +53,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TicketWithLayoutsType.
@@ -485,7 +484,7 @@ class TicketWithLayoutsType extends AbstractType
             'placeholder' => '',
             'constraints' => [
                 new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
-                new NotNull(['message' => 'portal.forms.error_ticket_department_required']),
+                new Assert\NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
     }
@@ -501,7 +500,7 @@ class TicketWithLayoutsType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
-                new Length([
+                new Assert\Length([
                     'min'        => 5,
                     'minMessage' => 'portal.forms.error_ticket_subject_length',
                 ]),
