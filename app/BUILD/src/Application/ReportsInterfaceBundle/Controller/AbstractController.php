@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\Service\CheckWhitelistedIP;
@@ -63,7 +64,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Force a login.
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if (!$this->_userHasPermissions()) {
             if ($this->request->isXmlHttpRequest()) {

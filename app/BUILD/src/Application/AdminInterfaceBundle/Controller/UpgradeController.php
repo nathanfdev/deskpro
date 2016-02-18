@@ -29,19 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiToken;
 
 class UpgradeController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if (defined('DPC_IS_CLOUD')) {
             throw $this->createNotFoundException();
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($action, $arguments);
     }
 
     ####################################################################################################################

@@ -42,13 +42,13 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class TestController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if ($action == 'testAction' || $action == 'aboutAction') {
             return;
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($action, $arguments);
     }
 
     /**

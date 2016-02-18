@@ -42,6 +42,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class LogsController.
@@ -72,11 +73,38 @@ class LogsController extends BaseController
         $qb = $repository->createQueryBuilder('a')->select('a')->orderBy('a.id', 'DESC');
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage(50);
+        $pager->setMaxPerPage(100);
         $pager->setCurrentPage($request->query->getInt('page', 1));
 
         return View::create(
             $this->dataSerialize($pager),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get api log",
+     *      statusCodes={
+     *          200="Success",
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
+     * )
+     *
+     * @param int $id
+     * @Annotations\Get("/api_logs/{id}", name="api_logs_view", requirements={"page": "\d+"})
+     *
+     * @return View
+     */
+    public function getAction($id)
+    {
+        $entity = $this->get('doctrine.orm.default_entity_manager')->find('DeskPRO\Bundle\AppBundle\Entity\ApiLog', (int) $id);
+        if (!$entity) {
+            throw new NotFoundHttpException(sprintf('ApiLog with id [ %d ] was not found', (int) $id));
+        }
+
+        return View::create(
+            $this->dataSerialize($entity),
             Response::HTTP_OK
         );
     }
@@ -89,7 +117,7 @@ class LogsController extends BaseController
      *      }
      * )
      *
-     * @Annotations\Get("/api_logs/options", name="api_logs_options")
+     * @Annotations\Get("/api_logs_options", name="api_logs_options")
      *
      * @return View
      */
@@ -116,7 +144,7 @@ class LogsController extends BaseController
      *      }
      * )
      *
-     * @Annotations\Put("/api_logs/options", name="api_logs_options_update")
+     * @Annotations\Put("/api_logs_options", name="api_logs_options_update")
      *
      * @return View
      */

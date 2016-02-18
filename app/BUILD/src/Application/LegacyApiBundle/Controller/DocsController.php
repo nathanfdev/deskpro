@@ -50,7 +50,7 @@ class DocsController extends AbstractController
         $this->settings = $this->get('deskpro.core.settings');
     }
 
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         return;
     }

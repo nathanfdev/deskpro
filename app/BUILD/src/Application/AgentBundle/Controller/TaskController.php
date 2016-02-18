@@ -31,6 +31,7 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\Task;
@@ -47,7 +48,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class TaskController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if (!$this->settings->get(TasksController::KEY_ENABLED, 0)) {
             throw new NotFoundHttpException();
@@ -57,7 +58,7 @@ class TaskController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        parent::preAction($action, $arguments);
+        parent::preActionHandler($action, $arguments);
     }
 
     public function getSectionDataAction()

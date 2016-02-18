@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -71,7 +72,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     /**
      * Force a login.
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         $return = '';
         if (!$this->person['id']) {

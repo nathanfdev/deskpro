@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -37,7 +38,7 @@ use DpSys\License;
 
 class CloudCallController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;

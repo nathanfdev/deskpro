@@ -20,7 +20,7 @@ define [
 
     getOptions: ->
       deferred = @$q.defer()
-      @Api2.sendGet('/api_logs/options')
+      @Api2.sendGet('/api_logs_options')
       .success((data) =>
         deferred.resolve data.data
       )
@@ -29,7 +29,7 @@ define [
       deferred.promise
 
     updateOptions: (options)->
-      @Api2.sendPutJson('/api_logs/options', options)
+      @Api2.sendPutJson('/api_logs_options', options)
       .success((data) =>
         deferred.resolve data.data
       )
@@ -71,3 +71,14 @@ define [
       }
 
       return models
+
+    loadLog: (id) =>
+      deferred = @$q.defer()
+
+      @Api2.sendGet('/api_logs/' + id + '?include=data').success((data) =>
+        deferred.resolve(data.data)
+      , (data, status, headers, config) ->
+        deferred.reject()
+      )
+
+      deferred.promise

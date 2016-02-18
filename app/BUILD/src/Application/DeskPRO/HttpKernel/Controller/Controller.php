@@ -31,6 +31,7 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\HttpKernel\Controller;
 
 use Application\DeskPRO\Util;
@@ -100,9 +101,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     {
     }
 
-    public function DeskPRO_onControllerPreAction($event)
+    public function DeskPRO_onControllerPreActionHandler($event)
     {
-        $ret = $this->preAction($event->get('action'), $event->get('arguments'));
+        $ret = $this->preActionHandler($event->get('action'), $event->get('arguments'));
         if ($ret) {
             $event->setResponse($ret);
         }
@@ -117,13 +118,13 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      * @param string $action    The action that will be called
      * @param array  $arguments The arguments that will be passed in
      */
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
     }
 
-    public function DeskPRO_onControllerPostAction($event)
+    public function DeskPRO_onControllerPostActionHandler($event)
     {
-        $ret = $this->postAction($event->get('response'));
+        $ret = $this->postActionHandler($event->get('response'));
         if ($ret) {
             $event->setResponse($ret);
         }
@@ -148,9 +149,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      * and the original discarded. Any other return value will be discarded and result
      * in the original response being used.
      *
-     * @param Symfony\Component\HttpFoundation\Response $response
+     * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    public function postAction($response)
+    public function postActionHandler($response)
     {
     }
 

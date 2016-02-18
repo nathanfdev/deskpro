@@ -60,9 +60,21 @@ class ApiLogTransformer extends AbstractDataSerializerTransformer
     {
         $data = $transformation_request->getDataToBeTransformed();
 
+        $context = $transformation_request->getSerializerContext();
+
+        if ($context->isTypeIncluded('data')) {
+            $response_data         = $data->getResponseData();
+            $response_data['body'] = json_decode($response_data['body'], true);
+
+            return [
+                'request_data'  => $data->getRequestData(),
+                'response_data' => $response_data,
+            ];
+        }
+
         return [
-            'request_data'  => $data->getRequestData(),
-            'response_data' => $data->getResponseData(),
+            'request_data'  => [],
+            'response_data' => [],
         ];
     }
 }

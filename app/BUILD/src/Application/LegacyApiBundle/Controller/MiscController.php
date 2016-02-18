@@ -49,13 +49,13 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class MiscController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if ($action == 'tokenExchangeAction' || $action == 'helpdeskInfoAction' || $action == 'dpSpecialAction') {
             return;
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($action, $arguments);
     }
 
     protected function _checkRateLimit($action, $arguments = null)

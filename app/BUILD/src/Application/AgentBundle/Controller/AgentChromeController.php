@@ -53,7 +53,7 @@ class AgentChromeController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
     }
 }

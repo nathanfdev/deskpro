@@ -44,13 +44,13 @@ class JiraController extends AbstractController
     /** @var JIRA */
     protected $service;
 
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         if (!$this->service()->isEnabled()) {
             return $this->createPermissionErrorResponse('Service is disabled');
         }
 
-        return parent::preAction($action, $arguments);
+        return parent::preActionHandler($action, $arguments);
     }
 
     /**

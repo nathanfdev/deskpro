@@ -43,7 +43,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class OpenTicketController extends AbstractController
 {
-    public function preAction($action, $arguments = null)
+    public function preActionHandler($action, $arguments = null)
     {
         return;
     }
