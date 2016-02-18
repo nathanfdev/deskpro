@@ -32,27 +32,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class DevFinishFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class DevFinishFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * {@inheritdoc}
      */

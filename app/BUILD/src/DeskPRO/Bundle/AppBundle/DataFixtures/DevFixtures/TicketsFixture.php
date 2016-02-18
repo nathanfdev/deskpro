@@ -29,20 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class TicketsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     use ContainerAwareTrait;
 
@@ -51,21 +50,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private $ticket_max_messages = 10;
 
     private $num_tickets = 250;
-
-    /**
-     * @var \Faker\Generator
-     */
-    private $faker;
-
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
-     * @var Connection
-     */
-    private $db;
 
     /**
      * @var int[]
@@ -123,14 +107,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     private $fields;
 
     /**
-     * DpFixture constructor.
-     */
-    public function __construct()
-    {
-        $this->faker = \Faker\Factory::create();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getOrder()
@@ -144,7 +120,6 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->db      = $this->container->get('database_connection');
         $this->initIds();
         $this->loadProblems();
         $this->loadLabels();
@@ -157,19 +132,24 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
     private function initIds()
     {
-        $this->agent_ids          = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 1');
-        $this->agent_team_ids     = $this->db->fetchAllCol('SELECT id FROM agent_teams');
-        $this->people_ids         = $this->db->fetchAllCol('SELECT id FROM people WHERE is_agent = 0');
+        $this->agent_team_ids = $this->fetchIds(self::TABLE_AGENT_TEAMS);
+        $this->agent_ids      = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
+        $this->people_ids     = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
+        $this->department_ids = $this->fetchIds(
+            self::TABLE_DEPARTMENTS,
+            [['field' => 'is_tickets_enabled', 'value' => 1]]
+        );
         $this->joe_id             = $this->getReference('person.joe')->getId();
         $this->joe_manager_id     = $this->getReference('person.joes_manager')->getId();
         $this->joe_manager_org_id = $this->getReference('org.mana')->getId();
-        $this->department_ids     = $this->db->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
 
-        $this->fields = $this->container->get('doctrine.orm.entity_manager')->createQuery('
+        $this->fields = $this->container->get('doctrine.orm.entity_manager')->createQuery(
+            '
             SELECT f
             FROM DeskPRO:CustomDefTicket f
             WHERE f.parent IS NULL ORDER BY f.display_order ASC
-        ')->execute();
+        '
+        )->execute();
     }
 
     private function loadProblems()
@@ -185,9 +165,8 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             );
         }
 
-        $this->db->batchInsert('problems', $batch);
-
-        $this->problem_ids = $this->db->fetchAllCol('SELECT id FROM problems');
+        $this->db->batchInsert(self::TABLE_PROBLEMS, $batch);
+        $this->problem_ids = $this->fetchIds(self::TABLE_PROBLEMS);
     }
 
     private function loadLabels()
@@ -201,7 +180,12 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l       = strtolower($l);
-                $batch[] = ['label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0];
+                $batch[] = [
+                    'label_type' => $label_type,
+                    'label'      => $l,
+                    'color'      => $this->faker->hexColor,
+                    'total'      => 0,
+                ];
             }
         }
 
@@ -234,10 +218,13 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
             $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
             $batch[] = [
-                'department_id'           => $this->faker->randomElement($this->department_ids),
-                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
-                'person_id'               => $this->faker->randomElement($this->people_ids),
-                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'department_id' => $this->faker->randomElement($this->department_ids),
+                'agent_id'      => $this->faker->boolean(90) ? $this->faker->randomElement(
+                    $this->agent_ids
+                ) : null,
+                'person_id'     => $this->faker->randomElement($this->people_ids),
+                'agent_team_id' => $this->agent_team_ids && $this->faker->boolean(40)
+                    ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
                 'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
@@ -258,9 +245,8 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             ];
         }
 
-        $this->db->batchInsert('tickets', $batch);
-
-        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
+        $this->db->batchInsert(self::TABLE_TICKETS, $batch);
+        $this->ticket_ids = $this->fetchIds(self::TABLE_TICKETS);
     }
 
     private function loadTicketsForJoe()
@@ -276,10 +262,12 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
-                'department_id'           => $this->faker->randomElement($this->department_ids),
-                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
-                'person_id'               => $this->joe_id,
-                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'department_id' => $this->faker->randomElement($this->department_ids),
+                'agent_id'      => $this->faker->boolean(90)
+                    ? $this->faker->randomElement($this->agent_ids) : null,
+                'person_id'     => $this->joe_id,
+                'agent_team_id' => $this->agent_team_ids && $this->faker->boolean(40)
+                    ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
                 'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
@@ -300,9 +288,9 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             ];
         }
 
-        $this->db->batchInsert('tickets', $batch);
+        $this->db->batchInsert(self::TABLE_TICKETS, $batch);
 
-        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
+        $this->ticket_ids = $this->fetchIds(self::TABLE_TICKETS);
     }
 
     private function loadTicketsForManager()
@@ -318,10 +306,12 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
 
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
-                'department_id'           => $this->faker->randomElement($this->department_ids),
-                'agent_id'                => $this->faker->boolean(90) ? $this->faker->randomElement($this->agent_ids) : null,
-                'person_id'               => $this->joe_manager_id,
-                'agent_team_id'           => $this->agent_team_ids && $this->faker->boolean(40) ? $this->faker->randomElement($this->agent_team_ids) : null,
+                'department_id' => $this->faker->randomElement($this->department_ids),
+                'agent_id'      => $this->faker->boolean(90)
+                    ? $this->faker->randomElement($this->agent_ids) : null,
+                'person_id'     => $this->joe_manager_id,
+                'agent_team_id' => $this->agent_team_ids && $this->faker->boolean(40)
+                    ? $this->faker->randomElement($this->agent_team_ids) : null,
                 'ref'                     => Strings::random(15, Strings::CHARS_ALPHANUM_IU),
                 'auth'                    => DpStrings::random(Ticket::TAC_AUTHCODE_LEN, Strings::CHARS_KEY),
                 'status'                  => $status,
@@ -341,9 +331,9 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             ];
         }
 
-        $this->db->batchInsert('tickets', $batch);
+        $this->db->batchInsert(self::TABLE_TICKETS, $batch);
 
-        $this->ticket_ids = $this->db->fetchAllCol('SELECT id FROM tickets');
+        $this->ticket_ids = $this->fetchIds(self::TABLE_TICKETS);
     }
 
     private function loadTicketMessages()
@@ -374,8 +364,10 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
                 $text = implode('<br/><br/>', $text);
 
                 $batch[] = [
-                    'ticket_id'       => $ticket_id,
-                    'person_id'       => $as_agent ? $this->faker->randomElement($this->agent_ids) : $this->faker->randomElement($this->people_ids),
+                    'ticket_id' => $ticket_id,
+                    'person_id' => $as_agent
+                        ? $this->faker->randomElement($this->agent_ids)
+                        : $this->faker->randomElement($this->people_ids),
                     'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                     'creation_system' => 'web',
                     'is_agent_note'   => (int) ($as_agent && $this->faker->boolean(10)),
@@ -402,8 +394,11 @@ class TicketsFixture extends AbstractFixture implements ContainerAwareInterface,
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
                 $labels_batch[] = ['ticket_id' => $ticket_id, 'label' => $l];
             }
-            $probs_batch[] = ['ticket_id' => $ticket_id, 'problem_id' => $this->faker->randomElement($this->problem_ids)];
-            $people_ids    = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
+            $probs_batch[] = [
+                'ticket_id'  => $ticket_id,
+                'problem_id' => $this->faker->randomElement($this->problem_ids),
+            ];
+            $people_ids = $this->faker->randomElements($this->people_ids, $this->faker->numberBetween(1, 4));
             foreach ($people_ids as $pid) {
                 $parts_batch[] = [
                     'ticket_id' => $ticket_id,

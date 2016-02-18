@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -131,16 +132,14 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->loadStatusCategories();
         $this->manager->flush();
 
-        $this->people         = $this->fetchRelatedEntitiesIds('id', self::TABLE_PEOPLE);
-        $this->types          = $this->fetchRelatedEntitiesIds('id', self::TABLE_FEEDBACK_CATEGORIES);
-        $this->languages      = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
-        $this->activeStatuses = $this->fetchRelatedEntitiesIds(
-            'id',
+        $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->types          = $this->fetchIds(self::TABLE_FEEDBACK_CATEGORIES);
+        $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->activeStatuses = $this->fetchIds(
             self::TABLE_FEEDBACK_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => Feedback::STATUS_ACTIVE]]
         );
-        $this->closedStatuses = $this->fetchRelatedEntitiesIds(
-            'id',
+        $this->closedStatuses = $this->fetchIds(
             self::TABLE_FEEDBACK_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => Feedback::STATUS_CLOSED]]
         );
@@ -177,12 +176,12 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $i     = 0;
         $batch = [];
         while ($i++ < self::NUM_FEEDBACK) {
-            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
             $values      = [
                 'content'      => $this->faker->realText(300),
-                'person_id'    => $this->randomArrayValue($this->people),
-                'category_id'  => $this->randomArrayValue($this->types),
-                'language_id'  => $this->randomArrayValue($this->languages),
+                'person_id'    => $this->faker->randomElement($this->people),
+                'category_id'  => $this->faker->randomElement($this->types),
+                'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
             ];
             $values  = $this->setStatus($values);
@@ -191,23 +190,23 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_FEEDBACK, $batch, true);
-        $this->feedback = $this->fetchRelatedEntitiesIds('id', self::TABLE_FEEDBACK);
+        $this->feedback = $this->fetchIds(self::TABLE_FEEDBACK);
     }
 
     private function setStatus(array $values)
     {
-        $values['status'] = $this->randomArrayValue($this->statuses);
+        $values['status'] = $this->faker->randomElement($this->statuses);
         switch ($values['status']) {
             case Feedback::STATUS_ACTIVE:
                 $values['hidden_status']      = null;
-                $values['status_category_id'] = $this->randomArrayValue($this->activeStatuses);
+                $values['status_category_id'] = $this->faker->randomElement($this->activeStatuses);
                 break;
             case Feedback::STATUS_CLOSED:
                 $values['hidden_status']      = null;
-                $values['status_category_id'] = $this->randomArrayValue($this->closedStatuses);
+                $values['status_category_id'] = $this->faker->randomElement($this->closedStatuses);
                 break;
             case Feedback::STATUS_HIDDEN:
-                $values['hidden_status']      = $this->randomArrayValue($this->hiddenStatuses);
+                $values['hidden_status']      = $this->faker->randomElement($this->hiddenStatuses);
                 $values['status_category_id'] = null;
                 break;
         }
@@ -217,7 +216,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function setReviewed(array $values)
     {
-        $date                  = $this->dateTimeBetween('-10 days', '-1 days');
+        $date                  = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
         $isReviewed            = rand(0, 1);
         $values['is_reviewed'] = $isReviewed;
         if ($isReviewed) {
@@ -255,8 +254,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     private function loadFeedbackCategories()
     {
         $batch         = [];
-        $categoryDefId = $this->fetchRelatedEntitiesIds(
-            'id',
+        $categoryDefId = $this->fetchIds(
             self::TABLE_CUSTOM_DEF_FEEDBACK,
             [['field' => 'title', 'value' => 'Category']]
         );
@@ -265,7 +263,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 'feedback_id' => $feedbackId,
                 'field_id'    => $categoryDefId[0],
                 'value'       => 0,
-                'input'       => $this->randomArrayValue($this->categories),
+                'input'       => $this->faker->randomElement($this->categories),
             ];
             $batch[] = $values;
         }

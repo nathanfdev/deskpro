@@ -39,10 +39,6 @@ class GlossaryFixture extends DeskProAbstractFixture
 {
     const NUM_WORDS            = 20;
     const NUM_WORD_DEFINITIONS = 10;
-    /**
-     * @var int
-     */
-    protected $fixtureOrder = 80;
 
     /**
      * @var int[]
@@ -50,7 +46,7 @@ class GlossaryFixture extends DeskProAbstractFixture
     private $definitions;
 
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param ObjectManager $manager
      */
@@ -67,11 +63,11 @@ class GlossaryFixture extends DeskProAbstractFixture
         $batch = [];
         while ($i++ < self::NUM_WORD_DEFINITIONS) {
             $batch[] = [
-                'definition' => $this->faker->realText(100)
+                'definition' => $this->faker->realText(100),
             ];
         }
         $this->db->batchInsert(self::TABLE_GLOSSARY_WORD_DEFINITIONS, $batch, true);
-        $this->definitions = $this->fetchRelatedEntitiesIds('id', self::TABLE_GLOSSARY_WORD_DEFINITIONS);
+        $this->definitions = $this->fetchIds(self::TABLE_GLOSSARY_WORD_DEFINITIONS);
     }
 
     private function loadWords()
@@ -80,8 +76,8 @@ class GlossaryFixture extends DeskProAbstractFixture
         $batch = [];
         while ($i++ < self::NUM_WORDS) {
             $batch[] = [
-                'definition_id' => $this->randomArrayValue($this->definitions),
-                'word' => $this->faker->realText(15)
+                'definition_id' => $this->faker->randomElement($this->definitions),
+                'word'          => $this->faker->realText(15),
             ];
         }
         $this->db->batchInsert(self::TABLE_GLOSSARY_WORDS, $batch, true);

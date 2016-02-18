@@ -29,17 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\AgentTeam;
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class AgentTeamsFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class AgentTeamsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     use ContainerAwareTrait;
 

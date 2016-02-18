@@ -29,21 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * This inserts some default settings so you dont have to waste time going through the welcome wizard.
  */
-class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class DevSetupFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -65,10 +62,18 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
             }
         }
 
-        /** @var \Application\DeskPRO\DBAL\Connection $db */
-        $db = $this->container->get('database_connection');
-
-        $db->deleteIn('settings', ['core.done_data_initializer', 'core.deskpro_url', 'core.deskpro_name', 'core.default_timezone', 'core.license', 'core.setup_initial', 'admin_has_loaded'], 'name');
+        $this->db->deleteIn('settings',
+            [
+                'core.done_data_initializer',
+                'core.deskpro_url',
+                'core.deskpro_name',
+                'core.default_timezone',
+                'core.license',
+                'core.setup_initial',
+                'admin_has_loaded',
+            ],
+            'name'
+        );
 
         if (file_exists(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')) {
             $url = rtrim(trim(file_get_contents(DP_WEB_ROOT.'/config/LOCALHOST_URL.txt')), '/').'/';
@@ -78,28 +83,46 @@ class DevSetupFixture extends AbstractFixture implements ContainerAwareInterface
 
         $ins = [
             ['name' => 'core.done_data_initializer', 'value' => 1],
-            ['name' => 'core.setup_initial',         'value' => 1],
-            ['name' => 'admin_has_loaded',           'value' => 1],
-            ['name' => 'core.default_timezone',      'value' => 'UTC'],
-            ['name' => 'core.deskpro_name',          'value' => 'Helpesk'],
-            ['name' => 'core.deskpro_url',           'value' => $url],
-            ['name' => 'core.license',               'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
+            ['name' => 'core.setup_initial', 'value' => 1],
+            ['name' => 'admin_has_loaded', 'value' => 1],
+            ['name' => 'core.default_timezone', 'value' => 'UTC'],
+            ['name' => 'core.deskpro_name', 'value' => 'Helpesk'],
+            ['name' => 'core.deskpro_url', 'value' => $url],
+            ['name' => 'core.license', 'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
         ];
 
-        $db->batchInsert('settings', $ins);
+        $this->db->batchInsert('settings', $ins);
 
-        $db->insert('email_accounts', [
-            'account_type'       => 'tickets',
-            'incoming_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config', '@DATA' => ['host' => 'pop.example.com', 'port' => '110', 'user' => 'dev@deskprodev.com', 'password' => 'bogus']]),
-            'outgoing_account'   => json_encode(['@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\PhpMailConfig', '@DATA' => ['PhpMail' => true]]),
-            'is_enabled'         => 1,
-            'address'            => 'dev@deskprodev.com',
-            'other_addresses'    => null,
-            'options'            => null,
-            'date_created'       => date('Y-m-d H:i:s'),
-            'date_read_start'    => date('Y-m-d H:i:s'),
-            'date_last_incoming' => null,
-            'is_read_active'     => 0,
-        ]);
+        $this->db->insert(
+            'email_accounts',
+            [
+                'account_type'     => 'tickets',
+                'incoming_account' => json_encode(
+                    [
+                        '@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\Pop3Config',
+                        '@DATA'  => [
+                            'host'     => 'pop.example.com',
+                            'port'     => '110',
+                            'user'     => 'dev@deskprodev.com',
+                            'password' => 'bogus',
+                        ],
+                    ]
+                ),
+                'outgoing_account' => json_encode(
+                    [
+                        '@CLASS' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\PhpMailConfig',
+                        '@DATA'  => ['PhpMail' => true],
+                    ]
+                ),
+                'is_enabled'         => 1,
+                'address'            => 'dev@deskprodev.com',
+                'other_addresses'    => null,
+                'options'            => null,
+                'date_created'       => date('Y-m-d H:i:s'),
+                'date_read_start'    => date('Y-m-d H:i:s'),
+                'date_last_incoming' => null,
+                'is_read_active'     => 0,
+            ]
+        );
     }
 }

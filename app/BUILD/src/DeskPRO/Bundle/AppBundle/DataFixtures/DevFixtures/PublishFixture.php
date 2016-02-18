@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
@@ -135,8 +136,8 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->manager   = $manager;
         $this->tr        = $this->container->get('deskpro.core.translate');
         $this->admin     = $this->getReference('admin');
-        $this->people    = $this->fetchRelatedEntitiesIds('id', self::TABLE_PEOPLE);
-        $this->languages = $this->fetchRelatedEntitiesIds('id', self::TABLE_LANGUAGES);
+        $this->people    = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->languages = $this->fetchIds(self::TABLE_LANGUAGES);
 
         $this->loadExampleArticle();
         $this->loadExampleNew();
@@ -174,10 +175,10 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function setStatus(array $values)
     {
-        $date                    = $this->dateTimeBetween('-10 days', '-1 days');
-        $values['status']        = $this->randomArrayValue($this->statuses);
+        $date                    = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
+        $values['status']        = $this->faker->randomElement($this->statuses);
         $values['hidden_status'] = $values['status'] === ContentAbstract::STATUS_HIDDEN
-            ? $this->randomArrayValue($this->hiddenStatuses) : null;
+            ? $this->faker->randomElement($this->hiddenStatuses) : null;
         if ($values['hidden_status'] !== ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
             $values['view_count']     = rand(0, 100);
             $values['num_comments']   = rand(0, 100);
@@ -216,7 +217,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $batch[] = $values;
         }
         $this->db->batchInsert($categoryTable, $batch, true);
-        $this->content[$content]['categories'] = $this->fetchRelatedEntitiesIds('id', $categoryTable);
+        $this->content[$content]['categories'] = $this->fetchIds($categoryTable);
     }
 
     private function generateParentId($i)
@@ -236,22 +237,22 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $i     = 0;
         $batch = [];
         while ($i++ < self::NUM_PUBLISH) {
-            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
             $values      = [
                 'content'      => $this->faker->realText(300),
-                'person_id'    => $this->randomArrayValue($this->people),
-                'language_id'  => $this->randomArrayValue($this->languages),
+                'person_id'    => $this->faker->randomElement($this->people),
+                'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
             ];
             $values = $this->setStatus($values);
             $values = $this->setTitleAndSlug($values);
             if ($content !== self::TABLE_ARTICLES) {
-                $values['category_id'] = $this->randomArrayValue($this->content[$content]['categories']);
+                $values['category_id'] = $this->faker->randomElement($this->content[$content]['categories']);
             }
             $batch[] = $values;
         }
         $this->db->batchInsert($content, $batch, true);
-        $this->content[$content]['ids'] = $this->fetchRelatedEntitiesIds('id', $content);
+        $this->content[$content]['ids'] = $this->fetchIds($content);
     }
 
     private function loadComments($content)
@@ -259,21 +260,21 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $i     = 0;
         $batch = [];
         while ($i++ < self::NUM_COMMENTS) {
-            $dateCreated = $this->dateTimeBetween('-2 months', '-10 days');
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
             $values      = [
                 'content'      => $this->faker->realText(300),
-                'person_id'    => $this->randomArrayValue($this->people),
-                'ip_address'   => '',
-                'status'       => $this->randomArrayValue($this->commentStatuses),
+                'person_id'    => $this->faker->randomElement($this->people),
+                'ip_address'   => $this->faker->ipv4,
+                'status'       => $this->faker->randomElement($this->commentStatuses),
                 'is_reviewed'  => rand(0, 1),
                 'date_created' => $dateCreated,
             ];
             if ($content === self::TABLE_ARTICLES) {
-                $values['article_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+                $values['article_id'] = $this->faker->randomElement($this->content[$content]['ids']);
             } elseif ($content === self::TABLE_NEWS) {
-                $values['news_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+                $values['news_id'] = $this->faker->randomElement($this->content[$content]['ids']);
             } elseif ($content === self::TABLE_DOWNLOADS) {
-                $values['download_id'] = $this->randomArrayValue($this->content[$content]['ids']);
+                $values['download_id'] = $this->faker->randomElement($this->content[$content]['ids']);
             }
             $batch[] = $values;
         }
@@ -303,7 +304,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     private function generateLinks($num, $id, array $batch)
     {
-        $categories = $this->randomArrayValue(
+        $categories = $this->faker->randomElements(
             $this->content[self::TABLE_ARTICLES]['categories'],
             $num
         );

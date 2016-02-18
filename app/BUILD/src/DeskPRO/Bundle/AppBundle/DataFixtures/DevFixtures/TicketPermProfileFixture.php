@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * TODO.
@@ -45,23 +44,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  * - couple custom usergroups to test with as well
  * - few example people records
  */
-class TicketPermProfileFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class TicketPermProfileFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
-
-    /**
-     * @var \Faker\Generator
-     */
-    private $faker;
-
-    /**
-     * DpFixture constructor.
-     */
-    public function __construct()
-    {
-        $this->faker = \Faker\Factory::create();
-    }
-
     /**
      * {@inheritdoc}
      */
