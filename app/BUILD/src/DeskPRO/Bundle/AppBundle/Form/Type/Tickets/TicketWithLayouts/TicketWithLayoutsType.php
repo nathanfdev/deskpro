@@ -305,16 +305,28 @@ class TicketWithLayoutsType extends AbstractType
                     continue;
                 }
             } else {
-                if (!$form->getConfig()->getOption('full_version') && $field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
+                if (!$context->getOption('full_version') && $field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
                     continue;
                 }
             }
 
-            $field_added = $this->addField($context, $field, $changes);
+            $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
+            if ($form_field) {
+                // we need to collect custom data fields to make custom field groups
+                if ($context->forApi() && $form_field->getType() === 'deskpro_custom_data') {
+                    $custom_field_groups[$field->getFieldType()][] = [
+                        'name'    => $field->getFieldId(),
+                        'type'    => $form_field->getType(),
+                        'options' => $form_field->getOptions(),
+                    ];
+                } else {
+                    $this->addField($context, $field, $form_field);
+                }
 
-            // check if there was submitted data for this field
-            if ($field_added && !array_key_exists($field->getId(), $data)) {
-                $has_not_submitted = true;
+                // check if there was submitted data for this field
+                if (!array_key_exists($field->getId(), $data)) {
+                    $has_not_submitted = true;
+                }
             }
         }
 
@@ -322,40 +334,51 @@ class TicketWithLayoutsType extends AbstractType
             $this->removeField($context, $field);
         }
 
-        // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-        if ($had_previous_layout && $has_not_submitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
-            if (!$form->has('rerender_form')) {
-                $form->add('rerender_form', 'hidden', [
-                    'mapped' => false,
-                    'label'  => false,
-                ]);
+        if ($context->forApi()) {
+            // add custom field groups to the form
+            $custom_data_mapping = [
+                FormFields::TICKET_FIELD => 'fields',
+                FormFields::ORG_FIELD    => 'organization_fields',
+                FormFields::USER_FIELD   => 'user_fields',
+            ];
+
+            foreach ($custom_data_mapping as $field_type => $form_field_name) {
+                if (!empty($custom_field_groups[$field_type])) {
+                    $form->add($form_field_name, 'deskpro_combined_type', [
+                        'forms' => $custom_field_groups[$field_type],
+                    ]);
+                }
             }
-        }
+        } else {
+            // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
+            if ($had_previous_layout && $has_not_submitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
+                if (!$form->has('rerender_form')) {
+                    $form->add('rerender_form', 'hidden', [
+                        'mapped' => false,
+                        'label'  => false,
+                    ]);
+                }
+            }
 
-        // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
-        if ($form->has('submit')) {
-            $form->remove('submit');
-        }
+            // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
+            if ($form->has('submit')) {
+                $form->remove('submit');
+            }
 
-        $this->addSubmit($context);
+            $this->addSubmit($context);
+        }
     }
 
     /**
      * @param TicketWithLayoutsContext $context
      * @param LayoutField              $field
-     * @param TicketLayoutChanges      $changes
+     * @param FormField                $form_field
      *
      * @return bool
      */
-    private function addField(TicketWithLayoutsContext $context, LayoutField $field, TicketLayoutChanges $changes)
+    private function addField(TicketWithLayoutsContext $context, LayoutField $field, FormField $form_field)
     {
-        $form       = $context->getForm();
-        $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
-
-        if (!$form_field) {
-            return false;
-        }
-
+        $form = $context->getForm();
         $form->add($field->getId(), $form_field->getType(), $form_field->getOptions());
 
         // for web view add more attachments button
@@ -365,8 +388,6 @@ class TicketWithLayoutsType extends AbstractType
                 'label'             => $this->phrase('portal.forms.label_add_attachment'),
             ]);
         }
-
-        return true;
     }
 
     /**
@@ -873,7 +894,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCaptcha(TicketWithLayoutsContext $context, $ignore_validation)
     {
-        if (!$this->canCaptchaBeDisplayed($context)) {
+        if (!$context->getOption('use_captcha')) {
             return false;
         }
 
@@ -978,19 +999,5 @@ class TicketWithLayoutsType extends AbstractType
     private function phrase($name, array $vars = [])
     {
         return $this->language_manager->phrase($name, $vars);
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function canCaptchaBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getOption('use_captcha')) {
-            return false;
-        }
-
-        return true;
     }
 }

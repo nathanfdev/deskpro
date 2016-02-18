@@ -73,19 +73,25 @@ Feature: /ticket_forms endpoint
   "priority": 3,
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
-  "ticket_field_1": "2",
-  "ticket_field_5": "2016-02-09 17:28:00",
-  "ticket_field_6": "inline text",
-  "ticket_field_7": "textarea text",
-  "ticket_field_8": ["10", "11"],
-  "user_field_1": "2",
-  "user_field_5": "2016-02-09 17:28:00",
-  "user_field_6": "inline text",
-  "user_field_7": "textarea text",
-  "org_field_1": "2",
-  "org_field_5": "2016-02-09 17:28:00",
-  "org_field_6": "inline text",
-  "org_field_7": "textarea text",
+  "fields": {
+    "1": "2",
+    "5": "2016-02-09 17:28:00",
+    "6": "inline text",
+    "7": "textarea text",
+    "8": ["10", "11"]
+  },
+  "user_fields": {
+    "1": "2",
+    "5": "2016-02-09 17:28:00",
+    "6": "inline text",
+    "7": "textarea text"
+  },
+  "organization_fields": {
+    "1": "2",
+    "5": "2016-02-09 17:28:00",
+    "6": "inline text",
+    "7": "textarea text"
+  },
   "message": {
     "message": "my text message",
     "format": "text"
@@ -158,7 +164,9 @@ Feature: /ticket_forms endpoint
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
-  "ticket_field_8": ["9", "11"]
+  "fields": {
+    "8": ["9", "11"]
+  }
 }
     """
     Then the response status code should be 204
