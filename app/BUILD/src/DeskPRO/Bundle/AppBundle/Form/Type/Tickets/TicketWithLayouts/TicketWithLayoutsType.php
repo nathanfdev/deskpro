@@ -204,6 +204,13 @@ class TicketWithLayoutsType extends AbstractType
             $already_displayed_fields = explode(',', $pre_submit_data['displayed_fields']);
         }
 
+        if ($ticket->getDepartment() && isset($pre_submit_data[FormFields::DEPARTMENT])) {
+            if ($ticket->getDepartment()->getId() !== $pre_submit_data[FormFields::DEPARTMENT]) {
+                // if department was changed, we need to clear its related data
+                $ticket->resetCustomData();
+            }
+        }
+
         // calculate the initial layout of the form (before any form submissions took place)
         $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
         $context = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);

@@ -253,3 +253,36 @@ Feature: /ticket_forms endpoint
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "(No Subject)"
+
+  Scenario: I change department and unset previous department fields
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "department": 1,
+  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
+  "message": {
+    "message": "<p>my html message</p>",
+    "format": "html"
+  },
+  "attachments": [
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
+  ]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+
+    And the JSON node "data.id" should be equal to 5
+    And the JSON node "data.subject" should be equal to "Sample Ticket"
+    And the JSON node "data.department" should be equal to 1
+    And the JSON node "data.fields" should have 0 elements
+
+    When I send a GET request to "/api/v2/tickets/5/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].message" should contain "<p>my html message"

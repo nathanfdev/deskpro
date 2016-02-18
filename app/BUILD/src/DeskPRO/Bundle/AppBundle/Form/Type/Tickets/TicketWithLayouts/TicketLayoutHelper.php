@@ -179,7 +179,7 @@ class TicketLayoutHelper extends AbstractType
      *
      * @return array the form key and its selected entity ID (or null if not submitted)
      */
-    protected function getTicketDataIds(array $submitted_data, TicketWithLayoutsContext $context)
+    public function getTicketDataIds(array $submitted_data, TicketWithLayoutsContext $context)
     {
         $form       = $context->getForm();
         $final_data = [];
