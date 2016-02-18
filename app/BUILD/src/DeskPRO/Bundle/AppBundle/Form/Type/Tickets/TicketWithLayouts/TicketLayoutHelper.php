@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
+use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
@@ -126,17 +127,6 @@ class TicketLayoutHelper extends AbstractType
     }
 
     /**
-     * @param TicketWithLayoutsContext $context
-     * @param LayoutField              $field
-     *
-     * @return bool
-     */
-    public function fieldWasDisplayedBefore(TicketWithLayoutsContext $context, LayoutField $field)
-    {
-        return in_array($field->getId(), $context->getPreviouslyDisplayedFields());
-    }
-
-    /**
      * @param LayoutField $field
      * @param array       $extracted_data
      *
@@ -211,5 +201,39 @@ class TicketLayoutHelper extends AbstractType
         }
 
         return $final_data;
+    }
+
+    /**
+     * @param Layout                   $new_layout
+     * @param TicketWithLayoutsContext $context
+     * @param array                    $extracted_data
+     * @param array                    $fields_to_remove
+     * @param array                    $additional_fields
+     *
+     * @return array
+     */
+    public function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketWithLayoutsContext $context, $extracted_data, $fields_to_remove, $additional_fields)
+    {
+        // DEPENDENT FIELDS
+        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
+        $fields_requiring_rerender = [];
+        foreach ($new_layout->all() as $field) {
+            if ($context->fieldWasDisplayedBefore($field)) {
+                // this field was displayed before. should it continue to be displayed?
+                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
+                    $fields_to_remove[] = $field;
+                }
+            } else {
+                // this field was not displayed before, but should it be added and the form re-rendered?
+                if ($this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
+                    if (!in_array($field, $additional_fields)) {
+                        $additional_fields[] = $field;
+                    }
+                    $fields_requiring_rerender[] = $field;
+                }
+            }
+        }
+
+        return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
     }
 }

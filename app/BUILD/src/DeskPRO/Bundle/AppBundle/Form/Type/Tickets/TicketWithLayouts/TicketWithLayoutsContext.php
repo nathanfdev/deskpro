@@ -89,27 +89,19 @@ class TicketWithLayoutsContext
     private $captcha_exists_on_form;
 
     /**
-     * @var array passed as a hidden form field, it tells us what fields were visible to a user on submit
-     *            this helps us decide if we need to re-render or not
-     */
-    private $previously_displayed_fields;
-
-    /**
      * Constructor.
      *
      * @param FormInterface $form
      * @param Ticket        $ticket
      * @param TicketLayout  $layout
-     * @param array         $previously_displayed_fields
      */
-    public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout, array $previously_displayed_fields)
+    public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout)
     {
-        $this->form                        = $form;
-        $this->ticket                      = $ticket;
-        $this->layout                      = $layout;
-        $this->previous_layout             = $layout;
-        $this->captcha_exists_on_form      = false;
-        $this->previously_displayed_fields = $previously_displayed_fields;
+        $this->form                   = $form;
+        $this->ticket                 = $ticket;
+        $this->layout                 = $layout;
+        $this->previous_layout        = $layout;
+        $this->captcha_exists_on_form = false;
     }
 
     /**
@@ -135,7 +127,7 @@ class TicketWithLayoutsContext
      */
     public function getPreviouslyActiveLayout()
     {
-        return self::VIEW_AGENT === $this->getViewContext() ? $this->layout->agent_layout : $this->layout->user_layout;
+        return self::VIEW_AGENT === $this->getViewContext() ? $this->previous_layout->agent_layout : $this->previous_layout->user_layout;
     }
 
     /**
@@ -287,11 +279,13 @@ class TicketWithLayoutsContext
     }
 
     /**
-     * @return array
+     * @param $field
+     *
+     * @return bool
      */
-    public function getPreviouslyDisplayedFields()
+    public function fieldWasDisplayedBefore(LayoutField $field)
     {
-        return $this->previously_displayed_fields;
+        return $this->getPreviouslyActiveLayout()->has($field->getId());
     }
 
     /**

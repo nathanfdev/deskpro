@@ -52,26 +52,13 @@ export class TicketForm extends PageWidget {
     const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
 
     let updateHitter;
-    let setDisplayedFields;
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
-
-    setDisplayedFields = event => {
-      // handle special field "attachments"
-      // we remove the unnecessary and "more_attachments" from the string
-      const theFields = event.inst.currentFields;
-
-      const displayedFields = theFields.filter(field => !_.includes(['displayed_fields', 'more_attachments'], field)).join(',');
-      const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
-
-      console.log('[TicketForm] [setDisplayedFields] setting displayed_fields to: ', displayedFields);
-      $df.val(displayedFields);
-    };
 
     this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
-      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit', 'displayed_fields'],
+      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit'],
       onInit: () => {
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
@@ -98,9 +85,6 @@ export class TicketForm extends PageWidget {
         });
 
         return _.flatten(newFields);
-      },
-      onFieldsUpdated: fields => {
-        setDisplayedFields(fields);
       },
       onPostUpdate: () => {
         const portalPage = portalApp.getPortalPage();

@@ -101,12 +101,9 @@ class TicketTypeTest extends PortalTestCase
             'attachments',
             'more_attachments',
             'submit',
-            'displayed_fields',
         ]);
 
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments');
         $this->assertRerenderFormDoesNotExist($form);
-
         $this->teardownEnvForTicketForm();
     }
 
@@ -131,9 +128,7 @@ class TicketTypeTest extends PortalTestCase
             'more_attachments',
             'ticket_field_1',
             'submit',
-            'displayed_fields',
         ]);
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments,ticket_field_1');
         $this->assertRerenderFormDoesNotExist($form);
 
         $this->teardownEnvForTicketForm();
@@ -166,7 +161,6 @@ class TicketTypeTest extends PortalTestCase
             'attachments',
             'more_attachments',
             'submit',
-            'displayed_fields',
         ]);
 
         // test
@@ -179,13 +173,11 @@ class TicketTypeTest extends PortalTestCase
                 'format'  => 'text',
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
-            'displayed_fields'     => 'department,subject,message,user_email,attachments',
         ];
         $form->submit($submit_data);
 
         // assert
         $this->assertRerenderFormExists($form);
-        $this->assertDisplayFieldsValue($form, 'department,subject,message,user_email,attachments,ticket_field_1');
         $this->assertFields($form, [
             'department',
             'subject',
@@ -193,9 +185,8 @@ class TicketTypeTest extends PortalTestCase
             'user_email',
             'attachments',
             'more_attachments',
-            'displayed_fields',
-            'rerender_form',
             'ticket_field_1',
+            'rerender_form',
             'submit',
         ]);
         $this->assertEquals('My Test Subject', $ticket->getSubject());
@@ -231,7 +222,6 @@ class TicketTypeTest extends PortalTestCase
             'attachments',
             'more_attachments',
             'submit',
-            'displayed_fields',
         ]);
 
         // test
@@ -245,7 +235,6 @@ class TicketTypeTest extends PortalTestCase
             ],
             FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
             'ticket_field_1'       => null,
-            'displayed_fields'     => 'department,subject,message,user_email,attachments,ticket_field_1',
         ];
         $form->submit($submit_data);
 
@@ -284,7 +273,6 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                'displayed_fields' => 'department,subject,message,user_email,attachments',
             ],
         ]);
         $client->submit($form);
@@ -319,7 +307,6 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                'displayed_fields' => 'department,subject,message,user_email,attachments',
             ],
         ]);
 
@@ -341,8 +328,7 @@ class TicketTypeTest extends PortalTestCase
                 FormFields::USER_EMAIL => [
                     'email' => 'some@test.email',
                 ],
-                'ticket_field_1'   => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
-                'displayed_fields' => 'department,subject,message,user_email,attachments,ticket_field_1', // fix
+                'ticket_field_1' => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
             ],
         ]);
 
@@ -590,15 +576,5 @@ class TicketTypeTest extends PortalTestCase
     private function assertRerenderFormExists(FormInterface $form)
     {
         $this->assertTrue($form->has('rerender_form'), '"rerender_form" field does not exist, but should');
-    }
-
-    /**
-     * @param FormInterface $form
-     * @param string        $text
-     */
-    protected function assertDisplayFieldsValue(FormInterface $form, $text)
-    {
-        $fields = $form->get('displayed_fields')->getData();
-        $this->assertEquals($text, $fields, 'the displayed fields are set incorrectly');
     }
 }

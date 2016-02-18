@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
@@ -165,7 +164,8 @@ class TicketWithLayoutsType extends AbstractType
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
-        $context = $this->createTicketFormContext($form, $ticket, $layout);
+        $context = $this->createTicketFormContext($form, $ticket, new TicketLayout());
+        $context->setNewLayout($layout);
 
         // if there is only one department we want to make sure to set it now...
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
@@ -174,17 +174,7 @@ class TicketWithLayoutsType extends AbstractType
         if (!$ticket->getDepartment() && $hierarchy->countSelectable() == 1) {
             $ticket->setDepartment($hierarchy->getFirstSelectable());
         }
-
-        $displaying_fields = $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
-
-        if ($form->has('displayed_fields')) {
-            $form->remove('displayed_fields');
-        }
-
-        $form->add('displayed_fields', 'hidden', [
-            'mapped' => false,
-            'data'   => $displaying_fields['displayed_fields'],
-        ]);
+        $this->manipulateForm($context);
     }
 
     /**
@@ -195,45 +185,31 @@ class TicketWithLayoutsType extends AbstractType
     public function onPreSubmit(FormEvent $event)
     {
         /* @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $form                     = $event->getForm();
-        $ticket                   = $form->getData();
-        $pre_submit_data          = $event->getData();
-        $already_displayed_fields = [];
+        $form   = $event->getForm();
+        $ticket = $form->getData();
+        $data   = $event->getData();
 
-        if (array_key_exists('displayed_fields', $pre_submit_data)) {
-            $already_displayed_fields = explode(',', $pre_submit_data['displayed_fields']);
-        }
-
-        if ($ticket->getDepartment() && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            if ($ticket->getDepartment()->getId() !== $pre_submit_data[FormFields::DEPARTMENT]) {
+        if ($ticket->getDepartment() && isset($data[FormFields::DEPARTMENT])) {
+            if ($ticket->getDepartment()->getId() !== $data[FormFields::DEPARTMENT]) {
                 // if department was changed, we need to clear its related data
                 $ticket->resetCustomData();
             }
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context        = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
-        $initial_layout = $context->getActiveLayout();
+        $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $context = $this->createTicketFormContext($form, $ticket, $layout);
 
         // now we need to compare the department's layout, maybe the layout has changed
-        if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            $extracted_data     = $this->ticket_layout_helper->getTicketDataIds($pre_submit_data, $context);
+        if ($form->has(FormFields::DEPARTMENT) && isset($data[FormFields::DEPARTMENT])) {
+            $extracted_data     = $this->ticket_layout_helper->getTicketDataIds($data, $context);
             $new_department_id  = $extracted_data[FormFields::DEPARTMENT];
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
 
             $context->setNewLayout($destination_layout);
         }
 
-        // when manipulating the form, it may return data that we need to add to the pre submit event's data (new defaults)
-        $extra_data_to_submit = $this->manipulateForm(
-            $initial_layout,
-            $context->getActiveLayout(),
-            $context,
-            $pre_submit_data
-        );
-
-        $event->setData(array_merge($event->getData(), $extra_data_to_submit));
+        $this->manipulateForm($context, $data);
     }
 
     /**
@@ -261,28 +237,26 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
-     * @param Layout                   $initial_layout
-     * @param Layout                   $new_layout
      * @param TicketWithLayoutsContext $context
      * @param array                    $submitted_data
      *
      * @return array of field names that are now displayed on the form
      */
-    private function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketWithLayoutsContext $context, $submitted_data = [])
+    private function manipulateForm(TicketWithLayoutsContext $context, $submitted_data = [])
     {
-        $additional_fields             = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
-        $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
-        $extracted_data                = $this->ticket_layout_helper->getTicketDataIds($submitted_data, $context);
-        $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
-        $had_previous_layout           = count($initial_layout->all()) > 0;
+        $initial_layout = $context->getPreviouslyActiveLayout();
+        $new_layout     = $context->getActiveLayout();
 
-        list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
+        $additional_fields   = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
+        $fields_to_remove    = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+        $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($submitted_data, $context);
+        $had_previous_layout = count($initial_layout->all()) > 0;
+
+        list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->ticket_layout_helper->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
 
         $form = $context->getForm();
 
-        $added_something       = false;
-        $new_fields_to_display = [];
-        $extra_data_to_submit  = [];
+        $has_not_submitted = false;
         foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
@@ -298,46 +272,32 @@ class TicketWithLayoutsType extends AbstractType
                 }
             }
 
-            // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
-            if ($form->has('submit')) {
-                $form->remove('submit');
+            if (!array_key_exists($field->getId(), $submitted_data)) {
+                $has_not_submitted = true;
             }
 
-            // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-            if (count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$form->has('rerender_form')) {
-                $form->add('rerender_form', 'hidden', [
-                    'mapped' => false,
-                    'label'  => false,
-                ]);
-            }
-
-            $added_something = true;
-
-            $new_fields_to_display[] = $field->getId();
             $field_requires_rerender = in_array($field, $fields_requiring_rerender) && $had_previous_layout;
-
             $this->addField($context, $field, $field_requires_rerender);
         }
 
         foreach ($fields_to_remove as $field) {
             $this->removeField($context, $field);
-            if (($key = array_search($field->getId(), $pre_existing_displayed_fields)) !== false) {
-                unset($pre_existing_displayed_fields[$key]);
-            }
         }
 
-        if (!$added_something && $form->has('rerender_form')) {
-            // we didn't add anything new, so remove the signal to re-render
-            $form->remove('rerender_form');
+        // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
+        if ($has_not_submitted && count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$form->has('rerender_form')) {
+            $form->add('rerender_form', 'hidden', [
+                'mapped' => false,
+                'label'  => false,
+            ]);
+        }
+
+        // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
+        if ($form->has('submit')) {
+            $form->remove('submit');
         }
 
         $this->addSubmit($context);
-
-        $displayed_fields_data = [
-            'displayed_fields' => implode(',', array_merge($pre_existing_displayed_fields, $new_fields_to_display)),
-        ];
-
-        return array_merge($extra_data_to_submit, $displayed_fields_data);
     }
 
     /**
@@ -978,13 +938,12 @@ class TicketWithLayoutsType extends AbstractType
      * @param FormInterface $form
      * @param Ticket        $ticket
      * @param TicketLayout  $initial_layout
-     * @param array         $already_displayed_fields
      *
      * @return TicketWithLayoutsContext
      */
-    private function createTicketFormContext(FormInterface $form, Ticket $ticket, TicketLayout $initial_layout, $already_displayed_fields = [])
+    private function createTicketFormContext(FormInterface $form, Ticket $ticket, TicketLayout $initial_layout)
     {
-        return new TicketWithLayoutsContext($form, $ticket, $initial_layout, $already_displayed_fields);
+        return new TicketWithLayoutsContext($form, $ticket, $initial_layout);
     }
 
     /**
@@ -1009,47 +968,6 @@ class TicketWithLayoutsType extends AbstractType
     private function phrase($name, array $vars = [])
     {
         return $this->language_manager->phrase($name, $vars);
-    }
-
-    /**
-     * @param Layout                   $new_layout
-     * @param TicketWithLayoutsContext $context
-     * @param array                    $extracted_data
-     * @param array                    $fields_to_remove
-     * @param array                    $additional_fields
-     *
-     * @return array
-     */
-    private function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketWithLayoutsContext $context, $extracted_data, $fields_to_remove, $additional_fields)
-    {
-        // DEPENDENT FIELDS
-        // find fields that should be rendered, but weren't before, via criteria with recently submitted data
-        $fields_requiring_rerender = [];
-        foreach ($new_layout->all() as $field) {
-            if ($this->ticket_layout_helper->fieldWasDisplayedBefore($context, $field)) {
-                // this field was displayed before. should it continue to be displayed?
-                if ($this->ticket_layout_helper->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
-                    $fields_to_remove[] = $field;
-                } elseif ($this->ticket_layout_helper->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
-                    // this field was displayed before + is still supposed to be on the form after the submit
-                    if (!$context->hasValidVisibility($field)) {
-                        continue;
-                    }
-
-                    $this->addField($context, $field);
-                }
-            } else {
-                // this field was not displayed before, but should it be added and the form re-rendered?
-                if ($this->ticket_layout_helper->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
-                    if (!in_array($field, $additional_fields)) {
-                        $additional_fields[] = $field;
-                    }
-                    $fields_requiring_rerender[] = $field;
-                }
-            }
-        }
-
-        return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
     }
 
     /**
