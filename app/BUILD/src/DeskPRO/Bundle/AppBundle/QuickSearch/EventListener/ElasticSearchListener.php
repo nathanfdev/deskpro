@@ -91,6 +91,8 @@ class ElasticSearchListener implements EventSubscriberInterface
 
         // todo debug
         // todo temporary disabled elastic search
+        // todo elastic search seems is enabled on test build but not populated, and so we get always empty results
+        // todo check the elastic index and remove this
         if (true || !$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
             $this->dispatchFallback($event);
 
