@@ -335,6 +335,14 @@ class TicketWithLayoutsType extends AbstractType
             $form->remove('submit');
         }
 
+        // for web view add more attachments button
+        if (!$context->forApi() && $form->has(FormFields::ATTACHMENTS)) {
+            $form->add('more_attachments', 'submit', [
+                'validation_groups' => false,
+                'label'             => $this->phrase('portal.forms.label_add_attachment'),
+            ]);
+        }
+
         $this->addSubmit($context);
     }
 
@@ -392,19 +400,19 @@ class TicketWithLayoutsType extends AbstractType
                 $this->addCc($context, $field);
                 break;
             case FormFields::ATTACHMENTS:
-                $this->addAttach($context);
+                $this->addAttach($context, $field);
                 break;
             case FormFields::USER_EMAIL:
-                $this->addUserEmail($context);
+                $this->addUserEmail($context, $field);
                 break;
             case FormFields::USER_NAME:
-                $this->addUserName($context);
+                $this->addUserName($context, $field);
                 break;
             case FormFields::USER_TIMEZONE:
                 $this->addUserTimezone($context, $field);
                 break;
             case FormFields::LABELS:
-                $this->addLabelField($context);
+                $this->addLabelField($context, $field);
                 break;
             case FormFields::USER_FIELD:
                 $this->addCustomUserField($context, $field, $ignore_validation);
@@ -520,15 +528,12 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
      */
-    private function addUserName(TicketWithLayoutsContext $context)
+    private function addUserName(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $form = $this->createUserName($context);
-        $context->getForm()->add(
-            $form['name'],
-            $form['type'],
-            $form['options']
-        );
+        $context->getForm()->add($field->getId(), $form['type'], $form['options']);
     }
 
     /**
@@ -551,15 +556,12 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
      */
-    private function addUserEmail(TicketWithLayoutsContext $context)
+    private function addUserEmail(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $form = $this->createUserEmail($context);
-        $context->getForm()->add(
-            $form['name'],
-            $form['type'],
-            $form['options']
-        );
+        $context->getForm()->add($field->getId(), $form['type'], $form['options']);
     }
 
     /**
@@ -607,10 +609,11 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
      */
-    private function addLabelField(TicketWithLayoutsContext $context)
+    private function addLabelField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        $context->getForm()->add('labels', 'api_labels_collection', [
+        $context->getForm()->add($field->getId(), 'api_labels_collection', [
             'labels_class'   => LabelTicket::class,
             'labels_owner'   => $context->getTicket(),
             'owner_property' => 'ticket',
@@ -885,26 +888,20 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
      */
-    private function addAttach(TicketWithLayoutsContext $context)
+    private function addAttach(TicketWithLayoutsContext $context, LayoutField $field)
     {
         if (!$context->getMessage()) {
             return;
         }
 
-        $form = $context->getForm();
-        $form
-            ->add('attachments', 'ticket_message_attachment_collection', [
-                'property_path'  => 'messages[0].attachments',
-                'required'       => false,
-                'person'         => $context->getPerson(),
-                'ticket_message' => $context->getMessage(),
-            ])
-            ->add('more_attachments', 'submit', [
-                'validation_groups' => false,
-                'label'             => $this->phrase('portal.forms.label_add_attachment'),
-            ])
-        ;
+        $context->getForm()->add($field->getId(), 'ticket_message_attachment_collection', [
+            'property_path'  => 'messages[0].attachments',
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
+        ]);
     }
 
     /**
