@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
+namespace DeskPRO\Bundle\AppBundle\Form;
 
 /**
  * Class FormField.

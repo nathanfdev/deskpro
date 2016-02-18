@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
@@ -159,7 +160,7 @@ class CustomFieldManager
             case FormFields::ORG_FIELD:
                 return $this->getCustomTicketFieldById($field_id);
             default:
-                return;
+                return false;
         }
     }
 

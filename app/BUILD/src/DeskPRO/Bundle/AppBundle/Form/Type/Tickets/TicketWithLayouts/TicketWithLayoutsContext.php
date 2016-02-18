@@ -84,11 +84,6 @@ class TicketWithLayoutsContext
     private $form;
 
     /**
-     * @var bool keeps track of if we have already added a captcha to the form or not
-     */
-    private $captcha_exists_on_form;
-
-    /**
      * Constructor.
      *
      * @param FormInterface $form
@@ -97,11 +92,10 @@ class TicketWithLayoutsContext
      */
     public function __construct(FormInterface $form, Ticket $ticket, TicketLayout $layout)
     {
-        $this->form                   = $form;
-        $this->ticket                 = $ticket;
-        $this->layout                 = $layout;
-        $this->previous_layout        = $layout;
-        $this->captcha_exists_on_form = false;
+        $this->form            = $form;
+        $this->ticket          = $ticket;
+        $this->layout          = $layout;
+        $this->previous_layout = $layout;
     }
 
     /**
@@ -260,22 +254,6 @@ class TicketWithLayoutsContext
     public function setPreviousLayout(TicketLayout $previous_layout)
     {
         $this->previous_layout = $previous_layout;
-    }
-
-    /**
-     * @return bool
-     */
-    public function doesCaptchaExistOnForm()
-    {
-        return $this->captcha_exists_on_form;
-    }
-
-    /**
-     * @param bool $bool
-     */
-    public function setCaptchaExistsOnForm($bool)
-    {
-        $this->captcha_exists_on_form = (bool) $bool;
     }
 
     /**
