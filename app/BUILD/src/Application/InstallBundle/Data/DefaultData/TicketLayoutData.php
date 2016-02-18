@@ -55,7 +55,7 @@ class TicketLayoutData extends AbstractDefaultData
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
 
-            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACH));
+            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACHMENTS));
 
             $this->getEm()->persist($ticket_layout);
             $this->getEm()->flush();

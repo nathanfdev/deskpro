@@ -543,7 +543,7 @@ class TicketTypeTest extends PortalTestCase
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }
 
-            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACH));
+            $ticket_layout->user_layout->add(new LayoutField(FormFields::ATTACHMENTS));
 
             $f = $this->createField('radio', 'Reason for Complaint', ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']);
             $ticket_layout->user_layout->add(new LayoutField('ticket_field', $f->getId()));

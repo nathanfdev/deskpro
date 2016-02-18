@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -343,7 +342,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
             }
 
             $layout->add(new LayoutField('message'));
-            $layout->add(new LayoutField(FormFields::ATTACH));
+            $layout->add(new LayoutField(FormFields::ATTACHMENTS));
 
             $enc = JsonObjectSerializer::serialize($layout);
 

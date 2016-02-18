@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -157,12 +156,12 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField(FormFields::PERSON))
             ->add(new LayoutField(FormFields::DEPARTMENT))
             ->add(new LayoutField(FormFields::MESSAGE))
-            ->add(new LayoutField(FormFields::ATTACH))
+            ->add(new LayoutField(FormFields::ATTACHMENTS))
             ->add(new LayoutField(FormFields::CAPTCHA))
             ->add(new LayoutField(FormFields::PRODUCT))
             ->add(new LayoutField(FormFields::CC))
             ->add(new LayoutField(FormFields::PRIORITY))
-            ->add(new LayoutField(FormFields::LABEL))
+            ->add(new LayoutField(FormFields::LABELS))
 
             ->add(new LayoutField('ticket_field', 1)) // Select box
             ->add(new LayoutField('ticket_field', 5)) // Datetime

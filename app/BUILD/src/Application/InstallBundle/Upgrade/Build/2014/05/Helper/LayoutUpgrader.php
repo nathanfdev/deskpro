@@ -276,7 +276,7 @@ class LayoutUpgrader
             case 'message':
                 return new TicketLayout\LayoutField('message');
             case 'attachments':
-                return new TicketLayout\LayoutField(FormFields::ATTACH);
+                return new TicketLayout\LayoutField(FormFields::ATTACHMENTS);
             case 'ticket_cc_emails':
                 return new TicketLayout\LayoutField('cc');
             case 'captcha':

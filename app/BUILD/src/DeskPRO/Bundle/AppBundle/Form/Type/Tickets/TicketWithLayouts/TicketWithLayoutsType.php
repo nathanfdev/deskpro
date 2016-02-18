@@ -362,7 +362,7 @@ class TicketWithLayoutsType extends AbstractType
 
         switch ($field->getFieldType()) {
             case FormFields::SUBJECT:
-                $this->addSubject($context, $ignore_validation);
+                $this->addSubject($context, $field, $ignore_validation);
                 break;
             case FormFields::MESSAGE:
                 $this->addMessage($context, $field);
@@ -391,7 +391,7 @@ class TicketWithLayoutsType extends AbstractType
             case FormFields::CC:
                 $this->addCc($context, $field);
                 break;
-            case FormFields::ATTACH:
+            case FormFields::ATTACHMENTS:
                 $this->addAttach($context);
                 break;
             case FormFields::USER_EMAIL:
@@ -403,7 +403,7 @@ class TicketWithLayoutsType extends AbstractType
             case FormFields::USER_TIMEZONE:
                 $this->addUserTimezone($context, $field);
                 break;
-            case FormFields::LABEL:
+            case FormFields::LABELS:
                 $this->addLabelField($context);
                 break;
             case FormFields::USER_FIELD:
@@ -449,9 +449,10 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
      * @param bool|false               $ignore_validation
      */
-    private function addSubject(TicketWithLayoutsContext $context, $ignore_validation = false)
+    private function addSubject(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
         $options = [
             'label'       => $this->phrase('portal.forms.label_subject'),
@@ -468,7 +469,7 @@ class TicketWithLayoutsType extends AbstractType
             $options = $this->markNoValidation($options);
         }
 
-        $context->getForm()->add('subject', 'text', $options);
+        $context->getForm()->add($field->getId(), 'text', $options);
     }
 
     /**

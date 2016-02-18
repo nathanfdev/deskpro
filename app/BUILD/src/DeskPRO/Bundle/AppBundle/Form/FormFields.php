@@ -54,6 +54,6 @@ class FormFields
     const PRODUCT       = 'product';
     const CAPTCHA       = 'captcha';
     const CC            = 'cc';
-    const ATTACH        = 'attachments';
-    const LABEL         = 'label';
+    const ATTACHMENTS   = 'attachments';
+    const LABELS        = 'labels';
 }
