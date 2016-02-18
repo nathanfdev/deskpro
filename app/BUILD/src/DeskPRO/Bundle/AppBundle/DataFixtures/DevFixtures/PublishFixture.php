@@ -125,7 +125,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     public function getOrder()
     {
-        return 90;
+        return 80;
     }
 
     /**
