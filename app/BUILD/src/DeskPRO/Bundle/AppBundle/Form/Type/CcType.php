@@ -146,19 +146,13 @@ class CcType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
-    {
-        return 'text';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
             ->setDefaults([
-                'view_type' => 'inline',
+                'view_type'      => 'inline',
+                'compound'       => false,
+                'error_bubbling' => false,
             ])
             ->setRequired([
                 'ticket',

@@ -45,7 +45,7 @@ class TextTransformerExtension extends AbstractTypeExtension
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new TextStringTransformer());
+        $builder->addViewTransformer(new TextStringTransformer());
     }
 
     /**

@@ -27,6 +27,19 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.subject.errors[0].code" should be equal to "wrong_length"
     And the JSON node "errors.fields.subject.errors[0].message" should be equal to "The value must be at least 5 characters in length."
 
+  Scenario: I sent not valid data type in subject:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "subject": {
+    "title": "subject"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
   Scenario: I try to create a ticket with person by unknown id
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
