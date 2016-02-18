@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -74,7 +73,7 @@ class UserGroupsController extends BaseController
      * )
      * @Get("/user_groups/{id}", name="api_single_user_group", requirements={"id" = "\d+"})
      */
-    public function getUserGroup($id)
+    public function getUserGroupAction($id)
     {
         $service = $this->get('data.user_groups');
 
