@@ -217,23 +217,10 @@ class TicketWithLayoutsType extends AbstractType
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            $extracted_data    = $this->ticket_layout_helper->getTicketDataIds($pre_submit_data, $context);
-            $new_department_id = $extracted_data['department'];
-
-            if ($form->has('last_department_id')) {
-                $form->remove('last_department_id');
-            }
-
-            $form->add('last_department_id', 'hidden', [
-                'mapped' => false,
-                'label'  => false,
-            ]);
-
-            $event->setData(array_merge($pre_submit_data, [
-                'last_department_id' => $new_department_id,
-            ]));
-
+            $extracted_data     = $this->ticket_layout_helper->getTicketDataIds($pre_submit_data, $context);
+            $new_department_id  = $extracted_data['department'];
             $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
+
             $context->setNewLayout($destination_layout);
         }
 

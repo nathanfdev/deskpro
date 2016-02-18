@@ -194,7 +194,6 @@ class TicketTypeTest extends PortalTestCase
             'attachments',
             'more_attachments',
             'displayed_fields',
-            'last_department_id',
             'rerender_form',
             'ticket_field_1',
             'submit',

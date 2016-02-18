@@ -53,23 +53,7 @@ export class TicketForm extends PageWidget {
     const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
 
     let updateHitter;
-    let updateLastDepId;
     let setDisplayedFields;
-
-    updateLastDepId = () => {
-      const depId = ticketReader.getDepartmentId();
-      const $ldp = $formEl.find("[data-field='last_department_id']");
-
-      if ($ldp.length) {
-        if ($ldp.find('input').length) {
-          $ldp.find('input').val(depId);
-        } else {
-          $ldp.val(depId); // on first page load this is the case
-        }
-      } else {
-        $formEl.find('form').append('<input data-field="last_department_id" type="hidden" name="' + formName + '[last_department_id]" value="' + depId + '" />');
-      }
-    };
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
@@ -88,10 +72,8 @@ export class TicketForm extends PageWidget {
     this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
-      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit', 'last_department_id', 'displayed_fields'],
+      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit', 'displayed_fields'],
       onInit: () => {
-        updateLastDepId();
-
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
           const $subject = $('#ticket_subject', $formEl);
@@ -119,7 +101,6 @@ export class TicketForm extends PageWidget {
         return _.flatten(newFields);
       },
       onFieldsUpdated: fields => {
-        updateLastDepId();
         setDisplayedFields(fields);
       },
       onPostUpdate: () => {
