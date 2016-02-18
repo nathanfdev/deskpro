@@ -29,46 +29,24 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\LabelDef;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     private $num_people = 500;
     private $num_agents = 10;
     private $num_orgs   = 75;
     private $num_labels = 100;
     private $max_notes  = 3;
-
-    /**
-     * @var \Faker\Generator
-     */
-    private $faker;
-
-    /**
-     * @var ObjectManager
-     */
-    private $manager;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var Connection
-     */
-    private $db;
 
     /**
      * @var string[]
@@ -103,24 +81,6 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container        = $container;
-        $this->ava_files        = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
-        $this->ava_people_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people');
-    }
-
-    /**
-     * DpFixture constructor.
-     */
-    public function __construct()
-    {
-        $this->faker = \Faker\Factory::create();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getOrder()
     {
         return 40;
@@ -131,18 +91,23 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
      */
     public function load(ObjectManager $manager)
     {
-        $this->manager = $manager;
-        $this->db      = $this->container->get('database_connection');
+        $this->manager   = $manager;
+        $this->ava_files = new RandomFileFromDir(
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars'
+        );
+        $this->ava_people_files = new RandomFileFromDir(
+            DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people'
+        );
 
         $this->loadLabels();
         $this->loadOrgs();
         $this->loadOrgProps();
 
         $this->loadPeople($this->num_agents, true);
-        $this->agent_ids = $this->db->fetchAllCol('SELECT id FROM people');
+        $this->agent_ids = $this->fetchIds(self::TABLE_PEOPLE);
 
         $this->loadPeople($this->num_people, false);
-        $this->people_ids = $this->db->fetchAllCol('SELECT id FROM people');
+        $this->people_ids = $this->fetchIds(self::TABLE_PEOPLE);
 
         $this->loadPeopleProps();
 
@@ -160,7 +125,12 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
             $l = $this->faker->unique()->company;
             if ($l) {
                 $l       = strtolower($l);
-                $batch[] = ['label_type' => $label_type, 'label' => $l, 'color' => $this->faker->hexColor, 'total' => 0];
+                $batch[] = [
+                    'label_type' => $label_type,
+                    'label'      => $l,
+                    'color'      => $this->faker->hexColor,
+                    'total'      => 0,
+                ];
             }
         }
 
@@ -238,12 +208,14 @@ class PeopleFixture extends AbstractFixture implements ContainerAwareInterface, 
         }
 
         $this->db->batchInsert('people_emails', $batch, true);
-        $this->db->executeUpdate('
+        $this->db->executeUpdate(
+            '
             UPDATE people
             JOIN people_emails ON (people_emails.person_id = people.id)
             SET people.primary_email_id = people_emails.id
             WHERE people.primary_email_id IS NULL
-        ');
+        '
+        );
     }
 
     private function loadOrgs()

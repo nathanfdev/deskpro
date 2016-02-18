@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
@@ -105,15 +106,13 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
         $this->manager = $manager;
         $this->db      = $this->container->get('database_connection');
 
-        $this->team_ids  = $this->fetchRelatedEntitiesIds('id', self::TABLE_AGENT_TEAMS);
-        $this->blob_ids  = $this->fetchRelatedEntitiesIds('id', self::TABLE_BLOBS);
-        $this->agent_ids = $this->fetchRelatedEntitiesIds(
-            'id',
+        $this->team_ids  = $this->fetchIds(self::TABLE_AGENT_TEAMS);
+        $this->blob_ids  = $this->fetchIds(self::TABLE_BLOBS);
+        $this->agent_ids = $this->fetchIds(
             self::TABLE_PEOPLE,
             [['field' => 'is_agent', 'value' => 1]]
         );
-        $this->department_ids = $this->fetchRelatedEntitiesIds(
-            'id',
+        $this->department_ids = $this->fetchIds(
             self::TABLE_DEPARTMENTS,
             [['field' => 'is_tickets_enabled', 'value' => 1]]
         );
@@ -172,9 +171,8 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             ];
         }
 
-        $table = 'task_projects';
-        $this->db->batchInsert($table, $batch, true);
-        $this->project_ids = $this->db->fetchAllCol('SELECT id FROM '.$table);
+        $this->db->batchInsert(self::TABLE_TASK_PROJECTS, $batch, true);
+        $this->project_ids = $this->fetchIds(self::TABLE_TASK_PROJECTS);
     }
 
     private function loadLists()
@@ -185,13 +183,12 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             $batch[] = [
                 'title'         => $this->faker->realText(70),
                 'display_order' => $i,
-                'project_id'    => $this->project_ids[array_rand($this->project_ids)],
+                'project_id'    => $this->faker->randomElement($this->project_ids),
             ];
         }
 
-        $table = 'task_lists';
-        $this->db->batchInsert($table, $batch, true);
-        $this->list_ids = $this->db->fetchAllCol('SELECT id FROM '.$table);
+        $this->db->batchInsert(self::TABLE_TASK_LISTS, $batch, true);
+        $this->list_ids = $this->fetchIds(self::TABLE_TASK_LISTS);
     }
 
     private function loadTasks()
@@ -214,9 +211,9 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
 
             $batch[] = [
                 'title'             => $this->faker->realText(100),
-                'creator_person_id' => $this->agent_ids[array_rand($this->agent_ids)],
-                'project_id'        => $this->project_ids[array_rand($this->project_ids)],
-                'list_id'           => $this->list_ids[array_rand($this->list_ids)],
+                'creator_person_id' => $this->faker->randomElement($this->agent_ids),
+                'project_id'        => $this->faker->randomElement($this->project_ids),
+                'list_id'           => $this->faker->randomElement($this->list_ids),
                 'is_done'           => $isDone,
                 'percent_complete'  => $percentDone,
                 'date_created'      => $dateCreated,
@@ -228,9 +225,8 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             ];
         }
 
-        $table = 'tasks_new';
-        $this->db->batchInsert($table, $batch, true);
-        $this->task_ids = $this->db->fetchAllCol('SELECT id FROM '.$table.' order by id');
+        $this->db->batchInsert(self::TABLE_TASKS_NEW, $batch, true);
+        $this->task_ids = $this->db->fetchAllCol('SELECT id FROM '.self::TABLE_TASKS_NEW.' ORDER BY id');
     }
 
     private function loadAssignments()
@@ -242,11 +238,11 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             $team       = null;
 
             if (rand(1, 100) < 25 && $this->department_ids) {
-                $department = $this->department_ids[array_rand($this->department_ids)];
+                $department = $this->faker->randomElement($this->department_ids);
             } elseif (rand(1, 100) < 25 && $this->team_ids) {
-                $team = $this->team_ids[array_rand($this->team_ids)];
+                $team = $this->faker->randomElement($this->team_ids);
             } else {
-                $agent = $this->agent_ids[array_rand($this->agent_ids)];
+                $agent = $this->faker->randomElement($this->agent_ids);
             }
 
             $batch[] = [
@@ -257,7 +253,7 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             ];
         }
 
-        $this->db->batchInsert('task_assignments', $batch, true);
+        $this->db->batchInsert(self::TABLE_TASK_ASSIGNMENTS, $batch, true);
     }
 
     private function loadSubtasks()
@@ -274,16 +270,16 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
 
             $batch[] = [
                 'title'          => $this->faker->realText(100),
-                'creator_id'     => $this->agent_ids[array_rand($this->agent_ids)],
+                'creator_id'     => $this->faker->randomElement($this->agent_ids),
                 'is_done'        => $isDone,
                 'date_created'   => $dateCreated,
                 'date_completed' => $dateDone,
                 'display_order'  => $i,
-                'task_id'        => $this->task_ids[array_rand($this->task_ids)],
+                'task_id'        => $this->faker->randomElement($this->task_ids),
             ];
         }
 
-        $this->db->batchInsert('task_subtask', $batch, true);
+        $this->db->batchInsert(self::TABLE_TASK_SUBTASK, $batch, true);
     }
 
     public function loadComments()
@@ -295,14 +291,14 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
 
             $batch[] = [
-                'person_id'    => $this->agent_ids[array_rand($this->agent_ids)],
-                'task_id'      => $this->task_ids[array_rand($this->task_ids)],
+                'person_id'    => $this->faker->randomElement($this->agent_ids),
+                'task_id'      => $this->faker->randomElement($this->task_ids),
                 'comment'      => $this->faker->realText(300),
                 'date_created' => $dateCreated,
             ];
         }
 
-        $this->db->batchInsert('task_comments_new', $batch, true);
+        $this->db->batchInsert(self::TABLE_TASK_COMMENTS_NEW, $batch, true);
     }
 
     public function loadAttachments()
@@ -313,14 +309,14 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
 
             $batch[] = [
-                'person_id'    => $this->agent_ids[array_rand($this->agent_ids)],
+                'person_id'    => $this->faker->randomElement($this->agent_ids),
                 'date_created' => $dateCreated,
-                'task_id'      => $this->task_ids[array_rand($this->task_ids)],
+                'task_id'      => $this->faker->randomElement($this->task_ids),
                 'blob_id'      => $this->blob_ids[0],
             ];
         }
 
-        $this->db->batchInsert('task_attachments', $batch, true);
+        $this->db->batchInsert(self::TABLE_TASK_ATTACHMENTS, $batch, true);
     }
 
     public function loadLinks()
@@ -341,14 +337,13 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             }
 
             $batch[] = [
-                'task_id'    => $this->task_ids[array_rand($this->task_ids)],
+                'task_id'    => $this->faker->randomElement($this->task_ids),
                 'ticket_id'  => $ticket,
                 'chat_id'    => $chat,
                 'article_id' => $article,
             ];
         }
 
-        //TODO: This is failing
-        //$this->db->batchInsert('task_links', $batch, true);
+        $this->db->batchInsert('task_links', $batch, true);
     }
 }

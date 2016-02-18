@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -45,9 +46,11 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_ARTICLES                   = 'articles';
     const TABLE_ARTICLE_CATEGORIES         = 'article_categories';
     const TABLE_ARTICLE_COMMENTS           = 'article_comments';
+    const TABLE_ARTICLE_PENDING_CREATE     = 'article_pending_create';
     const TABLE_ARTICLE_TO_CATEGORIES      = 'article_to_categories';
     const TABLE_BLOBS                      = 'blobs';
     const TABLE_CUSTOM_DATA_FEEDBACK       = 'custom_data_feedback';
+    const TABLE_CUSTOM_DATA_TICKET         = 'custom_data_ticket';
     const TABLE_CUSTOM_DEF_FEEDBACK        = 'custom_def_feedback';
     const TABLE_DEPARTMENTS                = 'departments';
     const TABLE_DOWNLOADS                  = 'downloads';
@@ -56,12 +59,24 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_FEEDBACK                   = 'feedback';
     const TABLE_FEEDBACK_CATEGORIES        = 'feedback_categories';
     const TABLE_FEEDBACK_STATUS_CATEGORIES = 'feedback_status_categories';
+    const TABLE_GLOSSARY_WORD_DEFINITIONS  = 'glossary_word_definitions';
+    const TABLE_GLOSSARY_WORDS             = 'glossary_words';
     const TABLE_LABELS_FEEDBACK            = 'labels_feedback';
     const TABLE_LANGUAGES                  = 'languages';
     const TABLE_NEWS                       = 'news';
     const TABLE_NEWS_CATEGORIES            = 'news_categories';
     const TABLE_NEWS_COMMENTS              = 'news_comments';
     const TABLE_PEOPLE                     = 'people';
+    const TABLE_PROBLEMS                   = 'problems';
+    const TABLE_TASK_ASSIGNMENTS           = 'task_assignments';
+    const TABLE_TASK_ATTACHMENTS           = 'task_attachments';
+    const TABLE_TASK_LISTS                 = 'task_lists';
+    const TABLE_TASK_LINKS                 = 'task_links';
+    const TABLE_TASKS_NEW                  = 'tasks_new';
+    const TABLE_TASK_PROJECTS              = 'task_projects';
+    const TABLE_TASK_COMMENTS_NEW          = 'task_comments_new';
+    const TABLE_TASK_SUBTASK               = 'task_subtask';
+    const TABLE_TICKETS                    = 'tickets';
     const TABLE_USERGROUPS                 = 'usergroups';
 
     /**
@@ -93,7 +108,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     }
 
     /**
-     * Sets the container.
+     * Sets the container and db (Connection).
      *
      * @param ContainerInterface|null $container A ContainerInterface instance or null
      */
@@ -103,37 +118,15 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
         $this->db        = $this->container->get('database_connection');
     }
 
-    protected function randomArrayValue(array $array, $num = null)
-    {
-        if ($num > 1) {
-            $res  = [];
-            $keys = array_rand($array, $num);
-            foreach ($keys as $key) {
-                $res[] = $array[$key];
-            }
-
-            return $res;
-        }
-
-        return $array[array_rand($array)];
-    }
-
     /**
-     * @param string       $table  Table name for fetching
-     * @param string|array $fields
-     * @param array        $where
+     * @param string $table Table name for fetching
+     * @param array  $where
      *
      * @return array
      */
-    protected function fetchRelatedEntitiesIds($fields, $table, $where = [])
+    protected function fetchIds($table, $where = [])
     {
-        $sql = 'SELECT ';
-        if (is_array($fields)) {
-            $sql .= implode(', ', $fields);
-        } elseif (is_string($fields)) {
-            $sql .= $fields;
-        }
-        $sql .= ' FROM '.$table;
+        $sql = "SELECT id FROM $table";
         if (!empty($where)) {
             $sql .= ' WHERE ';
             $statements = [];
@@ -152,14 +145,15 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
         return $ids;
     }
 
-    protected function dateTimeBetween($from, $to)
+    /**
+     * @param array $values
+     * @param int   $nbWords
+     *
+     * @return array
+     */
+    protected function setTitleAndSlug(array $values, $nbWords = 5)
     {
-        return $this->faker->dateTimeBetween($from, $to)->format('Y-m-d H:i:s');
-    }
-
-    protected function setTitleAndSlug(array $values, $maxLength = 100)
-    {
-        $title           = $this->faker->realText($maxLength);
+        $title           = $this->faker->sentence($nbWords);
         $values['title'] = $title;
         $values['slug']  = Strings::slugifyTitle($title);
 

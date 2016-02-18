@@ -32,49 +32,54 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Orb\Data\ContentTypes;
 
-class AgentTeamsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+class GlossaryFixture extends DeskProAbstractFixture
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getOrder()
-    {
-        return 10;
-    }
+    const NUM_WORDS            = 20;
+    const NUM_WORD_DEFINITIONS = 10;
 
     /**
-     * {@inheritdoc}
+     * @var int[]
+     */
+    private $definitions;
+
+    /**
+     * Load data fixtures with the passed EntityManager.
+     *
+     * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
-        $ava_map = [
-            null,
-            '/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/superman_.jpg',
-            '/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/captain_america.gif',
-        ];
+        $this->manager = $manager;
+        $this->loadWordDefinitions();
+        $this->loadWords();
+    }
 
-        $bs = $this->container->get('deskpro.blob_storage');
-
-        foreach (['Support', 'Level 1', 'Level 2'] as $k => $title) {
-            $team       = new AgentTeam();
-            $team->name = $title;
-            $this->addReference('team.'.$k, $team);
-            $manager->persist($team);
-
-            $ava = $ava_map[$k];
-            if ($ava) {
-                $blob         = $bs->createBlobRecordFromFile(DP_ROOT.$ava, basename($ava), ContentTypes::getContentTypeFromFilename($ava));
-                $team->avatar = $blob;
-                $manager->persist($team);
-            }
+    private function loadWordDefinitions()
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_WORD_DEFINITIONS) {
+            $batch[] = [
+                'definition' => $this->faker->realText(100),
+            ];
         }
+        $this->db->batchInsert(self::TABLE_GLOSSARY_WORD_DEFINITIONS, $batch, true);
+        $this->definitions = $this->fetchIds(self::TABLE_GLOSSARY_WORD_DEFINITIONS);
+    }
 
-        $manager->flush();
+    private function loadWords()
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_WORDS) {
+            $batch[] = [
+                'definition_id' => $this->faker->randomElement($this->definitions),
+                'word'          => $this->faker->realText(15),
+            ];
+        }
+        $this->db->batchInsert(self::TABLE_GLOSSARY_WORDS, $batch, true);
     }
 }

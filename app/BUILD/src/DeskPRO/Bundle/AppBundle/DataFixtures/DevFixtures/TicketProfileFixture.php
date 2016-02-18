@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -157,11 +158,10 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->db      = $this->container->get('database_connection');
         $this->em      = $this->container->get('doctrine.orm.entity_manager');
 
         $this->ava_files  = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
-        $this->usergroups = $this->fetchRelatedEntitiesIds('id', self::TABLE_USERGROUPS);
+        $this->usergroups = $this->fetchIds(self::TABLE_USERGROUPS);
 
         $this->initRecords();
         $this->initDeps();
@@ -172,8 +172,8 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
 
     private function initRecords()
     {
-        $this->agents = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = true')->execute(
-        );
+        $this->agents = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = TRUE')
+            ->execute();
         $this->agent_teams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
     }
 
@@ -540,7 +540,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         }
 
         if ($batch) {
-            $this->db->batchInsert('custom_data_ticket', $batch, true);
+            $this->db->batchInsert(self::TABLE_CUSTOM_DATA_TICKET, $batch, true);
         }
     }
 
@@ -555,34 +555,35 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
      */
     private function createField($type, $title, array $choices = null)
     {
-        $options = [];
+        $handlers = 'Application\DeskPRO\CustomFields\Handler\\';
+        $options  = [];
         switch ($type) {
             case 'text':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+                $handler_class = $handlers.'Text';
                 break;
             case 'textarea':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Textarea';
+                $handler_class = $handlers.'Textarea';
                 break;
             case 'date':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Date';
+                $handler_class = $handlers.'Date';
                 break;
             case 'datetime':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\DateTime';
+                $handler_class = $handlers.'DateTime';
                 break;
             case 'select':
-                $handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class = $handlers.'Choice';
                 break;
             case 'multiselect':
-                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = $handlers.'Choice';
                 $options['multiple'] = true;
                 break;
             case 'checkbox':
-                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = $handlers.'Choice';
                 $options['multiple'] = true;
                 $options['expanded'] = true;
                 break;
             case 'radio':
-                $handler_class       = 'Application\DeskPRO\CustomFields\Handler\Choice';
+                $handler_class       = $handlers.'Choice';
                 $options['multiple'] = false;
                 $options['expanded'] = true;
                 break;
@@ -602,7 +603,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->em->persist($f);
         $this->em->flush();
 
-        if ($handler_class === 'Application\DeskPRO\CustomFields\Handler\Choice' && $choices) {
+        if ($handler_class === $handlers.'Choice' && $choices) {
             foreach ($choices as $c) {
                 $this->_createSubOptions($f, null, $c);
             }

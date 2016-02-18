@@ -29,19 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class DefaultDataFixture extends AbstractFixture implements ContainerAwareInterface, OrderedFixtureInterface
+class DefaultDataFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
-
     /**
      * {@inheritdoc}
      */

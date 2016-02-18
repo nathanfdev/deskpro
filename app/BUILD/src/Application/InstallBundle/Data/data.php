@@ -26,126 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-################################################################################
-# TEMPORARY TEST DATA: Glossary
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `glossary_word_definitions`
-        (`id`, `definition`)
-    VALUES
-        (1, 'Definition Text')
-    ;
-
-
-    INSERT INTO `glossary_words`
-        (`id`, `definition_id`, `word`)
-    VALUES
-        (1, 1, 'Word 1'),
-        (2, 1, 'Word 2')
-    ;
-"
-);
-
-################################################################################
-# TEMPORARY TEST DATA: ArticlePendingCreate
-################################################################################
-
-$em->getConnection()->executeUpdate(
-    "
-    INSERT INTO `article_pending_create`
-        (`person_id`, `ticket_id`, `ticket_message_id`, `comment`, `date_created`, `assigned_person_id`)
-    VALUES
-        (1, NULL, NULL, 'ArticlePendingCreate #1', '2015-09-01 10:05:30', 2),
-        (2, NULL, NULL, 'ArticlePendingCreate #2', '2015-09-02 04:12:25', 3)
-    ;
-"
-);
-
 ########################################################
 # TEMP DATA
 ########################################################
 
-$faker = \Faker\Factory::create();
-
-//////////////////////////////////////////////////////////////
-// downloads
-//////////////////////////////////////////////////////////////
-
-if (!function_exists('make_blob')) {
-    function make_blob(\Symfony\Component\DependencyInjection\ContainerInterface $container = null)
-    {
-        if (!$container) {
-            return;
-        }
-
-        $storage = $container->get('blob.storage');
-        $blob    = $storage->createBlobRecordFromFile(
-            realpath(__DIR__.'/../../../../../web/images/dp-logo-130.png'),
-            'dp-logo-130.png',
-            'image/png'
-        );
-
-        return $blob;
-    }
-}
-
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
-$ac->title = 'Canada Info';
-$ac->addUsergroup($USERGROUP_EVERYONE);
-$em->persist($ac);
-
-for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($container);
-    $a    = new \Application\DeskPRO\Entity\Download();
-    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
-    $a->setCategory($ac);
-    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
-    $a->setPerson($publisher);
-    $a->setBlob($blob);
-    $em->persist($a);
-}
-
-$ac        = new \Application\DeskPRO\Entity\DownloadCategory();
-$ac->title = 'U.S. Info';
-$ac->addUsergroup($USERGROUP_EVERYONE);
-$em->persist($ac);
-
-for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($container);
-    $a    = new \Application\DeskPRO\Entity\Download();
-    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
-    $a->setCategory($ac);
-    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
-    $a->setPerson($publisher);
-    $a->setBlob($blob);
-    $em->persist($a);
-}
-
-$ac = $em->getRepository('DeskPRO:DownloadCategory')->find(1);
-
-for ($i = 0; $i < 15; ++$i) {
-    $blob = make_blob($container);
-    $a    = new \Application\DeskPRO\Entity\Download();
-    $a->setTitle(sprintf('%s %s %s', $faker->company, $faker->word, $faker->word));
-    $a->setContent($faker->text(2000).'<br><br>'.$faker->text(3000));
-    $a->setCategory($ac);
-    $a->setStatus(\Application\DeskPRO\Entity\ContentAbstract::STATUS_PUBLISHED);
-    $a->setPerson($publisher);
-    $a->setBlob($blob);
-    $em->persist($a);
-}
-
 $em->getConnection()->executeUpdate(
     "
-INSERT INTO `products` (`id`, `parent_id`, `title`, `display_order`, `depth`, `root`)
-VALUES
-	(1, NULL, 'Product 1', 10, 0, NULL),
-	(2, NULL, 'Product 2', 20, 0, NULL),
-	(3, NULL, 'Product 3', 30, 0, NULL);
 INSERT INTO `ticket_priorities` (`id`, `title`, `priority`)
 VALUES
 	(1, 'Priority 1', 10),
@@ -168,16 +54,6 @@ VALUES
 // TEMPORARY CHAT DATA
 //
 
-$sql = <<<SQL
-INSERT INTO `custom_def_chat` (`id`, `parent_id`, `app_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `default_value`, `is_agent_field`)
-VALUES
-  (1, NULL, NULL, '', 0, 0, 'Chat text', 'this is a text box for a chat', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Text', X'613A303A7B7D', 1, 1, 0, NULL, 0),
-  (2, NULL, NULL, '', 0, 0, 'chatt toggle it\'', 'this is a toggle for chat', 'Application\\\\DeskPRO\\\\CustomFields\\\\Handler\\\\Toggle', X'613A303A7B7D', 1, 1, 0, '', 0);
-SQL;
-
-$em->getConnection()->executeUpdate(
-    $sql
-);
 
 $sql = <<<SQL
 INSERT INTO `chat_conversations` (`id`, `department_id`, `agent_id`, `agent_team_id`, `person_id`, `session_id`, `subject`, `status`, `person_name`, `person_email`, `rating_response_time`, `rating_overall`, `rating_comment`, `is_agent`, `is_window`, `date_created`, `date_user_waiting`, `date_assigned`, `date_first_agent_message`, `date_ended`, `should_send_transcript`, `date_transcript_sent`, `total_to_ended`, `ended_by`)

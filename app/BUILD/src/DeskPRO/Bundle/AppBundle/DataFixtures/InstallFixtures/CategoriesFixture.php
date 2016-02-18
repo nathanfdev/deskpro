@@ -29,21 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
-use Doctrine\Common\DataFixtures\AbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class CategoriesFixture extends AbstractFixture implements ContainerAwareInterface
+class CategoriesFixture extends DeskProAbstractFixture
 {
-    use ContainerAwareTrait;
-
     /**
      * {@inheritdoc}
      */
