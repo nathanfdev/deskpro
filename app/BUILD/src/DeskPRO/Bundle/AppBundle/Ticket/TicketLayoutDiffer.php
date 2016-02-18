@@ -52,7 +52,7 @@ class TicketLayoutDiffer
      */
     public function findFieldsToRemove(Layout $initial_layout, Layout $destination_layout)
     {
-        $fields_to_remove = array();
+        $fields_to_remove = [];
 
         foreach ($initial_layout->all() as $field) {
             if (!$destination_layout->has($field->getId())) {
@@ -74,7 +74,7 @@ class TicketLayoutDiffer
      */
     public function findFieldsToAdd(Layout $initial_layout, Layout $destination_layout)
     {
-        $fields_to_add = array();
+        $fields_to_add = [];
 
         foreach ($destination_layout->all() as $field) {
             if (!$initial_layout->has($field->getId())) {

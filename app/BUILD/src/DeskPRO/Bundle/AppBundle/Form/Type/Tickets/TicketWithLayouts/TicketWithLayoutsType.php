@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\LabelTicket;
@@ -47,7 +47,6 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
-use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -79,11 +78,6 @@ class TicketWithLayoutsType extends AbstractType
     private $layout_differ;
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @var HierarchyGenerator
      */
     private $hierarchy_generator;
@@ -99,6 +93,11 @@ class TicketWithLayoutsType extends AbstractType
     private $custom_per_field_manager;
 
     /**
+     * @var TicketLayoutHelper
+     */
+    private $ticket_layout_helper;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager    $field_manager
@@ -108,15 +107,17 @@ class TicketWithLayoutsType extends AbstractType
      * @param EntityManager         $em
      * @param LanguageManager       $language_manager
      * @param CustomPerFieldManager $custom_per_field_manager
+     * @param TicketLayoutHelper    $ticket_layout_helper
      */
     public function __construct(
-        CustomFieldManager               $field_manager,
-        TicketLayoutFactory              $ticket_layout_factory,
-        TicketLayoutDiffer               $layout_differ,
-        HierarchyGenerator               $hierarchy_generator,
-        EntityManager                    $em,
-        LanguageManager                  $language_manager,
-        CustomPerFieldManager            $custom_per_field_manager
+        CustomFieldManager    $field_manager,
+        TicketLayoutFactory   $ticket_layout_factory,
+        TicketLayoutDiffer    $layout_differ,
+        HierarchyGenerator    $hierarchy_generator,
+        EntityManager         $em,
+        LanguageManager       $language_manager,
+        CustomPerFieldManager $custom_per_field_manager,
+        TicketLayoutHelper    $ticket_layout_helper
     ) {
         $this->layout_differ            = $layout_differ;
         $this->field_manager            = $field_manager;
@@ -125,6 +126,7 @@ class TicketWithLayoutsType extends AbstractType
         $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
+        $this->ticket_layout_helper     = $ticket_layout_helper;
     }
 
     /**
@@ -203,13 +205,12 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context        = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
-        $initial_layout = $context->getActiveLayout();
+        $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $context = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
-            $extracted_data    = $this->getTicketDataIds($pre_submit_data, $context);
+            $extracted_data    = $this->ticket_layout_helper->getTicketDataIds($pre_submit_data, $context);
             $new_department_id = $extracted_data['department'];
 
             if ($form->has('last_department_id')) {
@@ -231,7 +232,7 @@ class TicketWithLayoutsType extends AbstractType
 
         // when manipulating the form, it may return data that we need to add to the pre submit event's data (new defaults)
         $extra_data_to_submit = $this->manipulateForm(
-            $initial_layout,
+            $context->getActiveLayout(),
             $context->getActiveLayout(),
             $context,
             $pre_submit_data
@@ -276,7 +277,7 @@ class TicketWithLayoutsType extends AbstractType
     {
         $additional_fields             = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove              = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
-        $extracted_data                = $this->getTicketDataIds($submitted_data, $context);
+        $extracted_data                = $this->ticket_layout_helper->getTicketDataIds($submitted_data, $context);
         $pre_existing_displayed_fields = $context->getPreviouslyDisplayedFields();
         $had_previous_layout           = count($initial_layout->all()) > 0;
 
@@ -345,50 +346,6 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
-     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
-     *
-     * This inspects the submitted data on our form and gives us data we're interesed in.
-     *
-     * @param array                    $submitted_data
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return array the form key and its selected entity ID (or null if not submitted)
-     */
-    private function getTicketDataIds(array $submitted_data, TicketWithLayoutsContext $context)
-    {
-        $form       = $context->getForm();
-        $final_data = [];
-        $keys       = [
-            FormFields::DEPARTMENT,
-            FormFields::PRODUCT,
-            FormFields::CATEGORY,
-            FormFields::WORKFLOW,
-            FormFields::PRIORITY,
-        ];
-
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
-                $submitted_value = $submitted_data[$key];
-                $choice          = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues([$submitted_value]));
-
-                if ($choice instanceof HierarchyNode) {
-                    $choice = $choice->getData();
-                }
-
-                if ($choice) {
-                    $final_data[$key] = $choice->getId();
-                } else {
-                    $final_data[$key] = null;
-                }
-            } else {
-                $final_data[$key] = null;
-            }
-        }
-
-        return $final_data;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -444,11 +401,9 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function removeField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if (!$context->getForm()->has($field->getId())) {
-            return;
+        if ($context->getForm()->has($field->getId())) {
+            $context->getForm()->remove($field->getId());
         }
-
-        $context->getForm()->remove($field->getId());
     }
 
     /**
@@ -458,7 +413,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
-        if ($context->getForm()->has($field->getId()) || $this->shouldFieldBeSkipped($field, $context)) {
+        if ($context->getForm()->has($field->getId())) {
             return;
         }
 
@@ -857,7 +812,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addCategory(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if (!$this->canCategoryBeDisplayed($context)) {
+        if (!$this->ticket_layout_helper->canCategoryBeDisplayed($context)) {
             return;
         }
 
@@ -880,7 +835,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addPriority(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if (!$this->canPriorityBeDisplayed($context)) {
+        if (!$this->ticket_layout_helper->canPriorityBeDisplayed($context)) {
             return;
         }
 
@@ -903,7 +858,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addWorkflow(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if (!$this->canWorkflowBeDisplayed($context)) {
+        if (!$this->ticket_layout_helper->canWorkflowBeDisplayed($context)) {
             return;
         }
 
@@ -925,7 +880,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function addProduct(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if (!$this->canProductBeDisplayed($context)) {
+        if (!$this->ticket_layout_helper->canProductBeDisplayed($context)) {
             return;
         }
 
@@ -1062,77 +1017,6 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
-     * @param TicketWithLayoutsContext $context
-     * @param LayoutField              $field
-     *
-     * @return bool
-     */
-    private function fieldWasDisplayedBefore(TicketWithLayoutsContext $context, LayoutField $field)
-    {
-        return in_array($field->getId(), $context->getPreviouslyDisplayedFields());
-    }
-
-    /**
-     * @param LayoutField $field
-     * @param $extracted_data
-     *
-     * @return bool
-     */
-    private function fieldHasCriteriaAndCriteriaDoesNOTMatch(LayoutField $field, $extracted_data)
-    {
-        return $field->getCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data);
-    }
-
-    /**
-     * @param LayoutField $field
-     * @param $extracted_data
-     *
-     * @return bool
-     */
-    private function fieldHasCriteriaAndItDOESMatch(LayoutField $field, $extracted_data)
-    {
-        return $field->getCriteria() && $field->getCriteria()->isSubmittedDataMatch($extracted_data);
-    }
-
-    /**
-     * @param $has_field_criteria
-     * @param LayoutField $field
-     * @param $extracted_data
-     *
-     * @return bool
-     */
-    private function fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, LayoutField $field, $extracted_data)
-    {
-        return !$has_field_criteria
-        ||
-        ($has_field_criteria && $field->getCriteria()->isSubmittedDataMatch($extracted_data));
-    }
-
-    /**
-     * @param LayoutField              $field
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function shouldFieldBeSkipped(LayoutField $field, TicketWithLayoutsContext $context)
-    {
-        switch ($field->getFieldType()) {
-            case FormFields::PRIORITY:
-                return !$this->canPriorityBeDisplayed($context);
-            case FormFields::PRODUCT:
-                return !$this->canProductBeDisplayed($context);
-            case FormFields::WORKFLOW:
-                return !$this->canWorkflowBeDisplayed($context);
-            case FormFields::CATEGORY:
-                return !$this->canCategoryBeDisplayed($context);
-            case FormFields::CAPTCHA:
-                return !$this->canCaptchaBeDisplayed($context);
-            default:
-                return false;
-        }
-    }
-
-    /**
      * @param Layout                   $new_layout
      * @param TicketWithLayoutsContext $context
      * @param array                    $extracted_data
@@ -1147,14 +1031,11 @@ class TicketWithLayoutsType extends AbstractType
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
-            if ($this->shouldFieldBeSkipped($field, $context)) {
-                continue;
-            }
-            if ($this->fieldWasDisplayedBefore($context, $field)) {
+            if ($this->ticket_layout_helper->fieldWasDisplayedBefore($context, $field)) {
                 // this field was displayed before. should it continue to be displayed?
-                if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
+                if ($this->ticket_layout_helper->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {
                     $fields_to_remove[] = $field;
-                } elseif ($this->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
+                } elseif ($this->ticket_layout_helper->fieldHasCriteriaAndItDOESMatch($field, $extracted_data)) {
                     // this field was displayed before + is still supposed to be on the form after the submit
                     if (!$context->hasValidVisibility($field)) {
                         continue;
@@ -1164,8 +1045,7 @@ class TicketWithLayoutsType extends AbstractType
                 }
             } else {
                 // this field was not displayed before, but should it be added and the form re-rendered?
-                $has_field_criteria = $field->getCriteria();
-                if ($this->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($has_field_criteria, $field, $extracted_data)) {
+                if ($this->ticket_layout_helper->fieldDoesNotHaveCriteriaOrHasCriteriaAndMatches($field, $extracted_data)) {
                     if (!in_array($field, $additional_fields)) {
                         $additional_fields[] = $field;
                     }
@@ -1175,74 +1055,6 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function canProductBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_product', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\Product $repository */
-        $repository = $this->em->getRepository('DeskPRO:Product');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function canPriorityBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_priority', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketPriority $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketPriority');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function canCategoryBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_category', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketCategory $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketCategory');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    private function canWorkflowBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_workflow', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketWorkflow $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketWorkflow');
-
-        return $repository->countAll() > 0;
     }
 
     /**

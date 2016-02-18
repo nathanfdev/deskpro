@@ -262,8 +262,13 @@ services:
     tags:
       - { name: form.type, alias: ticket_message_attachment_collection }
 
+  form.ticket_with_layouts_helper:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketLayoutHelper
+    arguments:
+      - @doctrine.orm.default_entity_manager
+
   form.ticket_with_layouts:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayoutsType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:
       - @custom_field_manager
       - @ticket_layout_factory
@@ -272,6 +277,7 @@ services:
       - @doctrine.orm.default_entity_manager
       - @language_manager
       - @tickets.custom_per_field_manager
+      - @form.ticket_with_layouts_helper
     tags:
       - { name: form.type, alias: ticket_with_layouts }
 

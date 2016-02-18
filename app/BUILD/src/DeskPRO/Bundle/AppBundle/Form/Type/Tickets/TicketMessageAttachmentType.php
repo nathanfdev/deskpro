@@ -231,7 +231,7 @@ class TicketMessageAttachmentType extends AbstractType
             }
         }
 
-        if ($attachment->getPerson() != $person) {
+        if ($attachment->getPerson() !== $person) {
             $attachment->setPerson($person);
         }
         $ticket_message->addAttachment($attachment);
