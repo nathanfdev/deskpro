@@ -212,8 +212,9 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
+        $layout         = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $context        = $this->createTicketFormContext($form, $ticket, $layout, $already_displayed_fields);
+        $initial_layout = $context->getActiveLayout();
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
@@ -226,7 +227,7 @@ class TicketWithLayoutsType extends AbstractType
 
         // when manipulating the form, it may return data that we need to add to the pre submit event's data (new defaults)
         $extra_data_to_submit = $this->manipulateForm(
-            $context->getActiveLayout(),
+            $initial_layout,
             $context->getActiveLayout(),
             $context,
             $pre_submit_data
