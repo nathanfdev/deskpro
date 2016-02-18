@@ -22,7 +22,6 @@ Feature: /ticket_forms endpoint
 {
   "subject": "abc"
 }
-    """
     Then the response status code should be 400
     And the JSON node "errors.fields.subject.errors[0].code" should be equal to "wrong_length"
     And the JSON node "errors.fields.subject.errors[0].message" should be equal to "The value must be at least 5 characters in length."

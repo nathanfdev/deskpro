@@ -310,7 +310,9 @@ class TicketWithLayoutsType extends AbstractType
                 }
             }
 
-            $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
+            $need_rerender = !$context->forApi() && $had_previous_layout && in_array($field, $changes->getFieldsRequiringRerender());
+            $form_field    = $this->createFormField($context, $field, $need_rerender);
+
             if ($form_field) {
                 // we need to collect custom data fields to make custom field groups
                 if ($context->forApi() && $form_field->getType() === 'deskpro_custom_data') {
