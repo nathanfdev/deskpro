@@ -39,7 +39,7 @@ class MethodMetadataTest extends DeskProTestCase
     public function setUp()
     {
         $reflection     = new \ReflectionClass(ActionPermissionsClass::class);
-        $this->metadata = new MethodMetadata($reflection->getName(), 'overrideBoth');
+        $this->metadata = new MethodMetadata($reflection->getName(), 'overrideBothAction');
     }
 
     public function testSettersGetters()

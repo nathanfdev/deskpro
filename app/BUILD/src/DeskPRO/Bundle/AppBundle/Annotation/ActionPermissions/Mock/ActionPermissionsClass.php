@@ -39,21 +39,21 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
  */
 class ActionPermissionsClass
 {
-    public function inherit()
+    public function inheritAction()
     {
     }
 
     /**
      * @ApiModes("all")
      */
-    public function overrideModes()
+    public function overrideModesAction()
     {
     }
 
     /**
      * @ApiTags("class.overridden")
      */
-    public function overrideTags()
+    public function overrideTagsAction()
     {
     }
 
@@ -61,7 +61,7 @@ class ActionPermissionsClass
      * @ApiModes({"token", "key"})
      * @ApiTags({"class.overridden", "class.overridden2"})
      */
-    public function overrideBoth()
+    public function overrideBothAction()
     {
     }
 }

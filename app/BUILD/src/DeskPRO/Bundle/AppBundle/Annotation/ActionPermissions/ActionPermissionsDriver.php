@@ -156,7 +156,7 @@ class ActionPermissionsDriver implements DriverInterface
             $fqcn = $metadata->class;
         }
         $tag   = explode('\\', $fqcn);
-        $tag[] = $metadata->name;
+        $tag[] = substr($metadata->name, 0, -6);
         foreach ($tag as &$t) {
             $t = str_replace('/Controller/', '', $t);
             $t = StringUtils::toSnakeCase($t);
