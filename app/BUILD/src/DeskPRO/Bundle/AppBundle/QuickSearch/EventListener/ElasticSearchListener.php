@@ -88,7 +88,10 @@ class ElasticSearchListener implements EventSubscriberInterface
         if (!$query) {
             return;
         }
-        if (!$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
+
+        // todo debug
+        // todo temporary disabled elastic search
+        if (true || !$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
             $this->dispatchFallback($event);
 
             return;
