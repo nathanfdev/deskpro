@@ -47,7 +47,6 @@ export class TicketForm extends PageWidget {
 
   renderWidget() {
     const $formEl = this.$element.find('.dp_ticket_form');
-    const formName = $formEl.find('form').attr('name');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
     const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
