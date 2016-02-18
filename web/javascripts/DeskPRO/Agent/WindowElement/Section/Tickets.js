@@ -501,7 +501,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			if (tab && data.changed_fields) {
-				tab.page.doTicketUpdate();
+				var isOwnUpdate = data.via_person && data.via_person === DP_PERSON_ID;
+				if (data.is_via_replybox && isOwnUpdate) {
+					// ignore this change because our own reply ajax
+					// contains all the data we need to refresh the ui
+				} else {
+					tab.page.doTicketUpdate(isOwnUpdate);
+				}
 			}
 
 			// And if we're viewing any groups affected by the changed field, then we need to reload the group

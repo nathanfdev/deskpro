@@ -370,9 +370,10 @@ class TicketManager
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize(array(
-                    'ticket_id'      => $ticket->getId(),
-                    'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                    'ticket_id'       => $ticket->getId(),
+                    'changed_fields'  => $ticket->getStateChangeRecorder()->getChangedFields(),
+                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                    'is_via_replybox' => $context->getVars()->get('is_via_replybox', false),
                 )),
             ));
         }
