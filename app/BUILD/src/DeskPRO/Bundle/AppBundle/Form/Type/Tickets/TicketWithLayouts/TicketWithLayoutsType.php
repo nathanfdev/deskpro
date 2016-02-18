@@ -317,6 +317,14 @@ class TicketWithLayoutsType extends AbstractType
             $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
             if ($form_field) {
                 $form->add($field->getId(), $form_field->getType(), $form_field->getOptions());
+
+                // for web view add more attachments button
+                if (!$context->forApi() && $field->getFieldType() === FormFields::ATTACHMENTS) {
+                    $form->add('more_attachments', 'submit', [
+                        'validation_groups' => false,
+                        'label'             => $this->phrase('portal.forms.label_add_attachment'),
+                    ]);
+                }
             }
         }
 
@@ -339,14 +347,6 @@ class TicketWithLayoutsType extends AbstractType
             $form->remove('submit');
         }
 
-        // for web view add more attachments button
-        if (!$context->forApi() && $form->has(FormFields::ATTACHMENTS)) {
-            $form->add('more_attachments', 'submit', [
-                'validation_groups' => false,
-                'label'             => $this->phrase('portal.forms.label_add_attachment'),
-            ]);
-        }
-
         $this->addSubmit($context);
     }
 
@@ -356,8 +356,15 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function removeField(TicketWithLayoutsContext $context, LayoutField $field)
     {
-        if ($context->getForm()->has($field->getId())) {
-            $context->getForm()->remove($field->getId());
+        $form = $context->getForm();
+        if (!$form->has($field->getId())) {
+            return;
+        }
+
+        $form->remove($field->getId());
+
+        if ($field->getFieldType() === FormFields::ATTACHMENTS && $form->has('more_attachments')) {
+            $form->remove('more_attachments');
         }
     }
 
@@ -728,8 +735,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $data = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $field_context);
-
+        $data    = $this->custom_per_field_manager->getOrCreateCustomPerFieldData($def, $field_context);
         $options = [
             'agent_interface'             => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
             'label'                       => $def->getTitle(),
