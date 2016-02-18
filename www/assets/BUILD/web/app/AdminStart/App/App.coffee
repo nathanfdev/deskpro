@@ -67,16 +67,16 @@ define [
 
   AdminStartModule.config(['$routeProvider', ($routeProvider) ->
     $routeProvider.when('/', {
-      templateUrl: DP_BASE_ADMIN_URL+'/load-view/Start/home.html',
+      templateUrl: 'AdminInterface/Start/home.html',
       controller: 'AdminStart_Ctrl_Home'
     }).when('/cron', {
-      templateUrl: DP_BASE_ADMIN_URL+'/load-view/Start/cron.html',
+      templateUrl: 'AdminInterface/Start/cron.html',
       controller: 'AdminStart_Ctrl_Cron'
     }).when('/email', {
-      templateUrl: DP_BASE_ADMIN_URL+'/load-view/Start/email.html',
+      templateUrl: 'AdminInterface/Start/email.html',
       controller: 'AdminStart_Ctrl_Email'
     }).when('/finish', {
-      templateUrl: DP_BASE_ADMIN_URL+'/load-view/Start/finish.html',
+      templateUrl: 'AdminInterface/Start/finish.html',
       controller: 'AdminStart_Ctrl_Finish'
     }).otherwise({
       redirectTo: '/'
