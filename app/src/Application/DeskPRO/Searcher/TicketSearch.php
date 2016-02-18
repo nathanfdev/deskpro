@@ -2165,6 +2165,9 @@ class TicketSearch extends SearcherAbstract
                                     }, $field_def->getAllChildTitles());
 
                                     foreach ($choice as $c) {
+                                        if (!is_scalar($c)) {
+                                            continue;
+                                        }
                                         // if its an invalid id, try to find it based off a title match
                                         if (!ctype_digit($c) || !array_key_exists($c, $children_titles)) {
                                             $c = array_search(trim(strtolower($c)), $children_titles);
