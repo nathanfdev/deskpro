@@ -43,7 +43,6 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use Doctrine\ORM\EntityManager;
@@ -72,11 +71,6 @@ class TicketWithLayoutsType extends AbstractType
     private $ticket_layout_factory;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
-     */
-    private $layout_differ;
-
-    /**
      * @var HierarchyGenerator
      */
     private $hierarchy_generator;
@@ -101,7 +95,6 @@ class TicketWithLayoutsType extends AbstractType
      *
      * @param CustomFieldManager    $field_manager
      * @param TicketLayoutFactory   $ticket_layout_factory
-     * @param TicketLayoutDiffer    $layout_differ
      * @param HierarchyGenerator    $hierarchy_generator
      * @param EntityManager         $em
      * @param LanguageManager       $language_manager
@@ -111,14 +104,12 @@ class TicketWithLayoutsType extends AbstractType
     public function __construct(
         CustomFieldManager    $field_manager,
         TicketLayoutFactory   $ticket_layout_factory,
-        TicketLayoutDiffer    $layout_differ,
         HierarchyGenerator    $hierarchy_generator,
         EntityManager         $em,
         LanguageManager       $language_manager,
         CustomPerFieldManager $custom_per_field_manager,
         TicketLayoutHelper    $ticket_layout_helper
     ) {
-        $this->layout_differ            = $layout_differ;
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->hierarchy_generator      = $hierarchy_generator;
@@ -295,20 +286,15 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function manipulateForm(TicketWithLayoutsContext $context, array $data = [])
     {
-        $initial_layout = $context->getPreviouslyActiveLayout();
-        $new_layout     = $context->getActiveLayout();
-
-        $additional_fields   = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
-        $fields_to_remove    = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+        $form                = $context->getForm();
         $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($data, $context);
-        $had_previous_layout = count($initial_layout->all()) > 0;
+        $had_previous_layout = count($context->getPreviouslyActiveLayout()->all()) > 0;
+        $has_not_submitted   = false;
 
-        list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->ticket_layout_helper->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
+        $changes = $this->ticket_layout_helper->getLayoutChanges($context, $extracted_data);
 
-        $form = $context->getForm();
-
-        $has_not_submitted = false;
-        foreach ($additional_fields as $field) {
+        /** @var LayoutField $field */
+        foreach ($changes->getAdditionalFields() as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
             }
@@ -327,20 +313,21 @@ class TicketWithLayoutsType extends AbstractType
                 $has_not_submitted = true;
             }
 
-            $field_requires_rerender = in_array($field, $fields_requiring_rerender) && $had_previous_layout;
-            $this->addField($context, $field, $field_requires_rerender);
+            $this->addField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
         }
 
-        foreach ($fields_to_remove as $field) {
+        foreach ($changes->getFieldsToRemove() as $field) {
             $this->removeField($context, $field);
         }
 
         // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-        if ($has_not_submitted && count($fields_requiring_rerender) > 0 && count($data) > 0 && !$form->has('rerender_form')) {
-            $form->add('rerender_form', 'hidden', [
-                'mapped' => false,
-                'label'  => false,
-            ]);
+        if ($had_previous_layout && $has_not_submitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
+            if (!$form->has('rerender_form')) {
+                $form->add('rerender_form', 'hidden', [
+                    'mapped' => false,
+                    'label'  => false,
+                ]);
+            }
         }
 
         // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)

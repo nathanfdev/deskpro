@@ -31,10 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 
@@ -49,13 +49,20 @@ class TicketLayoutHelper extends AbstractType
     protected $em;
 
     /**
+     * @var \DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
+     */
+    protected $layout_differ;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param TicketLayoutDiffer $layout_differ
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, TicketLayoutDiffer $layout_differ)
     {
-        $this->em = $em;
+        $this->em            = $em;
+        $this->layout_differ = $layout_differ;
     }
 
     /**
@@ -204,16 +211,19 @@ class TicketLayoutHelper extends AbstractType
     }
 
     /**
-     * @param Layout                   $new_layout
      * @param TicketWithLayoutsContext $context
      * @param array                    $extracted_data
-     * @param array                    $fields_to_remove
-     * @param array                    $additional_fields
      *
-     * @return array
+     * @return TicketLayoutChanges
      */
-    public function useLayoutCriteriaToDetermineDynamicLayoutChanges(Layout $new_layout, TicketWithLayoutsContext $context, $extracted_data, $fields_to_remove, $additional_fields)
+    public function getLayoutChanges(TicketWithLayoutsContext $context, $extracted_data)
     {
+        $initial_layout = $context->getPreviouslyActiveLayout();
+        $new_layout     = $context->getActiveLayout();
+
+        $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
+        $fields_to_remove  = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+
         // DEPENDENT FIELDS
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
         $fields_requiring_rerender = [];
@@ -234,6 +244,6 @@ class TicketLayoutHelper extends AbstractType
             }
         }
 
-        return [$fields_requiring_rerender, $fields_to_remove, $additional_fields];
+        return new TicketLayoutChanges($fields_requiring_rerender, $fields_to_remove, $additional_fields);
     }
 }
