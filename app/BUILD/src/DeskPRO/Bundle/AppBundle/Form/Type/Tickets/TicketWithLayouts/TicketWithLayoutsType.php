@@ -142,6 +142,56 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
+                'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
+                'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
+                'method'              => 'POST',
+                'allow_extra_fields'  => true,
+                'full_version'        => false,
+                'use_captcha'         => true,
+                'for_api'             => false,
+            ])
+            ->setRequired([
+                'person',
+                'settings',
+            ])
+            ->addAllowedValues([
+                'ticket_visibility' => [
+                    TicketWithLayoutsContext::VISIBILITY_NEW,
+                    TicketWithLayoutsContext::VISIBILITY_EDIT,
+                    TicketWithLayoutsContext::VISIBILITY_VIEW,
+                ],
+            ])
+            ->setAllowedTypes([
+                'person'   => 'Application\\DeskPRO\\Entity\\Person',
+                'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+            ])
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'ticket_with_layouts';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'ticket';
+    }
+
+    /**
      * PRE DATA PROCESSING (creates the form based on ticket department).
      *
      * @param FormEvent $event
@@ -174,6 +224,7 @@ class TicketWithLayoutsType extends AbstractType
         if (!$ticket->getDepartment() && $hierarchy->countSelectable() == 1) {
             $ticket->setDepartment($hierarchy->getFirstSelectable());
         }
+
         $this->manipulateForm($context);
     }
 
@@ -238,18 +289,18 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
-     * @param array                    $submitted_data
+     * @param array                    $data
      *
      * @return array of field names that are now displayed on the form
      */
-    private function manipulateForm(TicketWithLayoutsContext $context, $submitted_data = [])
+    private function manipulateForm(TicketWithLayoutsContext $context, array $data = [])
     {
         $initial_layout = $context->getPreviouslyActiveLayout();
         $new_layout     = $context->getActiveLayout();
 
         $additional_fields   = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove    = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
-        $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($submitted_data, $context);
+        $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($data, $context);
         $had_previous_layout = count($initial_layout->all()) > 0;
 
         list($fields_requiring_rerender, $fields_to_remove, $additional_fields) = $this->ticket_layout_helper->useLayoutCriteriaToDetermineDynamicLayoutChanges($new_layout, $context, $extracted_data, $fields_to_remove, $additional_fields);
@@ -262,7 +313,7 @@ class TicketWithLayoutsType extends AbstractType
                 continue;
             }
 
-            if (count($submitted_data)) {
+            if (count($data)) {
                 if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
                     continue;
                 }
@@ -272,7 +323,7 @@ class TicketWithLayoutsType extends AbstractType
                 }
             }
 
-            if (!array_key_exists($field->getId(), $submitted_data)) {
+            if (!array_key_exists($field->getId(), $data)) {
                 $has_not_submitted = true;
             }
 
@@ -285,7 +336,7 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-        if ($has_not_submitted && count($fields_requiring_rerender) > 0 && count($submitted_data) > 0 && !$form->has('rerender_form')) {
+        if ($has_not_submitted && count($fields_requiring_rerender) > 0 && count($data) > 0 && !$form->has('rerender_form')) {
             $form->add('rerender_form', 'hidden', [
                 'mapped' => false,
                 'label'  => false,
@@ -298,56 +349,6 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         $this->addSubmit($context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver
-            ->setDefaults([
-                'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
-                'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-                'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
-                'method'              => 'POST',
-                'allow_extra_fields'  => true,
-                'full_version'        => false,
-                'use_captcha'         => true,
-                'for_api'             => false,
-            ])
-            ->setRequired([
-                'person',
-                'settings',
-            ])
-            ->addAllowedValues([
-                'ticket_visibility' => [
-                    TicketWithLayoutsContext::VISIBILITY_NEW,
-                    TicketWithLayoutsContext::VISIBILITY_EDIT,
-                    TicketWithLayoutsContext::VISIBILITY_VIEW,
-                ],
-            ])
-            ->setAllowedTypes([
-                'person'   => 'Application\\DeskPRO\\Entity\\Person',
-                'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            ])
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_with_layouts';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'ticket';
     }
 
     /**
