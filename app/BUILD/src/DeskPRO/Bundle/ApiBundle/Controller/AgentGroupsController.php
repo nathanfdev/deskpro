@@ -62,7 +62,7 @@ class AgentGroupsController extends BaseController
     /**
      * @Get("/agent_groups/{id}", name="api_single_agent_group")
      */
-    public function getAgentGroup($id)
+    public function getAgentGroupAction($id)
     {
         $service = $this->get('data.user_groups');
 

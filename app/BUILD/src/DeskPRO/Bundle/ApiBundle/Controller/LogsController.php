@@ -93,7 +93,7 @@ class LogsController extends BaseController
      *
      * @return View
      */
-    public function getOptions()
+    public function getOptionsAction()
     {
         $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled');
 
@@ -120,7 +120,7 @@ class LogsController extends BaseController
      *
      * @return View
      */
-    public function putOptions(Request $request)
+    public function putOptionsAction(Request $request)
     {
         $enabled = $request->request->get('enabled');
         $modes   = $request->request->get('modes');

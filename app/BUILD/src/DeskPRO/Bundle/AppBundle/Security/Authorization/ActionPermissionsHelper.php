@@ -65,9 +65,9 @@ class ActionPermissionsHelper
     /**
      * @param $tags
      *
-     * @return mixed
+     * @return array
      */
-    protected function createActionTagsHierarchy($tags)
+    public function createActionTagsHierarchy($tags)
     {
         return $this->createTagsHierarchy($tags);
     }
@@ -75,9 +75,9 @@ class ActionPermissionsHelper
     /**
      * @param $tags
      *
-     * @return mixed
+     * @return array
      */
-    protected function createGatheredTagsHierarchy($tags)
+    public function createGatheredTagsHierarchy($tags)
     {
         return $this->createTagsHierarchy($tags, true);
     }

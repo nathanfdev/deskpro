@@ -270,6 +270,11 @@ class TicketFiltersController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     *
      * @ApiDoc(
      *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
      *      statusCodes={
@@ -279,7 +284,7 @@ class TicketFiltersController extends BaseController
      *
      * @Get("/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
      */
-    public function getTicketFilterTickets(Request $request, $id)
+    public function getTicketFilterTicketsAction(Request $request, $id)
     {
         return TicketsController::subRequestSearch($this->get('kernel'), $request, ['filter' => $this->findOr404(TicketFilter::class, $id)->getId()]);
     }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -82,7 +83,7 @@ class LanguageController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function widgetChatPhrasesActions(Request $request)
+    public function widgetChatPhrasesAction(Request $request)
     {
         $phrases = [
             'user.chat.email',

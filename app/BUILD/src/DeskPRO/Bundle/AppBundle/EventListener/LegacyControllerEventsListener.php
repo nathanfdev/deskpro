@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
@@ -116,7 +117,7 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
             'action'       => $controller[1],
             'arguments'    => $arguments,
         ));
-        $controller[0]->DeskPRO_onControllerPreAction($legacyEvent);
+        $controller[0]->DeskPRO_onControllerPreActionHandler($legacyEvent);
 
         if ($legacyEvent->hasResponse()) {
             // override the real controller with the response from
@@ -159,7 +160,7 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
             'arguments'    => $arguments,
             'response'     => $event->getResponse(),
         ));
-        $controller[0]->DeskPRO_onControllerPostAction($legacyEvent);
+        $controller[0]->DeskPRO_onControllerPostActionHandler($legacyEvent);
 
         if ($legacyEvent->hasResponse()) {
             // ignore the real response and override it with the event
@@ -178,6 +179,6 @@ class LegacyControllerEventsListener implements EventSubscriberInterface
             && is_array($controller)
             && isset($controller[0])
             && is_object($controller[0])
-            && method_exists($controller[0], 'DeskPRO_onControllerPreAction');
+            && method_exists($controller[0], 'DeskPRO_onControllerPreActionHandler');
     }
 }

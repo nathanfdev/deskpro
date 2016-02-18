@@ -60,7 +60,7 @@ class NotificationController extends BaseController
      * @return View
      * @Annotations\Get("/notify/action-alerts/{last}", name="action_alerts_last")
      */
-    public function getLastActionAlerts($last, Request $request)
+    public function getLastActionAlertsAction($last, Request $request)
     {
         $service = $this->get('deskpro.notification.service');
         $this->doHeartbeat($request);
@@ -77,7 +77,7 @@ class NotificationController extends BaseController
      * @return View
      * @Annotations\Get("/notify/setup/action-alerts", name="action_alerts_setup")
      */
-    public function setupActionAlerts()
+    public function setupActionAlertsAction()
     {
         $service  = $this->get('deskpro.notification.service');
         $response = [
@@ -96,7 +96,7 @@ class NotificationController extends BaseController
      * @return View
      * @Annotations\Get("/notify/heartbeat", name="online_heartbeat")
      */
-    public function heartbeat(Request $request)
+    public function heartbeatAction(Request $request)
     {
         $this->doHeartbeat($request);
 
@@ -130,7 +130,7 @@ class NotificationController extends BaseController
      * @return View
      * @Annotations\Post("/pusher/auth", name="pusher_auth")
      */
-    public function pusherAuth(Request $request)
+    public function pusherAuthAction(Request $request)
     {
         $submitted = $request->request->all();
         /** @var Pusher $pusher */

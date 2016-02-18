@@ -79,7 +79,7 @@ class AgentsController extends CrudController
      *
      * @return View
      */
-    public function getAgentsOnline()
+    public function getAgentsOnlineAction()
     {
         $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
 

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -143,7 +144,7 @@ class TicketStarsController extends BaseController
      *
      * @Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
      */
-    public function getTicketFlagsCounts()
+    public function getTicketFlagsCountsAction()
     {
         $flags_service = $this->get('data.ticketflags');
 
@@ -168,7 +169,7 @@ class TicketStarsController extends BaseController
      *
      * @Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
      */
-    public function getTicketFlagCount($star)
+    public function getTicketFlagCountAction($star)
     {
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 

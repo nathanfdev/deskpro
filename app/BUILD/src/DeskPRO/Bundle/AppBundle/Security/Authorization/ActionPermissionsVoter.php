@@ -103,6 +103,9 @@ class ActionPermissionsVoter extends Voter
         /** @var ClassMetadata $classMetadata */
         $classMetadata  = $this->factory->getMetadataForClass(get_class($controller));
         $methodMetadata = $classMetadata->methodMetadata[$method];
+        if (!$methodMetadata) {
+            throw new \LogicException('Looks like you are requested action without "Action" suffix. Please contact developers"');
+        }
 
         return $methodMetadata;
     }
@@ -134,6 +137,11 @@ class ActionPermissionsVoter extends Voter
                 && ($mode !== 'key' || $this->checkTags($methodMetadata, $key));
     }
 
+    /**
+     * @param AbstractController $controller
+     *
+     * @return string
+     */
     protected function getOldMode(AbstractController $controller)
     {
         return $controller->apikey ? 'key' : 'session';
@@ -166,6 +174,11 @@ class ActionPermissionsVoter extends Voter
         return $this->helper->calculateAccess($action_tags, $gathered_tags);
     }
 
+    /**
+     * @param TokenInterface $token
+     *
+     * @return \Application\DeskPRO\EntityRepository\ApiKey
+     */
     protected function getApiKeyByToken(TokenInterface $token)
     {
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */

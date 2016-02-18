@@ -78,10 +78,12 @@ class ActionPermissionsDriver implements DriverInterface
         $classTags  = $this->getClassTags($class);
 
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $methodMetadata = new MethodMetadata($class->getName(), $method->getName());
-            $this->addMethodModes($methodMetadata, $method, $classModes);
-            $this->addMethodTags($methodMetadata, $method, $classTags);
-            $classMetadata->addMethodMetadata($methodMetadata);
+            if (strcasecmp(substr($method->getName(), -6 /* word 'action' length */), 'action') === 0) {
+                $methodMetadata = new MethodMetadata($class->getName(), $method->getName());
+                $this->addMethodModes($methodMetadata, $method, $classModes);
+                $this->addMethodTags($methodMetadata, $method, $classTags);
+                $classMetadata->addMethodMetadata($methodMetadata);
+            }
         }
 
         return $classMetadata;

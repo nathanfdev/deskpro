@@ -94,7 +94,7 @@ services:
   api_authorization.action_permissions.cache_warmer:
     class: DeskPRO\Bundle\AppBundle\CacheWarmer\ActionPermissionsCacheWarmer
     arguments:
-      - @api_authorization.action_permissions.metadata_factory
+      - @api_authorization.tags_collector
     tags:
       - { name: 'kernel.cache_warmer' }
 
@@ -109,5 +109,11 @@ services:
 
   api_authorization.action_permissions_helper:
     class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper
+
+  api_authorization.tags_collector:
+    class: DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\TagsCollector
+    arguments:
+      - @api_authorization.action_permissions_helper
+      - @api_authorization.action_permissions.metadata_factory
 
 

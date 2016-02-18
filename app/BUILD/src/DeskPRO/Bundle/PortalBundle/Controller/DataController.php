@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldContext;
@@ -48,7 +49,7 @@ class DataController extends AbstractController
      * @Security("is_granted('ROLE_USER')")
      * @PageHttpCache
      */
-    public function saveFormCustomPerChoiceController(Request $request, $type, $id)
+    public function saveFormCustomPerChoiceControllerAction(Request $request, $type, $id)
     {
         /**
          * NOTE: $type will always be "per_user" because we don't allow the ability

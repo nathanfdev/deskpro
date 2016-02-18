@@ -77,7 +77,7 @@ class TicketStatusesController extends BaseController
      *
      * @Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
      */
-    public function getTicketsForStatus($status)
+    public function getTicketsForStatusAction($status)
     {
         $service = $this->get('data.ticketstatuses');
 

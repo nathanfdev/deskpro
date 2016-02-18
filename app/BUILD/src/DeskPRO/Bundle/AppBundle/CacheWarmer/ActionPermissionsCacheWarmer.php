@@ -28,11 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\CacheWarmer;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
-use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
-use Gnugat\NomoSpaco\File\FileRepository;
-use Gnugat\NomoSpaco\FqcnRepository;
-use Gnugat\NomoSpaco\Token\ParserFactory;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\TagsCollector;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -41,16 +37,16 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 class ActionPermissionsCacheWarmer implements CacheWarmerInterface
 {
     /**
-     * @var ActionPermissionsMetadataFactory
+     * @var TagsCollector
      */
-    protected $metadata_factory;
+    protected $tags_collector;
 
     /**
-     * @param ActionPermissionsMetadataFactory $metadata_factory
+     * @param TagsCollector $tags_collector
      */
-    public function __construct(ActionPermissionsMetadataFactory $metadata_factory)
+    public function __construct(TagsCollector $tags_collector)
     {
-        $this->metadata_factory = $metadata_factory;
+        $this->tags_collector = $tags_collector;
     }
 
     /**
@@ -58,15 +54,8 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        foreach ($this->getClasses() as $class) {
-            try {
-                $metadata[] = $this->metadata_factory->getMetadataForClass($class, true);
-            } catch (AbstractClassException $e) {
-                // There is nothing to do. Or just output it
-            } catch (\ReflectionException $e) {
-                // TODO: we should dive into FQCN to know why it return directories as FQCN.
-            }
-        }
+        $this->tags_collector->collectTags(true);
+        var_dump($this->tags_collector->getTagsHierarchy());
     }
 
     /**
@@ -75,35 +64,5 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     public function isOptional()
     {
         return true;
-    }
-
-    /**
-     * @param $cacheDir
-     *
-     * @return string
-     */
-    protected function getCacheDir($cacheDir)
-    {
-        $cacheDir = $cacheDir.DIRECTORY_SEPARATOR.'api_permissions';
-        if (!file_exists($cacheDir)) {
-            if (!$rs = @mkdir($cacheDir, 0777, true)) {
-                throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cacheDir));
-            }
-        }
-
-        return $cacheDir;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getClasses()
-    {
-        $fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());
-
-        return array_merge(
-            @$fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller'),
-            @$fqcn_repo->findIn(DP_ROOT.'/src/Application/LegacyApiBundle/Controller')
-        );
     }
 }

@@ -49,7 +49,7 @@ class TicketMacrosController extends BaseController
      *
      * @Get("/ticket_macros", name="api_ticket_layouts")
      */
-    public function getTicketMacros()
+    public function getTicketMacrosAction()
     {
         $service = $this->get('data.ticket_macros');
 
@@ -75,7 +75,7 @@ class TicketMacrosController extends BaseController
     /**
      * @Get("/users/{user_id}/ticket_macros")
      */
-    public function loadPersonTicketMacros($user_id)
+    public function loadPersonTicketMacrosAction($user_id)
     {
         if ($user_id == 'me') {
             $user    = $this->getUser();

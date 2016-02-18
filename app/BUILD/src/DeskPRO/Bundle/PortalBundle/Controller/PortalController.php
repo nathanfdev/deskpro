@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -181,7 +182,7 @@ class PortalController extends AbstractController
     /**
      * @Route("/dismiss-lang-alert", name="portal_dismiss_lang_alert")
      */
-    public function ignoreLangAlert(Request $request)
+    public function ignoreLangAlertAction(Request $request)
     {
         $this->getSession()->set('ignore_language_warning', true);
 

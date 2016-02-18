@@ -49,7 +49,7 @@ class TicketLayoutController extends BaseController
      *
      * @Get("/ticket_layouts", name="api_ticket_layouts")
      */
-    public function getTicketLayouts()
+    public function getTicketLayoutsAction()
     {
         $service = $this->get('data.ticket_layouts');
 
@@ -75,7 +75,7 @@ class TicketLayoutController extends BaseController
     /**
      * @Get("/ticket_departments/{dept_id}/ticket_layouts")
      */
-    public function getDepartment($dept_id)
+    public function getDepartmentAction($dept_id)
     {
         $service = $this->get('data.ticket_layouts');
 
