@@ -310,21 +310,11 @@ class TicketWithLayoutsType extends AbstractType
                 }
             }
 
-            if (!array_key_exists($field->getId(), $data)) {
+            $field_added = $this->addField($context, $field, $changes);
+
+            // check if there was submitted data for this field
+            if ($field_added && !array_key_exists($field->getId(), $data)) {
                 $has_not_submitted = true;
-            }
-
-            $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
-            if ($form_field) {
-                $form->add($field->getId(), $form_field->getType(), $form_field->getOptions());
-
-                // for web view add more attachments button
-                if (!$context->forApi() && $field->getFieldType() === FormFields::ATTACHMENTS) {
-                    $form->add('more_attachments', 'submit', [
-                        'validation_groups' => false,
-                        'label'             => $this->phrase('portal.forms.label_add_attachment'),
-                    ]);
-                }
             }
         }
 
@@ -348,6 +338,35 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         $this->addSubmit($context);
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     * @param LayoutField              $field
+     * @param TicketLayoutChanges      $changes
+     *
+     * @return bool
+     */
+    private function addField(TicketWithLayoutsContext $context, LayoutField $field, TicketLayoutChanges $changes)
+    {
+        $form       = $context->getForm();
+        $form_field = $this->createFormField($context, $field, in_array($field, $changes->getFieldsRequiringRerender()));
+
+        if (!$form_field) {
+            return false;
+        }
+
+        $form->add($field->getId(), $form_field->getType(), $form_field->getOptions());
+
+        // for web view add more attachments button
+        if (!$context->forApi() && $field->getFieldType() === FormFields::ATTACHMENTS) {
+            $form->add('more_attachments', 'submit', [
+                'validation_groups' => false,
+                'label'             => $this->phrase('portal.forms.label_add_attachment'),
+            ]);
+        }
+
+        return true;
     }
 
     /**
