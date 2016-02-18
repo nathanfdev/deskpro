@@ -35,13 +35,13 @@ namespace Application\DeskPRO\AgentAlert;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
 use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AlertSender
 {
     /**
-     * @var \Application\DeskPRO\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
