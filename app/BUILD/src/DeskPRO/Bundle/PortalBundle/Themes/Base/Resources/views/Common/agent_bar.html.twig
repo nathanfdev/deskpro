@@ -30,31 +30,6 @@ if impersonation is OFF "impersonator" is the agent
         </div>
         {% endif %}
 
-        <select id="agent_bar_brand_select" name="brand" style="width: 20%; position: absolute; top: 15px;">
-        {% for brand in brands %}
-        <option value="{{ brand['id'] }}"{% if brand['id'] == active_brand_id %} selected="selected"{% endif %}>{{ brand['name'] }} ({{ brand['theme_id'] }})</option>
-        {% endfor %}
-        </select>
-
-        <script>
-            /**
-             * TODO: remove this when we go for launch. I'm sure we'll change it to something else for admins before then.
-             */
-            var agent_brand_select = document.getElementById('agent_bar_brand_select');
-            agent_brand_select.addEventListener('change', function() {
-                var path = window.location.pathname;
-                var re = /\/brand-\d/;
-                var new_brand = '/brand-' + agent_brand_select.value;
-                if (path.search(re) >= 0) {
-                    path = path.replace(re, new_brand);
-                } else {
-                    path = new_brand + path;
-                }
-                console.log('redirecting to: ' + path);
-                window.location = path;
-            });
-        </script>
-
         <div class="datb-interface-switcher">
           <div id="datp-dropdown-theme-switcher" class="datb-dropdown-content" style="display: none">
             <ul class="theme-selector">
@@ -82,8 +57,6 @@ if impersonation is OFF "impersonator" is the agent
             </ul>
           </div>
 
-
-            <span>{{ phrase('portal.general.switch_interface') }}:</span>
             <a href="{{ path('agent') }}" id="agent-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-agent-dropdown">
                 <i class="fa fa-users"></i>
                 <span class="datb-button-content">
@@ -99,36 +72,31 @@ if impersonation is OFF "impersonator" is the agent
             <div id="agent-bar-agent-dropdown" class="datb-dropdown-content" style="display: none;">
                 <ul>
                     <li>
-                        <a href="/agent">
-                            <i class="fa fa-angle-double-right"></i>TEMPORARY: Old Agent
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ path('agent') }}">
                             <i class="fa fa-angle-double-right"></i>
                             {{- phrase('portal.general.agent_bar_agent_home') -}}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('agent') }}">
+                        <a href="{{ path('agent') }}#app.publish">
                             <i class="fa fa-angle-double-right"></i>
                             {{- phrase('portal.general.agent_bar_agent_kb') -}}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('agent') }}">
+                        <a href="{{ path('agent') }}#app.publish">
                             <i class="fa fa-angle-double-right"></i>
                             {{- phrase('portal.general.agent_bar_agent_news') -}}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('agent') }}">
+                        <a href="{{ path('agent') }}#app.publish">
                             <i class="fa fa-angle-double-right"></i>
                             {{- phrase('portal.general.agent_bar_agent_dl') -}}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('agent') }}">
+                        <a href="{{ path('agent') }}#app.feedback,fb_content">
                             <i class="fa fa-angle-double-right"></i>
                             {{- phrase('portal.general.agent_bar_agent_feedback') -}}
                         </a>
@@ -159,7 +127,7 @@ if impersonation is OFF "impersonator" is the agent
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('admin') }}#/portal/portal_editor">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_portal') -}}
                             </a>
@@ -171,25 +139,25 @@ if impersonation is OFF "impersonator" is the agent
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('admin') }}#/portal/kb/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_kb') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('admin') }}#/portal/news/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_news') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('admin') }}#/portal/downloads/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_dl') -}}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin') }}">
+                            <a href="{{ path('admin') }}#/portal/feedback/settings">
                                 <i class="fa fa-angle-double-right"></i>
                                 {{- phrase('portal.general.agent_bar_admin_feedback') -}}
                             </a>
@@ -197,36 +165,7 @@ if impersonation is OFF "impersonator" is the agent
                     </ul>
                 </div>
             {% endif %}
-
-            {# DISABLED "EDIT" BUTTON - this will be a feature #}
-            {#<div class="datb-edit-context">#}
-                {#<a href="#"><i class="fa fa-edit"></i></a>#}
-            {#</div>#}
         </div>
     </div>
 </div>
 {% endif %}
-
-
-
-{#<div class="admin-bar">#}
-    {#<div class="wrapper">#}
-        {#<ul>#}
-            {#<li>#}
-                {#<a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">#}
-                    {#<span>{{ phrase('portal.account.exit_impersonation') }}</span>#}
-                {#</a>#}
-            {#</li>#}
-            {#<li>#}
-                {#<a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}">#}
-                    {#<i>{{ impersonator.display_name }}</i>#}
-                    {#{{ phrase('portal.account.impersonating') }}#}
-                    {#<i>{{ user.display_name }}#}
-                        {#({{ phrase('portal.general.id') }}#}
-                        {##{{ user.id }})#}
-                    {#</i>#}
-                {#</a>#}
-            {#</li>#}
-        {#</ul>#}
-    {#</div>#}
-{#</div>#}

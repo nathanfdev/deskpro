@@ -37,7 +37,7 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('old_agent', array(
+$collection->create('agent', array(
     'path'       => '/',
     'controller' => 'AgentBundle:Main:index',
 ));

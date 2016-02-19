@@ -75,6 +75,14 @@ class AppEnv implements AppEnvInterface
     /**
      * {@inheritdoc}
      */
+    public function getAppWwwAssetDir()
+    {
+        return $this->dpEnv->getAppWwwAssetDir();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getAppName()
     {
         return $this->dpEnv->getAppName();
@@ -177,7 +185,7 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setRuntimeVar($name, $value)
     {
@@ -185,7 +193,7 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function hasRuntimeVar($name)
     {
@@ -193,7 +201,7 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function unsetRuntimeVar($name)
     {
@@ -201,11 +209,10 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getRuntimeVar($name, $default = '__throw__')
     {
         return $this->dpEnv->getRuntimeVar($name, $default);
     }
-
 }

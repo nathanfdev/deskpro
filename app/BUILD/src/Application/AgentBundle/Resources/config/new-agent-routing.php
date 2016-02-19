@@ -38,7 +38,7 @@ use Application\DeskPRO\Routing\RouteCollection;
 $collection = new RouteCollection();
 
 $collection->create(
-    'agent',
+    'new_agent',
     [
         'path'       => '/',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',

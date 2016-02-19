@@ -49,6 +49,13 @@ interface AppEnvInterface
     public function getWwwRoot();
 
     /**
+     * Gets the root asset directory for the active build.
+     *
+     * @return string
+     */
+    public function getAppWwwAssetDir();
+
+    /**
      * Gets the 'name' of the currently active build. The 'name' in this case
      * just means the directory name of the active build.
      *
@@ -173,12 +180,13 @@ interface AppEnvInterface
      * if possible because they are little better than simply using globals.
      *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function setRuntimeVar($name, $value);
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function hasRuntimeVar($name);
@@ -191,6 +199,7 @@ interface AppEnvInterface
     /**
      * @param string $name
      * @param mixed  $default
+     *
      * @return \OutOfRangeException|string
      */
     public function getRuntimeVar($name, $default = '__throw__');
