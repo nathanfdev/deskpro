@@ -8,6 +8,7 @@ var runSeq = require('run-sequence');
 var path = require('path');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackNotifierPlugin = require('webpack-notifier');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var glob = require('glob');
 var babel = require('babel-core');
 var uglify = require('uglify-js');
@@ -330,7 +331,10 @@ function getWebpackConfig(mode, isDevServer, isProd) {
       new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery'
-      })
+      }),
+      new CopyWebpackPlugin([
+        { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
+      ])
     ]
   };
 

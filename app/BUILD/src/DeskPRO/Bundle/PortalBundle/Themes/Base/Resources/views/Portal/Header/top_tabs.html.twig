@@ -6,7 +6,7 @@
                 {% if tab == 'articles' %}
                     <li{% if url_starts_with == 'kb' %} class="tab-active"{% endif %}>
                         <a href="{{ path('portal_kb') }}">
-                            <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png') }}">
+                            <img src="{{ asset('DeskPRO/Bundle/PortalBundle/Resources/img/icon-view-more.png', 'app_assets') }}">
 
                             <div>
                                 <span class="title">{{ phrase('portal.general.nav-news') }}</span>
@@ -19,7 +19,7 @@
                 {% if tab == 'downloads' %}
                     <li{% if url_starts_with == 'downloads' %} class="tab-active"{% endif %}>
                         <a href="{{ path('portal_downloads') }}">
-                            <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-star.png') }}">
+                            <img src="{{ asset('DeskPRO/Bundle/PortalBundle/Resources/img/icon-star.png', 'app_assets') }}">
 
                             <div>
                                 <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
@@ -32,7 +32,7 @@
                 {% if tab == 'feedback' %}
                     <li{% if url_starts_with == 'feedback' %} class="tab-active"{% endif %}>
                         <a href="{{ path('portal_feedback') }}">
-                            <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-shield.png') }}">
+                            <img src="{{ asset('DeskPRO/Bundle/PortalBundle/Resources/img/icon-shield.png', 'app_assets') }}">
 
                             <div>
                                 <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
@@ -45,7 +45,7 @@
                 {% if tab == 'newticket' %}
                     <li{% if url_starts_with == 'new-ticket' %} class="tab-active"{% endif %}>
                         <a href="{{ path('portal_new_ticket') }}">
-                            <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-shield.png') }}">
+                            <img src="{{ asset('DeskPRO/Bundle/PortalBundle/Resources/img/icon-shield.png', 'app_assets') }}">
 
                             <div>
                                 <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
@@ -58,7 +58,7 @@
                 {% if tab == 'news' %}
                     <li{% if url_starts_with == 'news' %} class="tab-active"{% endif %}>
                         <a href="{{ path('portal_news') }}">
-                            <img src="{{ asset('pub/src/DeskPRO/Bundle/PortalBundle/Resources/img/icon-star.png') }}">
+                            <img src="{{ asset('DeskPRO/Bundle/PortalBundle/Resources/img/icon-star.png', 'app_assets') }}">
 
                             <div>
                                 <span class="title">{{ phrase('portal.general.nav-news') }}</span>
