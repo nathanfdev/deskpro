@@ -94,9 +94,9 @@ export class ClickOut extends React.Component {
 
   render() {
     return (
-      <clickout ref="container">
+      <div ref="container">
         {this.props.children}
-      </clickout>
+      </div>
     );
   }
 }

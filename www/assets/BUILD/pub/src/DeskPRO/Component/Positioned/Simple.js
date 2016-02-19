@@ -13,25 +13,6 @@ export class Simple extends Abstract {
   };
 
   /**
-   * Run when the component has been mounted
-   * Because componentDidUpdate fires only after the first render here we should call it directly
-   * @returns {void}
-   */
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
-    this.updatePosition();
-  }
-
-  /**
-   * Override parent method with the way without mutate dom
-   * @param  {Object} newProps The new props
-   * @return {void}
-   */
-  componentWillReceiveProps(newProps) {
-    this.props = newProps;
-  }
-
-  /**
    * We should update our position in case rerender
    * @return {void}
    */

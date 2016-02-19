@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { Abstract } from './Abstract';
@@ -9,17 +9,29 @@ export class Detached extends Abstract {
     context: PropTypes.any
   };
 
-  /**
-   * Run when the component has been mounted
-   * @returns {void}
-   */
-  componentDidMount() {
-    this.node = ReactDOM.findDOMNode(this);
+  componentDidUpdate() {
+    const { isOpen = false } = this.state;
+    const { onOpen, onClose } = this.props;
 
-    $(this.node).detach();
-    $(this.props.context || 'body').prepend(this.node);
+    if (isOpen) {
+      this.cont = document.createElement('div');
+      this.cont.className = 'positioned-element';
 
-    // Manipulate the DOM here
-    this.renderContent();
+      document.body.appendChild(this.cont);
+      this._renderLayer();
+      onOpen && onOpen();
+      this.updatePosition();
+
+    } else if (this.cont) {
+      ReactDOM.unmountComponentAtNode(this.cont);
+      this.cont.parentNode.removeChild(this.cont);
+      this.cont = null;
+
+      onClose && onClose();
+    }
+  }
+
+  _renderLayer() {
+    this.cont && ReactDOM.render(this.props.children, this.cont);
   }
 }
