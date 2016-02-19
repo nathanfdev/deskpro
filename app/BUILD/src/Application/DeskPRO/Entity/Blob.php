@@ -346,6 +346,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getAuthcode()
+    {
+        return $this->authcode;
+    }
+
+    /**
+     * @param string $authcode
+     *
+     * @return $this
+     */
+    public function setAuthCode($authcode)
+    {
+        $this->setModelField('authcode', $authcode);
+
+        return $this;
+    }
+
+    /**
      * Get the standard download URL for this blob.
      *
      * @Serializer\VirtualProperty
@@ -593,13 +613,5 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $this->id = null;
 
         return parent::__clone();
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthcode()
-    {
-        return $this->authcode;
     }
 }

@@ -101,17 +101,12 @@ class TicketMessageAttachmentType extends AbstractType
         if (!$attachment instanceof TicketAttachment) {
             $attachment = new TicketAttachment();
         }
-        if (!$attachment->getBlob()) {
-            $blob           = new Blob();
-            $blob->authcode = '';
-
-            $attachment->setBlob($blob);
-        }
 
         $event->setData($attachment);
 
         // setting fields depend on initial value
-        if ($attachment->getBlob()) {
+        $blob = $attachment->getBlob();
+        if ($blob && $blob->getAuthcode()) {
             $this->setAttachmentFieldsOnForm($form);
         } else {
             $this->setUploadFieldOnForm($form);
@@ -136,6 +131,7 @@ class TicketMessageAttachmentType extends AbstractType
         // Got blob auth code from the request
         // Trying to assign a real blob to attachment or delete it
         if (array_key_exists('blob_auth', $data)) {
+            // handle deleting of the attachment
             if (array_key_exists('delete', $data) && $data['delete']) {
                 $this->setUploadFieldOnForm($form);
 
@@ -154,9 +150,12 @@ class TicketMessageAttachmentType extends AbstractType
 
             // find for existing blob by auth code
             $blob = $this->blob_repo->getByAuthCode($data['blob_auth']);
-            if ($blob) {
-                $attachment->setBlob($blob);
+            if (!$blob) {
+                $blob = new Blob();
+                $blob->setAuthCode('');
             }
+
+            $attachment->setBlob($blob);
         } else {
             // Got uploaded file, try to accept and set blob auth code as form data
             $this->setUploadFieldOnForm($form);
