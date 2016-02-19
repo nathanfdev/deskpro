@@ -4294,7 +4294,7 @@ section.new-user-chat-alert footer {
   padding: 3px;
 }
 .legacy-dp-interface button.clean-gray {
-  background: #eeeeee url("../../../file.php/gradient?size=20&start_color=eeeeee&end_color=cccccc") repeat-x bottom left /*gradient_v:20:eeeeee:cccccc*/;
+  background: #eeeeee url("../../../../../../file.php/gradient?size=20&start_color=eeeeee&end_color=cccccc") repeat-x bottom left /*gradient_v:20:eeeeee:cccccc*/;
   border: 1px solid #ccc;
   border-bottom: 1px solid #bbb;
   -webkit-border-top-left-radius: 3px;
@@ -4321,7 +4321,7 @@ section.new-user-chat-alert footer {
   white-space: nowrap;
 }
 .legacy-dp-interface button.clean-gray:hover {
-  background: #dddddd url("../../../file.php/gradient?size=20&start_color=dddddd&end_color=bbbbbb") repeat-x bottom left /*gradient_v:20:dddddd:bbbbbb*/;
+  background: #dddddd url("../../../../../../file.php/gradient?size=20&start_color=dddddd&end_color=bbbbbb") repeat-x bottom left /*gradient_v:20:dddddd:bbbbbb*/;
   border: 1px solid #bbb;
   border-bottom: 1px solid #999;
   cursor: pointer;
@@ -4371,7 +4371,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface button.clean-white,
 .legacy-dp-interface a.clean-white {
-  background: #fafcfd url("../../../file.php/gradient?size=20&start_color=fafcfd&end_color=f0f2f3") repeat-x bottom left /*gradient_v:20:fafcfd:f0f2f3*/;
+  background: #fafcfd url("../../../../../../file.php/gradient?size=20&start_color=fafcfd&end_color=f0f2f3") repeat-x bottom left /*gradient_v:20:fafcfd:f0f2f3*/;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
   border: 1px solid #b6babf;
   -webkit-border-top-left-radius: 3px;
@@ -4487,7 +4487,7 @@ section.new-user-chat-alert footer {
   background-color: #CDD1D3 !important;
 }
 .legacy-dp-interface .clean-white.radio-on {
-  background: #eaeded url("../../../file.php/gradient?size=20&start_color=eaeded&end_color=d3d3d3") repeat-x bottom left /*gradient_v:20:eaeded:d3d3d3*/;
+  background: #eaeded url("../../../../../../file.php/gradient?size=20&start_color=eaeded&end_color=d3d3d3") repeat-x bottom left /*gradient_v:20:eaeded:d3d3d3*/;
   /* FF3.6+ */
   -webkit-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
   -moz-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
@@ -5273,7 +5273,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .optionbox > header {
   height: 25px;
-  background: #edeeef url("../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
+  background: #edeeef url("../../../../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
   border-bottom: 1px solid #ACB2B9;
   -webkit-border-top-left-radius: 9px;
   -webkit-border-top-right-radius: 9px;
@@ -5323,7 +5323,7 @@ section.new-user-chat-alert footer {
   margin-right: 0.5%;
 }
 .legacy-dp-interface .optionbox section header {
-  background: #edeeef url("../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
+  background: #edeeef url("../../../../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
   border-bottom: 1px solid #ACB2B9;
   padding: 2px 2px 2px 5px;
   -webkit-box-shadow: inset 0px 0px 1px 1px #ffffff;
@@ -5355,7 +5355,7 @@ section.new-user-chat-alert footer {
   padding: 4px 4px 3px 8px;
   line-height: 100%;
   font-size: 11px;
-  background: #FFFFFF url("../../../file.php/gradient?size=20&start_color=FFFFFF&end_color=E6E6E6") repeat-x bottom left /*gradient_v:20:FFFFFF:E6E6E6*/;
+  background: #FFFFFF url("../../../../../../file.php/gradient?size=20&start_color=FFFFFF&end_color=E6E6E6") repeat-x bottom left /*gradient_v:20:FFFFFF:E6E6E6*/;
   border-top: 1px solid #D7DCDE;
   border-bottom: 1px solid #D7DCDE;
   color: #738699;
@@ -5455,7 +5455,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .optionbox > footer {
   height: 23px;
   border-top: 1px solid #A1AAB3;
-  background: #e4e7e9 url("../../../file.php/gradient?size=20&start_color=e4e7e9&end_color=babfc4") repeat-x bottom left /*gradient_v:20:e4e7e9:babfc4*/;
+  background: #e4e7e9 url("../../../../../../file.php/gradient?size=20&start_color=e4e7e9&end_color=babfc4") repeat-x bottom left /*gradient_v:20:e4e7e9:babfc4*/;
   -webkit-border-top-left-radius: 0px;
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 5px;
@@ -5474,7 +5474,7 @@ section.new-user-chat-alert footer {
   text-align: center;
 }
 .legacy-dp-interface .optionbox > footer button {
-  background: #598eb6 url("../../../file.php/gradient?size=20&start_color=598eb6&end_color=3c6094") repeat-x bottom left /*gradient_v:20:598eb6:3c6094*/;
+  background: #598eb6 url("../../../../../../file.php/gradient?size=20&start_color=598eb6&end_color=3c6094") repeat-x bottom left /*gradient_v:20:598eb6:3c6094*/;
   border: 1px solid #3f5973;
   box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
   -webkit-border-top-left-radius: 4px;
@@ -6277,7 +6277,7 @@ section.new-user-chat-alert footer {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
 }
 .legacy-dp-interface .dp-grid .dp-grid-sectionrow .inner-wrap2 {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
   border-bottom: 1px solid #D9DBDB;
   border-left: 1px solid #D9DBDB;
   border-right: 1px solid #D9DBDB;
@@ -6605,7 +6605,7 @@ section.new-user-chat-alert footer {
   color: #666;
 }
 .legacy-dp-interface .simple-help-box {
-  background: #E1EFF5 url("../../../file.php/gradient?size=20&start_color=E1EFF5&end_color=E9F8FF") repeat-x bottom left /*gradient_v:20:E1EFF5:E9F8FF*/;
+  background: #E1EFF5 url("../../../../../../file.php/gradient?size=20&start_color=E1EFF5&end_color=E9F8FF") repeat-x bottom left /*gradient_v:20:E1EFF5:E9F8FF*/;
   border: 1px solid #CAD8DD;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -7191,7 +7191,7 @@ section.new-user-chat-alert footer {
   outline: dashed 1px #0000ff;
 }
 .legacy-dp-interface .box-header-gradient {
-  background: #F0F1F3 url("../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
+  background: #F0F1F3 url("../../../../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
   height: 22px;
 }
 .legacy-dp-interface .box-header-gradient h3 {
@@ -7315,7 +7315,7 @@ section.new-user-chat-alert footer {
   left: 0;
 }
 .legacy-dp-interface #tabNavigationPane {
-  background: #DADBDE url("../../../file.php/gradient?size=20&start_color=DADBDE&end_color=F0F1F3") repeat-x bottom left /*gradient_v:20:DADBDE:F0F1F3*/;
+  background: #DADBDE url("../../../../../../file.php/gradient?size=20&start_color=DADBDE&end_color=F0F1F3") repeat-x bottom left /*gradient_v:20:DADBDE:F0F1F3*/;
   height: 37px;
   position: absolute;
   overflow: hidden;
@@ -7442,7 +7442,7 @@ section.new-user-chat-alert footer {
   float: left;
 }
 .legacy-dp-interface .deskproTabList li {
-  background: #d5d8dc url("../../../file.php/gradient?size=20&start_color=d5d8dc&end_color=b6babf") repeat-x bottom left /*gradient_v:20:d5d8dc:b6babf*/;
+  background: #d5d8dc url("../../../../../../file.php/gradient?size=20&start_color=d5d8dc&end_color=b6babf") repeat-x bottom left /*gradient_v:20:d5d8dc:b6babf*/;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
@@ -7946,7 +7946,7 @@ section.new-user-chat-alert footer {
   padding-right: 12px;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-1 {
-  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
+  background: #fafad6 url("../../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
   border: 1px solid #E2DE9C;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-1 label,
@@ -7955,7 +7955,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-2 {
-  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
+  background: #fff1c4 url("../../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
   border: 1px solid #B9A567;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-2 label,
@@ -7964,7 +7964,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-3 {
-  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
+  background: #ffe0b4 url("../../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
   border: 1px solid #B6905A;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-3 label,
@@ -7973,7 +7973,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-4 {
-  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
+  background: #ffcda4 url("../../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
   border: 1px solid #BF8452;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-4 label,
@@ -7982,7 +7982,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-5 {
-  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
+  background: #ffba95 url("../../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
   border: 1px solid #B66B43;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-5 label,
@@ -7991,7 +7991,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-6 {
-  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
+  background: #ffa585 url("../../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
   border: 1px solid #C05E3A;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-6 label,
@@ -8000,7 +8000,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-7 {
-  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
+  background: #ff9484 url("../../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
   border: 1px solid #A54031;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-7 label,
@@ -8009,7 +8009,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-8 {
-  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
+  background: #ff8584 url("../../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
   border: 1px solid #9C2F2D;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-8 label,
@@ -8018,7 +8018,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-9 {
-  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
+  background: #fe6e7e url("../../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
   border: 1px solid #A12230;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-9 label,
@@ -8027,7 +8027,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-10 {
-  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
+  background: #fa5a79 url("../../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
   border: 1px solid #A12230;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_agent span.urgency-10 label,
@@ -8044,7 +8044,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
+  background: #fafad6 url("../../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
   border: 1px solid #E2DE9C;
 }
 .legacy-dp-interface .urgency-value-1 label,
@@ -8061,7 +8061,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
+  background: #fff1c4 url("../../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
   border: 1px solid #B9A567;
 }
 .legacy-dp-interface .urgency-value-2 label,
@@ -8078,7 +8078,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
+  background: #ffe0b4 url("../../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
   border: 1px solid #B6905A;
 }
 .legacy-dp-interface .urgency-value-3 label,
@@ -8095,7 +8095,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
+  background: #ffcda4 url("../../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
   border: 1px solid #BF8452;
 }
 .legacy-dp-interface .urgency-value-4 label,
@@ -8112,7 +8112,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
+  background: #ffba95 url("../../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
   border: 1px solid #B66B43;
 }
 .legacy-dp-interface .urgency-value-5 label,
@@ -8129,7 +8129,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
+  background: #ffa585 url("../../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
   border: 1px solid #C05E3A;
 }
 .legacy-dp-interface .urgency-value-6 label,
@@ -8146,7 +8146,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
+  background: #ff9484 url("../../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
   border: 1px solid #A54031;
 }
 .legacy-dp-interface .urgency-value-7 label,
@@ -8163,7 +8163,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
+  background: #ff8584 url("../../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
   border: 1px solid #9C2F2D;
 }
 .legacy-dp-interface .urgency-value-8 label,
@@ -8180,7 +8180,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
+  background: #fe6e7e url("../../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
   border: 1px solid #A12230;
   color: #fff;
   text-shadow: none;
@@ -8199,7 +8199,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
+  background: #fa5a79 url("../../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
   border: 1px solid #A12230;
   color: #fff;
   text-shadow: none;
@@ -8218,7 +8218,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
+  background: #fafad6 url("../../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
   border: 1px solid #E2DE9C;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-1 .urgency-text label,
@@ -8235,7 +8235,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
+  background: #fff1c4 url("../../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
   border: 1px solid #B9A567;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-2 .urgency-text label,
@@ -8252,7 +8252,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
+  background: #ffe0b4 url("../../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
   border: 1px solid #B6905A;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-3 .urgency-text label,
@@ -8269,7 +8269,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
+  background: #ffcda4 url("../../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
   border: 1px solid #BF8452;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-4 .urgency-text label,
@@ -8286,7 +8286,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
+  background: #ffba95 url("../../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
   border: 1px solid #B66B43;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-5 .urgency-text label,
@@ -8303,7 +8303,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
+  background: #ffa585 url("../../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
   border: 1px solid #C05E3A;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-6 .urgency-text label,
@@ -8320,7 +8320,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
+  background: #ff9484 url("../../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
   border: 1px solid #A54031;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-7 .urgency-text label,
@@ -8337,7 +8337,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
+  background: #ff8584 url("../../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
   border: 1px solid #9C2F2D;
 }
 .legacy-dp-interface .layout-content.awaiting_agent.urgency-8 .urgency-text label,
@@ -8354,7 +8354,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
+  background: #fe6e7e url("../../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
   border: 1px solid #A12230;
   color: #fff;
   text-shadow: none;
@@ -8373,7 +8373,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
+  background: #fa5a79 url("../../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
   border: 1px solid #A12230;
   color: #fff;
   text-shadow: none;
@@ -8392,7 +8392,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #dafcdb url("../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
+  background: #dafcdb url("../../../../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
   border: 1px solid #639564;
   color: #385739;
 }
@@ -8416,7 +8416,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #cdd0da url("../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
+  background: #cdd0da url("../../../../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
   border: 1px solid #979BA8;
   color: #60626B;
 }
@@ -8446,7 +8446,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #95c296 url("../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
+  background: #95c296 url("../../../../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
   border: 1px solid #4F7950;
   color: #1B2E1C;
 }
@@ -8467,7 +8467,7 @@ section.new-user-chat-alert footer {
   background-clip: padding-box;
   padding: 1px 4px;
   line-height: 18px;
-  background: #b5e3b6 url("../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
+  background: #b5e3b6 url("../../../../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
   border: 1px solid #669966;
   color: #385739;
 }
@@ -8480,7 +8480,7 @@ section.new-user-chat-alert footer {
   border-left: 1px solid rgba(102, 153, 102, 0.8);
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_user span {
-  background: #dafcdb url("../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
+  background: #dafcdb url("../../../../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
   border: 1px solid #639564;
 }
 .legacy-dp-interface header.page-header .meta-line .status.awaiting_user span label,
@@ -8489,7 +8489,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.resolved span {
-  background: #b5e3b6 url("../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
+  background: #b5e3b6 url("../../../../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
   border: 1px solid #669966;
 }
 .legacy-dp-interface header.page-header .meta-line .status.resolved span label,
@@ -8498,7 +8498,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.hidden span {
-  background: #cdd0da url("../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
+  background: #cdd0da url("../../../../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
   border: 1px solid #979BA8;
 }
 .legacy-dp-interface header.page-header .meta-line .status.hidden span label,
@@ -8507,7 +8507,7 @@ section.new-user-chat-alert footer {
   text-shadow: none;
 }
 .legacy-dp-interface header.page-header .meta-line .status.archived span {
-  background: #95c296 url("../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
+  background: #95c296 url("../../../../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
   border: 1px solid #4F7950;
 }
 .legacy-dp-interface header.page-header .meta-line .status.archived span label,
@@ -8518,7 +8518,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .status-pill {
   position: relative;
   top: -5px;
-  background: #8bbe72 url("../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
+  background: #8bbe72 url("../../../../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
@@ -8573,7 +8573,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-1,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-1 {
-  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
+  background: #fafad6 url("../../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
   border: 1px solid #E2DE9C;
   color: #4D4938;
 }
@@ -8590,7 +8590,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-2,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-2 {
-  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
+  background: #fff1c4 url("../../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
   border: 1px solid #B9A567;
   color: #4D4938;
 }
@@ -8607,7 +8607,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-3,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-3 {
-  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
+  background: #ffe0b4 url("../../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
   border: 1px solid #B6905A;
   color: #3D2E19;
 }
@@ -8624,7 +8624,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-4,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-4 {
-  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
+  background: #ffcda4 url("../../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
   border: 1px solid #BF8452;
   color: #3D2E19;
 }
@@ -8641,7 +8641,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-5,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-5 {
-  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
+  background: #ffba95 url("../../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
   border: 1px solid #B66B43;
   color: #3D2E19;
 }
@@ -8658,7 +8658,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-6,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-6 {
-  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
+  background: #ffa585 url("../../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
   border: 1px solid #C05E3A;
   color: #311207;
 }
@@ -8675,7 +8675,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-7,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-7 {
-  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
+  background: #ff9484 url("../../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
   border: 1px solid #A54031;
   color: #311207;
 }
@@ -8692,7 +8692,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-8,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-8 {
-  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
+  background: #ff8584 url("../../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
   border: 1px solid #9C2F2D;
   color: #311207;
 }
@@ -8709,7 +8709,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-9,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-9 {
-  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
+  background: #fe6e7e url("../../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
   border: 1px solid #A12230;
   color: #FFF;
 }
@@ -8726,7 +8726,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .group-by-pill.urgency-10,
 .legacy-dp-interface .status-pill.awaiting_agent.urgency-10 {
-  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
+  background: #fa5a79 url("../../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
   border: 1px solid #A12230;
   color: #FFF;
 }
@@ -8742,7 +8742,7 @@ section.new-user-chat-alert footer {
   border-left: 1px solid rgba(161, 34, 48, 0.8);
 }
 .legacy-dp-interface .status-pill.awaiting_user {
-  background: #dafcdb url("../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
+  background: #dafcdb url("../../../../../../file.php/gradient?size=20&start_color=dafcdb&end_color=AAF9AC") repeat-x bottom left /*gradient_v:20:dafcdb:AAF9AC*/;
   border: 1px solid #639564;
   color: #385739;
 }
@@ -8755,7 +8755,7 @@ section.new-user-chat-alert footer {
   border-left: 1px solid rgba(99, 149, 100, 0.8);
 }
 .legacy-dp-interface .status-pill.resolved {
-  background: #b5e3b6 url("../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
+  background: #b5e3b6 url("../../../../../../file.php/gradient?size=20&start_color=b5e3b6&end_color=90D591") repeat-x bottom left /*gradient_v:20:b5e3b6:90D591*/;
   border: 1px solid #669966;
   color: #385739;
 }
@@ -8771,7 +8771,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .status-pill.hidden_deleted,
 .legacy-dp-interface .status-pill.hidden_spam,
 .legacy-dp-interface .status-pill.hidden_validating {
-  background: #cdd0da url("../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
+  background: #cdd0da url("../../../../../../file.php/gradient?size=20&start_color=cdd0da&end_color=B0B4C4") repeat-x bottom left /*gradient_v:20:cdd0da:B0B4C4*/;
   border: 1px solid #979BA8;
   color: #60626B;
 }
@@ -8793,7 +8793,7 @@ section.new-user-chat-alert footer {
   border-left: 1px solid rgba(151, 155, 168, 0.8);
 }
 .legacy-dp-interface .status-pill.archived {
-  background: #95c296 url("../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
+  background: #95c296 url("../../../../../../file.php/gradient?size=20&start_color=95c296&end_color=75AF76") repeat-x bottom left /*gradient_v:20:95c296:75AF76*/;
   border: 1px solid #4F7950;
   color: #1B2E1C;
 }
@@ -8807,7 +8807,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-1,
 .legacy-dp-interface .select2-choice .urgency-1 {
-  background: #fafad6 url("../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
+  background: #fafad6 url("../../../../../../file.php/gradient?size=20&start_color=fafad6&end_color=F4F4A9") repeat-x bottom left /*gradient_v:20:fafad6:F4F4A9*/;
   border: 1px solid #E2DE9C;
   color: #4D4938;
 }
@@ -8824,7 +8824,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-2,
 .legacy-dp-interface .select2-choice .urgency-2 {
-  background: #fff1c4 url("../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
+  background: #fff1c4 url("../../../../../../file.php/gradient?size=20&start_color=fff1c4&end_color=FFE491") repeat-x bottom left /*gradient_v:20:fff1c4:FFE491*/;
   border: 1px solid #B9A567;
   color: #4D4938;
 }
@@ -8841,7 +8841,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-3,
 .legacy-dp-interface .select2-choice .urgency-3 {
-  background: #ffe0b4 url("../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
+  background: #ffe0b4 url("../../../../../../file.php/gradient?size=20&start_color=ffe0b4&end_color=FFCB81") repeat-x bottom left /*gradient_v:20:ffe0b4:FFCB81*/;
   border: 1px solid #B6905A;
   color: #3D2E19;
 }
@@ -8858,7 +8858,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-4,
 .legacy-dp-interface .select2-choice .urgency-4 {
-  background: #ffcda4 url("../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
+  background: #ffcda4 url("../../../../../../file.php/gradient?size=20&start_color=ffcda4&end_color=FFB171") repeat-x bottom left /*gradient_v:20:ffcda4:FFB171*/;
   border: 1px solid #BF8452;
   color: #3D2E19;
 }
@@ -8875,7 +8875,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-5,
 .legacy-dp-interface .select2-choice .urgency-5 {
-  background: #ffba95 url("../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
+  background: #ffba95 url("../../../../../../file.php/gradient?size=20&start_color=ffba95&end_color=FF9962") repeat-x bottom left /*gradient_v:20:ffba95:FF9962*/;
   border: 1px solid #B66B43;
   color: #3D2E19;
 }
@@ -8892,7 +8892,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-6,
 .legacy-dp-interface .select2-choice .urgency-6 {
-  background: #ffa585 url("../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
+  background: #ffa585 url("../../../../../../file.php/gradient?size=20&start_color=ffa585&end_color=FF8052") repeat-x bottom left /*gradient_v:20:ffa585:FF8052*/;
   border: 1px solid #C05E3A;
   color: #311207;
 }
@@ -8909,7 +8909,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-7,
 .legacy-dp-interface .select2-choice .urgency-7 {
-  background: #ff9484 url("../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
+  background: #ff9484 url("../../../../../../file.php/gradient?size=20&start_color=ff9484&end_color=FF6851") repeat-x bottom left /*gradient_v:20:ff9484:FF6851*/;
   border: 1px solid #A54031;
   color: #311207;
 }
@@ -8926,7 +8926,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-8,
 .legacy-dp-interface .select2-choice .urgency-8 {
-  background: #ff8584 url("../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
+  background: #ff8584 url("../../../../../../file.php/gradient?size=20&start_color=ff8584&end_color=FF5351") repeat-x bottom left /*gradient_v:20:ff8584:FF5351*/;
   border: 1px solid #9C2F2D;
   color: #311207;
 }
@@ -8943,7 +8943,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-9,
 .legacy-dp-interface .select2-choice .urgency-9 {
-  background: #fe6e7e url("../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
+  background: #fe6e7e url("../../../../../../file.php/gradient?size=20&start_color=fe6e7e&end_color=FD3C51") repeat-x bottom left /*gradient_v:20:fe6e7e:FD3C51*/;
   border: 1px solid #A12230;
   color: #FFF;
 }
@@ -8960,7 +8960,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .select2-result .urgency-10,
 .legacy-dp-interface .select2-choice .urgency-10 {
-  background: #fa5a79 url("../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
+  background: #fa5a79 url("../../../../../../file.php/gradient?size=20&start_color=fa5a79&end_color=F92851") repeat-x bottom left /*gradient_v:20:fa5a79:F92851*/;
   border: 1px solid #A12230;
   color: #FFF;
 }
@@ -9001,7 +9001,7 @@ section.new-user-chat-alert footer {
   top: 2px;
 }
 .legacy-dp-interface header.page-header .status span {
-  background: #8bbe72 url("../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
+  background: #8bbe72 url("../../../../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
@@ -9113,7 +9113,7 @@ section.new-user-chat-alert footer {
   cursor: text;
 }
 .legacy-dp-interface nav.page-tabs {
-  background: #F0F1F3 url("../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
+  background: #F0F1F3 url("../../../../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
   height: 27px;
   clear: both;
   border-top: 1px solid #C2C6CC;
@@ -9388,7 +9388,7 @@ section.new-user-chat-alert footer {
   border: 1px solid #ACB2BF;
 }
 .legacy-dp-interface article.content-message .content header {
-  background: #e7eefc url("../../../file.php/gradient?size=20&start_color=e7eefc&end_color=d7e3fa") repeat-x bottom left /*gradient_v:20:e7eefc:d7e3fa*/;
+  background: #e7eefc url("../../../../../../file.php/gradient?size=20&start_color=e7eefc&end_color=d7e3fa") repeat-x bottom left /*gradient_v:20:e7eefc:d7e3fa*/;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 0;
@@ -9463,7 +9463,7 @@ section.new-user-chat-alert footer {
   color: #777;
 }
 .legacy-dp-interface article.content-message.agent-message .content header {
-  background: #fcf6e7 url("../../../file.php/gradient?size=20&start_color=fcf6e7&end_color=faf0d8") repeat-x bottom left /*gradient_v:20:fcf6e7:faf0d8*/;
+  background: #fcf6e7 url("../../../../../../file.php/gradient?size=20&start_color=fcf6e7&end_color=faf0d8") repeat-x bottom left /*gradient_v:20:fcf6e7:faf0d8*/;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 0;
@@ -9760,7 +9760,7 @@ section.new-user-chat-alert footer {
   position: relative;
 }
 .legacy-dp-interface section.ticket-reply nav {
-  background: #F0F1F3 url("../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
+  background: #F0F1F3 url("../../../../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
   height: 27px;
   clear: both;
   border-bottom: 1px solid #c2c6cc;
@@ -10197,7 +10197,7 @@ section.new-user-chat-alert footer {
   margin-right: 4px;
 }
 .legacy-dp-interface .notes-wrap .new-note header {
-  background: #F0F1F3 url("../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
+  background: #F0F1F3 url("../../../../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
   height: 22px;
   font-size: 10px;
   border-bottom: 1px solid #C8C9CD;
@@ -10300,7 +10300,7 @@ section.new-user-chat-alert footer {
   display: inline;
 }
 .legacy-dp-interface .profile-box-container .headerbox .unhold .clean-white {
-  background: #eaeded url("../../../file.php/gradient?size=20&start_color=eaeded&end_color=d3d3d3") repeat-x bottom left /*gradient_v:20:eaeded:d3d3d3*/;
+  background: #eaeded url("../../../../../../file.php/gradient?size=20&start_color=eaeded&end_color=d3d3d3") repeat-x bottom left /*gradient_v:20:eaeded:d3d3d3*/;
   /* FF3.6+ */
   -webkit-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
   -moz-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
@@ -10311,7 +10311,7 @@ section.new-user-chat-alert footer {
   margin: 10px;
 }
 .legacy-dp-interface .profile-box-container.highlighted > header {
-  background: #F4EFC9 url("../../../file.php/gradient?size=20&start_color=F4EFC9&end_color=F5EB96") repeat-x bottom left /*gradient_v:20:F4EFC9:F5EB96*/;
+  background: #F4EFC9 url("../../../../../../file.php/gradient?size=20&start_color=F4EFC9&end_color=F5EB96") repeat-x bottom left /*gradient_v:20:F4EFC9:F5EB96*/;
   border: 1px solid #A19A5E;
 }
 .legacy-dp-interface .profile-box-container.highlighted > header h4 {
@@ -10322,7 +10322,7 @@ section.new-user-chat-alert footer {
   border-top: none;
 }
 .legacy-dp-interface .profile-box-container > header {
-  background: #F0F1F3 url("../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
+  background: #F0F1F3 url("../../../../../../file.php/gradient?size=20&start_color=F0F1F3&end_color=DADBDE") repeat-x bottom left /*gradient_v:20:F0F1F3:DADBDE*/;
   min-height: 24px;
   border: 1px solid #ACB6BF;
   position: relative;
@@ -10412,7 +10412,7 @@ section.new-user-chat-alert footer {
   float: left;
 }
 .legacy-dp-interface nav.section-subnav {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
   height: 22px;
   border: 1px solid #ACB6BF;
   border-top: none;
@@ -10453,7 +10453,7 @@ section.new-user-chat-alert footer {
   display: block;
   float: left;
   border-right: 1px solid #C2C6CC;
-  background: #edeff2 url("../../../file.php/gradient?size=20&start_color=edeff2&end_color=e6eaed") repeat-x bottom left /*gradient_v:20:edeff2:e6eaed*/;
+  background: #edeff2 url("../../../../../../file.php/gradient?size=20&start_color=edeff2&end_color=e6eaed") repeat-x bottom left /*gradient_v:20:edeff2:e6eaed*/;
   position: relative;
   font-size: 11px;
   font-weight: bold;
@@ -10479,7 +10479,7 @@ section.new-user-chat-alert footer {
   margin-left: 2px;
 }
 .legacy-dp-interface .profile-box-container > header > nav ul li.on {
-  background: #cdd2d9 url("../../../file.php/gradient?size=20&start_color=cdd2d9&end_color=c7cfd5&direction=horizontal") repeat-y top right /*gradient_h:20:cdd2d9:c7cfd5*/;
+  background: #cdd2d9 url("../../../../../../file.php/gradient?size=20&start_color=cdd2d9&end_color=c7cfd5&direction=horizontal") repeat-y top right /*gradient_h:20:cdd2d9:c7cfd5*/;
   color: #404040;
 }
 .legacy-dp-interface .profile-box-container > header > nav ul li span.count {
@@ -10595,7 +10595,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .notes-wrap .note .delete {
   cursor: pointer;
   color: #808080;
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=f6f6f6") repeat-x bottom left /*gradient_v:20:ffffff:f6f6f6*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=f6f6f6") repeat-x bottom left /*gradient_v:20:ffffff:f6f6f6*/;
   border: 1px solid #DEDFDF;
   -webkit-box-shadow: inset 0px 0px 1px 1px #fff;
   -moz-box-shadow: inset 0px 0px 1px 1px #fff;
@@ -11264,7 +11264,7 @@ section.new-user-chat-alert footer {
   padding: 4px 4px 3px 8px;
   line-height: 100%;
   font-size: 11px;
-  background: #FFFFFF url("../../../file.php/gradient?size=20&start_color=FFFFFF&end_color=E6E6E6") repeat-x bottom left /*gradient_v:20:FFFFFF:E6E6E6*/;
+  background: #FFFFFF url("../../../../../../file.php/gradient?size=20&start_color=FFFFFF&end_color=E6E6E6") repeat-x bottom left /*gradient_v:20:FFFFFF:E6E6E6*/;
   border-bottom: 1px solid #D7DCDE;
   color: #738699;
   font-weight: normal;
@@ -11549,7 +11549,7 @@ section.new-user-chat-alert footer {
   height: 29px;
   overflow: hidden;
   border-bottom: 1px solid #2D2D2D;
-  background: #474d50 url("../../../file.php/gradient?size=20&start_color=474d50&end_color=3b4042") repeat-x bottom left /*gradient_v:20:474d50:3b4042*/;
+  background: #474d50 url("../../../../../../file.php/gradient?size=20&start_color=474d50&end_color=3b4042") repeat-x bottom left /*gradient_v:20:474d50:3b4042*/;
   text-align: right;
   padding-right: 8px;
   padding-top: 4px;
@@ -11571,7 +11571,7 @@ section.new-user-chat-alert footer {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background: #63676d url("../../../file.php/gradient?size=20&start_color=63676d&end_color=555a60") repeat-x bottom left /*gradient_v:20:63676d:555a60*/;
+  background: #63676d url("../../../../../../file.php/gradient?size=20&start_color=63676d&end_color=555a60") repeat-x bottom left /*gradient_v:20:63676d:555a60*/;
   -webkit-box-shadow: inset 0px 0px 1px 0px rgba(255, 255, 255, 0.5);
   -moz-box-shadow: inset 0px 0px 1px 0px rgba(255, 255, 255, 0.5);
   box-shadow: inset 0px 0px 1px 0px rgba(255, 255, 255, 0.5);
@@ -11586,7 +11586,7 @@ section.new-user-chat-alert footer {
   cursor: pointer;
 }
 .legacy-dp-interface .macro-controls button.save {
-  background: #30579b url("../../../file.php/gradient?size=20&start_color=30579b&end_color=021c63") repeat-x bottom left /*gradient_v:20:30579b:021c63*/;
+  background: #30579b url("../../../../../../file.php/gradient?size=20&start_color=30579b&end_color=021c63") repeat-x bottom left /*gradient_v:20:30579b:021c63*/;
 }
 .legacy-dp-interface .macro-controls button:hover {
   position: relative;
@@ -11716,7 +11716,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .snippets-overlay > nav li:hover a,
 .legacy-dp-interface .snippets-overlay > nav li.on a {
-  background: #6baccc url("../../../file.php/gradient?size=20&start_color=6baccc&end_color=5182b3") repeat-x bottom left /*gradient_v:20:6baccc:5182b3*/;
+  background: #6baccc url("../../../../../../file.php/gradient?size=20&start_color=6baccc&end_color=5182b3") repeat-x bottom left /*gradient_v:20:6baccc:5182b3*/;
   box-shadow: inset 0 1px 0 #82bdd7;
   border-bottom: 1px solid #4d7399!important;
   border-top: 1px solid #709ecc!important;
@@ -12250,7 +12250,7 @@ section.new-user-chat-alert footer {
   font-size: 11px;
 }
 .legacy-dp-interface .ticketreply > nav {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
   height: 22px;
   border-bottom: 1px solid #B3B6B8;
   overflow: hidden;
@@ -12261,7 +12261,7 @@ section.new-user-chat-alert footer {
   float: right;
 }
 .legacy-dp-interface .ticketreply > nav ul.option-buttons li {
-  background: #f9f9f9 url("../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
+  background: #f9f9f9 url("../../../../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
   float: left;
   display: block;
   height: 22px;
@@ -12278,7 +12278,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .ticketreply > nav ul.option-buttons li.send {
   line-height: 23px;
   padding: 0 10px 0 10px;
-  background: #eaecef url("../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
+  background: #eaecef url("../../../../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
   border-right: none;
 }
 .legacy-dp-interface .ticketreply > nav ul.option-buttons li:hover {
@@ -12345,7 +12345,7 @@ section.new-user-chat-alert footer {
   position: relative;
 }
 .legacy-dp-interface .ticketreply > nav ul.option-buttons li.toggle.on {
-  background: #eaecef url("../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
+  background: #eaecef url("../../../../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
 }
 .legacy-dp-interface .ticketreply > nav ul.option-buttons li em.check {
   background-image: url("../../images/agent/icons/tick_small.png") /** sprite-ref: ui-v */;
@@ -12663,7 +12663,7 @@ section.new-user-chat-alert footer {
   left: 0;
   height: 26px;
   overflow: hidden;
-  background: #edeeef url("../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
+  background: #edeeef url("../../../../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
   border-bottom: 1px solid #ACB2B9;
   -webkit-border-top-left-radius: 9px;
   -webkit-border-top-right-radius: 9px;
@@ -12940,7 +12940,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .check-grid > table > thead > tr > th {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
   border-bottom: 1px solid #D9DBDB;
   padding: 3px 8px 2px 8px !important;
   vertical-align: middle;
@@ -13013,7 +13013,7 @@ section.new-user-chat-alert footer {
   border-top: none;
 }
 .legacy-dp-interface .check-grid > header {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
   border-bottom: 1px solid #B3B6B8;
   border-top: 1px solid #c2c6cc;
   line-height: 22px;
@@ -13138,7 +13138,7 @@ section.new-user-chat-alert footer {
   border-radius: 4px 4px 4px 4px;
 }
 .legacy-dp-interface .dp-radio-expander-form .dp-group-options .apply-actions {
-  background: #fafcfd url("../../../file.php/gradient?size=20&start_color=fafcfd&end_color=f0f2f3") repeat-x bottom left /*gradient_v:20:fafcfd:f0f2f3*/;
+  background: #fafcfd url("../../../../../../file.php/gradient?size=20&start_color=fafcfd&end_color=f0f2f3") repeat-x bottom left /*gradient_v:20:fafcfd:f0f2f3*/;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
   border: 1px solid #b6babf;
   -webkit-border-top-left-radius: 3px;
@@ -13226,7 +13226,7 @@ section.new-user-chat-alert footer {
   height: 24px;
   overflow: hidden;
   line-height: 26px;
-  background: #edeff2 url("../../../file.php/gradient?size=20&start_color=edeff2&end_color=e6eaed") repeat-x bottom left /*gradient_v:20:edeff2:e6eaed*/;
+  background: #edeff2 url("../../../../../../file.php/gradient?size=20&start_color=edeff2&end_color=e6eaed") repeat-x bottom left /*gradient_v:20:edeff2:e6eaed*/;
   border-bottom: 1px solid #CCCCCC;
   border-left: 1px solid #CCCCCC;
 }
@@ -13293,7 +13293,7 @@ section.new-user-chat-alert footer {
   width: 98%;
 }
 .legacy-dp-interface .search-form .term {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=FAFAFA") repeat-x bottom left /*gradient_v:20:ffffff:FAFAFA*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=FAFAFA") repeat-x bottom left /*gradient_v:20:ffffff:FAFAFA*/;
   color: #808080;
   padding: 6px;
   border: 1px solid #CCCCCC;
@@ -13651,7 +13651,7 @@ section.new-user-chat-alert footer {
   clear: both;
 }
 .legacy-dp-interface .chat-transcript .uploading-list li {
-  background: #f2f2f2 url("../../../file.php/gradient?size=20&start_color=f2f2f2&end_color=eaeaea") repeat-x bottom left /*gradient_v:20:f2f2f2:eaeaea*/;
+  background: #f2f2f2 url("../../../../../../file.php/gradient?size=20&start_color=f2f2f2&end_color=eaeaea") repeat-x bottom left /*gradient_v:20:f2f2f2:eaeaea*/;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
@@ -13731,7 +13731,7 @@ section.new-user-chat-alert footer {
   border-top: 1px solid #D1D1D1;
 }
 .legacy-dp-interface .chatreply > nav {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
   height: 22px;
   border-top: 1px solid #B3B6B8;
   border-bottom: 1px solid #B3B6B8;
@@ -13743,7 +13743,7 @@ section.new-user-chat-alert footer {
   float: right;
 }
 .legacy-dp-interface .chatreply > nav ul.option-buttons li {
-  background: #f9f9f9 url("../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
+  background: #f9f9f9 url("../../../../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
   float: left;
   display: block;
   height: 22px;
@@ -13760,7 +13760,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface .chatreply > nav ul.option-buttons li.send {
   line-height: 23px;
   padding: 0 10px 0 10px;
-  background: #eaecef url("../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
+  background: #eaecef url("../../../../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
   border-right: none;
 }
 .legacy-dp-interface .chatreply > nav ul.option-buttons li:hover {
@@ -13829,7 +13829,7 @@ section.new-user-chat-alert footer {
   position: relative;
 }
 .legacy-dp-interface .chatreply > nav ul.option-buttons li.toggle.on {
-  background: #eaecef url("../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
+  background: #eaecef url("../../../../../../file.php/gradient?size=20&start_color=eaecef&end_color=ccd4dd") repeat-x bottom left /*gradient_v:20:eaecef:ccd4dd*/;
 }
 .legacy-dp-interface .chatreply > nav ul.option-buttons li em.check {
   background-image: url("../../images/agent/icons/tick_small.png") /** sprite-ref: ui-v */;
@@ -14187,7 +14187,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface article.task .task-title {
   border-bottom: 1px solid #ACB6BF;
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=DDDEE1") repeat-x bottom left /*gradient_v:20:ffffff:DDDEE1*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=DDDEE1") repeat-x bottom left /*gradient_v:20:ffffff:DDDEE1*/;
   -webkit-border-top-left-radius: 6px;
   -webkit-border-top-right-radius: 6px;
   -webkit-border-bottom-right-radius: 0;
@@ -14836,7 +14836,7 @@ section.new-user-chat-alert footer {
   color: green;
 }
 .legacy-dp-interface .sub-box-nav {
-  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
   height: 22px;
   border-bottom: 1px solid #B3B6B8;
   overflow: hidden;
@@ -14850,7 +14850,7 @@ section.new-user-chat-alert footer {
   border-left: 1px solid #B3B6B8;
 }
 .legacy-dp-interface .sub-box-nav ul.option-buttons li {
-  background: #f9f9f9 url("../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
+  background: #f9f9f9 url("../../../../../../file.php/gradient?size=20&start_color=f9f9f9&end_color=dddddd") repeat-x bottom left /*gradient_v:20:f9f9f9:dddddd*/;
   float: left;
   display: block;
   height: 22px;
@@ -15427,7 +15427,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface .twitter-user-page .twitter-status .dm-notice,
 .legacy-dp-interface .twitter-user-page .twitter-status .long-notice {
-  background: #8bbe72 url("../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
+  background: #8bbe72 url("../../../../../../file.php/gradient?size=20&start_color=8bbe72&end_color=71b058") repeat-x bottom left /*gradient_v:20:8bbe72:71b058*/;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
@@ -15990,7 +15990,7 @@ section.new-user-chat-alert footer {
   display: none;
 }
 .legacy-dp-interface .page-ticket nav.header-nav > ul > li.set-hold.unhold {
-  background: #d4d4d4 url("../../../file.php/gradient?size=30px&start_color=d4d4d4&end_color=999999") repeat-x bottom left /*gradient_v:30px:d4d4d4:999999*/;
+  background: #d4d4d4 url("../../../../../../file.php/gradient?size=30px&start_color=d4d4d4&end_color=999999") repeat-x bottom left /*gradient_v:30px:d4d4d4:999999*/;
   -webkit-box-shadow: inset 0px 0px 3px 1px rgba(255, 255, 255, 0.5);
   box-shadow: inset 0px 0px 3px 1px rgba(255, 255, 255, 0.6);
 }
@@ -16001,7 +16001,7 @@ section.new-user-chat-alert footer {
   display: block !important;
 }
 .legacy-dp-interface .page-ticket nav.header-nav {
-  background: #fafafa url("../../../file.php/gradient?size=30px&start_color=fafafa&end_color=d4d4d4") repeat-x bottom left /*gradient_v:30px:fafafa:d4d4d4*/;
+  background: #fafafa url("../../../../../../file.php/gradient?size=30px&start_color=fafafa&end_color=d4d4d4") repeat-x bottom left /*gradient_v:30px:fafafa:d4d4d4*/;
   height: 30px;
   overflow: hidden;
   border-bottom: 1px solid #B1AFAF;
@@ -16260,7 +16260,7 @@ section.new-user-chat-alert footer {
   margin-left: -12px;
   height: 35px;
   overflow: hidden;
-  background: #edeeef url("../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
+  background: #edeeef url("../../../../../../file.php/gradient?size=20&start_color=edeeef&end_color=dbdcdd") repeat-x bottom left /*gradient_v:20:edeeef:dbdcdd*/;
   border-bottom: 1px solid #ACB2B9;
   padding-left: 12px;
 }
@@ -17753,7 +17753,7 @@ section.new-user-chat-alert footer {
   color: #940300;
 }
 .legacy-dp-interface #dp_header {
-  background: #1d7ab2 url("../../../file.php/gradient?size=49px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:49px:1d7ab2:1c74a9*/;
+  background: #1d7ab2 url("../../../../../../file.php/gradient?size=49px&start_color=1d7ab2&end_color=1c74a9") repeat-x bottom left /*gradient_v:49px:1d7ab2:1c74a9*/;
   height: 49px;
   border-top: 1px solid #1d7ab2;
   border-bottom: 1px solid #273036;
@@ -17972,14 +17972,14 @@ section.new-user-chat-alert footer {
   border: 1px solid #005d4e;
   border-radius: 3px;
   box-shadow: inset 0px 1px 0px 0px #00c3a3, 0px 1px 2px 0px #004338;
-  background: #00a98e url("../../../file.php/gradient?size=49px&start_color=00a98e&end_color=009a81") repeat-x bottom left /*gradient_v:49px:00a98e:009a81*/;
+  background: #00a98e url("../../../../../../file.php/gradient?size=49px&start_color=00a98e&end_color=009a81") repeat-x bottom left /*gradient_v:49px:00a98e:009a81*/;
 }
 .legacy-dp-interface #dp_header .btn-group-chat .btn:hover {
   background: #00a48a;
 }
 .legacy-dp-interface #dp_header .btn-group-chat .btn.all-offline {
   box-shadow: inset 0px 1px 0px 0px #ab0002, 0px 1px 2px 0px #2c0001;
-  background: #920002 url("../../../file.php/gradient?size=49px&start_color=920002&end_color=830002") repeat-x bottom left /*gradient_v:49px:920002:830002*/;
+  background: #920002 url("../../../../../../file.php/gradient?size=49px&start_color=920002&end_color=830002") repeat-x bottom left /*gradient_v:49px:920002:830002*/;
   border: 1px solid #460001;
 }
 .legacy-dp-interface #dp_header .btn-group-chat .btn.all-offline:hover {
@@ -17990,7 +17990,7 @@ section.new-user-chat-alert footer {
 }
 .legacy-dp-interface #dp_header .btn-group-chat .btn.me-offline {
   box-shadow: inset 0px 1px 0px 0px #a3894b, 0px 1px 2px 0px #4c4023;
-  background: #927A43 url("../../../file.php/gradient?size=49px&start_color=927A43&end_color=88713e") repeat-x bottom left /*gradient_v:49px:927A43:88713e*/;
+  background: #927A43 url("../../../../../../file.php/gradient?size=49px&start_color=927A43&end_color=88713e") repeat-x bottom left /*gradient_v:49px:927A43:88713e*/;
   border: 1px solid #5e4e2b;
 }
 .legacy-dp-interface #dp_header .btn-group-chat .btn.me-offline:hover {
@@ -18109,7 +18109,7 @@ section.new-user-chat-alert footer {
   float: left;
 }
 .legacy-dp-interface .dp-header-group-chat-dropdown #agent_status_menu_me_list a.signin {
-  background: #2c85c6 url("../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
+  background: #2c85c6 url("../../../../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
   display: inline-block;
   height: 28px;
   line-height: 30px;
@@ -18123,7 +18123,7 @@ section.new-user-chat-alert footer {
   text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
 }
 .legacy-dp-interface .dp-header-group-chat-dropdown #agent_status_menu_me_list a.signin:hover {
-  background: #348fd2 url("../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
+  background: #348fd2 url("../../../../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
 }
 .legacy-dp-interface .dp-header-group-chat-dropdown .sound-row {
   border-bottom: 1px solid #c3c8cd;
@@ -18503,7 +18503,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface #dp_header .btn-group-wrap .btn-wrap a.btn,
 .legacy-dp-interface #tabNavigationPane .btn-group-actions .btn-wrap a.btn,
 .legacy-dp-interface #dp_header .btn-group-wrap .btn-wrap a.btn {
-  background: #2c85c6 url("../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
+  background: #2c85c6 url("../../../../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
   display: inline-block;
   height: 30px;
   line-height: 30px;
@@ -18525,7 +18525,7 @@ section.new-user-chat-alert footer {
 .legacy-dp-interface #dp_header .btn-group-wrap .btn-wrap a.btn:hover,
 .legacy-dp-interface #tabNavigationPane .btn-group-actions .btn-wrap a.btn:hover,
 .legacy-dp-interface #dp_header .btn-group-wrap .btn-wrap a.btn:hover {
-  background: #348fd2 url("../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
+  background: #348fd2 url("../../../../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
 }
 .legacy-dp-interface #dp_header .btn-group-actions .btn-wrap.active a.btn,
 .legacy-dp-interface #dp_header .btn-group-wrap .btn-wrap.active a.btn,
@@ -18870,7 +18870,7 @@ section.new-user-chat-alert footer {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   white-space: nowrap;
   vertical-align: baseline;
-  background: #FB0016 url("../../../file.php/gradient?size=15px&start_color=FB0016&end_color=c80012") repeat-x bottom left /*gradient_v:15px:FB0016:c80012*/;
+  background: #FB0016 url("../../../../../../file.php/gradient?size=15px&start_color=FB0016&end_color=c80012") repeat-x bottom left /*gradient_v:15px:FB0016:c80012*/;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -18971,7 +18971,7 @@ section.new-user-chat-alert footer {
   text-align: left;
   vertical-align: middle;
   cursor: pointer;
-  background: #2c85c6 url("../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
+  background: #2c85c6 url("../../../../../../file.php/gradient?size=20&start_color=2c85c6&end_color=2777b1") repeat-x bottom left /*gradient_v:20:2c85c6:2777b1*/;
   border-radius: 3px;
   border: 1px solid #153f5e;
   box-shadow: inset 0px 1px 0px #4d9dd8, 0px 1px 2px rgba(16, 49, 73, 0.6);
@@ -18980,7 +18980,7 @@ section.new-user-chat-alert footer {
   margin-right: 5px;
 }
 .legacy-dp-interface .dp-header-notify-menu footer a.btn:hover {
-  background: #348fd2 url("../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
+  background: #348fd2 url("../../../../../../file.php/gradient?size=20&start_color=348fd2&end_color=2b82c2") repeat-x bottom left /*gradient_v:20:348fd2:2b82c2*/;
 }
 .legacy-dp-interface .dp-header-notify-menu .no-notifications {
   display: block;
@@ -19321,7 +19321,7 @@ section.new-user-chat-alert footer {
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   white-space: nowrap;
   vertical-align: baseline;
-  background: #FB0016 url("../../../file.php/gradient?size=15px&start_color=FB0016&end_color=c80012") repeat-x bottom left /*gradient_v:15px:FB0016:c80012*/;
+  background: #FB0016 url("../../../../../../file.php/gradient?size=15px&start_color=FB0016&end_color=c80012") repeat-x bottom left /*gradient_v:15px:FB0016:c80012*/;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -22014,7 +22014,7 @@ section.new-user-chat-alert footer {
   margin: 0;
 }
 .legacy-dp-interface section.dp-overlay > header nav ul li {
-  background: #f0f1f1 url("../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
+  background: #f0f1f1 url("../../../../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
   color: #5b5d61;
   padding: 0 25px;
   padding-top: 1px;
@@ -22196,7 +22196,7 @@ section.new-user-chat-alert footer {
   height: 39px;
 }
 .legacy-dp-interface #settingswin header.pageheader nav ul li {
-  background: #f0f1f1 url("../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
+  background: #f0f1f1 url("../../../../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
   height: 25px;
   margin-top: 9px;
   line-height: 25px;
@@ -22213,7 +22213,7 @@ section.new-user-chat-alert footer {
   cursor: default;
 }
 .legacy-dp-interface #settingswin header.pageheader nav ul li:hover {
-  background: #f0f1f1 url("../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
+  background: #f0f1f1 url("../../../../../../file.php/gradient?size=25&start_color=f0f1f1&end_color=dee0e0") repeat-x bottom left /*gradient_v:25:f0f1f1:dee0e0*/;
   color: #434549;
   margin-top: 9px;
 }
