@@ -21,9 +21,9 @@ define [
     initialLoad: ->
       @service.get(@$stateParams.id).then( (model) =>
         @model = model if model
-      )
-      @service.loadLog(@$stateParams.id).then( (model) =>
-        @model = model if model
+        @service.loadLog(@$stateParams.id).then( (model) =>
+          @model = model
+        )
       )
 
     getResponseData: ->

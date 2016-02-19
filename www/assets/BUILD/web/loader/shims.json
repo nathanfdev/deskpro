@@ -5,6 +5,7 @@
   "angularBootstrap":                ["angular"],
   "angularSanitize":                 ["angular"],
   "angularSelect2":                  ["angular", "select2"],
+  "angularTree":                     ["angular"],
   "angularUiAce":                    ["angular"],
   "angularUiRouter":                 ["angular"],
   "angularUiSortable":               ["angular"],

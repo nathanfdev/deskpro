@@ -74,6 +74,10 @@ class ActionPermissionsHelperTest extends ApiTestCase
             [['test.test2.test3'], ['test.test2.*'], true],
             // one tag received, global allowed 2
             [['test.test2.test3'], ['test.*'], true],
+            // one global allow and one subglobal deny you can allow all, except something
+            [['test.test2.test3'], ['test.*', '-test.test2.*'], false],
+            // one global deny and one sublobal allow, but you can not deny all except something
+            [['test.test2.test3'], ['-test.*', 'test.test2.*'], false],
         ];
     }
 }

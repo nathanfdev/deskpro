@@ -5,6 +5,7 @@
   "angularBootstrap":                "bower_components/angular-bootstrap/ui-bootstrap-tpls.min",
   "angularSanitize":                 "bower_components/angular-sanitize/angular-sanitize.min",
   "angularSelect2":                  "bower_components/angular-ui-select2/src/select2",
+  "angularTree":                     "bower_components/angular-ui-tree/dist/angular-ui-tree",
   "angularUiAce":                    "bower_components/angular-ui-ace/ui-ace",
   "angularUiRouter":                 "bower_components/angular-ui-router/release/angular-ui-router.min",
   "angularUiSortable":               "bower_components/angular-ui-sortable/src/sortable",

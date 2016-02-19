@@ -115,5 +115,6 @@ services:
     arguments:
       - @api_authorization.action_permissions_helper
       - @api_authorization.action_permissions.metadata_factory
+      - @doctrine.orm.default_entity_manager
 
 

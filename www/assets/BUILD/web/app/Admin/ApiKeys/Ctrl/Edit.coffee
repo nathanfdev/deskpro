@@ -1,9 +1,11 @@
 define [
     'Admin/Main/Ctrl/Base'
     'angular'
+    'DeskPRO/Util/Arrays'
 ], (
     Admin_Ctrl_Base
     angular
+    Arrays
   ) ->
 
   class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base
@@ -18,16 +20,48 @@ define [
       @service =
         keys:   @DataService.get 'ApiKeys'
         agents: @DataService.get 'Agents'
+        tags:   @DataService.get 'ApiTags'
 
       @$scope.replayLogEntry = (entry) =>
         return if !entry?.id?
         entry.response = null
+
+      @$scope.toggle = (scope) ->
+        scope.toggle()
 
         @service.keys.replayLogEntry(entry).then(
           (data) => entry.response = data
           => entry.response = {status: null, content: null}
         )
 
+      @$scope.enable = (node) =>
+        node.value = 1
+        @updateChildren node.nodes, node.value if node.nodes
+        @service.tags.updateTags(node.title, node.value, @form.id)
+
+
+      @$scope.default = (node) =>
+        node.value = 0
+        @updateChildren node.nodes, node.value if node.nodes
+        @service.tags.updateTags(node.title, node.value, @form.id)
+
+      @$scope.disable = (node) =>
+        node.value = -1
+        @updateChildren node.nodes, node.value if node.nodes
+        @service.tags.updateTags(node.title, node.value, @form.id)
+
+    updateChildren: (nodes, value) =>
+      for node in nodes
+        node.value = value
+        @updateChildren node.nodes, value if node.nodes
+
+    find: (title) ->
+      parts = title.split('.')
+      tmp = @$scope.tags
+      console.log tmp, parts
+      while(part = parts.shift())
+        tmp = tmp[part]
+        console.log tmp, part
 
 
     initialLoad: ->
@@ -40,11 +74,19 @@ define [
 
       p2 = @service.agents.all().then (agents) => @agents = agents
 
+
+
       # Load logs separately
       if @$stateParams.id
+        @service.tags.getTags(@$stateParams.id).then((data) =>
+          @$scope.tags = data
+          @tags = data
+        )
+
         @service.keys.getLogs({id: @$stateParams.id}).then((data) =>
           @logs = data.logs
         )
+
 
       return @$q.all([p1, p2])
 
@@ -104,7 +146,5 @@ define [
     regenerateApiKey: ->
       @service.keys.regenerateApiKey(@form).success =>
         @Growl.success("API Key regenerated")
-
-
 
   Admin_ApiKeys_Ctrl_Edit.EXPORT_CTRL()
