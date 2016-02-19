@@ -70,7 +70,6 @@ class TicketDescriptionType extends AbstractType
                 'property_path' => 'message_html',
                 'label'         => $options['message_label'],
                 'required'      => $options['required'],
-                'attr'          => ['data-rte-field' => 'message'],
                 'constraints'   => [
                     new Assert\NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
                     new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
@@ -78,7 +77,6 @@ class TicketDescriptionType extends AbstractType
             ])
             ->add('format', 'choice', [
                 'data'    => 'text',
-                'attr'    => ['data-rte-field' => 'format'],
                 'mapped'  => false,
                 'choices' => [
                     'text' => 'text',
