@@ -370,3 +370,43 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_7.errors[0].code" should be equal to "invalid_data_type"
     And the JSON node "errors.fields.fields.fields.fields_7.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid attachments data
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "attachments": "AAAAAAAAAAAAAAAAAA"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.attachments.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.attachments.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid attachment
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "attachments": [
+    "AAAAAAAAAAAAAAAAAA"
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.attachments.fields.attachments_0.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.attachments.fields.attachments_0.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent attachment with empty blob auth code
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "attachments": [
+    {"blob_auth": ""}
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors[0].message" should contain "This value should not be blank."

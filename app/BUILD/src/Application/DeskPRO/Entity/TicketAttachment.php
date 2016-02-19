@@ -31,11 +31,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Ticket attachments.
@@ -61,6 +61,8 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @Assert\Valid()
      */
     protected $blob;
 
@@ -78,10 +80,6 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_inline = false;
-
-    public function __construct()
-    {
-    }
 
     /**
      * @return int

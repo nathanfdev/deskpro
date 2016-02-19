@@ -64,7 +64,7 @@ class TicketDescriptionType extends AbstractType
         $resolver->setDefaults([
             'render_is_note'      => false,
             'message_constraints' => [
-                new Assert\NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
+                new Assert\NotBlank(['message' => 'portal.forms.error_ticket_msg_required']), // use to avoid entity empty message string
                 new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
             ],
         ]);

@@ -40,6 +40,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A blob is just a pointer to data.
@@ -162,6 +163,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $authcode;
 

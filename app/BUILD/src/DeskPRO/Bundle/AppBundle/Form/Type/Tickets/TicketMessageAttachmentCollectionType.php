@@ -59,22 +59,6 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 $event->setData($collection);
             }
         }, 100);
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $collection = $event->getData();
-
-            // clean up attachments that don't have a blob (delete them from the message)
-            foreach ($collection as $attachment) {
-                /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
-                if (!$attachment) {
-                    $collection->removeElement($attachment);
-                    continue;
-                }
-                if (!$attachment->getBlob()) {
-                    $collection->removeElement($attachment);
-                }
-            }
-        });
     }
 
     /**
@@ -92,9 +76,10 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                         'label'          => false,
                     ];
                 },
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'label'        => false,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'label'          => false,
+                'error_bubbling' => false,
             ])
             ->setRequired([
                 'ticket_message',

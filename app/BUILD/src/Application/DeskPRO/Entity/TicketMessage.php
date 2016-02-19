@@ -97,6 +97,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var TicketAttachment[]
+     *
+     * @Assert\Valid()
      */
     protected $attachments;
 

@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
@@ -41,7 +42,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -83,159 +84,131 @@ class TicketMessageAttachmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
-            $attachment = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
-            $form = $event->getForm();
-
-            if (!$attachment->getBlob()) {
-                $this->addUpload($form);
-            } else {
-                $form
-                    ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
-                    ->add('is_inline', 'checkbox', ['required' => false])
-                    ->add('delete', 'checkbox', ['mapped' => false, 'required' => false])
-                ;
-            }
-        });
-
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'postSubmit'], 600);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
-    }
-
-    /**
-     * @param FormInterface $form
-     */
-    public function addUpload(FormInterface $form)
-    {
-        $form->add(
-            'upload',
-            'file',
-            [
-                'mapped'      => false,
-                'required'    => false,
-                'label'       => false,
-                'constraints' => [
-                    new \Symfony\Component\Validator\Constraints\File(
-                        [
-                            'uploadErrorMessage'         => 'portal.forms.error_upload_general',
-                            'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
-                            'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
-                            'notFoundMessage'            => 'portal.forms.error_upload_general',
-                            'notReadableMessage'         => 'portal.forms.error_upload_general',
-                            'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
     /**
      * @param FormEvent $event
      */
-    public function preSubmit(FormEvent $event)
+    public function onPreData(FormEvent $event)
     {
-        $form          = $event->getForm();
-        $submittedData = $event->getData();
-        if (array_key_exists('blob_auth', $submittedData)) {
-            if (!$form->getData()) {
-                $attachment = new TicketAttachment();
-                $form->setData($attachment);
-            }
-            $form->getData()->setBlob($this->blob_repo->getByAuthCode($submittedData['blob_auth']));
+        $form       = $event->getForm();
+        $attachment = $event->getData();
 
-            // delete?
-            if (array_key_exists('delete', $submittedData)) {
-                if ($submittedData['delete'] != 0) {
-                    $attachment = $form->getData();
-                    $blob       = $attachment->getBlob();
+        // setting initial value
+        if (!$attachment instanceof TicketAttachment) {
+            $attachment = new TicketAttachment();
+        }
+        if (!$attachment->getBlob()) {
+            $blob           = new Blob();
+            $blob->authcode = '';
 
-                    if ($blob) {
-                        $this->blob_storage->deleteBlobRecord($blob);
-                    }
+            $attachment->setBlob($blob);
+        }
 
-                    $form->setData(null);
-                    $form->remove('blob_auth');
-                    $form->remove('is_inline');
-                    $form->remove('delete');
-                    $this->addUpload($form);
-                }
-            } else {
-                if ($form->has('upload')) {
-                    $form->remove('upload');
-                }
-                if (!$form->has('blob_auth')) {
-                    $form
-                        ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
-                        ->add('is_inline', 'checkbox', ['required' => false])
-                    ;
-                }
-            }
+        $event->setData($attachment);
+
+        // setting fields depend on initial value
+        if ($attachment->getBlob()) {
+            $this->setAttachmentFieldsOnForm($form);
+        } else {
+            $this->setUploadFieldOnForm($form);
         }
     }
 
     /**
      * @param FormEvent $event
      */
-    public function postSubmit(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
-        $attachment     = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
-        $form           = $event->getForm();
-        $person         = $form->getConfig()->getOption('person');
-        $ticket_message = $form->getConfig()->getOption('ticket_message');
+        $form = $event->getForm();
+        $data = $event->getData();
 
-        if ($form->has('upload')) {
+        if (!is_array($data)) {
+            return;
+        }
+
+        /** @var TicketAttachment $attachment */
+        $attachment = $form->getData();
+
+        // Got blob auth code from the request
+        // Trying to assign a real blob to attachment or delete it
+        if (array_key_exists('blob_auth', $data)) {
+            if (array_key_exists('delete', $data) && $data['delete']) {
+                $this->setUploadFieldOnForm($form);
+
+                $blob = $attachment->getBlob();
+                if ($blob) {
+                    $this->blob_storage->deleteBlobRecord($blob);
+                }
+
+                $form->setData(null);
+                $event->setData(null);
+
+                return;
+            }
+
+            $this->setAttachmentFieldsOnForm($form);
+
+            // find for existing blob by auth code
+            $blob = $this->blob_repo->getByAuthCode($data['blob_auth']);
+            if ($blob) {
+                $attachment->setBlob($blob);
+            }
+        } else {
+            // Got uploaded file, try to accept and set blob auth code as form data
+            $this->setUploadFieldOnForm($form);
+
             $file = $form->get('upload')->getData();
-
-            if ($file instanceof File) {
+            if ($file instanceof UploadedFile) {
                 $error = $this->attachment_accepter->getError($file, 'user');
+
+                // Unable to accept, generate error
                 if ($error) {
                     $error_code = $error['error_code'];
                     $params     = [];
-                    if ($error_detail = $error['error_detail']) {
+
+                    $error_detail = $error['error_detail'];
+                    if ($error_detail) {
                         $params = ['detail' => $error_detail];
                     }
+
                     $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
                     $form->get('upload')->addError(new FormError($phrase, $phrase, $params));
+                } else {
+                    $this->setAttachmentFieldsOnForm($form);
 
-                    return;
+                    $blob = $this->attachment_accepter->accept($file, true);
+                    $attachment->setBlob($blob);
+
+                    $event->setData([
+                        'blob_auth' => $blob->authcode,
+                    ]);
                 }
-            } else {
-                $error = [];
             }
+        }
+    }
 
-            if ($file instanceof File && empty($error) && $file->getRealPath()) {
-                $blob = $this->attachment_accepter->accept($file, true);
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form           = $event->getForm();
+        $config         = $form->getConfig();
+        $person         = $config->getOption('person');
+        $ticket_message = $config->getOption('ticket_message');
+        $attachment     = $event->getData();
 
-                $attachment->setBlob($blob);
+        if ($attachment instanceof TicketAttachment) {
+            if ($attachment->getPerson() !== $person) {
                 $attachment->setPerson($person);
-
-                $ticket_message->addAttachment($attachment);
-
-                $form->remove('upload');
-                $form->add('delete', 'checkbox', ['mapped' => false, 'required' => false]);
-                $form->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode']);
-                $form->add('is_inline', 'checkbox', ['required' => false]);
-            } else {
-                $ticket_message->attachments->removeElement($attachment);
             }
-        } else {
-            if (!$form->has('blob_auth')) {
-                $form
-                    ->add('blob_auth', 'hidden', ['property_path' => 'blob.authcode'])
-                    ->add('is_inline', 'checkbox', ['required' => false])
-                ;
-                $ticket_message->addAttachment($attachment);
-            }
-        }
 
-        if ($attachment->getPerson() !== $person) {
-            $attachment->setPerson($person);
+            $ticket_message->addAttachment($attachment);
         }
-        $ticket_message->addAttachment($attachment);
-        $form->setData($attachment);
     }
 
     /**
@@ -253,7 +226,8 @@ class TicketMessageAttachmentType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'data_class'     => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'error_bubbling' => false,
             ])
             ->setRequired([
                 'ticket_message',
@@ -264,5 +238,61 @@ class TicketMessageAttachmentType extends AbstractType
                 'person'         => 'Application\\DeskPRO\\Entity\\Person',
             ])
         ;
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    private function setUploadFieldOnForm(FormInterface $form)
+    {
+        $form->add('upload', 'file', [
+            'mapped'      => false,
+            'required'    => false,
+            'label'       => false,
+            'constraints' => [
+                new \Symfony\Component\Validator\Constraints\File([
+                    'uploadErrorMessage'         => 'portal.forms.error_upload_general',
+                    'uploadFormSizeErrorMessage' => 'portal.forms.error_upload_html_size',
+                    'uploadIniSizeErrorMessage'  => 'portal.forms.error_upload_ini_size',
+                    'notFoundMessage'            => 'portal.forms.error_upload_general',
+                    'notReadableMessage'         => 'portal.forms.error_upload_general',
+                    'disallowEmptyMessage'       => 'portal.forms.error_upload_empty',
+                ]),
+            ],
+        ]);
+
+        foreach (['blob_auth', 'is_inline', 'delete'] as $field_to_remove) {
+            if ($form->has($field_to_remove)) {
+                $form->remove($field_to_remove);
+            }
+        }
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    private function setAttachmentFieldsOnForm(FormInterface $form)
+    {
+        if ($form->has('upload')) {
+            $form->remove('upload');
+        }
+
+        if (!$form->has('blob_auth')) {
+            $form->add('blob_auth', 'hidden', [
+                'property_path'  => 'blob.authcode',
+                'error_bubbling' => false,
+            ]);
+        }
+        if (!$form->has('is_inline')) {
+            $form->add('is_inline', 'checkbox', [
+                'required' => false,
+            ]);
+        }
+        if (!$form->has('delete')) {
+            $form->add('delete', 'checkbox', [
+                'mapped'   => false,
+                'required' => false,
+            ]);
+        }
     }
 }
