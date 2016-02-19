@@ -26,6 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Application\DeskPRO\Entity\Blob;

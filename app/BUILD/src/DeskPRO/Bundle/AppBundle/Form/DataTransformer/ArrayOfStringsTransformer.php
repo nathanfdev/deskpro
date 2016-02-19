@@ -35,9 +35,9 @@ use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Class EmptyStringTransformer.
+ * Class ArrayOfStringsTransformer.
  */
-class TextStringTransformer implements DataTransformerInterface
+class ArrayOfStringsTransformer implements DataTransformerInterface
 {
     /**
      * {@inheritdoc}
@@ -53,13 +53,22 @@ class TextStringTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         if ($value === null) {
-            return '';
+            return [];
         }
 
-        if (!is_scalar($value)) {
-            throw new TransformationFailedException('Expected scalar.');
+        if (!is_array($value) && !$value instanceof \Traversable) {
+            throw new TransformationFailedException('Expected array');
         }
 
-        return $value;
+        $result = [];
+        foreach ($value as $string) {
+            if (!is_scalar($string)) {
+                throw new TransformationFailedException('Expected scalar');
+            }
+
+            $result[] = (string) $string;
+        }
+
+        return $result;
     }
 }

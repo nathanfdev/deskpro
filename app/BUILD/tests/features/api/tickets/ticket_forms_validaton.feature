@@ -178,3 +178,44 @@ Feature: /ticket_forms endpoint
       | category |
       | workflow |
       | priority |
+
+  Scenario: I sent not valid data in labels:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "labels": [
+    {"id": 1}
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.labels.fields.labels_0.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.labels.fields.labels_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid cc email data
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "cc": [
+    {"id": 1}
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.cc.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid cc email
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "cc": ["not_valid_email"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "invalid_email"
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "is not a valid email address."
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "not_valid_email"

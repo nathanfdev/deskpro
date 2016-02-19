@@ -32,15 +32,16 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Accepts comma separated list or array of emails.
@@ -70,6 +71,8 @@ class CcType extends AbstractType
         if ($options['view_type'] === 'inline') {
             $builder->addViewTransformer(new ArrayToStringTransformer());
         }
+
+        $builder->addViewTransformer(new ArrayOfStringsTransformer());
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -108,19 +111,12 @@ class CcType extends AbstractType
         $cc_emails    = is_array($cc_emails) ? $cc_emails : [$cc_emails];
 
         foreach ($cc_emails as $email) {
+            $email = is_string($email) ? trim($email) : '';
             $email = trim($email);
 
-            if (strlen($email) === 0) {
-                continue;
-            }
-
-            if (!preg_match('/.+\@.+\..+/', $email)) {
-                $form->addError(new FormError(sprintf('Invalid email detected: "%s". Please review the email list.', $email)));
-                continue;
-            }
-
-            $email = trim($email);
-            if ($email) {
+            // note that we really create a new person (flush to db) in this callback
+            // should be just creating a new object to use validators properly
+            if (strlen($email) && preg_match('/.+\@.+\..+/', $email)) {
                 $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
                 $participants[]     = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
             }
@@ -154,6 +150,13 @@ class CcType extends AbstractType
                 'view_type'      => 'inline',
                 'compound'       => false,
                 'error_bubbling' => false,
+                'constraints'    => [
+                    new Assert\All([
+                        'constraints' => [
+                            new Assert\Email(),
+                        ],
+                    ]),
+                ],
             ])
             ->setRequired([
                 'ticket',
