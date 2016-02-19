@@ -324,3 +324,49 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_1.errors[0].code" should be equal to "bad_choice"
     And the JSON node "errors.fields.fields.fields.fields_1.errors[0].message" should contain "One or more of the given values is invalid."
+
+  Scenario: I sent not valid datetime string
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "5": "not_vaild_datetime"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_5.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.fields.fields.fields_5.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid custom data text
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "6": {
+      "text": "some text"
+    }
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid custom data textarea
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "7": {
+      "text": "some text"
+    }
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].message" should contain "This data type is not is data type that was expected."
