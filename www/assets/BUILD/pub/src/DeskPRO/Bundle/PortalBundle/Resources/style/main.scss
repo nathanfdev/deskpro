@@ -119,6 +119,7 @@ h1, h2, h3, h4, h5 {
   margin: 0;
   padding: 0;
   color: $text-color;
+  font-family: $heading-fonts;
 }
 
 h2 {
@@ -5689,7 +5690,6 @@ h1.fancy-header {
       height: 28px;
       background: #fff;
 
-      font-family: "Helvetica Neue", sans-serif;
       border-radius: 99px;
 
       position: absolute;

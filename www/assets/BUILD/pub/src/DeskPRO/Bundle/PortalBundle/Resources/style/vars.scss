@@ -17,9 +17,13 @@ $world-padding: 20px;
 $page-background: #fff;
 
 /// @group fonts
-$fonts: "Helvetica Neue", "Segoe UI", "Roboto", sans-serif;
-// $fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
-// $fonts: "Ubuntu", helvetica, verdana, sans-serif;
+$fonts: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/// @group fonts
+$heading-fonts: inherit;
+
+/// @group fonts
+$monospace-fonts: Menlo, Monaco, Consolas, "Courier New", monospace;
 
 /// @group colors
 $divider-color: #cdcdcd;

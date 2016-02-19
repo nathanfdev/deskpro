@@ -8,7 +8,6 @@
     {% include 'Theme:Internal:head-include.html.twig' %}
     {#<link href="{{ path('serve_brand_asset', { brand_id: brand('id'), file: 'DeskPRO/Bundle/Build/Resources/style/DeskPRO_PortalBundle_style.css' }) }}" media="all" rel="stylesheet" />#}
     <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
-    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700|Open+Sans:400,300,600,700|Roboto:400,300,500,700|Lato:400,300,700' rel='stylesheet' type='text/css' />
 </head>
 <body class="{% if is_agent() or is_admin() or is_impersonating() %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
 {% include 'Theme:Internal:custom-header.html.twig' %}
