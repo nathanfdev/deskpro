@@ -1,3 +1,4 @@
+@basic
 Feature: /tickets/{id}/messages endpoint
   To CRUD DeskPRO ticket messages
   As a developer

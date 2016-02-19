@@ -1,3 +1,4 @@
+@basic
 Feature: /ticket_layouts endpoint
   To DeskPRO ticket layouts
   As a developer

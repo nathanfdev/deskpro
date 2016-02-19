@@ -146,8 +146,6 @@ class TicketMessageAttachmentType extends AbstractType
                 return;
             }
 
-            $this->setAttachmentFieldsOnForm($form);
-
             // find for existing blob by auth code
             $blob = $this->blob_repo->getByAuthCode($data['blob_auth']);
             if (!$blob) {
@@ -156,6 +154,7 @@ class TicketMessageAttachmentType extends AbstractType
             }
 
             $attachment->setBlob($blob);
+            $this->setAttachmentFieldsOnForm($form);
         } else {
             // Got uploaded file, try to accept and set blob auth code as form data
             $this->setUploadFieldOnForm($form);
