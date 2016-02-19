@@ -382,7 +382,7 @@ class TicketWithLayoutsType extends AbstractType
         $form = $context->getForm();
         $form->add($field->getId(), $form_field->getType(), $form_field->getOptions());
 
-        // for web view add more attachments button
+        // attachments field should have more_attachments button for portal
         if (!$context->forApi() && $field->getFieldType() === FormFields::ATTACHMENTS) {
             $form->add('more_attachments', 'submit', [
                 'validation_groups' => false,
@@ -404,6 +404,8 @@ class TicketWithLayoutsType extends AbstractType
 
         $form->remove($field->getId());
 
+        // attachments field should have more_attachments button for portal,
+        // so remove it as well
         if ($field->getFieldType() === FormFields::ATTACHMENTS && $form->has('more_attachments')) {
             $form->remove('more_attachments');
         }
@@ -895,7 +897,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCaptcha(TicketWithLayoutsContext $context, $ignore_validation)
     {
-        if (!$context->getOption('use_captcha')) {
+        if (!$context->getOption('use_captcha') || $context->forApi()) {
             return false;
         }
 

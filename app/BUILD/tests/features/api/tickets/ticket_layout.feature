@@ -6,6 +6,10 @@ Feature: /ticket_layouts endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And the setting "core.use_product" is set to 1
+    And the setting "core.use_ticket_priority" is set to 1
+    And the setting "core.use_ticket_category" is set to 1
+    And the setting "core.use_ticket_workflow" is set to 1
 
   @reinstall
   Scenario: I want to see ticket layouts without context or with unknown context
@@ -31,7 +35,7 @@ Feature: /ticket_layouts endpoint
 
     And the JSON node "[1].department" should be equal to 2
     And the JSON node "[1].context" should be equal to agent
-    And the JSON node "[1].fields" should have 22 elements
+    And the JSON node "[1].fields" should have 26 elements
     And the JSON node "[1].fields[0].field_type" should be equal to "person"
     And the JSON node "[1].fields[1].field_type" should be equal to "department"
     And the JSON node "[1].fields[2].field_type" should be equal to "message"
@@ -60,8 +64,18 @@ Feature: /ticket_layouts endpoint
     Examples:
       | context | department_id | expected_department_id | expected_fields_count |
       | agent   |  1            | 1                      | 2                     |
-      | agent   |  2            | 2                      | 22                    |
+      | agent   |  2            | 2                      | 26                    |
       | agent   |  default      | 0                      | 2                     |
       | user    |  1            | 1                      | 0                     |
       | user    |  2            | 2                      | 0                     |
       | user    |  default      | 0                      | 0                     |
+
+  Scenario: I want to see ticket layout with disabled product, priority, category and workflow settings
+    Given the setting "core.use_product" is set to 0
+    And the setting "core.use_ticket_priority" is set to 0
+    And the setting "core.use_ticket_category" is set to 0
+    And the setting "core.use_ticket_workflow" is set to 0
+    When I send a GET request to "/api/v2/ticket_layouts/agent/2"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "fields" should have 22 elements

@@ -55,6 +55,10 @@ class ValidatorErrorCodeFactory
             return ApiErrors::EXTRA_FIELDS;
         }
         if ($violation->getCause() instanceof TransformationFailedException) {
+            if (preg_match('/The choice ".*" does not exist or is not unique/', $violation->getCause()->getMessage())) {
+                return ApiErrors::BAD_CHOICE;
+            }
+
             return ApiErrors::INVALID_DATA_TYPE;
         }
 

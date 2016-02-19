@@ -5,16 +5,17 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I install the api data set
-    Given the setting "core.use_product" is set to 1
-    Given the setting "core.use_ticket_priority" is set to 1
     And my request is authenticated
+    And the setting "core.use_product" is set to 1
+    And the setting "core.use_ticket_priority" is set to 1
+    And the setting "core.use_ticket_category" is set to 1
+    And the setting "core.use_ticket_workflow" is set to 1
 
   Scenario: I try to create a ticket with empty subject (empty request)
     When I send a POST request to "/api/v2/ticket_forms/agent"
     Then the response status code should be 400
     And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value should not be blank."
-
 
   Scenario: I try to create a ticket with empty subject (too short)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -49,6 +50,8 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_found"
+    And the JSON node "errors.fields.person.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.person.errors[0].message" should contain "10000"
 
   Scenario: I try to create a ticket with person by unknown email (inline)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -98,3 +101,80 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.person.fields.email.errors[0].code" should be equal to "invalid_email"
     And the JSON node "errors.fields.person.fields.email.errors[0].message" should contain "is not a valid email address."
+
+  Scenario: I sent extra data in person field:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "person": {
+    "extra_field": "some value"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "extra_fields"
+    And the JSON node "errors.fields.person.errors[0].message" should contain "Unexpected field names: extra_field"
+
+  Scenario: I sent unknown department choice:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 404
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.department.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.department.errors[0].message" should contain "One or more of the given values is invalid."
+
+  Scenario: I sent not valid data type in choice:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": {
+    "id": 1
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.department.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.department.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario Outline: I sent unknown choice:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "<field>": 404
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.<field>.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.<field>.errors[0].message" should contain "One or more of the given values is invalid."
+
+    Examples:
+      | field    |
+      | product  |
+      | category |
+      | workflow |
+      | priority |
+
+  Scenario Outline: I sent not valid data type in choice:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "<field>": {
+    "id": 1
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.<field>.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.<field>.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+    Examples:
+      | field    |
+      | product  |
+      | category |
+      | workflow |
+      | priority |

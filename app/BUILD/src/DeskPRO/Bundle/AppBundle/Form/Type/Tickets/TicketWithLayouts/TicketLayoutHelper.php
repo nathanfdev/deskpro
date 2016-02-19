@@ -191,7 +191,11 @@ class TicketLayoutHelper extends AbstractType
         foreach ($keys as $key) {
             if (array_key_exists($key, $submitted_data) && $form->has($key)) {
                 $submitted_value = $submitted_data[$key];
-                $choice          = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues([$submitted_value]));
+
+                $choice = null;
+                if (is_scalar($submitted_value)) {
+                    $choice = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues([$submitted_value]));
+                }
 
                 if ($choice instanceof HierarchyNode) {
                     $choice = $choice->getData();

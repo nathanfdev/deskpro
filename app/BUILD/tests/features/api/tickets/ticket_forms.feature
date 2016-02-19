@@ -5,9 +5,11 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I install the api data set
-    Given the setting "core.use_product" is set to 1
-    Given the setting "core.use_ticket_priority" is set to 1
     And my request is authenticated
+    And the setting "core.use_product" is set to 1
+    And the setting "core.use_ticket_priority" is set to 1
+    And the setting "core.use_ticket_category" is set to 1
+    And the setting "core.use_ticket_workflow" is set to 1
 
   @reinstall
   Scenario: I create a ticket
@@ -71,6 +73,8 @@ Feature: /ticket_forms endpoint
   "department": 2,
   "product": 2,
   "priority": 3,
+  "category": 3,
+  "workflow": 1,
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "fields": {
@@ -112,6 +116,8 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.product" should be equal to 2
     And the JSON node "data.priority" should be equal to 3
+    And the JSON node "data.category" should be equal to 3
+    And the JSON node "data.workflow" should be equal to 1
     And the JSON node "data.participants" should have 1 element
     And the JSON node "data.participants[0]" should be equal to 3
     And the JSON node "data.followers" should have 1 element

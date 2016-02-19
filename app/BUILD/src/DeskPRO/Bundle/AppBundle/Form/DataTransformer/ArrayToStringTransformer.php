@@ -32,19 +32,37 @@
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Class EmptyStringTransformer.
+ * Class ArrayToStringTransformer.
  */
-class TextStringTransformer implements DataTransformerInterface
+class ArrayToStringTransformer implements DataTransformerInterface
 {
+    /**
+     * @var string
+     */
+    private $delimiter;
+
+    /**
+     * Constructor.
+     *
+     * @param string $delimiter
+     */
+    public function __construct($delimiter = ',')
+    {
+        $this->delimiter = $delimiter;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function transform($value)
     {
-        return $this->doTransform($value);
+        if ($value === null) {
+            return '';
+        }
+
+        return implode($this->delimiter, $value);
     }
 
     /**
@@ -52,24 +70,13 @@ class TextStringTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        return $this->doTransform($value);
-    }
+        $val = explode($this->delimiter, $value);
+        $k   = [];
 
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
-    protected function doTransform($value)
-    {
-        if ($value === null) {
-            return '';
+        foreach ($val as $v) {
+            $k[] = trim((string) $v);
         }
 
-        if (!is_scalar($value)) {
-            throw new TransformationFailedException('Expected scalar.');
-        }
-
-        return $value;
+        return $k;
     }
 }

@@ -161,6 +161,8 @@ class ApiDb extends AbstractDbSet
             ->add(new LayoutField(FormFields::PRODUCT))
             ->add(new LayoutField(FormFields::CC))
             ->add(new LayoutField(FormFields::PRIORITY))
+            ->add(new LayoutField(FormFields::CATEGORY))
+            ->add(new LayoutField(FormFields::WORKFLOW))
             ->add(new LayoutField(FormFields::LABELS))
 
             ->add(new LayoutField('ticket_field', 1)) // Select box
@@ -609,8 +611,11 @@ class ApiDb extends AbstractDbSet
         // Department permissions test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
             "
-            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('1', '1', '1', 'tickets', 'full', '1');
-            INSERT INTO `department_permissions` (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`) VALUES ('2', '2', '1', 'tickets', 'full', '1');
+            INSERT INTO `department_permissions`
+                (`id`, `department_id`, `usergroup_id`, `app`, `name`, `value`)
+            VALUES
+                ('1', '1', '1', 'tickets', 'full', '1'),
+                ('2', '2', '1', 'tickets', 'full', '1');
         "
         );
         // end of department permissions
@@ -618,9 +623,12 @@ class ApiDb extends AbstractDbSet
         // Products test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
             "
-            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('1', 'Product 1', '10', '0');
-            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('2', 'Product 2', '20', '0');
-            INSERT INTO `products` (`id`, `title`, `display_order`, `depth`) VALUES ('3', 'Product 3', '30', '0');
+            INSERT INTO `products`
+                (`id`, `title`, `display_order`, `depth`)
+            VALUES
+                ('1', 'Product 1', '10', '0'),
+                ('2', 'Product 2', '20', '0'),
+                ('3', 'Product 3', '30', '0');
         "
         );
         // end of products
@@ -628,12 +636,41 @@ class ApiDb extends AbstractDbSet
         // Ticket priorities test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
             "
-            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('1', 'Priority 1', '10');
-            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('2', 'Priority 2', '20');
-            INSERT INTO `ticket_priorities` (`id`, `title`, `priority`) VALUES ('3', 'Priority 3', '30');
+            INSERT INTO `ticket_priorities`
+                (`id`, `title`, `priority`)
+            VALUES
+                ('1', 'Priority 1', '10'),
+                ('2', 'Priority 2', '20'),
+                ('3', 'Priority 3', '30');
         "
         );
         // end of ticket priorities
+
+        // Ticket categories test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_categories`
+                (`id`, `title`, `display_order`)
+            VALUES
+              ('1', 'Category 1', '10'),
+              ('2', 'Category 2', '20'),
+              ('3', 'Category 3', '30');
+        "
+        );
+        // end of ticket categories
+
+        // Ticket workflows test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_workflows`
+                (`id`, `title`, `display_order`)
+            VALUES
+              ('1', 'Workflow 1', '10'),
+              ('2', 'Workflow 2', '20'),
+              ('3', 'Workflow 3', '30');
+        "
+        );
+        // end of ticket workflows
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(

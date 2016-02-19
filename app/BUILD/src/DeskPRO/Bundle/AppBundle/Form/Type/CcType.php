@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\ArrayToStringTransformer;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -104,7 +104,8 @@ class CcType extends AbstractType
         $ticket = $config->getOption('ticket');
 
         $participants = [];
-        $cc_emails    = $form->getData();
+        $cc_emails    = ($form->getData() ?: []);
+        $cc_emails    = is_array($cc_emails) ? $cc_emails : [$cc_emails];
 
         foreach ($cc_emails as $email) {
             $email = trim($email);

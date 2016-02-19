@@ -138,7 +138,7 @@ class PersonAssignType extends AbstractType
         } elseif (!empty($data['id'])) {
             $person = $person_repository->find((int) $data['id']);
             if (!$person) {
-                $form->addError(new FormError('person_not_found'));
+                $form->addError(new FormError('person_not_found', null, ['value' => $data['id']]));
             }
 
             $form->setData($person);
@@ -164,11 +164,12 @@ class PersonAssignType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'person'           => null,
-                'label_name'       => '',
-                'label_email'      => '',
-                'data_class'       => 'Application\\DeskPRO\\Entity\\Person',
-                'available_fields' => ['name', 'email'],
+                'person'             => null,
+                'label_name'         => '',
+                'label_email'        => '',
+                'data_class'         => 'Application\\DeskPRO\\Entity\\Person',
+                'available_fields'   => ['name', 'email'],
+                'allow_extra_fields' => false,
             ])
             ->setAllowedTypes([
                 'person' => 'Application\\DeskPRO\\Entity\\Person',
