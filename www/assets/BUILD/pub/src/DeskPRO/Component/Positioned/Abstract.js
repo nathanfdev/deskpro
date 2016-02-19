@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import invariant from 'invariant';
 import $ from 'jquery';
 import 'jquery-ui/position';
 
@@ -44,14 +45,13 @@ export class Abstract extends React.Component {
         my: positionMy || 'left top',
         at: positionAt || 'right bottom',
         of: null,
-        collision: collision || 'none'
+        collision: collision || 'fit'
       };
 
     if (positionTarget) {
       placement.of = positionTarget;
       if (!(positionTarget instanceof $) && ReactDOM.findDOMNode(positionTarget) !== null) {
         placement.of = ReactDOM.findDOMNode(positionTarget);
-        console.info(placement.of);
       }
 
       placement.collision = collision || placement.collision;
