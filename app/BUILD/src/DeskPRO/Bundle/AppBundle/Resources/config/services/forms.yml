@@ -281,8 +281,13 @@ services:
     tags:
       - { name: form.type, alias: ticket_with_layouts }
 
+  form.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
+    arguments: [@language_manager]
+    tags:
+      - { name: form.type, alias: ticket_message }
+
   form.ticket_description:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType
-    arguments: [@language_manager]
     tags:
       - { name: form.type, alias: ticket_description }

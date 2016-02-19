@@ -33,7 +33,8 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -42,8 +43,23 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class TicketMessageType.
  */
-class TicketMessageType extends ApiType
+class TicketMessageType extends AbstractType
 {
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    /**
+     * Constructor.
+     *
+     * @param LanguageManager $language_manager
+     */
+    public function __construct(LanguageManager $language_manager)
+    {
+        $this->language_manager = $language_manager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +68,9 @@ class TicketMessageType extends ApiType
         $builder
             ->add('message', 'html_textarea', [
                 'property_path' => 'message_html',
-                'required'      => true,
+                'label'         => $options['message_label'],
+                'required'      => $options['required'],
+                'constraints'   => $options['message_constraints'],
             ])
             ->add('format', 'choice', [
                 'choices' => [
@@ -78,9 +96,14 @@ class TicketMessageType extends ApiType
     {
         $resolver
             ->setDefaults([
-                'ticket'        => null,
-                'person'        => null,
-                'error_mapping' => [
+                'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
+                'attr'                => ['data-rte' => '1'],
+                'error_bubbling'      => false,
+                'ticket'              => null,
+                'person'              => null,
+                'message_constraints' => [],
+                'error_mapping'       => [
                     // we use custom setters to modify message,
                     // so we need to map entity property with the form field
                     'message' => 'message',
@@ -90,7 +113,19 @@ class TicketMessageType extends ApiType
                 'ticket',
                 'person',
             ])
+            ->setAllowedTypes([
+                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
+            ])
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'ticket_message';
     }
 
     /**
@@ -113,15 +148,18 @@ class TicketMessageType extends ApiType
      */
     public function onChangeMessageFormat(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form    = $event->getForm();
+        $data    = $event->getData();
+        $options = $form->getConfig()->getOptions();
 
         if (isset($data['format']) && $data['format'] === 'text') {
             $form
                 ->remove('message')
                 ->add('message', 'html_textarea', [
                     'property_path' => 'message_text',
-                    'required'      => true,
+                    'label'         => $options['message_label'],
+                    'required'      => $options['required'],
+                    'constraints'   => $options['message_constraints'],
                 ])
             ;
         }
@@ -132,18 +170,20 @@ class TicketMessageType extends ApiType
      */
     public function onSetRelations(FormEvent $event)
     {
-        /** @var TicketMessage $message */
-        $message = $event->getData();
+        $data   = $event->getData();
+        $config = $event->getForm()->getConfig();
 
-        /** @var Ticket $ticket */
-        $ticket = $event->getForm()->getConfig()->getOption('ticket');
-        if ($ticket) {
-            $ticket->addMessage($message);
-        }
+        if ($data instanceof TicketMessage) {
+            /** @var Ticket $ticket */
+            $ticket = $config->getOption('ticket');
+            if ($ticket) {
+                $ticket->addMessage($data);
+            }
 
-        $person = $event->getForm()->getConfig()->getOption('person');
-        if ($person) {
-            $message->setPerson($person);
+            $person = $config->getOption('person');
+            if ($person) {
+                $data->setPerson($person);
+            }
         }
     }
 }

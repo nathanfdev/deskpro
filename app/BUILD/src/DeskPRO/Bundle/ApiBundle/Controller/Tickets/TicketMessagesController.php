@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -50,7 +48,7 @@ class TicketMessagesController extends CrudSubController
 {
     public static $exposeOnly     = ['list', 'get', 'post'];
     public static $entity         = TicketMessage::class;
-    public static $type           = TicketMessageType::class;
+    public static $type           = 'ticket_message';
     public static $parentProperty = 'ticket';
     public static $sortOptions    = ['date' => 'date_created'];
     public static $listSort       = 'id';
