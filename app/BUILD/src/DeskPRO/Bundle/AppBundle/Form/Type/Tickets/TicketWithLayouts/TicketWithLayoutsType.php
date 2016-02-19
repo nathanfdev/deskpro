@@ -346,7 +346,8 @@ class TicketWithLayoutsType extends AbstractType
             foreach ($custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
                     $form->add($form_field_name, 'deskpro_combined_type', [
-                        'forms' => $custom_field_groups[$field_type],
+                        'forms'          => $custom_field_groups[ $field_type ],
+                        'error_bubbling' => false,
                     ]);
                 }
             }
