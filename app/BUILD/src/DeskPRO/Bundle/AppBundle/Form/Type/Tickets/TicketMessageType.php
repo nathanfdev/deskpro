@@ -79,10 +79,13 @@ class TicketMessageType extends AbstractType
                 ],
                 'mapped' => false,
             ])
-            ->add('is_note', 'api_boolean', [
-                'property_path' => 'is_agent_note',
-            ])
         ;
+
+        if ($options['render_is_note']) {
+            $builder->add('is_note', 'api_boolean', [
+                'property_path' => 'is_agent_note',
+            ]);
+        }
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetAttachments']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeMessageFormat']);
@@ -102,6 +105,7 @@ class TicketMessageType extends AbstractType
                 'error_bubbling'      => false,
                 'ticket'              => null,
                 'person'              => null,
+                'render_is_note'      => true,
                 'message_constraints' => [],
                 'error_mapping'       => [
                     // we use custom setters to modify message,

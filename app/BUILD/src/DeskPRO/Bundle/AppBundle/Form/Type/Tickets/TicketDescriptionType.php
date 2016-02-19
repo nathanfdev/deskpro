@@ -62,6 +62,7 @@ class TicketDescriptionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
+            'render_is_note'      => false,
             'message_constraints' => [
                 new Assert\NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
                 new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
