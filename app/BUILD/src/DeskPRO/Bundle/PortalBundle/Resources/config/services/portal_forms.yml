@@ -135,13 +135,6 @@ services:
       - @deskpro.core.translate
 
 
-  form.ticket_message:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketMessageType
-    arguments: [@language_manager]
-    tags:
-      - { name: form.type, alias: ticket_message }
-
-
   form.deskpro_contextual_per_field_choice:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
     arguments: [@form_hierarchy_generator]
