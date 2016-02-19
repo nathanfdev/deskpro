@@ -17,6 +17,85 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value should not be blank."
 
+  Scenario: I sent not valid message format
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": "abc"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.message.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I sent message with extra fields
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": {
+    "message": "",
+    "extra_field": ""
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.errors[0].code" should be equal to "extra_fields"
+    And the JSON node "errors.fields.message.errors[0].message" should be equal to "Unexpected field names: extra_field"
+
+  Scenario: I sent empty message
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": {
+    "message": ""
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value should not be blank."
+
+  Scenario: I sent not valid message
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": {
+    "message": {
+      "content": "message"
+    }
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I sent wrong message format
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": {
+    "format": "unknown"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.fields.format.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.message.fields.format.errors[0].message" should be equal to "One or more of the given values is invalid."
+
+  Scenario: I sent too short message
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "message": {
+    "message": "abc"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "wrong_length"
+    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "The value must be at least 10 characters in length."
+
   Scenario: I try to create a ticket with empty subject (too short)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """

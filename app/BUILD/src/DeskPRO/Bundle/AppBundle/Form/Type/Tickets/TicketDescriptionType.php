@@ -76,13 +76,14 @@ class TicketDescriptionType extends AbstractType
                     new Assert\Length(['min' => 10, 'minMessage' => 'portal.forms.error_ticket_msg_length']),
                 ],
             ])
-            ->add('format', 'hidden', [
-                'data'        => 'text',
-                'attr'        => ['data-rte-field' => 'format'],
-                'constraints' => [
-                    new Assert\Choice(['choices' => ['text', 'html']]),
+            ->add('format', 'choice', [
+                'data'    => 'text',
+                'attr'    => ['data-rte-field' => 'format'],
+                'mapped'  => false,
+                'choices' => [
+                    'text' => 'text',
+                    'html' => 'html',
                 ],
-                'mapped' => false,
             ])
         ;
 
@@ -124,9 +125,10 @@ class TicketDescriptionType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'    => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'message_label' => $this->language_manager->phrase('portal.forms.label_message'),
-                'attr'          => ['data-rte' => '1'],
+                'data_class'     => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'message_label'  => $this->language_manager->phrase('portal.forms.label_message'),
+                'attr'           => ['data-rte' => '1'],
+                'error_bubbling' => false,
             ])
             ->setRequired([
                 'person',

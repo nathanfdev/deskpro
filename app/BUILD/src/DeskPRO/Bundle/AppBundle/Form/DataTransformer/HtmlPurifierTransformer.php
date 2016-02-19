@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Orb\Input\Cleaner\Cleaner;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class HtmlPurifierTransformer.
@@ -81,6 +81,9 @@ class HtmlPurifierTransformer implements DataTransformerInterface
     {
         if ($value === null || empty($value) || ctype_digit($value)) {
             return $value;
+        }
+        if (!is_scalar($value)) {
+            throw new TransformationFailedException('Expected scalar');
         }
 
         return $this->cleaner->clean($value, $this->html_type);
