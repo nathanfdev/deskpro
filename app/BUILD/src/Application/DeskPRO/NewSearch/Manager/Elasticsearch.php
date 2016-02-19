@@ -31,13 +31,16 @@ namespace Application\DeskPRO\NewSearch\Manager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Elasticsearch Search Manager.
  */
-class Elasticsearch extends ContainerAware implements SearchManagerInterface
+class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * The currently logged in person.
      *
