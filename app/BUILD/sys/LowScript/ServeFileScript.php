@@ -962,7 +962,7 @@ class ServeFileScript extends LowScriptAbstract
 
             // Generate the resized blob and save it now
             } else {
-                $new_blob = $this->createSizedBlob($blob, $size, $is_fit, $this->getPdo(), false);
+                $new_blob = $this->createSizedBlob($blob, $size, $is_fit, false);
 
                 if ($new_blob) {
                     // Possible the resize failed, in which case we'd fall back on showing the orig
