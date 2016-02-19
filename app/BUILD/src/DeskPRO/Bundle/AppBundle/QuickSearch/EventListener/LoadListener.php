@@ -96,7 +96,7 @@ class LoadListener implements EventSubscriberInterface
     public function onLoadPeopleOrganizations(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if (!$context->isPerson()) {
+        if (!$context->isPerson() || !$event->getRequest()->enabledSideloads()) {
             return;
         }
 
@@ -117,7 +117,7 @@ class LoadListener implements EventSubscriberInterface
     public function onLoadOrganizationsPeople(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        if (!$context->isOrganization()) {
+        if (!$context->isOrganization() || !$event->getRequest()->enabledSideloads()) {
             return;
         }
 

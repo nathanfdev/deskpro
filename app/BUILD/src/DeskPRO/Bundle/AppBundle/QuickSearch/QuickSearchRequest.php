@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
@@ -61,6 +62,16 @@ class QuickSearchRequest
      * @var string[]
      */
     private $words;
+
+    /**
+     * @var string[];
+     */
+    private $types;
+
+    /**
+     * @var bool
+     */
+    private $enable_sideloads = true;
 
     /**
      * Constructor.
@@ -153,6 +164,24 @@ class QuickSearchRequest
     }
 
     /**
+     * @return $this
+     */
+    public function disableSideloads()
+    {
+        $this->enable_sideloads = false;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function enabledSideloads()
+    {
+        return $this->enable_sideloads;
+    }
+
+    /**
      * @return string[]
      */
     public function getWords()
@@ -189,11 +218,23 @@ class QuickSearchRequest
     }
 
     /**
+     * @param array $types
+     */
+    public function setTypes(array $types)
+    {
+        $this->types = array_intersect($types, array_keys(QuickSearchContext::getDoctrineMapping()));
+    }
+
+    /**
      * @return string[]
      */
     public function getTypes()
     {
-        $types = array_keys(QuickSearchContext::getDoctrineMapping());
+        if (!$this->types) {
+            $types = array_keys(QuickSearchContext::getDoctrineMapping());
+        } else {
+            $types = $this->types;
+        }
 
         if (!$this->person->hasPerm('agent_people.use')) {
             $types = array_diff($types, [QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);

@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -53,11 +55,50 @@ class SearchController extends BaseController
      */
     public function quickSearchAction(Request $request)
     {
-        $results = $this->get('quick_search')->search(new QuickSearchRequest(
+        $search_request = $this->getSearchRequest($request);
+
+        $types = explode(',', $request->query->get('types', ''));
+        $search_request->setTypes($types);
+
+        return $this->getSearchResults($search_request);
+    }
+
+    /**
+     * @Annotations\Get("/search/people_and_orgs", name="api_quick_search")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function quickSearchPeopleOrganizationsAction(Request $request)
+    {
+        $search_request = $this->getSearchRequest($request);
+
+        $search_request->setTypes([QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);
+        $search_request->disableSideloads();
+
+        return $this->getSearchResults($search_request);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return QuickSearchRequest
+     */
+    protected function getSearchRequest(Request $request)
+    {
+        $search_request = new QuickSearchRequest(
             $this->getUser(),
             (string) $request->query->get('q'),
             (string) $request->query->get('sort')
-        ));
+        );
+
+        return $search_request;
+    }
+
+    protected function getSearchResults(QuickSearchRequest $search_request)
+    {
+        $results = $this->get('quick_search')->search($search_request);
 
         $response = ['grouped_results' => []];
         foreach ($results->getContexts() as $context) {
