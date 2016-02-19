@@ -915,7 +915,7 @@ class KbController extends AbstractController
 
         $data = array(
             'article_id' => $article['id'],
-            'permalink'  => $article->getLink(),
+            'permalink'  => $this->get('object_router')->getPortalUrl($article),
             'content'    => $article->getContentHtml(),
             'is_html'    => true,
         );

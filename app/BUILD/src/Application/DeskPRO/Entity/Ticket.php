@@ -3566,10 +3566,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getLink()
     {
-        SystemErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
-        );
-
         return App::getObjectRouter()->getPortalUrl($this);
     }
 

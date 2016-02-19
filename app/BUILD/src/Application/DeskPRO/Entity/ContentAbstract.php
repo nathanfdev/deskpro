@@ -269,10 +269,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getLink()
     {
-        SystemErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getLink()')
-        );
-
         return App::getObjectRouter()->getPortalUrl($this);
     }
 
