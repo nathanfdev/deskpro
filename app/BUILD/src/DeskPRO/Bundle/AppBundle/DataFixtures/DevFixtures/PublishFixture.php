@@ -101,22 +101,25 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     private $content = [
         self::TABLE_ARTICLES => [
-            'ids'            => [],
-            'category_table' => self::TABLE_ARTICLE_CATEGORIES,
-            'comments_table' => self::TABLE_ARTICLE_COMMENTS,
-            'categories'     => [],
+            'ids'               => [],
+            'category_table'    => self::TABLE_ARTICLE_CATEGORIES,
+            'comments_table'    => self::TABLE_ARTICLE_COMMENTS,
+            'permissions_table' => 'article_category2usergroup',
+            'categories'        => [],
         ],
         self::TABLE_NEWS => [
-            'ids'            => [],
-            'category_table' => self::TABLE_NEWS_CATEGORIES,
-            'comments_table' => self::TABLE_NEWS_COMMENTS,
-            'categories'     => [],
+            'ids'               => [],
+            'category_table'    => self::TABLE_NEWS_CATEGORIES,
+            'comments_table'    => self::TABLE_NEWS_COMMENTS,
+            'permissions_table' => 'news_category2usergroup',
+            'categories'        => [],
         ],
         self::TABLE_DOWNLOADS => [
-            'ids'            => [],
-            'category_table' => self::TABLE_DOWNLOAD_CATEGORIES,
-            'comments_table' => self::TABLE_DOWNLOAD_COMMENTS,
-            'categories'     => [],
+            'ids'               => [],
+            'category_table'    => self::TABLE_DOWNLOAD_CATEGORIES,
+            'comments_table'    => self::TABLE_DOWNLOAD_COMMENTS,
+            'permissions_table' => 'download_category2usergroup',
+            'categories'        => [],
         ],
     ];
 
@@ -145,6 +148,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
         foreach ($this->content as $content => $params) {
             $this->loadGeneratedCategories($content);
+            $this->loadCategoryPermissions($content);
             $this->loadGenerated($content);
             $this->loadComments($content);
         }
@@ -230,6 +234,21 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         }
 
         return;
+    }
+
+    private function loadCategoryPermissions($content)
+    {
+        $batch      = [];
+        $categories = $this->content[$content]['categories'];
+        $table      = $this->content[$content]['permissions_table'];
+        foreach ($categories as $category) {
+            $values = [
+                'category_id'  => $category,
+                'usergroup_id' => rand(1, 2),
+            ];
+            $batch[] = $values;
+        }
+        $this->db->batchInsert($table, $batch, true);
     }
 
     private function loadGenerated($content)

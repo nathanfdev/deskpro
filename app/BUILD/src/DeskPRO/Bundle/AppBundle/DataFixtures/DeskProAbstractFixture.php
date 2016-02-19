@@ -153,8 +153,8 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
      */
     protected function setTitleAndSlug(array $values, $nbWords = 5)
     {
-        $title           = $this->faker->sentence($nbWords);
-        $values['title'] = $title;
+        $title           = $this->faker->words($nbWords, true);
+        $values['title'] = ucfirst($title);
         $values['slug']  = Strings::slugifyTitle($title);
 
         return $values;
