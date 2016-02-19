@@ -29,31 +29,40 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Controller;
+namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
-class BlobController extends AbstractController
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+class BlobController extends BaseController
 {
     /**
-     * Favicon.
+     * @Route(
+     *     "/favicon.ico",
+     *     name="favicon"
+     * )
+     * @Method("GET")
+     *
+     * @return BinaryFileResponse
      */
     public function faviconAction()
     {
-        $favicon_id = $this->container->getSetting('core.favicon_blob_id');
+        $settings = $this->container->get('settings_resolver');
+        $em       = $this->container->get('doctrine')->getManager();
+        $bs       = $this->container->get('blob.storage');
+
+        $favicon_id = $settings->getGlobalSettings()->get('core.favicon_blob_id');
         $blob       = null;
         if ($favicon_id) {
-            $blob = $this->em->getRepository('DeskPRO:Blob')->find($favicon_id);
+            $blob = $em->getRepository('DeskPRO:Blob')->find($favicon_id);
         }
 
         if ($blob) {
-            $response = $this->container->get('response');
-            $file     = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
-            $response->setContent($file);
+            $response = new BinaryFileResponse($bs->copyBlobRecordToString($blob));
         } else {
-            $file = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/favicon.ico');
-
-            $response = $this->container->get('response');
-            $response->headers->set('Content-Length', strlen($file));
-            $response->setContent($file);
+            $response = new BinaryFileResponse(DP_APP_DIR.'/src/Application/DeskPRO/Resources/assets/favicon.ico');
         }
 
         $response->headers->set('Content-Type', 'image/vnd.microsoft.icon; filename=favicon.ico');

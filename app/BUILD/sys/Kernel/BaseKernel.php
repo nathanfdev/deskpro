@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\HttpKernel\Kernel;
 
 abstract class BaseKernel extends Kernel
@@ -110,6 +109,10 @@ abstract class BaseKernel extends Kernel
         App::$container = $this->container;
         if ($this->container->has('deskpro.sys_events_loader')) {
             $this->container->get('deskpro.sys_events_loader');
+        }
+
+        if ($this->container->has('monolog.logger.php')) {
+            $this->container->get('monolog.logger.php')->info('Kernel Type: '.get_class($this));
         }
     }
 

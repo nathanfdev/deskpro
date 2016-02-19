@@ -120,11 +120,6 @@ $collection->create('serve_default_picture', array(
     'defaults'   => array('name' => 'default_picture', 's' => '0'),
 ));
 
-$collection->create('favicon', array(
-    'path'       => '/favicon.ico',
-    'controller' => 'DeskPRO:Blob:favicon',
-));
-
 $collection->create('serve_org_picture_default', array(
     'path'       => '/file.php/o-avatar/default',
     'controller' => '(see: serve_file.php)',
