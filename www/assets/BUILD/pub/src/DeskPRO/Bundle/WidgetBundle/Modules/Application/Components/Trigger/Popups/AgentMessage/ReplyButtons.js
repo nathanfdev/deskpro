@@ -5,6 +5,7 @@ export class ReplyButtons extends React.Component {
   static propTypes = {
     backgroundColor: PropTypes.string,
     textColor: PropTypes.string,
+    primaryAgent: PropTypes.object,
     onClick: PropTypes.func,
     onClose: PropTypes.func
   };
@@ -20,7 +21,9 @@ export class ReplyButtons extends React.Component {
   };
 
   render() {
-    const { backgroundColor, textColor } = this.props;
+    const { backgroundColor, textColor, primaryAgent } = this.props;
+    const displayName = primaryAgent.get('display_name') || 'Agent';
+    const firstName = displayName.split(' ')[0];
 
     return (
       <div className="preemtive-chat-footer">
@@ -32,7 +35,7 @@ export class ReplyButtons extends React.Component {
                color: textColor
              }}>
 
-            <i className="fa fa-mail-reply-all"></i> Reply to Noelle
+            <i className="fa fa-mail-reply-all"></i> Reply to {firstName}
           </a>
           <a href="#" className="blank" onClick={this.onClose}><i className="fa fa-times"></i> Dismiss message</a>
         </div>

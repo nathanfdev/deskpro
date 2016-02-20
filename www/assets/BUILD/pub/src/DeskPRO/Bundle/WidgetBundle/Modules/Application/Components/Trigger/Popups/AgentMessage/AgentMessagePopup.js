@@ -16,6 +16,7 @@ export class AgentMessagePopup extends React.Component {
   render() {
     const { primaryAgent = Immutable.fromJS({}), children, onClick } = this.props;
     const { helpPopupTitle, helpPopupMessage } = this.props;
+    const childProps = children.props;
 
     return (
       <ChatPopup {...this.props}>
@@ -31,7 +32,7 @@ export class AgentMessagePopup extends React.Component {
         <hr/>
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
-            {children}
+            {React.cloneElement(children, {...childProps, primaryAgent})}
           </div>
         </div>
       </ChatPopup>
