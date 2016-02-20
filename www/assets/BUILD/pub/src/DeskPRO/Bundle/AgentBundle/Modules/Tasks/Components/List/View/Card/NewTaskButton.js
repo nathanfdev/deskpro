@@ -8,8 +8,7 @@ export class NewTaskButton extends React.Component {
     super(props);
 
     this.state = {
-      newTaskExpanded: false,
-      newTaskEdited: false
+      newTaskExpanded: false
     };
   }
 
@@ -21,18 +20,15 @@ export class NewTaskButton extends React.Component {
   };
 
   onCloseNewTaskForm = () => {
-    if (this.state.newTaskEdited) return;
+    if (this.cardChanged) return;
 
     this.setState({
-      newTaskExpanded: false,
-      newTaskEdited: false
+      newTaskExpanded: false
     });
   };
 
-  onChange = isChanged => {
-    this.setState({
-      newTaskEdited: isChanged
-    });
+  isChanged = (val) => {
+    this.cardChanged = val;
   };
 
   renderAddTaskButton() {
@@ -47,7 +43,7 @@ export class NewTaskButton extends React.Component {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm} ignoreNodes={[this.refs.button, 'popup']}>
         {this.state.newTaskExpanded
-          ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} onChange={this.onChange} />
+          ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} isChanged={this.isChanged} />
           : null
         }
       </ClickOut>

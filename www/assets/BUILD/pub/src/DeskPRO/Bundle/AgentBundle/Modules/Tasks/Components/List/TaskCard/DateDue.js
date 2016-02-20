@@ -5,8 +5,9 @@ import { HiddenDateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DateString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DateString';
+import { CardWidget } from './CardWidget';
 
-export class DateDue extends React.Component {
+export class DateDue extends CardWidget {
 
   static propTypes = {
     value: PropTypes.string,
@@ -15,43 +16,13 @@ export class DateDue extends React.Component {
     openBySingleClick: PropTypes.bool
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isOpen: false
-    };
-  }
-
-  onOpenCalendar = () => {
-    const { onSetEditing } = this.props;
-    this.setState({
-      isOpen: true
-    });
-
-    if (onSetEditing) {
-      onSetEditing(true);
-    }
-  };
-
-  onCloseCalendar = event => {
-    const { onSetEditing } = this.props;
-    this.setState({
-      isOpen: false
-    });
-
-    if (onSetEditing) {
-      onSetEditing(false);
-    }
-  };
-
   render() {
-    const { value, onChange } = this.props;
+    const { value } = this.state;
     const isOverdue = value && moment(value).isBefore();
-    const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpenCalendar};
+    const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
 
     return (
-      <div className="dpwd--card-line-item" {...prop}>
+      <div ref="trigger" className="dpwd--card-line-item" {...prop}>
         <span className={classNames({'overdue': isOverdue})}>
           <i className="fa fa-calendar-o"/>
           <i />
@@ -64,8 +35,8 @@ export class DateDue extends React.Component {
                   collision="fit"
                   zIndex={1002}>
 
-          <ClickOut onClickOut={this.onCloseCalendar}>
-            <HiddenDateTimePicker value={value} onChange={onChange} />
+          <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.trigger]}>
+            <HiddenDateTimePicker value={value} onChange={this.onChange} />
           </ClickOut>
         </Detached>
       </div>

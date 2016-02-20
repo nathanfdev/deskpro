@@ -170,16 +170,52 @@ export class CardCheckbox extends Component {
 export class CardReset extends Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
-    isActive: PropTypes.bool
+    isChanged: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isChanged: false
+    };
+    this.prev = false;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.info('component did update', prevState.isChanged, this.state.isChanged);
+    this.prev = prevState.isChanged;
+  }
+
+  reset = () => {
+    if (!this.state.isChanged) {
+      return;
+    }
+    this.setState({isChanged: false});
+    this.props.onReset && this.props.onReset();
+  };
+
+  onSetEditing = (isEditing) => {
+    this.setState({isChanged: isEditing || this.prev});
+  };
+
+  onChange = () => {
+    const wasChanged = this.state.isChanged;
+    if (wasChanged) {
+      this.prev = true;
+    } else {
+      this.setState({isChanged: true});
+    }
+  };
+
+  componentDidUpdate() {
+    this.props.isChanged && this.props.isChanged(this.state.isChanged);
+  }
+
   render() {
-    const { onClick, isActive } = this.props;
-    const classes = classNames('fa fa-trash', { 'active': isActive });
+    const classes = classNames('fa fa-trash', { 'active': this.state.isChanged });
 
     return (
-      <div className="dpm--card-reset" onClick={onClick}>
+      <div className="dpm--card-reset" onClick={this.reset}>
         <i className={classes}></i>
       </div>
     );

@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
 import jQuery from 'jquery';
+import { CardWidget } from './CardWidget';
 
-export class TitleForm extends React.Component {
+export class TitleForm extends CardWidget {
 
   static propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func
   };
 
   componentDidMount() {
@@ -14,13 +15,20 @@ export class TitleForm extends React.Component {
   }
 
   onChange = event => {
-    this.props.onChange(event.target.value);
+    const val = event.target.value;
+    this.setState({value: val});
+    this.props.onChange && this.props.onChange(val);
+  };
+
+  onSubmit = event => {
+    event.preventDefault();
+    this.props.onSubmit && this.props.onSubmit();
   };
 
   render() {
-    const { value } = this.props;
+    const { value } = this.state;
     return (
-      <form className="inline-form">
+      <form className="inline-form" onSubmit={this.onSubmit}>
         <input type="text"
                ref="input"
                name="title"

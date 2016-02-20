@@ -2,59 +2,57 @@ import React, { PropTypes } from 'react';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TitleForm } from './TitleForm';
 import classNames from 'classnames';
+import { CardWidget } from './CardWidget';
 
-export class Title extends React.Component {
+export class Title extends React.Component{
 
   static propTypes = {
     value: PropTypes.string,
     isDone: PropTypes.bool,
-    onChange: PropTypes.func,
-    onSetEditing: PropTypes.func
+    onChange: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      editing: false
-    };
+    this.state = {isOpen: false};
+    this.value = props.value;
   }
 
-  onEdit = () => {
-    this.setState({
-      editing: true
-    });
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.value !== nextProps.value || this.state.isOpen !== nextState.isOpen;
+  }
 
-    this.props.onSetEditing(true);
+  componentWillUpdate(nextProps, nextState) {
+    this.value = nextProps.value;
+  }
+
+  onChange = (val) => {
+    this.value = val;
   };
 
-  onCloseEdit = event => {
-    event.preventDefault();
-    this.refs.form.onSubmit(event);
+  onOpen = () => {
+    if (this.state.isOpen) return;
+    this.setState({isOpen: true});
   };
 
-  onChange = value => {
-    const { onChange, onSetEditing } = this.props;
-    this.setState({
-      editing: false
-    });
-
-    onChange(value);
-    onSetEditing(false);
+  onClose = () => {
+    if (!this.state.isOpen) return;
+    this.setState({isOpen: false});
+    this.props.onChange && this.props.onChange(this.value);
   };
 
   renderHeader() {
     return (
-      <h1 onDoubleClick={this.onEdit}>
-        {this.props.value}
+      <h1 onDoubleClick={this.onOpen}>
+        {this.value}
       </h1>
     );
   }
 
   renderForm() {
     return (
-      <ClickOut onClickOut={this.onCloseEdit}>
-        <TitleForm {...this.props} ref="form" onChange={this.onChange} />
+      <ClickOut onClickOut={this.onClose}>
+        <TitleForm value={this.value} onChange={this.onChange} onSubmit={this.onClose} />
       </ClickOut>
     );
   }
@@ -64,10 +62,10 @@ export class Title extends React.Component {
       <div className="card-title">
         <div className={classNames(
           'dpwd--card-title',
-          {'strikethrough': this.props.isDone && !this.state.editing}
+          {'strikethrough': this.props.isDone && !this.state.isOpen}
         )}>
 
-          {this.state.editing ? this.renderForm() : this.renderHeader()}
+          {this.state.isOpen ? this.renderForm() : this.renderHeader()}
         </div>
       </div>
     );

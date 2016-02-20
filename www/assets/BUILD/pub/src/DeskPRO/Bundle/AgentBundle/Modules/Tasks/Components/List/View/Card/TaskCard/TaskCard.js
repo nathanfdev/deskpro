@@ -54,7 +54,8 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
 
-          <CardProject projectId={task.get('project')} onSetEditing={onSetEditing}
+          <CardProject projectId={task.get('project')}
+                       onSetEditing={onSetEditing}
                        onChange={this.onChange.bind(this, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>

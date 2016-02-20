@@ -26,8 +26,8 @@ export class TaskCardNew extends React.Component {
 
   static propTypes = {
     onClose: PropTypes.func,
-    onChange: PropTypes.func,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    isChanged: PropTypes.func
   };
 
   constructor(props) {
@@ -43,17 +43,12 @@ export class TaskCardNew extends React.Component {
       }),
       project: null
     };
-
-    this.state = {
-      isChanged: false
-    };
-    this.prev = false;
   }
 
-  reset = () => {
-    if (!this.state.isChanged) {
-      return;
-    }
+  onReset = () => {
+    this.refs.title.reset();
+    this.refs.due.reset();
+    this.refs.project.getWrappedInstance().reset();
     this.model = {
       title: null,
       due: null,
@@ -64,33 +59,21 @@ export class TaskCardNew extends React.Component {
       }),
       project: null
     };
-    this.setState({isChanged: false});
   };
 
   onSetEditing = (isEditing) => {
-    this.setState({isChanged: isEditing || this.prev});
+    this.refs.reset.onSetEditing(isEditing);
   };
 
   onChange(prop, value) {
-    const wasChanged = this.state.isChanged;
     this.model[prop] = value;
-    if (wasChanged) {
-      this.prev = true;
-      this.forceUpdate();
-    } else {
-      this.setState({isChanged: true});
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.prev = prevState.isChanged;
-    this.props.onChange && this.props.onChange(this.state.isChanged);
+    value && this.refs.reset.onChange();
   }
 
   onAssign = (assignee) => {
     return new Promise(resolve => {
       this.model.assignee = assignee;
-      this.setState({isChanged: true});
+      this.refs.reset.onChange();
       resolve();
     });
   };
@@ -118,31 +101,36 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { submit } = this.props;
+    const { submit, isChanged } = this.props;
     const { title, due, project, assignee } = this.model;
 
     return (
       <Card type="task">
         <SaveTaskButton onClick={this.onSave} submit={submit} />
-        <CardReset isActive={this.state.isChanged} onClick={this.reset} />
+        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged} />
         <CardLine>
           <CardLineLeft>
             <div className="dpwd--card-title">
-              <TitleForm onChange={this.onChange.bind(this, 'title')} value={title} />
+              <TitleForm ref="title" onChange={this.onChange.bind(this, 'title')} />
             </div>
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
+            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
           </CardLineRight>
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <DateDue onChange={this.onChange.bind(this, 'due')} value={due} onSetEditing={this.onSetEditing}
-                     openBySingleClick={true} />
-            <CardProject projectId={project} onChange={this.onChange.bind(this, 'project')}
+            <DateDue ref="due"
+                     onChange={this.onChange.bind(this, 'due')}
+                     onSetEditing={this.onSetEditing}
+                     openBySingleClick={true}
+            />
+            <CardProject ref="project"
+                         onChange={this.onChange.bind(this, 'project')}
                          onSetEditing={this.onSetEditing}
-                         openBySingleClick={true} />
+                         openBySingleClick={true}
+            />
           </CardLineLeft>
         </CardLine>
       </Card>
