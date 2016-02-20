@@ -1,5 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { history } from '../../../Services/history';
 
 export const login = createAction(
   'LOGIN_SUBMIT_FORM',
