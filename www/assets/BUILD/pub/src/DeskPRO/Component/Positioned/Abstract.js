@@ -45,7 +45,7 @@ export class Abstract extends React.Component {
         my: positionMy || 'left top',
         at: positionAt || 'right bottom',
         of: null,
-        collision: collision || 'fit'
+        collision: collision || 'none'
       };
 
     if (positionTarget) {

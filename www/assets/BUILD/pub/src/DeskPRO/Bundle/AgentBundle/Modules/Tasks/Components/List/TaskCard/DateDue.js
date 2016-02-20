@@ -61,6 +61,7 @@ export class DateDue extends React.Component {
         <Detached isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="left bottom"
+                  collision="fit"
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onCloseCalendar}>
