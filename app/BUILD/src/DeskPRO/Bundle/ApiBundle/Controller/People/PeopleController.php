@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -104,11 +103,14 @@ class PeopleController extends CrudController
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $user->getId());
         }
-        if ($period = $request->get('period_created')) {
+
+        $period = $request->get('period_created');
+        if ($period) {
             $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
             $qb->andWhere("$datePeriodCaseWhen = :period_created");
             $qb->setParameter('period_created', $period);
         }
+
         $userGroups = $request->get('user_group');
         if (null !== $userGroups) {
             $qb->leftJoin("$alias.usergroups", 'ug');
@@ -140,7 +142,8 @@ class PeopleController extends CrudController
             }
         }
 
-        if ($org = $request->get('organization')) {
+        $org = $request->get('organization');
+        if ($org) {
             $qb->innerJoin("$alias.organization", 'org');
             if (is_array($org)) {
                 $qb->andWhere('org.id IN (:org)');
@@ -158,11 +161,8 @@ class PeopleController extends CrudController
      * @param string       $alias
      * @param Request      $request
      */
-    protected function applySorting(
-        QueryBuilder $qb,
-        $alias,
-        Request $request
-    ) {
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
         if (is_array(static::$sortOptions)) {
             $sortParam = strtolower($request->get('sort'));
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
