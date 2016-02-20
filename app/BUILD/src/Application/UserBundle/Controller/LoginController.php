@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -588,14 +589,17 @@ HTML;
 
         // Remember me cookie
         if ($this->in->getBool('remember_me')) {
-            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie(
+            $cookie = new \Symfony\Component\HttpFoundation\Cookie(
                 'dpreme',
                 $person->getId().'-'.$person->getRememberMeCookieCode(),
-                'never',
-                true,
-                \Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false
+                // anyway we can't just set false for expire, so we will just set it everytime to far distant future
+                new \DateTime('2030-01-01 00:00:00'),
+                null,
+                null,
+                \Orb\Util\Web::getRequestProtocol() == 'HTTPS' ? true : false,
+                true
             );
-            $cookie->send();
+            header('Set-Cookie: '.$cookie->__toString(), false); //eew, but since it's legacy it just should work
         }
 
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
