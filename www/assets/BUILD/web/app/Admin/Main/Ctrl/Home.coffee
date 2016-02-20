@@ -150,7 +150,7 @@ define [
       http_method = {}
       $http = @$http
 
-      checkUrl = DP_BASE_URL + 'index.php?_sys=check_http_method&x=' + ((new Date()).getTime())
+      checkUrl = DP_BASE_URL + '__serverinfo/check_http_methods?x=' + ((new Date()).getTime())
 
       makeCheck = (type) ->
         typeU = type.toUpperCase()

@@ -76,32 +76,33 @@ class Boot
 
     private static function bootServerInfoChecks($reqName)
     {
-        /** @var \DpRun\DpEnv $env */
-        $env = $GLOBALS['DP_ENV'];
+        self::authlessServerChecks($reqName);
+        self::checkAuth();
+        self::authRequiredServerChecks($reqName);
 
-        if ($reqName === 'ping') {
-            header('Content-Type: text/plain');
-            echo 'pong';
-            if ($msg = $env->getDatManager()->readTxtFile('pong_message')) {
-                echo "\n";
-                echo $msg;
-            }
-            exit;
-        }
+        exit;
+    }
 
-        // If installed, we require auth
-        if (($env->getConfig('database.host') || $env->getConfig('database.0.host'))) {
-            $server_info_auth = $env->getDatManager()->readTxtFile('server_info_auth', null);
-            if (!$server_info_auth || empty($_GET['auth'])) {
-                echo "Use the dp:web-server-info command to generate links to view server info.\n";
+    protected static function authlessServerChecks($reqName)
+    {
+        switch ($reqName) {
+            case 'ping':
+                header('Content-Type: text/plain');
+                echo 'pong';
+                if ($msg = self::env()->getDatManager()->readTxtFile('pong_message')) {
+                    echo "\n";
+                    echo $msg;
+                }
                 exit;
-            }
-            if ($_GET['auth'] !== $server_info_auth) {
-                echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+            case 'check_http_methods':
+                header('Content-Type: text/plain');
+                echo 'HTTP_METHOD_'.strtoupper(@$_SERVER['REQUEST_METHOD']);
                 exit;
-            }
         }
+    }
 
+    protected static function authRequiredServerChecks($reqName)
+    {
         switch ($reqName) {
             case 'phpinfo':
                 phpinfo();
@@ -132,8 +133,24 @@ class Boot
             default:
                 echo 'Unknown serverinfo request.';
         }
+    }
 
-        exit;
+    protected static function checkAuth()
+    {
+        $env = self::env();
+
+        // If installed, we require auth
+        if (($env->getConfig('database.host') || $env->getConfig('database.0.host'))) {
+            $server_info_auth = $env->getDatManager()->readTxtFile('server_info_auth', null);
+            if (!$server_info_auth || empty($_GET['auth'])) {
+                echo "Use the dp:web-server-info command to generate links to view server info.\n";
+                exit;
+            }
+            if ($_GET['auth'] !== $server_info_auth) {
+                echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
+                exit;
+            }
+        }
     }
 
     /**
@@ -279,5 +296,18 @@ class Boot
 
         $app = new Application($kernel);
         $app->run($input);
+    }
+
+    /**
+     * just a shortcut.
+     *
+     * @return \DpRun\DpEnv
+     */
+    protected static function env()
+    {
+        /** @var \DpRun\DpEnv $env */
+        $env = $GLOBALS['DP_ENV'];
+
+        return $env;
     }
 }
