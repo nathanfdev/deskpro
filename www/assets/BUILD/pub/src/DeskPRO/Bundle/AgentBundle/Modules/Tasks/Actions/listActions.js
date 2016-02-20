@@ -101,10 +101,8 @@ export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => new Promise(resolve => {
     const state = getState();
-    const ids = elementsSelector(state);
-    const tasks = collectionSelectorFactory('TaskList', 'tasks')(state);
+    const tasks = collectionSelectorFactory('Task', recordStoresId)(state);
     const task = tasks.get(taskId);
-    const taskIndex = ids.indexOf(taskId);
 
     const changedProps = Object.keys(data).filter(taskProp => task.get(taskProp) !== data[taskProp]);
     let updatedTasks = tasks;
@@ -116,7 +114,7 @@ export const editTask = createAction(
     }
 
     // Update task props
-    let updatedTask = updatedTasks.get(taskIndex);
+    let updatedTask = updatedTasks.get(taskId);
     changedProps.forEach(changedProp => {
       let newValue = data[changedProp];
       if (Array.isArray(newValue)) {
@@ -126,7 +124,7 @@ export const editTask = createAction(
       updatedTask = updatedTask.set(changedProp, newValue);
     });
 
-    updatedTasks = updatedTasks.set(taskIndex, updatedTask);
+    updatedTasks = updatedTasks.set(taskId, updatedTask);
     api.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
   })
 );
