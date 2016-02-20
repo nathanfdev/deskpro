@@ -33,14 +33,14 @@ export const loadBatch = createAction(
           ids,
           records: response.getData().data
         }))
-      }
+      };
     } else {
       result = {
         recordName,
         collectionName,
         ids,
         records: []
-      }
+      };
     }
 
     return result;
@@ -66,7 +66,7 @@ export const loadAll = createAction(
             ids,
             records,
             collectionName: 'all'
-          }
+          };
         })
       };
     } else {
@@ -92,7 +92,7 @@ export const loadFromApi = createAction(
         collectionName,
         ids,
         records
-      }
+      };
     })
   })
 );

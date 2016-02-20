@@ -50,7 +50,7 @@ export const updateChatInfo = createAction(
     }
 
     if (peopleIds.length) {
-      dispatch(loadBatch('Person', 'all', peopleIds));
+      dispatch(loadBatch('Person', peopleIds, 'all'));
     }
 
     return chatInfo;
@@ -305,7 +305,7 @@ export const pollingChat = createAction(
         });
 
         if (peopleIds.length) {
-          dispatch(loadBatch('Person', 'all', peopleIds));
+          dispatch(loadBatch('Person', peopleIds, 'all'));
         }
       }
 
