@@ -186,6 +186,23 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.8.detail.9.title" should be equal to "Choice 1"
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
+  Scenario: I modify custom text field in data serializer format
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "fields": {
+    "6": {
+      "value": "edited inline text"
+    }
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+    And the JSON node "data.fields.6.value" should be equal to "edited inline text"
+
   Scenario: I modify ticket person by id
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """

@@ -148,6 +148,8 @@ class TicketMessageAttachmentType extends AbstractType
 
             // find for existing blob by auth code
             $blob = $this->blob_repo->getByAuthCode($data['blob_auth']);
+
+            // or just set empty blob to correct setting of form fields and form validation
             if (!$blob) {
                 $blob = new Blob();
                 $blob->setAuthCode('');

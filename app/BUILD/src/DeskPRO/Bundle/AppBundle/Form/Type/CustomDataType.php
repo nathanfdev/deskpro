@@ -176,12 +176,19 @@ class CustomDataType extends AbstractType
     public function onSetInlineData(FormEvent $event)
     {
         $data = $event->getData();
+
+        // default format based on form "data" field
         if (isset($data['data'])) {
             return;
         }
 
+        // custom data serializer format we get from api response
+        if (isset($data['value'])) {
+            $data = $data['value'];
+        }
+
         $event->setData([
-            'data' => $event->getData(),
+            'data' => $data,
         ]);
     }
 
