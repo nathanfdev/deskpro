@@ -21,31 +21,18 @@ Feature: /ticket_forms endpoint
 {
   "subject": "Sample Ticket",
   "department": 1,
-  "product": 2,
-  "priority": 3,
-  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "message": {
     "message": "<p>my html message</p>",
     "format": "html"
-  },
-  "attachments": [
-    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
-    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
-  ]
+  }
 }
     """
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
-
-    # Layout has no product field
     And the JSON node "data.product" should be equal to 0
-
-    # Layout has no priority field
     And the JSON node "data.priority" should be equal to 0
-
-    # Layout has not cc field
     And the JSON node "data.participants" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
 
@@ -54,8 +41,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should contain "<p>my html message"
-
-    # Department with id = 1 has default layout without attachments field
     And the JSON node "data[0].attachments" should have 0 elements
 
     When I send a GET request to "/api/v2/people/1"
@@ -257,22 +242,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "new-user@deskpro.dev"
     And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
 
-  Scenario: I modify ticket using user layout (doesn't have product and priority fields)
-    When I send a PUT request to "/api/v2/ticket_forms/user/5" with body:
-    """
-{
-  "department": 2,
-  "product": 3,
-  "priority": 2
-}
-    """
-    Then the response status code should be 204
-    When I send a GET request to "/api/v2/tickets/5"
-    Then the response status code should be 200
-    And the JSON node "data.department" should be equal to 2
-    And the JSON node "data.product" should be equal to 2
-    And the JSON node "data.priority" should be equal to 3
-
   Scenario: I try to create a ticket with empty subject (empty subject)
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
@@ -292,15 +261,10 @@ Feature: /ticket_forms endpoint
 {
   "subject": "Sample Ticket",
   "department": 1,
-  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "message": {
     "message": "<p>my html message</p>",
     "format": "html"
-  },
-  "attachments": [
-    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
-    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
-  ]
+  }
 }
     """
     Then the response status code should be 204

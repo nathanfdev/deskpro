@@ -143,7 +143,7 @@ class TicketWithLayoutsType extends AbstractType
                 'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
                 'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
                 'method'              => 'POST',
-                'allow_extra_fields'  => true,
+                'allow_extra_fields'  => false,
                 'full_version'        => false,
                 'use_captcha'         => true,
                 'for_api'             => false,

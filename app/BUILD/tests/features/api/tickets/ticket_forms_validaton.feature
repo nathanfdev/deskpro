@@ -411,3 +411,18 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.attachments.fields.attachments_0.fields.blob_auth.errors[0].message" should contain "This value should not be blank."
+
+  Scenario: I modify ticket using user layout (doesn't have product and priority fields)
+    When I send a POST request to "/api/v2/ticket_forms/user" with body:
+    """
+{
+  "department": 2,
+  "product": 3,
+  "priority": 2
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.errors[0].code" should be equal to "extra_fields"
+    And the JSON node "errors.errors[0].message" should contain "Unexpected field names:"
+    And the JSON node "errors.errors[0].message" should contain "product"
+    And the JSON node "errors.errors[0].message" should contain "priority"
