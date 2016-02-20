@@ -36,11 +36,9 @@ export class Abstract extends React.Component {
    * @return {void}
    */
   componentWillReceiveProps(newProps) {
-    // Re-render the dialog box with the new properties when there's a change
-    this.props = newProps;
-    const { isOpen = false, positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = this.props;
+    const { isOpen = false, positionCalc, positionTarget, positionMy, positionAt, collision, zIndex } = newProps;
     const position = positionCalc ? positionCalc() || {} : {};
-    const placement = this.props.position ||
+    const placement = newProps.position ||
       {
         my: positionMy || 'left top',
         at: positionAt || 'right bottom',
