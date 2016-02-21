@@ -36,7 +36,8 @@ export class DateFilter extends Component {
                   icon={icon || 'calendar-o'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
+                  resetFilter={unsetParams.bind(this, [fromParam, toParam])}
+                  dispatch={dispatch}>
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
           <div
