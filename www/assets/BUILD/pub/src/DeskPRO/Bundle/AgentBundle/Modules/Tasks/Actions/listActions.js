@@ -99,22 +99,13 @@ export const addTask = createAction(
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, data) => (dispatch, getState) => new Promise(resolve => {
-    const state = getState();
-    const tasks = collectionSelectorFactory('Task', recordStoresId)(state);
-    const task = tasks.get(taskId);
-
-    const changedProps = Object.keys(data).filter(taskProp => task.get(taskProp) !== data[taskProp]);
-    let updatedTasks = tasks;
-
-    // Re order tasks
-    updatedTasks = reOrderCollection(tasks, taskId, data.display_order);
-    if (changedProps.indexOf('display_order') !== -1) {
-      changedProps.splice(changedProps.indexOf('display_order'), 1);
-    }
+  (taskId, data) => (dispatch, getState) => {
+    api.sendPut(`DP_API/tasks/${taskId}`, data);
+    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
-    let updatedTask = updatedTasks.get(taskId);
+    let updatedTask = tasks.get(taskId);
+    const changedProps = Object.keys(data).filter(taskProp => updatedTask.get(taskProp) !== data[taskProp]);
     changedProps.forEach(changedProp => {
       let newValue = data[changedProp];
       if (Array.isArray(newValue)) {
@@ -124,7 +115,9 @@ export const editTask = createAction(
       updatedTask = updatedTask.set(changedProp, newValue);
     });
 
-    updatedTasks = updatedTasks.set(taskId, updatedTask);
-    api.sendPut(`DP_API/tasks/${taskId}`, data).then(() => resolve(updatedTasks));
-  })
+    // Re order tasks
+    tasks = reOrderCollection(tasks, updatedTask.get('id'), updatedTask.get('display_order'));
+    tasks = tasks.set(taskId, updatedTask);
+    dispatch(setCollection('Task', recordStoresId, tasks));
+  }
 );

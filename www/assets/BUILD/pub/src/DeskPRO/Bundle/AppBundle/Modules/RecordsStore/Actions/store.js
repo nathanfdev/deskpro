@@ -104,7 +104,7 @@ export const setCollection = createAction(
   (recordName, collectionName, records) => {
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
-    return {recordName, collectionName, records: recordsArray, ids: recordsArray.map(record => record.id)};
+    return {recordName, collectionName, records: recordsArray};
   }
 );
 

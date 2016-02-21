@@ -3,6 +3,7 @@ import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassA
 import * as actions from '../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import invariant from 'invariant';
+import { setCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 const initialState = {
   listParams: {
@@ -53,9 +54,6 @@ export default createReducer(initialState, {
     },
     start: setValue('async.done', false),
     done: setValue('async.done', true)
-  }),
-  [actions.editTask]: async({
-    success: setFullPayload('elements')
   }),
   [actions.addTask]: async({
     success: pushPayloadToCollection('elements')

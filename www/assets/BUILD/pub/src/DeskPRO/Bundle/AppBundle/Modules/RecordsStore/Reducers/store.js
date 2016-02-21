@@ -11,9 +11,14 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
     return state;
   }
 
+  records = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  if (!ids) {
+    ids = records.keySeq().toArray();
+  }
+
   return state.mergeDeep({
     [recordName]: {
-      records: mapKeyedFromArray(records, 'id'),
+      records: records,
       collections: {[collectionName]: ids},
       statuses: {[collectionName]: {success: true, loading: false}}
     }
