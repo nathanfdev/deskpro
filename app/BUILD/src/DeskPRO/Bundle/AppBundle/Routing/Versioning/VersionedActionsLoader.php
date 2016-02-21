@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\Routing\Versioning;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
-use Doctrine\Common\Util\Debug;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -66,10 +65,9 @@ class VersionedActionsLoader extends Loader
      * @param Reader $annotation_reader
      * @param RestControllerReader $controller_reader
      * @param FileLocator $file_locator
-     * @param $config_path
      */
     public function __construct(
-        Reader $annotation_reader, RestControllerReader $controller_reader, FileLocator $file_locator, $config_path)
+        Reader $annotation_reader, RestControllerReader $controller_reader, FileLocator $file_locator)
     {
         $this->annotation_reader = $annotation_reader;
         $this->controller_reader = $controller_reader;
