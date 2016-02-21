@@ -78,10 +78,23 @@ class PeopleController extends CrudController
      * )
      * @Get("/{id}/tickets")
      */
-    public function getTicketsAction(Request $request, $id)
+    public function getTicketsAction(Request $request)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['person' => $id]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['person' => $request->get('id')]);
     }
+
+    // This exists temporarily until we have some real versioned actions ###############################################
+
+    public function getTickets20151231Action()
+    {
+        die("v 20151231");
+    }
+    public function getTicketsiOSAction()
+    {
+        die("v iOS");
+    }
+
+    // #################################################################################################################
 
     /**
      * {@inheritdoc}

@@ -1,1 +1,8 @@
-# Nothing here. It's all automated through annotations.
+api_routes:
+    prefix: /api/v2/
+    type: annotation
+    resource: "@ApiBundle/Controller"
+
+api_versioned_actions:
+    resource: "@ApiBundle/Resources/config/versioned_actions.yml"
+    type: versioned_action

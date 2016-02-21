@@ -40,7 +40,6 @@ $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Res
 
 // NEW API ROUTES
 $col = $loader->import(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Resources/config/routing_api.yml');
-$col->addPrefix('/api/v2');
 $collection->addCollection($col);
 
 // NEW PORTAL ROUTES

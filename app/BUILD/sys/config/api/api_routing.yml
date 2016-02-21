@@ -1,5 +1,10 @@
 # This is the "main" file for the api kernel. No other kernel imports this.
 # 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
+
+api_versioned_actions:
+    resource: "@ApiBundle/Resources/config/versioned_actions.yml"
+    type: versioned_action
+
 api_routes:
     prefix: /api/v2
     type: annotation
