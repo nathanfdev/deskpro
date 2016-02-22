@@ -9423,6 +9423,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
     &.medium-editor-placeholder:after {
       padding: 0.75em 1em;
     }
+
+    @extend .deskpro-standard-message-formatting;
   }
 
   .medium-editor-toolbar {
@@ -10191,10 +10193,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   padding-left: 29px;
   margin-top: 5px;
 
-  p {
-    font-size: 12px;
-    line-height: 2.1em;
-  }
+  @extend .deskpro-standard-message-formatting;
 }
 
 .mark-resolved {

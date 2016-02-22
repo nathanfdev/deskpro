@@ -1,0 +1,131 @@
+$heading-fonts: inherit !default;
+$monospace-fonts: Menlo, Monaco, Consolas, "Courier New", monospace !default;
+
+.deskpro-standard-message-formatting {
+
+  color: #4d4d4d;
+  line-height: 18px;
+
+  //-------------------------
+  // Paragraph
+  //-------------------------
+
+  p, .dp-p {
+    color: #4d4d4d;
+    line-height: 18px;
+    margin: 0 0 8px;
+  }
+
+  //-------------------------
+  // Bold
+  //-------------------------
+
+  strong, b, .dp-bold {
+    font-weight: bold;
+  }
+
+  //-------------------------
+  // Underline
+  //-------------------------
+
+  u, .dp-underline {
+    text-decoration: underline;
+  }
+
+  //-------------------------
+  // Italic
+  //-------------------------
+
+  em, i, .dp-italic {
+    font-style: italic;
+  }
+
+  //-------------------------
+  // Blockquote
+  //-------------------------
+
+  blockquote, .dp-bq {
+    display: block;
+    margin: 15px 0 15px 0;
+    padding-left: 5px;
+    border-left: 2px solid #777;
+    color: #777;
+  }
+
+  //-------------------------
+  // Code (inline)
+  //-------------------------
+
+  code, .dp-code {
+    font-family: $monospace-fonts;
+    color: #eb5a46;
+    background: #f8f9f9;
+    border: 1px solid #e2e4e6;
+  }
+
+  //-------------------------
+  // Code (pre block)
+  //-------------------------
+
+  pre, .dp-pre {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 6px;
+    white-space: pre-wrap;
+    overflow: auto;
+    max-height: 400px;
+    margin: 15px 0 15px 0;
+    font-family: $monospace-fonts;
+    line-height: 110%;
+    display: block;
+
+    p { margin: 0; padding: 0; font-family: $monospace-fonts; }
+  }
+
+  //-------------------------
+  // Headings
+  //-------------------------
+
+  h1, h2, h3, h4,
+  .dp-h1, .dp-h2, .dp-h3, .dp-h4 {
+    font-family: $heading-fonts;
+    margin: 7px 0;
+    display: block;
+    line-height: 128%;
+    padding: 0;
+    font-weight: normal;
+  }
+
+  h1, .dp-h1 { font-size: 200%; }
+  h2, .dp-h2 { font-size: 170%; }
+  h3, .dp-h3 { font-size: 150%; }
+  h4, .dp-h4 { font-size: 125%; }
+
+  //-------------------------
+  // Lists
+  //-------------------------
+
+  ul, ol, .dp-list, .dp-ul-list, .dp-ol-list {
+    margin: 8px 0;
+    padding: 0;
+    display: block;
+
+    > li {
+      display: list-item;
+      margin: 8px 0 8px 20px;
+    }
+  }
+
+  ul, .dp-ul-list {
+    > li {
+      list-style: disc;
+    }
+  }
+
+  ol, .dp-ol-list {
+    > li {
+      list-style: decimal;
+    }
+  }
+}
