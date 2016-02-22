@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
-use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -43,7 +43,7 @@ class RequestTypeClassifierListener implements EventSubscriberInterface
 {
     const LOW_REQUEST_ATTR = '_dp_is_low';
 
-    public function onKernelPreRequest(GetPreResponseEvent $event)
+    public function onKernelPreRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -62,7 +62,7 @@ class RequestTypeClassifierListener implements EventSubscriberInterface
     {
         return array(
             // high priority, called before everything
-            DpKernelEvents::PRE_REQUEST => array('onKernelPreRequest', 5000),
+            KernelEvents::REQUEST => array('onKernelPreRequest', 5000),
         );
     }
 }

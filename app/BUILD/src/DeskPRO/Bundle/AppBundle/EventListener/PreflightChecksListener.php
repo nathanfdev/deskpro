@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
-use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -59,11 +59,11 @@ class PreflightChecksListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            DpKernelEvents::PRE_REQUEST => array('onPreRequest', 3000),
+            KernelEvents::REQUEST => array('onPreRequest', 3000),
         );
     }
 
-    public function onPreRequest(GetPreResponseEvent $event)
+    public function onPreRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
 

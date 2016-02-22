@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
+use Symfony\Component\HttpKernel\KernelEvents;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,7 +72,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            DpKernelEvents::PRE_REQUEST => array('onPreRequest', 2000), // runs before everything
+            KernelEvents::REQUEST => array('onPreRequest', 2000), // runs before everything
         );
     }
 

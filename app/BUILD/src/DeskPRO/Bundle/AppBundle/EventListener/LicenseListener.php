@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\HttpKernel\DpKernelEvents;
-use DeskPRO\Bundle\AppBundle\HttpKernel\Event\GetPreResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use DpSys\License;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -59,11 +59,11 @@ class LicenseListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            DpKernelEvents::PRE_REQUEST => array('onPreRequest', 0),
+            KernelEvents::REQUEST => array('onPreRequest', 0),
         );
     }
 
-    public function onPreRequest(GetPreResponseEvent $event)
+    public function onPreRequest(GetResponseEvent $event)
     {
         $container = $this->container;
         License::setLoaderFunction(function () use ($container) {
