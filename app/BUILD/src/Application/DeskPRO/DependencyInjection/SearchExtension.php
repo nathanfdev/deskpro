@@ -43,8 +43,7 @@ class SearchExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
-        $definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
-        $definition->setFactoryMethod('getSearchAdapter');
+        $definition->setFactory('Application\\DeskPRO\\StaticLoader\\SearchAdapter::getSearchAdapter');
         $container->setDefinition('deskpro.search_adapter', $definition);
 
         // Doctrine listener to support search engine

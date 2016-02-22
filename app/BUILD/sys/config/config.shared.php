@@ -55,8 +55,7 @@ $container->setDefinition('app_secret', $definition);
 // settings
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');
-$definition->setFactoryClass('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService');
-$definition->setFactoryMethod('create');
+$definition->setFactory('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService::create');
 $definition->setArguments(
     array(
         new Reference('service_container'),
@@ -191,8 +190,7 @@ $container->setDefinition('assets.packages', $definition);
 // doctrine.orm.default_query_cache
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory');
-$definition->setFactoryMethod('create');
+$definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory::create');
 $definition->setArguments(array('dql'));
 $definition->addMethodCall('registerShutdownCommit');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
@@ -317,8 +315,7 @@ $container->loadFromExtension(
 // deskpro.mail_logger
 $definition = new Definition();
 $definition->setClass('Orb\\Log\\Logger');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService');
-$definition->setFactoryMethod('create');
+$definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService::create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
 
@@ -367,8 +364,7 @@ $definition = new Definition(
     'Application\\DeskPRO\\Groups\\GroupsReposFactory',
     array(new Reference('doctrine.orm.entity_manager'))
 );
-$definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
-$definition->setFactoryMethod('createFromEntityManager');
+$definition->setFactory('Application\\DeskPRO\\Groups\\GroupsReposFactory::createFromEntityManager');
 $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
 
 $definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
@@ -392,8 +388,7 @@ $container
 
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSearch\SearchEngine\SearchEngine');
-$definition->setFactoryClass('Application\DeskPRO\DependencyInjection\SystemServices\SearchEngineService');
-$definition->setFactoryMethod('create');
+$definition->setFactory('Application\DeskPRO\DependencyInjection\SystemServices\SearchEngineService::create');
 $definition->setArguments(
     array(
         new Reference('service_container'),
@@ -750,8 +745,7 @@ $container->loadFromExtension(
 ############################################################################
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Encryption\\DpEnc');
-$definition->setFactoryClass('Application\\DeskPRO\\Encryption\\StandardEncFactory');
-$definition->setFactoryMethod('create');
+$definition->setFactory('Application\\DeskPRO\\Encryption\\StandardEncFactory::create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('dp_enc', $definition);
 

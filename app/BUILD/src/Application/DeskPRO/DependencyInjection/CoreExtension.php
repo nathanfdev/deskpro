@@ -94,8 +94,7 @@ class CoreExtension extends Extension
     protected function loadPeople(ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
-        $definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
-        $definition->setFactoryMethod('createFromEntityManager');
+        $definition->setFactory('Application\\DeskPRO\\Groups\\GroupsReposFactory::createFromEntityManager');
         $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
