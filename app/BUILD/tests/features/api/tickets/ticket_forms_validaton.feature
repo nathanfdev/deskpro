@@ -96,6 +96,17 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "wrong_length"
     And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "The value must be at least 10 characters in length."
 
+  Scenario: I try to create a ticket with empty subject (empty subject)
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "subject": ""
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I try to create a ticket with empty subject (too short)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """

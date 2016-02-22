@@ -241,19 +241,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "new-user@deskpro.dev"
     And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
 
-  Scenario: I try to create a ticket with empty subject (empty subject)
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
-    """
-{
-  "subject": ""
-}
-    """
-    Then the response status code should be 204
-
-    When I send a GET request to "/api/v2/tickets/5"
-    Then the response status code should be 200
-    And the JSON node "data.subject" should be equal to "(No Subject)"
-
   Scenario: I change department and unset previous department fields
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """

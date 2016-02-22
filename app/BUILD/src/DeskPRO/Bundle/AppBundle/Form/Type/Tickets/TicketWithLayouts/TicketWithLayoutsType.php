@@ -503,6 +503,9 @@ class TicketWithLayoutsType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
+                new Assert\NotBlank([
+                    'message' => 'portal.forms.error_ticket_subject_required',
+                ]),
                 new Assert\Length([
                     'min'        => 5,
                     'minMessage' => 'portal.forms.error_ticket_subject_length',
