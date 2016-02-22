@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class TicketReplyType.
+ */
 class TicketReplyType extends AbstractType
 {
     /**
@@ -46,70 +49,85 @@ class TicketReplyType extends AbstractType
      */
     private $language_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param LanguageManager $language_manager
+     */
     public function __construct(LanguageManager $language_manager)
     {
         $this->language_manager = $language_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ticket_message', 'ticket_message', array(
-            'ticket'              => $options['ticket'],
-            'person'              => $options['person'],
-            'message_label'       => $options['message_label'],
-            'label'               => false,
-            'message_constraints' => array(
-                new NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
-            ),
-        ));
+        $builder
+            ->add('ticket_message', 'ticket_message', [
+                'ticket'              => $options['ticket'],
+                'person'              => $options['person'],
+                'message_label'       => $options['message_label'],
+                'label'               => false,
+                'message_constraints' => [
+                    new NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
+                ],
+            ])
+            ->add('attachments', 'ticket_message_attachment_collection', [
+                'ticket_message' => $options['ticket_message'],
+                'person'         => $options['person'],
+                'label'          => false,
+            ])
+            ->add('more_attachments', 'submit', [
+                'validation_groups' => false,
+                'label'             => $this->language_manager->phrase('portal.forms.label_add_attachment'),
+            ])
+            ->add('submit', 'submit', [
+                'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
+            ])
+        ;
 
-        $builder->add('attachments', 'ticket_message_attachment_collection', array(
-            'ticket_message' => $options['ticket_message'],
-            'person'         => $options['person'],
-            'label'          => false,
-        ));
-
-        $builder->add('more_attachments', 'submit', array(
-            'validation_groups' => false,
-            'label'             => $this->language_manager->phrase('portal.forms.label_add_attachment'),
-        ));
-
-        $builder->add('submit', 'submit', array(
-            'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
-        ));
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPostSubmit(FormEvent $event)
     {
         /* @var \Application\DeskPRO\Entity\TicketMessage $message */
-        /* @var \Application\DeskPRO\Entity\Ticket $ticket */
         $data                 = $event->getData();
         $message              = $data['ticket_message'];
         $message->attachments = $data['attachments'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'ticket_reply';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
+        $resolver
+            ->setDefaults([
                 'message_label' => false,
-            )
-        );
-        $resolver->setRequired(array(
-            'person', 'ticket', 'ticket_message', 'settings',
-        ));
-        $resolver->setAllowedTypes(array(
-            'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
-            'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-            'person'         => 'Application\\DeskPRO\\Entity\\Person',
-        ));
+            ])
+            ->setRequired([
+                'person', 'ticket', 'ticket_message', 'settings',
+            ])
+            ->setAllowedTypes([
+                'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
+                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+                'person'         => 'Application\\DeskPRO\\Entity\\Person',
+            ])
+        ;
     }
 }
