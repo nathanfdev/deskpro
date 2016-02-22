@@ -177,24 +177,24 @@ class AppAsset extends DomainObject
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
             'inversedBy'   => 'assets',
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
             'joinColumns'  => array(array(
                 'name'                 => 'package_name',
                 'referencedColumnName' => 'name',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
             )),
         ));
 
         $metadata->mapOneToOne(array(
             'fieldName'    => 'blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'fetch'        => ClassMetadataInfo::FETCH_EAGER,
             'joinColumns'  => array(array(
                 'name'                 => 'blob_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
             )),
         ));
     }

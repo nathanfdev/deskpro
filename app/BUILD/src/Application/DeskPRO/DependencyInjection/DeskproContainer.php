@@ -845,7 +845,7 @@ class DeskproContainer extends Container
      */
     public function getAppManager()
     {
-        return $this->getSystemService('app_manager');
+        return $this->get('deskpro.apps.manager');
     }
 
     /**
