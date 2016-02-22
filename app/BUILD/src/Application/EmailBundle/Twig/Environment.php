@@ -222,7 +222,9 @@ class Environment extends \Twig_Environment
     public function getCacheFilename($name)
     {
         if (!($this->loader instanceof HybridLoader) || !$this->loader->dbHasTemplate($name)) {
-            return parent::getCacheFilename($name);
+            $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
+
+            return !$key ? false : $key;
         }
 
         return 'dptpl://load/'.$name;

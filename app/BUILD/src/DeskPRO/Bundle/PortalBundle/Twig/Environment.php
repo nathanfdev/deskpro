@@ -154,13 +154,20 @@ class Environment extends \Twig_Environment
         return App::$container && App::$container->has('portal_loader.twig') ? App::$container->get('portal_loader.twig') : null;
     }
 
+    private function getCachePath($name)
+    {
+        $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
+
+        return !$key ? false : $key;
+    }
+
     private function loadClass($cls, $name)
     {
         if ($this->loadClassFromDb($cls, $name)) {
             return true;
         }
 
-        if (false === $cache = $this->getCacheFilename($name)) {
+        if (false === $cache = $this->getCachePath($name)) {
             eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
         } else {
             if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
