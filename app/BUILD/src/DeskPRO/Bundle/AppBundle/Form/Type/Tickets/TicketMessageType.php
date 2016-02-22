@@ -184,7 +184,7 @@ class TicketMessageType extends AbstractType
         if ($data instanceof TicketMessage) {
             /** @var Ticket $ticket */
             $ticket = $config->getOption('ticket');
-            if ($ticket && $ticket->messages->contains(!$data)) {
+            if ($ticket && !$ticket->messages->contains($data)) {
                 $ticket->addMessage($data);
             }
 
