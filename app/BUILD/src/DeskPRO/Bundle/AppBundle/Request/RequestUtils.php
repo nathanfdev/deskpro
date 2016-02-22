@@ -43,6 +43,8 @@ class RequestUtils
      * The framework reaches the controller without a database connection.
      *
      * @param Request $request
+     *
+     * @return bool
      */
     public static function isLowRequest(Request $request)
     {
