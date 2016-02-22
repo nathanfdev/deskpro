@@ -98,13 +98,11 @@ class CoreExtension extends Extension
         $container->setDefinition('deskpro.people.groups_repos_factory', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
-        $definition->setFactoryService('deskpro.people.groups_repos_factory');
-        $definition->setFactoryMethod('createAgentGroups');
+        $definition->setFactory([new Reference('deskpro.people.groups_repos_factory'), 'createAgentGroups']);
         $container->setDefinition('deskpro.people.agent_groups', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
-        $definition->setFactoryService('deskpro.people.groups_repos_factory');
-        $definition->setFactoryMethod('createUserGroups');
+        $definition->setFactory([new Reference('deskpro.people.groups_repos_factory'), 'createUserGroups']);
         $container->setDefinition('deskpro.people.user_groups', $definition);
     }
 

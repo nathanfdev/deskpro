@@ -142,8 +142,7 @@ foreach (array(
 
     $definition = new Definition();
     $definition->setClass($class);
-    $definition->setFactoryService('deskpro.constraint_factory');
-    $definition->setFactoryMethod('get'.ucfirst($base_name));
+    $definition->setFactory([new Reference('deskpro.constraint_factory'), 'get'.ucfirst($base_name)]);
     $definition->addTag('validator.constraint_validator', array('alias' => $alias));
     $container->setDefinition('validator.deskpro.'.strtolower($alias), $definition);
 }
