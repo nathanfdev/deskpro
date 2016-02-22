@@ -31,18 +31,35 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\LabelOrganization;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class OrganizationNoteType.
+ * Class OrganizationType.
  */
-class OrganizationNoteType extends ApiType
+class OrganizationType extends ApiType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('note', 'text');
+        $builder
+            ->add('name', 'text')
+            ->add('parent', 'entity', [
+                'class' => 'DeskPRO:Organization',
+            ])
+            ->add('picture_blob', 'auth_blob', [
+                'required'      => false,
+                'property_path' => 'picture_blob',
+            ])
+            ->add('summary', 'text')
+            ->add('importance', 'integer')
+            ->add('labels', 'api_labels_collection', [
+                'labels_class'   => LabelOrganization::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'organization',
+            ])
+        ;
     }
 }

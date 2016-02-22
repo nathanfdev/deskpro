@@ -36,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use DeskPRO\Bundle\AppBundle\Form\Type\OrganizationType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -51,8 +52,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly  = ['list', 'get'];
+    public static $exposeOnly  = ['list', 'get', 'post', 'put'];
     public static $entity      = Organization::class;
+    public static $type        = OrganizationType::class;
     public static $sortOptions = [
         'date_created' => 'date_created',
         'id'           => 'id',

@@ -43,6 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Numbers;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
@@ -67,6 +68,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The organization name.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $name = null;
 
@@ -81,6 +84,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The org importance.
      *
      * @var int
+     *
+     * @Assert\NotNull()
      */
     protected $importance = 0;
 
@@ -178,10 +183,13 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->setModelField('contact_data', new ArrayCollection());
         $this->setModelField('usergroups', new ArrayCollection());
         $this->setModelField('twitter_users', new ArrayCollection());
+
         $this->setModelField('date_created', new \DateTime());
 
-        $this->slas     = new ArrayCollection();
-        $this->children = new ArrayCollection();
+        $this->slas      = new ArrayCollection();
+        $this->children  = new ArrayCollection();
+        $this->employees = new ArrayCollection();
+        $this->tickets   = new ArrayCollection();
     }
 
     /**
