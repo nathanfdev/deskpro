@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
@@ -38,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 
-class PortalExtension extends \Twig_Extension
+class PortalExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /**
      * @var ContainerInterface
