@@ -46,7 +46,6 @@ Feature: /people endpoint
     Then the response should be in JSON
     And the response status code should be 400
 
-  @basic
   Scenario: I modify and retrieve a person
     Given I have a person with name "Sample Person" and primary email "sample.person@gmail.com"
     When I send a PUT request to the just created person resource:

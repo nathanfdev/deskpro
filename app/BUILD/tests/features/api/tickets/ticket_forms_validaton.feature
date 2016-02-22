@@ -1,4 +1,3 @@
-@basic
 Feature: /ticket_forms endpoint
   To ticket with layouts form
   As a developer

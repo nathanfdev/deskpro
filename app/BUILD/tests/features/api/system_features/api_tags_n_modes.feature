@@ -1,4 +1,3 @@
-@basic
 Feature: Api tags and modes
   To grant and restrict access based on different login type
   and to have permissions based on api_key

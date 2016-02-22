@@ -1,4 +1,3 @@
-@basic
 Feature: Agent Chats api service
   To work with chats, send messages
   Search in chat history

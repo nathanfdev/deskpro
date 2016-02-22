@@ -1,4 +1,3 @@
-@basic
 Feature: Api should log any request
 
   Background:

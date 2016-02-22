@@ -7,7 +7,6 @@ Feature: /mass_actions endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @basic
   Scenario: I create first job
     When I send a POST request to "/api/v2/mass_actions/" with body:
     """

@@ -60,7 +60,6 @@ Feature: /tickets endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-  @basic
   Scenario: I try to get deleted ticket
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
