@@ -51,6 +51,7 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -89,7 +90,7 @@ class TicketsController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
-            array(
+            [
                 'ticket_list_tables'      => $tables,
                 'resolved_only'           => $resolved_only,
                 'awaiting_response_count' => $this->getAwaitingUserCount($type, $person),
@@ -99,7 +100,7 @@ class TicketsController extends AbstractController
                 'page_title'              => $this->createPageTitle()->tickets(),
                 'ticket_list_js'          => $ticket_list_js,
                 'search_query'            => $request->query->get('q', ''),
-            )
+            ]
         );
     }
 
@@ -128,6 +129,14 @@ class TicketsController extends AbstractController
      * @Route("/tickets/{ticket_ref}", name="portal_tickets_view")
      * @Route("/ticket-view/{auth}", name="portal_tickets_guest_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticket_ref
+     * @param string  $auth
+     * @param string  $visitor_id
+     * @param string  $_route
+     *
+     * @return Response
      */
     public function viewAction(Request $request, $ticket_ref = null, $auth = null, $visitor_id, $_route)
     {
@@ -141,20 +150,20 @@ class TicketsController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $form_data = array(
+        $form_data = [
             'ticket_message' => $message = new TicketMessage(),
             'attachments'    => new ArrayCollection(),
-        );
+        ];
 
         $message->setVisitorId($visitor_id);
         $message->setIpAddress($request->getClientIp());
 
-        $form = $this->createForm('ticket_reply', $form_data, array(
+        $form = $this->createForm('ticket_reply', $form_data, [
             'ticket'         => $ticket,
             'ticket_message' => $message,
             'person'         => $this->getUser(),
             'settings'       => $this->getBrandContainer()->getSettings(),
-        ));
+        ]);
 
         $form->handleRequest($request);
 
@@ -188,7 +197,7 @@ class TicketsController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
-            array(
+            [
                 'ticket'                     => $ticket,
                 'ticket_view'                => $ticket_view,
                 'timeline_pager'             => $pager,
@@ -201,13 +210,18 @@ class TicketsController extends AbstractController
                 'created_in_seconds'         => $created_in_seconds,
                 'edit_page'                  => false,
                 'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
-            )
+            ]
         );
     }
 
     /**
      * @Route("/tickets/{ticket_ref}/edit", name="portal_tickets_edit")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticket_ref
+     *
+     * @return Response
      */
     public function editAction(Request $request, $ticket_ref)
     {
@@ -221,11 +235,11 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        $form = $this->createForm('ticket', $ticket, array(
+        $form = $this->createForm('ticket', $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
             'settings'          => $this->getBrandContainer()->getSettings(),
-        ));
+        ]);
 
         $form->handleRequest($request);
 
@@ -248,20 +262,20 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm('ticket', $ticket, array(
+        $form_full = $this->createForm('ticket', $ticket, [
             'person'            => $person,
             'ticket_message'    => null,
             'settings'          => $this->getBrandContainer()->getSettings(),
             'full_version'      => true,
             'ticket_visibility' => 'edit',
             'action'            => $this->generateUrl('portal_new_ticket'),
-        ));
+        ]);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
-            array(
+            [
                 'ticket'                     => $ticket,
                 'form'                       => $form->createView(),
                 'rerendering'                => $rerendering,
@@ -274,13 +288,18 @@ class TicketsController extends AbstractController
                 'ticket_view'                => $ticket_view,
                 'ticket_display_js'          => $ticket_display_js,
                 'form_full'                  => $form_full->createView(),
-            )
+            ]
         );
     }
 
     /**
      * @Route("/tickets/{ticket_ref}/resolve", name="portal_tickets_resolve")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticket_ref
+     *
+     * @return Response
      */
     public function resolveTicketAction(Request $request, $ticket_ref)
     {
@@ -310,16 +329,21 @@ class TicketsController extends AbstractController
             ]);
         }
 
-        return $this->renderThemeView('Theme:Tickets:resolve.html.twig', array(
+        return $this->renderThemeView('Theme:Tickets:resolve.html.twig', [
             'ticket'      => $ticket,
             'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
             'page_title'  => $this->createPageTitle()->tickets($ticket),
-        ));
+        ]);
     }
 
     /**
      * @Route("/tickets/{ticket_ref}/add-cc", name="portal_tickets_cc_add")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param string  $ticket_ref
+     *
+     * @return Response
      */
     public function addCcAction(Request $request, $ticket_ref)
     {
@@ -345,7 +369,9 @@ class TicketsController extends AbstractController
 
         $person_factory = $this->get('person_factory');
         $context        = new CreatePersonContext('gateway.person');
-        if ($person = $person_factory->getOrCreatePersonByEmail($email, $context)) {
+        $person         = $person_factory->getOrCreatePersonByEmail($email, $context);
+
+        if ($person) {
             // only set the name if this email doesn't have a name (a new person)
             // otherwise anyone can CC a person and change their name in the system...
             if ($name && !$person->first_name) {
@@ -484,14 +510,14 @@ class TicketsController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
-        return $this->renderThemeView('Theme:Tickets:feedback.html.twig', array(
+        return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
             'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,
             'feedback'    => $feedback,
             'setrating'   => $set_rating_via_get,
-        ));
+        ]);
     }
 
     /**
@@ -579,9 +605,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByRef($ticket_ref)
     {
-        $repo = $this->getRepo('DeskPRO:Ticket');
-
-        return $repo->findOneBy(array('ref' => $ticket_ref));
+        return $this->getRepo('DeskPRO:Ticket')->findOneBy(['ref' => $ticket_ref]);
     }
 
     /**
@@ -591,9 +615,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByAuthIfGrantedAccess($auth)
     {
-        $repo = $this->getRepo('DeskPRO:Ticket');
-
-        $ticket = $repo->findOneBy(array('auth' => $auth));
+        $ticket = $this->getRepo('DeskPRO:Ticket')->findOneBy(['auth' => $auth]);
 
         if (!$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket)) {
             // the user has a valid auth code for a ticket, but isn't logged in
@@ -616,9 +638,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketById($ticket_ref)
     {
-        $repo = $this->getRepo('DeskPRO:Ticket');
-
-        return $repo->findOneBy(array('id' => $ticket_ref));
+        return $this->getRepo('DeskPRO:Ticket')->findOneBy(['id' => $ticket_ref]);
     }
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)
@@ -668,10 +688,10 @@ class TicketsController extends AbstractController
             // If status is pending, we'll switch it to open so agents will see it
             if (in_array(
                 $ticket->getStatusCode(),
-                array(
+                [
                     Ticket::STATUS_AWAITING_USER,
                     Ticket::STATUS_RESOLVED,
-                )
+                ]
             )) {
                 $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
             }
@@ -717,7 +737,7 @@ class TicketsController extends AbstractController
         $created            = Carbon::createFromTimestamp($ticket->date_created->getTimestamp());
         $created_in_seconds = $created->diffInSeconds();
 
-        return array($last_user_reply_in_seconds, $created_in_seconds);
+        return [$last_user_reply_in_seconds, $created_in_seconds];
     }
 
     /**
