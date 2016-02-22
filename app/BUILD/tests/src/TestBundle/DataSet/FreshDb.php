@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\InstallBundle\Data\DefaultDataProcessor;
@@ -92,7 +91,7 @@ class FreshDb extends AbstractDbSet
             false
         );
 
-        $this->getDb()->insert('permissions', array('person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 
         \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
@@ -173,9 +172,7 @@ class FreshDb extends AbstractDbSet
 
         $this->getDb()->batchInsert('department_permissions', $perms, true);
 
-        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(
-            array('sys_name' => 'everyone')
-        );
+        $USERGROUP_EVERYONE = $em->getRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'everyone']);
         $em->flush();
 
         if (!empty($USERGROUP_EVERYONE)) {
@@ -205,12 +202,12 @@ class FreshDb extends AbstractDbSet
         ];
         foreach ($fixtures as $path) {
             $app->setAutoExit(false);
-            $input = new ArrayInput(array(
+            $input = new ArrayInput([
                 'command'          => 'doctrine:fixtures:load',
                 '--fixtures'       => $path,
                 '--no-interaction' => true,
                 '--append'         => true,
-            ));
+            ]);
             $app->run($input);
         }
     }
