@@ -21,6 +21,7 @@ Feature: /organizations endpoint
     And the JSON node "data[1].name" should be equal to "Organization 2"
 
   Scenario: I try to add a new organization with empty request
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
     When I send a POST request to "/api/v2/organizations"
     Then the response status code should be 400
     And the response should be in JSON
@@ -37,12 +38,35 @@ Feature: /organizations endpoint
 {
   "name": "Organization 3",
   "summary": "test organization",
-  "importance": 3
+  "importance": 3,
+  "picture_blob": "AAAAAAAAAAAAAAAAAA"
 }
     """
-    And print last JSON response
     Then the response status code should be 201
+    And the response should be in JSON
     And the JSON node "data.id" should be equal to 3
     And the JSON node "data.name" should be equal to "Organization 3"
     And the JSON node "data.summary" should be equal to "test organization"
     And the JSON node "data.importance" should be equal to 3
+
+  Scenario: I update an organization
+    Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
+    When I send a PUT request to "/api/v2/organizations/3" with body:
+    """
+{
+  "name": "Updated organization 3",
+  "summary": "updated test organization",
+  "importance": 5,
+  "picture_blob": "BBBBBBBBBBBBBBBBBB"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/organizations/3"
+    Then the response should be in JSON
+    And the response status code should be 200
+
+    And the JSON node "data.id" should be equal to 3
+    And the JSON node "data.name" should be equal to "Updated organization 3"
+    And the JSON node "data.summary" should be equal to "updated test organization"
+    And the JSON node "data.importance" should be equal to 5
