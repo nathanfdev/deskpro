@@ -31,6 +31,7 @@
  */
 namespace DpTestSrc\TestBundle\DataSet;
 
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -90,6 +91,14 @@ class FreshDb extends AbstractDbSet
             false,
             false
         );
+
+        $cat_field                = new CustomDefFeedback();
+        $cat_field->sys_name      = 'cat';
+        $cat_field->title         = 'Category';
+        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
+        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+
+        $em->persist($cat_field);
 
         $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 
