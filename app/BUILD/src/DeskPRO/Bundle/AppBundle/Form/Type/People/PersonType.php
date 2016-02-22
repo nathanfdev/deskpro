@@ -81,11 +81,11 @@ class PersonType extends ApiType
             ->add('title_prefix')
             ->add('first_name', 'text')
             ->add('last_name', 'text')
-            ->add('summary', 'text')
-            ->add('organization_position', 'text')
             ->add('override_display_name', 'text')
+            ->add('summary', 'text')
             ->add('timezone', 'text')
             ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
+            ->add('organization_position', 'text')
             ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
             ->add('labels', 'api_labels_collection', [
                 'labels_class'   => LabelPerson::class,
