@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -55,11 +54,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
      * @var int[]
      */
     private $types = [];
-
-    /**
-     * @var int[]
-     */
-    private $typeValues = ['Suggestion', 'Feature Request', 'Bug Report'];
 
     /**
      * @var int[]
