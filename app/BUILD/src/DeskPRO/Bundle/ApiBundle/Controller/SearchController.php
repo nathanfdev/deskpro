@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -64,7 +63,7 @@ class SearchController extends BaseController
     }
 
     /**
-     * @Annotations\Get("/search/people_and_orgs", name="api_quick_search")
+     * @Annotations\Get("/search/people_and_orgs", name="api_quick_search_people_and_orgs")
      *
      * @param Request $request
      *
@@ -96,6 +95,11 @@ class SearchController extends BaseController
         return $search_request;
     }
 
+    /**
+     * @param QuickSearchRequest $search_request
+     *
+     * @return View
+     */
     protected function getSearchResults(QuickSearchRequest $search_request)
     {
         $results = $this->get('quick_search')->search($search_request);
