@@ -42,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class PeopleController.
@@ -77,6 +78,11 @@ class PeopleController extends CrudController
      *      }
      * )
      * @Get("/{id}/tickets")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
      */
     public function getTicketsAction(Request $request)
     {

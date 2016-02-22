@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -38,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AgentsController.
@@ -62,10 +60,7 @@ class AgentsController extends CrudController
     {
         $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
 
-        return View::create(
-            $this->dataSerialize($agents),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($agents));
     }
 
     /**
@@ -83,8 +78,6 @@ class AgentsController extends CrudController
     {
         $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
 
-        return View::create(
-            $this->createRepresentation($agent_ids)
-        );
+        return View::create($this->createRepresentation($agent_ids));
     }
 }

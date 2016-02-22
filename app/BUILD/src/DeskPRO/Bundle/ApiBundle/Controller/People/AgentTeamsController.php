@@ -74,13 +74,18 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         if (!empty($query['ids'])) {
             $teams = $this->selectTeams(explode(',', $query['ids']));
         } else {
-            $teams = $this->getDoctrine()->getManager()->createQueryBuilder()
-                            ->select('t')->from('DeskPRO:AgentTeam', 't')->getQuery();
+            $qb = $this
+                ->getDoctrine()
+                ->getManager()
+                ->createQueryBuilder()
+                ->select('t')
+                ->from('DeskPRO:AgentTeam', 't')
+            ;
+
+            $teams = $qb->getQuery()->getResult();
         }
 
-        $teams = $teams->getResult();
         /* @var AgentTeam[] $teams */
-
         if ($request->query->getBoolean('my', false)) {
             $teams = array_filter($teams, function ($team) {
                 /** @var AgentTeam $team */
@@ -94,10 +99,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             });
         }
 
-        return View::create(
-            $this->dataSerialize($teams),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($teams));
     }
 
     /**
@@ -225,10 +227,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         $this->getDoctrine()->getManager()->remove($team);
         $this->getDoctrine()->getManager()->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([]);
     }
 
     /**
@@ -273,14 +272,14 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             $this->getDoctrine()->getManager()->persist($team);
             $this->getDoctrine()->getManager()->flush();
 
-            $location = $this->generateUrl('api_agent_teams_get', array('id' => $team->getId()));
+            $location = $this->generateUrl('api_agent_teams_get', ['id' => $team->getId()]);
 
             return View::create(
                 $this->dataSerialize($team),
                 $status,
-                array(
+                [
                     'Location' => $location,
-                )
+                ]
             );
         }
 
@@ -296,16 +295,20 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      */
     protected function selectTeams($teamIds)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
         // Clean the IDs
         $teamIds = array_map(function ($value) {
             return (int) $value;
         }, $teamIds);
 
-        $query = $entityManager->createQueryBuilder()->select('t')->from('DeskPRO:AgentTeam', 't')
+        $query = $em
+            ->createQueryBuilder()
+            ->select('t')
+            ->from('DeskPRO:AgentTeam', 't')
             ->where('t.id IN (:teamIds)')
-            ->setParameter('teamIds', $teamIds);
+            ->setParameter('teamIds', $teamIds)
+        ;
 
         return $query->getQuery();
     }

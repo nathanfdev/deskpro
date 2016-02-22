@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -40,7 +39,6 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -94,9 +92,6 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
 
         $count = $dataService->countPeople($criteria);
 
-        return View::create(
-            $this->createRepresentation($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->createRepresentation($count));
     }
 }

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -42,6 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -57,6 +57,10 @@ class PersonNotesController extends CrudController
 
     /**
      * @Get("/people/{id}/notes")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function listAction(Request $request)
     {
@@ -65,6 +69,10 @@ class PersonNotesController extends CrudController
 
     /**
      * @Post("/people/{id}/notes")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
@@ -73,6 +81,11 @@ class PersonNotesController extends CrudController
 
     /**
      * @Put("/people/{person_id}/notes/{id}")
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return View
      */
     public function putAction($id, Request $request)
     {
@@ -89,6 +102,11 @@ class PersonNotesController extends CrudController
 
     /**
      * @Delete("/people/{person_id}/notes/{id}")
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return View
      */
     public function deleteAction($id, Request $request)
     {
