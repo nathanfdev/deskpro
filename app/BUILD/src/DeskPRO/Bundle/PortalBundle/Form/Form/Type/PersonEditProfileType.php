@@ -213,7 +213,7 @@ class PersonEditProfileType extends AbstractType
             ]);
         }
 
-        foreach ($field_manager->getAvailablePersonFields() as $field_def) {
+        foreach ($field_manager->getAvailablePersonDefs() as $field_def) {
             if (!$field_def->isEnabled()) {
                 continue;
             }

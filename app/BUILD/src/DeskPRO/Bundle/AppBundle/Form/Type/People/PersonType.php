@@ -184,7 +184,7 @@ class PersonType extends ApiType
      */
     private function getCustomDataFields(array $options)
     {
-        $field_defs  = $this->field_manager->getAvailablePersonFields();
+        $field_defs  = $this->field_manager->getAvailablePersonDefs();
         $form_fields = [];
 
         foreach ($field_defs as $field_def) {

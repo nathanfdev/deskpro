@@ -59,7 +59,10 @@ Feature: /organizations endpoint
   "importance": 5,
   "picture_blob": "BBBBBBBBBBBBBBBBBB",
   "parent": 2,
-  "labels": ["label 1", "label 2"]
+  "labels": ["label 1", "label 2"],
+  "fields": {
+    "6": "some text"
+  }
 }
     """
     Then the response status code should be 204
@@ -76,3 +79,7 @@ Feature: /organizations endpoint
     And the JSON node "data.labels" should have 2 elements
     And the JSON node "data.labels[0]" should be equal to "label 1"
     And the JSON node "data.labels[1]" should be equal to "label 2"
+    And the JSON node "data.fields" should have 3 elements
+    And the JSON node "data.fields.5.value" should exist
+    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.7.value" should be equal to 0

@@ -148,6 +148,12 @@ services:
     tags:
         - { name: form.type, alias: api_person }
 
+  dp.app.form.organization_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\OrganizationType
+    arguments: ["@custom_field_manager"]
+    tags:
+        - { name: form.type, alias: organization }
+
   form.api_boolean:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
     tags:

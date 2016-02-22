@@ -32,13 +32,31 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\LabelOrganization;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class OrganizationType.
  */
-class OrganizationType extends ApiType
+class OrganizationType extends AbstractType
 {
+    /**
+     * @var CustomFieldManager
+     */
+    private $field_manager;
+
+    /**
+     * PersonType constructor.
+     *
+     * @param CustomFieldManager $field_manager
+     */
+    public function __construct(CustomFieldManager $field_manager)
+    {
+        $this->field_manager = $field_manager;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -60,6 +78,58 @@ class OrganizationType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',
             ])
+            ->add('fields', 'deskpro_combined_type', [
+                'forms'          => $this->getCustomDataFields($options),
+                'error_bubbling' => false,
+            ])
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'organization';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'data_class'      => 'Application\DeskPRO\Entity\Organization',
+                'agent_interface' => false,
+            ])
+        ;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    private function getCustomDataFields(array $options)
+    {
+        $field_defs  = $this->field_manager->getAvailableOrganizationDefs();
+        $form_fields = [];
+
+        foreach ($field_defs as $field_def) {
+            $form_fields[] = [
+                'name'    => $field_def->getId(),
+                'type'    => 'deskpro_custom_data',
+                'options' => [
+                    'custom_def'      => $field_def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'label'           => $field_def->getTitle(),
+                    'inline'          => true,
+                ],
+            ];
+        }
+
+        return $form_fields;
     }
 }

@@ -103,45 +103,25 @@ class CustomFieldManager
     /**
      * @return CustomDefPerson[]
      */
-    public function getAvailablePersonFields()
+    public function getAvailablePersonDefs()
     {
-        return $this->em
-            ->createQueryBuilder()
-            ->select('f')
-            ->from('DeskPRO:CustomDefPerson', 'f')
-            ->where(
-                'f.is_user_enabled = true',
-                'f.is_enabled = true',
-                'f.handler_class IS NOT NULL'
-            )
-            ->orderBy('f.display_order')
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->getAvailableCustomDefs('DeskPRO:CustomDefPerson');
     }
 
     /**
      * @return CustomDefFeedback[]
      */
-    public function getFeedbackFields()
+    public function getAvailableFeedbackDefs()
     {
-        $fields     = [];
-        $all_fields = $this->em->getRepository('DeskPRO:CustomDefFeedback')->findAll();
+        return $this->getAvailableCustomDefs('DeskPRO:CustomDefFeedback');
+    }
 
-        /** @var CustomDefAbstract $field */
-        foreach ($all_fields as $field) {
-            if (!$field->isEnabled()) {
-                continue;
-            }
-
-            if ($field->getParent()) {
-                continue;
-            }
-
-            $fields[] = $field;
-        }
-
-        return $fields;
+    /**
+     * @return CustomDefOrganization[]
+     */
+    public function getAvailableOrganizationDefs()
+    {
+        return $this->getAvailableCustomDefs('DeskPRO:CustomDefOrganization');
     }
 
     /**
@@ -329,6 +309,28 @@ class CustomFieldManager
             default:
                 throw new \InvalidArgumentException('invalid field. cannot find handler for type: '.$def->getType());
         }
+    }
+
+    /**
+     * @param string $entity_type
+     *
+     * @return CustomDefAbstract[]
+     */
+    private function getAvailableCustomDefs($entity_type)
+    {
+        return $this->em
+            ->createQueryBuilder()
+            ->select('f')
+            ->from($entity_type, 'f')
+            ->where(
+                'f.is_user_enabled = true',
+                'f.is_enabled = true',
+                'f.handler_class IS NOT NULL'
+            )
+            ->orderBy('f.display_order')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     /**
