@@ -32,6 +32,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use DeskPRO\Bundle\ApiBundle\Limits\Exception\LimitExhaustedException;
 use DeskPRO\Bundle\ApiBundle\Limits\LimitsService;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -57,6 +58,10 @@ class ApiLimitsListener implements EventSubscriberInterface
     public function onController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
+        $token      = $this->container->get('security.token_storage')->getToken();
+        if (!$token || !$token instanceof ApiKeySecurityToken) {
+            return;
+        }
         if ($controller[0] instanceof BaseController && !$controller[0] instanceof ExceptionController) {
             /** @var LimitsService $service */
             $service = $this->container->get('api_limits.limits_service');

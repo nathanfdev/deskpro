@@ -72,7 +72,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getGlobalLimits()
     {
-        $db_global_limits = $this->repo()->findBy(['type' => LimitInterface::TYPE_GLOBAL]);
+        $db_global_limits = $this->repo()->findBy(['limit_type' => LimitInterface::TYPE_GLOBAL]);
         foreach ($db_global_limits as $db_limit) {
             $this->global_limits->attach($this->getLimit($db_limit), $db_limit);
         }
@@ -85,7 +85,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getKeyLimits(ApiKey $key)
     {
-        $db_key_limits = $this->repo()->findBy(['type' => LimitInterface::TYPE_KEY, 'api_key' => $key]);
+        $db_key_limits = $this->repo()->findBy(['limit_type' => LimitInterface::TYPE_KEY, 'api_key' => $key]);
         foreach ($db_key_limits as $db_limit) {
             $this->key_limits->attach($this->getLimit($db_limit), $db_limit);
         }
