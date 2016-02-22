@@ -43,10 +43,10 @@
 $CONFIG = [];
 
 $CONFIG['database'] = [
-    'host'     => DP_DATABASE_HOST,
-    'user'     => DP_DATABASE_USER,
-    'password' => DP_DATABASE_PASSWORD,
-    'dbname'   => DP_DATABASE_NAME,
+    'host'     => '127.0.0.1',
+    'user'     => 'deskpro',
+    'password' => 'deskpro',
+    'dbname'   => getenv('DATABASE_PREFIX') ? getenv('DATABASE_PREFIX').'_test' : 'deskpro_test',
 ];
 
 $CONFIG['paths'] = [
@@ -69,6 +69,3 @@ $CONFIG['env'] = [
 $CONFIG['settings'] = [
     'disable_outgoing_email' => true,
 ];
-
-define('DP_LIC_STR', 'MDAwMC0wMDAwLTAwMDBUR1FHQ1NPSFhMQk9IQ1ZJU0ZLUGlSA3p0aQFic35UP1UpUWcLaRt+ZmNZaDQ6VFR3LwQkNzxNejMmIRsOelxiChREPwEXGikODgkfLHlADRAXCAQ/fj0uIXhqa2J6H1NLfFBnbXcCXyBrFnIMak03fz5JeFg8SSpfKwZxSXpUfwUqCykAP1wwIDhdZg86NxYQCRIAZztRGiQ/PnUubyoYAytbKkMbBjENI2gdDBQFJgkhOFYZDFIwCR5dFn8HHCIpOBx1BjFzHRABUix3blUHLScILx47CWB1LUBmbGoVZDdpHnxYfh11DHtJEkkvRj1gfQx4TC9LfGQoA10AF18eGiVDB3ooJgILEFgMMyk0MlY5MQcyOTYiSQ4ANR0FGBNZMR4pLVYWW28+CgxYfw9/ACxEDmYAU3EcWgABYGldcV59AmFbKh9AXnkFVjZt');
-define('DP_INSTALL_KEY', 'DXRPIOOUEFHSRPLIIWPT');

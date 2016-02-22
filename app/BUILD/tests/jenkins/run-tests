@@ -24,10 +24,6 @@ echo "Creating config.all.php"
 cp app/BUILD/tests/config/config.all.dist.php app/BUILD/tests/config/config.all.php
 echo "--> Done"
 
-echo "Creating config.test.php"
-cp app/BUILD/tests/jenkins/config.test.php.dist app/BUILD/tests/config/config.test.php
-echo "--> Done"
-
 echo "Ensuring permissions"
 chmod -R 0777 data
 chmod -R 0777 app/BUILD/sys/cache
