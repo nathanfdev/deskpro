@@ -114,7 +114,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
             /** @var RouterInterface $router */
             $router = $this->container->get('router');
 
-            return $router->generate('dp_portal_custom_asset', ['name' => $asset->getName()], true);
+            return $router->generate('dp_portal_custom_asset', ['name' => $asset->getName()], RouterInterface::ABSOLUTE_URL);
         }
 
         return;
