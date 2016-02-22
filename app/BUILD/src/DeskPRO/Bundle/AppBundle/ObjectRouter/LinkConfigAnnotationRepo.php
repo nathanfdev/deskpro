@@ -196,17 +196,17 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
     {
         $class = $this->parseClassName($object_classname_or_filename);
 
-        // $this->config_cache->__toString() is the filename to the cached array
+        // $this->config_cache->getPath() is the filename to the cached array
         // load it into memory if it is not already
         if (!isset($this->cached_config_map)) {
             // this file should always exist in production mode (cache/portal/objectRouter.php), so we'd only fail here
             // in dev mode (or if somehow it got to production without a proper warmup, which would be
             // a really big problem!)
-            if (!file_exists($this->config_cache)) {
+            if (!file_exists($this->config_cache->getPath())) {
                 $this->warmUp(null);
             }
 
-            $this->cached_config_map = require $this->config_cache;
+            $this->cached_config_map = require $this->config_cache->getPath();
         }
 
         if (array_key_exists($class, $this->cached_config_map)) {
