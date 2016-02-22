@@ -57,6 +57,7 @@ class DevKernel extends BaseKernel
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
+            new \FOS\RestBundle\FOSRestBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
