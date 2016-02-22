@@ -86,6 +86,7 @@ class TicketMessageAttachmentType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
@@ -188,6 +189,23 @@ class TicketMessageAttachmentType extends AbstractType
                     ]);
                 }
             }
+        }
+    }
+
+    /**
+     * Deletes the TicketAttachment record if it does not contain a valid
+     * blob after all processing is done.
+     *
+     * @param FormEvent $event
+     */
+    public function onSubmit(FormEvent $event)
+    {
+        $form       = $event->getForm();
+        $attachment = $event->getData();
+
+        if ($attachment instanceof TicketAttachment && !$attachment->getBlob()) {
+            $form->setData(null);
+            $event->setData(null);
         }
     }
 
