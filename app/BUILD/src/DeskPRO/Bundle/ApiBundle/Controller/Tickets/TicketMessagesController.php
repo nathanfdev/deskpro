@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends CrudSubController
 {
-    public static $exposeOnly     = ['list', 'get', 'post'];
+    public static $exposeOnly     = ['list', 'get', 'post', 'put'];
     public static $entity         = TicketMessage::class;
     public static $type           = 'ticket_message';
     public static $parentProperty = 'ticket';

@@ -128,6 +128,7 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 6
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 0
 
@@ -141,6 +142,7 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 7
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 0
 
@@ -154,5 +156,22 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 8
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 1
+
+  Scenario: I reset ticket message attachments
+    When I send a PUT request to "/api/v2/tickets/1/messages/5" with body:
+      """
+    {
+      "message": "<span>my edited message without attachments</span>",
+      "format": "text",
+      "attachments": []
+    }
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/1/messages/5"
+    Then the response status code should be 200
+    And the JSON node "data.message" should contain "&lt;span&gt;my edited message without attachments&lt;"
+    And the JSON node "data.attachments" should have 0 elements
