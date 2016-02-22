@@ -19,14 +19,9 @@ export class DpxRte extends PageWidget {
     const $el = this.$element;
 
     const $textarea = $el.find('textarea');
-    const $format = $el.find('select');
     const $rElement = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
 
     $textarea.hide();
-    $format.val('html').hide();
-
-    $el.find('label[for=ticket_message_format]').hide();
-    $el.find('.multiselect').hide();
 
     const component = React.createElement(PortalRte, {
       className: 'dp-medium-rte medium-editor-placeholder',

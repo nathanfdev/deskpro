@@ -71,6 +71,7 @@ class TicketReplyType extends AbstractType
                 'message_label'       => $options['message_label'],
                 'label'               => false,
                 'render_is_note'      => false,
+                'format'              => 'html',
                 'message_constraints' => [
                     new NotBlank(['message' => 'portal.forms.error_ticket_msg_required']),
                 ],

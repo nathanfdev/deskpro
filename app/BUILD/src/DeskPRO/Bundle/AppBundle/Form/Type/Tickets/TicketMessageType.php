@@ -72,14 +72,22 @@ class TicketMessageType extends AbstractType
                 'required'      => $options['required'],
                 'constraints'   => $options['message_constraints'],
             ])
-            ->add('format', 'choice', [
+        ;
+
+        if ($options['format']) {
+            $builder->add('format', 'deskpro_hidden', [
+                'empty_data' => 'hidden',
+                'mapped'     => false,
+            ]);
+        } else {
+            $builder->add('format', 'choice', [
                 'choices' => [
                     'html' => 'html',
                     'text' => 'text',
                 ],
                 'mapped' => false,
-            ])
-        ;
+            ]);
+        }
 
         if ($options['render_is_note']) {
             $builder->add('is_note', 'api_boolean', [
@@ -88,7 +96,7 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetAttachments']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeMessageFormat']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
@@ -106,6 +114,7 @@ class TicketMessageType extends AbstractType
                 'ticket'              => null,
                 'person'              => null,
                 'render_is_note'      => true,
+                'format'              => '',
                 'message_constraints' => [],
                 'error_mapping'       => [
                     // we use custom setters to modify message,
@@ -120,6 +129,9 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes([
                 'person' => 'Application\\DeskPRO\\Entity\\Person',
                 'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
+            ])
+            ->setAllowedValues([
+                'format' => ['', 'html', 'text'],
             ])
         ;
     }
@@ -152,20 +164,12 @@ class TicketMessageType extends AbstractType
      */
     public function onChangeMessageFormat(FormEvent $event)
     {
-        $form    = $event->getForm();
-        $data    = $event->getData();
-        $options = $form->getConfig()->getOptions();
+        /** @var TicketMessage $data */
+        $data = $event->getData();
+        $form = $event->getForm();
 
-        if (isset($data['format']) && $data['format'] === 'text') {
-            $form
-                ->remove('message')
-                ->add('message', 'html_textarea', [
-                    'property_path' => 'message_text',
-                    'label'         => $options['message_label'],
-                    'required'      => $options['required'],
-                    'constraints'   => $options['message_constraints'],
-                ])
-            ;
+        if ($form->get('format')->getData() === 'text') {
+            $data->setMessageText($data->getMessageHtml());
         }
     }
 

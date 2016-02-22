@@ -537,6 +537,7 @@ class TicketWithLayoutsType extends AbstractType
             'person' => $context->getPerson(),
             'ticket' => $context->getTicket(),
             'data'   => $context->getMessage(),
+            'format' => $context->forApi() ? '' : 'html',
         ]);
     }
 
