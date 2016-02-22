@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Brand;
@@ -38,12 +37,9 @@ use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class BrandFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    use ContainerAwareTrait;
-
     /**
      * {@inheritdoc}
      */
