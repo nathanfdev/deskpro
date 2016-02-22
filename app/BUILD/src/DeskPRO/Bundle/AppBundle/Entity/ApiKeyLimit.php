@@ -60,9 +60,9 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="hit_limit")
      */
-    protected $limit;
+    protected $hit_limit;
 
     /**
      * @var int
@@ -80,15 +80,15 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      * interval in seconds.
      *
      * @var int
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="time_interval")
      */
-    protected $interval;
+    protected $time_interval;
 
     /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", name="limit_type")
      */
-    protected $type;
+    protected $limit_type;
 
     /**
      * @return int
@@ -135,7 +135,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function getLimit()
     {
-        return $this->limit;
+        return $this->hit_limit;
     }
 
     /**
@@ -145,7 +145,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setLimit($limit)
     {
-        $this->limit = $limit;
+        $this->hit_limit = $limit;
 
         return $this;
     }
@@ -195,7 +195,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function getInterval()
     {
-        return $this->interval;
+        return $this->time_interval;
     }
 
     /**
@@ -205,7 +205,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setInterval($interval)
     {
-        $this->interval = $interval;
+        $this->time_interval = $interval;
 
         return $this;
     }
@@ -215,7 +215,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function getType()
     {
-        return $this->type;
+        return $this->limit_type;
     }
 
     /**
@@ -225,7 +225,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->limit_type = $type;
 
         return $this;
     }

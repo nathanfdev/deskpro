@@ -62,8 +62,8 @@ class DefaultApiFixtures extends DeskProAbstractFixture implements OrderedFixtur
         $manager->persist($global_hourly_limit);
 
         $global_daily_limit = new ApiKeyLimit();
-        $limit              = $this->container->get('settings_resolver')->getGlobalSettings()->get('api_limits.global.daily');
-        $global_hourly_limit->setLimit($limit)
+        $limit              = $this->container->get('settings_resolver')->getGlobalSettings()->get('api_limits.global.day');
+        $global_daily_limit->setLimit($limit)
                             ->setCurrent($limit)
                             ->setInterval(86400)
                             ->setType(LimitInterface::TYPE_GLOBAL);

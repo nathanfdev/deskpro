@@ -35,11 +35,11 @@ class Build1456169401 extends AbstractBuild
         $this->execMutateSql('
 CREATE TABLE `api_key_limits` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`limit` INT(11) NOT NULL,
+	`hit_limit` INT(11) NOT NULL,
 	`current` INT(11) NOT NULL,
 	`start_time` DATETIME NULL DEFAULT NULL,
-	`interval` INT(11) NOT NULL,
-	`type` VARCHAR(255) NOT NULL COLLATE \'utf8_unicode_ci\',
+	`time_interval` INT(11) NOT NULL,
+	`limit_type` VARCHAR(255) NOT NULL COLLATE \'utf8_unicode_ci\',
 	`api_key_id` INT(11) NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `IDX_9A50A5F68BE312B3` (`api_key_id`),
@@ -48,8 +48,8 @@ CREATE TABLE `api_key_limits` (
 COLLATE=\'utf8_unicode_ci\'
 ENGINE=InnoDB;
 
-INSERT INTO `api_key_limits` (`limit`, `current`, `interval`, `type`) VALUES (500, 500, NULL, 3600, \'global\');
-INSERT INTO `api_key_limits` (`limit`, `current`, `interval`, `type`) VALUES (2500, 2500, NULL, 86400, \'global\');
+INSERT INTO `api_key_limits` (`hit_limit`, `current`, `time_interval`, `limit_type`) VALUES (500, 500, 3600, \'global\');
+INSERT INTO `api_key_limits` (`hit_limit`, `current`, `time_interval`, `limit_type`) VALUES (2500, 2500, 86400, \'global\');
 ');
     }
 }
