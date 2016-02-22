@@ -345,6 +345,18 @@ cd $DIR_WEB_BOWER/ng-clip
 rm -rf example
 
 ########################################################################################################################
+# Asset cleanup
+########################################################################################################################
+
+# Dont need node modules at all for old web assets
+rm -rf $DP_DIR/www/assets/BUILD/web/node_modules
+
+# remove then re-install deps for pub
+cd $DP_DIR/www/assets/BUILD/pub
+rm -rf node_modules
+npm install --production
+
+########################################################################################################################
 # Make sure cleaned files arent in checksum fule
 ########################################################################################################################
 
