@@ -87,7 +87,7 @@ class VersionedActionsLoader extends Loader
 
         $routes = new RouteCollection();
 
-        $config = Yaml::parse($this->file_locator->locate($resource));
+        $config = Yaml::parse(file_get_contents($this->file_locator->locate($resource)));
         foreach ($config['versioned_actions'] as $action_path => $versions) {
             $path_parts = explode('\\', $action_path);
             $action_name = array_pop($path_parts);
