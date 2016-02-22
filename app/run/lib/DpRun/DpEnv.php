@@ -525,6 +525,14 @@ class DpEnv
     }
 
     /**
+     * @return ConfigReaderInterface
+     */
+    public function getConfigReader()
+    {
+        return $this->config_reader;
+    }
+
+    /**
      * Find a config file or null if the file doesnt exist.
      *
      * @param string $f
