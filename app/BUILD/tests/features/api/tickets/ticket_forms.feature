@@ -268,3 +268,18 @@ Feature: /ticket_forms endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should contain "<p>my html message"
+
+  Scenario: I set empty attachments
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "department": 2,
+  "attachments": []
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].attachments" should have 0 elements

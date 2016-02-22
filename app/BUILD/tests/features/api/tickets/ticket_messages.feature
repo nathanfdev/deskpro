@@ -37,6 +37,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should be equal to "my message"
+    And the JSON node "data.attachments" should have 0 elements
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -64,6 +65,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should contain '&lt;span&gt;my html message&lt;'
+    And the JSON node "data.attachments" should have 0 elements
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -78,6 +80,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 1
     And the JSON node "data.message" should contain '<span>my note</span>'
+    And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I retrieve a ticket messages after adding
     When I send a GET request to "/api/v2/tickets/1/messages"
