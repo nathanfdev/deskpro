@@ -36,13 +36,13 @@ services:
 
   helpdesk_offline_low.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineLowListener
-    arguments: ["@deskpro.interface_info", @=service('deskpro.app_env').getUserCacheDir()]
+    arguments: ["@deskpro.interface_info", "@=service('deskpro.app_env').getUserCacheDir()"]
     tags:
       - { name: kernel.event_subscriber }
 
   helpdesk_offline_setting.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineSettingListener
-    arguments: ["@deskpro.interface_info", "@brand_stack", @=service('deskpro.app_env').getUserCacheDir()]
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@=service('deskpro.app_env').getUserCacheDir()"]
     tags:
       - { name: kernel.event_subscriber }
 
