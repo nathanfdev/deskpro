@@ -49,8 +49,7 @@ services:
 
   default_brand:
     class: Application\DeskPRO\Entity\Brand
-    factory_service: default_brand_finder
-    factory_method: getDefaultBrand
+    factory: ["@default_brand_finder", getDefaultBrand]
 
   person_factory:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonFactory

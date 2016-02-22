@@ -41,8 +41,7 @@ services:
 
   language_repository:
     class: Application\DeskPRO\EntityRepository\Language
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Language']
 
   language_extension.twig:
