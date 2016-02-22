@@ -20,14 +20,12 @@ services:
 
   email.email_account_manager:
     class: Application\DeskPRO\Email\EmailAccount\EmailAccountManager
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\EmailAccountManagerService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\EmailAccountManagerService, create]
     arguments: ["@service_container"]
 
   deskpro.blob_storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService, create]
     arguments: ["@service_container"]
 
   email.raw_transport_factory:
@@ -50,8 +48,7 @@ services:
 
   email.source_mapper:
     class: Application\EmailBundle\SourceMapper\SourceMapperInterface
-    factory_class: Application\EmailBundle\SourceMapper\DeskproSourceMapperFactory
-    factory_method: getSourceMapper
+    factory: [Application\EmailBundle\SourceMapper\DeskproSourceMapperFactory, getSourceMapper]
     arguments: ["@service_container"]
 
   email.source_sender:
@@ -62,6 +59,5 @@ services:
 
   in_email.proc_queue:
       class: Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface
-      factory_class: Application\EmailBundle\Incoming\ProcQueue\DeskproProcQueueFactory
-      factory_method: create
+      factory: [Application\EmailBundle\Incoming\ProcQueue\DeskproProcQueueFactory, create]
       arguments: ["@service_container"]

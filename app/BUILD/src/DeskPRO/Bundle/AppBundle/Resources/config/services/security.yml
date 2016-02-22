@@ -58,20 +58,17 @@ services:
 
   dp_authentication_manager.user:
     class: Application\DeskPRO\Auth\AuthenticationManager
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService, create]
     arguments: ["@service_container", 'user']
 
   dp_authentication_manager.agent:
     class: Application\DeskPRO\Auth\AuthenticationManager
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService, create]
     arguments: ["@service_container", 'agent']
 
   dp_auth_settings:
     class: Application\DeskPRO\Auth\AuthSettings
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService, create]
     arguments: ["@service_container"]
 
   ###

@@ -2,8 +2,7 @@ services:
 
   deskpro.app_env:
     class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
-    factory_class: DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory
-    factory_method: create
+    factory: [DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory, create]
 
   deskpro.db_config_reader:
     class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
@@ -15,8 +14,7 @@ services:
 
   deskpro.interface_info:
     class: DeskPRO\Bundle\AppBundle\Request\InterfaceInfo
-    factory_class: DeskPRO\Bundle\AppBundle\Request\InterfaceInfo
-    factory_method: create
+    factory: [DeskPRO\Bundle\AppBundle\Request\InterfaceInfo, create]
 
   # This is a copy of the normal doctrine cache warmer, except we've set a high
   # priority so its done first. See also LazyWamersPass

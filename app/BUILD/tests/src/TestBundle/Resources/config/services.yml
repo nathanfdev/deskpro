@@ -6,8 +6,7 @@ services:
 
     test_faker:
         class: Faker\Generator
-        factory_class: Faker\Factory
-        factory_method: create
+        factory: [Faker\Factory, create]
 
     test_factory.person:
         class: DpTestSrc\TestBundle\Factory\PersonTestFactory

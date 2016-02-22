@@ -10,14 +10,12 @@ services:
 
   blob.storage:
     class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService, create]
     arguments: ["@service_container"]
 
   deskpro_password_policy_validator:
     class: Application\DeskPRO\People\PasswordPolicyValidator
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\PasswordPolicyValidatorService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\PasswordPolicyValidatorService, create]
     arguments: ["@service_container"]
 
   avatar_resolver:
@@ -38,8 +36,7 @@ services:
 
   attachment_accepter:
     class: Application\DeskPRO\Attachments\AcceptAttachment
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService
-    factory_method: create
+    factory: [Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService, create]
     arguments: ["@service_container"]
 
   api_authorization.action_permissions.metadata_cache:

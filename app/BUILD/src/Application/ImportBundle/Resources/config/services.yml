@@ -2,8 +2,7 @@ services:
 
   deskpro.import.formatter:
     class: Application\ImportBundle\Generator\Exporter\Formatter\Formatter
-    factory_class: Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory
-    factory_method: create
+    factory: [Application\ImportBundle\Generator\Exporter\Formatter\FormatterFactory, create]
 
   deskpro.import.csv_reader_factory:
     class: Application\ImportBundle\Reader\Csv\CsvReaderFactory
@@ -23,12 +22,10 @@ services:
 
   deskpro.import:
     class: Application\ImportBundle\Importer\Importer
-    factory_class: Application\ImportBundle\Importer\ImporterFactory
-    factory_method: create
+    factory: [Application\ImportBundle\Importer\ImporterFactory, create]
     arguments: ["@service_container"]
 
   deskpro.import.batch_exporter:
     class: Application\ImportBundle\Generator\Exporter\Batch
-    factory_class: Application\ImportBundle\Generator\Exporter\BatchFactory
-    factory_method: createExporter
+    factory: [Application\ImportBundle\Generator\Exporter\BatchFactory, createExporter]
     arguments: ["@deskpro.import.formatter"]
