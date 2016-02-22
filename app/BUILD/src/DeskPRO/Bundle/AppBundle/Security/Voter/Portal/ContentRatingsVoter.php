@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Can the user rate content?
@@ -43,13 +44,23 @@ class ContentRatingsVoter extends AbstractVoter
     const RATE_DOWNLOAD = 'RATE_DOWNLOAD';
     const RATE_NEWS     = 'RATE_NEWS';
 
-    protected function getSupportedAttributes()
+    /**
+     * @inheritdoc
+     */
+    protected function supports($attribute, $subject)
     {
-        return array(self::RATE_ARTICLE, self::RATE_FEEDBACK, self::RATE_DOWNLOAD, self::RATE_NEWS);
+        $supported = array(self::RATE_ARTICLE, self::RATE_FEEDBACK, self::RATE_DOWNLOAD, self::RATE_NEWS);
+
+        return in_array($attribute, $supported);
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    /**
+     * @inheritdoc
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
+        $user = $token->getUser();
+
         if ($this->isLoggedIn($user)) {
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
@@ -70,15 +81,5 @@ class ContentRatingsVoter extends AbstractVoter
         }
 
         return false;
-    }
-
-    /**
-     * Return an array of supported classes. This will be called by supportsClass.
-     *
-     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
-     */
-    protected function getSupportedClasses()
-    {
-        return true;
     }
 }

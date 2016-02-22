@@ -35,28 +35,22 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ChatVoter extends AbstractVoter
 {
     const CHAT_VIEW = 'CHAT_VIEW';
 
-    protected function getSupportedAttributes()
-    {
-        return array(self::CHAT_VIEW);
-    }
-
     /**
-     * @param string                                                                          $attribute
-     * @param object                                                                          $chat
-     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
-     *
-     * @return bool
+     * @inheritdoc
      */
-    protected function isGranted($attribute, $chat, $user = null)
+    protected function voteOnAttribute($attribute, $chat, TokenInterface $token)
     {
         if (!$chat instanceof ChatConversation) {
             throw new InvalidArgumentException('expected ChatConversation entity, but got "'.get_class($chat).'"');
         }
+
+        $user = $token->getUser();
 
         // none of the attributes currently supported by this voter will grant unauthenticated tokens
         if (!$this->isLoggedIn($user)) {
@@ -75,12 +69,12 @@ class ChatVoter extends AbstractVoter
     }
 
     /**
-     * Return an array of supported classes. This will be called by supportsClass.
-     *
-     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
+     * @inheritdoc
      */
-    protected function getSupportedClasses()
+    protected function supports($attribute, $subject)
     {
-        return array('Application\\DeskPRO\\Entity\\ChatConversation');
+        return $subject instanceof ChatConversation && in_array($attribute, array(
+            self::CHAT_VIEW
+        ));
     }
 }
