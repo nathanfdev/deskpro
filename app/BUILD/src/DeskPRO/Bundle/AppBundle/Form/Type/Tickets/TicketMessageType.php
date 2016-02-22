@@ -94,8 +94,14 @@ class TicketMessageType extends AbstractType
                 'property_path' => 'is_agent_note',
             ]);
         }
+        if ($options['has_attachments']) {
+            $builder->add('attachments', 'ticket_message_attachment_collection', [
+                'required'       => false,
+                'person'         => $options['person'],
+                'ticket_message' => $builder->getData(),
+            ]);
+        }
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetAttachments']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
@@ -114,6 +120,7 @@ class TicketMessageType extends AbstractType
                 'ticket'              => null,
                 'person'              => null,
                 'render_is_note'      => true,
+                'has_attachments'     => false,
                 'format'              => '',
                 'message_constraints' => [],
                 'error_mapping'       => [
@@ -142,21 +149,6 @@ class TicketMessageType extends AbstractType
     public function getName()
     {
         return 'ticket_message';
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onSetAttachments(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
-
-        $form->add('attachments', 'ticket_message_attachment_collection', [
-            'required'       => false,
-            'person'         => $person,
-            'ticket_message' => $form->getData(),
-        ]);
     }
 
     /**

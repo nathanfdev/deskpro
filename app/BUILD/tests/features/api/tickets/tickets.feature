@@ -1,3 +1,4 @@
+@tickets
 Feature: /tickets endpoint
   To CRUD DeskPRO tickets
   As a developer
