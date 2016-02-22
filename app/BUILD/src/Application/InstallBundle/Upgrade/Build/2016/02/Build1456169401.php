@@ -47,6 +47,9 @@ CREATE TABLE `api_key_limits` (
 )
 COLLATE=\'utf8_unicode_ci\'
 ENGINE=InnoDB;
+
+INSERT INTO `api_key_limits` (`limit`, `current`, `interval`, `type`) VALUES (500, 500, NULL, 3600, \'global\');
+INSERT INTO `api_key_limits` (`limit`, `current`, `interval`, `type`) VALUES (2500, 2500, NULL, 86400, \'global\');
 ');
     }
 }
