@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -128,6 +128,10 @@ class PortalRequestInfo
 
     public function isSpecialPath()
     {
+        if (RequestUtils::isLowRequest($this->request)) {
+            return true;
+        }
+
         if (IsProxyRequestHelper::check($this->request)) {
             return true;
         }

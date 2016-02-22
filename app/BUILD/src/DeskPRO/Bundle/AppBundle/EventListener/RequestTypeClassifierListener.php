@@ -31,9 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Sets an attribute on the request when this is considered a "low level" request.
@@ -52,7 +52,7 @@ class RequestTypeClassifierListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         if (!$request->attributes->has(self::LOW_REQUEST_ATTR)) {
-            if (preg_match('#^/dp/#', $request->getPathInfo()) || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())) {
+            if (preg_match('#^/(dp/|favicon\.ico|sitemap\.xml|robots\.txt)#', $request->getPathInfo()) || preg_match('#^/[a-z]{2}(?:_[A-Z]{2})?/dp/#', $request->getPathInfo())) {
                 $request->attributes->set(self::LOW_REQUEST_ATTR, true);
             }
         }
