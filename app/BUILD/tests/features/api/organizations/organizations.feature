@@ -57,7 +57,9 @@ Feature: /organizations endpoint
   "name": "Updated organization 3",
   "summary": "updated test organization",
   "importance": 5,
-  "picture_blob": "BBBBBBBBBBBBBBBBBB"
+  "picture_blob": "BBBBBBBBBBBBBBBBBB",
+  "parent": 2,
+  "labels": ["label 1", "label 2"]
 }
     """
     Then the response status code should be 204
@@ -70,3 +72,7 @@ Feature: /organizations endpoint
     And the JSON node "data.name" should be equal to "Updated organization 3"
     And the JSON node "data.summary" should be equal to "updated test organization"
     And the JSON node "data.importance" should be equal to 5
+    And the JSON node "data.parent" should be equal to 2
+    And the JSON node "data.labels" should have 2 elements
+    And the JSON node "data.labels[0]" should be equal to "label 1"
+    And the JSON node "data.labels[1]" should be equal to "label 2"
