@@ -201,3 +201,13 @@
         </div>
     </article>
 {% endblock inner_content %}
+
+{% block doc_end %}
+    <script type="text/javascript">
+        window.DP_DISMISS_ALERTS = window.DP_DISMISS_ALERTS || [];
+        window.DP_DISMISS_ALERTS.push({
+            alertId: '{{ portal_path(ticket) }}',
+            alertVersion: {{ "now"|date('U') }}
+        });
+    </script>
+{% endblock %}

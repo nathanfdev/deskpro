@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -48,8 +47,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CommonController extends AbstractController
 {
-    const DISMISSED_ALERTS_COOKIE_NAME = 'dismissed_ui_alerts';
-
     /**
      * @Tag(name="get_in_touch", esi=true)
      * @TagHttpCache()
@@ -161,26 +158,12 @@ class CommonController extends AbstractController
 
         $should_display = count($saved_forms) || $lang_diff || count($tickets_awaiting_reply);
 
-        $dismissed_alerts = [];
-        // we check attributes too, because a subrequest will contain the value as a request attribute
-        // instead of as a cookie on the request (see TagRequestFactory).
-        if ($should_display && $tag_request->attributes->has(self::DISMISSED_ALERTS_COOKIE_NAME) || $tag_request->cookies->has(self::DISMISSED_ALERTS_COOKIE_NAME)) {
-            // find the ignored alerts from cookies so we can hide it in the html resposne
-            if ($tag_request->attributes->has(self::DISMISSED_ALERTS_COOKIE_NAME)) {
-                $dismissed = $tag_request->attributes->get(self::DISMISSED_ALERTS_COOKIE_NAME);
-            } else {
-                $dismissed = $tag_request->cookies->get(self::DISMISSED_ALERTS_COOKIE_NAME);
-            }
-            $dismissed_alerts = explode('#!#', $dismissed);
-        }
-
         return $this->renderThemeView('Theme:Common:alerts.html.twig', array(
             'user'                   => $user,
             'saved_forms'            => $saved_forms,
             'display_alerts'         => $should_display,
             'lang_diff'              => $lang_diff,
             'tickets_awaiting_reply' => $tickets_awaiting_reply,
-            'dismissed_alerts'       => $dismissed_alerts,
         ));
     }
 

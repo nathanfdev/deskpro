@@ -4787,18 +4787,23 @@ ul.kb-checkbox-extra {
     color: $text-color-darker;
   }
 
-  i {
+  .click-to-dismiss {
     position: absolute;
-    top: 36%;
-    right: 20px;
-    color: $text-color-lighter;
+    top: -2px;
+    right: 0;
+    padding: 10px 15px;
     cursor: pointer;
+    z-index: 9999;
 
-    // hover didn't look so good, we should look into a hover bg change maybe?
-    //&:hover {
-    //  background: #e3dddd;
-    //  color: #333;
-    //}
+    i {
+      color: $text-color-lighter;
+    }
+
+    &:hover {
+      i {
+        color: #333;
+      }
+    }
   }
 
   a {

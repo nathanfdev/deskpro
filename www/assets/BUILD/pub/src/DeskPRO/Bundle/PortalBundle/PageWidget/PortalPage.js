@@ -7,8 +7,7 @@ import { DownloadsList } from './DownloadsList';
 import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { FeedbackPage } from './FeedbackPage';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
-import { ClickToDismissWidget } from './ClickToDismissWidget';
-import { HideAlertsWidget } from './HideAlertsWidget';
+import { AlertsWidget } from './AlertsWidget';
 import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { OmniSearchWidget } from './OmniSearchWidget';
@@ -39,12 +38,11 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(HtmlLinkToPostWidget, 'body');
     this.addWidgetDef(CustomPerFieldEdit, '.form-custom-per-field');
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
-    this.addWidgetDef(ClickToDismissWidget, '.click-to-dismiss');
     this.addWidgetDef(AgentBarWidget, '#agent-bar');
     this.addWidgetDef(ArticleHighlighter, '.dpx-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
     this.addWidgetDef(LoginPage, '#login-page');
-    this.addWidgetDef(HideAlertsWidget, '#dpx-alerts');
+    this.addWidgetDef(AlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
 
