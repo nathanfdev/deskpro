@@ -29,13 +29,21 @@ Feature: /people endpoint
 {
   "name": "Sample Person",
   "primary_email": "sample.person@deskpro.com",
-  "organization_position": "Chief Sample Person"
+  "organization_position": "Chief Sample Person",
+  "fields": {
+    "6": "some text"
+  }
 }
     """
     Then the response status code should be 201
+    And print last JSON response
     And the JSON node "data.name" should be equal to "Sample Person"
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
     And the JSON node "data.primary_email" should be equal to "sample.person@deskpro.com"
+    And the JSON node "data.fields" should have 3 elements
+    And the JSON node "data.fields.5.value" should exist
+    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.7.value" should be equal to 0
 
   Scenario: I try to create a person providing empty data
     When I send a POST request to "/api/v2/people" with body:

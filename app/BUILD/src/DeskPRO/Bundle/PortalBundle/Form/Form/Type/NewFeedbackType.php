@@ -189,7 +189,7 @@ class NewFeedbackType extends AbstractType
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => $options['agent_interface'],
-                    'label'           => $field_def->title,
+                    'label'           => $field_def->getTitle(),
                 ],
             ];
         }

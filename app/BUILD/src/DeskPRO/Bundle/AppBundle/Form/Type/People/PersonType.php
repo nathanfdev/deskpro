@@ -33,12 +33,14 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class PersonType.
@@ -51,13 +53,20 @@ class PersonType extends ApiType
     private $em;
 
     /**
+     * @var CustomFieldManager
+     */
+    private $field_manager;
+
+    /**
      * PersonType constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager      $em
+     * @param CustomFieldManager $field_manager
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, CustomFieldManager $field_manager)
     {
-        $this->em = $em;
+        $this->em            = $em;
+        $this->field_manager = $field_manager;
     }
 
     /**
@@ -100,10 +109,27 @@ class PersonType extends ApiType
                 'delete_empty' => true,
                 'by_reference' => false,
             ])
+            ->add('fields', 'deskpro_combined_type', [
+                'forms'          => $this->getCustomDataFields($options),
+                'error_bubbling' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'data_class'      => 'Application\DeskPRO\Entity\Person',
+                'agent_interface' => false,
+            ])
+        ;
     }
 
     /**
@@ -149,5 +175,32 @@ class PersonType extends ApiType
                 'last_name'  => $person->last_name,
             ]));
         }
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    private function getCustomDataFields(array $options)
+    {
+        $field_defs  = $this->field_manager->getAvailablePersonFields();
+        $form_fields = [];
+
+        foreach ($field_defs as $field_def) {
+            $form_fields[] = [
+                'name'    => $field_def->getId(),
+                'type'    => 'deskpro_custom_data',
+                'options' => [
+                    'custom_def'      => $field_def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'label'           => $field_def->getTitle(),
+                    'inline'          => true,
+                ],
+            ];
+        }
+
+        return $form_fields;
     }
 }

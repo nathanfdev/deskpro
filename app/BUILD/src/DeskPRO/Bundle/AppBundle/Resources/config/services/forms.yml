@@ -144,7 +144,7 @@ services:
 
   dp.app.form.person_type:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @custom_field_manager]
     tags:
         - { name: form.type, alias: api_person }
 
