@@ -2,20 +2,20 @@ services:
 
   ticket_manager:
     class: Application\DeskPRO\Tickets\TicketManager
-    arguments: [@service_container]
+    arguments: ["@service_container"]
 
   tickets.view:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
-    arguments: [@doctrine.orm.default_entity_manager, @custom_field_manager, @ticket_layout_factory, @deskpro.core.translate, @tickets.custom_per_field_manager, @brand_aware_settings_resolver]
+    arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager", "@ticket_layout_factory", "@deskpro.core.translate", "@tickets.custom_per_field_manager", "@brand_aware_settings_resolver"]
 
   chat.view:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatViewDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   tickets.table:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketTableDataService
-    arguments: [@doctrine.orm.default_entity_manager, @data.tickets, @language_manager, @data.departments, @ticket_layout_factory, @custom_field_manager, @brand_aware_settings_resolver]
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.tickets", "@language_manager", "@data.departments", "@ticket_layout_factory", "@custom_field_manager", "@brand_aware_settings_resolver"]
 
   tickets.custom_per_field_manager:
     class: DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]

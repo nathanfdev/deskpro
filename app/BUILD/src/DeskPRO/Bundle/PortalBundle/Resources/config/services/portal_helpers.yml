@@ -3,28 +3,28 @@ services:
 
   portal_validation:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
-      arguments: [@portal_email_sender, @brand_stack, @router, @data.person]
+      arguments: ["@portal_email_sender", "@brand_stack", "@router", "@data.person"]
 
   tabs_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalTabsHelper
-      arguments: [@brand_stack, @security.authorization_checker]
+      arguments: ["@brand_stack", "@security.authorization_checker"]
 
   usersources_view_helper:
       class: DeskPRO\Bundle\PortalBundle\View\UsersourcesHelper
-      arguments: [@dp_authentication_manager.user, @language_manager]
+      arguments: ["@dp_authentication_manager.user", "@language_manager"]
 
   ratings_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
-      arguments: [@doctrine.orm.default_entity_manager, @request_stack]
+      arguments: ["@doctrine.orm.default_entity_manager", "@request_stack"]
 
   subscriptions_helper:
       class: DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper
-      arguments: [@doctrine.orm.default_entity_manager]
+      arguments: ["@doctrine.orm.default_entity_manager"]
 
   language_changer:
       class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger
-      arguments: [@router, @language_manager, @portal_mode_storage]
+      arguments: ["@router", "@language_manager", "@portal_mode_storage"]
 
   icon_factory:
       class: DeskPRO\Bundle\PortalBundle\View\PortalIconFactory
-      arguments: [@brand_stack]
+      arguments: ["@brand_stack"]

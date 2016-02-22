@@ -2,8 +2,8 @@ services:
   dp.versioned_actions_routing_loader:
     class: DeskPRO\Bundle\AppBundle\Routing\Versioning\VersionedActionsLoader
     arguments:
-      - @annotation_reader
-      - @fos_rest.routing.loader.reader.controller
-      - @file_locator
+      - "@annotation_reader"
+      - "@fos_rest.routing.loader.reader.controller"
+      - "@file_locator"
     tags:
       - { name: routing.loader }

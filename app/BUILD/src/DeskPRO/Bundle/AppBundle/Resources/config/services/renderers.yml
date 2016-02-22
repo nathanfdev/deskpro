@@ -2,11 +2,11 @@ services:
 
   inline_attachments.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\InlineAttachmentsRenderer
-    arguments: [@router, @blob.storage]
+    arguments: ["@router", "@blob.storage"]
 
   ticket_message.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\TicketMessageRenderer
-    arguments: [@inline_attachments.renderer]
+    arguments: ["@inline_attachments.renderer"]
 
   news.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\NewsRenderer

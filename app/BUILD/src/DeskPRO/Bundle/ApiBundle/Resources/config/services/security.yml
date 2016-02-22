@@ -3,22 +3,22 @@ services:
   api_authenticator:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
     arguments:
-      - @doctrine.orm.default_entity_manager
+      - "@doctrine.orm.default_entity_manager"
   api_anon_authenticator:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
     arguments:
-      - @doctrine.orm.default_entity_manager
+      - "@doctrine.orm.default_entity_manager"
 
   api_user_provider:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiUserProvider
     arguments:
-      - @doctrine.orm.default_entity_manager
+      - "@doctrine.orm.default_entity_manager"
 
   api_authorization.action_permissions.event_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiEndpointListener
     arguments:
-      - @security.authorization_checker
-      - @api_view_representation_factory
+      - "@security.authorization_checker"
+      - "@api_view_representation_factory"
     tags:
       - {name: kernel.event_subscriber }
 

@@ -6,49 +6,49 @@ services:
 
   preflight_checks.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\PreflightChecksListener
-    arguments: [@service_container]
+    arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }
 
   license_listener.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\LicenseListener
-    arguments: [@service_container]
+    arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }
 
   license_checks.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\LicenseCheckListener
-    arguments: [@service_container, @deskpro.interface_info]
+    arguments: ["@service_container", "@deskpro.interface_info"]
     tags:
       - { name: kernel.event_subscriber }
 
   welcome_wizard.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\WelcomeWizardListener
-    arguments: [@service_container]
+    arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }
 
   user_banning.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\UserBannedListener
-    arguments: [@service_container, @deskpro.interface_info]
+    arguments: ["@service_container", "@deskpro.interface_info"]
     tags:
       - { name: kernel.event_subscriber }
 
   helpdesk_offline_low.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineLowListener
-    arguments: [@deskpro.interface_info, @=service('deskpro.app_env').getUserCacheDir()]
+    arguments: ["@deskpro.interface_info", @=service('deskpro.app_env').getUserCacheDir()]
     tags:
       - { name: kernel.event_subscriber }
 
   helpdesk_offline_setting.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\HelpdeskOfflineSettingListener
-    arguments: [@deskpro.interface_info, @brand_stack, @=service('deskpro.app_env').getUserCacheDir()]
+    arguments: ["@deskpro.interface_info", "@brand_stack", @=service('deskpro.app_env').getUserCacheDir()]
     tags:
       - { name: kernel.event_subscriber }
 
   url_corrector.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
-    arguments: [@deskpro.interface_info, @brand_stack, @logger]
+    arguments: ["@deskpro.interface_info", "@brand_stack", "@logger"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -59,6 +59,6 @@ services:
 
   legacy_controller_events.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\LegacyControllerEventsListener
-    arguments: [@service_container]
+    arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }

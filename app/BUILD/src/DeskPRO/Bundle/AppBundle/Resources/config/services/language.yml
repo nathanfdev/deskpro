@@ -3,7 +3,7 @@ services:
   # Same translator config as the DpKernel uses
   deskpro.core.translate:
     class: Application\DeskPRO\Translate\Translate
-    arguments: [ @deskpro.core.translate_loader, @event_dispatcher ]
+    arguments: [ "@deskpro.core.translate_loader", "@event_dispatcher" ]
 
   deskpro.core.translate_loader_system:
     class: Application\DeskPRO\Translate\Loader\SystemLoader
@@ -11,33 +11,33 @@ services:
 
   deskpro.core.translate_loader_db:
     class: Application\DeskPRO\Translate\Loader\DbLoader
-    arguments: [ @doctrine.dbal.default_connection ]
+    arguments: [ "@doctrine.dbal.default_connection" ]
 
   deskpro.core.translate_loader:
     class: Application\DeskPRO\Translate\Loader\DeskproLoader
     calls:
-     - [setSystemLoader, [@deskpro.core.translate_loader_system] ]
-     - [setDbLoader, [@deskpro.core.translate_loader_db] ]
+     - [setSystemLoader, ["@deskpro.core.translate_loader_system"] ]
+     - [setDbLoader, ["@deskpro.core.translate_loader_db"] ]
 
   language_stack_initializer.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener
-    arguments: [@language_manager, @?portal_mode_storage, @logger, @doctrine.orm.default_entity_manager]
+    arguments: ["@language_manager", @?portal_mode_storage, "@logger", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: kernel.event_subscriber }
 
   last_language.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Language\LastLanguageListener
-    arguments: [@language_stack, @logger]
+    arguments: ["@language_stack", "@logger"]
     tags:
       - { name: kernel.event_subscriber }
 
   language_manager:
     class: DeskPRO\Bundle\AppBundle\Language\LanguageManager
-    arguments: [@deskpro.core.translate, @language_stack, @language_repository]
+    arguments: ["@deskpro.core.translate", "@language_stack", "@language_repository"]
 
   language_stack:
     class: DeskPRO\Bundle\AppBundle\Language\LanguageStack
-    arguments: [ @settings_resolver, @language_repository ]
+    arguments: [ "@settings_resolver", "@language_repository" ]
 
   language_repository:
     class: Application\DeskPRO\EntityRepository\Language
@@ -47,6 +47,6 @@ services:
 
   language_extension.twig:
     class: DeskPRO\Bundle\AppBundle\Twig\LanguageExtension
-    arguments: [@language_manager]
+    arguments: ["@language_manager"]
     tags:
       - { name: twig.extension }

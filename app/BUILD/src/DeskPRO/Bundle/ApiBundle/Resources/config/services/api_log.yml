@@ -3,27 +3,27 @@ services:
   api_log.service_factory:
     class: DeskPRO\Bundle\ApiBundle\Log\LogServiceFactory
     arguments:
-      - @service_container
+      - "@service_container"
 
   api_log.writer:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface
-    factory: [@api_log.service_factory, createWriter]
+    factory: ["@api_log.service_factory", createWriter]
 
   api_log.writer.db:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\DbWriter
     arguments:
-      - @doctrine.orm.default_entity_manager
+      - "@doctrine.orm.default_entity_manager"
 
   api_log.writer.file:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\FileWriter
     arguments:
       - %kernel.logs_dir%
-      - @settings_resolver
-      - @api_log.writer.file.serializer
+      - "@settings_resolver"
+      - "@api_log.writer.file.serializer"
 
   api_log.writer.file.serializer:
     class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializerInterface
-    factory: [@api_log.service_factory, createSerializer]
+    factory: ["@api_log.service_factory", createSerializer]
 
   api_log.writer.file.serializer.human_readable:
       class: DeskPRO\Bundle\ApiBundle\Log\Serializer\HumanReadableSerializer
@@ -31,64 +31,64 @@ services:
   api_log.writer.file.serializer.serialize:
       class: DeskPRO\Bundle\ApiBundle\Log\Serializer\SerializeSerializer
       arguments:
-        - @doctrine.orm.default_entity_manager
+        - "@doctrine.orm.default_entity_manager"
 
   api_log.finder:
     class: DeskPRO\Bundle\ApiBundle\Log\Finder\FinderInterface
-    factory: [@api_log.service_factory, createFinder]
+    factory: ["@api_log.service_factory", createFinder]
 
   api_log.finder.db:
     class: DeskPRO\Bundle\ApiBundle\Log\Finder\DbFinder
     arguments:
-      - @doctrine.orm.default_entity_manager
+      - "@doctrine.orm.default_entity_manager"
 
   api_log.listener:
       class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiLogListener
       arguments:
-          - @api_log.composer
+          - "@api_log.composer"
       tags:
           - { name: kernel.event_subscriber }
 
   api_log.dupe.listener:
       class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiDupeListener
       arguments:
-          - @api_log.composer
+          - "@api_log.composer"
       tags:
           - { name: kernel.event_subscriber }
 
   api_log.helper:
     class: DeskPRO\Bundle\ApiBundle\Log\Helper\LogHelper
     arguments:
-      - @settings_resolver
-      - @api_log.finder
+      - "@settings_resolver"
+      - "@api_log.finder"
 
   api_log.dupe_helper:
     class: DeskPRO\Bundle\ApiBundle\Log\Helper\DupeHelper
     arguments:
-      - @settings_resolver
-      - @api_log.finder
+      - "@settings_resolver"
+      - "@api_log.finder"
 
   api_log.composer:
     class: DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer
     arguments:
-      - @api_log.writer
-      - @api_log.helper
-      - @api_log.dupe_helper
-      - @security.token_storage
-      - @doctrine.orm.default_entity_manager
+      - "@api_log.writer"
+      - "@api_log.helper"
+      - "@api_log.dupe_helper"
+      - "@security.token_storage"
+      - "@doctrine.orm.default_entity_manager"
 
   api_request_id_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\Log\ApiRequestIdListener
     arguments:
-      - @api_log.helper
-      - @security.token_storage
+      - "@api_log.helper"
+      - "@security.token_storage"
     tags:
       - { name: kernel.event_subscriber }
 
   api_log.replayer:
     class: DeskPRO\Bundle\ApiBundle\Log\Replayer
     arguments:
-      - @kernel
-      - @api_log.composer
-      - @api_log.service_factory
-      - @settings_resolver
+      - "@kernel"
+      - "@api_log.composer"
+      - "@api_log.service_factory"
+      - "@settings_resolver"

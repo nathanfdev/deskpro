@@ -5,17 +5,17 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter
     arguments:
       link_generators:
-        - @object_router.link_generator.portal
-        - @object_router.link_generator.agent
-        - @object_router.link_generator.ticket
-        - @object_router.link_generator.downloads
-        - @object_router.link_generator.feedback
+        - "@object_router.link_generator.portal"
+        - "@object_router.link_generator.agent"
+        - "@object_router.link_generator.ticket"
+        - "@object_router.link_generator.downloads"
+        - "@object_router.link_generator.feedback"
 
   object_router.twig_extension:
     class: DeskPRO\Bundle\AppBundle\Twig\ObjectRouterExtension
     public: false
     arguments:
-      - @object_router
+      - "@object_router"
     tags:
       - { name: twig.extension }
 
@@ -23,8 +23,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo
     public: false
     arguments:
-      - @annotation_reader
-      - @object_router.config_cache
+      - "@annotation_reader"
+      - "@object_router.config_cache"
     tags:
       - { name: kernel.cache_warmer }
 
@@ -41,34 +41,34 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultPortalLinkGenerator
     public: false
     arguments:
-      - @object_router.annotation_config
-      - @router
-      - @property_accessor
+      - "@object_router.annotation_config"
+      - "@router"
+      - "@property_accessor"
 
   object_router.link_generator.agent:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DefaultAgentLinkGenerator
     public: false
     arguments:
-      - @object_router.annotation_config
-      - @router
-      - @property_accessor
+      - "@object_router.annotation_config"
+      - "@router"
+      - "@property_accessor"
 
   object_router.link_generator.ticket:
     public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\TicketLinkGenerator
     arguments:
-      - @router
-      - @ticket.public_id_resolver
+      - "@router"
+      - "@ticket.public_id_resolver"
 
   object_router.link_generator.downloads:
     public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\DownloadsLinkGenerator
     arguments:
-      - @router
+      - "@router"
 
   object_router.link_generator.feedback:
     public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
     arguments:
-      - @router
+      - "@router"
 

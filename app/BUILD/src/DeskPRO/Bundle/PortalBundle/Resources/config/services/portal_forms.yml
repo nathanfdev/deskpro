@@ -3,9 +3,9 @@ services:
   form_saver:
     class: DeskPRO\Bundle\PortalBundle\SavedForm\FormSaver
     arguments:
-      - @router
-      - @doctrine.orm.default_entity_manager
-      - @session
+      - "@router"
+      - "@doctrine.orm.default_entity_manager"
+      - "@session"
 
   listener.response.double_submit:
     class: DeskPRO\Bundle\PortalBundle\Form\EventListener\DoubleSubmitJavascriptListener
@@ -39,17 +39,17 @@ services:
 
   captcha_decider:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
-    arguments: [@brand_stack, @security.authorization_checker, @security.token_storage, @request_stack, @anti_abuse]
+    arguments: ["@brand_stack", "@security.authorization_checker", "@security.token_storage", "@request_stack", "@anti_abuse"]
 
   deskpro.validator.valid_recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Validator\Constraints\ValidRecaptcha2Validator
-    arguments: [@brand_stack, @request_stack]
+    arguments: ["@brand_stack", "@request_stack"]
     tags:
       - { name: validator.constraint_validator, alias: valid_recaptcha2 }
 
   form.api.chat.set_person_listener:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener
-    arguments: [@email.email_account_manager, @doctrine.orm.default_entity_manager]
+    arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
 
   #
   # Types
@@ -57,28 +57,28 @@ services:
 
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
-    arguments: [@request_stack, @language_manager, %kernel.environment%]
+    arguments: ["@request_stack", "@language_manager", %kernel.environment%]
     tags:
       - { name: form.type_extension, alias: form }
 
 
   form.ticket_reply:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
-    arguments: [@language_manager]
+    arguments: ["@language_manager"]
     tags:
       - { name: form.type, alias: ticket_reply }
 
 
   form.person_registration:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
-    arguments: [@custom_field_manager, @language_manager, @captcha_decider]
+    arguments: ["@custom_field_manager", "@language_manager", "@captcha_decider"]
     tags:
       - { name: form.type, alias: person_registration }
 
 
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
-    arguments: [@custom_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]
+    arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: form.type, alias: person_profile }
 
@@ -88,20 +88,20 @@ services:
     tags:
       - { name: form.type, alias: comment }
     arguments:
-      - @captcha_decider
-      - @language_manager
+      - "@captcha_decider"
+      - "@language_manager"
 
 
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
-    arguments: [@captcha_decider, @language_manager, @custom_field_manager]
+    arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager"]
     tags:
       - { name: form.type, alias: new_feedback }
 
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: [@blob.storage, @blob_repository, @attachment_accepter]
+    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
     tags:
       - { name: form.type, alias: feedback_attachment }
 
@@ -123,7 +123,7 @@ services:
     tags:
       - { name: form.type, alias: request_password_reset }
     arguments:
-      - @captcha_decider
+      - "@captcha_decider"
 
 
   form.person_change_password:
@@ -131,13 +131,13 @@ services:
     tags:
       - { name: form.type, alias: person_change_password }
     arguments:
-      - @captcha_decider
-      - @deskpro.core.translate
+      - "@captcha_decider"
+      - "@deskpro.core.translate"
 
 
   form.deskpro_contextual_per_field_choice:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
-    arguments: [@form_hierarchy_generator]
+    arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type, alias: deskpro_contextual_per_field_choice }
 
@@ -150,21 +150,21 @@ services:
 
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
-    arguments: [@brand_stack, @language_manager]
+    arguments: ["@brand_stack", "@language_manager"]
     tags:
       - { name: form.type, alias: deskpro_captcha }
 
 
   form.recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
-    arguments: [@brand_stack, @language_manager]
+    arguments: ["@brand_stack", "@language_manager"]
     tags:
       - { name: form.type, alias: deskpro_recaptcha }
 
 
   form.blob:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
-    arguments: [@doctrine.orm.default_entity_manager, @blob.storage, @blob_repository]
+    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage", "@blob_repository"]
     tags:
       - { name: form.type, alias: deskpro_blob }
 
@@ -177,7 +177,7 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
-    arguments: [@form.api.chat.set_person_listener, @user_chat.settings]
+    arguments: ["@form.api.chat.set_person_listener", "@user_chat.settings"]
     tags:
       - { name: form.type, alias: api_chat_create }
 
@@ -202,7 +202,7 @@ services:
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
-    arguments: [@form.api.chat.set_person_listener, @user_chat.settings]
+    arguments: ["@form.api.chat.set_person_listener", "@user_chat.settings"]
     tags:
       - { name: form.type, alias: api_chat_transcription_info }
 

@@ -7,7 +7,7 @@ services:
 
   deskpro.db_config_reader:
     class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
-    arguments: [@deskpro.app_env]
+    arguments: ["@deskpro.app_env"]
 
   ######################################################################################################################
   # Misc
@@ -22,7 +22,7 @@ services:
   # priority so its done first. See also LazyWamersPass
   doctrine.orm.proxy_cache_warmer:
     class: %doctrine.orm.proxy_cache_warmer.class%
-    arguments: [@doctrine]
+    arguments: ["@doctrine"]
     public: false
     tags:
       - { name: kernel.cache_warmer, priority: 100 }
@@ -34,20 +34,20 @@ services:
   brand_stack:
     class: DeskPRO\Bundle\PortalBundle\Brand\BrandStack
     arguments:
-      - @brand_container_factory
-      - @default_brand
+      - "@brand_container_factory"
+      - "@default_brand"
     lazy: true
 
   brand_container_factory:
     class: DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory
     arguments:
-      - @settings_resolver
-      - @doctrine.orm.default_entity_manager
-      - @deskpro.blob_storage
+      - "@settings_resolver"
+      - "@doctrine.orm.default_entity_manager"
+      - "@deskpro.blob_storage"
 
   default_brand_finder:
     class: DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder
-    arguments: [@settings_resolver, @brand_repository]
+    arguments: ["@settings_resolver", "@brand_repository"]
 
   default_brand:
     class: Application\DeskPRO\Entity\Brand
@@ -56,7 +56,7 @@ services:
 
   person_factory:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonFactory
-    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher, @brand_stack, @language_stack, @user_rule_processor]
+    arguments: ["@doctrine.orm.default_entity_manager", "@event_dispatcher", "@brand_stack", "@language_stack", "@user_rule_processor"]
 
 
   ######################################################################################################################
@@ -68,16 +68,16 @@ services:
 
   hitrecord.record_storage:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Recorder\HitDbStorage
-    arguments: [@doctrine.dbal.default_connection]
+    arguments: ["@doctrine.dbal.default_connection"]
 
   hitrecord.viewcounts.updater:
     class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewCountUpdater
-    arguments: [@doctrine.dbal.default_connection]
+    arguments: ["@doctrine.dbal.default_connection"]
 
   hitrecord.viewcounts.counter:
     class: DeskPRO\Bundle\AppBundle\HitTrack\ViewCount\ViewDbCounter
-    arguments: [@doctrine.dbal.default_connection, @settings_resolver]
+    arguments: ["@doctrine.dbal.default_connection", "@settings_resolver"]
 
   hitrecord.cleaner:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Cleaner\HitDbCleaner
-    arguments: [@doctrine.dbal.default_connection]
+    arguments: ["@doctrine.dbal.default_connection"]

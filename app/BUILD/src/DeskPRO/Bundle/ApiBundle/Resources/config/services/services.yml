@@ -4,8 +4,8 @@ services:
     class: Application\LegacyApiBundle\Request\RequestAuth
     scope: request
     arguments:
-      - @doctrine.orm.entity_manager
-      - @request
+      - "@doctrine.orm.entity_manager"
+      - "@request"
 
   api_view_representation_factory:
     class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
@@ -23,7 +23,7 @@ services:
   json_headers_response_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener
     arguments:
-      - @serializer
+      - "@serializer"
     tags:
     - { name: 'kernel.event_subscriber' }
 
@@ -43,10 +43,10 @@ services:
   job.scheduler:
     class: Application\DeskPRO\JobQueue\JobScheduler
     arguments:
-      - @doctrine.orm.entity_manager
+      - "@doctrine.orm.entity_manager"
 
   job.queue:
     class: Application\DeskPRO\JobQueue\JobQueue
     arguments:
-      - @doctrine.orm.entity_manager
-      - @job.scheduler
+      - "@doctrine.orm.entity_manager"
+      - "@job.scheduler"

@@ -2,15 +2,15 @@ services:
 
   person_manipulator:
       class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator
-      arguments: [@router, @security.token_storage]
+      arguments: ["@router", "@security.token_storage"]
 
   session.handler.dbal:
     class: DeskPRO\Bundle\PortalBundle\Session\DbalSessionHandler
-    arguments: [@doctrine.dbal.default_connection, %portal.session.name%, @visitor_identification_provider, @security.token_storage]
+    arguments: ["@doctrine.dbal.default_connection", %portal.session.name%, "@visitor_identification_provider", "@security.token_storage"]
 
   visitor_identification_provider:
     class: DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
-    arguments: [@request_stack, @logger]
+    arguments: ["@request_stack", "@logger"]
 
   pagerfanta.view.deskpro:
     class: DeskPRO\Bundle\PortalBundle\View\Pagerfanta\DeskproView
@@ -26,14 +26,14 @@ services:
 
   portal_search_serializer:
       class: DeskPRO\Bundle\PortalBundle\Search\SimplePortalEntitySerializer
-      arguments: [@object_router, @icon_factory]
+      arguments: ["@object_router", "@icon_factory"]
 
   tickets.new_ticket:
     class: DeskPRO\Bundle\PortalBundle\Ticket\NewTicket
     arguments:
-      - @doctrine.orm.default_entity_manager
-      - @ticket_manager
-      - @tickets.custom_per_field_manager
-      - @language_manager
-      - @person_factory
-      - @anti_abuse
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+      - "@tickets.custom_per_field_manager"
+      - "@language_manager"
+      - "@person_factory"
+      - "@anti_abuse"

@@ -2,141 +2,141 @@ services:
 
   data.person:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.people_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.templates:
     class: DeskPRO\Bundle\AppBundle\DataService\TemplatesDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_timeline:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketTimelineDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.departments:
     class: DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
-    arguments: [@doctrine.orm.default_entity_manager, @permissions_manager]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.articles:
     class: DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
-    arguments: [@doctrine.orm.default_entity_manager, @permissions_manager]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.news:
     class: DeskPRO\Bundle\AppBundle\DataService\NewsDataService
-    arguments: [@doctrine.orm.default_entity_manager, @permissions_manager]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.email:
     class: DeskPRO\Bundle\AppBundle\DataService\EmailDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.downloads:
     class: DeskPRO\Bundle\AppBundle\DataService\DownloadsDataService
-    arguments: [@doctrine.orm.default_entity_manager, @permissions_manager]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.feedback:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
-    arguments: [@doctrine.orm.default_entity_manager, @permissions_manager]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.feedback_comments:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.rating:
     class: DeskPRO\Bundle\AppBundle\DataService\RatingsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.filters:
     class: DeskPRO\Bundle\AppBundle\DataService\FiltersDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticketflags:
     class: DeskPRO\Bundle\AppBundle\Model\TicketFlags
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticketlabels:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketLabelsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_filter_views:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketFilterViewDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_custom_fields:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.user_groups:
     class: DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_slas:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketSlasDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.slas:
     class: DeskPRO\Bundle\AppBundle\DataService\SlasDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_layouts:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketLayoutsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_macros:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketMacrosDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticketstatuses:
     class: DeskPRO\Bundle\AppBundle\Model\TicketStatuses
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.chat:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.agent_teams:
     class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.content:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.content_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService
-    arguments: [@doctrine.orm.default_entity_manager, @data.categories]
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.categories"]
 
   data.comments:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.categories:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.apc:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.agent:
     class: DeskPRO\Bundle\AppBundle\DataService\AgentDataService
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.tickets.ticket_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService
-    arguments: [@doctrine.orm.entity_manager, @term_engine.dbal_ticket_filters.engine, @security.token_storage]
+    arguments: ["@doctrine.orm.entity_manager", "@term_engine.dbal_ticket_filters.engine", "@security.token_storage"]
 
   data.tasks:
     class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksDataService
-    arguments: [@doctrine.orm.entity_manager, @security.token_storage]
+    arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
 
   data.task_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksCountsDataService
-    arguments: [@doctrine.orm.entity_manager, @security.token_storage]
+    arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
 

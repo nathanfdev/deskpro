@@ -7,32 +7,32 @@ services:
   term_engine.php_ticket_checker.engine:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngine
     arguments:
-      - @term_engine.php_ticket_checker.engine.compiler
-      - @term_engine.expression_language
-      - @event_dispatcher
-      - @term_engine.php.helper_pool
-      - @monolog.logger.dp.tickets.filters.tengine.php.engine
+      - "@term_engine.php_ticket_checker.engine.compiler"
+      - "@term_engine.expression_language"
+      - "@event_dispatcher"
+      - "@term_engine.php.helper_pool"
+      - "@monolog.logger.dp.tickets.filters.tengine.php.engine"
 
   term_engine.php_ticket_checker.engine.compiler:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\PhpTicketCheckerEngineCompiler
     arguments:
-      - @term_engine.php_ticket_checker.compiler
-      - @term_engine.php.php_check_cacher
-      - @monolog.logger.dp.tickets.filters.tengine.php.compiler
+      - "@term_engine.php_ticket_checker.compiler"
+      - "@term_engine.php.php_check_cacher"
+      - "@monolog.logger.dp.tickets.filters.tengine.php.compiler"
 
   term_engine.php_ticket_checker.compiler:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\Compiler\PhpTicketCheckerCompiler
     arguments:
-      - @term_engine.php_ticket_checker.compiler.factory
+      - "@term_engine.php_ticket_checker.compiler.factory"
       - []  # the visitors added in compiler pass with tag "php_ticket_checker_visitor"
-      - @monolog.logger.dp.tickets.filters.tengine.php.compiler
+      - "@monolog.logger.dp.tickets.filters.tengine.php.compiler"
 
   term_engine.php.php_check_cacher:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckCacher
     arguments:
-      - @cache.one_day
-      - @term_engine.php.php_check_serializer
-      - @monolog.logger.dp.tickets.filters.tengine.php.compiler
+      - "@cache.one_day"
+      - "@term_engine.php.php_check_serializer"
+      - "@monolog.logger.dp.tickets.filters.tengine.php.compiler"
 
   term_engine.php.php_check_serializer:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheckSerializer
@@ -276,7 +276,7 @@ services:
 
   term_engine.dbal_ticket_filters.logger_visitor:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Visitor\LoggingVisitor
-    arguments: [@logger]
+    arguments: ["@logger"]
     tags:
     - { name: php_ticket_checker_visitor }
 
@@ -290,7 +290,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\AbstractPhpHelper
     abstract: true
     arguments:
-      - @monolog.logger.dp.tickets.filters.tengine.php.compiler
+      - "@monolog.logger.dp.tickets.filters.tengine.php.compiler"
 
   term_engine.php.helper_pool:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermCompilerHelperPool
@@ -315,7 +315,7 @@ services:
   term_engine.php.agent_helper:
     parent: term_engine.php.abstract_helper
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpAgentHelper
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: php_term_engine_helper }
   
