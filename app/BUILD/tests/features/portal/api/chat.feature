@@ -362,7 +362,7 @@ Feature: Widget Chat
     Then the response status code should be 204
     And the response should be empty
     And chat property "rating_overall" should be equal to 10 for chat 1
-    And chat property "rating_comment" should be null for chat 1
+    And chat property "rating_comment" should be equal to 0 for chat 1
 
   Scenario: I send negative feedback
     When I send a POST request to "/portal/api/chats/1/feedback?__sid=1-AAAAAAAAAAAAAAA" with parameters:

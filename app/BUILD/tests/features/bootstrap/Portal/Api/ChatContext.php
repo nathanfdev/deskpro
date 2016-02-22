@@ -125,11 +125,19 @@ class ChatContext extends BaseContext
      * @param string $property
      * @param int    $expected
      * @param int    $chat_id
+     *
+     * @throws \Exception
      */
     public function chatPropertyShouldBeEqual($property, $expected, $chat_id)
     {
         $conversation = $this->findConversation($chat_id);
-        expect($conversation->$property)->toBe($expected);
+        $actual       = $conversation->$property;
+
+        if ($actual != $expected) {
+            throw new \Exception(
+                sprintf("The chat property value is '%s'", json_encode($actual))
+            );
+        }
     }
 
     /**
