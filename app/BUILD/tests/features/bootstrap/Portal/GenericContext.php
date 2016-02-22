@@ -128,9 +128,9 @@ class GenericContext extends BasePortalContext
     }
 
     /**
-     * @Then I should recieve an email with the subject phrase :subject_phrase
+     * @Then I should receive an email with the subject phrase :subject_phrase
      */
-    public function iShouldRecieveAnEmailWithTheSubjectPhrase($subject_phrase)
+    public function iShouldReceiveAnEmailWithTheSubjectPhrase($subject_phrase)
     {
         $subject = $this->phrase($subject_phrase);
 
@@ -138,9 +138,9 @@ class GenericContext extends BasePortalContext
     }
 
     /**
-     * @Then I should recieve an email with the subject :subject
+     * @Then I should receive an email with the subject :subject
      */
-    public function iShouldRecieveAnEmailWithTheSubject($subject)
+    public function iShouldReceiveAnEmailWithTheSubject($subject)
     {
         expect($this->getSubjectOfLastEmail())->toBe($subject);
     }
