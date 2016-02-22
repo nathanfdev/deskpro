@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class BlobAuthType.
@@ -70,15 +70,16 @@ class BlobAuthType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new BlobAuthTransformer($this->em));
         $builder->addViewTransformer(new BlobAuthTransformer($this->em));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return 'text';
+        $resolver->setDefaults([
+            'compound' => false,
+        ]);
     }
 }
