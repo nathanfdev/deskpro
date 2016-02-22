@@ -48,6 +48,11 @@ class ApiRequestIdListener implements EventSubscriberInterface
     protected $helper;
 
     /**
+     * @var TokenStorageInterface
+     */
+    protected $token_storage;
+
+    /**
      * @param LogHelper             $helper
      * @param TokenStorageInterface $token_storage
      */
@@ -68,6 +73,9 @@ class ApiRequestIdListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         $this->helper->getRequestId($event->getRequest()->headers);
@@ -86,6 +94,7 @@ class ApiRequestIdListener implements EventSubscriberInterface
     public function onResponse(FilterResponseEvent $event)
     {
         $response = $event->getResponse();
-        $response->headers->add([LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId()]);
+        $headers  = [LogHelper::REQUEST_ID_HEADER => $this->helper->getRequestId($event->getRequest()->headers)];
+        $response->headers->add($headers);
     }
 }

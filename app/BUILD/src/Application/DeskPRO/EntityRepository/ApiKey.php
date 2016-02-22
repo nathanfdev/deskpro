@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -42,7 +43,7 @@ class ApiKey extends AbstractEntityRepository
      *
      * @param string $key_string
      *
-     * @return ApiKey
+     * @return \Application\DeskPRO\Entity\ApiKey
      */
     public function findByKeyString($key_string)
     {
