@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock\ActionPermissionsClass;
+use DeskPRO\Bundle\AppBundle\Annotation\MetadataCache;
 use Doctrine\Common\Annotations\AnnotationReader;
 use DpTest\ApiTestCase;
 use Metadata\ClassMetadata;
@@ -43,7 +44,7 @@ class ActionPermissionsMetadataFactoryTest extends ApiTestCase
     {
         parent::setUp();
         $kernel        = $this->getApiKernel(true);
-        $cache         = new ActionPermissionsCache($kernel->getContainer()->getParameter('kernel.cache_dir'));
+        $cache         = new MetadataCache($kernel->getContainer()->getParameter('kernel.cache_dir'));
         $driver        = new ActionPermissionsDriver(new AnnotationReader());
         $this->factory = new ActionPermissionsMetadataFactory($driver, $cache);
     }

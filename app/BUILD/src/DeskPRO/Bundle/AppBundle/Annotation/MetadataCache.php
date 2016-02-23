@@ -26,15 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
+namespace DeskPRO\Bundle\AppBundle\Annotation;
 
 use Metadata\Cache\FileCache;
 use Metadata\ClassMetadata;
 
 /**
- * Class ActionPermissionsCache.
+ * Class MetadataCache.
  */
-class ActionPermissionsCache extends FileCache
+class MetadataCache extends FileCache
 {
     /**
      * @var string
@@ -42,21 +42,28 @@ class ActionPermissionsCache extends FileCache
     private $dir;
 
     /**
-     * @param $cache_dir
+     * @var string
      */
-    public function __construct($cache_dir)
+    private $cache_dir;
+
+    /**
+     * @param string $kernel_cache_dir
+     * @param string $cache_dir
+     */
+    public function __construct($kernel_cache_dir, $cache_dir)
     {
-        $this->dir = rtrim($this->getCacheDir($cache_dir), '\\/');
+        $this->cache_dir = $cache_dir;
+        $this->dir       = rtrim($this->getCacheDir($kernel_cache_dir), '\\/');
     }
 
     /**
-     * @param $cache_dir
+     * @param string $kernel_cache_dir
      *
      * @return string
      */
-    protected function getCacheDir($cache_dir)
+    protected function getCacheDir($kernel_cache_dir)
     {
-        $cache_dir = str_replace('/api', '', $cache_dir).DIRECTORY_SEPARATOR.'api_permissions';
+        $cache_dir = $kernel_cache_dir.DIRECTORY_SEPARATOR.$this->cache_dir;
         if (!file_exists($cache_dir)) {
             if (!$rs = @mkdir($cache_dir, 0777, true)) {
                 throw new \RuntimeException(sprintf('Could not create cache directory "%s".', $cache_dir));

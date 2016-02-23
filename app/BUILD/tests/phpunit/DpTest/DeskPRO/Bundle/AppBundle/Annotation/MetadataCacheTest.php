@@ -26,21 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
+namespace DeskPRO\Bundle\AppBundle\Annotation;
 
 use DpTest\ApiTestCase;
 use Metadata\ClassMetadata;
 
-class ActionPermissionsCacheTest extends ApiTestCase
+/**
+ * Class MetadataCacheTest.
+ */
+class MetadataCacheTest extends ApiTestCase
 {
-    /** @var  ActionPermissionsCache */
+    /** @var  MetadataCache */
     protected static $cache;
 
+    /**
+     *
+     */
     public static function setUpBeforeClass()
     {
-        /** \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-        self::$cache = new ActionPermissionsCache($DP_ENV->getAppBaseKernelCacheDir());
+        self::$cache = new MetadataCache(self::getEnvironmentCacheDir(), 'metadata_cache');
     }
 
     /**
@@ -48,37 +52,58 @@ class ActionPermissionsCacheTest extends ApiTestCase
      */
     public function testUnableCreateCacheDir()
     {
-        new ActionPermissionsCache('/action_permissions');
+        new MetadataCache('/action_permissions', 'metadata_cache');
     }
 
+    /**
+     * test cache could be created.
+     */
     public function testCreateCache()
     {
-        self::$cache->putClassMetadataInCache(new ClassMetadata(ActionPermissionsCache::class));
+        self::$cache->putClassMetadataInCache(new ClassMetadata(MetadataCache::class));
     }
 
+    /**
+     * test cache could be read.
+     */
     public function testReadCache()
     {
-        $class_metadata = self::$cache->loadClassMetadataFromCache(new \ReflectionClass(ActionPermissionsCache::class));
+        $class_metadata = self::$cache->loadClassMetadataFromCache(new \ReflectionClass(MetadataCache::class));
         $this->assertTrue(is_object($class_metadata));
         $this->assertTrue($class_metadata instanceof ClassMetadata);
     }
 
-    public function testReadUnexistingCache()
+    /**
+     * test reading unexistent cache.
+     */
+    public function testReadUnexistentCache()
     {
         $class_metadata = self::$cache->loadClassMetadataFromCache(new \ReflectionClass(self::class));
         $this->assertFalse(is_object($class_metadata));
         $this->assertFalse($class_metadata instanceof ClassMetadata);
     }
 
+    /**
+     * test cache erasing.
+     */
     public function testEraseCache()
     {
-        self::$cache->evictClassMetadataFromCache(new \ReflectionClass(ActionPermissionsCache::class));
+        self::$cache->evictClassMetadataFromCache(new \ReflectionClass(MetadataCache::class));
     }
 
     public static function tearDownAfterClass()
     {
-        /** \DpRun\DpEnv $DP_ENV */
+        rmdir(self::getEnvironmentCacheDir().'/metadata_cache');
+    }
+
+    /**
+     * @return string
+     */
+    protected static function getEnvironmentCacheDir()
+    {
+        /* \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
-        rmdir($DP_ENV->getAppBaseKernelCacheDir().'/api_permissions');
+
+        return $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId();
     }
 }
