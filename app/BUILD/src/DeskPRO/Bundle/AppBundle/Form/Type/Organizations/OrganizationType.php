@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
@@ -98,12 +98,10 @@ class OrganizationType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class'      => 'Application\DeskPRO\Entity\Organization',
-                'agent_interface' => false,
-            ])
-        ;
+        $resolver->setDefaults([
+            'data_class'      => 'Application\DeskPRO\Entity\Organization',
+            'agent_interface' => false,
+        ]);
     }
 
     /**

@@ -149,7 +149,7 @@ services:
         - { name: form.type, alias: api_person }
 
   dp.app.form.organization_type:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\OrganizationType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
     tags:
         - { name: form.type, alias: organization }

@@ -29,8 +29,9 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
