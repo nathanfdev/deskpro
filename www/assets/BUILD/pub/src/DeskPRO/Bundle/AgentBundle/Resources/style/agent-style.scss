@@ -27,6 +27,14 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "animation"; // ReactCSSTransitionGroup
 //@import "raw/styles";
 
+// This are styles required to display labels in navigation
+@import "raw/main-panel";
+@import "raw/sidebar-labels";
+@import "raw/ticket-view";
+
+// This is tickets urgency slider styles (tickets count in navigation when grouping by urgency)
+@import "raw/sidebar-urgent-sliders";
+
 @import "chrome/positioning";
 @import "chrome/tabpane";
 @import "cards/_index";
