@@ -138,7 +138,7 @@ services:
 
   form.api_labels_collection:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@property_accessor"]
     tags:
       - { name: form.type, alias: api_labels_collection }
 

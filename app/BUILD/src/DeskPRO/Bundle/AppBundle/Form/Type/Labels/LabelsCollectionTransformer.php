@@ -31,8 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
+use Application\DeskPRO\Entity\Labels\Label;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class LabelsCollectionTransformer.
@@ -43,6 +45,11 @@ class LabelsCollectionTransformer implements DataTransformerInterface
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var PropertyAccessor
+     */
+    private $property_accessor;
 
     /**
      * @var object
@@ -67,19 +74,21 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     /**
      * LabelsCollectionTransformer constructor.
      *
-     * @param EntityManager $em
-     * @param object        $labelsOwner
-     * @param string        $labelsClass
-     * @param string        $labelsProperty
-     * @param string        $ownerProperty
+     * @param EntityManager    $em
+     * @param PropertyAccessor $property_accessor
+     * @param object           $labelsOwner
+     * @param string           $labelsClass
+     * @param string           $labelsProperty
+     * @param string           $ownerProperty
      */
-    public function __construct(EntityManager $em, $labelsOwner, $labelsClass, $labelsProperty, $ownerProperty)
+    public function __construct(EntityManager $em, PropertyAccessor $property_accessor, $labelsOwner, $labelsClass, $labelsProperty, $ownerProperty)
     {
-        $this->em             = $em;
-        $this->labelsOwner    = $labelsOwner;
-        $this->labelsClass    = $labelsClass;
-        $this->labelsProperty = $labelsProperty;
-        $this->ownerProperty  = $ownerProperty;
+        $this->em                = $em;
+        $this->property_accessor = $property_accessor;
+        $this->labelsOwner       = $labelsOwner;
+        $this->labelsClass       = $labelsClass;
+        $this->labelsProperty    = $labelsProperty;
+        $this->ownerProperty     = $ownerProperty;
     }
 
     /**
@@ -111,15 +120,22 @@ class LabelsCollectionTransformer implements DataTransformerInterface
         }
 
         $repository = $this->em->getRepository($this->labelsClass);
+        $result     = [];
 
-        $result = [];
         foreach ($labels as $label) {
-            $entity = $repository->findOneBy([$this->ownerProperty => $this->labelsOwner, 'label' => $label]);
+            $entity = $repository->findOneBy([
+                $this->ownerProperty => $this->labelsOwner,
+                'label'              => $label,
+            ]);
+
             if (!$entity) {
                 $entity = new $this->labelsClass();
+                if (!$entity instanceof Label) {
+                    throw new \InvalidArgumentException('Entity '.get_class($entity).' is not instance of '.Label::class);
+                }
 
-                $entity->label                  = $label;
-                $entity->{$this->ownerProperty} = $this->labelsOwner;
+                $entity->setLabel($label);
+                $this->property_accessor->setValue($entity, $this->ownerProperty, $this->labelsOwner);
             }
 
             $result[] = $entity;
