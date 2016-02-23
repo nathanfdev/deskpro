@@ -23,3 +23,5 @@ services:
     arguments:
       - "@api_limits.metadata_factory"
       - "@api_controllers_finder"
+    tags:
+      - { name: 'kernel.cache_warmer' }

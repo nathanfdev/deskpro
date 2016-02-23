@@ -52,7 +52,7 @@ class ApiLimitsCacheWarmer implements CacheWarmerInterface
     {
         foreach ($this->finder->getClasses() as $class) {
             try {
-                $this->factory->getMetadataForClass($class, true);
+                $this->metadata_factory->getMetadataForClass($class, true);
             } catch (AbstractClassException $e) {
                 // There is nothing to do. Or just output it
             } catch (\ReflectionException $e) {
