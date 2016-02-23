@@ -77,20 +77,30 @@ class ApiLimitsListener implements EventSubscriberInterface
         $controller = $event->getController();
         $token      = $this->container->get('security.token_storage')->getToken();
 
-        if (!$token || !$token instanceof ApiKeySecurityToken) {
+        if (!$token
+            || !$token instanceof ApiKeySecurityToken
+            || !$controller[0] instanceof BaseController
+            || $controller[0] instanceof ExceptionController
+        ) {
+            // so we have no token or it's not key auth
+            // or we have not BaseController descendant or it's ExceptionController which we don't serve
             return;
         }
 
-        if ($controller[0] instanceof BaseController && !$controller[0] instanceof ExceptionController) {
-            /** @var LimitsService $service */
-            $service = $this->container->get('api_limits.limits_service');
-            try {
-                $service->checkLimits($controller[0], $controller[1]);
-            } catch (LimitExhaustedException $e) {
-                throw new AccessDeniedHttpException($e->getMessage(), $e);
-            }
+        $classMetadata = $this->container->get('api_limits.metadata_factory')->getMetadataForClass(get_class($controller['0']));
 
-            $service->reduceLimits();
+        if ($classMetadata && isset($classMetadata->methodMetadata[$controller[1]]) && $classMetadata->methodMetadata[$controller[1]]->isLimitsDisabled()) {
+            return;
         }
+
+        /** @var LimitsService $service */
+        $service = $this->container->get('api_limits.limits_service');
+        try {
+            $service->checkLimits($controller[0], $controller[1]);
+        } catch (LimitExhaustedException $e) {
+            throw new AccessDeniedHttpException($e->getMessage(), $e);
+        }
+
+        $service->reduceLimits();
     }
 }

@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions;
+namespace DeskPRO\Bundle\AppBundle\Annotation\Limits;
 
 use DeskPRO\Bundle\AppBundle\Annotation\Driver\AbstractDriver;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;

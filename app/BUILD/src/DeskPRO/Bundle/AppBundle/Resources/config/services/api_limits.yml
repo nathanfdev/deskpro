@@ -8,7 +8,7 @@ services:
       - %kernel.debug%
 
   api_limits.metadata_driver:
-    class: DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\LimitsDriver
+    class: DeskPRO\Bundle\AppBundle\Annotation\Limits\LimitsDriver
     arguments:
       - "@annotations.reader"
 

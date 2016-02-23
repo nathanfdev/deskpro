@@ -50,6 +50,11 @@ class MethodMetadata extends BaseMethodMetadata
         return $this;
     }
 
+    public function isLimitsDisabled()
+    {
+        return $this->limits_disabled;
+    }
+
     /**
      * @return string
      */

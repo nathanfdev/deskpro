@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Pusher;
@@ -94,6 +95,7 @@ class NotificationController extends BaseController
      * @param Request $request
      *
      * @return View
+     * @ApiDisableLimits()
      * @Annotations\Get("/notify/heartbeat", name="online_heartbeat")
      */
     public function heartbeatAction(Request $request)
