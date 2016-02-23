@@ -31,59 +31,26 @@ namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
-use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
+use DeskPRO\Bundle\AppBundle\Annotation\Driver\AbstractDriver;
 use DeskPRO\Component\Util\StringUtils;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Metadata\Driver\DriverInterface;
 use Metadata\MergeableClassMetadata;
 
 /**
  * Class ActionPermissionsDriver.
  */
-class ActionPermissionsDriver implements DriverInterface
+class ActionPermissionsDriver extends AbstractDriver
 {
-    /**
-     * @var AnnotationReader
-     */
-    private $reader;
-
-    /**
-     * @param AnnotationReader $reader
-     */
-    public function __construct(AnnotationReader $reader)
+    protected function loadInternal(\ReflectionClass $class, MergeableClassMetadata $classMetadata)
     {
-        $this->reader = $reader;
-        $this->reader->addGlobalIgnoredName('SWG\Api');
-        $this->reader->addGlobalIgnoredName('SWG\Operation');
-        $this->reader->addGlobalIgnoredName('SWG\Parameters');
-        $this->reader->addGlobalIgnoredName('SWG\Parameter');
-        $this->reader->addGlobalIgnoredName('SWG\ResponseMessage');
-    }
-
-    /**
-     * @param \ReflectionClass $class
-     *
-     * @throws AbstractClassException - it should be thrown only when using cli cache:warmup
-     *
-     * @return MergeableClassMetadata
-     */
-    public function loadMetadataForClass(\ReflectionClass $class)
-    {
-        if ($class->isAbstract() || $class->isTrait() || $class->isInterface()) {
-            throw new AbstractClassException(sprintf('Skip [ %s ] class. It\'s abstract, trait or interface', $class->getName()));
-        };
-        $classMetadata = new MergeableClassMetadata($class->getName());
-
         $classModes = $this->getClassModes($class);
         $classTags  = $this->getClassTags($class);
 
-        foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if (strcasecmp(substr($method->getName(), -6 /* word 'action' length */), 'action') === 0) {
-                $methodMetadata = new MethodMetadata($class->getName(), $method->getName());
-                $this->addMethodModes($methodMetadata, $method, $classModes);
-                $this->addMethodTags($methodMetadata, $method, $classTags);
-                $classMetadata->addMethodMetadata($methodMetadata);
-            }
+        foreach ($this->getMethods($class) as $method) {
+            /* @var \ReflectionMethod $method */
+            $methodMetadata = new MethodMetadata($class->getName(), $method->getName());
+            $this->addMethodModes($methodMetadata, $method, $classModes);
+            $this->addMethodTags($methodMetadata, $method, $classTags);
+            $classMetadata->addMethodMetadata($methodMetadata);
         }
 
         return $classMetadata;
