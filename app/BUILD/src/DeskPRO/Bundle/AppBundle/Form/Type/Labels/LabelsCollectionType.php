@@ -47,7 +47,7 @@ class LabelsCollectionType extends ApiType
     private $em;
 
     /**
-     * LabelsCollectionType constructor.
+     * Constructor.
      *
      * @param EntityManager $em
      */
@@ -77,14 +77,15 @@ class LabelsCollectionType extends ApiType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        parent::setDefaultOptions($resolver);
-        $resolver->setRequired(['labels_class', 'labels_owner', 'labels_property', 'owner_property']);
-        $resolver->setDefaults([
-            'labels_property' => 'labels',
-            'allow_add'       => true,
-            'allow_delete'    => true,
-            'by_reference'    => true,
-        ]);
+        $resolver
+            ->setRequired(['labels_class', 'labels_owner', 'labels_property', 'owner_property'])
+            ->setDefaults([
+                'labels_property' => 'labels',
+                'allow_add'       => true,
+                'allow_delete'    => true,
+                'by_reference'    => true,
+            ])
+        ;
     }
 
     /**
@@ -92,14 +93,12 @@ class LabelsCollectionType extends ApiType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-        $builder->addViewTransformer($transformer = new LabelsCollectionTransformer(
+        $builder->addViewTransformer(new LabelsCollectionTransformer(
             $this->em,
             $options['labels_owner'],
             $options['labels_class'],
             $options['labels_property'],
             $options['owner_property']
         ));
-        $builder->addModelTransformer($transformer);
     }
 }

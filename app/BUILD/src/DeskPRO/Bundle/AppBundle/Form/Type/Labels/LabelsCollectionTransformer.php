@@ -83,9 +83,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param mixed $labels
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function transform($labels)
     {
@@ -104,9 +102,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param array $labels
-     *
-     * @return Label[]
+     * {@inheritdoc}
      */
     public function reverseTransform($labels)
     {
@@ -118,9 +114,11 @@ class LabelsCollectionTransformer implements DataTransformerInterface
 
         $result = [];
         foreach ($labels as $label) {
-            $entity = is_object($label) ? $label
-                    : $repository->findOneBy([$this->ownerProperty => $this->labelsOwner, 'label' => $label])
-                      ?: $this->newLabel($this->labelsOwner, $label);
+            $entity = $repository->findOneBy([$this->ownerProperty => $this->labelsOwner, 'label' => $label]);
+            if (!$entity) {
+                $entity = $this->newLabel($this->labelsOwner, $label);
+            }
+
             $result[] = $entity;
         }
 
