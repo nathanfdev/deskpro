@@ -78,7 +78,9 @@ class OrganizationType extends AbstractType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',
             ])
-            ->add('usergroups', UsergroupsType::class)
+            ->add('user_groups', UsergroupsType::class, [
+                'property_path' => 'usergroups',
+            ])
             ->add('email_domains', 'organization_domains', [
                 'owner' => $builder->getData(),
             ])

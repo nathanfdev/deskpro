@@ -31,6 +31,8 @@ Feature: /people endpoint
   "primary_email": "sample.person@deskpro.com",
   "organization": 1,
   "organization_position": "Chief Sample Person",
+  "user_groups": [1, 2],
+  "agent_groups": [7, 8],
   "fields": {
     "6": "some text"
   }
@@ -45,6 +47,9 @@ Feature: /people endpoint
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
+    And the JSON node "data.usergroups" should have 2 elements
+    And the JSON node "data.usergroups[0]" should be equal to 7
+    And the JSON node "data.usergroups[1]" should be equal to 8
 
   Scenario: I try to create a person providing empty data
     When I send a POST request to "/api/v2/people"
