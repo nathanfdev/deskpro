@@ -26,6 +26,12 @@ export const applyListParams = createAction(
   (overwrite) => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
     let params = {...current, ...overwrite};
+
+    // reset pagination when switching to another filter
+    if (overwrite.filter) {
+      delete params.page;
+    }
+
     const { delayReload } = params;
     // todo?
     delete params.delayReload;
