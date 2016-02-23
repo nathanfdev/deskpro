@@ -34,10 +34,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
 use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper;
+use DeskPRO\Bundle\AppBundle\Util\ApiControllersFinder;
 use Doctrine\ORM\EntityManager;
-use Gnugat\NomoSpaco\File\FileRepository;
-use Gnugat\NomoSpaco\FqcnRepository;
-use Gnugat\NomoSpaco\Token\ParserFactory;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -55,7 +53,9 @@ class TagsCollector
      */
     protected $helper;
 
-    /** @var MetadataFactory */
+    /**
+     * @var MetadataFactory
+     */
     protected $factory;
 
     /**
@@ -64,31 +64,26 @@ class TagsCollector
     protected $em;
 
     /**
+     * @var ApiControllersFinder
+     */
+    protected $finder;
+
+    /**
      * @param ActionPermissionsHelper $helper
      * @param MetadataFactory         $factory
-     * @param Entitymanager           $em
+     * @param EntityManager           $em
+     * @param ApiControllersFinder    $finder
      */
     public function __construct(
         ActionPermissionsHelper $helper,
         MetadataFactory $factory,
-        EntityManager $em
+        EntityManager $em,
+        ApiControllersFinder $finder
     ) {
         $this->helper  = $helper;
         $this->factory = $factory;
         $this->em      = $em;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClasses()
-    {
-        $fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());
-
-        return array_merge(
-            @$fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller'),
-            @$fqcn_repo->findIn(DP_ROOT.'/src/Application/LegacyApiBundle/Controller')
-        );
+        $this->finder  = $finder;
     }
 
     /**
@@ -123,7 +118,7 @@ class TagsCollector
      */
     public function collectTags($force_reload = false)
     {
-        foreach ($this->getClasses() as $class) {
+        foreach ($this->finder->getClasses() as $class) {
             try {
                 $classMetadata = $this->factory->getMetadataForClass($class, $force_reload);
                 $metadata[]    = $classMetadata;

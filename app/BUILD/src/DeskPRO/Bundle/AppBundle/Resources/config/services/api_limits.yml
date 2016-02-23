@@ -17,3 +17,9 @@ services:
     arguments:
       - %kernel.cache_dir%
       - 'api_limits'
+
+  api_limits.cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\ApiLimitsCacheWarmer
+    arguments:
+      - "@api_limits.metadata_factory"
+      - "@api_controllers_finder"
