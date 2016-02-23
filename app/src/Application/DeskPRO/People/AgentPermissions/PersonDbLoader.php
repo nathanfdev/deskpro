@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\People\AgentPermissions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
@@ -67,7 +68,7 @@ class PersonDbLoader
     {
         $this->person = $person;
         $this->em     = $em;
-        $this->db     = $em->getConnection();
+        $this->db     = App::getDbRead('perms');
     }
 
     /**
