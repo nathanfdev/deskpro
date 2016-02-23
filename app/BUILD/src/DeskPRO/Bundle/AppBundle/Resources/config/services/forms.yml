@@ -142,23 +142,29 @@ services:
     tags:
       - { name: form.type, alias: api_labels_collection }
 
-  form.person_type:
+  form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
     arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
     tags:
       - { name: form.type, alias: api_person }
 
-  form.organization_type:
+  form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type, alias: organization }
 
-  form.organization_domains_type:
+  form.organization_email_domains:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationEmailDomainsType
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
-      - { name: form.type, alias: organization_domains }
+      - { name: form.type, alias: organization_email_domains }
+
+  form.organization_member:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type, alias: organization_member }
 
   form.api_boolean:
     class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType

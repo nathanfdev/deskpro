@@ -141,7 +141,6 @@ class TicketMessageAttachmentType extends AbstractType
                     $this->blob_storage->deleteBlobRecord($blob);
                 }
 
-                $form->setData(null);
                 $event->setData(null);
 
                 return;
@@ -200,11 +199,8 @@ class TicketMessageAttachmentType extends AbstractType
      */
     public function onSubmit(FormEvent $event)
     {
-        $form       = $event->getForm();
         $attachment = $event->getData();
-
         if ($attachment instanceof TicketAttachment && !$attachment->getBlob()) {
-            $form->setData(null);
             $event->setData(null);
         }
     }

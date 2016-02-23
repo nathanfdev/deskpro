@@ -51,9 +51,10 @@ class UsergroupsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return EntityType::class;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onFilterValues']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeValues'], 100);
     }
 
     /**
@@ -86,10 +87,9 @@ class UsergroupsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getParent()
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onFilterValues']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeValues'], 100);
+        return EntityType::class;
     }
 
     /**

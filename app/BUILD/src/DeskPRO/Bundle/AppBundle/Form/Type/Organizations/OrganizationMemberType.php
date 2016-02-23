@@ -31,15 +31,21 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class OrganizationEmailDomainsType.
+ * Class OrganizationMemberType.
  */
-class OrganizationEmailDomainsType extends AbstractType
+class OrganizationMemberType extends AbstractType
 {
     /**
      * @var EntityManager
@@ -61,7 +67,17 @@ class OrganizationEmailDomainsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new OrganizationEmailDomainTransformer($this->em, $options['owner']));
+        $builder
+            ->add('person', IntegerType::class, [
+                'mapped' => false,
+            ])
+            ->add('position', TextType::class, [
+                'property_path' => 'organization_position',
+                'required'      => false,
+            ])
+        ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAssignPerson']);
     }
 
     /**
@@ -70,10 +86,14 @@ class OrganizationEmailDomainsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setRequired(['owner'])
             ->setDefaults([
-                'allow_add'    => true,
-                'allow_delete' => true,
+                'data_class' => Person::class,
+            ])
+            ->setRequired([
+                'organization',
+            ])
+            ->addAllowedTypes([
+                'organization' => Organization::class,
             ])
         ;
     }
@@ -81,16 +101,24 @@ class OrganizationEmailDomainsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getName()
     {
-        return 'collection';
+        return 'organization_member';
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormEvent $event
      */
-    public function getName()
+    public function onAssignPerson(FormEvent $event)
     {
-        return 'organization_email_domains';
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        $person = null;
+        if (isset($data['person'])) {
+            $person = $this->em->getRepository('DeskPRO:Person')->find($data['person']);
+        }
+
+        $form->setData($person);
     }
 }

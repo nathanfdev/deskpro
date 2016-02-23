@@ -17,7 +17,7 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/1/messages/1"
     Then the response status code should be 404
 
-  Scenario: Scenario: I fail form validation
+  Scenario: I fail form validation
     When I send a POST request to "/api/v2/tickets/1/messages"
     Then the response status code should be 400
     And the JSON node "errors.fields.message.errors[0].message" should be equal to "This value should not be blank."

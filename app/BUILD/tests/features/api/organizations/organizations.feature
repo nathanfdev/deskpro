@@ -1,3 +1,4 @@
+@organization
 Feature: /organizations endpoint
   To CRUD DeskPRO organizations
   As a developer

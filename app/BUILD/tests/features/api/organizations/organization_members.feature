@@ -1,0 +1,37 @@
+@organization
+Feature: /organization_members endpoint
+  To CRUD DeskPRO organization members
+  As a developer
+  I want an API endpoint
+
+  Background:
+    Given I install the api data set
+    And my request is authenticated
+
+  @reinstall
+  Scenario: I retrieve list of organization members
+    When I send a GET request to "/api/v2/organizations/1/members"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to 3
+    And the JSON node "data[0].primary_email" should be equal to "user@deskpro.dev"
+    And the JSON node "data[1].id" should be equal to 1
+    And the JSON node "data[1].primary_email" should be equal to "admin@deskpro.dev"
+
+  Scenario: I try add a new member with empty request
+    When I send a POST request to "/api/v2/organizations/1/members"
+    Then the response should be in JSON
+    And the response status code should be 400
+    And print last JSON response
+
+  Scenario: I try add an existing member
+    When I send a POST request to "/api/v2/organizations/1/members" with body:
+    """
+{
+  "person": 1
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 400
+    And print last JSON response

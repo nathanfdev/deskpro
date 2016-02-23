@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class OrganizationMembersController.
@@ -44,7 +45,20 @@ use FOS\RestBundle\Controller\Annotations;
  */
 class OrganizationMembersController extends CrudSubController
 {
-    public static $exposeOnly     = ['list'];
+    public static $exposeOnly     = ['list', 'post'];
     public static $entity         = Person::class;
     public static $parentProperty = 'organization';
+    public static $type           = 'organization_member';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'organization' => $this->findParentOr404(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 }

@@ -83,7 +83,7 @@ class OrganizationType extends AbstractType
                 'owner'          => $builder->getData(),
                 'property_path'  => 'usergroups',
             ])
-            ->add('email_domains', 'organization_domains', [
+            ->add('email_domains', 'organization_email_domains', [
                 'owner' => $builder->getData(),
             ])
             ->add('fields', 'deskpro_combined_type', [
