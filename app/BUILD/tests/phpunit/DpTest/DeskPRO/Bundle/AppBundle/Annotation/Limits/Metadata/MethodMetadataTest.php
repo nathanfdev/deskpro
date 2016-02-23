@@ -26,46 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Limits\Metadata;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
-use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
+use DeskPRO\Bundle\AppBundle\Annotation\Limits\Metadata\MethodMetadata;
+use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\ActionPermissionsClass;
+use DpTest\DeskProTestCase;
 
-/**
- * Class AbstractActionPermissionsClass.
- *
- * @ApiModes("standard")
- * @ApiTags("class.mock")
- */
-class ActionPermissionsClass
+class MethodMetadataTest extends DeskProTestCase
 {
-    /**
-     * @ApiDisableLimits()
-     */
-    public function inheritAction()
+    /** @var  MethodMetadata */
+    protected $metadata;
+
+    public function setUp()
     {
+        $reflection     = new \ReflectionClass(ActionPermissionsClass::class);
+        $this->metadata = new MethodMetadata($reflection->getName(), 'overrideBothAction');
     }
 
-    /**
-     * @ApiModes("all")
-     */
-    public function overrideModesAction()
+    public function testLimitsDisable()
     {
+        $this->metadata->disableLimits();
+        $this->assertTrue($this->metadata->isLimitsDisabled());
     }
 
-    /**
-     * @ApiTags("class.overridden")
-     */
-    public function overrideTagsAction()
+    public function testSerialization()
     {
-    }
-
-    /**
-     * @ApiModes({"token", "key"})
-     * @ApiTags({"class.overridden", "class.overridden2"})
-     */
-    public function overrideBothAction()
-    {
+        $this->metadata->disableLimits();
+        $str      = serialize($this->metadata);
+        $metadata = unserialize($str);
+        $this->assertTrue($metadata->isLimitsDisabled());
     }
 }
