@@ -65,6 +65,11 @@ class ActionPermissionsVoter extends Voter
     protected $helper;
 
     /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
      * @param \DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory $factory
      * @param ActionPermissionsHelper                                       $helper
      * @param EntityManager                                                 $em
