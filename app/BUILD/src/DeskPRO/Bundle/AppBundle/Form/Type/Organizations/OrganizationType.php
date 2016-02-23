@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -77,6 +78,7 @@ class OrganizationType extends AbstractType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',
             ])
+            ->add('usergroups', UsergroupsType::class)
             ->add('email_domains', 'organization_domains', [
                 'owner' => $builder->getData(),
             ])

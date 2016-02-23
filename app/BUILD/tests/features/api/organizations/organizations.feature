@@ -53,7 +53,8 @@ Feature: /organizations endpoint
   "importance": 3,
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
   "labels": ["label 1", "label 2"],
-  "email_domains": ["domain1.com", "domain2.com"]
+  "email_domains": ["domain1.com", "domain2.com"],
+  "usergroups": [1, 2]
 }
     """
     Then the response status code should be 201
@@ -68,6 +69,9 @@ Feature: /organizations endpoint
     And the JSON node "data.email_domains" should have 2 elements
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
+    And the JSON node "data.usergroups" should have 2 elements
+    And the JSON node "data.usergroups[0]" should be equal to 1
+    And the JSON node "data.usergroups[1]" should be equal to 2
 
   Scenario: I update an organization
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
