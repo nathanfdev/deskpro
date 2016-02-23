@@ -34,6 +34,6 @@ export class Detached extends Abstract {
   }
 
   _renderLayer() {
-    this.cont && ReactDOM.render(this.props.children, this.cont);
+    this.cont && ReactDOM.unstable_renderSubtreeIntoContainer(this, this.props.children, this.cont);
   }
 }
