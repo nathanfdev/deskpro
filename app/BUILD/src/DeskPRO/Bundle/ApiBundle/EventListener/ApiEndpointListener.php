@@ -70,7 +70,7 @@ class ApiEndpointListener implements EventSubscriberInterface
     public function onController(FilterControllerEvent $event)
     {
         if (!is_array($controller = $event->getController())
-            || !$controller[0] instanceof BaseController // just a stub
+            || !$controller[0] instanceof BaseController
             || $controller[0] instanceof ExceptionController) {
             return;
         }
