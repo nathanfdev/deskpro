@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -41,6 +42,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -915,6 +917,28 @@ class ApiDb extends AbstractDbSet
             "
         );
         // end of AgentAlerts
+
+        $date = new \DateTime();
+
+        $global_limits = [
+            [
+                'hit_limit'     => 5000,
+                'current'       => 5000,
+                'start_time'    => $date->format('Y-m-d H:i:s'),
+                'time_interval' => 3600,
+                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+            ],
+            [
+                'hit_limit'     => 15000,
+                'current'       => 15000,
+                'start_time'    => $date->format('Y-m-d H:i:s'),
+                'time_interval' => 86400,
+                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+            ],
+
+        ];
+
+        $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         ++$count;
 

@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -195,6 +197,28 @@ class FreshDb extends AbstractDbSet
             }
             $em->flush();
         }
+
+        $date = new \DateTime();
+
+        $global_limits = [
+            [
+                'hit_limit'     => 5000,
+                'current'       => 5000,
+                'start_time'    => $date->format('Y-m-d H:i:s'),
+                'time_interval' => 3600,
+                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+            ],
+            [
+                'hit_limit'     => 15000,
+                'current'       => 15000,
+                'start_time'    => $date->format('Y-m-d H:i:s'),
+                'time_interval' => 86400,
+                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+            ],
+
+        ];
+
+        $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         ++$count;
 
