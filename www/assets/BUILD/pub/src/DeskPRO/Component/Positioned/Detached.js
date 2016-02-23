@@ -20,7 +20,7 @@ export class Detached extends Abstract {
         document.body.appendChild(this.cont);
       }
 
-      this._renderLayer();
+      ReactDOM.unstable_renderSubtreeIntoContainer(this, this.props.children, this.cont);
       onOpen && onOpen();
       this.updatePosition();
 
@@ -31,9 +31,5 @@ export class Detached extends Abstract {
 
       onClose && onClose();
     }
-  }
-
-  _renderLayer() {
-    this.cont && ReactDOM.unstable_renderSubtreeIntoContainer(this, this.props.children, this.cont);
   }
 }
