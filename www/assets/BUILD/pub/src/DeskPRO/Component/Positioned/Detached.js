@@ -9,6 +9,14 @@ export class Detached extends Abstract {
     context: PropTypes.any
   };
 
+  componentWillUnmount() {
+    if (this.cont) {
+      ReactDOM.unmountComponentAtNode(this.cont);
+      this.cont.parentNode.removeChild(this.cont);
+      this.cont = null;
+    }
+  }
+
   componentDidUpdate() {
     const { isOpen = false } = this.state;
     const { onOpen, onClose } = this.props;
@@ -24,10 +32,12 @@ export class Detached extends Abstract {
       onOpen && onOpen();
       this.updatePosition();
 
-    } else if (this.cont) {
-      ReactDOM.unmountComponentAtNode(this.cont);
-      this.cont.parentNode.removeChild(this.cont);
-      this.cont = null;
+    } else {
+      if (this.cont) {
+        ReactDOM.unmountComponentAtNode(this.cont);
+        this.cont.parentNode.removeChild(this.cont);
+        this.cont = null;
+      }
 
       onClose && onClose();
     }
