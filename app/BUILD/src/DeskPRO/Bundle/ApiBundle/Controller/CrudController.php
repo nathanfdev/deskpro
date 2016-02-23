@@ -133,9 +133,11 @@ abstract class CrudController extends BaseController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('e')
-            ->from(static::$entity, 'e');
+            ->from(static::$entity, 'e')
+        ;
 
-        if ($ids = $request->get('ids')) {
+        $ids = $request->get('ids');
+        if ($ids) {
             $ids = explode(',', $ids);
             $ids = array_map(function ($id) { return (int) $id; }, $ids);
             if (count($ids) > static::$listMaxResults) {
@@ -168,10 +170,7 @@ abstract class CrudController extends BaseController
             }
         }
 
-        return View::create(
-            $this->dataSerialize($result),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($result));
     }
 
     /**
