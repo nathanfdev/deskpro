@@ -32,8 +32,8 @@ use Application\DeskPRO\Entity\ApiKey;
 use Application\LegacyApiBundle\Controller\AbstractController;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
+use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
 use Doctrine\ORM\EntityManager;
 use Metadata\ClassMetadata;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -55,7 +55,7 @@ class ActionPermissionsVoter extends Voter
     ];
 
     /**
-     * @var ActionPermissionsMetadataFactory
+     * @var \DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory
      */
     protected $factory;
 
@@ -65,12 +65,12 @@ class ActionPermissionsVoter extends Voter
     protected $helper;
 
     /**
-     * @param ActionPermissionsMetadataFactory $factory
-     * @param ActionPermissionsHelper          $helper
-     * @param EntityManager                    $em
+     * @param \DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory $factory
+     * @param ActionPermissionsHelper                                       $helper
+     * @param EntityManager                                                 $em
      */
     public function __construct(
-        ActionPermissionsMetadataFactory $factory,
+        MetadataFactory $factory,
         ActionPermissionsHelper $helper,
         EntityManager $em
     ) {

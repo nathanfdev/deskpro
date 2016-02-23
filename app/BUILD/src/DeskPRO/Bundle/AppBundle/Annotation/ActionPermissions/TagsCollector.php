@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions;
 
 use Application\DeskPRO\Entity\ApiKey;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException;
+use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper;
 use Doctrine\ORM\EntityManager;
@@ -55,7 +55,7 @@ class TagsCollector
      */
     protected $helper;
 
-    /** @var ActionPermissionsMetadataFactory */
+    /** @var MetadataFactory */
     protected $factory;
 
     /**
@@ -64,13 +64,13 @@ class TagsCollector
     protected $em;
 
     /**
-     * @param ActionPermissionsHelper          $helper
-     * @param ActionPermissionsMetadataFactory $factory
-     * @param Entitymanager                    $em
+     * @param ActionPermissionsHelper $helper
+     * @param MetadataFactory         $factory
+     * @param Entitymanager           $em
      */
     public function __construct(
         ActionPermissionsHelper $helper,
-        ActionPermissionsMetadataFactory $factory,
+        MetadataFactory $factory,
         EntityManager $em
     ) {
         $this->helper  = $helper;
@@ -292,8 +292,8 @@ class TagsCollector
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return ApiKey|null|object
      *
+     * @return ApiKey|null|object
      */
     public function getKey($key)
     {

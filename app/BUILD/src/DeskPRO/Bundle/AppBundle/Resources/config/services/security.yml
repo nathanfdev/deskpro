@@ -82,7 +82,7 @@ services:
       - %kernel.cache_dir%
 
   api_authorization.action_permissions.metadata_factory:
-    class: DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsMetadataFactory
+    class: DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory
     arguments:
       - "@api_authorization.action_permissions.driver"
       - "@api_authorization.action_permissions.metadata_cache"

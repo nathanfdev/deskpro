@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation;
+namespace DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
 use Metadata\Cache\FileCache;
 use Metadata\ClassMetadata;

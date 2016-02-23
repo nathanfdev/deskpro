@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Annotation;
 
+use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache;
 use DpTest\ApiTestCase;
 use Metadata\ClassMetadata;
 

@@ -40,7 +40,7 @@ services:
     arguments: ["@service_container"]
 
   api_authorization.action_permissions.metadata_cache:
-    class: DeskPRO\Bundle\AppBundle\Annotation\MetadataCache
+    class: DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache
     arguments:
       - %kernel.cache_dir%
       - 'api_permissions'

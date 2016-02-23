@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
+namespace DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock\ActionPermissionsClass;
-use DeskPRO\Bundle\AppBundle\Annotation\MetadataCache;
 use Doctrine\Common\Annotations\AnnotationReader;
 use DpTest\ApiTestCase;
 use Metadata\ClassMetadata;
 
-class ActionPermissionsMetadataFactoryTest extends ApiTestCase
+class MetadataFactoryTest extends ApiTestCase
 {
-    /** @var ActionPermissionsMetadataFactory */
+    /** @var MetadataFactory */
     protected $factory;
 
     public function setUp()
     {
         parent::setUp();
         $kernel        = $this->getApiKernel(true);
-        $cache         = new MetadataCache($kernel->getContainer()->getParameter('kernel.cache_dir'));
+        $cache         = new MetadataCache($kernel->getContainer()->getParameter('kernel.cache_dir'), 'metadata_cache');
         $driver        = new ActionPermissionsDriver(new AnnotationReader());
-        $this->factory = new ActionPermissionsMetadataFactory($driver, $cache);
+        $this->factory = new MetadataFactory($driver, $cache);
     }
 
     public function testAnnotations()
