@@ -39,15 +39,29 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ApiLimitsListener.
+ */
 class ApiLimitsListener implements EventSubscriberInterface
 {
+    /**
+     * @var ContainerInterface
+     */
     protected $container;
 
+    /**
+     * ApiLimitsListener constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container; // we really do not want to get LimitsService as soon as possible, but only when it would be needed
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -55,13 +69,18 @@ class ApiLimitsListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     */
     public function onController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
         $token      = $this->container->get('security.token_storage')->getToken();
+
         if (!$token || !$token instanceof ApiKeySecurityToken) {
             return;
         }
+
         if ($controller[0] instanceof BaseController && !$controller[0] instanceof ExceptionController) {
             /** @var LimitsService $service */
             $service = $this->container->get('api_limits.limits_service');
