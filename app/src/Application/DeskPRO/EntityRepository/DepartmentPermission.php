@@ -65,7 +65,7 @@ class DepartmentPermission extends AbstractEntityRepository
             $this->cache_by_agent = array();
             $this->cache_by_group = array();
 
-            $q = $this->_em->getConnection()->query('
+            $q = App::getContainer()->getDbRead()->query('
                 SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
                 FROM department_permissions dp
             ');
