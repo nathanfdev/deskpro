@@ -87,18 +87,18 @@ class LabelsCollectionTransformer implements DataTransformerInterface
      */
     public function transform($labels)
     {
-        if (is_array($labels) || $labels instanceof \Traversable) {
-            $result = [];
-            foreach ($labels as $label) {
-                if (is_string($label)) {
-                    $result[] = $label;
-                }
-            }
-
-            return $result;
+        if (!is_array($labels) && !$labels instanceof \Traversable) {
+            return [];
         }
 
-        return [];
+        $result = [];
+        foreach ($labels as $label) {
+            if (is_string($label)) {
+                $result[] = $label;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -107,7 +107,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     public function reverseTransform($labels)
     {
         if (!$this->labelsOwner) {
-            return;
+            throw new \InvalidArgumentException('Labels owner is not defined.');
         }
 
         $repository = $this->em->getRepository($this->labelsClass);
@@ -116,33 +116,15 @@ class LabelsCollectionTransformer implements DataTransformerInterface
         foreach ($labels as $label) {
             $entity = $repository->findOneBy([$this->ownerProperty => $this->labelsOwner, 'label' => $label]);
             if (!$entity) {
-                $entity = $this->newLabel($this->labelsOwner, $label);
+                $entity = new $this->labelsClass();
+
+                $entity->label                  = $label;
+                $entity->{$this->ownerProperty} = $this->labelsOwner;
             }
 
             $result[] = $entity;
         }
 
         return $result;
-    }
-
-    /**
-     * @param object $owner
-     * @param string $label
-     *
-     * @return mixed
-     */
-    private function newLabel($owner, $label)
-    {
-        $new = new $this->labelsClass();
-
-        $reflectionLabel = new \ReflectionProperty($this->labelsClass, 'label');
-        $reflectionLabel->setAccessible(true);
-        $reflectionLabel->setValue($new, $label);
-
-        $reflectionOwner = new \ReflectionProperty($this->labelsClass, $this->ownerProperty);
-        $reflectionOwner->setAccessible(true);
-        $reflectionOwner->setValue($new, $owner);
-
-        return $new;
     }
 }

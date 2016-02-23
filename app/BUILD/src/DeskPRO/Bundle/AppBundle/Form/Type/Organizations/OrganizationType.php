@@ -68,7 +68,6 @@ class OrganizationType extends AbstractType
                 'class' => 'DeskPRO:Organization',
             ])
             ->add('picture_blob', 'auth_blob', [
-                'required'      => false,
                 'property_path' => 'picture_blob',
             ])
             ->add('summary', 'text')
@@ -77,6 +76,9 @@ class OrganizationType extends AbstractType
                 'labels_class'   => LabelOrganization::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',
+            ])
+            ->add('email_domains', 'organization_domains', [
+                'owner' => $builder->getData(),
             ])
             ->add('fields', 'deskpro_combined_type', [
                 'forms'          => $this->getCustomDataFields($options),

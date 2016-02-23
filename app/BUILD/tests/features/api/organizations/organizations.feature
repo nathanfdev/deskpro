@@ -32,6 +32,18 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.importance.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.importance.errors[0].message" should be equal to "This value should not be blank."
 
+  Scenario: I try to add a new organization with not valid email domain
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Organization 3",
+  "email_domains": [{"title": "domain1.com"}, "domain2.com"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
   Scenario: I create a new organization
     When I send a POST request to "/api/v2/organizations" with body:
     """
@@ -39,7 +51,8 @@ Feature: /organizations endpoint
   "name": "Organization 3",
   "summary": "test organization",
   "importance": 3,
-  "picture_blob": "AAAAAAAAAAAAAAAAAA"
+  "picture_blob": "AAAAAAAAAAAAAAAAAA",
+  "email_domains": ["domain1.com", "domain2.com"]
 }
     """
     Then the response status code should be 201
@@ -48,6 +61,9 @@ Feature: /organizations endpoint
     And the JSON node "data.name" should be equal to "Organization 3"
     And the JSON node "data.summary" should be equal to "test organization"
     And the JSON node "data.importance" should be equal to 3
+    And the JSON node "data.email_domains" should have 2 elements
+    And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
+    And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
 
   Scenario: I update an organization
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
