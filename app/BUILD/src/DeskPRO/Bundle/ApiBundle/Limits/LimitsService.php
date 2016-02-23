@@ -129,7 +129,7 @@ class LimitsService
     {
         foreach ($this->limit_set as $limit) {
             /** @var LimitInterface $limit */
-            if (!$limit->hasLimit() && !$limit->replenish()) {
+            if (!$limit->replenish() && !$limit->hasLimit()) {
                 throw new LimitExhaustedException();
             }
         }

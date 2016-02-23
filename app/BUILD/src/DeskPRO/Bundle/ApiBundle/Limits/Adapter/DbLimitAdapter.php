@@ -126,7 +126,8 @@ class DbLimitAdapter implements LimitAdapterInterface
             ->setCurrent($limit->getCurrentLimit())
             ->setStartTime($limit->getStartTime());
 
-//        $this->em->persist($db_limit);
+        $this->em->persist($db_limit);
+        $this->em->flush($db_limit);
     }
 
     /**
@@ -169,27 +170,5 @@ class DbLimitAdapter implements LimitAdapterInterface
     private function repo()
     {
         return $this->em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
-    }
-
-    /**
-     * @todo remove from desctructor
-     */
-    public function __destruct()
-    {
-        $flush = [];
-        $this->global_limits->rewind();
-        $this->key_limits->rewind();
-        while ($this->global_limits->current()) {
-            $flush[] = $this->global_limits->getInfo();
-            $this->global_limits->next();
-        }
-        while ($this->key_limits->current()) {
-            $flush[] = $this->key_limits->getInfo();
-            $this->key_limits->next();
-        }
-        foreach ($flush as $limit) {
-            $this->em->persist($limit);
-        }
-        $this->em->flush($flush);
     }
 }
