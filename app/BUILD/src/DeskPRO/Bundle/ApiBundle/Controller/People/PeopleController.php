@@ -80,7 +80,6 @@ class PeopleController extends CrudController
      * @Get("/{id}/tickets")
      *
      * @param Request $request
-     * @param int     $id
      *
      * @return Response
      */
@@ -93,11 +92,7 @@ class PeopleController extends CrudController
 
     public function getTickets20151231Action()
     {
-        die("v 20151231");
-    }
-    public function getTicketsiOSAction()
-    {
-        die("v iOS");
+        die('v 20151231');
     }
 
     // #################################################################################################################

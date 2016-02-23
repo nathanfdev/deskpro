@@ -1,5 +1,8 @@
 api_routes:
-    prefix: /api/v2/
+    prefix: /api/v2/{minor_version}
+    requirements:
+      minor_version: \d{8}
+    requirements:
     type: annotation
     resource: "@ApiBundle/Controller"
 

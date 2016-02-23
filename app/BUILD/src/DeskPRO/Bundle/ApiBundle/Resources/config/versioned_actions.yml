@@ -1,15 +1,4 @@
 versioned_actions:
-
-  # 4 sample versions of the getTicketsAction()
-  #
-  # 20151231 and iOS are examples of working versions
-  # 20160218 and blackberry are examples of versions which existed some time and later made pointing other versions
-  #
-  # First two version are YMD, another two have more logical names, action version used in URL may be any string
-  # and it just demostrates something we may want to use (/api/v2.iOS/ etc)
-
   People\PeopleController\getTickets:
-    - 20151231:   Some brief description of this version and reason why it exists
-    - 20160218:   (replaced) This is an example of removed in favour of the main version
-    - iOS:        Description why we have a special version for iOS
-    - blackberry: (replaced:iOS) Example of another replaced action
+    - 20151231: Some brief description of this version and reason why it exists
+    - 20160218: (replaced) This is an example of removed in favour of the main version
