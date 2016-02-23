@@ -26,56 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
+use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache;
+use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
+use DpTest\ApiTestCase;
 use DpTest\DeskPRO\Bundle\AppBundle\Annotation\CheckMetadataTrait;
-use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\AbstractActionPermissionsClass;
 use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\ActionPermissionsClass;
-use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\InterfaceActionPermissions;
-use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\TraitActionPermissions;
-use DpTest\DeskProTestCase;
 
-class ActionPermissionsDriverTest extends DeskProTestCase
+class MetadataFactoryTest extends ApiTestCase
 {
     use CheckMetadataTrait;
 
-    /** @var ActionPermissionsDriver */
-    protected $driver;
+    /** @var MetadataFactory */
+    protected $factory;
 
     public function setUp()
     {
-        $this->driver = new ActionPermissionsDriver(new AnnotationReader());
-    }
-
-    /**
-     * @expectedException \DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException
-     */
-    public function testAbstractClassParsing()
-    {
-        $this->driver->loadMetadataForClass(new \ReflectionClass(AbstractActionPermissionsClass::class));
-    }
-
-    /**
-     * @expectedException \DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException
-     */
-    public function testInterfaceParsing()
-    {
-        $this->driver->loadMetadataForClass(new \ReflectionClass(InterfaceActionPermissions::class));
-    }
-
-    /**
-     * @expectedException \DeskPRO\Bundle\AppBundle\Annotation\Exception\AbstractClassException
-     */
-    public function testTraitParsing()
-    {
-        $this->driver->loadMetadataForClass(new \ReflectionClass(TraitActionPermissions::class));
+        parent::setUp();
+        $kernel        = $this->getApiKernel(true);
+        $cache         = new MetadataCache($kernel->getContainer()->getParameter('kernel.cache_dir'), 'metadata_cache');
+        $driver        = new ActionPermissionsDriver(new AnnotationReader());
+        $this->factory = new MetadataFactory($driver, $cache);
     }
 
     public function testAnnotations()
     {
-        $class_metadata = $this->driver->loadMetadataForClass(new \ReflectionClass(ActionPermissionsClass::class));
+        $class_metadata = $this->factory->getMetadataForClass(ActionPermissionsClass::class);
+
+        $this->checkMetadata($class_metadata);
+    }
+
+    public function testAnnotationsCacheRewrite()
+    {
+        $class_metadata = $this->factory->getMetadataForClass(ActionPermissionsClass::class, true);
+
         $this->checkMetadata($class_metadata);
     }
 }

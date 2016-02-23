@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
 use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache;
 use DpTest\ApiTestCase;

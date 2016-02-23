@@ -26,9 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock\ActionPermissionsClass;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
+use DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock\ActionPermissionsClass;
 use DpTest\DeskProTestCase;
 
 class MethodMetadataTest extends DeskProTestCase

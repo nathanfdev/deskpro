@@ -26,17 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 
 /**
- * Trait TraitActionPermissions.
+ * Class AbstractActionPermissionsClass.
  *
  * @ApiModes("standard")
- * @ApiTags("trait.mock")
+ * @ApiTags("abstract.mock")
  */
-interface TraitActionPermissions
+abstract class AbstractActionPermissionsClass
 {
 }
