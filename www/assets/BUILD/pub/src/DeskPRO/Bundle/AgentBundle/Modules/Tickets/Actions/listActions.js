@@ -25,7 +25,10 @@ export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
-    const params = {...current, ...overwrite};
+    let params = {...current, ...overwrite};
+    const { delayReload } = params;
+    // todo?
+    delete params.delayReload;
     dispatch(setListParams(params));
 
     // reload if filter param is set i.e. navigation menu item is selected
