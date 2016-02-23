@@ -74,7 +74,6 @@ class OrganizationEmailDomainsType extends AbstractType
             ->setDefaults([
                 'allow_add'    => true,
                 'allow_delete' => true,
-                'by_reference' => true,
             ])
         ;
     }

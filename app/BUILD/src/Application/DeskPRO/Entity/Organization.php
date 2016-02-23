@@ -120,6 +120,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $email_domains;
 
@@ -177,7 +179,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      */
     public function __construct()
     {
-        $this->setModelField('email_domains', new ArrayCollection());
         $this->setModelField('custom_data', new ArrayCollection());
         $this->setModelField('labels', new ArrayCollection());
         $this->setModelField('contact_data', new ArrayCollection());
@@ -186,10 +187,11 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
         $this->setModelField('date_created', new \DateTime());
 
-        $this->slas      = new ArrayCollection();
-        $this->children  = new ArrayCollection();
-        $this->employees = new ArrayCollection();
-        $this->tickets   = new ArrayCollection();
+        $this->slas          = new ArrayCollection();
+        $this->children      = new ArrayCollection();
+        $this->employees     = new ArrayCollection();
+        $this->tickets       = new ArrayCollection();
+        $this->email_domains = new ArrayCollection();
     }
 
     /**
@@ -628,6 +630,27 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @param OrganizationEmailDomain $email_domain
+     */
+    public function addEmailDomain(OrganizationEmailDomain $email_domain)
+    {
+        $email_domain['organization'] = $this;
+        $this->email_domains->add($email_domain);
+        $this->_onPropertyChanged('email_domains', $this->email_domains, $this->email_domains);
+    }
+
+    /**
+     * @param OrganizationEmailDomain $email_domain
+     */
+    public function removeEmailDomain(OrganizationEmailDomain $email_domain)
+    {
+        if ($this->email_domains->contains($email_domain)) {
+            $this->email_domains->removeElement($email_domain);
+            $this->_onPropertyChanged('email_domains', null, $this->email_domains);
+        }
+    }
+
+    /**
      * Set date created.
      *
      * @param \DateTime $date_created
@@ -898,10 +921,11 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'    => 'email_domains',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy'     => 'organization',
+                'fieldName'     => 'email_domains',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain',
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'mappedBy'      => 'organization',
+                'orphanRemoval' => true,
             )
         );
         $metadata->mapOneToMany(

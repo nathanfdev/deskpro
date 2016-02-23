@@ -35,9 +35,12 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Maps known company domains to their company objects.
+ *
+ * @UniqueEntity("domain")
  */
 class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 {

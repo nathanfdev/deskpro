@@ -94,7 +94,11 @@ class OrganizationEmailDomainTransformer implements DataTransformerInterface
         $result     = [];
 
         foreach ($value as $email_domain) {
-            $entity = $repository->findOneBy(['domain' => $email_domain]);
+            $entity = $repository->findOneBy([
+                'domain'       => $email_domain,
+                'organization' => $this->organization->getId(),
+            ]);
+
             if (!$entity) {
                 $entity = new OrganizationEmailDomain();
                 $entity

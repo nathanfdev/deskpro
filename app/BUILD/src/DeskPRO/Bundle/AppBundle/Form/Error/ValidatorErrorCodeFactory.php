@@ -31,8 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 
 /**
@@ -65,20 +67,22 @@ class ValidatorErrorCodeFactory
         $constraint = $violation->getConstraint();
         if ($constraint) {
             switch (get_class($constraint)) {
-                case 'Symfony\Component\Validator\Constraints\NotNull':
+                case Assert\NotNull::class:
                     return ApiErrors::NOT_NULL;
-                case 'Symfony\Component\Validator\Constraints\NotBlank':
+                case Assert\NotBlank::class:
                     return ApiErrors::NOT_NULL;
-                case 'Symfony\Component\Validator\Constraints\Type':
+                case Assert\Type::class:
                     return ApiErrors::INVALID_DATA_TYPE;
-                case 'Symfony\Component\Validator\Constraints\Length':
+                case Assert\Length::class:
                     return ApiErrors::WRONG_LENGTH;
-                case 'Symfony\Component\Validator\Constraints\Valid':
+                case Assert\Valid::class:
                     return ApiErrors::INVALID_INPUT;
-                case 'Symfony\Component\Validator\Constraints\Choice':
+                case Assert\Choice::class:
                     return ApiErrors::BAD_CHOICE;
-                case 'Symfony\Component\Validator\Constraints\Email':
+                case Assert\Email::class:
                     return ApiErrors::INVALID_EMAIL;
+                case UniqueEntity::class:
+                    return ApiErrors::UNIQUE_ENTITY;
             }
         }
 
