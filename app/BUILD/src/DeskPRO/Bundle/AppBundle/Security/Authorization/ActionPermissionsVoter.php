@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Authorization;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\LegacyApiBundle\Controller\AbstractController;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory;
@@ -132,6 +133,7 @@ class ActionPermissionsVoter extends Voter
         } elseif ($token instanceof AnonymousToken) {
             return true;
         } else {
+            /* @var AbstractApiSecurityToken $token */
             $mode = $this->getMode($token->getName());
             $key  = $this->getApiKeyByToken($token);
         }
@@ -165,6 +167,7 @@ class ActionPermissionsVoter extends Voter
 
     /**
      * @param MethodMetadata $methodMetadata
+     * @param ApiKey         $key
      *
      * @return bool
      */
