@@ -48,7 +48,7 @@ class WidgetController extends AbstractApiController
      */
     public function getWidgetSettingsAction()
     {
-        $user_chat_settings = $this->container->get('user_chat.settings');
+        $user_chat_settings = $this->container->get('widget.settings');
 
         return new View([
             'chat' => [

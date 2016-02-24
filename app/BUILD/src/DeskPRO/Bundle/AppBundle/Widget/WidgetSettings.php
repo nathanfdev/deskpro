@@ -29,17 +29,18 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\UserChat;
+namespace DeskPRO\Bundle\AppBundle\Widget;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 /**
- * Class UserChatSettings.
+ * Class WidgetSettings.
  */
-class UserChatSettings
+class WidgetSettings
 {
-    const REQUIRE_LOGIN    = 'portal.chat.require_login';
-    const EMAIL_VALIDATION = 'portal.chat.email_validation';
+    const REQUIRE_LOGIN     = 'portal.chat.require_login';
+    const EMAIL_VALIDATION  = 'portal.chat.email_validation';
+    const ENABLED_ON_PORTAL = 'portal.widget.enabled';
 
     /**
      * @var SettingsResolver

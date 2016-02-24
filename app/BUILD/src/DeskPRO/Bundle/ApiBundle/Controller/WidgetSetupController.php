@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use Application\DeskPRO\Entity\DataStore;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
+use DeskPRO\Bundle\AppBundle\Widget\WidgetSettings;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -62,9 +62,10 @@ class WidgetSetupController extends BaseController
         $settings_resolver = $this->container->get('settings_resolver');
         $settings          = $settings_resolver->getGlobalSettings();
 
-        $user_settings  = $this->container->get('user_chat.settings');
+        $user_settings  = $this->container->get('widget.settings');
         $brand_settings = [];
-        $data_store     = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
+
+        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
         if ($data_store) {
             $brand_settings = $data_store->getData('brand_settings');
         }
@@ -102,20 +103,14 @@ class WidgetSetupController extends BaseController
      */
     public function postWidgetSetupAction(Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'widget_setup')->getForm();
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
+        $form = $this->handleForm($request);
 
         // Save global settings
         $new_global_chat_settings = $form->getData()['global']['chat'];
 
-        /** @var \Application\DeskPRO\EntityRepository\Setting $setting_repo */
-        $setting_repo = $this->getRepository('DeskPRO:Setting');
-        $setting_repo->updateSetting(UserChatSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
-        $setting_repo->updateSetting(UserChatSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
+        $setting_repo = $this->getSettingsRepository();
+        $setting_repo->updateSetting(WidgetSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
+        $setting_repo->updateSetting(WidgetSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
 
         // Save brand settings
         // Use datastore for now, should have brand id in future
@@ -132,5 +127,56 @@ class WidgetSetupController extends BaseController
         $em->flush();
 
         return new View();
+    }
+
+    /**
+     * @Post("/widget/portal/apply", name="api_widget_portal_settings_apply")
+     *
+     * @return View
+     */
+    public function applyPortalWidgetSettingsAction()
+    {
+        $setting_repo = $this->getSettingsRepository();
+        $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, true);
+
+        return new View();
+    }
+
+    /**
+     * @Post("/widget/portal/remove", name="api_widget_portal_settings_remove")
+     *
+     * @return View
+     */
+    public function removePortalWidgetAction()
+    {
+        $setting_repo = $this->getSettingsRepository();
+        $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, false);
+
+        return new View();
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function handleForm(Request $request)
+    {
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'widget_setup')->getForm();
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        return $form;
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Setting
+     */
+    protected function getSettingsRepository()
+    {
+        return $this->getRepository('DeskPRO:Setting');
     }
 }

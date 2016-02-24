@@ -41,3 +41,8 @@ services:
 
   api_controllers_finder:
     class: DeskPRO\Bundle\AppBundle\Util\ApiControllersFinder
+
+  widget.settings:
+    class: DeskPRO\Bundle\AppBundle\Widget\WidgetSettings
+    arguments:
+      - "@settings_resolver"

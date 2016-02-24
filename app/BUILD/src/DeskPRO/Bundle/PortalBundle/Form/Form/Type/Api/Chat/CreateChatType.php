@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatSettings;
+use DeskPRO\Bundle\AppBundle\Widget\WidgetSettings;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
@@ -56,7 +56,7 @@ class CreateChatType extends AbstractType
     private $set_person_listener;
 
     /**
-     * @var UserChatSettings
+     * @var WidgetSettings
      */
     private $user_chat_settings;
 
@@ -64,9 +64,9 @@ class CreateChatType extends AbstractType
      * Constructor.
      *
      * @param SetPersonListener $set_person_listener
-     * @param UserChatSettings  $user_chat_settings
+     * @param WidgetSettings    $user_chat_settings
      */
-    public function __construct(SetPersonListener $set_person_listener, UserChatSettings $user_chat_settings)
+    public function __construct(SetPersonListener $set_person_listener, WidgetSettings $user_chat_settings)
     {
         $this->set_person_listener = $set_person_listener;
         $this->user_chat_settings  = $user_chat_settings;

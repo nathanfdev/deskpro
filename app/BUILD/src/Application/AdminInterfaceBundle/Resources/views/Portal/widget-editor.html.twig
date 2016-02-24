@@ -210,7 +210,7 @@
                                         </option>
                                     </select>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
+                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
@@ -221,16 +221,51 @@
                                 <label>User Selects Department</label>
                             </li>
                         </ul>
+                        <ul class="errors">
+                            <li ng-repeat="error in formErrors.brand.fields.chat.fields.waiting_timeout.errors">
+                                {{ ng_var('error.message') }}
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
 
             <div class="form-footer">
                 <hr>
+
+                <h3>Apply to portal</h3>
+                <p>
+                    Apply these settings to your DeskPRO portal. This will enable the chat widget
+                    on your helpdesk itself.
+                </p>
+
+                <button>Apply chat widget to the portal</button>
+
+                <h3>Remove from portal</h3>
+                <button>Remove chat widget from the portal</button>
+
+                <hr>
+
                 <div dp-hide-spinning="saving">
                     <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving">Get Code</button>
                     <div ng-show="saving">
                         <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-row" ng-if="!!code">
+                <div class="editor-wrap">
+                    <div
+                         style="height: 220px;"
+                         ng-model="code"
+                         ui-ace="{
+                             mode: 'html',
+                             useWrapMode: false,
+                             showGutter: false,
+                             theme: 'textmate',
+                             onLoad: embedEditorLoaded
+                         }">
                     </div>
                 </div>
             </div>
@@ -239,22 +274,6 @@
         <div class="widget-editor-live-demo-container">
             <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
             <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
-        </div>
-
-        <div class="editor-row" ng-if="!!code">
-            <div class="editor-wrap">
-                <div
-                     style="height: 220px;"
-                     ng-model="code"
-                     ui-ace="{
-                         mode: 'html',
-                         useWrapMode: false,
-                         showGutter: false,
-                         theme: 'textmate',
-                         onLoad: embedEditorLoaded
-                     }">
-                </div>
-            </div>
         </div>
 
     </section>
