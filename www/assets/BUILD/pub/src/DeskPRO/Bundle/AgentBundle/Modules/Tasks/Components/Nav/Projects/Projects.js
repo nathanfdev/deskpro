@@ -80,7 +80,7 @@ export class Projects extends React.Component {
                   positionAt="right+5 top-6">
 
           <ClickOut onClickOut={this.onCloseForm}>
-            <ProjectFormContainer project={this.state.editProject} />
+            <ProjectFormContainer project={this.state.editProject} onSubmit={this.onCloseForm} />
           </ClickOut>
         </Detached>
       </Section>

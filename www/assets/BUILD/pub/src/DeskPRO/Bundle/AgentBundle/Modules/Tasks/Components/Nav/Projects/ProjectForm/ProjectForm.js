@@ -27,7 +27,8 @@ export class ProjectForm extends BaseForm {
     dispatch: PropTypes.func.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired
+    departments: PropTypes.object.isRequired,
+    onSubmit: PropTypes.func
   };
 
   constructor(props) {
@@ -82,9 +83,10 @@ export class ProjectForm extends BaseForm {
     }
 
     promise.then(
-      () => this.setState({
-        submit: false
-      }),
+      () => {
+        this.setState({submit: false});
+        this.props.onSubmit && this.props.onSubmit();
+      },
       result => this.setState({
         errors: result.getData().errors,
         submit: false
