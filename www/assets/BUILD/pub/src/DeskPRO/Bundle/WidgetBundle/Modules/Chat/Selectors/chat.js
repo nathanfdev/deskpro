@@ -103,7 +103,7 @@ export const authorIdSelector = createSelector(
 export const authorSelector = createSelector(
   authorIdSelector,
   peopleSelector,
-  (authorId, people) => people.get(authorId)
+  (authorId, people) => people && people.get(authorId)
 );
 
 export const authorEmailSelector = createSelector(
