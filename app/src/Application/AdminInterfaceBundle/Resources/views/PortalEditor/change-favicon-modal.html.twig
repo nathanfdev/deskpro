@@ -23,7 +23,7 @@
 				<label>
 					<input type="radio" value="new" ng-model="form.favicon_choice" />
 					<img ng-src="{{ ng_var('new_blob_url') }}" ng-show="new_blob_url" class="favicon" />
-					<strong>New Favicon</strong>
+					<strong>New Favicon</strong> 16x16 or 32x32, PNG or GIF
 				</label>
 				<div ng-show="!custom_favicon_blob_id && form.favicon_choice == 'new'">
 					<form id="fileupload"
