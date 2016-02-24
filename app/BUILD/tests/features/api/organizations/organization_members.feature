@@ -91,3 +91,21 @@ Feature: /organization_members endpoint
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.organization" should be equal to 1
     And the JSON node "data.organization_position" should be equal to 0
+
+  Scenario: I try to remove person from another organization
+    When I send a DELETE request to "/api/v2/organizations/2/members/2"
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "message" should be equal to "Person is not a member of this organization."
+
+  Scenario: I remove person from organization
+    When I send a DELETE request to "/api/v2/organizations/1/members/2"
+    Then the response should be in JSON
+    And the response status code should be 200
+
+    When I send a GET request to "/api/v2/people/2"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.id" should be equal to 2
+    And the JSON node "data.organization" should be equal to 0
+    And the JSON node "data.organization_position" should be equal to 0

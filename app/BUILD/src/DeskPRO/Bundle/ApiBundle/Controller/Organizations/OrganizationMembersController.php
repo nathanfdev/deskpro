@@ -35,7 +35,10 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class OrganizationMembersController.
@@ -65,5 +68,27 @@ class OrganizationMembersController extends CrudSubController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * @Delete("/{person}", requirements={"id"="\d+"})
+     *
+     * @param Person $person
+     *
+     * @return View
+     */
+    public function deleteMemberAction(Person $person)
+    {
+        $organization = $this->findParentOr404();
+        if ($person->getOrganization() !== $organization) {
+            throw new BadRequestHttpException('Person is not a member of this organization.');
+        }
+
+        $person->setOrganization(null);
+
+        $this->getManager()->persist($person);
+        $this->getManager()->flush();
+
+        return new View([]);
     }
 }
