@@ -44,5 +44,4 @@ services:
 
   widget.settings:
     class: DeskPRO\Bundle\AppBundle\Widget\WidgetSettings
-    arguments:
-      - "@settings_resolver"
+    arguments: ["@settings_resolver", "@doctrine.orm.entity_manager"]

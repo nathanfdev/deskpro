@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Widget;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class WidgetSettings.
@@ -48,13 +49,20 @@ class WidgetSettings
     protected $settings_resolver;
 
     /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
      * Constructor.
      *
      * @param SettingsResolver $settings_resolver
+     * @param EntityManager    $em
      */
-    public function __construct(SettingsResolver $settings_resolver)
+    public function __construct(SettingsResolver $settings_resolver, EntityManager $em)
     {
         $this->settings_resolver = $settings_resolver;
+        $this->em                = $em;
     }
 
     /**
@@ -113,6 +121,34 @@ class WidgetSettings
                 'begin_mode'      => 'form',
                 'waiting_timeout' => 30,
             ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getPortalBrandSettings()
+    {
+        $brand_settings = $this->getDefaultBrandSettings();
+        $data_store     = $this->em->getRepository('DeskPRO:DataStore')->findOneBy([
+            'name' => 'widget.portal_brand_settings',
+        ]);
+
+        if ($data_store) {
+            $brand_settings = array_merge($brand_settings, $data_store->getData('brand_settings') ?: []);
+        }
+
+        return $brand_settings;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCompanySettings()
+    {
+        return [
+            'name' => $this->getGlobalSettings()->get('core.site_name'),
+            'logo' => '',
         ];
     }
 

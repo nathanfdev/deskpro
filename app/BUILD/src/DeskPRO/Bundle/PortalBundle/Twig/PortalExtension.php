@@ -153,6 +153,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('phrase_form_error', [$this, 'makeFormError'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('insert_glossary_js', [$this, 'makeGlossaryJs'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
+            new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
+            new \Twig_SimpleFunction('portal_widget_options', [$this, 'getPortalWidgetOptions']),
         ];
     }
 
@@ -503,6 +505,26 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             'global_settings' => $this->getSettingsResolver()->getGlobalSettings(),
             'language'        => $this->getLanguageManager()->getLanguageStack()->getActive(),
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPortalWidgetEnabled()
+    {
+        return $this->container->get('widget.settings')->isEnabledOnPortal();
+    }
+
+    /**
+     * @return array
+     */
+    public function getPortalWidgetOptions()
+    {
+        $widget_settings = $this->container->get('widget.settings');
+
+        return array_merge($widget_settings->getPortalBrandSettings(), [
+            'company' => $widget_settings->getCompanySettings(),
+        ]);
     }
 
     /**

@@ -59,9 +59,6 @@ class WidgetSetupController extends BaseController
         $asset_package = $this->container->get('assets.packages');
         $base_router   = $this->container->get('router');
 
-        $settings_resolver = $this->container->get('settings_resolver');
-        $settings          = $settings_resolver->getGlobalSettings();
-
         $widget_settings = $this->container->get('widget.settings');
         $brand_settings  = array_merge(
             $widget_settings->getDefaultBrandSettings(),
@@ -75,10 +72,7 @@ class WidgetSetupController extends BaseController
                     'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
                     'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 ],
-                'company' => [
-                    'name' => $settings->get('core.site_name'),
-                    'logo' => '',
-                ],
+                'company'  => $widget_settings->getCompanySettings(),
                 'settings' => [
                     'global' => [
                         'chat' => [
