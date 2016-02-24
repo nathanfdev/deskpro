@@ -6,24 +6,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
     init: ->
       @$scope.code = ''
-      @$scope.url = {
-        widget_loader: '',
-        widget_bundle: '',
-        helpdesk: ''
-      };
 
-      @$scope.company = {
-        name: 'Helpdesk',
-        logo: ''
-      }
-
+      @$scope.url = {}
+      @$scope.company = {}
       @$scope.brand_settings = {}
-      @$scope.global_settings = {
-        chat: {
-          require_login: false,
-          email_validation: false
-        }
-      }
+      @$scope.global_settings = {}
 
       @$scope.enabled_on_portal = false
 
@@ -40,7 +27,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         data = response.data
 
         @$scope.url = data.url;
-        @$scope.company = $.extend(true, @$scope.company, data.company);
+        @$scope.company = data.company;
         @$scope.global_settings = data.settings.global;
         @$scope.brand_settings = data.settings.brand;
         @$scope.enabled_on_portal = data.enabled_on_portal;
