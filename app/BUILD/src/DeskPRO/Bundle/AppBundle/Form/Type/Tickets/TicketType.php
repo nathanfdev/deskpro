@@ -43,8 +43,7 @@ use Symfony\Component\Validator\Constraints;
 class TicketType extends ApiType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
