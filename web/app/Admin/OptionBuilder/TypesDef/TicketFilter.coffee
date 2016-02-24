@@ -688,8 +688,12 @@ define [
         formatResult: format
         formatSelection: format
         ajax:
-          data: (term, page) -> { query: term, limit: 10 }
-          results: (data, page) -> { results: data.data.organizations.map (item) -> {id: item.id, name: item.name }}
+          data: (term, page) -> { name: term, limit: 10 }
+          results: (data, page) ->
+            results = []
+            for k, v of data.data?.organizations
+              results.push {id: v.id, name: v.name}
+            return {results: results}
       @getRemoteInput options
 
     getFilterOrgName: (options = {}) ->
