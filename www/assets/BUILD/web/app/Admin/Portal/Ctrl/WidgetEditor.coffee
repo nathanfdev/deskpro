@@ -11,42 +11,17 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         widget_bundle: '',
         helpdesk: ''
       };
+
       @$scope.company = {
         name: 'Helpdesk',
         logo: ''
       }
+
+      @$scope.brand_settings = {}
       @$scope.global_settings = {
         chat: {
           require_login: false,
           email_validation: false
-        }
-      }
-      @$scope.brand_settings = {
-        widget: {
-          type: 'column',
-          position: 'right',
-          agent_polling_timeout: 10
-        },
-        button: {
-          size: 'medium',
-          name: 'Help',
-          colors: {
-            background: '#62ad8c',
-            text: '#ffffff',
-            border: '#4e9576'
-          }
-        },
-        chat: {
-          enabled: true,
-          request_user_info: true,
-          proactive: true,
-          popup: {
-            title: 'DeskPRO Customer Support',
-            message: 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-            reply_type: 'buttons'
-          },
-          begin_mode: 'form',
-          waiting_timeout: 30
         }
       }
 
@@ -66,8 +41,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
         @$scope.url = data.url;
         @$scope.company = $.extend(true, @$scope.company, data.company);
-        @$scope.global_settings = $.extend(true, @$scope.global_settings, data.settings.global);
-        @$scope.brand_settings = $.extend(true, @$scope.brand_settings, data.settings.brand);
+        @$scope.global_settings = data.settings.global;
+        @$scope.brand_settings = data.settings.brand;
         @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()

@@ -63,7 +63,10 @@ class WidgetSetupController extends BaseController
         $settings          = $settings_resolver->getGlobalSettings();
 
         $widget_settings = $this->container->get('widget.settings');
-        $brand_settings  = $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: [];
+        $brand_settings  = array_merge(
+            $widget_settings->getDefaultBrandSettings(),
+            $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
+        );
 
         return new View([
             'data' => [

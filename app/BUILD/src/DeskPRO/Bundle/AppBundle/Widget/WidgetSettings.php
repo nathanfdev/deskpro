@@ -82,6 +82,41 @@ class WidgetSettings
     }
 
     /**
+     * @return array
+     */
+    public function getDefaultBrandSettings()
+    {
+        return [
+            'widget' => [
+                'type'                  => 'column',
+                'position'              => 'right',
+                'agent_polling_timeout' => 10,
+            ],
+            'button' => [
+                'size'   => 'medium',
+                'name'   => 'Help',
+                'colors' => [
+                    'background' => '#62ad8c',
+                    'text'       => '#ffffff',
+                    'border'     => '#4e9576',
+                ],
+            ],
+            'chat' => [
+                'enabled'           => true,
+                'request_user_info' => true,
+                'proactive'         => true,
+                'popup'             => [
+                    'title'      => 'DeskPRO Customer Support',
+                    'message'    => 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
+                    'reply_type' => 'buttons',
+                ],
+                'begin_mode'      => 'form',
+                'waiting_timeout' => 30,
+            ],
+        ];
+    }
+
+    /**
      * @return \Application\DeskPRO\NewSettings\SettingsBag
      */
     protected function getGlobalSettings()
