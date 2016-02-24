@@ -50,10 +50,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         }
       }
 
+      @$scope.enabled_on_portal = false
+
       @$scope.widgetLoaded = false
       @$scope.departments = []
 
-      @$scope.saving = false
+      @$scope.saving_code = false
+      @$scope.applying_to_portal = false
       @$scope.formErrors = {}
 
     initialLoad: ->
@@ -65,6 +68,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         @$scope.company = $.extend(true, @$scope.company, data.company);
         @$scope.global_settings = $.extend(true, @$scope.global_settings, data.settings.global);
         @$scope.brand_settings = $.extend(true, @$scope.brand_settings, data.settings.brand);
+        @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()
       );
@@ -107,9 +111,47 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
     getLiveDemoDocument: ->
       document.getElementById('live-demo').contentDocument
 
+    applyPortalWidgetSettings: ->
+      @$scope.applying_to_portal = true
+      @$http({
+        method: 'POST',
+        url: '/api/v2/widget/portal/apply',
+        data: {
+          global: @$scope.global_settings,
+          brand: @$scope.brand_settings
+        }
+        headers: {
+          'X-Agent-Request': 'true'
+        }
+      })
+      .then(
+        () =>
+          @$scope.applying_to_portal = false
+          @$scope.enabled_on_portal = true
+      ,
+        (response) =>
+          @$scope.formErrors = response.data?.errors?.fields
+          @$scope.applying_to_portal = false
+      )
+
+    removeFromPortal: ->
+      @$scope.applying_to_portal = true
+      @$http({
+        method: 'POST',
+        url: '/api/v2/widget/portal/remove'
+      })
+      .then(
+        () =>
+          @$scope.applying_to_portal = false
+          @$scope.enabled_on_portal = false
+      ,
+        () =>
+          @$scope.applying_to_portal = false
+      )
+
     updateChatCode: ->
       @$scope.code = ''
-      @$scope.saving = true
+      @$scope.saving_code = true
       @$http({
         method: 'POST',
         url: '/api/v2/widget/setup',
@@ -124,11 +166,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       .then(
         () =>
           @$scope.code = @getCode(@getOptions())
-          @$scope.saving = false
+          @$scope.saving_code = false
         ,
         (response) =>
           @$scope.formErrors = response.data?.errors?.fields
-          @$scope.saving = false
+          @$scope.saving_code = false
       )
 
     initLiveDemo: ->

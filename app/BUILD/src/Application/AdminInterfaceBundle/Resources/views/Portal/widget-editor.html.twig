@@ -233,22 +233,9 @@
             <div class="form-footer">
                 <hr>
 
-                <h3>Apply to portal</h3>
-                <p>
-                    Apply these settings to your DeskPRO portal. This will enable the chat widget
-                    on your helpdesk itself.
-                </p>
-
-                <button>Apply chat widget to the portal</button>
-
-                <h3>Remove from portal</h3>
-                <button>Remove chat widget from the portal</button>
-
-                <hr>
-
-                <div dp-hide-spinning="saving">
-                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving">Get Code</button>
-                    <div ng-show="saving">
+                <div>
+                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving_code">Get Code</button>
+                    <div ng-show="saving_code">
                         <i class="spinner-flat"></i>
                     </div>
                 </div>
@@ -267,6 +254,32 @@
                              onLoad: embedEditorLoaded
                          }">
                     </div>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <br/>
+                <hr>
+
+                <h3>Apply to portal</h3>
+                <p>
+                    Apply these settings to your DeskPRO portal. This will enable the chat widget
+                    on your helpdesk itself.
+                </p>
+
+                <div>
+                    <button type="submit" ng-click="Ctrl.applyPortalWidgetSettings()" ng-hide="applying_to_portal">
+                        Apply chat widget to the portal
+                    </button>
+                </div>
+
+                <div ng-if="enabled_on_portal" ng-hide="applying_to_portal">
+                    <h3>Remove from portal</h3>
+                    <button ng-click="Ctrl.removeFromPortal()">Remove chat widget from the portal</button>
+                </div>
+
+                <div ng-show="applying_to_portal">
+                    <i class="spinner-flat"></i>
                 </div>
             </div>
         </form>

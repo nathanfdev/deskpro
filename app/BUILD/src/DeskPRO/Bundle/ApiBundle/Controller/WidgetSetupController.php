@@ -82,10 +82,10 @@ class WidgetSetupController extends BaseController
                             'require_login'    => $widget_settings->isPortalRequireLogin(),
                             'email_validation' => $widget_settings->isPortalEmailValidation(),
                         ],
-                        'enabled_on_portal' => $widget_settings->isEnabledOnPortal(),
                     ],
                     'brand' => $brand_settings,
                 ],
+                'enabled_on_portal' => $widget_settings->isEnabledOnPortal(),
             ],
         ]);
     }

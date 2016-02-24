@@ -13,10 +13,10 @@ Feature: Widget Setup
     And the JSON node "data.url.widget_bundle" should exist
     And the JSON node "data.url.helpdesk" should exist
     And the JSON node "data.company.name" should exist
+    And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
-    And the JSON node "data.settings.global.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand" should exist
     And the JSON node "data.settings.brand.widget" should not exist
@@ -64,7 +64,7 @@ Feature: Widget Setup
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.require_login" should be equal to 1
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
-    And the JSON node "data.settings.global.enabled_on_portal" should be equal to 0
+    And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"
     And the JSON node "data.settings.brand.widget.position" should be equal to "left"
@@ -118,7 +118,7 @@ Feature: Widget Setup
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
-    And the JSON node "data.settings.global.enabled_on_portal" should be equal to 1
+    And the JSON node "data.enabled_on_portal" should be equal to 1
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "column"
     And the JSON node "data.settings.brand.widget.position" should be equal to "right"
@@ -138,4 +138,4 @@ Feature: Widget Setup
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.settings.global.enabled_on_portal" should be equal to 0
+    And the JSON node "data.enabled_on_portal" should be equal to 0
