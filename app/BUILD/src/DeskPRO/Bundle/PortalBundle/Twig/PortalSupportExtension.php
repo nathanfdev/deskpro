@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
-use League\Url\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -59,72 +57,83 @@ class PortalSupportExtension extends \Twig_Extension
         $this->container = $container;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTokenParsers()
     {
-        $token_parsers = array(
+        $token_parsers = [
             new TokenParser\ShowParser($this),
             new TokenParser\GroupParser($this),
             new TokenParser\GroupItemParser($this),
-        );
+        ];
 
         return $token_parsers;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getNodeVisitors()
     {
-        $visitors = array(
+        $visitors = [
             new NodeVisitor\GroupVisitor(),
-        );
+        ];
 
         return $visitors;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
-        $funcs = array(
-            new \Twig_SimpleFunction('can_use_*', array($this, 'canUseCheck')),
-            new \Twig_SimpleFunction('can_rate_*', array($this, 'canRateCheck')),
-            new \Twig_SimpleFunction('show_tab_*', array($this, 'showTab')),
-            new \Twig_SimpleFunction('has_any_*', array($this, 'hasAnyCheck')),
-            new \Twig_SimpleFunction('is_user', array($this, 'isUser')),
-            new \Twig_SimpleFunction('is_agent', array($this, 'isAgent')),
-            new \Twig_SimpleFunction('is_admin', array($this, 'isAdmin')),
-            new \Twig_SimpleFunction('is_impersonating', array($this, 'isImpersonating')),
-            new \Twig_SimpleFunction('is_guest', array($this, 'isGuest')),
-            new \Twig_SimpleFunction('is_page_*', array($this, 'pageIsCheck')),
-            new \Twig_SimpleFunction('col_count', array($this, 'countTruthy')),
-            new \Twig_SimpleFunction('has_permission', array($this, 'hasPermission')),
-            new \Twig_SimpleFunction('get_ordered_tabs', array($this, 'getOrderedTabs')),
-            new \Twig_SimpleFunction('url_full', array($this, 'urlFull')),
-            new \Twig_SimpleFunction('base_url', array($this, 'baseUrl')),
-            new \Twig_SimpleFunction('root_url', array($this, 'rootUrl')),
-            new \Twig_SimpleFunction('no_cache_url', array($this, 'noCacheUrl')),
-            new \Twig_SimpleFunction('is_multi_lang', array($this, 'isMultLang')),
-            new \Twig_SimpleFunction('lang_code', array($this, 'langCode')),
-            new \Twig_SimpleFunction('enabled_languages', array($this, 'enabledLanguages')),
-            new \Twig_SimpleFunction('date', array($this, 'date')),
-            new \Twig_SimpleFunction('date_ago', array($this, 'dateAgo'), ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('date_diff', array($this, 'dateDiff'), ['is_safe' => ['html']]),
-        );
+        $funcs = [
+            new \Twig_SimpleFunction('can_use_*', [$this, 'canUseCheck']),
+            new \Twig_SimpleFunction('can_rate_*', [$this, 'canRateCheck']),
+            new \Twig_SimpleFunction('show_tab_*', [$this, 'showTab']),
+            new \Twig_SimpleFunction('has_any_*', [$this, 'hasAnyCheck']),
+            new \Twig_SimpleFunction('is_user', [$this, 'isUser']),
+            new \Twig_SimpleFunction('is_agent', [$this, 'isAgent']),
+            new \Twig_SimpleFunction('is_admin', [$this, 'isAdmin']),
+            new \Twig_SimpleFunction('is_impersonating', [$this, 'isImpersonating']),
+            new \Twig_SimpleFunction('is_guest', [$this, 'isGuest']),
+            new \Twig_SimpleFunction('is_page_*', [$this, 'pageIsCheck']),
+            new \Twig_SimpleFunction('col_count', [$this, 'countTruthy']),
+            new \Twig_SimpleFunction('has_permission', [$this, 'hasPermission']),
+            new \Twig_SimpleFunction('get_ordered_tabs', [$this, 'getOrderedTabs']),
+            new \Twig_SimpleFunction('url_full', [$this, 'urlFull']),
+            new \Twig_SimpleFunction('base_url', [$this, 'baseUrl']),
+            new \Twig_SimpleFunction('root_url', [$this, 'rootUrl']),
+            new \Twig_SimpleFunction('no_cache_url', [$this, 'noCacheUrl']),
+            new \Twig_SimpleFunction('is_multi_lang', [$this, 'isMultLang']),
+            new \Twig_SimpleFunction('lang_code', [$this, 'langCode']),
+            new \Twig_SimpleFunction('enabled_languages', [$this, 'enabledLanguages']),
+            new \Twig_SimpleFunction('date', [$this, 'date']),
+            new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('date_diff', [$this, 'dateDiff'], ['is_safe' => ['html']]),
+        ];
 
         return $funcs;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFilters()
     {
-        $filters = array(
-            new \Twig_SimpleFilter('date', array($this, 'date')),
-        );
+        $filters = [
+            new \Twig_SimpleFilter('date', [$this, 'date']),
+        ];
 
         return $filters;
     }
 
+    /**
+     * @param $permission_to_check
+     *
+     * @return bool
+     */
     public function hasPermission($permission_to_check)
     {
         $permission_manager = $this->container->get('portal_permissions_manager');
@@ -139,7 +148,13 @@ class PortalSupportExtension extends \Twig_Extension
         return $bag->hasPermission($permission_to_check);
     }
 
-    public function urlFull($route_name, $vars = array())
+    /**
+     * @param $route_name
+     * @param array $vars
+     *
+     * @return string
+     */
+    public function urlFull($route_name, $vars = [])
     {
         return $this->container->get('router.default')->generate($route_name, $vars, UrlGeneratorInterface::ABSOLUTE_URL);
     }
@@ -232,11 +247,17 @@ class PortalSupportExtension extends \Twig_Extension
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function enabledLanguages()
     {
         return $this->container->get('language_manager')->getEnabledLanguages();
     }
 
+    /**
+     * @return string
+     */
     public function langCode()
     {
         if (!$lang = $this->container->get('language_stack')->getActive()) {
@@ -246,23 +267,23 @@ class PortalSupportExtension extends \Twig_Extension
         return $lang->getUrlCode();
     }
 
+    /**
+     * @return bool
+     */
     public function isMultLang()
     {
         return $this->container->get('language_manager')->isMultiLanguagePortal();
     }
 
+    /**
+     * @return string
+     */
     public function baseUrl()
     {
         $portal_router = $this->container->get('router');
 
         // $base_url is the base URL to generate API calls to, it includes mode/language info.
-        $base_url = $portal_router->generate(
-            'portal_home',
-            array(),
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
-        return $base_url;
+        return $portal_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**
@@ -280,11 +301,7 @@ class PortalSupportExtension extends \Twig_Extension
         $base_symfony_router = $portal_router->getBaseRouter();
 
         // $root_url is the url that the root index.php lives on
-        $root_url = $base_symfony_router->generate(
-            'portal_home',
-            array(),
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        $root_url = $base_symfony_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         if (!$trailing_slash) {
             $root_url = rtrim($root_url, '/');
@@ -340,14 +357,13 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function isImpersonating()
     {
-        if ($token = $this->container->get('security.token_storage')->getToken()) {
-            if ($token instanceof AgentImpersonateToken) {
-                // perhaps another twig function will want to get the impersonator agent,
-                // can do that something like this:
-                //$agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
-                //$agent = $this->getPersonDataService()->getPerson($agent_id);
-                return true;
-            }
+        $token = $this->container->get('security.token_storage')->getToken();
+        if ($token instanceof AgentImpersonateToken) {
+            // perhaps another twig function will want to get the impersonator agent,
+            // can do that something like this:
+            //$agent_id = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+            //$agent = $this->getPersonDataService()->getPerson($agent_id);
+            return true;
         }
 
         return false;
@@ -438,6 +454,13 @@ class PortalSupportExtension extends \Twig_Extension
         return $x;
     }
 
+    /**
+     * @param $date
+     * @param null      $timezone
+     * @param bool|true $include_html_wrapper
+     *
+     * @return string
+     */
     public function dateAgo($date, $timezone = null, $include_html_wrapper = true)
     {
         $date = $this->ensureDateTime($date);
@@ -464,6 +487,12 @@ class PortalSupportExtension extends \Twig_Extension
         return $ago_string;
     }
 
+    /**
+     * @param $date1
+     * @param $date2
+     *
+     * @return string
+     */
     public function dateDiff($date1, $date2)
     {
         $date1 = $this->ensureDateTime($date1);
@@ -560,6 +589,11 @@ class PortalSupportExtension extends \Twig_Extension
         return $date->format($format);
     }
 
+    /**
+     * @param $date
+     *
+     * @return \DateTime|null
+     */
     public function ensureDateTime($date)
     {
         if ($date instanceof \DateTime) {
@@ -586,7 +620,7 @@ class PortalSupportExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function processPortalPageTag($context, $tag_name, $arguments = array())
+    public function processPortalPageTag($context, $tag_name, $arguments = [])
     {
         if ($context && isset($context['page']) && $context['page'] instanceof ThemeView) {
             return $context['page']->$tag_name($arguments);
@@ -605,7 +639,7 @@ class PortalSupportExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function processPortalTag($context, $tag_name, $arguments = array())
+    public function processPortalTag($context, $tag_name, $arguments = [])
     {
         $theme = $this->getActiveTheme();
 

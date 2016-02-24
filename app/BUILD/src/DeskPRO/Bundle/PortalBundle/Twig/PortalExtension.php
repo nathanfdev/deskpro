@@ -37,6 +37,9 @@ use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 
+/**
+ * Class PortalExtension.
+ */
 class PortalExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /**
@@ -52,80 +55,110 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         $this->container = $container;
     }
 
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     */
     public function getBrandStack()
     {
         return $this->container->get('brand_stack');
     }
 
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsResolver
+     */
     public function getSettingsResolver()
     {
         return $this->container->get('settings_resolver');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Content\AvatarResolver
+     */
     public function getAvatarResolver()
     {
         return $this->container->get('avatar_resolver');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver
+     */
     public function getTicketPublicIdResolver()
     {
         return $this->container->get('ticket.public_id_resolver');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
+     */
     public function getPermissionManager()
     {
         return $this->container->get('portal_permissions_manager');
     }
 
+    /**
+     * @return \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage
+     */
     public function getTokenStorage()
     {
         return $this->container->get('security.token_storage');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
+     */
     public function getRatingsHelper()
     {
         return $this->container->get('ratings_helper');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
+     */
     public function getVisitorIdentificationProvider()
     {
         return $this->container->get('visitor_identification_provider');
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Language\LanguageManager
+     */
     public function getLanguageManager()
     {
         return $this->container->get('language_manager');
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('auth_usersources_js_object', array($this, 'getAuthUsersourcesJsObject'), array('is_safe' => array('html', 'javascript'))),
-            new \Twig_SimpleFunction('ticket_status', array($this, 'getTicketStatusString')),
-            new \Twig_SimpleFunction('ticket_public_id', array($this, 'getPublicTicketId')),
-            new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('brand', array($this, 'getBrand')),
-            new \Twig_SimpleFunction('avatar_url', array($this, 'getAvatarUrl')),
-            new \Twig_SimpleFunction('render_message', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('render_news', array($this, 'getRenderedObject'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('get_secure_content_cats', array($this, 'getSecureCats')),
-            new \Twig_SimpleFunction('user_up_voted', array($this, 'didUserUpVote')),
-            new \Twig_SimpleFunction('user_down_voted', array($this, 'didUserDownVote')),
-            new \Twig_SimpleFunction('file_icon', array($this, 'makeFileIcon'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('article_icon', array($this, 'makeArticleIcon'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('news_icon', array($this, 'makeNewsIcon'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('feedback_icon', array($this, 'makeFeedbackIcon'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('content_icon', array($this, 'makeContentIcon'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('ticket_view', array($this, 'getTicketView')),
-            new \Twig_SimpleFunction('phrase_form_error', array($this, 'makeFormError'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('insert_glossary_js', array($this, 'makeGlossaryJs'), array('is_safe' => array('html', 'javascript'))),
-            new \Twig_SimpleFunction('portal_mode', array($this, 'getPortalMode'), array('is_safe' => array('html', 'javascript'))),
-        );
+        return [
+            new \Twig_SimpleFunction('auth_usersources_js_object', [$this, 'getAuthUsersourcesJsObject'], ['is_safe' => ['html', 'javascript']]),
+            new \Twig_SimpleFunction('ticket_status', [$this, 'getTicketStatusString']),
+            new \Twig_SimpleFunction('ticket_public_id', [$this, 'getPublicTicketId']),
+            new \Twig_SimpleFunction('brand_setting', [$this, 'getBrandSetting'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('brand', [$this, 'getBrand']),
+            new \Twig_SimpleFunction('avatar_url', [$this, 'getAvatarUrl']),
+            new \Twig_SimpleFunction('render_message', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_news', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('get_secure_content_cats', [$this, 'getSecureCats']),
+            new \Twig_SimpleFunction('user_up_voted', [$this, 'didUserUpVote']),
+            new \Twig_SimpleFunction('user_down_voted', [$this, 'didUserDownVote']),
+            new \Twig_SimpleFunction('file_icon', [$this, 'makeFileIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('article_icon', [$this, 'makeArticleIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('news_icon', [$this, 'makeNewsIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('feedback_icon', [$this, 'makeFeedbackIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('content_icon', [$this, 'makeContentIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('ticket_view', [$this, 'getTicketView']),
+            new \Twig_SimpleFunction('phrase_form_error', [$this, 'makeFormError'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('insert_glossary_js', [$this, 'makeGlossaryJs'], ['is_safe' => ['html', 'javascript']]),
+            new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
+        ];
     }
 
+    /**
+     * @return string
+     */
     public function getAuthUsersourcesJsObject()
     {
         $usersources = $this->container->get('usersources_view_helper')->createUsersourceViewList();
@@ -133,6 +166,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return json_encode($usersources);
     }
 
+    /**
+     * @param $article
+     *
+     * @return string
+     */
     public function makeGlossaryJs($article)
     {
         $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->container->get('doctrine.orm.default_entity_manager'));
@@ -156,6 +194,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $script;
     }
 
+    /**
+     * @param FormError $form_error
+     *
+     * @return string
+     */
     public function makeFormError(FormError $form_error)
     {
         $params = $this->parseErrorParams($form_error->getMessageParameters());
@@ -163,6 +206,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $this->getLanguageManager()->phrase($form_error->getMessageTemplate(), $params);
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     protected function parseErrorParams(array $params)
     {
         $cleaned_params = [];
@@ -180,26 +228,51 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $cleaned_params;
     }
 
+    /**
+     * @param $content
+     *
+     * @return string
+     */
     public function makeContentIcon($content)
     {
         return $this->container->get('icon_factory')->makeContentIcon($content);
     }
 
+    /**
+     * @param $blob_or_download
+     *
+     * @return string
+     */
     public function makeFileIcon($blob_or_download)
     {
         return $this->container->get('icon_factory')->makeFileIcon($blob_or_download);
     }
 
+    /**
+     * @param $article
+     *
+     * @return string
+     */
     public function makeArticleIcon($article)
     {
         return $this->container->get('icon_factory')->makeArticleIcon($article);
     }
 
+    /**
+     * @param $news
+     *
+     * @return string
+     */
     public function makeNewsIcon($news)
     {
         return $this->container->get('icon_factory')->makeNewsIcon($news);
     }
 
+    /**
+     * @param $feedback
+     *
+     * @return string
+     */
     public function makeFeedbackIcon($feedback)
     {
         return $this->container->get('icon_factory')->makeFeedbackIcon($feedback);
@@ -257,11 +330,21 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return;
     }
 
+    /**
+     * @param Entity\Ticket $ticket
+     *
+     * @return TicketView
+     */
     public function getTicketView(Entity\Ticket $ticket)
     {
         return $this->container->get('tickets.view')->getUserTicketView($ticket);
     }
 
+    /**
+     * @param $ticket
+     *
+     * @return int
+     */
     public function getPublicTicketId($ticket)
     {
         if ($ticket instanceof TicketView) {
@@ -280,6 +363,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $this->getTicketPublicIdResolver()->findId($ticket);
     }
 
+    /**
+     * @param Entity\ContentAbstract $content
+     *
+     * @return array
+     */
     public function getSecureCats(Entity\ContentAbstract $content)
     {
         $permission_bag = $this->getPermissionBagForCurrentUser();
@@ -303,7 +391,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Feedback, but did not get one');
         }
 
-        $category_tree = array();
+        $category_tree = [];
 
         $permission_bag = $this->getPermissionBagForCurrentUser();
         foreach ($cat->getTreeParents() as $c) {
@@ -411,10 +499,10 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getGlobals()
     {
-        return array(
+        return [
             'global_settings' => $this->getSettingsResolver()->getGlobalSettings(),
             'language'        => $this->getLanguageManager()->getLanguageStack()->getActive(),
-        );
+        ];
     }
 
     /**
@@ -423,10 +511,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     protected function getPerson()
     {
         $person = null;
-        if ($token = $this->getTokenStorage()->getToken()) {
+        $token  = $this->getTokenStorage()->getToken();
+
+        if ($token) {
             $person = $token->getUser();
         }
-
         if (!$person instanceof Entity\Person) {
             $person = new PersonGuest();
         };
@@ -434,6 +523,9 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $person;
     }
 
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
+     */
     protected function getPermissionBagForCurrentUser()
     {
         $person = $this->getPerson();
