@@ -34,14 +34,15 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class OrganizationMemberType.
@@ -69,8 +70,12 @@ class OrganizationMemberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person', IntegerType::class, [
-                'mapped' => false,
+            ->add('person', EntityType::class, [
+                'mapped'      => false,
+                'class'       => Person::class,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('position', TextType::class, [
                 'property_path' => 'organization_position',
@@ -78,7 +83,7 @@ class OrganizationMemberType extends AbstractType
             ])
         ;
 
-        $builder->get('person')->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetOrganization']);
+        $builder->get('person')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOrganization']);
     }
 
     /**

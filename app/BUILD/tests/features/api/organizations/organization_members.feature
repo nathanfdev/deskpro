@@ -23,7 +23,21 @@ Feature: /organization_members endpoint
     When I send a POST request to "/api/v2/organizations/1/members"
     Then the response should be in JSON
     And the response status code should be 400
-    And print last JSON response
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.person.errors[0].message" should be equal to "This value should not be blank."
+
+  Scenario: I try to add not existing person
+    When I send a POST request to "/api/v2/organizations/1/members" with body:
+    """
+{
+  "person": 404,
+  "position": "some text"
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.person.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I try add a member who is already in organization
     When I send a POST request to "/api/v2/organizations/1/members" with body:
@@ -62,3 +76,18 @@ Feature: /organization_members endpoint
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.organization" should be equal to 1
     And the JSON node "data.organization_position" should be equal to "some text"
+
+  Scenario: I reset organization position
+    When I send a POST request to "/api/v2/organizations/1/members" with body:
+    """
+{
+  "person": 2,
+  "position": ""
+}
+    """
+    When I send a GET request to "/api/v2/people/2"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.id" should be equal to 2
+    And the JSON node "data.organization" should be equal to 1
+    And the JSON node "data.organization_position" should be equal to 0
