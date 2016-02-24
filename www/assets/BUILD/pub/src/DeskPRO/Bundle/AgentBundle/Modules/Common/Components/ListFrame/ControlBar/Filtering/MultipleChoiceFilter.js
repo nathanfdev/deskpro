@@ -74,8 +74,7 @@ export class MultipleChoiceFilter extends Component {
                   icon={icon || 'filter'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, params)}
-                  dispatch={dispatch}>
+                  resetFilter={unsetParams.bind(this, params)}>
         <Menu>
           <ChoiceMenu title={label} quickFilter={quickFilter}>
             <ul>
