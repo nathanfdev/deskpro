@@ -33,11 +33,11 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists;
 use Doctrine\ORM\EntityManager;
 
-class ActionToJsonTransformer
+class ActionTransformer
 {
     private $em;
 
@@ -66,7 +66,7 @@ class ActionToJsonTransformer
      * @param string $namespace
      * @param string $json
      *
-     * @return SingleActionApplicatorInterface
+     * @return ActionApplicatorInterface
      */
     public function toActionApplicator($namespace, $json)
     {
@@ -92,13 +92,32 @@ class ActionToJsonTransformer
      * @param string $namespace
      * @param array  $serialized_array
      *
-     * @return SingleActionApplicatorInterface
+     * @return ActionApplicatorInterface
      */
     public function arrayToActionApplicator($namespace, array $serialized_array)
     {
         $class = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $serialized_array['type']);
         if (!class_exists($class)) {
             throw new ActionApplicatorDoesNotExists($serialized_array['type']);
+        }
+        $options = array_key_exists('options', $serialized_array) ? $serialized_array['options'] : [];
+
+        return new $class($this->em, $options);
+    }
+
+    /**
+     * @param                 $namespace
+     * @param ActionInterface $action
+     *
+     * @return ActionApplicatorInterface
+     */
+    public function actionToApplicator($namespace, ActionInterface $action)
+    {
+        $serialized_array = $action->serialize();
+        $type             = ActionTypeCodes::getActionTypeCode($action);
+        $class            = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $type);
+        if (!class_exists($class)) {
+            throw new ActionApplicatorDoesNotExists($type);
         }
         $options = array_key_exists('options', $serialized_array) ? $serialized_array['options'] : [];
 

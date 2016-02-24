@@ -31,6 +31,7 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -106,7 +107,7 @@ class JobRouterService
          * publish_mass
          */
         $router->addProcessor(
-            new PublishProcessor($conn, $em)
+            new PublishProcessor($conn, $container)
         );
 
         /*

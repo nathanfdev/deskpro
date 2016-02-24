@@ -30,11 +30,12 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-interface SingleActionApplicatorInterface
+use Application\DeskPRO\Entity\FeedbackComment;
+
+class FeedbackCommentApplicatorService extends AbstractApplicatorService
 {
-    public function init();
-
-    public function applyAction($entity);
+    protected static $class     = FeedbackComment::class;
+    protected static $namespace = 'FeedbackComment';
 }
