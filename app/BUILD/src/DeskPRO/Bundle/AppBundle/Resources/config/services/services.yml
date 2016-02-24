@@ -2,7 +2,7 @@ services:
 
   brand_aware_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver
-    arguments: ["@settings_resolver", @?brand_stack]
+    arguments: ["@settings_resolver", "@?brand_stack"]
 
   user_rule_processor:
     class: Application\DeskPRO\People\UserRuleProcessor
@@ -39,7 +39,5 @@ services:
     factory: [Application\DeskPRO\DependencyInjection\SystemServices\AttachmentAccepterService, create]
     arguments: ["@service_container"]
 
-  api_authorization.action_permissions.metadata_cache:
-    class: DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\ActionPermissionsCache
-    arguments:
-      - %kernel.cache_dir%
+  api_controllers_finder:
+    class: DeskPRO\Bundle\AppBundle\Util\ApiControllersFinder

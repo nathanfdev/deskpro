@@ -244,7 +244,7 @@ abstract class BaseKernel extends Kernel
 
         parent::dumpContainer($cache, $container, $class, $baseClass);
 
-        $cacheFile = (string) $cache;
+        $cacheFile = $cache->getPath();
         $content   = file_get_contents($cacheFile);
 
         // Re-write absolute paths to use DP_ROOT instead

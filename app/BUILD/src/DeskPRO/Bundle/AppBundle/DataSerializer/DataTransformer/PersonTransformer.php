@@ -46,7 +46,9 @@ class PersonTransformer extends AbstractDataSerializerTransformer
      */
     private $avatar_resolver;
 
-    /** @var AgentDataService */
+    /**
+     * @var AgentDataService
+     */
     private $agent_data_service;
 
     /**

@@ -159,7 +159,7 @@ class SitemapGenerator
 
         $items[] = array(
             'loc'        => $this->router->generate('portal_feedback', array()),
-            'changefreq' => 'monthly',
+            'changefreq' => 'daily',
         );
 
         return $items;
@@ -334,19 +334,6 @@ class SitemapGenerator
             'loc'        => $this->router->generate('portal_feedback', array()),
             'changefreq' => 'daily',
         );
-
-        #------------------------------
-        # Categories
-        #------------------------------
-
-//        $cats = $this->structure->getFeedbackCategories();
-//
-//        foreach ($cats as $cat) {
-//            $items[] = array(
-//                'loc'        => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-//                'changefreq'                                                          => 'daily',
-//            );
-//        }
 
         #------------------------------
         # Downloads

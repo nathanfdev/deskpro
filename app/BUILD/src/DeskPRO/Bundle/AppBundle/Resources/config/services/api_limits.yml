@@ -1,0 +1,27 @@
+services:
+
+  api_limits.metadata_factory:
+    class: DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataFactory
+    arguments:
+      - "@api_limits.metadata_driver"
+      - "@api_limits.metadata_cache"
+      - %kernel.debug%
+
+  api_limits.metadata_driver:
+    class: DeskPRO\Bundle\AppBundle\Annotation\Limits\LimitsDriver
+    arguments:
+      - "@annotations.reader"
+
+  api_limits.metadata_cache:
+    class: DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache
+    arguments:
+      - %kernel.cache_dir%
+      - 'api_limits'
+
+  api_limits.cache_warmer:
+    class: DeskPRO\Bundle\AppBundle\CacheWarmer\ApiLimitsCacheWarmer
+    arguments:
+      - "@api_limits.metadata_factory"
+      - "@api_controllers_finder"
+    tags:
+      - { name: 'kernel.cache_warmer' }

@@ -26,17 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
+use FOS\RestBundle\Controller\Annotations;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Trait TraitActionPermissions.
+ * Class OrganizationMembersController.
  *
- * @ApiModes("standard")
- * @ApiTags("trait.mock")
+ * @ApiModes("all")
+ * @Annotations\Route("/organizations/{parentId}/members")
  */
-interface TraitActionPermissions
+class OrganizationMembersController extends CrudSubController
 {
+    public static $exposeOnly     = ['list', 'post'];
+    public static $entity         = Person::class;
+    public static $parentProperty = 'organization';
+    public static $type           = 'organization_member';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'organization' => $this->findParentOr404(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 }

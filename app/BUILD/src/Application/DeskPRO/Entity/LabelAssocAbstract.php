@@ -52,19 +52,19 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
     protected $label;
 
     /**
-     * @param string $label
+     * {@inheritdoc}
      */
     public function setLabel($label)
     {
         $label       = trim($label);
         $label       = str_replace(',', '', $label);
         $this->label = $label;
+
+        return $this;
     }
 
     /**
-     * Returns label name.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getLabel()
     {
@@ -72,13 +72,16 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getType()
     {
         return static::LABEL_TYPENAME;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function __toString()
     {
         return $this->label;

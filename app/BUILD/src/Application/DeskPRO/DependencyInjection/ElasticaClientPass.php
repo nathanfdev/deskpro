@@ -51,16 +51,14 @@ class ElasticaClientPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('fos_elastica.client.default');
         $definition->setClass('Application\\DeskPRO\\Elastica\\Client');
-        $definition->setFactoryService('deskpro.elastica.client_factory');
-        $definition->setFactoryMethod('createSystemClientByConfig');
+        $definition->setFactory([new Reference('deskpro.elastica.client_factory'), 'createSystemClientByConfig']);
 
         $indexFactoryDef = new Definition('Application\\DeskPRO\\Elastica\\IndexFactory');
         $indexFactoryDef->setArguments(array(new Reference('fos_elastica.client.default')));
         $container->setDefinition('deskpro.elastica.default_index_factory', $indexFactoryDef);
 
         $indexDef = new Definition('Elastica\\Index');
-        $indexDef->setFactoryService('deskpro.elastica.default_index_factory');
-        $indexDef->setFactoryMethod('getIndex');
+        $indexDef->setFactory([new Reference('deskpro.elastica.default_index_factory'), 'getIndex']);
         $indexDef->setArguments(array('deskpro'));
         $container->setDefinition('fos_elastica.index.deskpro', $indexDef);
     }

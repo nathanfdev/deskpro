@@ -1,3 +1,6 @@
+parameters:
+  router_listener.class: DeskPRO\Bundle\AppBundle\Routing\Versioning\VersionedActionsRoutingListener
+
 services:
   dp.versioned_actions_routing_loader:
     class: DeskPRO\Bundle\AppBundle\Routing\Versioning\VersionedActionsLoader

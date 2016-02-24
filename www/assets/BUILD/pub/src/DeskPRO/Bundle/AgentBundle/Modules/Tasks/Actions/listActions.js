@@ -6,7 +6,7 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, 
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { setCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -55,7 +55,7 @@ export const loadList = createAction(
       .then(promise => {
         const res = promise.getData();
         const ids = res.data.map(item=>item.id);
-
+        dispatch(releaseCollection('Task', recordStoresId));
         dispatch(setCollection('Task', recordStoresId, res.data));
 
         return { ids: ids, pagination: res.meta.pagination };
@@ -83,6 +83,9 @@ export const applyOrder = createAction(
 export const applyFilters = createAction(
   'TASKS_LIST_APPLY_FILTERS',
   (value) => dispatch => {
+    const { delayReload } = value;
+    // todo?
+    delete value.delayReload;
     dispatch(setListParamsFilters(value));
     dispatch(loadList());
   }

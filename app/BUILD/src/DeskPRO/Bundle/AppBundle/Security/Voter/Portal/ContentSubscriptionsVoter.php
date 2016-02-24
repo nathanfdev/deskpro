@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * An example of a "global" or "app-wide" voter. This votes on USE_{SECTION} attributes.
@@ -48,9 +49,12 @@ class ContentSubscriptionsVoter extends AbstractVoter
     const SUBSCRIBE_DOWNLOAD_CATEGORY = 'SUBSCRIBE_DOWNLOAD_CATEGORY';
     const SUBSCRIBE_FEEDBACK          = 'SUBSCRIBE_FEEDBACK';
 
-    protected function getSupportedAttributes()
+    /**
+     * @inheritdoc
+     */
+    protected function supports($attribute, $subject)
     {
-        return array(
+        return in_array($attribute, array(
             self::SUBSCRIBE_ARTICLE,
             self::SUBSCRIBE_ARTICLE_CATEGORY,
             self::SUBSCRIBE_NEWS,
@@ -58,11 +62,16 @@ class ContentSubscriptionsVoter extends AbstractVoter
             self::SUBSCRIBE_DOWNLOAD,
             self::SUBSCRIBE_DOWNLOAD_CATEGORY,
             self::SUBSCRIBE_FEEDBACK,
-        );
+        ));
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    /**
+     * @inheritdoc
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
+        $user = $token->getUser();
+
         if (!$this->isLoggedIn($user)) {
             return false;
         }

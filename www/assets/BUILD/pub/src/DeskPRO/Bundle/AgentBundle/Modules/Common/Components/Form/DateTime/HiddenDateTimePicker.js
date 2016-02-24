@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { AbstractDateTimePicker } from './AbstractDateTimePicker';
 
 export class HiddenDateTimePicker extends AbstractDateTimePicker {

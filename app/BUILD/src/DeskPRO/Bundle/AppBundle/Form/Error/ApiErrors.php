@@ -69,6 +69,7 @@ class ApiErrors
     const NOT_BLANK                   = 'required';
     const WRONG_LENGTH                = 'wrong_length';
     const BAD_CHOICE                  = 'bad_choice';
+    const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
     const RESOURCE_NOT_FOUND          = 'resource_not_found';
     const INVALID_PHONE_NUMBER        = 'invalid_phone_number_format';

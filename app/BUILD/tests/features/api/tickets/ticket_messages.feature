@@ -1,3 +1,4 @@
+@tickets
 Feature: /tickets/{id}/messages endpoint
   To CRUD DeskPRO ticket messages
   As a developer
@@ -16,7 +17,7 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/1/messages/1"
     Then the response status code should be 404
 
-  Scenario: Scenario: I fail form validation
+  Scenario: I fail form validation
     When I send a POST request to "/api/v2/tickets/1/messages"
     Then the response status code should be 400
     And the JSON node "errors.fields.message.errors[0].message" should be equal to "This value should not be blank."
@@ -37,6 +38,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should be equal to "my message"
+    And the JSON node "data.attachments" should have 0 elements
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -64,6 +66,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should contain '&lt;span&gt;my html message&lt;'
+    And the JSON node "data.attachments" should have 0 elements
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -78,6 +81,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 1
     And the JSON node "data.message" should contain '<span>my note</span>'
+    And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I retrieve a ticket messages after adding
     When I send a GET request to "/api/v2/tickets/1/messages"
@@ -125,6 +129,7 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 6
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 0
 
@@ -138,6 +143,7 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 7
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 0
 
@@ -151,5 +157,22 @@ Feature: /tickets/{id}/messages endpoint
     }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 8
     And the JSON node "data.message" should contain "Test Note"
     And the JSON node "data.is_agent_note" should be equal to 1
+
+  Scenario: I reset ticket message attachments
+    When I send a PUT request to "/api/v2/tickets/1/messages/5" with body:
+      """
+    {
+      "message": "<span>my edited message without attachments</span>",
+      "format": "text",
+      "attachments": []
+    }
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/1/messages/5"
+    Then the response status code should be 200
+    And the JSON node "data.message" should contain "&lt;span&gt;my edited message without attachments&lt;"
+    And the JSON node "data.attachments" should have 0 elements

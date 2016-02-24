@@ -26,17 +26,47 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+namespace DeskPRO\Bundle\AppBundle\Util;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
+use Gnugat\NomoSpaco\File\FileRepository;
+use Gnugat\NomoSpaco\FqcnRepository;
+use Gnugat\NomoSpaco\Token\ParserFactory;
 
 /**
- * Interface InterfaceActionPermissions.
- *
- * @ApiModes("standard")
- * @ApiTags("interface.mock")
+ * Class ApiControllersFinder.
  */
-interface InterfaceActionPermissions
+class ApiControllersFinder
 {
+    /**
+     * @var array
+     */
+    protected $classes = [];
+
+    /**
+     * @var FqcnRepository
+     */
+    protected $fqcn_repo;
+
+    /**
+     * ApiControllersFinder constructor.
+     */
+    public function __construct()
+    {
+        $this->fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());
+    }
+
+    /**
+     * @return array
+     */
+    public function getClasses()
+    {
+        if (!$this->classes) {
+            $this->classes = array_merge(
+                @$this->fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller'),
+                @$this->fqcn_repo->findIn(DP_ROOT.'/src/Application/LegacyApiBundle/Controller')
+            );
+        }
+
+        return $this->classes;
+    }
 }

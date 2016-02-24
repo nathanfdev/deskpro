@@ -982,12 +982,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'    => 'attachments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy'     => 'message',
-                'dpApi'        => true,
-                'dpApiDeep'    => true,
+                'fieldName'     => 'attachments',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'cascade'       => array('remove', 'persist', 'merge'),
+                'mappedBy'      => 'message',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+                'dpApiDeep'     => true,
             )
         );
 

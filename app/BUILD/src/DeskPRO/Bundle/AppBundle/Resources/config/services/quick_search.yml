@@ -23,7 +23,7 @@ services:
   quick_search.listener.usersource:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\UsersourceListener
     arguments:
-      - @=service('service_container').getSystemService('usersource_manager')
+      - "@=service('service_container').getSystemService('usersource_manager')"
     tags:
       - { name: quick_search.event_subscriber }
 

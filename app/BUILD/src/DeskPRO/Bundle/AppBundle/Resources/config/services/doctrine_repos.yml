@@ -2,27 +2,23 @@ services:
 
   person_repository:
     class: Application\DeskPRO\EntityRepository\Person
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Person']
 
 
   blob_repository:
     class: Application\DeskPRO\EntityRepository\Blob
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Blob']
 
 
   brand_repository:
     class: Application\DeskPRO\EntityRepository\Brand
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Brand']
 
 
   template_repository:
     class: Application\DeskPRO\EntityRepository\Template
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Template']

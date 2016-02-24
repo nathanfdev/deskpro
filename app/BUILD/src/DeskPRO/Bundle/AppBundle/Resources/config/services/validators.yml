@@ -17,14 +17,14 @@ services:
   validator.free_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmailValidator
     arguments:
-      - @=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Person')
+      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Person')"
     tags:
       - { name: validator.constraint_validator, alias: 'free_email_validator' }
 
   validator.leaf_department_validator:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartmentValidator
     arguments:
-      - @=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Department')
+      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Department')"
     tags:
       - { name: validator.constraint_validator, alias: 'leaf_department_validator' }
 
@@ -38,7 +38,7 @@ services:
   validator.not_banned_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmailValidator
     arguments:
-      - @=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:BanEmail')
+      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:BanEmail')"
     tags:
       - { name: validator.constraint_validator, alias: 'not_banned_email_validator' }
 

@@ -1,0 +1,15 @@
+User-Agent: *
+Disallow: /web.config
+Disallow: /.htaccess
+Disallow: /admin/
+Disallow: /agent/
+Disallow: /api/
+Disallow: /portal/api/
+Disallow: /billing/
+Disallow: /reports/
+Disallow: /dp/
+Disallow: /dp.php
+Disallow: /get_messages.php
+Disallow: /__serverinfo/
+
+Sitemap: sitemap.xml

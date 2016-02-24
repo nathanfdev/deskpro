@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
@@ -37,7 +36,7 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Twig_Error_Loader;
 
-class PortalLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
+class PortalLoader implements \Twig_LoaderInterface
 {
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack

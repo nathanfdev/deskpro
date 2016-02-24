@@ -33,6 +33,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Labels\Label;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_labels")
  */
-class LabelTask implements EntityInterface, NotifyPropertyChanged
+class LabelTask implements EntityInterface, NotifyPropertyChanged, Label
 {
     use NotifyPropertyChangedTrait;
 
@@ -86,7 +87,15 @@ class LabelTask implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'task';
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getLabel()
     {
@@ -94,13 +103,15 @@ class LabelTask implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $label
+     * {@inheritdoc}
      */
     public function setLabel($label)
     {
         $label = trim($label);
         $label = str_replace(',', '', $label);
         $this->setModelField('label', $label);
+
+        return $this;
     }
 
     /**

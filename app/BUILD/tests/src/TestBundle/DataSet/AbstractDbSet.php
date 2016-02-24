@@ -349,18 +349,6 @@ abstract class AbstractDbSet implements DataSetInterface
         }
 
         $count = 1;
-
-        // Manually create install_data
-        // Its used by the installer to test that we have create perms, so its
-        // not part of the schema
-        $this->getDb()->exec("
-            CREATE TABLE `install_data` (
-              `build` varchar(30) NOT NULL,
-              `name` varchar(75) NOT NULL DEFAULT '',
-              `data` blob NOT NULL,
-              PRIMARY KEY (`build`,`name`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=latin1
-        ");
         foreach ($queries['creates'] as $q) {
             ++$count;
             $this->getDb()->exec($q);

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
@@ -42,6 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class OrganizationsController.
@@ -51,8 +51,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly  = ['list', 'get'];
+    public static $exposeOnly  = ['list', 'get', 'post', 'put'];
     public static $entity      = Organization::class;
+    public static $type        = 'organization';
     public static $sortOptions = [
         'date_created' => 'date_created',
         'id'           => 'id',
@@ -71,6 +72,11 @@ class OrganizationsController extends CrudController
      *      }
      * )
      * @Get("/{id}/tickets")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
      */
     public function getTicketsAction(Request $request, $id)
     {
@@ -82,7 +88,8 @@ class OrganizationsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        if ($period = $request->get('period_created')) {
+        $period = $request->get('period_created');
+        if ($period) {
             $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
             $qb->andWhere("$datePeriodCaseWhen = :period_created");
             $qb->setParameter('period_created', $period);

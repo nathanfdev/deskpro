@@ -55,20 +55,17 @@ class CoreExtension extends Extension
         $container->setDefinition('deskpro.api.request_auth', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
-        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-        $definition->setFactoryMethod('getAuditManager');
+        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditManager');
         $container->setDefinition('deskpro.auditlog.manager', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditDoctrineListener');
-        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-        $definition->setFactoryMethod('getAuditListener');
+        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditListener');
         $definition->setArguments(array(new Reference('deskpro.auditlog.manager')));
         $definition->addTag('doctrine.event_subscriber');
         $container->setDefinition('deskpro.auditlog.doctrine_listener', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditWriter\\AuditDbWriter');
-        $definition->setFactoryClass('Application\\DeskPRO\\AuditLog\\AuditManagerFactory');
-        $definition->setFactoryMethod('getAuditDbWriter');
+        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditDbWriter');
         $definition->addTag('deskpro.auditlog.writers');
         $container->setDefinition('deskpro.auditlog.writer.db', $definition);
 

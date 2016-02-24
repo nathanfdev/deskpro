@@ -56,7 +56,7 @@ class MiscController extends AbstractController
     public function getGeoIpAction(Request $request)
     {
         /** @var \Orb\GeoIP\AbstractGeoIp $geoip */
-        $geoip = $this->container->getSystemService('geoip');
+        $geoip = $this->container->getSystemService('geo_ip');
 
         return $this->createJsonResponse(array(
             'geoip' => $geoip->lookup($request->getClientIp()),

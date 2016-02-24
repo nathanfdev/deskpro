@@ -35,6 +35,7 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -47,9 +48,11 @@ class PortalRequestInfoSpec extends ObjectBehavior
         Request $request,
         RouterInterface $router,
         PortalMode $mode,
-        PortalModeFactory $mode_factory
+        PortalModeFactory $mode_factory,
+        ParameterBag $bag
     ) {
         $this->beConstructedWith($request, $mode, $mode_factory);
+        $request->attributes = $bag;
     }
 
     public function it_finds_the_lang_code_in_the_url(

@@ -21,7 +21,7 @@ services:
 
   language_stack_initializer.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Language\LanguageStackInitializeListener
-    arguments: ["@language_manager", @?portal_mode_storage, "@logger", "@doctrine.orm.default_entity_manager"]
+    arguments: ["@language_manager", "@?portal_mode_storage", "@logger", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -41,8 +41,7 @@ services:
 
   language_repository:
     class: Application\DeskPRO\EntityRepository\Language
-    factory_service: doctrine.orm.default_entity_manager
-    factory_method: getRepository
+    factory: ["@doctrine.orm.default_entity_manager", getRepository]
     arguments: ['DeskPRO:Language']
 
   language_extension.twig:

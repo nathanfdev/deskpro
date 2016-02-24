@@ -120,7 +120,7 @@ class PersonRegistrationType extends AbstractType
         $captcha_decider = $this->captcha_decider;
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager, $captcha_decider) {
             $form = $event->getForm();
-            foreach ($field_manager->getAvailablePersonFields() as $field_def) {
+            foreach ($field_manager->getAvailablePersonDefs() as $field_def) {
                 if (!$field_def->isEnabled()) {
                     continue;
                 }

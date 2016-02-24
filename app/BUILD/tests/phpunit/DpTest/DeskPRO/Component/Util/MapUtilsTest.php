@@ -44,7 +44,7 @@ class MapUtilsTest extends DeskProTestCase
         );
 
         $this->assertEquals(
-            array(55                            => 1, 'b' => 2, 'c' => 3),
+            array(55 => 1, 'b' => 2, 'c' => 3),
             MapUtils::filterOutFalsey(array('a' => false, 55 => 1, 'b' => 2, 0 => null, 0, 'c' => 3))
         );
 
@@ -57,17 +57,17 @@ class MapUtilsTest extends DeskProTestCase
     public function testFilterOutValues()
     {
         $this->assertEquals(
-            array('a'                           => false, 'c' => 2, 'd' => null, 'e' => 3),
+            array('a' => false, 'c' => 2, 'd' => null, 'e' => 3),
             MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), 1)
         );
 
         $this->assertEquals(
-            array('b'                           => 1, 'c' => 2, 'd' => null, 'e' => 3),
+            array('b' => 1, 'c' => 2, 'd' => null, 'e' => 3),
             MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), false)
         );
 
         $this->assertEquals(
-            array('b'                           => 1, 'c' => 2, 'e' => 3),
+            array('b' => 1, 'c' => 2, 'e' => 3),
             MapUtils::filterOutValues(array('a' => false, 'b' => 1, 'c' => 2, 'd' => null, 'e' => 3), false, false)
         );
     }
@@ -75,12 +75,12 @@ class MapUtilsTest extends DeskProTestCase
     public function testPrependItem()
     {
         $this->assertEquals(
-            array('a'                       => 1, 'b' => 2, 'c' => 3),
+            array('a' => 1, 'b' => 2, 'c' => 3),
             MapUtils::prependItem(array('b' => 2, 'c' => 3), 'a', 1)
         );
 
         $this->assertEquals(
-            array('a'                       => 1, 'b' => 2, 'c' => 3),
+            array('a' => 1, 'b' => 2, 'c' => 3),
             MapUtils::prependItem(array('b' => 2, 'c' => 3, 'a' => 'XXX'), 'a', 1)
         );
     }
@@ -117,6 +117,44 @@ class MapUtilsTest extends DeskProTestCase
             ), function ($v, $k) {
                 return $v[0];
             })
+        );
+    }
+
+    public function testGetInStr()
+    {
+        $this->assertEquals(
+            'x',
+            MapUtils::getIn(['foo' => ['bar' => ['baz' => 'x', 'boo' => 'gert']]], 'foo.bar.baz')
+        );
+    }
+
+    public function testGetIn()
+    {
+        $this->assertEquals(
+            'x',
+            MapUtils::getIn(['foo' => ['bar' => ['baz' => 'x', 'boo' => 'gert']]], ['foo', 'bar', 'baz'])
+        );
+    }
+
+    public function testSetInStr()
+    {
+        $arr1 = ['foo' => ['bar' => ['baz' => 'x', 'boo' => 'gert']], 'other' => ['value' => 1]];
+        $arr2 = ['foo' => ['bar' => ['baz' => 'z', 'boo' => 'gert']], 'other' => ['value' => 1]];
+
+        $this->assertEquals(
+            $arr2,
+            MapUtils::setIn($arr1, 'foo.bar.baz', 'z')
+        );
+    }
+
+    public function testSetIn()
+    {
+        $arr1 = ['foo' => ['bar' => ['baz' => 'x', 'boo' => 'gert']], 'other' => ['value' => 1]];
+        $arr2 = ['foo' => ['bar' => ['baz' => 'z', 'boo' => 'gert']], 'other' => ['value' => 1]];
+
+        $this->assertEquals(
+            $arr2,
+            MapUtils::setIn($arr1, ['foo', 'bar', 'baz'], 'z')
         );
     }
 }

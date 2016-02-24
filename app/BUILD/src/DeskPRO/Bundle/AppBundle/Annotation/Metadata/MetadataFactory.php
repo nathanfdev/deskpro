@@ -26,20 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata;
+namespace DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\ActionPermissionsDriver;
 use Metadata\Cache\CacheInterface;
 use Metadata\ClassMetadata;
+use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
- * Class ActionPermissionsMetadataFactory.
+ * Class MetadataFactory.
  */
-class ActionPermissionsMetadataFactory implements MetadataFactoryInterface
+class MetadataFactory implements MetadataFactoryInterface
 {
     /**
-     * @var ActionPermissionsDriver
+     * @var DriverInterface
      */
     protected $driver;
 
@@ -59,9 +59,9 @@ class ActionPermissionsMetadataFactory implements MetadataFactoryInterface
     public $loaded_metadata = [];
 
     /**
-     * @param ActionPermissionsDriver $driver
+     * @param DriverInterface $driver
      */
-    public function __construct(ActionPermissionsDriver $driver, CacheInterface $cache, $debug = false)
+    public function __construct(DriverInterface $driver, CacheInterface $cache, $debug = false)
     {
         $this->debug  = $debug;
         $this->driver = $driver;

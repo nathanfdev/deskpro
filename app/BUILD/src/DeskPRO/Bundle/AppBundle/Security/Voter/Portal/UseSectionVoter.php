@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Concerned only with wether or not a person can use a section / module of the portal.
@@ -45,13 +46,28 @@ class UseSectionVoter extends AbstractVoter
     const USE_NEWS      = 'USE_NEWS';
     const USE_TICKETS   = 'USE_TICKETS';
 
-    protected function getSupportedAttributes()
+    /**
+     * @inheritdoc
+     */
+    protected function supports($attribute, $subject)
     {
-        return array(self::USE_ARTICLES, self::USE_FEEDBACK, self::USE_CHAT, self::USE_DOWNLOADS, self::USE_NEWS, self::USE_TICKETS);
+        return in_array($attribute, array(
+            self::USE_ARTICLES,
+            self::USE_FEEDBACK,
+            self::USE_CHAT,
+            self::USE_DOWNLOADS,
+            self::USE_NEWS,
+            self::USE_TICKETS
+        ));
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    /**
+     * @inheritdoc
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
+        $user = $token->getUser();
+
         if ($this->isLoggedIn($user)) {
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
@@ -79,16 +95,6 @@ class UseSectionVoter extends AbstractVoter
         }
 
         return false;
-    }
-
-    /**
-     * Return an array of supported classes. This will be called by supportsClass.
-     *
-     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
-     */
-    protected function getSupportedClasses()
-    {
-        return true;
     }
 
     /**

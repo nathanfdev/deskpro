@@ -39,12 +39,21 @@ namespace Application\DeskPRO\Entity\Labels;
 interface Label
 {
     /**
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function setLabel($label);
+
+    /**
      * @return string
      */
     public function getLabel();
 
     /**
-     * @return string Return label type (e.g. person, feedback etc)
+     * Return label type (e.g. person, feedback etc).
+     *
+     * @return string
      */
     public function getType();
 }

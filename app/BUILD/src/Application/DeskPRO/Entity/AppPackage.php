@@ -454,6 +454,13 @@ class AppPackage extends DomainObject
             'fieldName'    => 'assets',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppAsset',
             'mappedBy'     => 'package',
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
+            'joinColumns'  => array(array(
+                'name'                 => 'package_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'CASCADE',
+            )),
         ));
     }
 }

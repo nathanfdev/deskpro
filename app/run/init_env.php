@@ -46,6 +46,8 @@ if (version_compare(phpversion(), '5.3.0', '<')) {
 @ini_set('xdebug.max_nesting_level', 1000000);
 libxml_disable_entity_loader(true);
 
+define('DP_START_TIME', microtime(true));
+
 #------------------------------
 # Paths
 #------------------------------

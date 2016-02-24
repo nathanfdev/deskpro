@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
@@ -53,7 +52,8 @@ abstract class CrudSubController extends CrudController
         $prop = static::$parentProperty;
         $qb
             ->andWhere("$alias.$prop = :parentId")
-            ->setParameter('parentId', $this->findParentOr404()->getId());
+            ->setParameter('parentId', $this->findParentOr404()->getId())
+        ;
     }
 
     /**
@@ -95,9 +95,11 @@ abstract class CrudSubController extends CrudController
     {
         $request     = $this->container->get('request_stack')->getCurrentRequest();
         $parentId    = $request->get('parentId');
-        $parentClass = $this->getManager()
-                            ->getClassMetadata(trim(static::$entity, '\\'))
-                            ->getAssociationMapping(static::$parentProperty)['targetEntity'];
+        $parentClass = $this
+            ->getManager()
+            ->getClassMetadata(trim(static::$entity, '\\'))
+            ->getAssociationMapping(static::$parentProperty)['targetEntity']
+        ;
 
         return $this->findOr404($parentClass, $parentId);
     }

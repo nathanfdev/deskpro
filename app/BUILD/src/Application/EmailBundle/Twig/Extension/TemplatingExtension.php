@@ -53,7 +53,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
-class TemplatingExtension extends \Twig_Extension
+class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /** @var \Symfony\Component\DependencyInjection\ContainerInterface */
     protected $container;

@@ -26,42 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Mock;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
-
-/**
- * Class AbstractActionPermissionsClass.
- *
- * @ApiModes("standard")
- * @ApiTags("class.mock")
- */
-class ActionPermissionsClass
+class Build1456169401 extends AbstractBuild
 {
-    public function inheritAction()
+    public function run()
     {
-    }
+        $this->execMutateSql('
+CREATE TABLE `api_key_limits` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`hit_limit` INT(11) NOT NULL,
+	`current` INT(11) NOT NULL,
+	`start_time` DATETIME NULL DEFAULT NULL,
+	`time_interval` INT(11) NOT NULL,
+	`limit_type` VARCHAR(255) NOT NULL COLLATE \'utf8_unicode_ci\',
+	`api_key_id` INT(11) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `IDX_9A50A5F68BE312B3` (`api_key_id`),
+	CONSTRAINT `FK_9A50A5F68BE312B3` FOREIGN KEY (`api_key_id`) REFERENCES `api_keys` (`id`) ON DELETE CASCADE
+)
+COLLATE=\'utf8_unicode_ci\'
+ENGINE=InnoDB;
 
-    /**
-     * @ApiModes("all")
-     */
-    public function overrideModesAction()
-    {
-    }
-
-    /**
-     * @ApiTags("class.overridden")
-     */
-    public function overrideTagsAction()
-    {
-    }
-
-    /**
-     * @ApiModes({"token", "key"})
-     * @ApiTags({"class.overridden", "class.overridden2"})
-     */
-    public function overrideBothAction()
-    {
+INSERT INTO `api_key_limits` (`hit_limit`, `current`, `time_interval`, `limit_type`) VALUES (500, 500, 3600, \'global\');
+INSERT INTO `api_key_limits` (`hit_limit`, `current`, `time_interval`, `limit_type`) VALUES (2500, 2500, 86400, \'global\');
+');
     }
 }

@@ -107,6 +107,7 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array(
             'fieldName'    => 'app_instance',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
             'joinColumns'  => array(array(
                 'name'                 => 'app_instance_id',
                 'referencedColumnName' => 'id',

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -281,5 +280,72 @@ class MapUtils
         }
 
         return $return;
+    }
+
+    /**
+     * Get a deep value of an array.
+     *
+     * @param \Traversable|array        $array
+     * @param \Traversable|array|string $path    An array of keys, or a string where keys are separated by dots
+     * @param mixed                     $default
+     *
+     * @return mixed
+     */
+    public static function getIn($array, $path, $default = null)
+    {
+        if (is_string($path)) {
+            $path = explode('.', trim(trim($path, '.')));
+        }
+
+        while (($key = array_shift($path)) !== null) {
+            if (!array_key_exists($key, $array)) {
+                return $default;
+            }
+
+            $array = $array[$key];
+        }
+
+        return $array;
+    }
+
+    /**
+     * Creates a copy of $array and returns it with $path set to $value.
+     *
+     * Note that if you attempt to set a deep key and the element in the middle of the
+     * path is not an array, then a RuntimeException will be raised.
+     *
+     * @param \Traversable|array        $array
+     * @param \Traversable|array|string $path  An array of keys, or a string where keys are separated by dots
+     * @param mixed                     $value
+     *
+     * @return mixed
+     */
+    public static function setIn($array, $path, $value)
+    {
+        if (is_string($path)) {
+            $path = explode('.', trim(trim($path, '.')));
+        }
+
+        $fullPath = $path;
+        $lastPath = array_pop($path);
+
+        $newArray  = $array;
+        $arrayPart = &$newArray;
+
+        while (($key = array_shift($path)) !== null) {
+            if (!array_key_exists($key, $arrayPart)) {
+                $arrayPart[$key] = [];
+            }
+
+            $arrayPart = &$arrayPart[$key];
+
+            if (!is_array($arrayPart) && !$arrayPart instanceof \ArrayAccess) {
+                throw new \RuntimeException('A value within this path is not an array: '.implode('.', $fullPath));
+            }
+        }
+
+        $arrayPart[$lastPath] = $value;
+
+        return $newArray;
     }
 }

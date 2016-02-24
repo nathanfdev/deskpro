@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag as TagAnnotation;
@@ -110,10 +109,10 @@ class ThemeRepository
         }
 
         // if fresh, we are done, return the stored array and retain it for easy access
-        if (file_exists($this->config_cache)) {
+        if (file_exists($this->config_cache->getPath())) {
             $this->logger->debug('theme repository: unserializing from file cache');
 
-            return $this->theme_map = require $this->config_cache;
+            return $this->theme_map = require $this->config_cache->getPath();
         }
 
         $this->logger->debug('theme repository: creating theme map and then caching it for future use');

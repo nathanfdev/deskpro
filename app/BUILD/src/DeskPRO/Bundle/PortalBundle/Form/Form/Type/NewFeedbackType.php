@@ -179,7 +179,7 @@ class NewFeedbackType extends AbstractType
     protected function getCustomDataForms(array $options)
     {
         $forms      = [];
-        $field_defs = $this->field_manager->getFeedbackFields();
+        $field_defs = $this->field_manager->getAvailableFeedbackDefs();
 
         foreach ($field_defs as $field_def) {
             $forms[] = [

@@ -50,6 +50,8 @@ use Orb\Util\Strings;
  * @property string $keyString
  * @property Person $person
  * @property array $flags
+ *
+ * @method ApiKeyAction[] getActions()
  */
 class ApiKey extends DomainObject
 {

@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Make access decisions about content entities. IE Can the user download a Download? Can user view an Article?
@@ -50,9 +51,12 @@ class ContentAccessVoter extends AbstractVoter
 
     const VIEW_FEEDBACK = 'VIEW_FEEDBACK';
 
-    protected function getSupportedAttributes()
+    /**
+     * @inheritdoc
+     */
+    protected function supports($attribute, $subject)
     {
-        return array(
+        $supported = array(
             self::DOWNLOAD_DOWNLOAD,
             self::VIEW_DOWNLOAD,
             self::VIEW_DOWNLOAD_CATEGORY,
@@ -62,10 +66,17 @@ class ContentAccessVoter extends AbstractVoter
             self::VIEW_NEWS_CATEGORY,
             self::VIEW_FEEDBACK,
         );
+
+        return in_array($attribute, $supported);
     }
 
-    protected function isGranted($attribute, $object, $user = null)
+    /**
+     * @inheritdoc
+     */
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
+        $user = $token->getUser();
+
         // $object is the content entity here (or content category) ie Article, ArticleCategory, etc.
         $permissions_bag = $this->getPermissionsBag($user);
 
@@ -89,15 +100,5 @@ class ContentAccessVoter extends AbstractVoter
         }
 
         return false;
-    }
-
-    /**
-     * Return an array of supported classes. This will be called by supportsClass.
-     *
-     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
-     */
-    protected function getSupportedClasses()
-    {
-        return true;
     }
 }

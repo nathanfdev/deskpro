@@ -29,18 +29,21 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class PortalRequestInfo.
+ */
 class PortalRequestInfo
 {
-    public static $special_routes = array(
+    public static $special_routes = [
         'saml_sls',
         'saml_metadata',
         'portal_agent_login',
@@ -54,7 +57,7 @@ class PortalRequestInfo
         'portal_login_authenticate',
         'portal_login_submit',
         'dp_pagehit',
-    );
+    ];
 
     /**
      * @var Request
@@ -99,9 +102,12 @@ class PortalRequestInfo
         $this->router = $router;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLanguageUrlCode()
     {
-        $pathinfo = $this->getReleventPathInfo();
+        $pathinfo = $this->getRelevantPathInfo();
 
         $matcher = new UrlMatcher();
         $info    = $matcher->extractLanguageCode($pathinfo);
@@ -109,9 +115,12 @@ class PortalRequestInfo
         return $info['lang_url_code'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getRoutablePath()
     {
-        $pathinfo = $this->getReleventPathInfo();
+        $pathinfo = $this->getRelevantPathInfo();
 
         $matcher = new UrlMatcher();
         $info    = $matcher->extractLanguageCode($pathinfo);
@@ -119,15 +128,25 @@ class PortalRequestInfo
         return $info['remaining_pathinfo'];
     }
 
-    protected function getReleventPathInfo()
+    /**
+     * @return string
+     */
+    protected function getRelevantPathInfo()
     {
         $request_path_info = $this->request->getPathInfo();
 
         return $this->mode_factory->getInternalPath($request_path_info);
     }
 
+    /**
+     * @return bool
+     */
     public function isSpecialPath()
     {
+        if (RequestUtils::isLowRequest($this->request)) {
+            return true;
+        }
+
         if (IsProxyRequestHelper::check($this->request)) {
             return true;
         }
@@ -139,8 +158,8 @@ class PortalRequestInfo
         }
 
         // if we have a router, get the route name and compare it with the list of special routes
-        if ($router = $this->router) {
-            $params = $router->match($this->getRoutablePath());
+        if ($this->router) {
+            $params = $this->router->match($this->getRoutablePath());
             if (isset($params['_route'])) {
                 $route_name = $params['_route'];
 

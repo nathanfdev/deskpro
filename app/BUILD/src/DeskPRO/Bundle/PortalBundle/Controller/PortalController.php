@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -187,6 +186,9 @@ class PortalController extends AbstractController
         $this->getSession()->set('ignore_language_warning', true);
 
         $referer = $request->server->get('HTTP_REFERER');
+        if (!$referer) {
+            return $this->redirectToRoute('portal_home');
+        }
 
         return $this->redirect($referer);
     }

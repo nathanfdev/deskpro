@@ -26,30 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Mock;
+
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
+use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
+
 /**
- * DeskPRO.
+ * Class AbstractActionPermissionsClass.
+ *
+ * @ApiModes("standard")
+ * @ApiTags("class.mock")
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class OrganizationNoteType extends AbstractType
+class ActionPermissionsClass
 {
     /**
-     * @return string
+     * @ApiDisableLimits()
      */
-    public function getName()
+    public function inheritAction()
     {
-        return 'task_star';
     }
 
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @ApiModes("all")
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function overrideModesAction()
     {
-        $builder->add('note', 'text');
+    }
+
+    /**
+     * @ApiTags("class.overridden")
+     */
+    public function overrideTagsAction()
+    {
+    }
+
+    /**
+     * @ApiModes({"token", "key"})
+     * @ApiTags({"class.overridden", "class.overridden2"})
+     */
+    public function overrideBothAction()
+    {
     }
 }

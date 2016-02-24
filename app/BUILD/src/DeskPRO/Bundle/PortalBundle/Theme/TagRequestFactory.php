@@ -35,7 +35,6 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use DeskPRO\Bundle\PortalBundle\Themes\Base\Controller\CommonController;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -131,10 +130,6 @@ class TagRequestFactory
         $current_attributes = $current_request->attributes->all();
 
         $new_attributes = array();
-
-        if ($cookie = $current_request->cookies->get(CommonController::DISMISSED_ALERTS_COOKIE_NAME)) {
-            $new_attributes[CommonController::DISMISSED_ALERTS_COOKIE_NAME] = $cookie;
-        }
 
         $tag_params = ['_tag_name' => $tag->getName()];
         if ($tag->allowRouteParams()) {

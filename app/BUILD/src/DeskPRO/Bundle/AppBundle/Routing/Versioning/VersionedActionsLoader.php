@@ -29,18 +29,20 @@
 namespace DeskPRO\Bundle\AppBundle\Routing\Versioning;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
+use Doctrine\Common\Annotations\Reader;
+use FOS\RestBundle\Routing\Loader\Reader\RestControllerReader;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Yaml\Yaml;
-use FOS\RestBundle\Routing\Loader\Reader\RestControllerReader;
-use Doctrine\Common\Annotations\Reader;
 
 /**
- * Class VersionedActionsLoader
+ * Class VersionedActionsLoader.
  */
 class VersionedActionsLoader extends Loader
 {
+    public static $api_prefix = '/api/v2';
+
     /**
      * @var bool
      */
@@ -62,9 +64,9 @@ class VersionedActionsLoader extends Loader
     private $file_locator;
 
     /**
-     * @param Reader $annotation_reader
+     * @param Reader               $annotation_reader
      * @param RestControllerReader $controller_reader
-     * @param FileLocator $file_locator
+     * @param FileLocator          $file_locator
      */
     public function __construct(
         Reader $annotation_reader, RestControllerReader $controller_reader, FileLocator $file_locator)
@@ -76,8 +78,11 @@ class VersionedActionsLoader extends Loader
 
     /**
      * @param mixed $resource
-     * @param null $type
+     * @param null  $type
+     *
+     * @throws \Exception
      * @return RouteCollection
+     *
      */
     public function load($resource, $type = null)
     {
@@ -87,15 +92,15 @@ class VersionedActionsLoader extends Loader
 
         $routes = new RouteCollection();
 
-        $config = Yaml::parse($this->file_locator->locate($resource));
+        $config = Yaml::parse(file_get_contents($this->file_locator->locate($resource)));
         foreach ($config['versioned_actions'] as $action_path => $versions) {
-            $path_parts = explode('\\', $action_path);
-            $action_name = array_pop($path_parts);
-            $controller_class = 'DeskPRO\Bundle\ApiBundle\Controller\\' . implode('\\', $path_parts);
+            $path_parts       = explode('\\', $action_path);
+            $action_name      = array_pop($path_parts);
+            $controller_class = 'DeskPRO\Bundle\ApiBundle\Controller\\'.implode('\\', $path_parts);
 
             $controller_reflection = new \ReflectionClass($controller_class);
 
-            /** @var RouteCollection $controller_routed */
+            /* @var RouteCollection $controller_routed */
             $controller_routes = $this->controller_reader->read($controller_reflection);
             $controller_routes->prependRouteControllersWithPrefix("{$controller_class}::");
 
@@ -108,19 +113,23 @@ class VersionedActionsLoader extends Loader
                 'FOS\RestBundle\Controller\Annotations\Route'
             );
             if ($base_route_annotation) {
-                $route->setPath($base_route_annotation->getPath() . $route->getPath());
+                $route->setPath($base_route_annotation->getPath().$route->getPath());
             }
 
             foreach ($versions as $version_spec) {
-                $version = array_keys($version_spec)[0];
+                $version = (string) array_keys($version_spec)[0];
+                if (!preg_match('/\d{8}/', $version)) {
+                    throw new \Exception("$version isn't a YYYYMMDD string, check versioned actions configuration");
+                }
+
                 $description = trim($version_spec[$version]);
 
-                $version_route = clone $route;
+                $version_route       = clone $route;
                 $original_controller = $route->getDefault('_controller');
 
                 if (strpos($description, '(replaced)') === 0) {
                     $version_controller_name = $original_controller;
-                } else if (strpos($description, '(replaced:') === 0) {
+                } elseif (strpos($description, '(replaced:') === 0) {
                     preg_match('/\(replaced\:([^\)]+)\).*/', $description, $matches);
                     $version_controller_name = preg_replace('/Action$/', "{$matches[1]}Action", $original_controller);
                 } else {
@@ -129,7 +138,7 @@ class VersionedActionsLoader extends Loader
 
                 $version_route->setDefault('_controller', $version_controller_name);
                 $version_path = str_replace('.{_format}', '', $route->getPath());
-                $version_route->setPath('/api/v2/' . $version . $version_path);
+                $version_route->setPath(self::$api_prefix.'/'.$version.$version_path);
                 $routes->add("v_{$version}_{$this->toUnderscore($action_path)}", $version_route);
             }
         }
@@ -141,7 +150,8 @@ class VersionedActionsLoader extends Loader
 
     /**
      * @param mixed $resource
-     * @param null $type
+     * @param null  $type
+     *
      * @return bool
      */
     public function supports($resource, $type = null)
@@ -151,6 +161,7 @@ class VersionedActionsLoader extends Loader
 
     /**
      * @param string $string
+     *
      * @return string
      */
     private function toUnderscore($string)

@@ -28,6 +28,7 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DeskPRO\Component\Util\MapUtils;
 use DpSys\Kernel;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -54,16 +55,16 @@ class CliKernelBootTask implements BootTaskInterface
 
         // barg -- boot args
         while (($idx = array_search('--barg', $argv, true)) !== false) {
-            $val = $argv[$idx+1];
-            unset($argv[$idx+1]);
+            $val = $argv[$idx + 1];
+            unset($argv[$idx + 1]);
             unset($argv[$idx]);
             $argv = array_values($argv);
 
             if (strpos($val, '=') !== false) {
-                list ($name, $val) = explode('=', $val, 2);
+                list($name, $val) = explode('=', $val, 2);
             } else {
                 $name = $val;
-                $val = true;
+                $val  = true;
             }
 
             $this->handleBootArg($env, $name, $val);
@@ -106,6 +107,27 @@ class CliKernelBootTask implements BootTaskInterface
         switch ($name) {
             case 'is-building':
                 $env->setRuntimeVar('is_building', true);
+                break;
+            case 'config':
+                // Called like: --barg "config=foo.bar.baz:value"
+
+                if (strpos($value, ':') === false) {
+                    echo "Invalid config bard\n";
+                    exit(1);
+                }
+
+                list($configName, $configValue) = explode(':', $value, 2);
+                $configNameParts                = explode('.', $configName);
+
+                $fileId = array_shift($configNameParts);
+                $env->getConfigReader()->addConfigLoader(function ($loadFileId, array $config) use ($fileId, $configNameParts, $configValue) {
+                    if ($loadFileId === $fileId) {
+                        $config = MapUtils::setIn($config, $configNameParts, $configValue);
+                    }
+
+                    return $config;
+                });
+                $env->getConfigReader()->resetCache();
                 break;
         }
     }

@@ -26,8 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation;
 
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DpTest\DeskProTestCase;
 
 /**

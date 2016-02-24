@@ -53,8 +53,7 @@ class InstallExtension extends Extension
         $container->setDefinition('deskpro.core.settings', $definition);
 
         $definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
-        $definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
-        $definition->setFactoryMethod('getSearchAdapter');
+        $definition->setFactory('Application\\DeskPRO\\StaticLoader\\SearchAdapter::getSearchAdapter');
         $container->setDefinition('deskpro.search_adapter', $definition);
 
         // slug listener (sets slugs on content)

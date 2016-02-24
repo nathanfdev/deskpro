@@ -55,7 +55,6 @@ class ActionPermissionsCacheWarmer implements CacheWarmerInterface
     public function warmUp($cacheDir)
     {
         $this->tags_collector->collectTags(true);
-        var_dump($this->tags_collector->getTagsHierarchy());
     }
 
     /**

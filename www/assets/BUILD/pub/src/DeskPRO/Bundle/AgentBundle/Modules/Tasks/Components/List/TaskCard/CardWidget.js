@@ -15,10 +15,6 @@ export class CardWidget extends React.Component {
     this.setState({value: newProps.value});
   }
 
-  componentWillUnmount() {
-    this.isUnmounted = true;
-  }
-
   reset() {
     this.setState({value: null});
   }

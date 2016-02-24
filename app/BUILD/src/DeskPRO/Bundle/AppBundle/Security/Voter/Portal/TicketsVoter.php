@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Can the user access tickets? Can the user edit or view a specific ticket?
@@ -45,20 +46,23 @@ class TicketsVoter extends AbstractVoter
     const TICKET_VIEW_AUTH = 'TICKET_VIEW_AUTH';
     const TICKET_EDIT      = 'TICKET_EDIT';
 
-    protected function getSupportedAttributes()
+    /**
+     * @inheritdoc
+     */
+    protected function supports($attribute, $subject)
     {
-        return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH);
+        return $subject instanceof Ticket && in_array($attribute, array(
+            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH
+        ));
     }
 
     /**
-     * @param string                                                                          $attribute
-     * @param object                                                                          $ticket
-     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
-     *
-     * @return bool
+     * @inheritdoc
      */
-    protected function isGranted($attribute, $ticket, $user = null)
+    protected function voteOnAttribute($attribute, $ticket, TokenInterface $token)
     {
+        $user = $token->getUser();
+
         if (!$ticket instanceof Ticket) {
             throw new InvalidArgumentException('expected Ticket entity, but got "'.get_class($ticket).'"');
         }
@@ -94,15 +98,5 @@ class TicketsVoter extends AbstractVoter
         }
 
         return $decision;
-    }
-
-    /**
-     * Return an array of supported classes. This will be called by supportsClass.
-     *
-     * @return array an array of supported classes, i.e. array('Acme\DemoBundle\Model\Product')
-     */
-    protected function getSupportedClasses()
-    {
-        return array('Application\\DeskPRO\\Entity\\Ticket');
     }
 }

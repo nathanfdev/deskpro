@@ -1087,4 +1087,10 @@ return array(
         'log_name'      => 'api_log.log',
     ],
     'api_log.writer.file.serializer.type' => 'serialize',
+
+    'api_limits.global.hour' => 500,
+    'api_limits.global.day'  => 2500,
+
+    'api_limits.individual.hour' => 100,
+    'api_limits.individual.day'  => 300,
 );

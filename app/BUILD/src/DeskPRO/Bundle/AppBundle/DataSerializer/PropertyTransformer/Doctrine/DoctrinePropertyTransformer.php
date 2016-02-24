@@ -55,12 +55,21 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
      */
     private $type_map;
 
+    /**
+     * Constructor.
+     *
+     * @param DoctrineAssociationManager $assoc_manager
+     * @param DataTypeMap                $type_map
+     */
     public function __construct(DoctrineAssociationManager $assoc_manager, DataTypeMap $type_map)
     {
         $this->assoc_manager = $assoc_manager;
         $this->type_map      = $type_map;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function transform(PropertyTransformationContext $property_context)
     {
         $val                = $property_context->getValue();
@@ -85,6 +94,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
                 $type              = $this->getType($data, $property_name);
                 $doctrine_deferred = $this->assoc_manager->deferAssociationIds($data, $property_name);
                 $new_val           = new DoctrineDeferredProperty($doctrine_deferred, $type);
+
                 if ($serializer_context->isTypeIncluded($type)) {
                     $serializer_context->getSideloads()->addDeferred(
                         $type,
@@ -99,6 +109,12 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
         }
     }
 
+    /**
+     * @param mixed  $entity
+     * @param string $property_name
+     *
+     * @return null|string
+     */
     protected function getType($entity, $property_name)
     {
         $type = null;
@@ -111,9 +127,7 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
     }
 
     /**
-     * @param DeferredPropertyInterface $deferred_property
-     *
-     * @return bool true if supports this deferred property, false otherwise
+     * {@inheritdoc}
      */
     public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
@@ -122,15 +136,14 @@ class DoctrinePropertyTransformer implements PropertyTransformerInterface
     }
 
     /**
-     * @param DeferredPropertyInterface $deferred_property
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
         if ($deferred_property instanceof DoctrineDeferredProperty) {
             return $deferred_property->resolveProperty();
         }
+
         /* @var DoctrineDeferredInclude $deferred_property */
         return $deferred_property->resolveInclude();
     }

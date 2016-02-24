@@ -106,14 +106,7 @@ class CachingApiDocExtractor extends ApiDocExtractor
             return $data;
         }
 
-        // For BC
-        if (method_exists($cache, 'getPath')) {
-            $cachePath = $cache->getPath();
-        } else {
-            $cachePath = (string) $cache;
-        }
-
-        return unserialize(file_get_contents($cachePath));
+        return unserialize(file_get_contents($cache->getPath()));
     }
 
     /**

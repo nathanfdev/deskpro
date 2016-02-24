@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -108,6 +109,16 @@ class PersonType extends ApiType
                 'allow_delete' => true,
                 'delete_empty' => true,
                 'by_reference' => false,
+            ])
+            ->add('user_groups', UsergroupsType::class, [
+                'is_agent_group' => false,
+                'owner'          => $builder->getData(),
+                'property_path'  => 'usergroups',
+            ])
+            ->add('agent_groups', UsergroupsType::class, [
+                'is_agent_group' => true,
+                'owner'          => $builder->getData(),
+                'property_path'  => 'usergroups',
             ])
             ->add('fields', 'deskpro_combined_type', [
                 'forms'          => $this->getCustomDataFields($options),
@@ -184,7 +195,7 @@ class PersonType extends ApiType
      */
     private function getCustomDataFields(array $options)
     {
-        $field_defs  = $this->field_manager->getAvailablePersonFields();
+        $field_defs  = $this->field_manager->getAvailablePersonDefs();
         $form_fields = [];
 
         foreach ($field_defs as $field_def) {

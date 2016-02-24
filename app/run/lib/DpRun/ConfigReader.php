@@ -85,7 +85,10 @@ class ConfigReader implements ConfigReaderInterface
     public function __construct(array $config_dirs, array $config_loaders = [])
     {
         $this->config_dirs = $config_dirs;
-        $this->config_loaders = $config_loaders;
+
+        foreach ($config_loaders as $loader) {
+            $this->addConfigLoader($loader);
+        }
     }
 
     /**

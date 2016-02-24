@@ -59,9 +59,11 @@ class OrganizationTransformer extends AbstractDataSerializerTransformer
             'id',
             'name',
             'summary',
+            'parent',
             'importance',
             'date_created',
             'email_domains',
+            'usergroups',
         ];
     }
 

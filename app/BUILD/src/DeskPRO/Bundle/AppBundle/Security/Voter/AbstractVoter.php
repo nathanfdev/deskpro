@@ -31,8 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Security\Voter;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorization\Voter\AbstractVoter
+abstract class AbstractVoter extends Voter
 {
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -63,14 +64,14 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
         $vote = self::ACCESS_ABSTAIN;
 
         foreach ($attributes as $attribute) {
-            if (!$this->supportsAttribute($attribute)) {
+            if (!$this->supports($attribute, $object)) {
                 continue;
             }
 
             // as soon as at least one attribute is supported, default is to deny access
             $vote = self::ACCESS_DENIED;
 
-            if ($this->isGranted($attribute, $object, $token->getUser())) {
+            if ($this->voteOnAttribute($attribute, $object, $token)) {
                 // grant access as soon as at least one voter returns a positive response
                 return self::ACCESS_GRANTED;
             }

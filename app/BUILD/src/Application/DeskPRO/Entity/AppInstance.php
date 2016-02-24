@@ -306,12 +306,12 @@ class AppInstance extends DomainObject
         $metadata->mapManyToOne(array(
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
+            'fetch'        => ClassMetadataInfo::FETCH_LAZY,
             'joinColumns'  => array(array(
                 'name'                 => 'package_name',
                 'referencedColumnName' => 'name',
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
             )),
         ));
     }

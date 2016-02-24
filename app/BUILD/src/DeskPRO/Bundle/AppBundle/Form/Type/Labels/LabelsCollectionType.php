@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class LabelsCollectionType.
@@ -47,13 +48,20 @@ class LabelsCollectionType extends ApiType
     private $em;
 
     /**
-     * LabelsCollectionType constructor.
-     *
-     * @param EntityManager $em
+     * @var PropertyAccessor
      */
-    public function __construct(EntityManager $em)
+    private $property_accessor;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager    $em
+     * @param PropertyAccessor $property_accessor
+     */
+    public function __construct(EntityManager $em, PropertyAccessor $property_accessor)
     {
-        $this->em = $em;
+        $this->em                = $em;
+        $this->property_accessor = $property_accessor;
     }
 
     /**
@@ -77,14 +85,15 @@ class LabelsCollectionType extends ApiType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        parent::setDefaultOptions($resolver);
-        $resolver->setRequired(['labels_class', 'labels_owner', 'labels_property', 'owner_property']);
-        $resolver->setDefaults([
-            'labels_property' => 'labels',
-            'allow_add'       => true,
-            'allow_delete'    => true,
-            'by_reference'    => true,
-        ]);
+        $resolver
+            ->setRequired(['labels_class', 'labels_owner', 'labels_property', 'owner_property'])
+            ->setDefaults([
+                'labels_property' => 'labels',
+                'allow_add'       => true,
+                'allow_delete'    => true,
+                'by_reference'    => true,
+            ])
+        ;
     }
 
     /**
@@ -92,14 +101,13 @@ class LabelsCollectionType extends ApiType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-        $builder->addViewTransformer($transformer = new LabelsCollectionTransformer(
+        $builder->addViewTransformer(new LabelsCollectionTransformer(
             $this->em,
+            $this->property_accessor,
             $options['labels_owner'],
             $options['labels_class'],
             $options['labels_property'],
             $options['owner_property']
         ));
-        $builder->addModelTransformer($transformer);
     }
 }

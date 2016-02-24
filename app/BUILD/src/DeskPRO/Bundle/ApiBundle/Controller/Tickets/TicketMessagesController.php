@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends CrudSubController
 {
-    public static $exposeOnly     = ['list', 'get', 'post'];
+    public static $exposeOnly     = ['list', 'get', 'post', 'put'];
     public static $entity         = TicketMessage::class;
     public static $type           = 'ticket_message';
     public static $parentProperty = 'ticket';
@@ -60,8 +60,9 @@ class TicketMessagesController extends CrudSubController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'ticket' => $this->findParentOr404(),
-            'person' => $this->getUser(),
+            'ticket'          => $this->findParentOr404(),
+            'person'          => $this->getUser(),
+            'has_attachments' => true,
         ]);
 
         return parent::handleForm($model, $request, $options);
