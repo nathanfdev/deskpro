@@ -38,7 +38,6 @@ use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class OrganizationMembersController.
@@ -81,7 +80,7 @@ class OrganizationMembersController extends CrudSubController
     {
         $organization = $this->findParentOr404();
         if ($person->getOrganization() !== $organization) {
-            throw new BadRequestHttpException('Person is not a member of this organization.');
+            throw $this->createBadRequestException('Person is not a member of this organization.');
         }
 
         $person->setOrganization(null);

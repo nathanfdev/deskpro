@@ -62,13 +62,8 @@ class WidgetSetupController extends BaseController
         $settings_resolver = $this->container->get('settings_resolver');
         $settings          = $settings_resolver->getGlobalSettings();
 
-        $user_settings  = $this->container->get('widget.settings');
-        $brand_settings = [];
-
-        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
-        if ($data_store) {
-            $brand_settings = $data_store->getData('brand_settings');
-        }
+        $widget_settings = $this->container->get('widget.settings');
+        $brand_settings  = $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: [];
 
         return new View([
             'data' => [
@@ -84,9 +79,10 @@ class WidgetSetupController extends BaseController
                 'settings' => [
                     'global' => [
                         'chat' => [
-                            'require_login'    => $user_settings->isPortalRequireLogin(),
-                            'email_validation' => $user_settings->isPortalEmailValidation(),
+                            'require_login'    => $widget_settings->isPortalRequireLogin(),
+                            'email_validation' => $widget_settings->isPortalEmailValidation(),
                         ],
+                        'enabled_on_portal' => $widget_settings->isEnabledOnPortal(),
                     ],
                     'brand' => $brand_settings,
                 ],
@@ -103,39 +99,32 @@ class WidgetSetupController extends BaseController
      */
     public function postWidgetSetupAction(Request $request)
     {
-        $form = $this->handleForm($request);
-
-        // Save global settings
-        $new_global_chat_settings = $form->getData()['global']['chat'];
-
-        $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
-        $setting_repo->updateSetting(WidgetSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
-
-        // Save brand settings
-        // Use datastore for now, should have brand id in future
-        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => 'core.apps_chat']);
-        if (!$data_store) {
-            $data_store = new DataStore();
-            $data_store->setName('core.apps_chat');
-        }
-
-        $data_store->setData('brand_settings', $form->getData()['brand']);
-
-        $em = $this->getManager();
-        $em->persist($data_store);
-        $em->flush();
+        $this->handleForm($request);
 
         return new View();
     }
 
     /**
-     * @Post("/widget/portal/apply", name="api_widget_portal_settings_apply")
+     * @Post("/widget/portal/apply", name="api_widget_portal_apply")
+     *
+     * @param Request $request
      *
      * @return View
      */
-    public function applyPortalWidgetSettingsAction()
+    public function applyPortalWidgetSettingsAction(Request $request)
     {
+        // store form settings
+        $this->handleForm($request);
+
+        // update portal widget brand settings as well
+        $data_store = $this->getOrCreatePortalWidgetBrandSettings();
+        $data_store->setData('brand_settings', $this->getOrCreateWidgetBrandSettings()->getData('brand_settings'));
+
+        $em = $this->getManager();
+        $em->persist($data_store);
+        $em->flush();
+
+        // enable widget on the portal
         $setting_repo = $this->getSettingsRepository();
         $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, true);
 
@@ -143,7 +132,7 @@ class WidgetSetupController extends BaseController
     }
 
     /**
-     * @Post("/widget/portal/remove", name="api_widget_portal_settings_remove")
+     * @Post("/widget/portal/remove", name="api_widget_portal_remove")
      *
      * @return View
      */
@@ -169,7 +158,19 @@ class WidgetSetupController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        return $form;
+        // Save global settings
+        $new_global_chat_settings = $form->getData()['global']['chat'];
+
+        $setting_repo = $this->getSettingsRepository();
+        $setting_repo->updateSetting(WidgetSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
+        $setting_repo->updateSetting(WidgetSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
+
+        $data_store = $this->getOrCreateWidgetBrandSettings();
+        $data_store->setData('brand_settings', $form->getData()['brand']);
+
+        $em = $this->getManager();
+        $em->persist($data_store);
+        $em->flush();
     }
 
     /**
@@ -178,5 +179,37 @@ class WidgetSetupController extends BaseController
     protected function getSettingsRepository()
     {
         return $this->getRepository('DeskPRO:Setting');
+    }
+
+    /**
+     * @return DataStore|null
+     */
+    protected function getOrCreateWidgetBrandSettings()
+    {
+        return $this->getOrCreateDataStore('widget.brand_settings');
+    }
+
+    /**
+     * @return DataStore|null
+     */
+    protected function getOrCreatePortalWidgetBrandSettings()
+    {
+        return $this->getOrCreateDataStore('widget.portal_brand_settings');
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return DataStore
+     */
+    protected function getOrCreateDataStore($name)
+    {
+        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => $name]);
+        if (!$data_store) {
+            $data_store = new DataStore();
+            $data_store->setName($name);
+        }
+
+        return $data_store;
     }
 }

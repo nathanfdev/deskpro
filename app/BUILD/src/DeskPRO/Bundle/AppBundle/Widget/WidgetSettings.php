@@ -74,6 +74,14 @@ class WidgetSettings
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabledOnPortal()
+    {
+        return (bool) $this->getGlobalSettings()->get(self::ENABLED_ON_PORTAL);
+    }
+
+    /**
      * @return \Application\DeskPRO\NewSettings\SettingsBag
      */
     protected function getGlobalSettings()
