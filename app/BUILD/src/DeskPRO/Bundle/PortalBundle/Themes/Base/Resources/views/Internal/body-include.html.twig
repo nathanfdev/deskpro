@@ -48,14 +48,20 @@
 
 {% if portal_mode() != 'focus-window' %}
     {% if is_portal_widget_enabled() %}
-        <script type="text/javascript">
-            (function() {
-                window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
-                window.__DP_URL__ = '{{ root_url() }}';
-                window.__DP_OPTIONS__ = {{ portal_widget_options() | json_encode | raw }};
-            })();
-        </script>
-        <script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>
         <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
+        {% if app.environment == 'prod' %}
+            <script type="text/javascript">
+                {{ minified_widget_loader(root_url(), asset('DeskPRO_WidgetBundle.js', 'app_assets')) | raw  }}
+            </script>
+        {% else %}
+            <script type="text/javascript">
+                (function() {
+                    window.__DP_APP_SRC__ = '{{ asset('DeskPRO_WidgetBundle.js', 'app_assets') }}';
+                    window.__DP_URL__ = '{{ root_url() }}';
+                    window.__DP_OPTIONS__ = {{ portal_widget_options() | json_encode | raw }};
+                })();
+            </script>
+            <script type="text/javascript" src="{{ asset('widget_loader.js', 'app_assets') }}" async="async"></script>
+        {% endif %}
     {% endif %}
 {% endif %}

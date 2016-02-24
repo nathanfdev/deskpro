@@ -155,6 +155,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_options', [$this, 'getPortalWidgetOptions']),
+            new \Twig_SimpleFunction('minified_widget_loader', [$this, 'getMinifiedWidgetLoader']),
         ];
     }
 
@@ -525,6 +526,30 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return array_merge($widget_settings->getPortalBrandSettings(), [
             'company' => $widget_settings->getCompanySettings(),
         ]);
+    }
+
+    /**
+     * @param string $root_path
+     * @param string $widget_bundle_path
+     *
+     * @return string
+     */
+    public function getMinifiedWidgetLoader($root_path, $widget_bundle_path)
+    {
+        $asset_dir          = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
+        $widget_loader_path = $asset_dir.'/pub/build/widget_loader.js';
+
+        $widget_loader = null;
+        if (file_exists($widget_loader_path)) {
+            $widget_loader = file_get_contents($widget_loader_path);
+
+            // override options
+            $widget_loader = str_replace('__DP_APP_SRC__', '"'.$widget_bundle_path.'"', $widget_loader);
+            $widget_loader = str_replace('__DP_URL__', '"'.$root_path.'"', $widget_loader);
+            $widget_loader = str_replace('__DP_OPTIONS__', json_encode($this->getPortalWidgetOptions()), $widget_loader);
+        }
+
+        return $widget_loader;
     }
 
     /**
