@@ -29,9 +29,15 @@ Feature: /organization_members endpoint
     When I send a POST request to "/api/v2/organizations/1/members" with body:
     """
 {
-  "person": 1
+  "person": 2,
+  "position": "some text"
 }
     """
+    And the response status code should be 204
+
+    When I send a GET request to "/api/v2/people/2"
     Then the response should be in JSON
-    And the response status code should be 400
-    And print last JSON response
+    And the response status code should be 200
+    And the JSON node "data.id" should be equal to 2
+    And the JSON node "data.organization" should be equal to 1
+    And the JSON node "data.organization_position" should be equal to "some text"

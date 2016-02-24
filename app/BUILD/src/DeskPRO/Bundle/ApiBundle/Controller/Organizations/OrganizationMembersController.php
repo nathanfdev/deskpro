@@ -55,6 +55,11 @@ class OrganizationMembersController extends CrudSubController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
+        $person_id = $request->request->getInt('person');
+        if ($person_id) {
+            $model = $this->getRepository('DeskPRO:Person')->find($person_id);
+        }
+
         $options = array_merge($options, [
             'organization' => $this->findParentOr404(),
         ]);

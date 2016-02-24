@@ -77,7 +77,7 @@ class OrganizationMemberType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAssignPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOrganization']);
     }
 
     /**
@@ -109,16 +109,15 @@ class OrganizationMemberType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onAssignPerson(FormEvent $event)
+    public function onSetOrganization(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+        $data   = $form->getData();
 
-        $person = null;
-        if (isset($data['person'])) {
-            $person = $this->em->getRepository('DeskPRO:Person')->find($data['person']);
+        if ($data instanceof Person) {
+            $data->setOrganization($config->getOption('organization'));
+            $form->setData($data);
         }
-
-        $form->setData($person);
     }
 }
