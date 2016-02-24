@@ -25,7 +25,7 @@ Feature: /organization_members endpoint
     And the response status code should be 400
     And print last JSON response
 
-  Scenario: I try add an existing member
+  Scenario: I try add a member who is already in organization
     When I send a POST request to "/api/v2/organizations/1/members" with body:
     """
 {
@@ -33,7 +33,28 @@ Feature: /organization_members endpoint
   "position": "some text"
 }
     """
-    And the response status code should be 204
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "already_in_organization"
+    And the JSON node "errors.fields.person.errors[0].message" should be equal to "That user is already in an organization."
+
+  Scenario: I remove person organization and re try to add
+    When I send a PUT request to "/api/v2/people/2" with body:
+    """
+{
+  "organization": null
+}
+    """
+    Then the response status code should be 204
+
+    When I send a POST request to "/api/v2/organizations/1/members" with body:
+    """
+{
+  "person": 2,
+  "position": "some text"
+}
+    """
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/people/2"
     Then the response should be in JSON

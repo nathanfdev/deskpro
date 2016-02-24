@@ -38,6 +38,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -77,7 +78,7 @@ class OrganizationMemberType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOrganization']);
+        $builder->get('person')->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetOrganization']);
     }
 
     /**
@@ -112,12 +113,17 @@ class OrganizationMemberType extends AbstractType
     public function onSetOrganization(FormEvent $event)
     {
         $form   = $event->getForm();
-        $config = $form->getConfig();
-        $data   = $form->getData();
+        $parent = $form->getParent();
+        $config = $parent->getConfig();
+        $data   = $parent->getData();
 
         if ($data instanceof Person) {
-            $data->setOrganization($config->getOption('organization'));
-            $form->setData($data);
+            $organization = $config->getOption('organization');
+            if (!$data->getOrganization()) {
+                $data->setOrganization($organization);
+            } elseif ($data->getOrganization() !== $organization) {
+                $form->addError(new FormError('already_in_organization'));
+            }
         }
     }
 }
