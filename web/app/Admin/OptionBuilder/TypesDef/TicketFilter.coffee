@@ -689,7 +689,7 @@ define [
         formatSelection: format
         ajax:
           data: (term, page) -> { query: term, limit: 10 }
-          results: (data, page) -> { results: data.data.map (item) -> {id: item.id, name: item.name }}
+          results: (data, page) -> { results: data.data.organizations.map (item) -> {id: item.id, name: item.name }}
       @getRemoteInput options
 
     getFilterOrgName: (options = {}) ->
