@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { toggleSelected } from '../../../Actions/listActions';
+import { toggleSelectedAction } from '../../../../Application/Actions/massActions';
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import {
@@ -45,7 +45,7 @@ export class TaskCardEditContainer extends React.Component {
 
   onToggleSelected = () => {
     const { dispatch, task } = this.props;
-    dispatch(toggleSelected(task.get('id')));
+    dispatch(toggleSelectedAction(task.get('id')));
   };
 
   onToggleDone = () => {

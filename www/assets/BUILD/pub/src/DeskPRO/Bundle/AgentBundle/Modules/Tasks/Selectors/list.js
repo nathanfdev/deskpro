@@ -96,7 +96,7 @@ export const massActionsSelector = createSelector(
     const otherOptions = [
       { label: 'Delete', icon: 'minus-square', param: 'delete' }
     ];
-    massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });
+    massActions.push({ icon: 'fa-asterisk', type: 'action', param: 'other', options: otherOptions });
 
     return massActions;
   }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
@@ -175,7 +176,7 @@ class AvatarResolver
                 'blob_auth_id' => $blob->getAuthId(),
                 'filename'     => $blob->getFilenameSafe(),
                 's'            => $size,
-            ), UrlGeneratorInterface::ABSOLUTE_URL);
+            ), UrlGeneratorInterface::ABSOLUTE_PATH);
         } elseif ($this->use_gravatar && $person->primary_email) {
             $url = $person->primary_email->getGravatarUrl(true).'&s='.$size;
 
@@ -202,7 +203,7 @@ class AvatarResolver
         $url = $this->router->generate('serve_default_picture', array(
             's'        => $size,
             'size-fit' => 1,
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        ), UrlGeneratorInterface::ABSOLUTE_PATH);
 
         return $url;
     }
@@ -223,7 +224,7 @@ class AvatarResolver
                 'blob_auth_id' => $blob->getAuthId(),
                 'filename'     => $blob->getFilenameSafe(),
                 's'            => $size,
-            ), UrlGeneratorInterface::ABSOLUTE_URL);
+            ), UrlGeneratorInterface::ABSOLUTE_PATH);
         }
 
         return $url;
@@ -239,7 +240,7 @@ class AvatarResolver
         $url = $this->router->generate('serve_org_picture_default', array(
             's'        => $size,
             'size-fit' => 1,
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        ), UrlGeneratorInterface::ABSOLUTE_PATH);
 
         return $url;
     }
