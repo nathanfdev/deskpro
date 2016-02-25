@@ -33,16 +33,18 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 
 /**
- * Class ArticlesContext.
+ * Class ContentContext.
  */
-class ArticlesContext extends BasePortalContext
+class ContentContext extends BasePortalContext
 {
     /**
      * @Given I have ":title" article
      */
-    public function hasATicket($title)
+    public function haveAnArticle($title)
     {
         $article = new Article();
         /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
@@ -52,6 +54,24 @@ class ArticlesContext extends BasePortalContext
         $article->setTitle($title);
         $article->setCategories(
             $this->em()->getRepository(ArticleCategory::class)->findAll()
+        );
+        $this->persistAndFlush($article);
+    }
+
+    /**
+     * @Given I have ":title" news
+     */
+    public function haveANews($title)
+    {
+        $article = new News();
+
+        /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
+        $user_details = $this->getContainer()->get('user_details');
+        $person       = $user_details->getWho('agent');
+        $article->setPerson($person);
+        $article->setTitle($title);
+        $article->setCategory(
+            $this->em()->getRepository(NewsCategory::class)->findOneBy(['slug' => 'general'])
         );
         $this->persistAndFlush($article);
     }
