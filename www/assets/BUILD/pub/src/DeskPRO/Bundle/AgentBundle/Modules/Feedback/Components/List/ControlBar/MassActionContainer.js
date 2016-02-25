@@ -4,7 +4,7 @@ import { MassActionBarContainer }
 import { submitMassActions } from '../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
-import { applyParams, loadIndicator } from '../../../Actions/FeedbackListActions';
+import { loadIndicator } from '../../../Actions/FeedbackListActions';
 import { initialLoad } from '../../../Actions/feedbackNavActions';
 
 import { connect } from 'react-redux';

@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { List } from './List';
-import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector, selectedCountSelector }
+import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector }
   from '../../Selectors/list';
 import { unload } from '../../Actions/listActions';
 
 @connect(state => ({
   isLoaded: isLoadedSelector(state),
   currentView: currentViewModeSelector(state),
-  selectedCount: selectedCountSelector(state),
+  selected: selectedSelector(state),
   currentNav: listParamsNavSelector(state)
 }))
 export class ListContainer extends React.Component {

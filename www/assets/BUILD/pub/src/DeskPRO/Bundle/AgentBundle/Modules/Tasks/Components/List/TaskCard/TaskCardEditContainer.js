@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { toggleSelected } from '../../../Actions/listActions';
 import { editTask } from '../../../Actions/listActions';
+import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import {
-  selectedSelector,
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
   kanbanVisibleFieldsSelector,
