@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -60,18 +60,13 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filter_sets", name="api_ticket_filter_sets")
+     * @Get("/new/ticket_filter_sets", name="api_ticket_filter_sets")
      */
-    public function cgetAction(Request $request)
+    public function cgetAction()
     {
-        $sets = $this->getEm()
-            ->getRepository('App:TicketFilterSet')
-            ->findBy(array(), array('display_order' => 'ASC'));
+        $sets = $this->getRepository('App:TicketFilterSet')->findBy([], ['display_order' => 'ASC']);
 
-        return View::create(
-            $this->dataSerialize($sets),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($sets), Response::HTTP_OK);
     }
 
     /**
@@ -92,20 +87,15 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Get("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_get")
+     * @Get("/new/ticket_filter_sets/{set}", name="api_ticket_filter_sets_get")
+     *
+     * @param TicketFilterSet $set
+     *
+     * @return View
      */
-    public function getAction($id)
+    public function getAction(TicketFilterSet $set)
     {
-        $set = $this->getEm()->find('App:TicketFilterSet', $id);
-
-        if (!$set) {
-            throw new NotFoundHttpException();
-        } else {
-            return View::create(
-                $this->dataSerialize($set),
-                Response::HTTP_OK
-            );
-        }
+        return View::create($this->dataSerialize($set), Response::HTTP_OK);
     }
 
     /**
@@ -123,9 +113,7 @@ class TicketFilterSetsController extends BaseController
      */
     public function postAction(Request $request)
     {
-        $set = new TicketFilterSet();
-
-        return $this->handleFormSubmission($request, $set);
+        return $this->handleFormSubmission($request, new TicketFilterSet());
     }
 
     /**
@@ -139,17 +127,16 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Put("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_put")
+     * @Put("/ticket_filter_sets/{set}", name="api_ticket_filter_sets_put")
+     *
+     * @param Request         $request
+     * @param TicketFilterSet $set
+     *
+     * @return View
      */
-    public function putAction(Request $request, $id)
+    public function putAction(Request $request, TicketFilterSet $set)
     {
-        $set = $this->getEm()->find('App:TicketFilterSet', $id);
-
-        if (!$set) {
-            throw new NotFoundHttpException();
-        } else {
-            return $this->handleFormSubmission($request, $set);
-        }
+        return $this->handleFormSubmission($request, $set);
     }
 
     /**
@@ -169,12 +156,16 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_delete")
+     * @Delete("/ticket_filter_sets/{set}", name="api_ticket_filter_sets_delete")
+     *
+     * @param TicketFilterSet $set
+     *
+     * @return View
      */
-    public function deleteAction($id)
+    public function deleteAction(TicketFilterSet $set)
     {
-        $this->getDoctrine()->getManager()->remove($this->findOr404('App:TicketFilterSet', $id));
-        $this->getDoctrine()->getManager()->flush();
+        $this->getManager()->remove($set);
+        $this->getManager()->flush();
 
         return View::create([], Response::HTTP_OK);
     }
@@ -188,6 +179,10 @@ class TicketFilterSetsController extends BaseController
      * )
      *
      * @Post("/ticket_filter_sets/display_order", name="api_ticket_filter_sets_display_order_post")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postReorderAction(Request $request)
     {
@@ -197,25 +192,22 @@ class TicketFilterSetsController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $results = array();
+        $results = [];
         foreach ($data['display_order'] as $order => $filter_set_id) {
-            $filter_set = $this->getEm()->find('App:TicketFilterSet', $filter_set_id);
+            $filter_set = $this->getRepository('App:TicketFilterSet')->find($filter_set_id);
 
             if (!$filter_set) {
                 continue;
             }
 
             $filter_set->setDisplayOrder($order);
-            $this->getEm()->persist($filter_set);
+            $this->getManager()->persist($filter_set);
             $results[$order] = $filter_set_id;
         }
 
-        $this->getEm()->flush();
+        $this->getManager()->flush();
 
-        return View::create(
-            $this->dataSerialize($results),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($results), Response::HTTP_OK);
     }
 
     /**
@@ -242,22 +234,25 @@ class TicketFilterSetsController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/ticket_filter_sets/{id}/filters", name="api_ticket_filter_set_filters")
+     * @Get("/new/ticket_filter_sets/{set}/filters", name="api_ticket_filter_set_filters")
+     *
+     * @param TicketFilterSet $set
+     *
+     * @return View
      */
-    public function getTicketsFiltersSetFiltersAction(Request $request, $id)
+    public function getSetFiltersAction(TicketFilterSet $set)
     {
-        $set = $this->getEm()->find('App:TicketFilterSet', $id);
-
-        if (!$set) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create(
-            $this->dataSerialize($set->getFilters()),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($set->getFilters()), Response::HTTP_OK);
     }
 
+    /**
+     * @param Request         $request
+     * @param TicketFilterSet $set
+     *
+     * @throws InvalidFormException
+     * @return View
+     *
+     */
     protected function handleFormSubmission(Request $request, TicketFilterSet $set)
     {
         $status = $set->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
@@ -275,27 +270,22 @@ class TicketFilterSetsController extends BaseController
         $form->submit($submitted, 'PUT' !== $request->getMethod());
 
         if ($form->isValid()) {
-            $this->getEm()->persist($set);
-            $this->getEm()->flush($set);
+            $this->getManager()->persist($set);
+            $this->getManager()->flush($set);
 
             return View::create(
                 $this->dataSerialize($set),
                 $status,
-                array(
-                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', array('id' => $set->getId())),
-                )
+                [
+                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', ['id' => $set->getId()]),
+                ]
             );
         } else {
             foreach ($form->getErrors() as $error) {
                 echo $error->getMessage()."\n";
             }
+
             throw new InvalidFormException($form); // let our listeners generate the form error response
         }
-    }
-
-    // A bit of comfort.
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
     }
 }
