@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
@@ -79,19 +78,14 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filters", name="api_ticket_filters")
+     * @Get("/new/ticket_filters", name="api_ticket_filters")
      */
-    public function getAllAction()
+    public function cgetAction()
     {
-        return View::create(
-            $this->dataSerialize($this->get('data.filters')->getFilters()),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($this->get('data.filters')->getFilters()), Response::HTTP_OK);
     }
 
     /**
-     * @Get("/ticket_filters/{id}", name="get_ticket_filters")
-     *
      * @ApiDoc(
      *      description="Get a filter",
      *      requirements={
@@ -109,25 +103,18 @@ class TicketFiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filters/{id}", name="api_ticket_filters_get")
+     * @Get("/new/ticket_filters/{filter}", name="api_ticket_filters_get")
+     *
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function getAction($id)
+    public function getAction(TicketFilter $filter)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
-
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create(
-            $this->dataSerialize($filter),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($filter), Response::HTTP_OK);
     }
 
     /**
-     * @Post("/ticket_filters", name="post_ticket_filters")
-     *
      * @ApiDoc(
      *      description="create a filter",
      *      input={"class"="filter","name"=""},
@@ -142,9 +129,7 @@ class TicketFiltersController extends BaseController
      */
     public function postAction(Request $request)
     {
-        $filter = new TicketFilter();
-
-        return $this->handleFormSubmission($request, $filter);
+        return $this->handleFormSubmission($request, new TicketFilter());
     }
 
     /**
@@ -165,20 +150,19 @@ class TicketFiltersController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $results = array();
+        $results = [];
         foreach ($data['display_order'] as $order => $filter_id) {
-            $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
-
+            $filter = $this->getRepository('App:TicketFilter')->find($filter_id);
             if (!$filter) {
                 continue;
             }
 
             $filter->setDisplayOrder($order);
-            $this->getEm()->persist($filter);
+            $this->getManager()->persist($filter);
             $results[$order] = $filter_id;
         }
 
-        $this->getEm()->flush();
+        $this->getManager()->flush();
 
         return View::create(
             $this->dataSerialize($results),
@@ -226,55 +210,15 @@ class TicketFiltersController extends BaseController
         }
 
         // Save the group_by in filter setting
-        else {
-            $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
-            $setting->setValue($content['group_by']);
-            $this->getManager()->persist($setting);
-            $this->getManager()->flush();
+        $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
+        $setting->setValue($content['group_by']);
+        $this->getManager()->persist($setting);
+        $this->getManager()->flush();
 
-            return new Response(null, Response::HTTP_NO_CONTENT);
-        }
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * @param TicketFilter $filter
-     *
-     * @return PersonSetting
-     */
-    private function findOrCreateFilterGroupByPersonSetting(TicketFilter $filter)
-    {
-        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
-        $person      = $this->getUser();
-
-        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
-        if (!$personSetting) {
-            $personSetting = new PersonSetting($person, $settingName);
-        }
-
-        return $personSetting;
-    }
-
-    /**
-     * @param TicketFilter $filter
-     */
-    private function removeFilterGroupByPersonSetting(TicketFilter $filter)
-    {
-        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
-        $person      = $this->getUser();
-
-        $personSetting = $this->getManager()->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
-        if ($personSetting) {
-            $this->getManager()->remove($personSetting);
-            $this->getManager()->flush();
-        }
-    }
-
-    /**
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return Response
-     *
      * @ApiDoc(
      *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
      *      statusCodes={
@@ -282,16 +226,21 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
+     * @Get("/new/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
+     *
+     * @param Request      $request
+     * @param TicketFilter $filter
+     *
+     * @return Response
      */
-    public function getTicketFilterTicketsAction(Request $request, $id)
+    public function getFilterTicketsAction(Request $request, TicketFilter $filter)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['filter' => $this->findOr404(TicketFilter::class, $id)->getId()]);
+        return TicketsController::subRequestSearch($this->get('kernel'), $request, [
+            'filter' => $filter->getId(),
+        ]);
     }
 
     /**
-     * @Delete("/ticket_filters/{id}")
-     *
      * @ApiDoc(
      *      description="Delete a filter",
      *      requirements={
@@ -308,28 +257,58 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filters/{id}", name="api_ticket_filters_delete")
+     * @Delete("/ticket_filters/{filter}", name="api_ticket_filters_delete")
+     *
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function deleteAction($id)
+    public function deleteAction(TicketFilter $filter)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
+        $this->getManager()->remove($filter);
+        $this->getManager()->flush();
 
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        $this->getDoctrine()->getManager()->remove($filter);
-        $this->getDoctrine()->getManager()->flush();
-
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([]);
     }
 
-    // A bit of comfort.
-    protected function getEm()
+    /**
+     * @param TicketFilter $filter
+     *
+     * @return PersonSetting
+     */
+    private function findOrCreateFilterGroupByPersonSetting(TicketFilter $filter)
     {
-        return $this->getDoctrine()->getManager();
+        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
+        $person      = $this->getUser();
+
+        $person_setting = $this->getManager()->find(PersonSetting::class, [
+            'person' => $person,
+            'name'   => $settingName,
+        ]);
+
+        if (!$person_setting) {
+            $person_setting = new PersonSetting($person, $settingName);
+        }
+
+        return $person_setting;
+    }
+
+    /**
+     * @param TicketFilter $filter
+     */
+    private function removeFilterGroupByPersonSetting(TicketFilter $filter)
+    {
+        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
+        $person      = $this->getUser();
+
+        $person_setting = $this->getManager()->find(PersonSetting::class, [
+            'person' => $person,
+            'name'   => $settingName,
+        ]);
+
+        if ($person_setting) {
+            $this->getManager()->remove($person_setting);
+            $this->getManager()->flush();
+        }
     }
 }

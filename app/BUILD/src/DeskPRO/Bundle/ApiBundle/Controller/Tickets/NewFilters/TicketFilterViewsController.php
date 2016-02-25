@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
@@ -67,15 +67,12 @@ class TicketFilterViewsController extends BaseController
      *
      * @Get("/ticket_filter_views", name="api_ticket_filter_views")
      */
-    public function cgetAction(Request $request)
+    public function cgetAction()
     {
         $service = $this->get('data.ticket_filter_views');
         $views   = $service->getUnassignedFilterViews();
 
-        return View::create(
-            $this->dataSerialize($views),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($views), Response::HTTP_OK);
     }
 
     /**
@@ -98,20 +95,15 @@ class TicketFilterViewsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filter_views/{id}", name="api_ticket_filter_views_get")
+     * @Get("/ticket_filter_views/{filter}", name="api_ticket_filter_views_get")
+     *
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function getAction($id)
+    public function getAction(TicketFilter $filter)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
-
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create(
-            $this->dataSerialize($filter),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($filter), Response::HTTP_OK);
     }
 
     /**
@@ -124,31 +116,29 @@ class TicketFilterViewsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filter_views/{id}/count")
+     * @Get("/ticket_filter_views/{filter}/count")
+     *
+     * @param Request      $request
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function getTicketsCountAction(Request $request, $id)
+    public function getTicketsCountAction(Request $request, TicketFilter $filter)
     {
-        $filters = $this->get('data.filters');
-        $filter  = $filters->getFilter($id);
-
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
         // Let's retrieve the tickets for this filter.
         $engine = $this->get('term_engine.dbal_ticket_filter_views.engine');
         $conn   = $this->get('database_connection');
 
         $context = new TermEngineContext($this->getUser());
         // Applying the group-by clauses.
-        $groupby = $request->query->get('group_by');
-        if ($groupby) {
-            $context->addGroupByFromString($groupby);
+        $group_by = $request->query->get('group_by');
+        if ($group_by) {
+            $context->addGroupByFromString($group_by);
         }
 
         $tickets_query = $engine->evaluate($filter, $context);
 
-        if ($groupby) {
+        if ($group_by) {
             $view_factory = $this->get('api_view_representation_factory');
 
             return View::create(
@@ -157,9 +147,9 @@ class TicketFilterViewsController extends BaseController
             );
         } else {
             return View::create(
-                $this->dataSerialize(array(
+                $this->dataSerialize([
                     'count' => $tickets_query->fetchCount(),
-                )),
+                ]),
                 Response::HTTP_OK
             );
         }
@@ -177,12 +167,14 @@ class TicketFilterViewsController extends BaseController
      * )
      *
      * @Post("/ticket_filter_views", name="api_ticket_filter_views_post")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
-        $filter = new TicketFilter();
-
-        return $this->handleFormSubmission($request, $filter);
+        return $this->handleFormSubmission($request, new TicketFilter());
     }
 
     /**
@@ -194,6 +186,10 @@ class TicketFilterViewsController extends BaseController
      * )
      *
      * @Post("/ticket_filter_views/display_order", name="api_ticket_filter_views_display_order_post")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postReorderAction(Request $request)
     {
@@ -203,25 +199,22 @@ class TicketFilterViewsController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $results = array();
+        $results = [];
         foreach ($data['display_order'] as $order => $filter_id) {
-            $filter = $this->getEm()->find('App:TicketFilter', $filter_id);
+            $filter = $this->getManager()->find('App:TicketFilter', $filter_id);
 
             if (!$filter) {
                 continue;
             }
 
             $filter->setDisplayOrder($order);
-            $this->getEm()->persist($filter);
+            $this->getManager()->persist($filter);
             $results[$order] = $filter_id;
         }
 
-        $this->getEm()->flush();
+        $this->getManager()->flush();
 
-        return View::create(
-            $this->dataSerialize($results),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($results), Response::HTTP_OK);
     }
 
     /**
@@ -245,15 +238,14 @@ class TicketFilterViewsController extends BaseController
      * )
      *
      * @Put("/ticket_filter_views/{id}", name="api_ticket_filter_views_put")
+     *
+     * @param Request      $request
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function putAction(Request $request, $id)
+    public function putAction(Request $request, TicketFilter $filter)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
-
-        if (!$filter) {
-            throw new NotFoundHttpException();
-        }
-
         return $this->handleFormSubmission($request, $filter);
     }
 
@@ -275,32 +267,33 @@ class TicketFilterViewsController extends BaseController
      * )
      *
      * @Delete("/ticket_filter_views/{id}", name="api_ticket_filter_views_delete")
+     *
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function deleteAction($id)
+    public function deleteAction(TicketFilter $filter)
     {
-        $filter = $this->get('data.filters')->getFilter($id);
+        $this->getManager()->remove($filter);
+        $this->getManager()->flush();
 
-        if (!$filter) {
-            throw $this->createNotFoundException();
-        }
-
-        $this->getDoctrine()->getManager()->remove($filter);
-        $this->getDoctrine()->getManager()->flush();
-
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
+        return View::create([]);
     }
 
     /**
      * we will be making this more abstract for general use by other controllers.
+     *
+     * @param Request      $request
+     * @param TicketFilter $filter
+     *
+     * @throws WrappedApiErrorException
+     *
+     * @return View
      */
     protected function handleFormSubmission(Request $request, TicketFilter $filter)
     {
         $status = $filter->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'filter', $filter)->getForm();
+        $form   = $this->get('form.factory')->createNamedBuilder(null, 'filter', $filter)->getForm();
 
         $submitted = $request->request->all();
 
@@ -309,31 +302,25 @@ class TicketFilterViewsController extends BaseController
         } catch (TermTypeDoesNotExistException $e) {
             throw new WrappedApiErrorException(
                 new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-                array(
+                [
                     'type' => $e->getMessage(),
-                )
+                ]
             );
         }
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($filter);
-            $this->getDoctrine()->getManager()->flush($filter);
+            $this->getManager()->persist($filter);
+            $this->getManager()->flush($filter);
 
             return View::create(
                 $this->dataSerialize($filter),
                 $status,
-                array(
-                    'Location' => $this->generateUrl('api_ticket_filter_views_get', array('id' => $filter->getId())),
-                )
+                [
+                    'Location' => $this->generateUrl('api_ticket_filter_views_get', ['id' => $filter->getId()]),
+                ]
             );
         }
 
         throw new InvalidFormException($form); // let our listeners generate the form error response
-    }
-
-    // A bit of comfort.
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
     }
 }
