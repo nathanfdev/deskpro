@@ -160,7 +160,7 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array('fieldName' => 'alert_agent_activity', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_agent_activity'));
         $metadata->mapField(array('fieldName' => 'alert_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_agent_note'));
         $metadata->mapField(array('fieldName' => 'alert_property_change', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'alert_property_change'));
-        $metadata->mapManyToOne(array('fieldName' => 'filter', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketFilter', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'filter_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(array('fieldName' => 'filter', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LegacyTicketFilter', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'filter_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
     }
 }

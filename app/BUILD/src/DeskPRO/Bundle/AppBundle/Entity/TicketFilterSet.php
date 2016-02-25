@@ -36,6 +36,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
@@ -56,6 +57,8 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @var string
      *
      * @ORM\Column(name="title", type="string")
+     *
+     * @Assert\NotBlank()
      */
     protected $title;
 

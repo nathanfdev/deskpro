@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -673,6 +672,19 @@ class ApiDb extends AbstractDbSet
         "
         );
         // end of ticket workflows
+
+        // Ticket filter sets test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_filter_sets`
+                (`id`, `title`, `display_order`, `is_default`)
+            VALUES
+              ('1', 'Filter set 1', '10', '1'),
+              ('2', 'Filter set 2', '20', '1'),
+              ('3', 'Filter set 3', '30', '1');
+        "
+        );
+        // end of ticket filter sets
 
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(

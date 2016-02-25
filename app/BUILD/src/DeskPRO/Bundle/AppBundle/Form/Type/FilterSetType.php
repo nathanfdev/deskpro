@@ -31,60 +31,48 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class FilterSetType.
+ */
 class FilterSetType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder
-            ->add(
-                'id',
-                'integer',
-                array(
-                    'description' => 'Object ID',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'title',
-                'text',
-                array(
-                    'description' => 'the filter title',
-                )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'description' => 'the display order',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'is_default',
-                'checkbox',
-                array(
-                    'description' => 'is part of the default filter set collection',
-                    'required'    => false,
-                )
-            )
-            ;
+            ->add('title', 'text')
+            ->add('display_order', 'integer', [
+                'required' => false,
+            ])
+            ->add('is_default', 'api_boolean', [
+                'required' => false,
+            ])
+        ;
+
+        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet',
-            )
-        );
+        $resolver->setDefaults([
+            'data_class' => TicketFilterSet::class,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'filter_set';
