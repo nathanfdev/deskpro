@@ -35,12 +35,10 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * API access to TicketFilterSet entities.
@@ -53,44 +51,6 @@ class TicketFilterSetsController extends CrudController
     public static $entity    = TicketFilterSet::class;
     public static $type      = 'filter_set';
     public static $listOrder = 'asc';
-
-    /**
-     * @ApiDoc(
-     *      description="Reorder filter sets.",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Post("/display_order")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postReorderAction(Request $request)
-    {
-        $data = $request->request->all();
-        if (!is_array($data) || !isset($data['display_order'])) {
-            throw new NotFoundHttpException();
-        }
-
-        $results = [];
-        foreach ($data['display_order'] as $order => $filter_set_id) {
-            $filter_set = $this->getRepository('App:TicketFilterSet')->find($filter_set_id);
-            if (!$filter_set) {
-                continue;
-            }
-
-            $filter_set->setDisplayOrder($order);
-            $this->getManager()->persist($filter_set);
-            $results[$order] = $filter_set_id;
-        }
-
-        $this->getManager()->flush();
-
-        return View::create($this->dataSerialize($results));
-    }
 
     /**
      * @ApiDoc(
