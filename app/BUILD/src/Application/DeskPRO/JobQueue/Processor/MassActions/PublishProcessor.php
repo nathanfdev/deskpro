@@ -75,9 +75,9 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        /** @var ApplicatorServiceInterface $applicator */
-        $applicator = $this->container->get('action_engine.'.$data['content']);
-        $applicator->apply($data['ids'], $data['actions']);
+        /* @var ApplicatorServiceInterface $applicator */
+        $service = $this->container->get('action_engine.'.$data['content']);
+        $service->apply($data['ids'], $data['actions']);
 
         return true;
     }

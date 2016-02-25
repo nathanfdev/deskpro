@@ -39,7 +39,7 @@ abstract class AbstractActionApplicator
     protected $em;
     protected $options;
 
-    public function __construct(EntityManager $em, array $options)
+    public function __construct(EntityManager $em, array $options = null)
     {
         $this->em      = $em;
         $this->options = $options;

@@ -106,20 +106,20 @@ class ActionTransformer
     }
 
     /**
-     * @param                 $namespace
+     * @param string          $namespace
      * @param ActionInterface $action
      *
      * @return ActionApplicatorInterface
      */
     public function actionToApplicator($namespace, ActionInterface $action)
     {
-        $serialized_array = $action->serialize();
-        $type             = ActionTypeCodes::getActionTypeCode($action);
-        $class            = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $type);
+        $serialized = $action->serialize();
+        $type       = ActionTypeCodes::getActionTypeCode($action);
+        $class      = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $type);
         if (!class_exists($class)) {
             throw new ActionApplicatorDoesNotExists($type);
         }
-        $options = array_key_exists('options', $serialized_array) ? $serialized_array['options'] : [];
+        $options = array_key_exists('options', $serialized) ? $serialized['options'] : [];
 
         return new $class($this->em, $options);
     }

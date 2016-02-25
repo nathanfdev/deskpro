@@ -65,7 +65,7 @@ export const isLoadedSelector = createSelector(
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listFiltersSelector = createSelector(
-  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('Feedback', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
+  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
   (navState, currentListParams, categories, labels, types) => {
     const checkIfShowStatus = ()=> {
       const navItem = currentListParams.get('navItem');
@@ -135,7 +135,7 @@ export const listFiltersSelector = createSelector(
 /* ==================== Mass actions ===================== */
 
 export const massActionsSelector = createSelector(
-  [navStateSelector, collectionSelectorFactory('Feedback', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
+  [navStateSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
   (navState, categories, types, labels) => {
     const massActions = [];
     // Type options
