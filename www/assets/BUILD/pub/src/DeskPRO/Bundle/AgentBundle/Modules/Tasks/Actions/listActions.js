@@ -31,6 +31,7 @@ export const toggleCalendarFieldVisibility = createAction('TASKS_LIST_TOGGLE_CAL
 export const toggleSelected = createAction('TASKS_LIST_TOGGLE_SELECTED');
 export const toggleAll = createAction('TASKS_LIST_TOGGLE_ALL_ACTION');
 
+export const loadIndicator = createAction('TASKS_LIST_LOAD_INDICATOR');
 export const unload = createAction('TASKS_LIST_UNLOAD');
 export const loadList = createAction(
   'TASKS_LIST_LOAD',

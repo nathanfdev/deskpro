@@ -1,4 +1,5 @@
 import { createReducer } from 'Ampliflux';
+import Immutable from 'immutable';
 import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction, pushPayloadToCollection } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -27,6 +28,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.loadIndicator]: setValue('async.done', false),
   [actions.setListParamsNav]: setFullPayload('listParams.nav'),
   [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
   [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CARD]),
@@ -40,12 +42,12 @@ export default createReducer(initialState, {
     success: (state, payload) => {
       invariant(
         Array.isArray(payload.ids),
-        "Reducer actions.loadList expects payload.ids to be an Array. Got %s",
+        'Reducer actions.loadList expects payload.ids to be an Array. Got %s',
         payload.ids
       );
       invariant(
-        'object' === typeof payload.pagination,
-        "Reducer actions.loadList expects payload.pagination to be an Object. Got %s",
+         typeof payload.pagination === 'object',
+        'Reducer actions.loadList expects payload.pagination to be an Object. Got %s',
         payload.pagination
       );
       return state
