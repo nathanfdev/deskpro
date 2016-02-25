@@ -39,13 +39,11 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -72,45 +70,6 @@ class TicketFiltersController extends CrudController
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Reorder filters.",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Post("/ticket_filters/display_order")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postReorderAction(Request $request)
-    {
-        $data = $request->request->all();
-
-        if (!is_array($data) || !isset($data['display_order'])) {
-            throw new NotFoundHttpException();
-        }
-
-        $results = [];
-        foreach ($data['display_order'] as $order => $filter_id) {
-            $filter = $this->getRepository('App:TicketFilter')->find($filter_id);
-            if (!$filter) {
-                continue;
-            }
-
-            $filter->setDisplayOrder($order);
-            $this->getManager()->persist($filter);
-            $results[$order] = $filter_id;
-        }
-
-        $this->getManager()->flush();
-
-        return View::create($this->dataSerialize($results));
     }
 
 //    /**
