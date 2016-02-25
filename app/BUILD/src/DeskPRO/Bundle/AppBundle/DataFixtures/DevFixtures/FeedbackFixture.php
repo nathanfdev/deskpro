@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -124,6 +126,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->manager = $manager;
         $this->loadCustomDefFeedback();
         $this->loadStatusCategories();
+        $this->loadLabels();
         $this->manager->flush();
 
         $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
@@ -163,6 +166,31 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 $this->manager->persist($cat);
             }
         }
+    }
+
+    private function loadLabels()
+    {
+        $label_type = LabelDef::TYPE_FEEDBACK;
+        $this->faker->unique(true);
+
+        $batch = [];
+
+        for ($i = 0; $i < self::NUM_LABELS; ++$i) {
+            $l = $this->faker->unique()->company;
+            if ($l) {
+                $l       = strtolower($l);
+                $batch[] = [
+                    'label_type' => $label_type,
+                    'label'      => $l,
+                    'color'      => $this->faker->hexColor,
+                    'total'      => 0,
+                ];
+            }
+        }
+
+        $this->db->batchInsert('label_defs', $batch, true);
+
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
     }
 
     private function loadFeedback()
@@ -266,12 +294,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadFeedbackLabels()
     {
-        $this->faker->unique(true);
-        while (count($this->labels) < self::NUM_LABELS) {
-            if ($label = strtolower($this->faker->unique()->company)) {
-                $this->labels[] = $label;
-            }
-        }
         $batch = [];
         foreach ($this->feedback as $id) {
             $num = rand(self::MIN_LABELS_PER_FEEDBACK, self::MAX_LABELS_PER_FEEDBACK);
