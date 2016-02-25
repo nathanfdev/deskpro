@@ -30,48 +30,59 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionCollectionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback\FeedbackApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
 
-class FeedbackApplicatorTest extends DeskProTestCase
+class ActionTransformerTest extends DeskProTestCase
 {
-    public static $options = [
-        'actions' => [
-            'set_type' => '1',
-            'approve'  => [],
-        ],
+    public static $serializedArray = [
+        'type'    => 'set_type',
+        'options' => ['id' => 1],
     ];
-    public static $ids = [1, 2, 3];
+
+    public static $wrongSerializedArray = [
+        'type'    => 'something',
+        'options' => ['id' => 1],
+    ];
 
     /**
      * @test
      */
     public function it_should_be_instantiable()
     {
-        $applicator = $this->instance();
-        $this->assertInstanceOf(FeedbackApplicator::class, $applicator);
-        $this->assertInstanceOf(ActionCollectionApplicatorInterface::class, $applicator);
+        $transformer = $this->instance();
+        $this->assertInstanceOf(ActionTransformer::class, $transformer);
     }
 
     /**
      * @test
      */
-    public function prepareActions_should_return_ActionCollection()
+    public function actionToApplicator_should_return_ActionApplicatorInterface()
     {
-        $applicator = $this->instance();
-        $actions    = $applicator->prepareActions();
-        $this->assertInstanceOf(ActionCollection::class, $actions);
+        $transformer = $this->instance();
+        $action      = $transformer->arrayToActionApplicator('Feedback', self::$serializedArray);
+        $this->assertInstanceOf(ActionApplicatorInterface::class, $action);
+    }
+
+    /**
+     * @test
+     * @expectedException \DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists
+     */
+    public function arrayToActionApplicator_should_raise_ActionApplicatorDoesNotExists_on_wrong_action()
+    {
+        $transformer = $this->instance();
+
+        return $transformer->arrayToActionApplicator('Feedback', self::$wrongSerializedArray);
     }
 
     private function instance()
     {
         $em = $this->prophesize(EntityManager::class);
 
-        return new FeedbackApplicator($em->reveal(), self::$options);
+        return new ActionTransformer($em->reveal());
     }
 }
