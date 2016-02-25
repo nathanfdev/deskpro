@@ -58,6 +58,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_DOWNLOAD_COMMENTS          = 'download_comments';
     const TABLE_FEEDBACK                   = 'feedback';
     const TABLE_FEEDBACK_CATEGORIES        = 'feedback_categories';
+    const TABLE_FEEDBACK_COMMENTS          = 'feedback_comments';
     const TABLE_FEEDBACK_STATUS_CATEGORIES = 'feedback_status_categories';
     const TABLE_GLOSSARY_WORD_DEFINITIONS  = 'glossary_word_definitions';
     const TABLE_GLOSSARY_WORDS             = 'glossary_words';
