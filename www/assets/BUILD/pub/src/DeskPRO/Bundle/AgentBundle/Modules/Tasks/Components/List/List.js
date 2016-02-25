@@ -9,7 +9,6 @@ import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
 import { CalendarView } from './View/Calendar/CalendarView';
 import { ListGroupContainer } from './ListGroupContainer';
-import { toggleAll } from '../../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends React.Component {

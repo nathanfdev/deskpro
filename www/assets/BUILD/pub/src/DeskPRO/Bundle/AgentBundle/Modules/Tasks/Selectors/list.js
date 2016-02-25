@@ -89,7 +89,7 @@ export const massActionsSelector = createSelector(
     // Status options
     massActions.push({
       label: 'Status', type: 'action', param: 'set_status', quickFilter: true,
-      options: [{value: 1, label: 'Complete'}, {value:0, label: 'Incomplete'}]
+      options: [{ value: 1, label: 'Complete' }, { value: 0, label: 'Incomplete' }]
     });
 
     // Other options

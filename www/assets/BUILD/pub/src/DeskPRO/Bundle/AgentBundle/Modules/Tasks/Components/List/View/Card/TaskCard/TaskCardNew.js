@@ -124,11 +124,11 @@ export class TaskCardNew extends React.Component {
             <DateDue ref="due"
                      onChange={this.onChange.bind(this, 'due')}
                      onSetEditing={this.onSetEditing}
-                     openBySingleClick={true}/>
+                     openBySingleClick/>
             <CardProject ref="project"
                          onChange={this.onChange.bind(this, 'project')}
                          onSetEditing={this.onSetEditing}
-                         openBySingleClick={true}/>
+                         openBySingleClick/>
           </CardLineLeft>
         </CardLine>
       </Card>
