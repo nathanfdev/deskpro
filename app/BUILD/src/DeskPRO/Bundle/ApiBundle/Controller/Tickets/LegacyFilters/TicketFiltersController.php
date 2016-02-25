@@ -32,12 +32,16 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Filters;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Pagerfanta\Adapter\FixedAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -121,13 +125,35 @@ class TicketFiltersController extends BaseController
      *
      * @Get("/ticket_filters/{id}/tickets")
      *
-     * @param Request $request
-     * @param int     $id
+     * @param Request            $request
+     * @param LegacyTicketFilter $filter
      *
      * @return Response
      */
-    public function getFilterTicketsAction(Request $request, $id)
+    public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        return View::create([], Response::HTTP_OK);
+        /** @var Person $user */
+        $user = $this->getUser();
+        $user->loadHelper('AgentTeam');
+        $user->loadHelper('AgentPermissions');
+
+        $current_page = $request->query->getInt('page', 1);
+        $max_per_page = $request->query->getInt('count', 10);
+
+        $searcher = $filter->getSearcher();
+        $searcher->setPersonContext($user);
+
+        $ticket_ids = $searcher->getMatches([
+            'limit'  => $max_per_page,
+            'offset' => $max_per_page * ($current_page - 1),
+        ]);
+
+        $tickets = $this->getRepository(Ticket::class)->findBy(['id' => $ticket_ids]);
+        $pager   = new Pagerfanta(new FixedAdapter($searcher->getCount(), $tickets));
+
+        $pager->setMaxPerPage($max_per_page);
+        $pager->setCurrentPage($current_page);
+
+        return View::create($this->dataSerialize($pager));
     }
 }

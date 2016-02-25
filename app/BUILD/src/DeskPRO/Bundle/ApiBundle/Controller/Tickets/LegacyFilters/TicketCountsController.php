@@ -204,7 +204,7 @@ class TicketCountsController extends BaseController
         $user->loadHelper('AgentPermissions');
 
         $searcher = $filter->getSearcher();
-        $searcher->setPerson($user);
+        $searcher->setPersonContext($user);
 
         if ($group_by) {
             $ticket_ids = $searcher->getMatches();
