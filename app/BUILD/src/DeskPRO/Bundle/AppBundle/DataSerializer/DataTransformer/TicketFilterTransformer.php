@@ -47,7 +47,6 @@ class TicketFilterTransformer extends AbstractDataSerializerTransformer
         return [
             'id',
             'title',
-            'term',
             'display_order',
             'filter_set',
             'filter_views',
