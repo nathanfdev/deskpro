@@ -31,18 +31,41 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class NewsCommentTransformer.
+ * Class LegacyTicketFilterTransformer.
  */
-class NewsCommentTransformer extends ArticleCommentTransformer
+class LegacyTicketFilterTransformer extends AbstractDataSerializerTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
-        return ['id', 'person', 'content', 'status', 'is_reviewed', 'date_created', 'news'];
+        return [
+            'id',
+            'title',
+            'display_order',
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        /** @var LegacyTicketFilter $data */
+        $data = $transformation_request->getDataToBeTransformed();
+
+        return [
+            'term'               => $data->terms,
+            'filter_set'         => null,
+            'filter_views'       => null,
+            'filter_preferences' => null,
+            'date_created'       => null,
+            'date_updated'       => null,
+        ];
     }
 }
