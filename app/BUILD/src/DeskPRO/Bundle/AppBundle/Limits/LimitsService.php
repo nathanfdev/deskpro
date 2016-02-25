@@ -92,12 +92,13 @@ class LimitsService
         $this->storage       = $storage;
         $this->limit_adapter = $limit_adapter;
         $this->em            = $em;
+        $this->collectLimits();
     }
 
     /**
      * Collection all limits.
      */
-    public function collectLimits()
+    protected function collectLimits()
     {
         foreach ($this->limit_adapter->getGlobalLimits() as $global_limit) {
             $this->limit_set->addLimit($global_limit);
