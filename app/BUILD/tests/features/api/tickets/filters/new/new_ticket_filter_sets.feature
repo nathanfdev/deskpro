@@ -86,3 +86,12 @@ Feature: /new/ticket_filter_sets endpoint
 
     When I send a GET request to "/api/v2/new/ticket_filter_sets/4"
     Then the response status code should be 404
+
+  Scenario: I get related filters
+    When I send a GET request to "/api/v2/new/ticket_filter_sets/1/filters"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to 2
+    And the JSON node "data[0].title" should be equal to "Filter 2"
+    And the JSON node "data[1].id" should be equal to 1
+    And the JSON node "data[1].title" should be equal to "Filter 1"

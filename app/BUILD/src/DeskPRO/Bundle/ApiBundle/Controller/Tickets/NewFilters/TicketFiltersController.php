@@ -31,13 +31,13 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
-use FOS\RestBundle\Controller\Annotations\Delete;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -46,94 +46,32 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class TicketFiltersController.
  *
  * @ApiModes("all")
  */
-class TicketFiltersController extends BaseController
+class TicketFiltersController extends CrudController
 {
-    /**
-     * @ApiDoc(
-     *      description="Get a list of filters",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/new/ticket_filters")
-     */
-    public function cgetAction()
-    {
-        return View::create($this->dataSerialize($this->getRepository(TicketFilter::class)->findAll()));
-    }
+    public static $entity = TicketFilter::class;
 
     /**
-     * @ApiDoc(
-     *      description="Get a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
+     * @param HttpKernelInterface $kernel
+     * @param Request             $masterRequest
+     * @param array               $params
      *
-     * @Get("/new/ticket_filters/{filter}")
-     *
-     * @param TicketFilter $filter
-     *
-     * @return View
+     * @return Response
      */
-    public function getAction(TicketFilter $filter)
+    public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        return View::create($this->dataSerialize($filter));
-    }
+        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
+            '_controller' => 'ApiBundle:Tickets\NewFilters\TicketFilters:list',
+        ]);
+        $request->query->add($params);
 
-    /**
-     * @ApiDoc(
-     *      description="create a filter",
-     *      input={"class"="filter","name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Post("/ticket_filters")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        return $this->handleFormSubmission($request, new TicketFilter());
+        return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
     }
 
     /**
@@ -175,57 +113,57 @@ class TicketFiltersController extends BaseController
         return View::create($this->dataSerialize($results));
     }
 
-    /**
-     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
-     *
-     * @ApiDoc(
-     *      description="Modify filter grouping",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "description"="new filter grouping",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          204="Updated",
-     *          404="Not Found",
-     *          400="Bad Request"
-     *      }
-     * )
-     *
-     * @Put("/ticket_filters/{id}")
-     *
-     * @param Request      $request
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function putAction(Request $request, TicketFilter $filter)
-    {
-        $content = json_decode($request->getContent(), true);
-
-        // Remove existing setting if got no or empty group_by
-        if (!array_key_exists('group_by', $content) || !$content['group_by']) {
-            $this->removeFilterGroupByPersonSetting($filter);
-
-            return new Response(null, Response::HTTP_NO_CONTENT);
-        }
-
-        // Save the group_by in filter setting
-        $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
-        $setting->setValue($content['group_by']);
-        $this->getManager()->persist($setting);
-        $this->getManager()->flush();
-
-        return new Response(null, Response::HTTP_NO_CONTENT);
-    }
+//    /**
+//     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
+//     *
+//     * @ApiDoc(
+//     *      description="Modify filter grouping",
+//     *      requirements={
+//     *          {
+//     *              "name"="id",
+//     *              "requirement"="\d+",
+//     *              "description"="the id of the filter",
+//     *              "dataType"="integer"
+//     *          },
+//     *          {
+//     *              "name"="group_by",
+//     *              "description"="new filter grouping",
+//     *              "dataType"="string"
+//     *          }
+//     *      },
+//     *      statusCodes={
+//     *          204="Updated",
+//     *          404="Not Found",
+//     *          400="Bad Request"
+//     *      }
+//     * )
+//     *
+//     * @Put("/ticket_filters/{id}")
+//     *
+//     * @param Request      $request
+//     * @param TicketFilter $filter
+//     *
+//     * @return View
+//     */
+//    public function putAction(Request $request, TicketFilter $filter)
+//    {
+//        $content = json_decode($request->getContent(), true);
+//
+//        // Remove existing setting if got no or empty group_by
+//        if (!array_key_exists('group_by', $content) || !$content['group_by']) {
+//            $this->removeFilterGroupByPersonSetting($filter);
+//
+//            return new Response(null, Response::HTTP_NO_CONTENT);
+//        }
+//
+//        // Save the group_by in filter setting
+//        $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
+//        $setting->setValue($content['group_by']);
+//        $this->getManager()->persist($setting);
+//        $this->getManager()->flush();
+//
+//        return new Response(null, Response::HTTP_NO_CONTENT);
+//    }
 
     /**
      * @ApiDoc(
@@ -247,37 +185,6 @@ class TicketFiltersController extends BaseController
         return TicketsController::subRequestSearch($this->get('kernel'), $request, [
             'filter' => $filter->getId(),
         ]);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Delete a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Deleted",
-     *          404="Not Found"
-     *      }
-     * )
-     *
-     * @Delete("/ticket_filters/{filter}")
-     *
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function deleteAction(TicketFilter $filter)
-    {
-        $this->getManager()->remove($filter);
-        $this->getManager()->flush();
-
-        return View::create([]);
     }
 
     /**
@@ -318,6 +225,20 @@ class TicketFiltersController extends BaseController
         if ($person_setting) {
             $this->getManager()->remove($person_setting);
             $this->getManager()->flush();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $filter_set = $request->query->getInt('filter_set');
+        if ($filter_set) {
+            $qb
+                ->andWhere('e.filter_set = :filter_set')
+                ->setParameter('filter_set', $filter_set)
+            ;
         }
     }
 }

@@ -686,6 +686,19 @@ class ApiDb extends AbstractDbSet
         );
         // end of ticket filter sets
 
+        // Ticket filters test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `custom_ticket_filters`
+                (`id`, `filter_set_id`,  `title`, `term`, `display_order`, `date_created`, `date_updated`)
+            VALUES
+              ('1', '1', 'Filter 1', '{"type":"ticket_status","op":"is","options":{"status":["awaiting_agent"]}}', '10', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
+              ('2', '1', 'Filter 2', '{"type":"ticket_status","op":"is","options":{"status":["resolved"]}}', '20', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
+              ('3', '2', 'Filter 3', '{"type":"ticket_status","op":"is","options":{"status":["deleted"]}}', '30', '2016-02-25 00:00:00', '2016-02-25 00:00:00');
+SQL
+        );
+        // end of ticket filters
+
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(
             "

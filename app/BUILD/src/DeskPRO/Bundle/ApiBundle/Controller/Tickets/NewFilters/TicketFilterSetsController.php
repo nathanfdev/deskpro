@@ -101,14 +101,7 @@ class TicketFilterSetsController extends CrudController
      *              "requirement"="\d+",
      *              "description"="the id of the filter set",
      *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
+     *          }
      *      },
      *      statusCodes={
      *          200="Success",
@@ -118,12 +111,15 @@ class TicketFilterSetsController extends CrudController
      * )
      * @Get("/{set}/filters")
      *
+     * @param Request         $request
      * @param TicketFilterSet $set
      *
      * @return View
      */
-    public function getFiltersAction(TicketFilterSet $set)
+    public function getFiltersAction(Request $request, TicketFilterSet $set)
     {
-        return View::create($this->dataSerialize($set->getFilters()));
+        return TicketFiltersController::subRequestSearch($this->get('kernel'), $request, [
+            'filter_set' => $set->getId(),
+        ]);
     }
 }
