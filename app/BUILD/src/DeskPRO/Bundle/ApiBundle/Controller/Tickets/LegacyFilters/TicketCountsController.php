@@ -177,17 +177,11 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterCountsAction(Request $request)
     {
-        $count    = Count::fromValue(0);
-        $group_by = $request->get('group_by');
-
-        /** @var Person $user */
-        $user = $this->getUser();
-
+        $count       = Count::fromValue(0);
+        $group_by    = $request->get('group_by');
         $filters     = new Filters();
-        $filter_info = $filters->getGroupedFiltersForPerson($user);
+        $all_filters = $filters->getFiltersForPerson($this->getUser());
 
-        /** @var LegacyTicketFilter[] $all_filters */
-        $all_filters = $filter_info['all_filters'];
         foreach ($all_filters as $filter) {
             $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
             $count->addNestedInstance($this->getTicketFilterCount($filter,  $filter_group_by), true);
@@ -221,13 +215,13 @@ class TicketCountsController extends BaseController
 
             $grouped_info = $grouper->getDisplayArray();
             $total_info   = array_shift($grouped_info['items']);
-            $filter_count = Count::create($total_info['count'], $filter->getId(), $filter->getTitle(), 'filter', $group_by);
+            $filter_count = Count::create($total_info['count'], $filter->getId(), $filter->getRawTitle(), 'filter', $group_by);
 
             foreach ($grouped_info['items'] as $nested_item) {
                 $filter_count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null, true);
             }
         } else {
-            $filter_count = Count::create($searcher->getCount(), $filter->getId(), $filter->getTitle(), 'filter');
+            $filter_count = Count::create($searcher->getCount(), $filter->getId(), $filter->getRawTitle(), 'filter');
         }
 
         return $filter_count;

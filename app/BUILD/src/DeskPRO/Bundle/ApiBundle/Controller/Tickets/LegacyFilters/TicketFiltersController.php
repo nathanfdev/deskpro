@@ -77,12 +77,9 @@ class TicketFiltersController extends BaseController
     public function cgetAction()
     {
         $filters     = new Filters();
-        $filter_info = $filters->getGroupedFiltersForPerson($this->getUser());
+        $all_filters = $filters->getFiltersForPerson($this->getUser());
 
-        /** @var LegacyTicketFilter[] $all_filters */
-        $all_filters = $filter_info['all_filters'];
-
-        return View::create($this->dataSerialize($all_filters), Response::HTTP_OK);
+        return View::create($this->dataSerialize($all_filters));
     }
 
     /**
@@ -105,13 +102,13 @@ class TicketFiltersController extends BaseController
      *
      * @Get("/ticket_filters/{filter}")
      *
-     * @param int $id
+     * @param LegacyTicketFilter $filter
      *
      * @return View
      */
-    public function getAction($id)
+    public function getAction(LegacyTicketFilter $filter)
     {
-        return View::create([], Response::HTTP_OK);
+        return View::create($this->dataSerialize($filter));
     }
 
     /**

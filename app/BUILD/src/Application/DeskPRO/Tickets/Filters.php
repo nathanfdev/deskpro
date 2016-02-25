@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Tickets;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\TicketFilter;
 
 class Filters
 {
@@ -42,18 +43,19 @@ class Filters
      *
      * @param mixed $person Person or person ID
      *
-     * @return array Collection of TicketFilter entities
+     * @return LegacyTicketFilter[]
      */
     public function getFiltersForPerson($person)
     {
-        return App::getOrm()
-            ->getRepository('DeskPRO:LegacyTicketFilter')
-            ->getFiltersForPerson($person);
+        /** @var TicketFilter $repository */
+        $repository = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter');
+
+        return $repository->getFiltersForPerson($person);
     }
 
     public function getGroupedFiltersForPerson($person)
     {
-        $all_filters = App::getApi('tickets.filters')->getFiltersForPerson($person);
+        $all_filters = $this->getFiltersForPerson($person);
 
         $order = $person->getPref('agent.ui.ticket-filters-order');
         if ($order) {
