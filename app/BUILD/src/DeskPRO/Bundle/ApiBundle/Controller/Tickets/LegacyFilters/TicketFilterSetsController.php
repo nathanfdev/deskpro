@@ -78,7 +78,7 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Get("/ticket_filter_sets/{id}", name="api_ticket_filter_sets_get")
+     * @Get("/ticket_filter_sets/{id}")
      *
      * @param int $id
      *
@@ -113,7 +113,7 @@ class TicketFilterSetsController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/ticket_filter_sets/{set}/filters", name="api_ticket_filter_set_filters")
+     * @Get("/ticket_filter_sets/{set}/filters")
      *
      * @param int $id
      *

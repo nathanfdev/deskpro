@@ -73,7 +73,7 @@ class TicketCountsController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/new/ticket_filter_sets/{set}/count", name="api_ticket_filter_set_count")
+     * @Get("/new/ticket_filter_sets/{set}/count")
      *
      * @param Request         $request
      * @param TicketFilterSet $set
@@ -103,7 +103,7 @@ class TicketCountsController extends BaseController
      *      },
      *      output="array"
      * )
-     * @Get("/new/ticket_filter_sets/all/counts", name="api_ticket_filters_sets_counts")
+     * @Get("/new/ticket_filter_sets/all/counts")
      *
      * @param Request $request
      *

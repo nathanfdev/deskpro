@@ -78,7 +78,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/new/ticket_filters", name="api_ticket_filters")
+     * @Get("/new/ticket_filters")
      */
     public function cgetAction()
     {
@@ -103,7 +103,7 @@ class TicketFiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/new/ticket_filters/{filter}", name="api_ticket_filters_get")
+     * @Get("/new/ticket_filters/{filter}")
      *
      * @param TicketFilter $filter
      *
@@ -125,7 +125,7 @@ class TicketFiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Post("/ticket_filters", name="api_ticket_filters_post")
+     * @Post("/ticket_filters")
      */
     public function postAction(Request $request)
     {
@@ -140,7 +140,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Post("/ticket_filters/display_order", name="api_ticket_filters_display_order_post")
+     * @Post("/ticket_filters/display_order")
      */
     public function postReorderAction(Request $request)
     {
@@ -195,7 +195,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Put("/ticket_filters/{id}", name="api_ticket_filters_put")
+     * @Put("/ticket_filters/{id}")
      */
     public function putAction(Request $request, $id)
     {
@@ -226,7 +226,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/new/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
+     * @Get("/new/ticket_filters/{id}/tickets")
      *
      * @param Request      $request
      * @param TicketFilter $filter
@@ -257,7 +257,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filters/{filter}", name="api_ticket_filters_delete")
+     * @Delete("/ticket_filters/{filter}")
      *
      * @param TicketFilter $filter
      *

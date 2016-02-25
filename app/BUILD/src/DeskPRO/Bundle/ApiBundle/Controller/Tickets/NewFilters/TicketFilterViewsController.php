@@ -95,7 +95,7 @@ class TicketFilterViewsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filter_views/{filter}", name="api_ticket_filter_views_get")
+     * @Get("/ticket_filter_views/{filter}")
      *
      * @param TicketFilter $filter
      *
@@ -166,7 +166,7 @@ class TicketFilterViewsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Post("/ticket_filter_views", name="api_ticket_filter_views_post")
+     * @Post("/ticket_filter_views")
      *
      * @param Request $request
      *
@@ -185,7 +185,7 @@ class TicketFilterViewsController extends BaseController
      *      }
      * )
      *
-     * @Post("/ticket_filter_views/display_order", name="api_ticket_filter_views_display_order_post")
+     * @Post("/ticket_filter_views/display_order")
      *
      * @param Request $request
      *
@@ -237,7 +237,7 @@ class TicketFilterViewsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Put("/ticket_filter_views/{id}", name="api_ticket_filter_views_put")
+     * @Put("/ticket_filter_views/{id}")
      *
      * @param Request      $request
      * @param TicketFilter $filter
@@ -266,7 +266,7 @@ class TicketFilterViewsController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filter_views/{id}", name="api_ticket_filter_views_delete")
+     * @Delete("/ticket_filter_views/{id}")
      *
      * @param TicketFilter $filter
      *

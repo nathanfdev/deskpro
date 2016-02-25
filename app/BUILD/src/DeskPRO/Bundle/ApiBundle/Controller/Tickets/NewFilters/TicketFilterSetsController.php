@@ -87,7 +87,7 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Get("/new/ticket_filter_sets/{set}", name="api_ticket_filter_sets_get")
+     * @Get("/new/ticket_filter_sets/{set}")
      *
      * @param TicketFilterSet $set
      *
@@ -109,7 +109,7 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Post("/ticket_filter_sets", name="api_ticket_filter_sets_post")
+     * @Post("/ticket_filter_sets")
      */
     public function postAction(Request $request)
     {
@@ -127,7 +127,7 @@ class TicketFilterSetsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
      * )
      *
-     * @Put("/ticket_filter_sets/{set}", name="api_ticket_filter_sets_put")
+     * @Put("/ticket_filter_sets/{set}")
      *
      * @param Request         $request
      * @param TicketFilterSet $set
@@ -156,7 +156,7 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Delete("/ticket_filter_sets/{set}", name="api_ticket_filter_sets_delete")
+     * @Delete("/ticket_filter_sets/{set}")
      *
      * @param TicketFilterSet $set
      *
@@ -178,7 +178,7 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Post("/ticket_filter_sets/display_order", name="api_ticket_filter_sets_display_order_post")
+     * @Post("/ticket_filter_sets/display_order")
      *
      * @param Request $request
      *
@@ -234,7 +234,7 @@ class TicketFilterSetsController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/new/ticket_filter_sets/{set}/filters", name="api_ticket_filter_set_filters")
+     * @Get("/new/ticket_filter_sets/{set}/filters")
      *
      * @param TicketFilterSet $set
      *

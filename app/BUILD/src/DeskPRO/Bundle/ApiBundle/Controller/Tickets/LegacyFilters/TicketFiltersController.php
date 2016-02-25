@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Tickets\Filters;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -70,11 +72,17 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filters", name="api_ticket_filters")
+     * @Get("/ticket_filters")
      */
     public function cgetAction()
     {
-        return View::create([], Response::HTTP_OK);
+        $filters     = new Filters();
+        $filter_info = $filters->getGroupedFiltersForPerson($this->getUser());
+
+        /** @var TicketFilter[] $all_filters */
+        $all_filters = $filter_info['all_filters'];
+
+        return View::create($this->dataSerialize($all_filters), Response::HTTP_OK);
     }
 
     /**
@@ -95,7 +103,7 @@ class TicketFiltersController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      *
-     * @Get("/ticket_filters/{filter}", name="api_ticket_filters_get")
+     * @Get("/ticket_filters/{filter}")
      *
      * @param int $id
      *
@@ -114,7 +122,7 @@ class TicketFiltersController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filters/{id}/tickets", name="api_ticket_filter_tickets_get")
+     * @Get("/ticket_filters/{id}/tickets")
      *
      * @param Request $request
      * @param int     $id
