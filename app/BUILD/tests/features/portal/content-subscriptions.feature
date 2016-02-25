@@ -6,6 +6,8 @@ Feature: Subscriptions
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I have "Example Article" article
+    And I have "Example News Post" news
 
   #
   # ARTICLES

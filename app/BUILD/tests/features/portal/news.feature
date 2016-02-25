@@ -6,6 +6,7 @@ Feature: News
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I have "Example News Post" news
 
   @reinstall
   Scenario: I visit the News from the homepage

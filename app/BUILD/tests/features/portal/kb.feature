@@ -6,6 +6,7 @@ Feature: KB
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I have "Example Article" article
 
   Scenario: I visit the KB from the homepage
     Given I am on "/"
