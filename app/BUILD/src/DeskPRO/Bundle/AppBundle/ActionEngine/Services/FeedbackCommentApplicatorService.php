@@ -36,6 +36,6 @@ use Application\DeskPRO\Entity\FeedbackComment;
 
 class FeedbackCommentApplicatorService extends AbstractApplicatorService
 {
-    protected static $class     = FeedbackComment::class;
-    protected static $namespace = 'FeedbackComment';
+    protected $class     = FeedbackComment::class;
+    protected $namespace = 'FeedbackComment';
 }

@@ -13,7 +13,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@action_engine.action_collection"
-  action_engine.feedback_comment:
+  action_engine.feedback_comments:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentApplicatorService
     arguments:
       - "@doctrine.orm.default_entity_manager"
