@@ -32,13 +32,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 
-class DeleteAction implements ActionInterface
+class DeleteAction extends AbstractAction
 {
-    /** @return array */
-    public function serialize()
-    {
-        return [];
-    }
 }

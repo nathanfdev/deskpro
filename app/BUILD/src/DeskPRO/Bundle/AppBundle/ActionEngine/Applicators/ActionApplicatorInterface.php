@@ -32,30 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback\FeedbackApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment\FeedbackCommentApplicator;
-use Doctrine\ORM\EntityManager;
-
-class ActionApplicatorFactory
+interface ActionApplicatorInterface
 {
-    /**
-     * @param EntityManager $em
-     * @param array         $params
-     *
-     * @return ActionCollectionApplicatorInterface
-     */
-    public static function create(EntityManager $em, array $params)
-    {
-        $content = $params['content'];
-        switch ($content) {
-            case 'feedback':
-                return new FeedbackApplicator($em, $params);
-            case 'feedback_comments':
-                return new FeedbackCommentApplicator($em, $params);
-        }
-
-        throw new \InvalidArgumentException(
-            "action applicator for '$content' does not exist, please check logic inside of ActionApplicatorFactory'"
-        );
-    }
+    public function apply(array $entities);
 }

@@ -34,19 +34,11 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class SetHiddenStatusAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class SetHiddenStatusAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    public function __construct(array $options)
-    {
-        $resolver = new ActionOptionsResolver();
-        self::configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_INPUT);
@@ -60,11 +52,5 @@ class SetHiddenStatusAction extends AbstractAction implements ActionInterface, A
                 Feedback::HIDDEN_STATUS_UNPUBLISHED,
             ]
         );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_INPUT => $this->options[self::OPTION_INPUT]];
     }
 }

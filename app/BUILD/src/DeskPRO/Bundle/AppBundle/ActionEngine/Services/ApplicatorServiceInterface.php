@@ -30,13 +30,9 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
-
-interface ActionCollectionApplicatorInterface
+interface ApplicatorServiceInterface
 {
-    public function prepareActions();
-
-    public function applyActionCollection(array $ids, ActionCollection $collection);
+    public function apply(array $ids, array $actions);
 }

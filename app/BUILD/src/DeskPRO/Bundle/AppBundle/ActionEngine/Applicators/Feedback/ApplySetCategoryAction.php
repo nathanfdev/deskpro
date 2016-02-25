@@ -36,31 +36,34 @@ use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplySetCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     private $customDef;
 
     /**
+     * @param Feedback[] $feedback
+     */
+    public function apply(array $feedback)
+    {
+        $this->init();
+        foreach ($feedback as $item) {
+            $item->resetCustomData();
+            $customCategory = new CustomDataFeedback();
+            $customCategory->setInput($this->options[AbstractAction::OPTION_INPUT]);
+            $customCategory->setField($this->customDef);
+            $item->addCustomData($customCategory);
+        }
+    }
+
+    /**
      * Fetch CustomDef.
      */
-    public function init()
+    private function init()
     {
         $this->customDef = $this->em
             ->getRepository('DeskPRO:CustomDefFeedback')
             ->findOneBy(['title' => 'Category']);
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function applyAction($feedback)
-    {
-        $feedback->resetCustomData();
-        $customCategory = new CustomDataFeedback();
-        $customCategory->setInput($this->options[AbstractAction::OPTION_INPUT]);
-        $customCategory->setField($this->customDef);
-        $feedback->addCustomData($customCategory);
     }
 }

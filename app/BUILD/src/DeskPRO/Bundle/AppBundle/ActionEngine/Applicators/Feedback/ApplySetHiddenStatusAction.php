@@ -35,22 +35,19 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplySetHiddenStatusAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplySetHiddenStatusAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public function init()
-    {
-        return true;
-    }
-
     /**
-     * @param Feedback $feedback
+     * @param Feedback[] $feedback
      */
-    public function applyAction($feedback)
+    public function apply(array $feedback)
     {
-        $feedback
-            ->setHiddenStatus($this->options[AbstractAction::OPTION_INPUT])
-            ->setStatus(Feedback::STATUS_HIDDEN);
+        foreach ($feedback as $item) {
+            $item
+                ->setHiddenStatus($this->options[AbstractAction::OPTION_INPUT])
+                ->setStatus(Feedback::STATUS_HIDDEN);
+        }
     }
 }

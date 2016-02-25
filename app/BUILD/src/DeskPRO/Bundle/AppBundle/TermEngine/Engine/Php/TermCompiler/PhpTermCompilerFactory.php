@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -53,7 +54,7 @@ class PhpTermCompilerFactory
         }
 
         throw new \InvalidArgumentException(
-            sprintf('DbalTermCompilerFactory: No compiler found for term with class "%s"', $class)
+            sprintf('PhpTermCompilerFactory: No compiler found for term with class "%s"', $class)
         );
     }
 }

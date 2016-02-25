@@ -34,20 +34,17 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplyDeleteAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public function init()
-    {
-        return true;
-    }
-
     /**
-     * @param FeedbackComment $comment
+     * @param FeedbackComment[] $comments
      */
-    public function applyAction($comment)
+    public function apply(array $comments)
     {
-        $comment->setStatus(FeedbackComment::STATUS_DELETED);
+        foreach ($comments as $comment) {
+            $comment->setStatus(FeedbackComment::STATUS_DELETED);
+        }
     }
 }

@@ -32,10 +32,10 @@
 
 namespace Application\DeskPRO\JobQueue\Processor\MassActions;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorFactory;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Services\ApplicatorServiceInterface;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -50,12 +50,12 @@ class PublishProcessor extends AbstractJobProcessor
 {
     const JOB_TYPE = 'publish_mass';
 
-    private $em;
+    private $container;
 
-    public function __construct(Connection $connection, EntityManager $em)
+    public function __construct(Connection $connection, DeskproContainer $container)
     {
         parent::__construct($connection);
-        $this->em = $em;
+        $this->container = $container;
     }
 
     /**
@@ -75,10 +75,9 @@ class PublishProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $applicator        = ActionApplicatorFactory::create($this->em, $data);
-        $actionsCollection = $applicator->prepareActions();
-        $applicator->applyActionCollection($data['ids'], $actionsCollection);
-        $this->em->flush();
+        /* @var ApplicatorServiceInterface $applicator */
+        $service = $this->container->get('action_engine.'.$data['content']);
+        $service->apply($data['ids'], $data['actions']);
 
         return true;
     }

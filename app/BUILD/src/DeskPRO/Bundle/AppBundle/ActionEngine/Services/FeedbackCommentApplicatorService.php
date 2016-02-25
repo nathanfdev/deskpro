@@ -30,21 +30,12 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class FeedbackCommentApplicatorService extends AbstractApplicatorService
 {
-    /**
-     * @param FeedbackComment[] $comments
-     */
-    public function apply(array $comments)
-    {
-        foreach ($comments as $comment) {
-            $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
-        }
-    }
+    protected $class     = FeedbackComment::class;
+    protected $namespace = 'FeedbackComment';
 }

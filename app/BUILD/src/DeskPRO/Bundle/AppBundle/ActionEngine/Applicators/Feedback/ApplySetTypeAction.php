@@ -34,30 +34,31 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     const OPTION_TYPE_ID = 'id';
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
     private $type;
 
     /**
-     * Fetch type (FeedbackCategory) for setting to items.
+     * @param Feedback[] $feedback
      */
-    public function init()
+    public function apply(array $feedback)
     {
-        $id         = $this->options[self::OPTION_TYPE_ID];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
+        $this->init();
+        foreach ($feedback as $item) {
+            $item->setCategory($this->type);
+        }
     }
 
     /**
-     * @param Feedback $feedback
-     *
-     * @return Feedback
+     * Fetch type (FeedbackCategory) for setting to items.
      */
-    public function applyAction($feedback)
+    private function init()
     {
-        $feedback->setCategory($this->type);
+        $id         = $this->options[self::OPTION_TYPE_ID];
+        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 }

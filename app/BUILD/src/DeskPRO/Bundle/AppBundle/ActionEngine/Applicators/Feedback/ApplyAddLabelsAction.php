@@ -35,22 +35,19 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplyAddLabelsAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplyAddLabelsAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public function init()
-    {
-        return true;
-    }
-
     /**
-     * @param Feedback $feedback
+     * @param Feedback[] $feedback
      */
-    public function applyAction($feedback)
+    public function apply(array $feedback)
     {
-        foreach ($this->options[AddLabelsAction::OPTION_LABELS] as $string) {
-            $feedback->addLabelByString($string);
+        foreach ($feedback as $item) {
+            foreach ($this->options[AddLabelsAction::OPTION_LABELS] as $string) {
+                $item->addLabelByString($string);
+            }
         }
     }
 }

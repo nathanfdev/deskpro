@@ -30,21 +30,44 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use Application\DeskPRO\Entity\FeedbackComment;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use Doctrine\ORM\EntityManager;
 
-class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface
+abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 {
-    /**
-     * @param FeedbackComment[] $comments
-     */
-    public function apply(array $comments)
+    protected $em;
+    protected $actions;
+    protected $class;
+    protected $namespace;
+
+    public function __construct(EntityManager $em, ActionCollection $actions)
     {
-        foreach ($comments as $comment) {
-            $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
-        }
+        $this->em      = $em;
+        $this->actions = $actions;
+    }
+
+    /**
+     * @param array $ids
+     * @param array $actions
+     */
+    public function apply(array $ids, array $actions)
+    {
+        $entities = $this->getEntities($this->class, $ids);
+        $this->actions->apply($this->namespace, $entities, $actions);
+        $this->em->flush();
+    }
+
+    private function getEntities($class, array $ids)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('entity')
+            ->from($class, 'entity')
+            ->where('entity.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
     }
 }

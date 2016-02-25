@@ -34,25 +34,22 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplyRemoveLabelsAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplyRemoveLabelsAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     const OPTION_LABELS = 'labels';
 
-    public function init()
-    {
-        return true;
-    }
-
     /**
-     * @param Feedback $feedback
+     * @param Feedback[] $feedback
      */
-    public function applyAction($feedback)
+    public function apply(array $feedback)
     {
-        foreach ($this->options[self::OPTION_LABELS] as $string) {
-            if ($label = $feedback->findLabelByString($string)) {
-                $feedback->labels->removeElement($label);
+        foreach ($feedback as $item) {
+            foreach ($this->options[self::OPTION_LABELS] as $string) {
+                if ($label = $item->findLabelByString($string)) {
+                    $item->labels->removeElement($label);
+                }
             }
         }
     }
