@@ -5,6 +5,7 @@ Feature: Commenting
 
   Background: Fresh database
     Given I install the fresh data set
+    And I have "Example Article" article
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme

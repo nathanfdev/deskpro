@@ -53,6 +53,7 @@ portal:
                 - DpBehat\Portal\AuthContext
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
+                - DpBehat\Portal\ArticlesContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\Portal\TicketContext
                 - DpBehat\Http\HttpContext
