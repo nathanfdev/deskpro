@@ -42,7 +42,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketCountsController.
@@ -84,7 +83,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->createRepresentation($count));
     }
 
     /**
@@ -118,7 +117,7 @@ class TicketCountsController extends BaseController
             $filter_set_counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
         }
 
-        return View::create($this->dataSerialize(new PrimitiveArray($filter_set_counts)), Response::HTTP_OK);
+        return View::create($this->dataSerialize(new PrimitiveArray($filter_set_counts)));
     }
 
     /**
@@ -156,7 +155,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getTicketFilterCount($filter, $request->get('group_by'));
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->createRepresentation($count));
     }
 
     /**
@@ -188,7 +187,8 @@ class TicketCountsController extends BaseController
         $count    = Count::fromValue(0);
         $group_by = $request->get('group_by');
 
-        $filters = $this->get('data.filters')->getFilters();
+        /** @var TicketFilter[] $filters */
+        $filters = $this->getRepository(TicketFilter::class)->findAll();
         foreach ($filters as $filter) {
             $filter_count = $this->getCountsService()->getTicketFilterCount(
                 $filter,
@@ -198,7 +198,7 @@ class TicketCountsController extends BaseController
             $count->add($filter_count->getCount());
         }
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->createRepresentation($count));
     }
 
     /**

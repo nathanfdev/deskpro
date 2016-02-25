@@ -72,7 +72,7 @@ class TicketFilterViewsController extends BaseController
         $service = $this->get('data.ticket_filter_views');
         $views   = $service->getUnassignedFilterViews();
 
-        return View::create($this->dataSerialize($views), Response::HTTP_OK);
+        return View::create($this->dataSerialize($views));
     }
 
     /**
@@ -103,7 +103,7 @@ class TicketFilterViewsController extends BaseController
      */
     public function getAction(TicketFilter $filter)
     {
-        return View::create($this->dataSerialize($filter), Response::HTTP_OK);
+        return View::create($this->dataSerialize($filter));
     }
 
     /**
@@ -146,12 +146,9 @@ class TicketFilterViewsController extends BaseController
                 Response::HTTP_OK
             );
         } else {
-            return View::create(
-                $this->dataSerialize([
-                    'count' => $tickets_query->fetchCount(),
-                ]),
-                Response::HTTP_OK
-            );
+            return View::create($this->dataSerialize([
+                'count' => $tickets_query->fetchCount(),
+            ]));
         }
     }
 
@@ -214,7 +211,7 @@ class TicketFilterViewsController extends BaseController
 
         $this->getManager()->flush();
 
-        return View::create($this->dataSerialize($results), Response::HTTP_OK);
+        return View::create($this->dataSerialize($results));
     }
 
     /**
@@ -312,13 +309,7 @@ class TicketFilterViewsController extends BaseController
             $this->getManager()->persist($filter);
             $this->getManager()->flush($filter);
 
-            return View::create(
-                $this->dataSerialize($filter),
-                $status,
-                [
-                    'Location' => $this->generateUrl('api_ticket_filter_views_get', ['id' => $filter->getId()]),
-                ]
-            );
+            return View::create($this->dataSerialize($filter), $status);
         }
 
         throw new InvalidFormException($form); // let our listeners generate the form error response

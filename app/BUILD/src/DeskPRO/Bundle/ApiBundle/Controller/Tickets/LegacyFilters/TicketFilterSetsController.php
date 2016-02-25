@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketFilterSetsController.
@@ -92,6 +91,10 @@ class TicketFilterSetsController extends BaseController
         $data_service = $this->get('data.ticket_legacy_filter_sets');
         $filter_set   = $data_service->getFilterSet($id);
 
+        if (!$filter_set) {
+            throw $this->createNotFoundException();
+        }
+
         return View::create($this->dataSerialize($filter_set));
     }
 
@@ -127,6 +130,6 @@ class TicketFilterSetsController extends BaseController
      */
     public function getSetFiltersAction($id)
     {
-        return View::create([], Response::HTTP_OK);
+        return View::create([]);
     }
 }

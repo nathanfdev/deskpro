@@ -42,7 +42,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketCountsController.
@@ -82,7 +81,7 @@ class TicketCountsController extends BaseController
      */
     public function getTicketFilterSetCountAction(Request $request, $id)
     {
-        return View::create([], Response::HTTP_OK);
+        return View::create([]);
     }
 
     /**
@@ -109,7 +108,7 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
-        return View::create([], Response::HTTP_OK);
+        return View::create([]);
     }
 
     /**
@@ -148,7 +147,7 @@ class TicketCountsController extends BaseController
         $group_by = $request->get('group_by');
         $count    = $this->getTicketFilterCount($ticket_filter, $group_by);
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->createRepresentation($count));
     }
 
     /**
@@ -187,7 +186,7 @@ class TicketCountsController extends BaseController
             $count->addNestedInstance($this->getTicketFilterCount($filter,  $filter_group_by), true);
         }
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->createRepresentation($count));
     }
 
     /**

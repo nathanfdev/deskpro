@@ -66,7 +66,7 @@ class TicketFilterSetsController extends BaseController
     {
         $sets = $this->getRepository('App:TicketFilterSet')->findBy([], ['display_order' => 'ASC']);
 
-        return View::create($this->dataSerialize($sets), Response::HTTP_OK);
+        return View::create($this->dataSerialize($sets));
     }
 
     /**
@@ -95,7 +95,7 @@ class TicketFilterSetsController extends BaseController
      */
     public function getAction(TicketFilterSet $set)
     {
-        return View::create($this->dataSerialize($set), Response::HTTP_OK);
+        return View::create($this->dataSerialize($set));
     }
 
     /**
@@ -110,6 +110,10 @@ class TicketFilterSetsController extends BaseController
      * )
      *
      * @Post("/ticket_filter_sets")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
@@ -167,7 +171,7 @@ class TicketFilterSetsController extends BaseController
         $this->getManager()->remove($set);
         $this->getManager()->flush();
 
-        return View::create([], Response::HTTP_OK);
+        return View::create([]);
     }
 
     /**
@@ -207,7 +211,7 @@ class TicketFilterSetsController extends BaseController
 
         $this->getManager()->flush();
 
-        return View::create($this->dataSerialize($results), Response::HTTP_OK);
+        return View::create($this->dataSerialize($results));
     }
 
     /**
@@ -242,7 +246,7 @@ class TicketFilterSetsController extends BaseController
      */
     public function getSetFiltersAction(TicketFilterSet $set)
     {
-        return View::create($this->dataSerialize($set->getFilters()), Response::HTTP_OK);
+        return View::create($this->dataSerialize($set->getFilters()));
     }
 
     /**
@@ -273,13 +277,7 @@ class TicketFilterSetsController extends BaseController
             $this->getManager()->persist($set);
             $this->getManager()->flush($set);
 
-            return View::create(
-                $this->dataSerialize($set),
-                $status,
-                [
-                    'Location' => $this->generateUrl('api_ticket_filter_sets_get', ['id' => $set->getId()]),
-                ]
-            );
+            return View::create($this->dataSerialize($set), $status);
         } else {
             foreach ($form->getErrors() as $error) {
                 echo $error->getMessage()."\n";

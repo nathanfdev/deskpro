@@ -82,7 +82,7 @@ class TicketFiltersController extends BaseController
      */
     public function cgetAction()
     {
-        return View::create($this->dataSerialize($this->get('data.filters')->getFilters()), Response::HTTP_OK);
+        return View::create($this->dataSerialize($this->getRepository(TicketFilter::class)->findAll()));
     }
 
     /**
@@ -111,7 +111,7 @@ class TicketFiltersController extends BaseController
      */
     public function getAction(TicketFilter $filter)
     {
-        return View::create($this->dataSerialize($filter), Response::HTTP_OK);
+        return View::create($this->dataSerialize($filter));
     }
 
     /**
@@ -126,6 +126,10 @@ class TicketFiltersController extends BaseController
      * )
      *
      * @Post("/ticket_filters")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
@@ -141,6 +145,10 @@ class TicketFiltersController extends BaseController
      * )
      *
      * @Post("/ticket_filters/display_order")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postReorderAction(Request $request)
     {
@@ -164,10 +172,7 @@ class TicketFiltersController extends BaseController
 
         $this->getManager()->flush();
 
-        return View::create(
-            $this->dataSerialize($results),
-            Response::HTTP_OK
-        );
+        return View::create($this->dataSerialize($results));
     }
 
     /**
@@ -196,10 +201,14 @@ class TicketFiltersController extends BaseController
      * )
      *
      * @Put("/ticket_filters/{id}")
+     *
+     * @param Request      $request
+     * @param TicketFilter $filter
+     *
+     * @return View
      */
-    public function putAction(Request $request, $id)
+    public function putAction(Request $request, TicketFilter $filter)
     {
-        $filter  = $this->findOr404(TicketFilter::class, $id);
         $content = json_decode($request->getContent(), true);
 
         // Remove existing setting if got no or empty group_by
