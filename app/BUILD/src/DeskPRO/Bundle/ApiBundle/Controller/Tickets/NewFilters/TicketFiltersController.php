@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,10 +51,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TicketFiltersController.
  *
  * @ApiModes("all")
+ * @Route("/new/ticket_filters")
  */
 class TicketFiltersController extends CrudController
 {
-    public static $entity = TicketFilter::class;
+    public static $entity    = TicketFilter::class;
+    public static $listOrder = 'asc';
 
     /**
      * @param HttpKernelInterface $kernel
