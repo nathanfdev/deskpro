@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Exception;
+namespace DeskPRO\Bundle\AppBundle\Limits\Model;
 
-use Symfony\Component\HttpFoundation\Response;
-
-class LimitExhaustedException extends \RuntimeException
+class KeyLimit extends AbstractLimit
 {
-    const STANDARD_MESSAGE = 'Your limit for api calls is exhausted';
-
-    public function __construct($message = self::STANDARD_MESSAGE, $code = Response::HTTP_FORBIDDEN)
+    public function getType()
     {
-        parent::__construct($message, $code);
+        return AbstractLimit::TYPE_KEY;
     }
 }

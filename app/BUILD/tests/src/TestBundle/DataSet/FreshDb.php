@@ -34,7 +34,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -206,14 +206,14 @@ class FreshDb extends AbstractDbSet
                 'current'       => 5000,
                 'start_time'    => $date->format('Y-m-d H:i:s'),
                 'time_interval' => 3600,
-                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
             ],
             [
                 'hit_limit'     => 15000,
                 'current'       => 15000,
                 'start_time'    => $date->format('Y-m-d H:i:s'),
                 'time_interval' => 86400,
-                'limit_type'    => LimitInterface::TYPE_GLOBAL,
+                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
             ],
 
         ];

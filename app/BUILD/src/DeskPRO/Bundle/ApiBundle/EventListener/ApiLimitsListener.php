@@ -30,9 +30,9 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
-use DeskPRO\Bundle\ApiBundle\Limits\Exception\LimitExhaustedException;
-use DeskPRO\Bundle\ApiBundle\Limits\LimitsService;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
+use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -89,14 +89,17 @@ class ApiLimitsListener implements EventSubscriberInterface
 
         $classMetadata = $this->container->get('api_limits.metadata_factory')->getMetadataForClass(get_class($controller['0']));
 
-        if ($classMetadata && isset($classMetadata->methodMetadata[$controller[1]]) && $classMetadata->methodMetadata[$controller[1]]->isLimitsDisabled()) {
+        if ($classMetadata
+            && isset($classMetadata->methodMetadata[$controller[1]])
+            && $classMetadata->methodMetadata[$controller[1]]->isLimitsDisabled()) {
             return;
         }
 
-        /** @var LimitsService $service */
+        /** @var \DeskPRO\Bundle\AppBundle\Limits\LimitsService $service */
         $service = $this->container->get('api_limits.limits_service');
+        $service->collectLimits();
         try {
-            $service->checkLimits($controller[0], $controller[1]);
+            $service->checkLimits();
         } catch (LimitExhaustedException $e) {
             throw new AccessDeniedHttpException($e->getMessage(), $e);
         }

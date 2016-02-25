@@ -26,13 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Model;
+namespace DeskPRO\Bundle\AppBundle\Limits\Model;
 
 /**
  * Class AbstractLimit.
  */
 abstract class AbstractLimit implements LimitInterface
 {
+    const TYPE_GLOBAL = 'global';
+    const TYPE_KEY    = 'key';
+
+    const INTERVAL_HOUR = 3600;
+    const INTERVAL_DAY  = 86400;
+
     /**
      * @var int
      */
@@ -54,9 +60,7 @@ abstract class AbstractLimit implements LimitInterface
     protected $interval;
 
     /**
-     * @param $limit
-     *
-     * @return $this
+     * {@inheritdoc}
      */
     public function setLimit($limit)
     {
@@ -66,9 +70,67 @@ abstract class AbstractLimit implements LimitInterface
     }
 
     /**
-     * @param \DateInterval $interval
-     *
-     * @return $this;
+     * {@inheritdoc}
+     */
+    public function hasLimit()
+    {
+        return $this->current > 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reduceLimit()
+    {
+        --$this->current;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCurrent($current)
+    {
+        $this->current = $current;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrentLimit()
+    {
+        return $this->current;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStartTime(\DateTime $start_time)
+    {
+        $this->start_time = $start_time;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStartTime()
+    {
+        return $this->start_time;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function setInterval(\DateInterval $interval)
     {
@@ -78,7 +140,19 @@ abstract class AbstractLimit implements LimitInterface
     }
 
     /**
-     *
+     * {@inheritdoc}
+     */
+    public function getIntervalInSeconds()
+    {
+        $date1 = new \DateTime();
+        $date2 = new \DateTime();
+        $date1->add($this->interval);
+
+        return $date1->getTimestamp() - $date2->getTimestamp();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function replenish()
     {
@@ -94,56 +168,8 @@ abstract class AbstractLimit implements LimitInterface
         return true;
     }
 
-    /**
-     *
-     */
-    public function reduceLimit()
+    public static function getLimitByMap($limit)
     {
-        --$this->current;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasLimit()
-    {
-        return $this->current > 0;
-    }
-
-    public function getCurrentLimit()
-    {
-        return $this->current;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getStartTime()
-    {
-        return $this->start_time;
-    }
-
-    /**
-     * @param \DateTime $start_time
-     *
-     * @return $this
-     */
-    public function setStartTime(\DateTime $start_time)
-    {
-        $this->start_time = $start_time;
-
-        return $this;
-    }
-
-    /**
-     * @param int $current
-     *
-     * @return $this
-     */
-    public function setCurrent($current)
-    {
-        $this->current = $current;
-
-        return $this;
+        return isset(self::$limits_map[$limit]) ? self::$limits_map[$limit] : 0;
     }
 }

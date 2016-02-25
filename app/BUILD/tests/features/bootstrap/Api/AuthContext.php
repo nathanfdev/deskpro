@@ -33,9 +33,9 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
 use DpBehat\RebootableContextInterface;
@@ -102,7 +102,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
 
         $key_limit = new ApiKeyLimit();
         $key_limit
-            ->setType(LimitInterface::TYPE_KEY)
+            ->setType(AbstractLimit::TYPE_KEY)
             ->setStartTime(new \DateTime())
             ->setInterval(3600)
             ->setApiKey($key)

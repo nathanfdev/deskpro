@@ -26,12 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Model;
+namespace DeskPRO\Bundle\AppBundle\Limits\Model;
 
-class GlobalLimit extends AbstractLimit
+/**
+ * Class LimitSet.
+ */
+class LimitSet extends \SplObjectStorage
 {
-    public function getType()
+    /**
+     * @param LimitInterface $limit
+     */
+    public function addLimit(LimitInterface $limit)
     {
-        return self::TYPE_GLOBAL;
+        if ($this->offsetExists($limit)) {
+            throw new \InvalidArgumentException('Limit already exists');
+        }
+
+        $this->attach($limit);
     }
 }

@@ -8,6 +8,17 @@ define [
 
     url: ->'/api_keys'
 
+    init: ->
+      @limits = {
+        daily_limit: 0
+        hourly_limit: 0
+      }
+
+      @Api.sendGet('/api_keys_settings')
+        .success((data) =>
+          @limits = data
+        )
+
     replayLogEntry: (entry) ->
       deferred = @$q.defer()
 
@@ -28,6 +39,9 @@ define [
       ).error((data, status, headers, config) -> deferred.reject(data, status))
 
       deferred.promise
+
+    getSettings: ->
+      deferred = @$q.defer
 
     ###
     # Generate new API key code

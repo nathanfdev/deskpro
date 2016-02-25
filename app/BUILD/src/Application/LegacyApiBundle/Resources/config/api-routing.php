@@ -5914,6 +5914,15 @@ $collection->create(
     )
 );
 
+$collection->create(
+    'api_api_keys_settings',
+    array(
+        'path'       => '/api_keys_settings',
+        'controller' => 'LegacyApiBundle:ApiKeys:getDefaultSettings',
+        'methods'    => array('GET'),
+    )
+);
+
 ########################################################################################################################
 # Tasks
 ########################################################################################################################

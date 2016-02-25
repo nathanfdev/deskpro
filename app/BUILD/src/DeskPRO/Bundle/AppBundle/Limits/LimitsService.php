@@ -26,14 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits;
+namespace DeskPRO\Bundle\AppBundle\Limits;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\ApiBundle\Limits\Adapter\LimitAdapterInterface;
-use DeskPRO\Bundle\ApiBundle\Limits\Exception\LimitExhaustedException;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitSet;
+use DeskPRO\Bundle\AppBundle\Limits\Adapter\LimitAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\KeyLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
+use DeskPRO\Bundle\AppBundle\Limits\Model\LimitSet;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -43,7 +45,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class LimitsService
 {
     /**
-     * @var \DeskPRO\Bundle\ApiBundle\Limits\Model\LimitSet
+     * @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitSet
      */
     protected $limit_set;
     /**
@@ -57,7 +59,7 @@ class LimitsService
     protected $storage;
 
     /**
-     * @var LimitAdapterInterface
+     * @var \DeskPRO\Bundle\AppBundle\Limits\Adapter\LimitAdapterInterface
      */
     protected $limit_adapter;
 
@@ -74,10 +76,10 @@ class LimitsService
     /**
      * LimitsService constructor.
      *
-     * @param SettingsResolver      $resolver
-     * @param TokenStorageInterface $storage
-     * @param LimitAdapterInterface $limit_adapter
-     * @param EntityManager         $em
+     * @param SettingsResolver                                               $resolver
+     * @param TokenStorageInterface                                          $storage
+     * @param \DeskPRO\Bundle\AppBundle\Limits\Adapter\LimitAdapterInterface $limit_adapter
+     * @param EntityManager                                                  $em
      */
     public function __construct(
         SettingsResolver $resolver,
@@ -90,19 +92,37 @@ class LimitsService
         $this->storage       = $storage;
         $this->limit_adapter = $limit_adapter;
         $this->em            = $em;
-        $this->collectLimits();
     }
 
     /**
      * Collection all limits.
      */
-    protected function collectLimits()
+    public function collectLimits()
     {
         foreach ($this->limit_adapter->getGlobalLimits() as $global_limit) {
             $this->limit_set->addLimit($global_limit);
         }
-        foreach ($this->limit_adapter->getKeyLimits($this->getKey()) as $key_limit) {
+        foreach ($this->getKeyLimits($this->getKey()) as $key_limit) {
             $this->limit_set->addLimit($key_limit);
+        }
+    }
+
+    /**
+     * @param ApiKey $key
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface[]
+     */
+    public function getKeyLimits(ApiKey $key)
+    {
+        return $this->limit_adapter->getKeyLimits($key);
+    }
+
+    public function saveLimit(ApiKey $key, LimitInterface $limit)
+    {
+        if ($limit->getType() === AbstractLimit::TYPE_GLOBAL) {
+            $this->limit_adapter->saveGlobalLimit($limit);
+        } elseif ($limit->getType() === AbstractLimit::TYPE_KEY) {
+            $this->limit_adapter->saveKeyLimit($limit, $key);
         }
     }
 
@@ -122,13 +142,12 @@ class LimitsService
     }
 
     /**
-     * @param $controller
-     * @param $action
+     *
      */
-    public function checkLimits($controller, $action)
+    public function checkLimits()
     {
         foreach ($this->limit_set as $limit) {
-            /** @var LimitInterface $limit */
+            /** @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface $limit */
             if (!$limit->replenish() && !$limit->hasLimit()) {
                 throw new LimitExhaustedException();
             }
@@ -141,13 +160,33 @@ class LimitsService
     public function reduceLimits()
     {
         foreach ($this->limit_set as $limit) {
-            /* @var \DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface $limit */
+            /* @var \DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface $limit */
             $limit->reduceLimit();
-            if ($limit->getType() === LimitInterface::TYPE_GLOBAL) {
-                $this->limit_adapter->saveGlobalLimit($limit);
-            } else {
-                $this->limit_adapter->saveKeyLimit($limit, $this->getKey());
-            }
+            $this->saveLimit($this->getKey(), $limit);
         }
+    }
+
+    public function createLimit($interval = AbstractLimit::INTERVAL_HOUR)
+    {
+        switch ($interval) {
+            case 3600:
+                $limit_hit = $this->resolver->getGlobalSettings()->get('api_limits.key.hour');
+                break;
+            case 86400:
+                $limit_hit = $this->resolver->getGlobalSettings()->get('api_limits.key.day');
+                break;
+            default:
+                $default_limit = $this->resolver->getGlobalSettings()->get('api_limits.key.default', 0);
+                $limit_hit     = $this->resolver->getGlobalSettings()->get('api_limits.key.day', $default_limit);
+                break;
+        }
+
+        $limit = new KeyLimit();
+        $limit
+            ->setCurrent($limit_hit)
+            ->setLimit($limit_hit)
+            ->setInterval(new \DateInterval(sprintf('PT%dS', $interval)));
+
+        return $limit;
     }
 }

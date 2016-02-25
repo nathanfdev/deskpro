@@ -25,3 +25,16 @@ services:
       - "@api_controllers_finder"
     tags:
       - { name: 'kernel.cache_warmer' }
+
+  api_limits.limit_adapter:
+    class: DeskPRO\Bundle\AppBundle\Limits\Adapter\DbLimitAdapter
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
+  api_limits.limits_service:
+    class: DeskPRO\Bundle\AppBundle\Limits\LimitsService
+    arguments:
+      - "@settings_resolver"
+      - "@security.token_storage"
+      - "@api_limits.limit_adapter"
+      - "@doctrine.orm.default_entity_manager"

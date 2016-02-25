@@ -1,13 +1,10 @@
 define [
     'Admin/Main/Ctrl/Base'
     'angular'
-    'DeskPRO/Util/Arrays'
 ], (
     Admin_Ctrl_Base
     angular
-    Arrays
-  ) ->
-
+) ->
   class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_ApiKeys_Ctrl_Edit'
     @CTRL_AS = 'EditCtrl'
@@ -55,22 +52,19 @@ define [
         node.value = value
         @updateChildren node.nodes, value if node.nodes
 
-    find: (title) ->
-      parts = title.split('.')
-      tmp = @$scope.tags
-      console.log tmp, parts
-      while(part = parts.shift())
-        tmp = tmp[part]
-        console.log tmp, part
-
-
     initialLoad: ->
+      @form.daily_limit = @service.keys.limits.daily_limit
+      @form.hourly_limit = @service.keys.limits.hourly_limit
+
       p1 = @service.keys.get(@$stateParams.id || null).then (model) =>
         return if !model?
         @form = angular.copy model
         @form.flags = @form.flags || []
         @form.isSuperUser = @form.flags.indexOf('super') > -1
         @form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
+        @form.daily_limit = @service.keys.limits.daily_limit if !@form.daily_limit
+        @form.hourly_limit = @service.keys.limits.hourly_limit if !@form.hourly_limit
+
 
       p2 = @service.agents.all().then (agents) => @agents = agents
 
@@ -103,7 +97,11 @@ define [
 
       @startSpinner 'saving'
       @service.keys.set(@form).then(
-        =>
+        (data) =>
+          @form = data
+          @form.flags = @form.flags || []
+          @form.isSuperUser = @form.flags.indexOf('super') > -1
+          @form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
           @stopSpinner 'saving', true
           @Growl.success 'Saved'
           @skipDirtyState()

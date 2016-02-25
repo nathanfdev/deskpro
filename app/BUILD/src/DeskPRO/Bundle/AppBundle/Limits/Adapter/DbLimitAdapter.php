@@ -26,13 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Adapter;
+namespace DeskPRO\Bundle\AppBundle\Limits\Adapter;
 
 use Application\DeskPRO\Entity\ApiKey;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\GlobalLimit;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\KeyLimit;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\GlobalLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\KeyLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -72,7 +73,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getGlobalLimits()
     {
-        $db_global_limits = $this->repo()->findBy(['limit_type' => LimitInterface::TYPE_GLOBAL]);
+        $db_global_limits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
         foreach ($db_global_limits as $db_limit) {
             $this->global_limits->attach($this->getLimit($db_limit), $db_limit);
         }
@@ -85,7 +86,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getKeyLimits(ApiKey $key)
     {
-        $db_key_limits = $this->repo()->findBy(['limit_type' => LimitInterface::TYPE_KEY, 'api_key' => $key]);
+        $db_key_limits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_KEY, 'api_key' => $key]);
         foreach ($db_key_limits as $db_limit) {
             $this->key_limits->attach($this->getLimit($db_limit), $db_limit);
         }
@@ -106,7 +107,23 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function saveKeyLimit(LimitInterface $limit, $key)
     {
-        $this->saveLimit($limit);
+        if (!$this->key_limits->offsetExists($limit)) {
+            $this->createKeyLimit($key, $limit);
+        } else {
+            $this->saveLimit($limit);
+        }
+    }
+
+    protected function createKeyLimit(ApiKey $key, LimitInterface $limit)
+    {
+        $db_limit = new ApiKeyLimit();
+        $db_limit
+            ->setInterval($limit->getIntervalInSeconds())
+            ->setCurrent($limit->getCurrentLimit())
+            ->setLimit($limit->getLimit())
+            ->setApiKey($key)
+            ->setType($limit->getType());
+        $this->persistAndFlush($db_limit);
     }
 
     /**
@@ -114,7 +131,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     protected function saveLimit(LimitInterface $limit)
     {
-        if ($limit->getType() === LimitInterface::TYPE_GLOBAL) {
+        if ($limit->getType() === AbstractLimit::TYPE_GLOBAL) {
             $storage = $this->global_limits;
         } else {
             $storage = $this->key_limits;
@@ -124,8 +141,15 @@ class DbLimitAdapter implements LimitAdapterInterface
         /* @var ApiKeyLimit $db_limit */
         $db_limit
             ->setCurrent($limit->getCurrentLimit())
+            ->setLimit($limit->getLimit())
+            ->setInterval($limit->getIntervalInSeconds())
             ->setStartTime($limit->getStartTime());
 
+        $this->persistAndFlush($db_limit);
+    }
+
+    protected function persistAndFlush(ApiKeyLimit $db_limit)
+    {
         $this->em->persist($db_limit);
         $this->em->flush($db_limit);
     }
@@ -138,10 +162,10 @@ class DbLimitAdapter implements LimitAdapterInterface
     protected function getLimit(ApiKeyLimit $db_limit)
     {
         switch ($db_limit->getType()) {
-            case LimitInterface::TYPE_GLOBAL:
+            case AbstractLimit::TYPE_GLOBAL:
                 $limit = new GlobalLimit();
                 break;
-            case LimitInterface::TYPE_KEY;
+            case AbstractLimit::TYPE_KEY;
                 $limit = new KeyLimit();
                 break;
             default:
@@ -149,7 +173,7 @@ class DbLimitAdapter implements LimitAdapterInterface
                     sprintf(
                         'Unknown limit type [ %s ], expecting one of [ %s ]',
                         $db_limit->getType(),
-                        implode(',', [LimitInterface::TYPE_KEY, LimitInterface::TYPE_GLOBAL]))
+                        implode(',', [AbstractLimit::TYPE_KEY, AbstractLimit::TYPE_GLOBAL]))
                 );
         }
 

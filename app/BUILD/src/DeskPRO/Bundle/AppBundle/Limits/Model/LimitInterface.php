@@ -26,40 +26,74 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Adapter;
+namespace DeskPRO\Bundle\AppBundle\Limits\Model;
 
-use Application\DeskPRO\Entity\ApiKey;
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
-
-/**
- * Interface LimitAdapterInterface.
- */
-interface LimitAdapterInterface
+interface LimitInterface
 {
     /**
-     * @return LimitInterface[]
-     */
-    public function getGlobalLimits();
-
-    /**
-     * @param ApiKey $key
+     * @param int $limit
      *
-     * @return \DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface[]
+     * @return LimitInterface
      */
-    public function getKeyLimits(ApiKey $key);
+    public function setLimit($limit);
 
     /**
-     * @param \DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface $limit
+     * @return bool
+     */
+    public function hasLimit();
+
+    /**
+     * @return int
+     */
+    public function getLimit();
+
+    /**
+     */
+    public function reduceLimit();
+
+    /**
+     * @param int $current_limit
+     *
+     * @return LimitInterface
+     */
+    public function setCurrent($current_limit);
+
+    /**
+     * @return int
+     */
+    public function getCurrentLimit();
+
+    /**
+     * @param \DateTime $date
      *
      * @return mixed
      */
-    public function saveGlobalLimit(LimitInterface $limit);
+    public function setStartTime(\DateTime $date);
 
     /**
-     * @param \DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface $limit
-     * @param                                                       $key
-     *
-     * @return mixed
+     * @return \DateTime
      */
-    public function saveKeyLimit(LimitInterface $limit, $key);
+    public function getStartTime();
+
+    /**
+     * @param \DateInterval $interval
+     *
+     * @return \DateInterval
+     */
+    public function setInterval(\DateInterval $interval);
+
+    /**
+     * @return int
+     */
+    public function getIntervalInSeconds();
+
+    /**
+     * @return bool
+     */
+    public function replenish();
+
+    /**
+     * @return string
+     */
+    public function getType();
 }

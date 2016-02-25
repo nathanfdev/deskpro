@@ -26,24 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Model;
+namespace DeskPRO\Bundle\AppBundle\Limits\Model;
 
-interface LimitInterface
+class GlobalLimit extends AbstractLimit
 {
-    const TYPE_GLOBAL = 'global';
-    const TYPE_KEY    = 'key';
-
-    public function reduceLimit();
-
-    public function hasLimit();
-
-    public function getCurrentLimit();
-
-    public function getStartTime();
-
-    public function setInterval(\DateInterval $interval);
-
-    public function replenish();
-
-    public function getType();
+    public function getType()
+    {
+        return AbstractLimit::TYPE_GLOBAL;
+    }
 }

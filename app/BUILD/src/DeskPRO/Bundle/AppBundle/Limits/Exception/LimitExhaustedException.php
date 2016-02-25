@@ -26,22 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Limits\Model;
+namespace DeskPRO\Bundle\AppBundle\Limits\Exception;
 
-/**
- * Class LimitSet.
- */
-class LimitSet extends \SplObjectStorage
+use Symfony\Component\HttpFoundation\Response;
+
+class LimitExhaustedException extends \RuntimeException
 {
-    /**
-     * @param LimitInterface $limit
-     */
-    public function addLimit(LimitInterface $limit)
-    {
-        if ($this->offsetExists($limit)) {
-            throw new \InvalidArgumentException('Limit already exists');
-        }
+    const STANDARD_MESSAGE = 'Your limit for api calls is exhausted';
 
-        $this->attach($limit);
+    public function __construct($message = self::STANDARD_MESSAGE, $code = Response::HTTP_FORBIDDEN)
+    {
+        parent::__construct($message, $code);
     }
 }
