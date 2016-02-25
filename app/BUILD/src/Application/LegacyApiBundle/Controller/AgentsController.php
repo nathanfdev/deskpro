@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -1220,11 +1219,11 @@ class AgentsController extends AbstractController implements ProtectedController
 
             $loader  = new AgentNotifPrefsLoader($agent, $this->em);
             $prefs   = $loader->getPrefs();
-            $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
+            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($agent);
         } else {
             $agent   = null;
             $prefs   = new AgentNotifPrefs();
-            $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         }
 
         $table_gen = new AgentNotifPrefsTable($prefs, $this->container->getTranslator());
@@ -1439,7 +1438,7 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         $prefs             = new AgentNotifPrefs();
-        $filters           = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $filters           = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         $defaultFilterSubs = array();
         $defaultOtherSubs  = array();
         foreach ($filters as $filter) {

@@ -73,7 +73,7 @@ class PrefsLoader
         # Load filters
         #------------------------------
 
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
         $sys_filters    = array();
@@ -201,7 +201,7 @@ class PrefsLoader
         #------------------------------
 
         if ($filter_subs) {
-            $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
             $filters = Arrays::keyFromData($filters, 'id');
 
             foreach ($filter_subs as $info) {

@@ -283,8 +283,8 @@ class PrefsTable
     }
 
     /**
-     * @param string                                     $type
-     * @param \Application\DeskPRO\Entity\TicketFilter[] $custom_filters
+     * @param string                                           $type
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter[] $custom_filters
      *
      * @return array
      */

@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
-use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Tickets\Filters;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -79,7 +79,7 @@ class TicketFiltersController extends BaseController
         $filters     = new Filters();
         $filter_info = $filters->getGroupedFiltersForPerson($this->getUser());
 
-        /** @var TicketFilter[] $all_filters */
+        /** @var LegacyTicketFilter[] $all_filters */
         $all_filters = $filter_info['all_filters'];
 
         return View::create($this->dataSerialize($all_filters), Response::HTTP_OK);

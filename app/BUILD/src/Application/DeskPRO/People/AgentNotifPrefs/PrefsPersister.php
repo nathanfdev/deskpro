@@ -69,7 +69,7 @@ class PrefsPersister
      */
     public function savePrefs(Prefs $prefs)
     {
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
         $filters = Arrays::keyFromData($filters, 'id');
 
         #------------------------------

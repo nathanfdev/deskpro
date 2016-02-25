@@ -49,7 +49,7 @@ class FilterChangeSet
     private $state_id;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $affected_filters = array();
 
@@ -73,7 +73,7 @@ class FilterChangeSet
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAffectedFilters()
     {

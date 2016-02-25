@@ -29,8 +29,8 @@
 namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Problem;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -108,7 +108,7 @@ class ProblemListener
             $data = $this->updates->dequeue();
             /* @var Problem $p */
             $problem = $data['entity'];
-            $filter  = $event->getEntityManager()->getRepository('DeskPRO:TicketFilter')->findOneBy(array(
+            $filter  = $event->getEntityManager()->getRepository('DeskPRO:LegacyTicketFilter')->findOneBy(array(
                 'sys_name' => Problem::FILTER_PREFIX.$problem->id,
             ));
 
@@ -186,7 +186,7 @@ class ProblemListener
     {
         $connection = $em->getConnection();
         $id         = $problem->id;
-        $connection->insert($em->getClassMetadata(TicketFilter::class)->getTableName(), [
+        $connection->insert($em->getClassMetadata(LegacyTicketFilter::class)->getTableName(), [
             'title'      => 'Problem #'.$id,
             'sys_name'   => Problem::FILTER_PREFIX.$id,
             'is_global'  => 1,

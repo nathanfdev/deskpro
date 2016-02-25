@@ -47,7 +47,7 @@ class TicketFilterSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter
      */
     protected $filter;
 

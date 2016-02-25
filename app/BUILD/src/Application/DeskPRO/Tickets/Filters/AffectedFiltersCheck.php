@@ -45,7 +45,7 @@ class AffectedFiltersCheck
     private $ticket;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $filters;
 
@@ -65,12 +65,12 @@ class AffectedFiltersCheck
     private $field_versions;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $affected_filters;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $affected_filters_nochange;
 
@@ -80,9 +80,9 @@ class AffectedFiltersCheck
     private $has_run = false;
 
     /**
-     * @param Ticket                                     $ticket
-     * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-     * @param Logger                                     $logger
+     * @param Ticket                                           $ticket
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter[] $filters
+     * @param Logger                                           $logger
      */
     public function __construct(Ticket $ticket, array $filters, Logger $logger)
     {
@@ -223,7 +223,7 @@ class AffectedFiltersCheck
     /**
      * Get an array of filters that are affected by the changed fields.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAffectedFilters()
     {
@@ -238,7 +238,7 @@ class AffectedFiltersCheck
      * Filters returned here can use the same result from any previous
      * run through the filter change detector.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAffectedFiltersWithNoChanges()
     {
@@ -251,7 +251,7 @@ class AffectedFiltersCheck
      * Return only filters that are affected by new changes. This is the
      * difference from getAffectedFilters/getAffectedFiltersWithNoChanges.
      *
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getNewAffectedFilters()
     {

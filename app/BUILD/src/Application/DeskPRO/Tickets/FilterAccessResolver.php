@@ -31,8 +31,8 @@
  */
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -102,12 +102,12 @@ class FilterAccessResolver
     /**
      * Can a person use a particular filter/.
      *
-     * @param \Application\DeskPRO\Entity\Person       $person
-     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\Person             $person
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter $filter
      *
      * @return bool
      */
-    public function canUse(Person $person, TicketFilter $filter)
+    public function canUse(Person $person, LegacyTicketFilter $filter)
     {
         if ($filter->is_global) {
             return true;
@@ -131,12 +131,12 @@ class FilterAccessResolver
     /**
      * Does a person ignore a filter?
      *
-     * @param \Application\DeskPRO\Entity\Person       $person
-     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\Person             $person
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter $filter
      *
      * @return bool
      */
-    public function isIgnored(Person $person, TicketFilter $filter)
+    public function isIgnored(Person $person, LegacyTicketFilter $filter)
     {
         return isset($this->hidden_prefs[$filter->id][$person->id]);
     }
@@ -144,11 +144,11 @@ class FilterAccessResolver
     /**
      * Get all users who use a filter.
      *
-     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter $filter
      *
      * @return array
      */
-    public function getUsers(TicketFilter $filter, array $available_agents = null)
+    public function getUsers(LegacyTicketFilter $filter, array $available_agents = null)
     {
         if ($available_agents === null) {
             $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -168,11 +168,11 @@ class FilterAccessResolver
     /**
      * Get all users who use ignore filter.
      *
-     * @param \Application\DeskPRO\Entity\TicketFilter $filter
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter $filter
      *
      * @return array
      */
-    public function getIgnoreUsers(TicketFilter $filter, array $available_agents = null)
+    public function getIgnoreUsers(LegacyTicketFilter $filter, array $available_agents = null)
     {
         if ($available_agents === null) {
             $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();

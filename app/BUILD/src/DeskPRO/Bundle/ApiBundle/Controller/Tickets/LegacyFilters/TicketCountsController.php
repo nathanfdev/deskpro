@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -138,12 +138,12 @@ class TicketCountsController extends BaseController
      * )
      * @Get("/ticket_filters/{id}/count")
      *
-     * @param Request      $request
-     * @param TicketFilter $ticket_filter
+     * @param Request            $request
+     * @param LegacyTicketFilter $ticket_filter
      *
      * @return View
      */
-    public function getTicketFilterCountAction(Request $request, TicketFilter $ticket_filter)
+    public function getTicketFilterCountAction(Request $request, LegacyTicketFilter $ticket_filter)
     {
         $group_by = $request->get('group_by');
         $count    = $this->getTicketFilterCount($ticket_filter, $group_by);
@@ -186,7 +186,7 @@ class TicketCountsController extends BaseController
         $filters     = new Filters();
         $filter_info = $filters->getGroupedFiltersForPerson($user);
 
-        /** @var TicketFilter[] $all_filters */
+        /** @var LegacyTicketFilter[] $all_filters */
         $all_filters = $filter_info['all_filters'];
         foreach ($all_filters as $filter) {
             $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
@@ -197,12 +197,12 @@ class TicketCountsController extends BaseController
     }
 
     /**
-     * @param TicketFilter $filter
-     * @param string|null  $group_by
+     * @param LegacyTicketFilter $filter
+     * @param string|null        $group_by
      *
      * @return Count
      */
-    protected function getTicketFilterCount(TicketFilter $filter, $group_by = null)
+    protected function getTicketFilterCount(LegacyTicketFilter $filter, $group_by = null)
     {
         /** @var Person $user */
         $user = $this->getUser();

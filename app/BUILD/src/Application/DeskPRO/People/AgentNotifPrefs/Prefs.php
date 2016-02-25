@@ -33,7 +33,7 @@
  */
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
-use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 
 class Prefs
 {
@@ -84,13 +84,13 @@ class Prefs
     }
 
     /**
-     * @param TicketFilter $filter
-     * @param array        $sub_types Map of subtype=>value. Currently, value must be either true or false
-     * @param string       $type
+     * @param LegacyTicketFilter $filter
+     * @param array              $sub_types Map of subtype=>value. Currently, value must be either true or false
+     * @param string             $type
      *
      * @throws \InvalidArgumentException
      */
-    public function setFilterSubs($type, TicketFilter $filter, array $sub_types)
+    public function setFilterSubs($type, LegacyTicketFilter $filter, array $sub_types)
     {
         $valid_sub_types = $this->getFilterNotifyTypes($filter, $type);
 
@@ -114,11 +114,11 @@ class Prefs
 
     /**
      * @param $type
-     * @param TicketFilter $for_filter
+     * @param LegacyTicketFilter $for_filter
      *
      * @return array
      */
-    public function getFilterSubsForFilter($type, TicketFilter $for_filter)
+    public function getFilterSubsForFilter($type, LegacyTicketFilter $for_filter)
     {
         $prefs = $this->getFilterNotifyTypes($for_filter, $type);
         $prefs = array_fill_keys($prefs, false);
@@ -244,14 +244,14 @@ class Prefs
     ####################################################################################################################
 
     /**
-     * @param TicketFilter $filter
-     * @param string       $type
+     * @param LegacyTicketFilter $filter
+     * @param string             $type
      *
      * @throws \InvalidArgumentException
      *
      * @return array
      */
-    public function getFilterNotifyTypes(TicketFilter $filter, $type)
+    public function getFilterNotifyTypes(LegacyTicketFilter $filter, $type)
     {
         if ($type != self::TYPE_EMAIL && $type != self::TYPE_ALERT) {
             throw new \InvalidArgumentException("\$type must be `email` or `alert` (got `$type`)`");

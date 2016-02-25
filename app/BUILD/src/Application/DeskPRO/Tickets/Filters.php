@@ -32,8 +32,8 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
 
 class Filters
 {
@@ -47,7 +47,7 @@ class Filters
     public function getFiltersForPerson($person)
     {
         return App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->getFiltersForPerson($person);
     }
 
@@ -160,25 +160,25 @@ class Filters
      *
      * @param int $ticket_filter_id
      *
-     * @return TicketFilter
+     * @return LegacyTicketFilter
      */
     public function getFilterFromId($ticket_filter_id)
     {
         return App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->find($ticket_filter_id);
     }
 
     /**
      * Get the number of results in a filter.
      *
-     * @param TicketFilter $ticket_filter
+     * @param LegacyTicketFilter $ticket_filter
      *
      * @return int
      */
     public function getCountForFilter($ticket_filter)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         return $ticket_filter->getResultsCount();
     }
@@ -193,7 +193,7 @@ class Filters
     public function getAllCountsSystemFilters($person)
     {
         $coll = App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->getSystemFilters($person);
 
         return $this->getAllCountsForFiltersCollection($coll, $person);
@@ -209,7 +209,7 @@ class Filters
     public function getAllCountsCustomFilters($person)
     {
         $coll = App::getOrm()
-            ->getRepository('DeskPRO:TicketFilter')
+            ->getRepository('DeskPRO:LegacyTicketFilter')
             ->getCustomFiltersForPerson($person);
 
         return $this->getAllCountsForFiltersCollection($coll);
@@ -316,7 +316,7 @@ class Filters
      */
     public function getIdsFromFilter($ticket_filter)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         $result_ids = $ticket_filter->getResults();
 
@@ -326,15 +326,15 @@ class Filters
     /**
      * Get ticket results from a filter.
      *
-     * @param TicketFilter $ticket_filter
-     * @param int          $page
-     * @param int          $per_page
+     * @param LegacyTicketFilter $ticket_filter
+     * @param int                $page
+     * @param int                $per_page
      *
      * @return array
      */
     public function getTicketsFromFilter($ticket_filter, $page = 1, $per_page = 25)
     {
-        $ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
+        $ticket_filter = App::getOrm()->getRepository('DeskPRO:LegacyTicketFilter')->getTicketFilterFromVar($ticket_filter);
 
         $result_ids = $ticket_filter->getResults();
 
