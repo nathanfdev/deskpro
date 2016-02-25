@@ -53,11 +53,14 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Get("/ticket_filter_sets", name="api_ticket_filter_sets")
+     * @Get("/ticket_filter_sets")
      */
     public function cgetAction()
     {
-        return View::create([], Response::HTTP_OK);
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+        $filter_sets  = $data_service->getAllFilterSets();
+
+        return View::create($this->dataSerialize($filter_sets));
     }
 
     /**
@@ -86,7 +89,10 @@ class TicketFilterSetsController extends BaseController
      */
     public function getAction($id)
     {
-        return View::create([], Response::HTTP_OK);
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+        $filter_set   = $data_service->getFilterSet($id);
+
+        return View::create($this->dataSerialize($filter_set));
     }
 
     /**

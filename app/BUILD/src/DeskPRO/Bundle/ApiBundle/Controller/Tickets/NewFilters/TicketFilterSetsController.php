@@ -60,7 +60,7 @@ class TicketFilterSetsController extends BaseController
      *      }
      * )
      *
-     * @Get("/new/ticket_filter_sets", name="api_ticket_filter_sets")
+     * @Get("/new/ticket_filter_sets")
      */
     public function cgetAction()
     {

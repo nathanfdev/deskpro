@@ -96,6 +96,9 @@ services:
     class: DeskPRO\Bundle\AppBundle\Model\TicketStatuses
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  data.ticket_legacy_filter_sets:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSetDataService
+
   data.chat:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
