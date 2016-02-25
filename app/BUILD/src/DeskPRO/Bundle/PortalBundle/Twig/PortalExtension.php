@@ -537,9 +537,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getMinifiedWidgetLoader($root_path, $widget_bundle_path)
     {
         $asset_dir          = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
-        $widget_loader_path = $asset_dir.'/pub/build/widget_loader.js';
+        $widget_loader_path = $asset_dir.'/pub/build/widget_loader.min.js';
 
-        $widget_loader = null;
         if (file_exists($widget_loader_path)) {
             $widget_loader = file_get_contents($widget_loader_path);
 
@@ -547,9 +546,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             $widget_loader = str_replace('__DP_APP_SRC__', '"'.$widget_bundle_path.'"', $widget_loader);
             $widget_loader = str_replace('__DP_URL__', '"'.$root_path.'"', $widget_loader);
             $widget_loader = str_replace('__DP_OPTIONS__', json_encode($this->getPortalWidgetOptions()), $widget_loader);
+
+            return $widget_loader;
         }
 
-        return $widget_loader;
+        return '';
     }
 
     /**
@@ -565,7 +566,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
         if (!$person instanceof Entity\Person) {
             $person = new PersonGuest();
-        };
+        }
 
         return $person;
     }
@@ -576,7 +577,6 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     protected function getPermissionBagForCurrentUser()
     {
         $person = $this->getPerson();
-
         if ($person) {
             return $this->getPermissionManager()->getPermissionsBagForPerson($person);
         }
