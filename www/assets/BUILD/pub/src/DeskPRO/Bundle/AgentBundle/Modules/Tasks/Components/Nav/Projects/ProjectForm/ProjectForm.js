@@ -186,10 +186,12 @@ export class ProjectForm extends BaseForm {
                 }
                 {project &&
                 <Modal ref="deleteModal"
-                       title={`Delete project "${project.get('title')}"?`}
+                       title="Delete project?"
                        onConfirm={this.onDeleteConfirm}
                        confirmTitle="Delete">
-                  All (5) tasks in project will be deleted!
+                  Are you sure you want to delete "{project.get('title')}"?
+                  <br />
+                  All (5) tasks will be deleted too!
                 </Modal>
                 }
                 <Loader opacity={0}

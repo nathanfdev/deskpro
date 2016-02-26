@@ -98,7 +98,7 @@ export class Modal extends React.Component {
     }
 
     return (
-      <Detached zIndex={this.props.zIndex}>
+      <Detached>
         {isOpen &&
         <div className="cover" onClick={this.coverClick} style={style}>
           <section className={className}>

@@ -12,10 +12,6 @@ import invariant from 'invariant';
  */
 export class Detached extends React.Component {
 
-  static propTypes = {
-    zIndex: PropTypes.number
-  };
-
   componentWillUnmount() {
     if (!this.node) return;
 
@@ -32,9 +28,6 @@ export class Detached extends React.Component {
     if (!this.node) {
       this.node = document.createElement('div');
       document.body.appendChild(this.node);
-      if (this.props.zIndex) {
-        this.node.style.zIndex = this.props.zIndex;
-      }
     }
 
     ReactDOM.unstable_renderSubtreeIntoContainer(this, <div className="detached">{this.props.children}</div>, this.node);
