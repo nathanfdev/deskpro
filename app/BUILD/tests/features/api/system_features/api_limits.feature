@@ -1,4 +1,4 @@
-@basic
+@basic @logs
 Feature: API limits
   Each key limited with global and individual limit (if set)
 

@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { BaseItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/BaseItem';
 
 import { connect } from 'react-redux';
-
+@connect()
 export class FilterItem extends Component {
   static propTypes = {
     icon: PropTypes.string,

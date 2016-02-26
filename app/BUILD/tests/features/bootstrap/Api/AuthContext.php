@@ -104,7 +104,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
         $key_limit
             ->setType(AbstractLimit::TYPE_KEY)
             ->setStartTime(new \DateTime())
-            ->setInterval(3600)
+            ->setInterval(AbstractLimit::INTERVAL_HOUR)
             ->setApiKey($key)
             ->setLimit(5000)
             ->setCurrent(5000);

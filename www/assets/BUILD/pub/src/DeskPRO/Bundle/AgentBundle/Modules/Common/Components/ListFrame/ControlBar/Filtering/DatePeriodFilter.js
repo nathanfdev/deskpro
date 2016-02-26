@@ -36,7 +36,7 @@ export class DatePeriodFilter extends Component {
   }
 
   render() {
-    const { dispatch, filter, unsetParams, setActiveItem, activeItem, stateValue } = this.props;
+    const { filter, unsetParams, setActiveItem, activeItem, stateValue } = this.props;
     const {icon, label} = filter;
     const value = stateValue(filter.param);
     let filterType = 'Select option';
@@ -55,8 +55,7 @@ export class DatePeriodFilter extends Component {
                   label={label}
                   isActive={isActive}
                   setActiveItem={setActiveItem}
-                  resetFilter={unsetParams.bind(this)}
-                  dispatch={dispatch}>
+                  resetFilter={unsetParams.bind(this)}>
         <Menu>
           <div
             className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">

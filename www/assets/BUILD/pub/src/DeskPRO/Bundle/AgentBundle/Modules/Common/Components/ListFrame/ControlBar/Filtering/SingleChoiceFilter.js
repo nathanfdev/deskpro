@@ -37,8 +37,7 @@ export class SingleChoiceFilter extends Component {
                   icon={icon || 'filter'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, params)}
-                  dispatch={dispatch}>
+                  resetFilter={unsetParams.bind(this, params)}>
         <Menu>
           <SingleChoicePanel title={label}
                              depth

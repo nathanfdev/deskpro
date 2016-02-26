@@ -97,7 +97,6 @@ class ApiLimitsListener implements EventSubscriberInterface
 
         /** @var \DeskPRO\Bundle\AppBundle\Limits\LimitsService $service */
         $service = $this->container->get('api_limits.limits_service');
-        $service->collectLimits();
         try {
             $service->checkLimits();
         } catch (LimitExhaustedException $e) {
