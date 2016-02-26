@@ -699,6 +699,19 @@ SQL
         );
         // end of ticket filters
 
+        // Legacy ticket filters test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `ticket_filters`
+                (`id`, `person_id`, `agent_team_id`, `is_global`,  `title`, `is_enabled`, `terms`, `group_by`, `order_by`, `display_order`)
+            VALUES
+              ('1', '1', null, '0', 'Filter 1', '0', '[{"type":"status","op":"is","options":{"status":["awaiting_agent"]}}]', '', '', 10),
+              ('2', '1', null, '0', 'Filter 2', '0', '[{"type":"status","op":"is","options":{"status":["resolved"]}}]', '', '', 20),
+              ('3', '1', null, '0', 'Filter 3', '0', '[{"type":"status","op":"is","options":{"status":["deleted"]}}]', '', '', 30)
+SQL
+        );
+        // end of legacy ticket filters
+
         // "/organizations" endpoint and its' children test data -------------------------------------------------------
         $this->getDb()->exec(
             "
