@@ -40,8 +40,8 @@ class InstallFixturesStep extends AbstractStep
         $this->writeln('We will now initialize the database. This may take a few minutes.');
 
         $fixtures = [
-            'SeedFixtures',
             'InstallFixtures',
+            'SeedFixtures',
         ];
 
         $is_dev = $this->getSession()->getSource() === InstallSession::SOURCE_DEV
