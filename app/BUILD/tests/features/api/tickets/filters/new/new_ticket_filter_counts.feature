@@ -125,3 +125,45 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].nested[1].title" should be equal to "Zelda Agent"
     And the JSON node "data.nested[0].nested[1].count" should be equal to 1
     And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
+
+  Scenario: I group by agent_team
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=agent_team"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And print last JSON response
+
+  Scenario: I group by organization
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=organization"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And print last JSON response
+
+  Scenario: I group by language
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=language"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And print last JSON response
+
+  Scenario: I group by urgency
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=urgency"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And print last JSON response
+
+  Scenario: I group by urgency
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=urgency"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "urgency"
+    And the JSON node "data.nested[0].nested" should have 1 elements
+
+    And the JSON node "data.nested[0].nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "urgency"
+    And the JSON node "data.nested[0].nested[0].title" should be equal to "1"
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
