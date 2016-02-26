@@ -628,7 +628,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				} else {
 					self.page.insertTextInReply(result);
 				}
-
+				textarea.addClass('touched');
 				recordSnippetUse(snippetId);
 
 				self.snippetsViewer.close();
