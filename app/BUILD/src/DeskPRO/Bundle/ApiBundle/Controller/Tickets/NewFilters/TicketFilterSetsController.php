@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Form\Type\TicketFilterSetType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
@@ -50,7 +51,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class TicketFilterSetsController extends CrudController
 {
     public static $entity    = TicketFilterSet::class;
-    public static $type      = 'filter_set';
+    public static $type      = TicketFilterSetType::class;
     public static $listOrder = 'asc';
 
     /**

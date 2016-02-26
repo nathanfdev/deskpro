@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\TicketFilterType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -249,7 +250,7 @@ class TicketFilterViewsController extends BaseController
     protected function handleFormSubmission(Request $request, TicketFilter $filter)
     {
         $status = $filter->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-        $form   = $this->get('form.factory')->createNamedBuilder(null, 'filter', $filter)->getForm();
+        $form   = $this->get('form.factory')->createNamedBuilder(null, TicketFilterType::class, $filter)->getForm();
 
         $submitted = $request->request->all();
 

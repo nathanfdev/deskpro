@@ -182,11 +182,6 @@ services:
     tags:
       - { name: form.type, alias: single_checkbox }
 
-  form.filter:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\FilterType
-    tags:
-      - { name: form.type, alias: filter }
-
   form.dp_auth:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType
     tags:
@@ -248,11 +243,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
     arguments:
       - "@term_to_json_converter"
-
-  form.filter_set:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\FilterSetType
-    tags:
-      - { name: form.type, alias: filter_set }
 
   form.feedback_comment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType

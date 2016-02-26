@@ -41,9 +41,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class FilterType.
+ * Class TicketFilterType.
  */
-class FilterType extends AbstractType
+class TicketFilterType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -71,13 +71,5 @@ class FilterType extends AbstractType
         $resolver->setDefaults([
             'data_class' => TicketFilter::class,
         ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'filter';
     }
 }
