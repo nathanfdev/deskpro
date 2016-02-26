@@ -66,6 +66,8 @@ class TicketCountsDataService
     private $user;
 
     /**
+     * Constructor.
+     *
      * @param EntityManager          $em
      * @param DbalTicketFilterEngine $engine
      * @param TokenStorage           $tokenStorage
@@ -98,8 +100,9 @@ class TicketCountsDataService
 
             // If grouping by a custom field, then additionally query for total count (w/o grouping)
             // to determine count of tickets where no value set on the custom field
-            $total = 0;
-            if ($isCustom = TicketGrouping::isCustom($group_by)) {
+            $total     = 0;
+            $is_custom = TicketGrouping::isCustom($group_by);
+            if ($is_custom) {
                 $total = $this->engine->evaluate($filter, new TermEngineContext($this->user))->fetchCount();
             }
 
@@ -115,12 +118,12 @@ class TicketCountsDataService
                     true
                 );
 
-                if ($isCustom) {
+                if ($is_custom) {
                     $total -= $value;
                 }
             }
 
-            if ($isCustom) {
+            if ($is_custom) {
                 $filter_count->addNestedInstance(
                     Count::create($total, null, $group_by, null, null, []),
                     true
@@ -148,9 +151,12 @@ class TicketCountsDataService
      */
     public function getFilterSetTicketsCount(TicketFilterSet $set, array $group_by = null)
     {
-        is_array($group_by) or $group_by = [];
-        $total                           = 0;
-        $counts                          = [];
+        if (!$group_by) {
+            $group_by = [];
+        }
+
+        $total  = 0;
+        $counts = [];
 
         foreach ($set->getFilters() as $filter) {
             $filter_grouping = array_key_exists($filter->getId(), $group_by) ? $group_by[$filter->getId()] : null;
@@ -173,9 +179,8 @@ class TicketCountsDataService
     private function getTitle($id, $type)
     {
         if (is_null($id)) {
-            return;
+            return '';
         }
-
         if (TicketGrouping::isCustom($type)) {
             return $id;
         }
