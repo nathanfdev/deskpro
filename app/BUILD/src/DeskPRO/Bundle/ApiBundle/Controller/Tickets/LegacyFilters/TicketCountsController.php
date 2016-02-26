@@ -220,7 +220,7 @@ class TicketCountsController extends BaseController
                 $filter_count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null, true);
             }
         } else {
-            $filter_count = Count::create($searcher->getCount(), $filter->getId(), $filter->getRawTitle(), 'filter');
+            $filter_count = Count::create($searcher->getCount(), $filter->getId(), 'filter', $filter->getRawTitle(), 'filter');
         }
 
         return $filter_count;
