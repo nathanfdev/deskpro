@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { createProject, editProject } from '../../../../Actions/navActions';
+import { createProject, editProject, deleteProject } from '../../../../Actions/navActions';
 import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
@@ -29,8 +29,7 @@ export class ProjectForm extends BaseForm {
     dispatch: PropTypes.func.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    onSubmit: PropTypes.func
+    departments: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -49,6 +48,10 @@ export class ProjectForm extends BaseForm {
       agentTeams: project.get('teams', emptyObject).toArray(),
       departments: project.get('departments', emptyObject).toArray()
     };
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
   }
 
   onChangeTitle = event => {
@@ -70,6 +73,7 @@ export class ProjectForm extends BaseForm {
     });
 
     const { project, dispatch } = this.props;
+    const isNew = !project.get('id');
     const submitData = {
       title: this.state.title,
       departments: this.state.departments,
@@ -78,7 +82,7 @@ export class ProjectForm extends BaseForm {
     };
 
     let promise;
-    if (project) {
+    if (!isNew) {
       promise = dispatch(editProject(project.get('id'), submitData));
     } else {
       promise = dispatch(createProject(submitData));
@@ -86,13 +90,14 @@ export class ProjectForm extends BaseForm {
 
     promise.then(
       () => {
-        this.setState({submit: false});
-        this.props.onSubmit && this.props.onSubmit();
+        !this.unmounted && this.setState({submit: false});
       },
-      result => this.setState({
-        errors: result.getData().errors,
-        submit: false
-      })
+      result => {
+        !this.unmounted && this.setState({
+          errors: result.getData().errors,
+          submit: false
+        })
+      }
     );
   };
 
@@ -101,11 +106,19 @@ export class ProjectForm extends BaseForm {
   };
 
   onDeleteConfirm = () => {
-
+    this.setState({submit: true});
+    const { project, dispatch } = this.props;
+    dispatch(deleteProject(project.get('id'))).catch((result) => {
+      !this.unmounted && this.setState({
+        errors: result.getData().errors,
+        submit: false
+      });
+    });
   };
 
   render() {
     const { agents, agentTeams, departments, project, tasksCount } = this.props;
+    const isNew = !project.get('id');
 
     return (
       <Popup>
@@ -174,22 +187,23 @@ export class ProjectForm extends BaseForm {
 
             <FieldGroup>
               <FullField>
-                <button type="submit"
-                        value="Save"
-                        className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
-                        onClick={this.onSubmit}>Save</button>
-                {project &&
-                <button type="button"
-                        className={classNames('dpw--popup-button')}
-                        onClick={this.onDeletePrompt}>
+                {!this.state.submit && <button type="submit"
+                                              value="Save"
+                                              className="dpw--popup-button"
+                                              onClick={this.onSubmit}>
+                  Save
+                </button>
+                }
+                {!isNew && !this.state.submit && <button type="button"
+                                                          className="dpw--popup-button"
+                                                          onClick={this.onDeletePrompt}>
                   Delete
                 </button>
                 }
-                {project &&
-                <Modal ref="deleteModal"
-                       title="Delete project?"
-                       onConfirm={this.onDeleteConfirm}
-                       confirmTitle="Delete">
+                {!isNew && <Modal ref="deleteModal"
+                                   title="Delete project?"
+                                   onConfirm={this.onDeleteConfirm}
+                                   confirmTitle="Delete">
                   Are you sure you want to delete "{project.get('title')}"?
                   <br />
                   {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
