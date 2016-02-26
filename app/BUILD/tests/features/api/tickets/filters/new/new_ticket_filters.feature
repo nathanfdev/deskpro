@@ -11,7 +11,7 @@ Feature: /new/ticket_filters endpoint
   @reinstall
   Scenario: I retrieve lists of ticket filters
     When I send a GET request to "/api/v2/new/ticket_filters"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the response should be in JSON
 
     And the JSON node "data" should have 3 elements
@@ -32,7 +32,7 @@ Feature: /new/ticket_filters endpoint
 
   Scenario: I get ticket filter
     When I send a GET request to "/api/v2/new/ticket_filters/2"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the response should be in JSON
 
     And the JSON node "data.id" should be equal to 2
@@ -42,10 +42,56 @@ Feature: /new/ticket_filters endpoint
 
   Scenario: I try to create a new ticket filter with empty request
     When I send a POST request to "/api/v2/new/ticket_filters"
-    And the response status code should be 400
+    Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.term.fields.options.errors[0].code" should be equal to "term_type_does_not_exist"
     And the JSON node "errors.fields.term.fields.options.errors[0].message" should contain "You tried to create a term with the type code"
     And the JSON node "errors.fields.term.fields.options.errors[0].message" should contain "but it does not exist. Please check your term types."
+
+  Scenario: I create a new ticket filter
+    When I send a POST request to "/api/v2/new/ticket_filters" with body:
+    """
+{
+  "title": "Filter 4",
+  "display_order": 10,
+  "filter_set": 1,
+  "term": {
+    "type": "ticket_status",
+    "op": "is",
+    "options": {
+      "status": ["resolved"]
+    }
+  }
+}
+    """
+    Then the response status code should be 201
+    And the response should be in JSON
+    And the JSON node "data.id" should be equal to 4
+    And the JSON node "data.title" should be equal to "Filter 4"
+    And the JSON node "data.display_order" should be equal to 10
+    And the JSON node "data.filter_set" should be equal to 1
+    And the JSON node "data.term.op" should be equal to "is"
+    And the JSON node "data.term.options.status[0]" should be equal to "resolved"
+
+  Scenario: I edit a ticket filter
+    When I send a PUT request to "/api/v2/new/ticket_filters/4" with body:
+    """
+{
+  "title": "Filter 4 (edited)"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/new/ticket_filters/4"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data.title" should be equal to "Filter 4 (edited)"
+
+  Scenario: I delete a ticket filter
+    When I send a DELETE request to "/api/v2/new/ticket_filters/4"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/new/ticket_filters/4"
+    Then the response status code should be 404
