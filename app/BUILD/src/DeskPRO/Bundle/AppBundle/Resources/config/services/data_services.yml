@@ -60,10 +60,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketLabelsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.ticket_filter_views:
-    class: DeskPRO\Bundle\AppBundle\DataService\TicketFilterViewDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
   data.ticket_custom_fields:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]

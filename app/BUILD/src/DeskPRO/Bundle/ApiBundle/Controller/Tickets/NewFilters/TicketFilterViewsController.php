@@ -40,9 +40,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
-use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -57,55 +55,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class TicketFilterViewsController extends BaseController
 {
-    /**
-     * @ApiDoc(
-     *      description="Get a list of public filters views",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/ticket_filter_views", name="api_ticket_filter_views")
-     */
-    public function cgetAction()
-    {
-        $service = $this->get('data.ticket_filter_views');
-        $views   = $service->getUnassignedFilterViews();
-
-        return View::create($this->dataSerialize($views));
-    }
-
-    /**
-     * @Get("/ticket_filter_views/{id}", name="get_ticket_filter_views")
-     *
-     * @ApiDoc(
-     *      description="Get a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Get("/ticket_filter_views/{filter}")
-     *
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function getAction(TicketFilter $filter)
-    {
-        return View::create($this->dataSerialize($filter));
-    }
-
     /**
      * @ApiDoc(
      *      description="Get ticket filter view counts",
@@ -150,91 +99,6 @@ class TicketFilterViewsController extends BaseController
                 'count' => $tickets_query->fetchCount(),
             ]));
         }
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Create a filter",
-     *      input={"class"="filter","name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Post("/ticket_filter_views")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        return $this->handleFormSubmission($request, new TicketFilter());
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="modify a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="filter","name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          404="Not Found",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Put("/ticket_filter_views/{id}")
-     *
-     * @param Request      $request
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function putAction(Request $request, TicketFilter $filter)
-    {
-        return $this->handleFormSubmission($request, $filter);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="delete a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Deleted",
-     *          404="Not Found"
-     *      }
-     * )
-     *
-     * @Delete("/ticket_filter_views/{id}")
-     *
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function deleteAction(TicketFilter $filter)
-    {
-        $this->getManager()->remove($filter);
-        $this->getManager()->flush();
-
-        return View::create([]);
     }
 
     /**
