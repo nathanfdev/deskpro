@@ -34,10 +34,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Filters;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\FixedAdapter;
@@ -49,71 +49,13 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketFiltersController.
  *
  * @ApiModes("all")
+ * @Route("/ticket_filters")
  */
-class TicketFiltersController extends BaseController
+class TicketFiltersController extends CrudController
 {
-    /**
-     * @ApiDoc(
-     *      description="Get a list of filters",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/ticket_filters")
-     */
-    public function cgetAction()
-    {
-        $filters     = new Filters();
-        $all_filters = $filters->getFiltersForPerson($this->getUser());
-
-        return View::create($this->dataSerialize($all_filters));
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Get a filter",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Get("/ticket_filters/{filter}")
-     *
-     * @param LegacyTicketFilter $filter
-     *
-     * @return View
-     */
-    public function getAction(LegacyTicketFilter $filter)
-    {
-        return View::create($this->dataSerialize($filter));
-    }
+    public static $exposeOnly = ['list', 'get'];
+    public static $entity     = LegacyTicketFilter::class;
+    public static $listOrder  = 'asc';
 
     /**
      * @ApiDoc(
