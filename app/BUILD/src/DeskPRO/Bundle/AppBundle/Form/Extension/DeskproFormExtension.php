@@ -31,9 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Extension;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractTypeExtension;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -43,14 +41,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class DeskproFormExtension extends AbstractTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
-    }
-
     /**
      * {@inheritdoc}
      */
