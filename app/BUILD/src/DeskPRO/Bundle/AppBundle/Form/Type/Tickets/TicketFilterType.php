@@ -61,6 +61,10 @@ class TicketFilterType extends AbstractType
             ])
             ->add('term', 'term_engine_term')
         ;
+
+// catch (TermTypeDoesNotExistException $e) {
+//    throw new WrappedApiErrorException(
+//        new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST)
     }
 
     /**

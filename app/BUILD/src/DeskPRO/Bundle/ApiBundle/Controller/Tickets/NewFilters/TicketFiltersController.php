@@ -34,15 +34,11 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,69 +73,6 @@ class TicketFiltersController extends CrudController
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
     }
 
-//    /**
-//     * @Put("/ticket_filters/{id}", name="put_ticket_filters")
-//     *
-//     * @ApiDoc(
-//     *      description="Modify filter grouping",
-//     *      requirements={
-//     *          {
-//     *              "name"="id",
-//     *              "requirement"="\d+",
-//     *              "description"="the id of the filter",
-//     *              "dataType"="integer"
-//     *          },
-//     *          {
-//     *              "name"="group_by",
-//     *              "description"="new filter grouping",
-//     *              "dataType"="string"
-//     *          }
-//     *      },
-//     *      statusCodes={
-//     *          204="Updated",
-//     *          404="Not Found",
-//     *          400="Bad Request"
-//     *      }
-//     * )
-//     *
-//     * @Put("/ticket_filters/{id}")
-//     *
-//     * @param Request      $request
-//     * @param TicketFilter $filter
-//     *
-//     * @return View
-//     */
-//    public function putAction(Request $request, TicketFilter $filter)
-//    {
-//        $content = json_decode($request->getContent(), true);
-//
-//        // Remove existing setting if got no or empty group_by
-//        if (!array_key_exists('group_by', $content) || !$content['group_by']) {
-//            $this->removeFilterGroupByPersonSetting($filter);
-//
-//            return new Response(null, Response::HTTP_NO_CONTENT);
-//        }
-//
-//        // Save the group_by in filter setting
-//        $setting = $this->findOrCreateFilterGroupByPersonSetting($filter);
-//        $setting->setValue($content['group_by']);
-//        $this->getManager()->persist($setting);
-//        $this->getManager()->flush();
-//
-//        return new Response(null, Response::HTTP_NO_CONTENT);
-
-// from views controller
-//try {
-//$form->submit($submitted, $request->getMethod() !== 'PUT');
-//} catch (TermTypeDoesNotExistException $e) {
-//    throw new WrappedApiErrorException(
-//        new BadRequestHttpException(ApiErrors::TERM_TYPE_DOES_NOT_EXIST),
-//        [
-//            'type' => $e->getMessage(),
-//        ]
-//
-//    }
-
     /**
      * @ApiDoc(
      *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
@@ -163,47 +96,6 @@ class TicketFiltersController extends CrudController
         return TicketsController::subRequestSearch($kernel, $request, [
             'filter' => $filter->getId(),
         ]);
-    }
-
-    /**
-     * @param TicketFilter $filter
-     *
-     * @return PersonSetting
-     */
-    private function findOrCreateFilterGroupByPersonSetting(TicketFilter $filter)
-    {
-        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
-        $person      = $this->getUser();
-
-        $person_setting = $this->getManager()->find(PersonSetting::class, [
-            'person' => $person,
-            'name'   => $settingName,
-        ]);
-
-        if (!$person_setting) {
-            $person_setting = new PersonSetting($person, $settingName);
-        }
-
-        return $person_setting;
-    }
-
-    /**
-     * @param TicketFilter $filter
-     */
-    private function removeFilterGroupByPersonSetting(TicketFilter $filter)
-    {
-        $settingName = TicketsSettings::FILTER_GROUPING_PREFIX.$filter->getId();
-        $person      = $this->getUser();
-
-        $person_setting = $this->getManager()->find(PersonSetting::class, [
-            'person' => $person,
-            'name'   => $settingName,
-        ]);
-
-        if ($person_setting) {
-            $this->getManager()->remove($person_setting);
-            $this->getManager()->flush();
-        }
     }
 
     /**
