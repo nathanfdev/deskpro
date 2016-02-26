@@ -82,7 +82,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
 
-        return View::create($count);
+        return View::create($this->dataSerialize($count));
     }
 
     /**
@@ -116,7 +116,7 @@ class TicketCountsController extends BaseController
             $counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
         }
 
-        return View::create($counts);
+        return View::create($this->dataSerialize($counts));
     }
 
     /**
@@ -154,7 +154,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getTicketFilterCount($filter, $request->get('group_by'));
 
-        return View::create($count);
+        return View::create($this->dataSerialize($count));
     }
 
     /**
@@ -198,7 +198,7 @@ class TicketCountsController extends BaseController
             $count->add($filter_count->getCount());
         }
 
-        return View::create($count);
+        return View::create($this->dataSerialize($count));
     }
 
     /**
