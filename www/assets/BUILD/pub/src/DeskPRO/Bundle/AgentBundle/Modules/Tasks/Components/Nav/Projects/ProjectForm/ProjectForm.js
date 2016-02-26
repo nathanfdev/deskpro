@@ -19,6 +19,7 @@ import {
   AgentTeamsList,
   DepartmentsList
 } from '../../../Form';
+import { Modal } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Modal';
 
 export class ProjectForm extends BaseForm {
 
@@ -94,9 +95,17 @@ export class ProjectForm extends BaseForm {
     );
   };
 
+  onDeletePrompt = () => {
+    this.refs.deleteModal.open();
+  };
+
+  onDeleteConfirm = () => {
+
+  };
+
   render() {
     const { agents, agentTeams, departments, project } = this.props;
-
+    console.info(project.toJS());
     return (
       <Popup>
         <Header>
@@ -168,6 +177,21 @@ export class ProjectForm extends BaseForm {
                         value="Save"
                         className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
                         onClick={this.onSubmit}>Save</button>
+                {project &&
+                <button type="button"
+                        className={classNames('dpw--popup-button')}
+                        onClick={this.onDeletePrompt}>
+                  Delete
+                </button>
+                }
+                {project &&
+                <Modal ref="deleteModal"
+                       title={`Delete project "${project.get('title')}"?`}
+                       onConfirm={this.onDeleteConfirm}
+                       confirmTitle="Delete">
+                  All (5) tasks in project will be deleted!
+                </Modal>
+                }
                 <Loader opacity={0}
                         width={3}
                         loaded={!this.state.submit} />
