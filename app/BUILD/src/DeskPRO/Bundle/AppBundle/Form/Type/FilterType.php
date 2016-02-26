@@ -31,60 +31,51 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class FilterType.
+ */
 class FilterType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder
-            ->add(
-                'title',
-                'text',
-                array(
-                    'description' => 'the filter title',
-                )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'description' => 'the display order',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'filter_set',
-                'entity',
-                array(
-                    'description' => 'the filter set to which this filter belongs',
-                    'required'    => false,
-                    'class'       => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet',
-                    'property'    => 'id',
-                )
-            )
-            ->add(
-                'term',
-                'term_engine_term',
-                array(
-                    'description' => 'the term definition in JSON',
-                )
-            );
+            ->add('title', TextType::class)
+            ->add('display_order', IntegerType::class, [
+                'required' => false,
+            ])
+            ->add('filter_set', EntityType::class, [
+                'required' => false,
+                'class'    => TicketFilterSet::class,
+            ])
+            ->add('term', 'term_engine_term')
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilter',
-            )
-        );
+        $resolver->setDefaults([
+            'data_class' => TicketFilter::class,
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'filter';

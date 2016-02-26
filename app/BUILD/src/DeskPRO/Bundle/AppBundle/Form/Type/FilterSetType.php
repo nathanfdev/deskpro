@@ -32,8 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
+use Doctrine\DBAL\Types\IntegerType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -48,16 +49,14 @@ class FilterSetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text')
-            ->add('display_order', 'integer', [
+            ->add('title', TextType::class)
+            ->add('display_order', IntegerType::class, [
                 'required' => false,
             ])
-            ->add('is_default', 'api_boolean', [
+            ->add('is_default', ApiBooleanType::class, [
                 'required' => false,
             ])
         ;
-
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
     }
 
     /**
