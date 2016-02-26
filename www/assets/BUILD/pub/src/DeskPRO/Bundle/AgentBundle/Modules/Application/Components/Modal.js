@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import invariant from 'invariant';
 import { Detached } from 'DeskPRO/Component/Detached';
 
@@ -29,7 +27,8 @@ export class Modal extends React.Component {
     cancelTitle: PropTypes.string,
     confirmVisible: PropTypes.bool,
     cancelVisible: PropTypes.bool,
-    isMini: PropTypes.bool
+    isMini: PropTypes.bool,
+    zIndex: PropTypes.number
   };
 
   static defaultProps = {
@@ -38,7 +37,8 @@ export class Modal extends React.Component {
     cancelTitle: 'Cancel',
     confirmVisible: true,
     cancelVisible: true,
-    isMini: true
+    isMini: true,
+    zIndex: 1005
   };
 
   constructor(props) {
@@ -71,9 +71,13 @@ export class Modal extends React.Component {
     this.props.onCancel && this.props.onCancel();
   };
 
-  coverClick = (event) => {
+  coverClick = (event, b, c, d, e) => {
     event.stopPropagation();
-    return this.cancelClick(event);
+    event.nativeEvent.stopImmediatePropagation();
+    if (event.target.className !== 'cover') {
+      return false;
+    }
+    this.cancelClick(event);
   };
 
   render() {
@@ -88,11 +92,16 @@ export class Modal extends React.Component {
       className += ' no-footer';
     }
 
+    let style = {};
+    if (this.props.zIndex) {
+      style.zIndex = this.props.zIndex;
+    }
+
     return (
-      <Detached>
-        {isOpen ? [
-          <div key="cover" className="cover" onClick={this.coverClick}></div>,
-          <section key="modal" className={className}>
+      <Detached zIndex={this.props.zIndex}>
+        {isOpen &&
+        <div className="cover" onClick={this.coverClick} style={style}>
+          <section className={className}>
             <header>
               <h1>
                 {title}
@@ -106,7 +115,8 @@ export class Modal extends React.Component {
             </div>
             {this.renderFooter()}
           </section>
-        ] : null}
+        </div>
+        }
       </Detached>
     );
   }
@@ -129,9 +139,9 @@ export class Modal extends React.Component {
 
     const className = 'popup-button ' + type;
     return (
-      <a href="#" className={className} onClick={this[type + 'Click']}>
+      <button className={className} onClick={this[type + 'Click']}>
         {this.props[type + 'Title']}
-      </a>
+      </button>
     );
   }
 }
