@@ -147,7 +147,7 @@ class TicketCountsController extends BaseController
         $group_by = $request->get('group_by');
         $count    = $this->getTicketFilterCount($ticket_filter, $group_by);
 
-        return View::create($this->createRepresentation($count));
+        return View::create($count);
     }
 
     /**
@@ -186,7 +186,7 @@ class TicketCountsController extends BaseController
             $count->addNestedInstance($this->getTicketFilterCount($filter,  $filter_group_by), true);
         }
 
-        return View::create($this->createRepresentation($count));
+        return View::create($count);
     }
 
     /**
