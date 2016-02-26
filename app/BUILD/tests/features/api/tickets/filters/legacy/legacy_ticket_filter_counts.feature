@@ -1,6 +1,6 @@
 @ticket-filters
 Feature: /ticket_filters_counts endpoint
-  To ticket filters grouping count
+  To legacy ticket filters grouping count
   As a developer
   I want to check endpoint
 

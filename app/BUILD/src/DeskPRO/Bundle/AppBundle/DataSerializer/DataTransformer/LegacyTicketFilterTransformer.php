@@ -46,7 +46,6 @@ class LegacyTicketFilterTransformer extends AbstractDataSerializerTransformer
     {
         return [
             'id',
-            'title',
             'display_order',
         ];
     }
@@ -60,6 +59,7 @@ class LegacyTicketFilterTransformer extends AbstractDataSerializerTransformer
         $data = $transformation_request->getDataToBeTransformed();
 
         return [
+            'title'              => $data->getRawTitle(),
             'term'               => $data->terms,
             'filter_set'         => null,
             'filter_views'       => null,

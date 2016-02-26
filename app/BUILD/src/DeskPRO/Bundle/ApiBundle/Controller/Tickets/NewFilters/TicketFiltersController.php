@@ -81,7 +81,7 @@ class TicketFiltersController extends CrudController
      *      }
      * )
      *
-     * @Get("/new/ticket_filters/{id}/tickets")
+     * @Get("/{filter}/tickets")
      *
      * @param Request      $request
      * @param TicketFilter $filter

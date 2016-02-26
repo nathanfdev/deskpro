@@ -9,7 +9,7 @@ Feature: /new/ticket_filter_sets endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: I retrieve lists of ticket filter sets
+  Scenario: I retrieve list of ticket filter sets
     When I send a GET request to "/api/v2/new/ticket_filter_sets"
     And the response status code should be 200
     And the response should be in JSON

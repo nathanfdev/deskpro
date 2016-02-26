@@ -182,7 +182,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iPrintLastRunQuery()
     {
-        print $this->engine_evaluation->getLastRunSql();
+        echo $this->engine_evaluation->getLastRunSql();
     }
 
     /**
@@ -443,6 +443,14 @@ class TermEngineBehatContext extends BaseContext
         list($expected, $real) = $this->dealWithParamAssertions($expected, $real);
 
         expect($real)->toBeLike($expected);
+    }
+
+    /**
+     * @Given I re-fill ticket search table
+     */
+    public function iRefillTicketSearchTable()
+    {
+        $this->getRepository('DeskPRO:Ticket')->fillSearchTable();
     }
 
     /**

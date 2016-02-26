@@ -65,7 +65,7 @@ class TicketFiltersController extends CrudController
      *      }
      * )
      *
-     * @Get("/ticket_filters/{id}/tickets")
+     * @Get("/{filter}/tickets")
      *
      * @param Request            $request
      * @param LegacyTicketFilter $filter

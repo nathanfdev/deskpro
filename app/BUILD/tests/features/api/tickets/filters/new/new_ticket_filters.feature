@@ -9,7 +9,7 @@ Feature: /new/ticket_filters endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: I retrieve lists of ticket filters
+  Scenario: I retrieve list of ticket filters
     When I send a GET request to "/api/v2/new/ticket_filters"
     Then the response status code should be 200
     And the response should be in JSON
@@ -34,11 +34,22 @@ Feature: /new/ticket_filters endpoint
     When I send a GET request to "/api/v2/new/ticket_filters/2"
     Then the response status code should be 200
     And the response should be in JSON
-
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.title" should be equal to "Filter 2"
     And the JSON node "data.display_order" should be equal to 20
     And the JSON node "data.filter_set" should be equal to 1
+
+  Scenario: I retrieve list of filter's tickets
+    When I send a GET request to "/api/v2/new/ticket_filters/1/tickets"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to 2
+    And the JSON node "data[0].subject" should be equal to "Ticket #1"
+    And the JSON node "data[1].id" should be equal to 3
+    And the JSON node "data[1].subject" should be equal to "Ticket #2"
+    And the JSON node "data[2].id" should be equal to 4
+    And the JSON node "data[2].subject" should be equal to "Ticket #3"
 
   Scenario: I try to create a new ticket filter with empty request
     When I send a POST request to "/api/v2/new/ticket_filters"
