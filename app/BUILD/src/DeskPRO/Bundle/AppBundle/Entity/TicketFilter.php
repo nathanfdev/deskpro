@@ -129,10 +129,14 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      */
     protected $date_updated;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->filter_views       = new ArrayCollection();
         $this->filter_preferences = new ArrayCollection();
+
         $this->setDisplayOrder(0);
         $this->setDateUpdated($updated = new \DateTime());
         $this->setDateCreated($updated);

@@ -131,12 +131,15 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
      */
     protected $display_order;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->type        = self::TYPE_LIST;
-        $this->icon_fields = array();
-        $this->options     = array();
-        $this->fields      = array();
+        $this->icon_fields = [];
+        $this->options     = [];
+        $this->fields      = [];
     }
 
     /**
@@ -168,7 +171,7 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
      */
     public function setType($type)
     {
-        if (!in_array($type, array(self::TYPE_LIST, self::TYPE_TABLE))) {
+        if (!in_array($type, [self::TYPE_LIST, self::TYPE_TABLE])) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid filter view type', $type));
         }
 
@@ -222,7 +225,7 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
     /**
      * @param array $fields
      */
-    public function setFields(array $fields = array())
+    public function setFields(array $fields = [])
     {
         $this->setModelField('fields', $fields);
     }
@@ -238,7 +241,7 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
     /**
      * @param array $icon_fields
      */
-    public function setIconFields(array $icon_fields = array())
+    public function setIconFields(array $icon_fields = [])
     {
         $this->setModelField('icon_fields', $icon_fields);
     }
@@ -254,7 +257,7 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
     /**
      * @param array $options
      */
-    public function setOptions(array $options = array())
+    public function setOptions(array $options = [])
     {
         $this->setModelField('options', $options);
     }
