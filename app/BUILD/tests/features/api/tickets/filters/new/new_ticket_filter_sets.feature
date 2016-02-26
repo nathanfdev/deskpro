@@ -1,3 +1,4 @@
+@ticket-filters
 Feature: /new/ticket_filter_sets endpoint
   To CRUD DeskPRO tickets
   As a developer

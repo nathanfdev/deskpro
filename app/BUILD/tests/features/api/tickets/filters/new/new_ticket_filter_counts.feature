@@ -1,3 +1,4 @@
+@ticket-filters
 Feature: /new/ticket_filters_counts endpoint
   To ticket filters grouping count
   As a developer

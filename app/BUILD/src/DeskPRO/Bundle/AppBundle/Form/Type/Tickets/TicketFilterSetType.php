@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
