@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -52,7 +51,6 @@ class TaskAttachmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder->add(
                 'task',
                 'entity',

@@ -31,7 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Extension;
 
+use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -44,11 +46,9 @@ class DeskproFormExtension extends AbstractTypeExtension
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $resolver->setDefaults([
-            'help' => '',
-        ]);
+        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
     }
 
     /**
@@ -57,6 +57,16 @@ class DeskproFormExtension extends AbstractTypeExtension
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['help'] = $options['help'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'help' => '',
+        ]);
     }
 
     /**

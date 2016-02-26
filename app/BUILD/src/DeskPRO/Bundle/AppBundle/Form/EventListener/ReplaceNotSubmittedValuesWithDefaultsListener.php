@@ -47,32 +47,38 @@ use Symfony\Component\Form\FormEvents;
  */
 class ReplaceNotSubmittedValuesWithDefaultsListener implements EventSubscriberInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SUBMIT => 'onPreSubmit',
-        );
+        ];
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPreSubmit(FormEvent $event)
     {
-        $form          = $event->getForm();
-        $submittedData = $event->getData();
+        $form = $event->getForm();
+        $data = $event->getData();
 
         // only listen to compound forms
         if ($form->getConfig()->getCompound()) {
             foreach ($form->all() as $name => $child_form) {
                 // if this form field was not submitted
-                if (!array_key_exists($name, $submittedData)) {
+                if (!array_key_exists($name, $data)) {
                     // and if this form field is not required
                     if (!$child_form->isRequired()) {
                         // then add its default data to the submitted data for processing
-                        $submittedData[$name] = $child_form->getData();
+                        $data[$name] = $child_form->getData();
                     }
                 }
             }
         }
 
-        $event->setData($submittedData);
+        $event->setData($data);
     }
 }
