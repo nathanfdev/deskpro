@@ -32,4 +32,26 @@ define [
     getRequestData: ->
       return angular.toJson(@model.request_data, true)
 
+    replay: ->
+      @service.replay(@model, 'subrequest').then((model) =>
+        @$modal.open({
+          templateUrl: @getTemplatePath('ApiLogs/replay-modal.html'),
+          size: 'lg',
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+            $scope.model = model
+
+            $scope.getResponseData = ->
+              return angular.toJson($scope.model.response_data, true)
+
+            $scope.getRequestData = ->
+              return angular.toJson($scope.model.request_data, true)
+
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        });
+      )
+
+
   Admin_ApiKeys_Ctrl_LogsView.EXPORT_CTRL()
