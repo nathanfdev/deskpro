@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -41,9 +39,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class TicketFilterType.
+ * Class TicketFilterSetType.
  */
-class TicketFilterType extends AbstractType
+class TicketFilterSetType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -55,11 +53,9 @@ class TicketFilterType extends AbstractType
             ->add('display_order', IntegerType::class, [
                 'required' => false,
             ])
-            ->add('filter_set', EntityType::class, [
+            ->add('is_default', ApiBooleanType::class, [
                 'required' => false,
-                'class'    => TicketFilterSet::class,
             ])
-            ->add('term', 'term_engine_term')
         ;
     }
 
@@ -69,7 +65,7 @@ class TicketFilterType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => TicketFilter::class,
+            'data_class' => TicketFilterSet::class,
         ]);
     }
 }
