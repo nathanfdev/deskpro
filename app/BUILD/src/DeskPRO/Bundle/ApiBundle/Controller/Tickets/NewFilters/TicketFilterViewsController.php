@@ -48,7 +48,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketFilterViewsController.
@@ -172,46 +171,6 @@ class TicketFilterViewsController extends BaseController
     public function postAction(Request $request)
     {
         return $this->handleFormSubmission($request, new TicketFilter());
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Reorder filters.",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Post("/ticket_filter_views/display_order")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function postReorderAction(Request $request)
-    {
-        $data = $request->request->all();
-
-        if (!is_array($data) || !isset($data['display_order'])) {
-            throw new NotFoundHttpException();
-        }
-
-        $results = [];
-        foreach ($data['display_order'] as $order => $filter_id) {
-            $filter = $this->getManager()->find('App:TicketFilter', $filter_id);
-
-            if (!$filter) {
-                continue;
-            }
-
-            $filter->setDisplayOrder($order);
-            $this->getManager()->persist($filter);
-            $results[$order] = $filter_id;
-        }
-
-        $this->getManager()->flush();
-
-        return View::create($this->dataSerialize($results));
     }
 
     /**

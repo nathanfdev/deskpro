@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService;
@@ -83,7 +82,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
 
-        return View::create($this->createRepresentation($count));
+        return View::create($count);
     }
 
     /**
@@ -110,14 +109,14 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
-        $sets = $this->getRepository('App:TicketFilterSet')->findAll();
+        $sets   = $this->getRepository('App:TicketFilterSet')->findAll();
+        $counts = [];
 
-        $filter_set_counts = [];
         foreach ($sets as $set) {
-            $filter_set_counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
+            $counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
         }
 
-        return View::create($this->dataSerialize(new PrimitiveArray($filter_set_counts)));
+        return View::create($counts);
     }
 
     /**
@@ -155,7 +154,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getTicketFilterCount($filter, $request->get('group_by'));
 
-        return View::create($this->createRepresentation($count));
+        return View::create($count);
     }
 
     /**
@@ -194,11 +193,12 @@ class TicketCountsController extends BaseController
                 $filter,
                 isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
             );
+
             $count->addNestedInstance($filter_count);
             $count->add($filter_count->getCount());
         }
 
-        return View::create($this->createRepresentation($count));
+        return View::create($count);
     }
 
     /**
