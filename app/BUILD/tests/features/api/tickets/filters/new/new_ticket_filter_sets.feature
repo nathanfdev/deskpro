@@ -91,7 +91,22 @@ Feature: /new/ticket_filter_sets endpoint
     When I send a GET request to "/api/v2/new/ticket_filter_sets/1/filters"
     Then the response status code should be 200
     And the JSON node "data" should have 2 elements
-    And the JSON node "data[0].id" should be equal to 2
-    And the JSON node "data[0].title" should be equal to "Filter 2"
-    And the JSON node "data[1].id" should be equal to 1
-    And the JSON node "data[1].title" should be equal to "Filter 1"
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].title" should be equal to "Filter 1"
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].title" should be equal to "Filter 2"
+
+  Scenario: I create filter set with default values
+    When I send a POST request to "/api/v2/new/ticket_filter_sets" with body:
+    """
+{
+  "title": "Filter set 5"
+}
+    """
+    Then the response status code should be 201
+    And the response should be in JSON
+
+    And the JSON node "data.id" should be equal to 5
+    And the JSON node "data.title" should be equal to "Filter set 5"
+    And the JSON node "data.display_order" should be equal to 0
+    And the JSON node "data.is_default" should be equal to 0
