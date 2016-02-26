@@ -75,12 +75,12 @@ class TermEngineTermType extends AbstractType
     {
         $resolver->setDefaults([
             'cascade_validation' => true,
+            'error_bubbling'     => false,
             'error_mapping'      => [
                 'op'      => 'op',
                 'options' => 'options',
                 'terms'   => 'terms',
             ],
-            'error_bubbling' => false,
         ]);
     }
 

@@ -31,9 +31,12 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -80,8 +83,15 @@ class TermEngineTermOptionsType extends AbstractType
         }
 
         // what term are we dealing with for this options?
-        $term_type  = $form->getConfig()->getOption('term_type');
-        $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
+        $term_type = $form->getConfig()->getOption('term_type');
+
+        try {
+            $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
+        } catch (TermTypeDoesNotExistException $e) {
+            $form->addError(new FormError(ApiErrors::TERM_TYPE_DOES_NOT_EXIST, null, ['type' => $term_type]));
+
+            return;
+        }
 
         // what options are defined for this term?
         $options_resolver = call_user_func([$term_class, 'getOptionsResolver']);

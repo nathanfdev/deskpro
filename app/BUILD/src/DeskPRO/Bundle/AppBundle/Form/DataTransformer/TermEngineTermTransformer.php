@@ -31,9 +31,11 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermToJsonConverter;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class TermEngineTermTransformer.
@@ -77,13 +79,16 @@ class TermEngineTermTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         if (!$value) {
-            return;
+            return false;
         }
-
         if ($value instanceof TermInterface) {
             return $value;
         }
 
-        return $this->converter->arrayToTerm($value);
+        try {
+            return $this->converter->arrayToTerm($value);
+        } catch (TermTypeDoesNotExistException $e) {
+            throw new TransformationFailedException('Unable to get term with code "'.$e->getMessage().'".');
+        }
     }
 }

@@ -38,3 +38,13 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data.title" should be equal to "Filter 2"
     And the JSON node "data.display_order" should be equal to 20
     And the JSON node "data.filter_set" should be equal to 1
+
+  Scenario: I try to create a new ticket filter with empty request
+    When I send a POST request to "/api/v2/new/ticket_filters"
+    And the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.term.fields.options.errors[0].code" should be equal to "term_type_does_not_exist"
+    And the JSON node "errors.fields.term.fields.options.errors[0].message" should contain "You tried to create a term with the type code"
+    And the JSON node "errors.fields.term.fields.options.errors[0].message" should contain "but it does not exist. Please check your term types."

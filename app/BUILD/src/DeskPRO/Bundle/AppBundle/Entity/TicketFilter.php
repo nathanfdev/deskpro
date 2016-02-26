@@ -55,22 +55,29 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
      * @Serializer\Expose()
      */
     protected $id;
 
     /**
      * @var string
+     *
      * @ORM\Column(name="title", type="string")
+     *
      * @Serializer\Expose()
-     * @Assert\NotNull()
+     *
+     * @Assert\NotBlank()
      */
     protected $title;
 
     /**
      * @var TermInterface
+     *
      * @ORM\Column(name="term", type="term_engine_term")
+     *
      * @Serializer\Expose()
+     *
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -78,6 +85,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @var int
+     *
      * @ORM\Column(name="display_order", type="integer")
      * @Serializer\Expose()
      */
@@ -85,6 +93,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @var TicketFilterSet
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
      * @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -92,18 +101,21 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @var TicketFilterView[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
      */
     protected $filter_views;
 
     /**
      * @var TicketFilterPreference[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
      */
     protected $filter_preferences;
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(name="date_created", type="datetime")
      * @Serializer\Expose()
      */
@@ -111,6 +123,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(name="date_updated", type="datetime")
      * @Serializer\Expose()
      */
