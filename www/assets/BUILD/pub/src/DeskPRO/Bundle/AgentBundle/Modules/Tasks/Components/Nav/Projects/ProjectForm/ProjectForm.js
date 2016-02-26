@@ -25,6 +25,7 @@ export class ProjectForm extends BaseForm {
 
   static propTypes = {
     project: PropTypes.object,
+    tasksCount: PropTypes.number,
     dispatch: PropTypes.func.isRequired,
     agents: PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
@@ -104,8 +105,8 @@ export class ProjectForm extends BaseForm {
   };
 
   render() {
-    const { agents, agentTeams, departments, project } = this.props;
-    console.info(project.toJS());
+    const { agents, agentTeams, departments, project, tasksCount } = this.props;
+
     return (
       <Popup>
         <Header>
@@ -191,7 +192,7 @@ export class ProjectForm extends BaseForm {
                        confirmTitle="Delete">
                   Are you sure you want to delete "{project.get('title')}"?
                   <br />
-                  All (5) tasks will be deleted too!
+                  {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
                 </Modal>
                 }
                 <Loader opacity={0}

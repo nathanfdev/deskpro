@@ -110,7 +110,7 @@ export class Modal extends React.Component {
                 <a href="#" onClick={this.cancelClick}><i className="fa fa-times"></i></a>
               </div>
             </header>
-            <div className="mini-popup-content">
+            <div className={(isMini && 'mini-') + 'popup-content'}>
               {children}
             </div>
             {this.renderFooter()}
