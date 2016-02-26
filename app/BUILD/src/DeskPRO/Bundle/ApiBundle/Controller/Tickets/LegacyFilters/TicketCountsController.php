@@ -214,10 +214,10 @@ class TicketCountsController extends BaseController
 
             $grouped_info = $grouper->getDisplayArray();
             $total_info   = array_shift($grouped_info['items']);
-            $filter_count = Count::create($total_info['count'], $filter->getId(), $filter->getRawTitle(), 'filter', $group_by);
+            $filter_count = Count::create($total_info['total'], $filter->getId(), 'filter', $filter->getRawTitle(), $group_by);
 
             foreach ($grouped_info['items'] as $nested_item) {
-                $filter_count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null, true);
+                $filter_count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null);
             }
         } else {
             $filter_count = Count::create($searcher->getCount(), $filter->getId(), 'filter', $filter->getRawTitle(), 'filter');

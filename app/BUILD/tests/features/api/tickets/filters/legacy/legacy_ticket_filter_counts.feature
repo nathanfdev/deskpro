@@ -43,6 +43,7 @@ Feature: /ticket_filters_counts endpoint
     And the JSON node "data.nested[2].nested" should have 0 elements
 
   Scenario: I group by department
+    Given I re-fill ticket search table
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[1]=department"
     Then the response status code should be 200
     And the response should be in JSON
