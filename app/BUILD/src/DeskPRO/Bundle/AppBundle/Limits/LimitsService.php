@@ -103,8 +103,10 @@ class LimitsService
         foreach ($this->limit_adapter->getGlobalLimits() as $global_limit) {
             $this->limit_set->addLimit($global_limit);
         }
-        foreach ($this->getKeyLimits($this->getKey()) as $key_limit) {
-            $this->limit_set->addLimit($key_limit);
+        if ($key = $this->getKey()) { // I have no idea how to prevent multiple collecting when testing.
+            foreach ($this->getKeyLimits($key) as $key_limit) {
+                $this->limit_set->addLimit($key_limit);
+            }
         }
     }
 
