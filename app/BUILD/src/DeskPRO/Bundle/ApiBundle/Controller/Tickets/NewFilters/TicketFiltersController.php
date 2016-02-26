@@ -38,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -164,52 +163,6 @@ class TicketFiltersController extends CrudController
         return TicketsController::subRequestSearch($kernel, $request, [
             'filter' => $filter->getId(),
         ]);
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Get ticket filter view counts",
-     *      input={"class"="filter","name"=""},
-     *      statusCodes={
-     *          200="Success"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
-     * )
-     *
-     * @Get("/ticket_filter_views/{filter}/count")
-     *
-     * @param Request      $request
-     * @param TicketFilter $filter
-     *
-     * @return View
-     */
-    public function getTicketsCountAction(Request $request, TicketFilter $filter)
-    {
-        // Let's retrieve the tickets for this filter.
-        $engine = $this->get('term_engine.dbal_ticket_filter_views.engine');
-        $conn   = $this->get('database_connection');
-
-        $context = new TermEngineContext($this->getUser());
-        // Applying the group-by clauses.
-        $group_by = $request->query->get('group_by');
-        if ($group_by) {
-            $context->addGroupByFromString($group_by);
-        }
-
-        $tickets_query = $engine->evaluate($filter, $context);
-
-        if ($group_by) {
-            $view_factory = $this->get('api_view_representation_factory');
-
-            return View::create(
-                $view_factory->dataSerialize($tickets_query->fetchGroupedCount(), $view_factory::DATATYPE_GROUPED_COUNT),
-                Response::HTTP_OK
-            );
-        } else {
-            return View::create($this->dataSerialize([
-                'count' => $tickets_query->fetchCount(),
-            ]));
-        }
     }
 
     /**
