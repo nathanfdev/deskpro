@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ReplayLogCommand extends ContainerAwareCommand
@@ -46,7 +47,8 @@ class ReplayLogCommand extends ContainerAwareCommand
     {
         $this->setName('dpdev:replay-log')
             ->setDescription('Replays log already stored in DB')
-            ->addArgument('request_id', InputArgument::REQUIRED, 'Id of request to replay (string)');
+            ->addArgument('request_id', InputArgument::REQUIRED, 'Id of request to replay (string)')
+            ->addOption('use-id', 'i', InputOption::VALUE_NONE, 'Use integer id instead if request_id');
     }
 
     /**
@@ -56,6 +58,16 @@ class ReplayLogCommand extends ContainerAwareCommand
     {
         $replayer = $this->getContainer()->get('api_log.replayer');
 
-        $output->writeln($replayer->replayWithCrawler($input->getArgument('request_id')));
+        $id = $input->getArgument('request_id');
+
+        if ($input->getOption('use-id')) {
+            $log = $this->getContainer()->get('doctrine.orm.default_entity_manager')->find('\DeskPRO\Bundle\AppBundle\Entity\ApiLog', $id);
+            if (!$log) {
+                throw new \InvalidArgumentException(sprintf('Log with id [ %d ] not found'), $id);
+            }
+            $id = $log->getRequestId();
+        }
+
+        $output->writeln($replayer->replayWithCrawler($id));
     }
 }

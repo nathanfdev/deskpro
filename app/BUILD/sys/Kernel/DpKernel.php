@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -134,6 +135,9 @@ class DpKernel extends BaseKernel
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
 
+            new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+
+            new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
         ];
 
