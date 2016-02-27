@@ -61,7 +61,7 @@ export const massActionsSelector = createSelector(
     const projectOptions = projects.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     massActions.push({
       label: 'Project',
-      type: 'action',
+      type: 'set_action',
       param: 'set_project',
       quickFilter: true,
       options: projectOptions
@@ -71,7 +71,7 @@ export const massActionsSelector = createSelector(
     const assignOptions = agents.toArray().map(type => ({ value: type.get('id'), label: type.get('name') }));
     massActions.push({
       label: 'Assign',
-      type: 'action',
+      type: 'set_action',
       param: 'assign',
       quickFilter: true,
       options: assignOptions
@@ -80,23 +80,27 @@ export const massActionsSelector = createSelector(
     // Due date options
     massActions.push({
       label: 'Due date',
-      type: 'action',
+      type: 'set_action',
       param: 'set_due_date',
-      quickFilter: true,
       options: []
     });
 
     // Status options
     massActions.push({
-      label: 'Status', type: 'action', param: 'set_status', quickFilter: true,
+      label: 'Status', type: 'set_action', param: 'set_status',
       options: [{ value: 1, label: 'Complete' }, { value: 0, label: 'Incomplete' }]
     });
 
     // Other options
     const otherOptions = [
-      { label: 'Delete', icon: 'minus-square', param: 'delete' }
+      { label: 'Delete', value: 'delete' }
     ];
-    massActions.push({ icon: 'fa-asterisk', type: 'action', param: 'other', options: otherOptions });
+    massActions.push({
+      icon: 'fa-asterisk',
+      type: 'select_action',
+      param: 'other',
+      options: otherOptions
+    });
 
     return massActions;
   }

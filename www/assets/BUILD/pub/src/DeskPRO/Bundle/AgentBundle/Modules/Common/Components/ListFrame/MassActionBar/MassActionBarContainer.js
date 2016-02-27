@@ -47,15 +47,13 @@ export class MassActionBarContainer extends Component {
                         onClick={item.onClick}/>
         );
       }
-      if (item.type === 'action' || item.type === 'menu') {
-        return (
-          <ActionContainer key={index} id={index}
-                           item={item}
-                           setParams={setMassActionsParams}
-                           resetSingleAction={resetParam}
-                           currentParams={currentParams}/>
-        );
-      }
+      return (
+        <ActionContainer key={index} id={index}
+                         item={item}
+                         setParams={setMassActionsParams}
+                         resetSingleAction={resetParam}
+                         currentParams={currentParams}/>
+      );
     };
 
     return (

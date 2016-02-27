@@ -41,7 +41,7 @@ export class SingleChoicePanel extends Component {
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              <QuickFilter/>
+              {item.quickFilter && <QuickFilter/>}
             </div>
           </div>
           <div className="dpw-navigation-dropdown-panel-content-line">

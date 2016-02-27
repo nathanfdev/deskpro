@@ -7,7 +7,7 @@ export class QuickFilter extends React.Component {
       <div className="dpw-quick-filter">
         <div className="dpw-quick-filter-container">
           <div className="dpw-quick-filter-icon"><i className="fa fa-filter"></i></div>
-          <input type="text" placeholder="Quick Filter Labels"/>
+          <input type="text" placeholder="Quick Filter"/>
           <span className="dpw-quick-filter-clear-link"><i className="fa fa-times-circle"></i></span>
         </div>
       </div>
