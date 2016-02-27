@@ -32,9 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Tickets\Filters;
-use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -144,8 +141,10 @@ class TicketCountsController extends BaseController
      */
     public function getTicketFilterCountAction(Request $request, LegacyTicketFilter $ticket_filter)
     {
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+
         $group_by = $request->get('group_by');
-        $count    = $this->getTicketFilterCount($ticket_filter, $group_by);
+        $count    = $data_service->getFilterCount($ticket_filter, $group_by);
 
         return View::create($this->dataSerialize($count));
     }
@@ -176,53 +175,16 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterCountsAction(Request $request)
     {
-        $count       = Count::fromValue(0);
-        $group_by    = $request->get('group_by');
-        $filters     = new Filters();
-        $all_filters = $filters->getFiltersForPerson($this->getUser());
+        $count        = Count::fromValue(0);
+        $group_by     = $request->get('group_by');
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+        $all_filters  = $data_service->getAllFilters();
 
         foreach ($all_filters as $filter) {
             $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
-            $count->addNestedInstance($this->getTicketFilterCount($filter,  $filter_group_by), true);
+            $count->addNestedInstance($data_service->getFilterCount($filter,  $filter_group_by), true);
         }
 
         return View::create($this->dataSerialize($count));
-    }
-
-    /**
-     * @param LegacyTicketFilter $filter
-     * @param string|null        $group_by
-     *
-     * @return Count
-     */
-    protected function getTicketFilterCount(LegacyTicketFilter $filter, $group_by = null)
-    {
-        /** @var Person $user */
-        $user = $this->getUser();
-        $user->loadHelper('AgentTeam');
-        $user->loadHelper('AgentPermissions');
-
-        $searcher = $filter->getSearcher();
-        $searcher->setPersonContext($user);
-
-        if ($group_by) {
-            $ticket_ids = $searcher->getMatches();
-
-            $grouper = new GroupingCounter();
-            $grouper->setGrouping($group_by);
-            $grouper->setMode('specify', $ticket_ids);
-
-            $grouped_info = $grouper->getDisplayArray();
-            $total_info   = array_shift($grouped_info['items']);
-            $filter_count = Count::create($total_info['total'], $filter->getId(), 'filter', $filter->getRawTitle(), $group_by);
-
-            foreach ($grouped_info['items'] as $nested_item) {
-                $filter_count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null);
-            }
-        } else {
-            $filter_count = Count::create($searcher->getCount(), $filter->getId(), 'filter', $filter->getRawTitle(), 'filter');
-        }
-
-        return $filter_count;
     }
 }

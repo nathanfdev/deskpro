@@ -31,8 +31,11 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Filters;
+use Application\DeskPRO\Tickets\GroupingCounter;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -56,6 +59,16 @@ class LegacyTicketFilterSetDataService
     }
 
     /**
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
+     */
+    public function getAllFilters()
+    {
+        $filters = new Filters();
+
+        return $filters->getFiltersForPerson($this->getUser());
+    }
+
+    /**
      * @param int $id
      *
      * @return LegacyTicketFilterSet
@@ -76,6 +89,43 @@ class LegacyTicketFilterSetDataService
     }
 
     /**
+     * @param LegacyTicketFilter $filter
+     * @param string|null        $group_by
+     *
+     * @return Count
+     */
+    public function getFilterCount(LegacyTicketFilter $filter, $group_by = null)
+    {
+        /** @var Person $user */
+        $user = $this->getUser();
+        $user->loadHelper('AgentTeam');
+        $user->loadHelper('AgentPermissions');
+
+        $searcher = $filter->getSearcher();
+        $searcher->setPersonContext($user);
+
+        if ($group_by) {
+            $ticket_ids = $searcher->getMatches();
+
+            $grouper = new GroupingCounter();
+            $grouper->setGrouping($group_by);
+            $grouper->setMode('specify', $ticket_ids);
+
+            $grouped_info = $grouper->getDisplayArray();
+            $total_info   = array_shift($grouped_info['items']);
+
+            $count = Count::create($total_info['total'], $filter->getId(), 'filter', $filter->getRawTitle(), $group_by);
+            foreach ($grouped_info['items'] as $nested_item) {
+                $count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null);
+            }
+        } else {
+            $count = Count::create($searcher->getCount(), $filter->getId(), 'filter', $filter->getRawTitle(), 'filter');
+        }
+
+        return $count;
+    }
+
+    /**
      * @return array
      */
     private function getFilterSetsData()
@@ -84,10 +134,7 @@ class LegacyTicketFilterSetDataService
         $all_tickets_set    = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets');
         $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters');
 
-        $filters     = new Filters();
-        $all_filters = $filters->getFiltersForPerson($this->getUser());
-
-        foreach ($all_filters as $filter) {
+        foreach ($this->getAllFilters() as $filter) {
             if ($filter->sys_name) {
                 $custom_filters_set->addFilter($filter);
             } elseif ($filter->terms) {
