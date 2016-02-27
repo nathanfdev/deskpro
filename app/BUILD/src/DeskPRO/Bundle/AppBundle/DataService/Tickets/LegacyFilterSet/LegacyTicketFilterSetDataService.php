@@ -135,12 +135,12 @@ class LegacyTicketFilterSetDataService
         $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters');
 
         foreach ($this->getAllFilters() as $filter) {
-            if ($filter->sys_name) {
+            if (!$filter->sys_name) {
                 $custom_filters_set->addFilter($filter);
-            } elseif ($filter->terms) {
-                $awaiting_agent_set->addFilter($filter);
-            } else {
+            } elseif (strpos($filter->sys_name, 'archive_') === 0) {
                 $all_tickets_set->addFilter($filter);
+            } else {
+                $awaiting_agent_set->addFilter($filter);
             }
         }
 
