@@ -187,6 +187,11 @@ services:
     tags:
       - { name: form.type, alias: filter }
 
+  form.dp_auth_request:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType
+    tags:
+      - { name: form.type, alias: dp_auth_request }
+
   form.dp_auth:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType
     tags:

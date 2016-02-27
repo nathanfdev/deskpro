@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,11 +59,11 @@ class ExceptionController extends BaseController
         }
 
         $errors_array = [];
-        if ($exception instanceof InvalidFormException) {
+        if ($exception instanceof FormExceptionInterface) {
             $errors_array = $this->getFormErrorsGenerator()->generateFormErrors($exception->getForm());
         }
 
-        if (!$exception instanceof InvalidFormException && !$exception instanceof HttpException) {
+        if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
             SystemErrorHandler::handleException($exception);
         }
 

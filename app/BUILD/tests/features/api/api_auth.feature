@@ -111,8 +111,11 @@ Feature: API Authentication
       "password": "wrong password"
     }
     """
-    Then the response status code should be 400
-    And the JSON node "status" should be equal to 400
+    Then the response status code should be 401
+    And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
+    And the JSON node "status" should be equal to 401
+    And the JSON node "code" should be equal to "bad_credentials"
+    And the JSON node "message" should be equal to "Bad credentials."
 
   Scenario: I successfully get a token
     When I send a POST request to "/api/v2/api_tokens" with body:

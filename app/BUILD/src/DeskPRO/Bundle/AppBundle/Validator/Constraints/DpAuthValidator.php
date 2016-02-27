@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -73,16 +74,14 @@ class DpAuthValidator extends ConstraintValidator
         $auth_result = $this->authentication_manager->authenticateFormLogin($email, $password);
 
         if (!$auth_result->isValid()) {
-            if (!$auth_result->isValid()) {
-                /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-                $person_repository = $this->em->getRepository('DeskPRO:Person');
-                $person            = $person_repository->findOneByEmail($email);
+            /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
+            $person_repository = $this->em->getRepository('DeskPRO:Person');
+            $person            = $person_repository->findOneByEmail($email);
 
-                if (!$person) {
-                    $this->context->addViolationAt('email', 'No such account was found', [], $email);
-                } else {
-                    $this->context->addViolationAt('password', 'Looks like this isn\'t the correct password', [], $password);
-                }
+            if (!$person) {
+                $this->context->addViolationAt('email', 'No such account was found', [], $email, null, ApiErrors::BAD_CREDENTIALS);
+            } else {
+                $this->context->addViolationAt('password', 'Looks like this isn\'t the correct password', [], $password, null, ApiErrors::BAD_CREDENTIALS);
             }
         }
     }
