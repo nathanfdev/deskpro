@@ -36,14 +36,17 @@ use Doctrine\DBAL\Connection;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class DbalExecutableQuery.
+ */
 class DbalExecutableQuery
 {
-    public static $groupAliases = array(
+    public static $groupAliases = [
         'agent'        => '{from}.agent_id',
         'department'   => '{from}.department_id',
         'person'       => '{from}.person_id',
         'date_created' => '{from}.date_created',
-    );
+    ];
 
     /**
      * @var DbalQuery
@@ -78,8 +81,10 @@ class DbalExecutableQuery
     private $group_by;
 
     /**
-     * @var additional custom select fields; defined as:
-     *                 ['alias' => 'SQL bit']
+     * additional custom select fields; defined as:
+     *     ['alias' => 'SQL bit'].
+     *
+     * @var array
      */
     private $additional_selects;
 
@@ -88,22 +93,34 @@ class DbalExecutableQuery
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param DbalQuery       $query
+     * @param Connection      $connection
+     * @param LoggerInterface $logger
+     */
     public function __construct(DbalQuery $query, Connection $connection, LoggerInterface $logger = null)
     {
         $this->query      = $query;
         $this->connection = $connection;
 
-        $this->order_by           = array();
-        $this->and_where          = array();
-        $this->and_group_where    = array();
-        $this->group_by           = array();
+        $this->order_by           = [];
+        $this->and_where          = [];
+        $this->and_group_where    = [];
+        $this->group_by           = [];
         $this->page               = 1;
         $this->count              = null;
         $this->logger             = $logger;
         $this->additional_selects = [];
     }
 
-    protected function log($level, $message, array $context = array())
+    /**
+     * @param mixed  $level
+     * @param string $message
+     * @param array  $context
+     */
+    protected function log($level, $message, array $context = [])
     {
         if ($this->logger) {
             $message = sprintf('DbalExecutableQuery: %s', $message);
@@ -125,14 +142,14 @@ class DbalExecutableQuery
         $query = clone $this->query;
         // pagination
         if ($this->count) {
-            $this->log(Logger::DEBUG, 'adding pagination to query', array('page' => $this->page, 'count' => $this->count));
+            $this->log(Logger::DEBUG, 'adding pagination to query', ['page' => $this->page, 'count' => $this->count]);
             $query->setPage($this->page);
             $query->setLimit($this->count);
         }
 
         // ordering
         foreach ($this->order_by as $order_by => $direction) {
-            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
+            $this->log(Logger::DEBUG, 'add order by', ['by' => $order_by, 'dir' => $direction]);
             $query->addOrderBy($order_by, $direction);
         }
 
@@ -141,8 +158,8 @@ class DbalExecutableQuery
         $stmt = $this->execute($query);
         $all  = $stmt->fetchAll();
 
-        $this->log(Logger::DEBUG, 'row count', array('count' => $stmt->rowCount()));
-        $this->log(Logger::DEBUG, 'finished fetechAll()', array('time' => $timer->getElapsedTime()));
+        $this->log(Logger::DEBUG, 'row count', ['count' => $stmt->rowCount()]);
+        $this->log(Logger::DEBUG, 'finished fetechAll()', ['time' => $timer->getElapsedTime()]);
 
         return $all;
     }
@@ -165,14 +182,14 @@ class DbalExecutableQuery
 
         // pagination
         if ($this->count) {
-            $this->log(Logger::DEBUG, 'adding pagination to query', array('page' => $this->page, 'count' => $this->count));
+            $this->log(Logger::DEBUG, 'adding pagination to query', ['page' => $this->page, 'count' => $this->count]);
             $query->setPage($this->page);
             $query->setLimit($this->count);
         }
 
         // ordering
         foreach ($this->order_by as $order_by => $direction) {
-            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
+            $this->log(Logger::DEBUG, 'add order by', ['by' => $order_by, 'dir' => $direction]);
             $query->addOrderBy($order_by, $direction);
         }
 
@@ -180,17 +197,16 @@ class DbalExecutableQuery
         $this->manipulateWhere($query);
 
         $stmt = $this->execute($query);
-
-        $ids = array();
+        $ids  = [];
 
         foreach ($stmt->fetchAll() as $row) {
             $ids[] = $row['id'];
         }
 
-        $this->log(Logger::DEBUG, 'selected IDs', array('ids' => $ids));
-        $this->log(Logger::DEBUG, 'row count', array('count' => $stmt->rowCount()));
+        $this->log(Logger::DEBUG, 'selected IDs', ['ids' => $ids]);
+        $this->log(Logger::DEBUG, 'row count', ['count' => $stmt->rowCount()]);
 
-        $this->log(Logger::DEBUG, 'finished fetchIds()', array('time' => $timer->getElapsedTime()));
+        $this->log(Logger::DEBUG, 'finished fetchIds()', ['time' => $timer->getElapsedTime()]);
 
         return $ids;
     }
@@ -222,6 +238,9 @@ class DbalExecutableQuery
         return (int) $res['count'];
     }
 
+    /**
+     * @return array
+     */
     public function fetchGroupedCount()
     {
         $query = clone $this->query;
@@ -251,7 +270,7 @@ class DbalExecutableQuery
 
         // ordering
         foreach ($this->order_by as $order_by => $direction) {
-            $this->log(Logger::DEBUG, 'add order by', array('by' => $order_by, 'dir' => $direction));
+            $this->log(Logger::DEBUG, 'add order by', ['by' => $order_by, 'dir' => $direction]);
             $query->addOrderBy($order_by, $direction);
         }
 
@@ -263,9 +282,7 @@ class DbalExecutableQuery
 
         $stmt = $this->execute($query);
 
-        $res = $stmt->fetchAll();
-
-        return $res;
+        return $stmt->fetchAll();
     }
 
     /**
@@ -284,10 +301,15 @@ class DbalExecutableQuery
         return $this->last_run_parameters;
     }
 
+    /**
+     * @param string $group
+     * @param string $optional_select_alias
+     */
     public function addCountGroup($group, $optional_select_alias = null)
     {
         if (null === $optional_select_alias) {
-            if ($sql = $this->transformAliasGroupName($group)) {
+            $sql = $this->transformAliasGroupName($group);
+            if ($sql) {
                 $optional_select_alias = $group;
                 $group                 = $sql;
             } else {
@@ -298,7 +320,7 @@ class DbalExecutableQuery
             $optional_select_alias = $optional_select_alias['alias'];
         }
 
-        $this->log(Logger::DEBUG, 'adding count group', array('group' => $group, 'alias' => $optional_select_alias));
+        $this->log(Logger::DEBUG, 'adding count group', ['group' => $group, 'alias' => $optional_select_alias]);
 
         $this->group_by[$optional_select_alias] = $group;
     }
@@ -308,6 +330,8 @@ class DbalExecutableQuery
      *
      * @param string $alias is the new select item's alias
      * @param string $sql   is the sql clause that defines the new select item
+     *
+     * @return $this
      */
     public function addSelect($alias, $sql)
     {
@@ -316,6 +340,9 @@ class DbalExecutableQuery
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getGroupBy()
     {
         return $this->group_by;
@@ -344,10 +371,10 @@ class DbalExecutableQuery
 
         $timer = new SimpleTimer();
 
-        $this->log(Logger::DEBUG, 'running execution', array(
+        $this->log(Logger::DEBUG, 'running execution', [
             'sql'    => $this->last_run_sql,
             'params' => $this->last_run_parameters,
-        ));
+        ]);
 
         $stmt = $this->connection->executeQuery(
             $this->last_run_sql,
@@ -355,9 +382,9 @@ class DbalExecutableQuery
             $this->last_run_parameter_types
         );
 
-        $this->log(Logger::DEBUG, 'finished execution', array(
+        $this->log(Logger::DEBUG, 'finished execution', [
             'time' => $timer->getElapsedTime(),
-        ));
+        ]);
 
         return $stmt;
     }
@@ -371,7 +398,7 @@ class DbalExecutableQuery
      */
     public function determineParameterTypes(array $params)
     {
-        $types = array();
+        $types = [];
 
         foreach ($params as $key => $param) {
             if ($this->isNum($param)) {
@@ -419,8 +446,8 @@ class DbalExecutableQuery
             throw new \InvalidArgumentException('unable to determine param type in DbalExecutableQuery');
         }
 
-        $this->log(Logger::DEBUG, 'determining dbal types for params', array('params' => $params));
-        $this->log(Logger::DEBUG, 'determined types', array('types' => $types));
+        $this->log(Logger::DEBUG, 'determining dbal types for params', ['params' => $params]);
+        $this->log(Logger::DEBUG, 'determined types', ['types' => $types]);
 
         return $types;
     }
@@ -445,10 +472,15 @@ class DbalExecutableQuery
         return is_string($param);
     }
 
+    /**
+     * @param string $potentially_an_alias
+     *
+     * @return string
+     */
     protected function transformAliasGroupName($potentially_an_alias)
     {
         if (!array_key_exists($potentially_an_alias, self::$groupAliases)) {
-            return;
+            return '';
         }
 
         return self::$groupAliases[$potentially_an_alias];
@@ -537,6 +569,8 @@ class DbalExecutableQuery
 
     /**
      * Add custom field table join.
+     *
+     * @param int $field_id
      */
     public function addCustomFieldTableJoins($field_id)
     {
@@ -555,13 +589,13 @@ class DbalExecutableQuery
     }
 
     /**
-     * @param $query
+     * @param DbalQuery $query
      */
-    protected function manipulateWhere($query)
+    protected function manipulateWhere(DbalQuery $query)
     {
         // extra where
         foreach ($this->and_where as $where) {
-            $this->log(Logger::DEBUG, 'adding AND where', array('where' => $where));
+            $this->log(Logger::DEBUG, 'adding AND where', ['where' => $where]);
             $query->appendWhere(sprintf('AND (%s)', $where));
         }
 
@@ -569,7 +603,7 @@ class DbalExecutableQuery
         foreach ($this->and_group_where as $group_name => $value) {
             $param_name = $query->addParameter('group_name', $value);
             $and_clause = sprintf('(%s = :%s)', $this->transformAliasGroupName($group_name), $param_name);
-            $this->log(Logger::DEBUG, 'and group by clause', array('where' => $and_clause));
+            $this->log(Logger::DEBUG, 'and group by clause', ['where' => $and_clause]);
             $query->appendWhere('AND '.$and_clause);
         }
     }
