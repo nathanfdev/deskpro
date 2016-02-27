@@ -111,6 +111,17 @@ class ApiDb extends AbstractDbSet
             true
         );
 
+        // Default language --------------------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `languages`
+                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
+                 `has_agent`, `has_admin`)
+            VALUES
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
+        "
+        );
+
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need some deps, and some other entities
         $dep1              = new Department();
@@ -394,6 +405,7 @@ class ApiDb extends AbstractDbSet
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
         $ticket1->setOrganization($organization1);
+        $ticket1->setLanguageId(1);
         $ticket1->setSubject('Ticket #1');
         $ticket1->setRef('DIDXGBLWRL-201622485');
         $em->persist($ticket1);
@@ -403,6 +415,7 @@ class ApiDb extends AbstractDbSet
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
         $ticket1->setOrganization($organization2);
+        $ticket1->setLanguageId(1);
         $ticket2->setSubject('Ticket #2');
         $ticket1->setAgentTeamId(1);
         $em->persist($ticket2);
@@ -764,17 +777,6 @@ SQL
 SQL
         );
         // end of legacy ticket filters
-
-        // Default language --------------------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            "
-            INSERT INTO `languages`
-                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
-                 `has_agent`, `has_admin`)
-            VALUES
-                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
-        "
-        );
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec(
