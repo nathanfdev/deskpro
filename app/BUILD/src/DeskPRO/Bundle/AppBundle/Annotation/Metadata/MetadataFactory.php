@@ -80,14 +80,19 @@ class MetadataFactory implements MetadataFactoryInterface
             return $this->loaded_metadata[$class_name];
         }
         $reflection = new \ReflectionClass($class_name);
-        if (null !== $classMetadata = $this->cache->loadClassMetadataFromCache($reflection)) {
-            if ($this->debug || $force_rewrite) {
-                $this->cache->evictClassMetadataFromCache($reflection);
-            } else {
-                $this->loaded_metadata[$class_name] = $classMetadata;
+        try {
+            if (null !== $classMetadata = $this->cache->loadClassMetadataFromCache($reflection)) {
+                if ($this->debug || $force_rewrite) {
+                    $this->cache->evictClassMetadataFromCache($reflection);
+                } else {
+                    $this->loaded_metadata[$class_name] = $classMetadata;
 
-                return $this->loaded_metadata[$class_name];
+                    return $this->loaded_metadata[$class_name];
+                }
             }
+        } catch (\ReflectionException $e) {
+            // something was changed, so we gonna evict metadata from cache
+            $this->cache->evictClassMetadataFromCache($reflection);
         }
 
         if (null !== $classMetadata = $this->driver->loadMetadataForClass($reflection)) {

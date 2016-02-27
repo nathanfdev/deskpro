@@ -36,11 +36,15 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\Ticket as Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
+use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -533,6 +537,7 @@ class TicketController extends AbstractController implements ProtectedController
 
             $data['messages'] = array();
             foreach ($messages as $m) {
+                /* @var TicketMessage $m */
                 $msg_data            = $m->toApiData(true);
                 $msg_data['message'] = $m->procInlineAttach($msg_data['message']);
 
@@ -559,12 +564,15 @@ class TicketController extends AbstractController implements ProtectedController
             'count'    => 0,
         );
 
+        /** @var TicketRepository $ticket_repo */
+        $ticket_repo = $this->em->getRepository('DeskPRO:Ticket');
+
         if ($ticket->parent_ticket && $ticket->parent_ticket->status != 'hidden' && $this->checkPerm($ticket->parent_ticket, 'view')) {
             $linked_tickets['parent'] = $ticket->parent_ticket;
 
             // Find siblings
             $linked_tickets['siblings'] = $this->permCheckArray(
-                $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket->parent_ticket),
+                $ticket_repo->getLinkedTickets($ticket->parent_ticket),
                 'view'
             );
             $linked_tickets['siblings'] = array_filter($linked_tickets['siblings'], function ($t) use ($ticket) {
@@ -577,7 +585,7 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         $linked_tickets['children'] = $this->permCheckArray(
-            $this->em->getRepository('DeskPRO:Ticket')->getLinkedTickets($ticket),
+            $ticket_repo->getLinkedTickets($ticket),
             'view'
         );
 
@@ -1484,7 +1492,7 @@ class TicketController extends AbstractController implements ProtectedController
 
         try {
             $this->em->beginTransaction();
-            $merge = new \Application\DeskPRO\Tickets\TicketMerge\TicketMerge($this->person, $ticket, $other_ticket);
+            $merge = new TicketMerge($this->person, $ticket, $other_ticket);
             $merge->merge();
             $this->em->commit();
         } catch (\Exception $e) {
