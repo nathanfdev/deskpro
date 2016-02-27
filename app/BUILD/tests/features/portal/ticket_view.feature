@@ -70,7 +70,7 @@ Feature: Ticket View
 
   @reinstall
   Scenario: If you are not logged in, you cannot view the "guest view" of a ticket. You must login first.
-    When I go to the ticket veiw page for ticket ID "1"
+    When I go to the ticket view page for ticket ID "1"
     Then I should be on "/login"
     And the response status code should be 200
 
@@ -78,7 +78,7 @@ Feature: Ticket View
   Scenario: Access a ticket view as a logged in user for a ticket you are not a part of, and replying to it makes you a participant
     Given I login with user credentials
     And "user" am not involved with ticket ID "9"
-    When I go to the ticket veiw page for ticket ID "9"
+    When I go to the ticket view page for ticket ID "9"
     Then I should be on the ticket view page for ticket ID "9"
     And I should see "An agent ticket 3"
     And I should see the ticket reply form

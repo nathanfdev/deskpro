@@ -113,9 +113,9 @@ class TicketContext extends BasePortalContext
     }
 
     /**
-     * @Given I go to the ticket veiw page for ticket ID :id
+     * @Given I go to the ticket view page for ticket ID :id
      */
-    public function iGoToTheTicketVeiwPageForTicketId($id)
+    public function iGoToTheTicketViewPageForTicketId($id)
     {
         $ticket = $this->getTicket($id);
 
