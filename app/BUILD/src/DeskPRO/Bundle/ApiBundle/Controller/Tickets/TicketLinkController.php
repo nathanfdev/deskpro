@@ -95,6 +95,10 @@ class TicketLinkController extends BaseController
     {
         $ticket = $this->get('ticket_manager')->getTicket($ticket_id);
 
+        if (!$ticket) {
+            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticket_id));
+        }
+
         $linker = $this->get('tickets.linker');
 
         return View::create(
