@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -41,10 +42,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketLinkController extends AbstractTicketsController
+class TicketLinkController extends BaseController
 {
-    public static $exposeOnly = ['post', 'list', 'delete'];
-
     /**
      * @param Request $request
      * @param int     $ticket_id
@@ -57,8 +56,8 @@ class TicketLinkController extends AbstractTicketsController
     {
         $link_ticket_id = $request->request->get('link_ticket_id');
 
-        $ticket      = $this->getTicketManager()->getTicket($ticket_id);
-        $link_ticket = $this->getTicketManager()->getTicket($link_ticket_id);
+        $ticket      = $this->get('ticket_manager')->getTicket($ticket_id);
+        $link_ticket = $this->get('ticket_manager')->getTicket($link_ticket_id);
 
         if ((int) $ticket_id === (int) $link_ticket_id) {
             throw new BadRequestHttpException('You can\'t link ticket to itself!');
@@ -94,7 +93,7 @@ class TicketLinkController extends AbstractTicketsController
      */
     public function listAction($ticket_id)
     {
-        $ticket = $this->getTicketManager()->getTicket($ticket_id);
+        $ticket = $this->get('ticket_manager')->getTicket($ticket_id);
 
         $linker = $this->get('tickets.linker');
 

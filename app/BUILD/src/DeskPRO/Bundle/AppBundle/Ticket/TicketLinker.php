@@ -118,9 +118,9 @@ class TicketLinker
         $children = $this->getTicketChildren($ticket);
 
         return [
-            'parent'   => $ticket->getParentTicket() ?: null,
-            'siblings' => $siblings,
-            'children' => $children,
+            'parent'   => $ticket->getParentTicket() ?: '',
+            'siblings' => array_values($siblings),
+            'children' => array_values($children),
             'count'    => array_sum([$ticket->getParentTicket() ? 1 : 0, count($siblings), count($children)]),
         ];
     }
