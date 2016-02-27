@@ -79,6 +79,7 @@ class CliKernelBootTask implements BootTaskInterface
 
         switch ($cmd_ns) {
             case 'dpdev':
+            case 'debug':
                 $kernel = new Kernel\DevKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
@@ -89,6 +90,10 @@ class CliKernelBootTask implements BootTaskInterface
 
             case 'portal':
                 $kernel = new Kernel\PortalKernel($env->getEnvId(), $env->isDebug(), $env);
+                break;
+
+            case 'api':
+                $kernel = new Kernel\ApiKernel($env->getEnvId(), $env->isDebug(), $env);
                 break;
 
             default:
