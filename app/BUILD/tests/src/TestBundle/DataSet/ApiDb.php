@@ -241,6 +241,28 @@ class ApiDb extends AbstractDbSet
 
         $this->getEm()->flush();
 
+        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `agent_teams`
+                (`avatar_blob_id`, `name`)
+            VALUES
+                (NULL, 'Support Managers'),
+                (NULL, '1st Level Support')
+            ;
+
+            INSERT INTO `agent_team_members`
+                (`team_id`, `person_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 3),
+                (2, 4)
+            ;
+        "
+        );
+        // end of "/agent_teams"
+
         // Create a ticket in the DB manually
         $this->getDb()->exec(
             "
@@ -353,6 +375,7 @@ class ApiDb extends AbstractDbSet
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
         $ticket2->setSubject('Ticket #2');
+        $ticket1->setAgentTeamId(1);
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
@@ -361,6 +384,7 @@ class ApiDb extends AbstractDbSet
         $ticket3->setDepartmentId(2);
         $ticket3->setSubject('Ticket #3');
         $em->persist($ticket3);
+        $ticket1->setAgentTeamId(2);
         $em->flush();
 
         // Add a blue flag on the first ticket.
@@ -726,28 +750,6 @@ SQL
         "
         );
         // end of "/organizations"
-
-        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
-        $this->getDb()->exec(
-            "
-            INSERT INTO `agent_teams`
-                (`avatar_blob_id`, `name`)
-            VALUES
-                (NULL, 'Support Managers'),
-                (NULL, '1st Level Support')
-            ;
-
-            INSERT INTO `agent_team_members`
-                (`team_id`, `person_id`)
-            VALUES
-                (1, 1),
-                (1, 2),
-                (2, 3),
-                (2, 4)
-            ;
-        "
-        );
-        // end of "/agent_teams"
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(

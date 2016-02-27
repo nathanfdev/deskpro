@@ -132,7 +132,25 @@ Feature: /ticket_filters_counts endpoint
     When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=agent_team"
     Then the response status code should be 200
     And the response should be in JSON
-    And print last JSON response
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "agent_team"
+    And the JSON node "data.nested[0].nested" should have 2 elements
+
+    And the JSON node "data.nested[0].nested[0].id" should be equal to 0
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "agent_team"
+    And the JSON node "data.nested[0].nested[0].title" should be equal to 0
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 2
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+
+    And the JSON node "data.nested[0].nested[1].id" should be equal to 2
+    And the JSON node "data.nested[0].nested[1].type" should be equal to "agent_team"
+    And the JSON node "data.nested[0].nested[1].title" should be equal to "Support Managers"
+    And the JSON node "data.nested[0].nested[1].count" should be equal to 1
+    And the JSON node "data.nested[0].nested[1].nested" should have 0 elements
 
   Scenario: I group by organization
     When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=organization"
