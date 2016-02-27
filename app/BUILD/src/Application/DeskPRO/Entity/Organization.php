@@ -229,6 +229,26 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return string
+     */
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param string $summary
+     *
+     * @return $this
+     */
+    public function setSummary($summary)
+    {
+        $this->setModelField('summary', $summary);
+
+        return $this;
+    }
+
+    /**
      * Set the default importance of people in this org.
      *
      * @param int $importance

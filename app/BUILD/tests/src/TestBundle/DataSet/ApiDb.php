@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
@@ -263,6 +264,32 @@ class ApiDb extends AbstractDbSet
         );
         // end of "/agent_teams"
 
+        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        $organization1 = new Organization();
+        $organization1
+            ->setName('Organization 1')
+            ->setSummary('test organization')
+            ->setImportance(1)
+        ;
+        $organization2 = new Organization();
+        $organization2
+            ->setName('Organization 1')
+            ->setSummary('test organization')
+            ->setImportance(1)
+        ;
+
+        $this->getEm()->persist($organization1);
+        $this->getEm()->persist($organization2);
+        $this->getEm()->flush();
+
+        $this->getDb()->exec(
+            '
+            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
+            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
+        '
+        );
+        // end of "/organizations"
+
         // Create a ticket in the DB manually
         $this->getDb()->exec(
             "
@@ -366,6 +393,7 @@ class ApiDb extends AbstractDbSet
         $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
+        $ticket1->setOrganization($organization1);
         $ticket1->setSubject('Ticket #1');
         $ticket1->setRef('DIDXGBLWRL-201622485');
         $em->persist($ticket1);
@@ -374,6 +402,7 @@ class ApiDb extends AbstractDbSet
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
+        $ticket1->setOrganization($organization2);
         $ticket2->setSubject('Ticket #2');
         $ticket1->setAgentTeamId(1);
         $em->persist($ticket2);
@@ -735,21 +764,6 @@ SQL
 SQL
         );
         // end of legacy ticket filters
-
-        // "/organizations" endpoint and its' children test data -------------------------------------------------------
-        $this->getDb()->exec(
-            "
-            INSERT INTO `organizations`
-                (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
-            VALUES
-                (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
-                (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
-
-            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
-            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
-        "
-        );
-        // end of "/organizations"
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
