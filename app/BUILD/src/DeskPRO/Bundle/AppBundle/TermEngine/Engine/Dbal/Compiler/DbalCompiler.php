@@ -79,20 +79,6 @@ abstract class DbalCompiler implements DbalCompilerInterface
     }
 
     /**
-     * An opportunity for this engine implemention to alter the query before compile starts.
-     *
-     * @param DbalQueryBuilder $query_writer
-     */
-    abstract protected function enginePreCompile(DbalQueryBuilder $query_writer);
-
-    /**
-     * An opportunity for this engine implemention to alter the query after compile is completed.
-     *
-     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
-     */
-    abstract protected function enginePostCompile(DbalQueryBuilder $query_writer);
-
-    /**
      * {@inheritdoc}
      */
     public function compile(TermInterface $term)
@@ -131,7 +117,6 @@ abstract class DbalCompiler implements DbalCompilerInterface
 
         // result is a DbalQuery
         $query = $query_builder->getQuery();
-
         $this->logger->debug('DbalCompiler result', ['query' => $query]);
 
         return $query;
@@ -146,6 +131,20 @@ abstract class DbalCompiler implements DbalCompilerInterface
     {
         return $this->compiler_factory->getCompiler($term);
     }
+
+    /**
+     * An opportunity for this engine implemention to alter the query before compile starts.
+     *
+     * @param DbalQueryBuilder $query_writer
+     */
+    abstract protected function enginePreCompile(DbalQueryBuilder $query_writer);
+
+    /**
+     * An opportunity for this engine implemention to alter the query after compile is completed.
+     *
+     * @param \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryBuilder $query_writer
+     */
+    abstract protected function enginePostCompile(DbalQueryBuilder $query_writer);
 
     /**
      * @param TermInterface $term
