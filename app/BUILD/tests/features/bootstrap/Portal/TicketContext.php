@@ -28,6 +28,7 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -46,6 +47,7 @@ class TicketContext extends BasePortalContext
 
         foreach ($tickets as $ticket_data) {
             $person = $this->getWho($ticket_data['who']);
+            App::setCurrentPerson($person);
             $ticket = new Ticket();
             $ticket->setPerson($person);
             $ticket->setSubject($ticket_data['subject']);
@@ -70,9 +72,8 @@ class TicketContext extends BasePortalContext
             $ticket->addMessage($message);
             $this->em()->persist($message);
             $this->em()->persist($ticket);
+            $this->em()->flush();
         }
-
-        $this->em()->flush();
     }
 
     /**
