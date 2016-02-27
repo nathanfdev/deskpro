@@ -769,11 +769,24 @@ SQL
         $this->getDb()->exec(
             <<<SQL
             INSERT INTO `ticket_filters`
-                (`id`, `person_id`, `agent_team_id`, `is_global`,  `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`, `display_order`)
+                (`id`, `is_global`, `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`, `display_order`)
             VALUES
-              ('1', '1', null, '0', 'Filter 1', '0', 'all', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', '', 10),
-              ('2', '1', null, '0', 'Filter 2', '0', 'resolved', '[{"type":"status","op":"is","options":{"status":["resolved"]}}]', '', '', 20),
-              ('3', '1', null, '0', 'Filter 3', '0', 'deleted', '[{"type":"status","op":"is","options":{"status":["deleted"]}}]', '', '', 30)
+                ('1', '1', 'My Tickets', '1', 'agent', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '1'),
+                ('2', '1', 'My Team\'s Tickets', '1', 'agent_team', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '2'),
+                ('3', '1', 'Tickets I Follow', '1', 'participant', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '3'),
+                ('4', '1', 'Unassigned', '1', 'unassigned', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '4'),
+                ('5', '1', 'All', '1', 'all', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '5'),
+                ('6', '1', 'Awaiting User', '1', 'archive_awaiting_user', '[{"type":"status","op":"is","options":{"status":"awaiting_user"}}]', '', 'ticket.urgency:desc', '6'),
+                ('7', '1', 'Resolved', '1', 'archive_resolved', '[{"type":"status","op":"is","options":{"status":"resolved"}}]', '', 'ticket.urgency:desc', '7'),
+                ('8', '1', 'Archived', '1', 'archive_archived', '[{"type":"status","op":"is","options":{"status":"archived"}}]', '', 'ticket.urgency:desc', '8'),
+                ('9', '1', 'Spam', '1', 'archive_spam', '[{"type":"status","op":"is","options":{"status":"hidden.spam"}}]', '', 'ticket.urgency:desc', '9'),
+                ('10', '1', 'Deleted', '1', 'archive_deleted', '[{"type":"status","op":"is","options":{"status":"hidden.deleted"}}]', '', 'ticket.urgency:desc', '10'),
+                ('11', '1', 'My Tickets (Hold)', '1', 'agent_w_hold', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '11'),
+                ('12', '1', 'My Team\'s Tickets (Hold)', '1', 'agent_team_w_hold', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '12'),
+                ('13', '1', 'Tickets I Follow (Hold)', '1', 'participant_w_hold', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '13'),
+                ('14', '1', 'Unassigned (Hold)', '1', 'unassigned_w_hold', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '14'),
+                ('15', '1', 'All (Hold)', '1', 'all_w_hold', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '15'),
+                ('16', '1', '0', 'My custom filter', '', '[{"type":"subject","op":"contains","options":{"subject":"Demo"}}]', '', '', '1000');
 SQL
         );
         // end of legacy ticket filters

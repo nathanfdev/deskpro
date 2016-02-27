@@ -130,9 +130,9 @@ class LegacyTicketFilterSetDataService
      */
     private function getFilterSetsData()
     {
-        $awaiting_agent_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_AWAITING_AGENT, 'Awaiting agent');
-        $all_tickets_set    = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets');
-        $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters');
+        $awaiting_agent_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_AWAITING_AGENT, 'Awaiting agent', 1);
+        $all_tickets_set    = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets', 2);
+        $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters', 3);
 
         foreach ($this->getAllFilters() as $filter) {
             if (!$filter->sys_name) {
