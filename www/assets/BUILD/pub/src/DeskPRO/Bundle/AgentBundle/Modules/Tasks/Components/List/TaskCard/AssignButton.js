@@ -32,6 +32,10 @@ export class AssignButton extends React.Component {
     });
   };
 
+  onAssign = (assignee) => {
+    this.props.onAssign(assignee).then(this.closeForm);
+  };
+
   closeForm = () => {
     const { onSetEditing } = this.props;
     onSetEditing && onSetEditing(false);
@@ -42,10 +46,6 @@ export class AssignButton extends React.Component {
     this.setState({
       formOpened: false
     });
-  };
-
-  onAssign = (assignee) => {
-    this.props.onAssign(assignee).then(this.closeForm);
   };
 
   hasAvatar() {
@@ -59,10 +59,10 @@ export class AssignButton extends React.Component {
         <div className="dpwd--card-assigned" onClick={this.onOpenForm} ref="button">
 
           {this.hasAvatar()
-            ? <AssigneeAvatar task={this.props.task} />
+            ? <AssigneeAvatar task={this.props.task}/>
             : <div className="dpw--avatar-face" style={{position: 'relative'}}>
-                <i className="fa fa-caret-down" />
-              </div>
+            <i className="fa fa-caret-down"/>
+          </div>
           }
         </div>
 
@@ -72,7 +72,7 @@ export class AssignButton extends React.Component {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.closeForm} additionalNodes={[this.refs.button, 'assign-form']}>
-            <AssignForm {...this.props} onSubmit={this.onAssign} />
+            <AssignForm {...this.props} onSubmit={this.onAssign}/>
           </ClickOut>
         </Detached>
       </div>

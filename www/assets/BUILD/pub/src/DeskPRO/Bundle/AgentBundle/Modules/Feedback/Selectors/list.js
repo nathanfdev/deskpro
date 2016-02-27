@@ -142,7 +142,7 @@ export const massActionsSelector = createSelector(
     const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     massActions.push({
       label: 'Type',
-      type: 'action',
+      type: 'set_action',
       param: 'set_type',
       quickFilter: true,
       options: typeOptions
@@ -161,7 +161,7 @@ export const massActionsSelector = createSelector(
       { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'set_hidden_status') }
     ];
     massActions.push({
-      label: 'Status', type: 'action', param: 'set_status', quickFilter: true,
+      label: 'Status', type: 'set_action', param: 'set_status', quickFilter: true,
       options: statusOptions
     });
 
@@ -171,7 +171,7 @@ export const massActionsSelector = createSelector(
       value: cat.get('input')
     }));
     massActions.push({
-      label: 'Category', type: 'action', param: 'set_category', quickFilter: true,
+      label: 'Category', type: 'set_action', param: 'set_category', quickFilter: true,
       options: categoryOptions
     });
 

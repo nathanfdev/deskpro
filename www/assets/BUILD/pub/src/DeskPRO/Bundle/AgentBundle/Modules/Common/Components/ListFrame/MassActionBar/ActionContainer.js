@@ -4,13 +4,17 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanel';
+import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 
+import { connect } from 'react-redux';
+@connect()
 export class ActionContainer extends Component {
   static propTypes = {
     isActive: PropTypes.bool,
+    dispatch: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object,
@@ -54,8 +58,76 @@ export class ActionContainer extends Component {
     }
   };
 
+  checkBoxClick = (value) => {
+    const {dispatch, setParams, currentParams} = this.props;
+    // console.log('Other', currentParams.get('other').toArray());
+    const other = currentParams.get('other') ? currentParams.get('other').toArray() : [];
+    const valueIndex = other.indexOf(value);
+    if (valueIndex > -1) {
+      other.splice(valueIndex, 1);
+    } else {
+      other.push(value);
+    }
+    dispatch(setParams({ 'other': other }));
+  };
+
+  choiceOtherAction = (option, key)=> {
+    const {setParams, currentParams, resetSingleAction } = this.props;
+
+    if (option.param === 'add_labels') {
+      return (
+        <AddLabelsContainer key={key}
+                            option={option}
+                            setParams={setParams}
+                            currentParams={currentParams}
+                            stateValue={this.stateValue}
+                            unsetParams={resetSingleAction}/>
+      );
+    } else if (option.param === 'remove_labels') {
+      return (
+        <RemoveLabelsContainer key={key}
+                               option={option}
+                               setParams={setParams}
+                               currentParams={currentParams}
+                               stateValue={this.stateValue}
+                               unsetParams={resetSingleAction}/>
+      );
+    }
+  };
+
+  renderPanel = (item) => {
+    const {setParams, currentParams, resetSingleAction } = this.props;
+    if (item.type === 'set_action') {
+      return (
+        <SingleChoicePanel item={item}
+                           currentParams={currentParams}
+                           setParams={setParams}
+                           resetSingleAction={resetSingleAction}/>
+      );
+    } else if (item.type === 'select_action') {
+      const values = currentParams.get('other') ? currentParams.get('other').toArray() : [];
+      return (
+        <ChoiceMenu>
+          <ul>
+            {item.options.map((option, index) => <ChoiceMenuOption key={index}
+                                                                   label={option.label}
+                                                                   values={values}
+                                                                   value={option.value}
+                                                                   onClick={this.checkBoxClick}/>
+            )}
+          </ul>
+        </ChoiceMenu>);
+    } else if (item.type === 'menu') {
+      return (
+        <Menu>
+          {item.options.map((option, key) => this.choiceOtherAction(option, key))}
+        </Menu>
+      );
+    }
+  };
+
   render() {
-    const {id, item, setParams, currentParams, resetSingleAction } = this.props;
+    const {id, item, currentParams } = this.props;
     const checkIfButtonHasValue = () => {
       if (!currentParams) {
         return false;
@@ -83,28 +155,6 @@ export class ActionContainer extends Component {
       return false;
     };
 
-    const choiceOtherAction = (option, key)=> {
-      if (option.param === 'add_labels') {
-        return (
-          <AddLabelsContainer key={key}
-                              option={option}
-                              setParams={setParams}
-                              currentParams={currentParams}
-                              stateValue={this.stateValue}
-                              unsetParams={resetSingleAction}/>
-        );
-      } else if (option.param === 'remove_labels') {
-        return (
-          <RemoveLabelsContainer key={key}
-                                 option={option}
-                                 setParams={setParams}
-                                 currentParams={currentParams}
-                                 stateValue={this.stateValue}
-                                 unsetParams={resetSingleAction}/>
-        );
-      }
-    };
-
     return (
       <li>
         <Button isActive={this.state.expanded}
@@ -119,17 +169,7 @@ export class ActionContainer extends Component {
           <ClickOut onClickOut={this.collapse}
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            {item.type === 'action' &&
-            <SingleChoicePanel item={item}
-                               currentParams={currentParams}
-                               setParams={setParams}
-                               resetSingleAction={resetSingleAction}/>
-            }
-            {item.type === 'menu' &&
-            <Menu>
-              {item.options.map((option, key)=> choiceOtherAction(option, key))}
-            </Menu>
-            }
+            {this.renderPanel(item)}
           </ClickOut>
         </Detached>
       </li>

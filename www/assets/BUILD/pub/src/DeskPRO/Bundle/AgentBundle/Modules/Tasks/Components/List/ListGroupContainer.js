@@ -21,7 +21,7 @@ export class ListGroupContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     sort: PropTypes.string,
-    ids: PropTypes.array,
+    ids: PropTypes.object,
     tasks: PropTypes.object,
     lists: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
