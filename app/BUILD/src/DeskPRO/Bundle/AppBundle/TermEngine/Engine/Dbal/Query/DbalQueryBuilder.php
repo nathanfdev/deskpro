@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+/**
+ * Class DbalQueryBuilder.
+ */
 class DbalQueryBuilder
 {
     /**
@@ -38,6 +41,11 @@ class DbalQueryBuilder
      */
     private $query;
 
+    /**
+     * Constructor.
+     *
+     * @param DbalQuery $query
+     */
     public function __construct(DbalQuery $query)
     {
         $this->query = $query;
@@ -131,7 +139,7 @@ class DbalQueryBuilder
         // keep track of renames, and update all joins with new join names given by DbalQuery
         // NOTE: if a unique join references a join that is added to the QueryPart at a later
         //       time, there will be an issue with the query
-        $join_renames = array();
+        $join_renames = [];
         foreach ($query_part->getUniqueJoins() as $alias => $join_info) {
             // replace the proposed alias with "alias", because query will replace it with the real alias
             $on = $join_info['on'];
@@ -152,7 +160,8 @@ class DbalQueryBuilder
             $this->addJoin($join_info['table'], $join_info['on']);
         }
 
-        if ($where = $query_part->getWhereString()) {
+        $where = $query_part->getWhereString();
+        if ($where) {
             // now we must "inject" the proper join names into the WHERE clause
             foreach ($join_renames as $old => $new) {
                 $where = str_replace('{'.$old.'}', $new, $where);

@@ -40,6 +40,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpressionLanguage;
 use Orb\Util\Arrays;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Class DbalQueryManipulatorListener.
+ */
 class DbalQueryManipulatorListener implements EventSubscriberInterface
 {
     /**
@@ -47,16 +50,24 @@ class DbalQueryManipulatorListener implements EventSubscriberInterface
      */
     private $expression_language;
 
+    /**
+     * Constructor.
+     *
+     * @param TermEngineExpressionLanguage $expression_language
+     */
     public function __construct(TermEngineExpressionLanguage $expression_language)
     {
         $this->expression_language = $expression_language;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             DbalEngineEvents::MANIPULATE_QUERY => 'onManipulateQuery',
-        );
+        ];
     }
 
     /**
@@ -74,16 +85,24 @@ class DbalQueryManipulatorListener implements EventSubscriberInterface
         $this->resolveParameters($query, $context);
     }
 
+    /**
+     * @param DbalQuery         $query
+     * @param TermEngineContext $context
+     */
     public function ensureAgentPermissions(DbalQuery $query, TermEngineContext $context)
     {
     }
 
+    /**
+     * @param DbalQuery         $query
+     * @param TermEngineContext $context
+     */
     public function resolveParameters(DbalQuery $query, TermEngineContext $context)
     {
         foreach ($query->getParameters() as $key => $val) {
             $resolved = $this->resolveParam($val, $context);
             if (is_array($resolved)) {
-                $resolved = Arrays::flatten($resolved); // always faltten arrays
+                $resolved = Arrays::flatten($resolved); // always flatten arrays
             }
             if ($resolved !== $val) {
                 $query->replaceParameter($key, $resolved);
@@ -91,10 +110,16 @@ class DbalQueryManipulatorListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param mixed             $val
+     * @param TermEngineContext $context
+     *
+     * @return array|string
+     */
     private function resolveParam($val, TermEngineContext $context)
     {
         if (is_array($val)) {
-            $new_val = array();
+            $new_val = [];
 
             foreach ($val as $key => $value) {
                 $resolved_inside_array = $this->resolveParam($value, $context);
@@ -111,13 +136,16 @@ class DbalQueryManipulatorListener implements EventSubscriberInterface
         return $val;
     }
 
+    /**
+     * @param TermEngineExpression $val
+     * @param TermEngineContext    $context
+     *
+     * @return string
+     */
     private function evalExpression(TermEngineExpression $val, TermEngineContext $context)
     {
-        return $this->expression_language->evaluate(
-            (string) $val,
-            array(
-                'agent' => $context->getAgent(),
-            )
-        );
+        return $this->expression_language->evaluate((string) $val, [
+            'agent' => $context->getAgent(),
+        ]);
     }
 }

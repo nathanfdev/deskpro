@@ -31,25 +31,39 @@
  */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+/**
+ * Class DbalQueryPart.
+ */
 class DbalQueryPart
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $parameters;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $joins;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $unique_joins;
 
-    /** @var null|string */
+    /**
+     * @var null|string
+     */
     protected $where;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->parameters   = array();
-        $this->joins        = array();
-        $this->unique_joins = array();
+        $this->parameters   = [];
+        $this->joins        = [];
+        $this->unique_joins = [];
         $this->where        = null;
     }
 
@@ -71,20 +85,20 @@ class DbalQueryPart
 
         // update join conditions
         foreach ($this->joins as $alias => $join_info) {
-            $this->joins[$alias] = array(
+            $this->joins[$alias] = [
                 'table' => $join_info['table'],
                 'on'    => str_replace(':'.$old_name, ':'.$new_name, $join_info['on']),
                 'type'  => $join_info['type'],
-            );
+            ];
         }
 
         // update unique join conditions
         foreach ($this->unique_joins as $alias => $join_info) {
-            $this->unique_joins[$alias] = array(
+            $this->unique_joins[$alias] = [
                 'table' => $join_info['table'],
                 'on'    => str_replace(':'.$old_name, ':'.$new_name, $join_info['on']),
                 'type'  => $join_info['type'],
-            );
+            ];
         }
     }
 
@@ -98,20 +112,20 @@ class DbalQueryPart
     {
         // update join conditions
         foreach ($this->joins as $alias => $join_info) {
-            $this->joins[$alias] = array(
+            $this->joins[$alias] = [
                 'table' => $join_info['table'],
                 'on'    => str_replace('{'.$old_alias.'}', '{'.$new_alias.'}', $join_info['on']),
                 'type'  => $join_info['type'],
-            );
+            ];
         }
 
         // update unique join conditions
         foreach ($this->unique_joins as $alias => $join_info) {
-            $this->unique_joins[$alias] = array(
+            $this->unique_joins[$alias] = [
                 'table' => $join_info['table'],
                 'on'    => str_replace('{'.$old_alias.'}', '{'.$new_alias.'}', $join_info['on']),
                 'type'  => $join_info['type'],
-            );
+            ];
 
             if ($alias == $old_alias) {
                 $this->unique_joins[$new_alias] = $this->unique_joins[$old_alias];
@@ -153,11 +167,11 @@ class DbalQueryPart
      */
     public function addJoin($table, $on_condition, $type = DbalQuery::JOIN_LEFT)
     {
-        $this->joins[$table] = array(
+        $this->joins[$table] = [
             'table' => $table,
             'on'    => $on_condition,
             'type'  => $type,
-        );
+        ];
     }
 
     /**
@@ -178,11 +192,11 @@ class DbalQueryPart
             );
         }
 
-        $this->unique_joins[$alias] = array(
+        $this->unique_joins[$alias] = [
             'table' => $table,
             'on'    => $on_condition,
             'type'  => $type,
-        );
+        ];
     }
 
     /**

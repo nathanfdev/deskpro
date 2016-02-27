@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+/**
+ * Class DbalQuery.
+ */
 class DbalQuery
 {
     const JOIN_LEFT  = 'LEFT';
@@ -115,25 +118,29 @@ class DbalQuery
      */
     private $group_with_rollup;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->page              = 1;
-        $this->select_pieces     = array('*');
-        $this->joins             = array();
-        $this->join_ons          = array();
-        $this->unique_joins      = array();
-        $this->unique_join_ons   = array();
-        $this->unique_join_types = array();
-        $this->groupings         = array();
-        $this->orderings         = array();
-        $this->params            = array();
+        $this->select_pieces     = ['*'];
+        $this->joins             = [];
+        $this->join_ons          = [];
+        $this->unique_joins      = [];
+        $this->unique_join_ons   = [];
+        $this->unique_join_types = [];
+        $this->groupings         = [];
+        $this->orderings         = [];
+        $this->params            = [];
         $this->group_with_rollup = true; // uses GROUP BY .. WITH ROLLUP by default
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        $sql_string = '';
-
         $sql_string = sprintf('SELECT %s FROM %s', $this->generateSelectString(), $this->generateFromString());
 
         if (count($this->joins)) {
@@ -172,31 +179,49 @@ class DbalQuery
         return $sql_string;
     }
 
+    /**
+     * @return string
+     */
     public function getFromTable()
     {
         return $this->from_table;
     }
 
+    /**
+     * @return string
+     */
     public function generateSelectString()
     {
         return $this->getSelectPart();
     }
 
+    /**
+     * @return string
+     */
     public function getSelectPart()
     {
         return implode(', ', $this->select_pieces);
     }
 
+    /**
+     * @return string
+     */
     public function generateWhereString()
     {
         return $this->where;
     }
 
+    /**
+     * @param $table
+     */
     public function setFromTable($table)
     {
         $this->from_table = trim($table);
     }
 
+    /**
+     * @return string
+     */
     public function generateFromString()
     {
         $table = $this->from_table;
@@ -204,56 +229,91 @@ class DbalQuery
         return $this->from_alias ? $table.' '.$this->from_alias : $table;
     }
 
+    /**
+     * @param $select
+     */
     public function addSelectPart($select)
     {
         $this->select_pieces[] = trim($select);
     }
 
+    /**
+     * @param $select
+     */
     public function setSelectPart($select)
     {
-        $this->select_pieces = array();
+        $this->select_pieces = [];
         $this->addSelectPart($select);
     }
 
+    /**
+     * @param string $table
+     * @param string $alias
+     */
     public function setFrom($table, $alias = null)
     {
         $this->from_table = $table;
         $this->from_alias = $alias;
     }
 
+    /**
+     * @param $alias
+     */
     public function setFromAlias($alias)
     {
         $this->from_alias = trim($alias);
     }
 
+    /**
+     * @return string
+     */
     public function getFromAlias()
     {
         return $this->from_alias;
     }
 
+    /**
+     * @param $where
+     */
     public function setWherePart($where)
     {
         $this->where = trim($where);
     }
 
+    /**
+     * @param $append_to_where
+     */
     public function appendWhere($append_to_where)
     {
         $this->where .= ' '.trim($append_to_where);
     }
 
+    /**
+     * @param string $alias
+     *
+     * @return bool
+     */
     public function hasJoin($alias)
     {
         return array_key_exists($alias, $this->joins);
     }
 
+    /**
+     * @param string $table
+     * @param string $on
+     * @param string $alias
+     */
     public function addJoin($table, $on, $alias = null)
     {
         if (!$alias) {
             $alias = $table;
         }
-        $this->joins[$alias] = array($table, $on);
+        $this->joins[$alias] = [$table, $on];
     }
 
+    /**
+     * @return string
+     */
     public function generateJoinString()
     {
         $join_string = '';
@@ -273,6 +333,9 @@ class DbalQuery
         return trim($join_string);
     }
 
+    /**
+     * @return string
+     */
     public function generateUniqueJoinString()
     {
         $join_string = '';
@@ -288,6 +351,13 @@ class DbalQuery
         return trim($join_string);
     }
 
+    /**
+     * @param string $table
+     * @param string $on
+     * @param string $type
+     *
+     * @return string
+     */
     public function addUniqueJoin($table, $on, $type)
     {
         $alias = $table.'_0';
@@ -305,6 +375,12 @@ class DbalQuery
         return $alias;
     }
 
+    /**
+     * @param string $name_prefix
+     * @param mixed  $value
+     *
+     * @return string
+     */
     public function addParameter($name_prefix, $value)
     {
         $p_name = $name_prefix.'_0';
@@ -318,11 +394,17 @@ class DbalQuery
         return $p_name;
     }
 
+    /**
+     * @return array
+     */
     public function getParameters()
     {
         return $this->params;
     }
 
+    /**
+     * @param $param
+     */
     public function getParameter($param)
     {
         if (array_key_exists($param, $this->params)) {
@@ -332,6 +414,10 @@ class DbalQuery
         return;
     }
 
+    /**
+     * @param string $param
+     * @param mixed  $value
+     */
     public function replaceParameter($param, $value)
     {
         if (!array_key_exists($param, $this->params)) {
@@ -343,35 +429,53 @@ class DbalQuery
         $this->params[$param] = $value;
     }
 
+    /**
+     * @param $group_by
+     */
     public function addGroupBy($group_by)
     {
         $this->groupings[] = $group_by;
     }
 
+    /**
+     * @return array
+     */
     public function getGroupBy()
     {
         return $this->groupings;
     }
 
+    /**
+     * @return string
+     */
     public function generateGroupByString()
     {
         return implode(', ', $this->groupings);
     }
 
+    /**
+     * @param string $order_by
+     * @param string $direction
+     */
     public function addOrderBy($order_by, $direction)
     {
-        $this->orderings[] = array($order_by, $direction);
+        $this->orderings[] = [$order_by, $direction];
     }
 
+    /**
+     * @return array
+     */
     public function getOrderBy()
     {
         return $this->orderings;
     }
 
+    /**
+     * @return string
+     */
     public function generateOrderByString()
     {
-        $parts = array();
-
+        $parts = [];
         foreach ($this->orderings as $order) {
             $parts[] = $order[0].' '.$order[1];
         }
@@ -379,26 +483,41 @@ class DbalQuery
         return implode(', ', $parts);
     }
 
+    /**
+     * @return int|null
+     */
     public function getLimit()
     {
         return $this->limit;
     }
 
+    /**
+     * @param $limit
+     */
     public function setLimit($limit)
     {
         $this->limit = $limit;
     }
 
+    /**
+     * @param $page
+     */
     public function setPage($page)
     {
         $this->page = $page;
     }
 
+    /**
+     * @return int
+     */
     public function getPage()
     {
         return $this->page;
     }
 
+    /**
+     * @return string
+     */
     public function generateLimitString()
     {
         if (!$this->limit) {
@@ -412,10 +531,13 @@ class DbalQuery
         return sprintf('%s', $this->limit);
     }
 
+    /**
+     * @return int
+     */
     public function getPageOffset()
     {
         if (!$this->limit || !$this->page) {
-            return;
+            return 0;
         }
 
         return ($this->page - 1) * $this->limit;
