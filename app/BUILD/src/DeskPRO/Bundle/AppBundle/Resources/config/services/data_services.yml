@@ -90,6 +90,7 @@ services:
 
   data.ticket_legacy_filter_sets:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSetDataService
+    arguments: ["@security.token_storage"]
 
   data.chat:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService

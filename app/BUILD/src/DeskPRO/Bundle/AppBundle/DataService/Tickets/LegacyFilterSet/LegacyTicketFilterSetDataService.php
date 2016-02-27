@@ -31,11 +31,30 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Tickets\Filters;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
 /**
  * Class LegacyTicketFilterSetDataService.
  */
 class LegacyTicketFilterSetDataService
 {
+    /**
+     * @var TokenStorageInterface
+     */
+    private $token_storage;
+
+    /**
+     * Constructor.
+     *
+     * @param TokenStorageInterface $token_storage
+     */
+    public function __construct(TokenStorageInterface $token_storage)
+    {
+        $this->token_storage = $token_storage;
+    }
+
     /**
      * @param int $id
      *
@@ -43,7 +62,9 @@ class LegacyTicketFilterSetDataService
      */
     public function getFilterSet($id)
     {
-        return new LegacyTicketFilterSet();
+        $sets = $this->getFilterSetsData();
+
+        return isset($sets[$id]) ? $sets[$id] : null;
     }
 
     /**
@@ -51,6 +72,47 @@ class LegacyTicketFilterSetDataService
      */
     public function getAllFilterSets()
     {
-        return [];
+        return array_values($this->getFilterSetsData());
+    }
+
+    /**
+     * @return array
+     */
+    private function getFilterSetsData()
+    {
+        $awaiting_agent_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_AWAITING_AGENT, 'Awaiting agent');
+        $all_tickets_set    = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets');
+        $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters');
+
+        $filters     = new Filters();
+        $all_filters = $filters->getFiltersForPerson($this->getUser());
+
+        foreach ($all_filters as $filter) {
+            if ($filter->sys_name) {
+                $custom_filters_set->addFilter($filter);
+            } elseif ($filter->terms) {
+                $awaiting_agent_set->addFilter($filter);
+            } else {
+                $all_tickets_set->addFilter($filter);
+            }
+        }
+
+        return [
+            LegacyTicketFilterSet::TYPE_AWAITING_AGENT => $awaiting_agent_set,
+            LegacyTicketFilterSet::TYPE_ALL_TICKETS    => $all_tickets_set,
+            LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS => $custom_filters_set,
+        ];
+    }
+
+    /**
+     * @return Person
+     */
+    private function getUser()
+    {
+        $user = $this->token_storage->getToken()->getUser();
+        $user->loadHelper('AgentTeam');
+        $user->loadHelper('AgentPermissions');
+
+        return $user;
     }
 }

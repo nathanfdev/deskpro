@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet;
 
@@ -55,14 +57,22 @@ class LegacyTicketFilterSetTransformer extends AbstractDataSerializerTransformer
         /** @var LegacyTicketFilterSet $data */
         $data = $transformation_request->getDataToBeTransformed();
 
+        $filter_ids = array_map(function (LegacyTicketFilter $filter) {
+            return $filter->getId();
+        }, $data->getFilters());
+
+        $shared_agent_ids = array_map(function (Person $person) {
+            return $person->getId();
+        }, $data->getSharedAgents());
+
         return [
             'id'            => $data->getId(),
             'title'         => $data->getTitle(),
             'display_order' => $data->getDisplayOrder(),
-            'filters'       => $data->getFilters(),
+            'filters'       => $filter_ids,
             'is_default'    => $data->getIsDefault(),
-            'private_agent' => $data->getPrivateAgent(),
-            'shared_agents' => $data->getSharedAgents(),
+            'private_agent' => $data->getPrivateAgent() ? $data->getPrivateAgent()->getId() : null,
+            'shared_agents' => $shared_agent_ids,
         ];
     }
 }

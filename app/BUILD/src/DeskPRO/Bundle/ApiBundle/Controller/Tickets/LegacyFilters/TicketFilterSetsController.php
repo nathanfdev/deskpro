@@ -54,7 +54,7 @@ class TicketFilterSetsController extends BaseController
      *
      * @Get("/ticket_filter_sets")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $data_service = $this->get('data.ticket_legacy_filter_sets');
         $filter_sets  = $data_service->getAllFilterSets();

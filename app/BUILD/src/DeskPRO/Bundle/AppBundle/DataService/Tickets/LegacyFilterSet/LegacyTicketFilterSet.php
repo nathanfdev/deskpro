@@ -39,9 +39,9 @@ use Application\DeskPRO\Entity\Person;
  */
 class LegacyTicketFilterSet
 {
-    const ID_AWAITING_AGENT = 1;
-    const ALL_TICKETS       = 2;
-    const FILTERS           = 3;
+    const TYPE_AWAITING_AGENT = 1;
+    const TYPE_ALL_TICKETS    = 2;
+    const TYPE_CUSTOM_FILTERS = 3;
 
     /**
      * @var int
@@ -79,6 +79,22 @@ class LegacyTicketFilterSet
     protected $shared_agents = [];
 
     /**
+     * Constructor.
+     *
+     * @param int    $id
+     * @param string $title
+     * @param int    $display_order
+     * @param bool   $is_default
+     */
+    public function __construct($id, $title, $display_order = 0, $is_default = true)
+    {
+        $this->id            = $id;
+        $this->title         = $title;
+        $this->display_order = $display_order;
+        $this->is_default    = $is_default;
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -111,6 +127,18 @@ class LegacyTicketFilterSet
     }
 
     /**
+     * @param LegacyTicketFilter $filter
+     *
+     * @return $this
+     */
+    public function addFilter(LegacyTicketFilter $filter)
+    {
+        $this->filters[] = $filter;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getIsDefault()
@@ -132,5 +160,17 @@ class LegacyTicketFilterSet
     public function getSharedAgents()
     {
         return $this->shared_agents;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function addSharedAgent(Person $person)
+    {
+        $this->shared_agents[] = $person;
+
+        return $this;
     }
 }
