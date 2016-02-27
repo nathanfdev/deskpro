@@ -444,10 +444,11 @@ function startWebpackServer(config) {
 
     gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
     gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
-    gutil.log('[webpack-dev-server]', "$PATHS_CONFIG['asset_paths']['app_assets'] = [");
-    gutil.log('[webpack-dev-server]', "    'type'    => 'url',");
-    gutil.log('[webpack-dev-server]', "    'value'   => 'http://localhost:9666/pub/build/'");
-    gutil.log('[webpack-dev-server]', '];');
+    gutil.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
+      '\r\n    \'type\' => \'url\',' +
+      '\r\n\    \'value\' => \'http://localhost:9666/pub/build/\'' +
+      '\r\n];'
+    );
   });
 
   return app;
