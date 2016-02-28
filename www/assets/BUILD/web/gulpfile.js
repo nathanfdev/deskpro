@@ -25,7 +25,7 @@ var gulp       = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['less', 'sass', 'cpjs', 'loader'], function() {
+gulp.task('default', ['less', 'sass', 'sassdoc', 'cpjs', 'loader'], function() {
     // hacking coffee here to run after all others
     // because something in the other tasks corrupts
     // the stream and causes coffee compile to fail
@@ -37,7 +37,7 @@ gulp.task('default', ['less', 'sass', 'cpjs', 'loader'], function() {
         './app/DeskPRO*/**/*.coffee'
     ]);
 });
-gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
 
 
 //######################################################################################################################
