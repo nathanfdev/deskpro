@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
-import { loadBatch, setCollection, releaseCollection } from '../Actions/store'
+import { loadBatch, setCollection, releaseCollection, updateCollection} from '../Actions/store';
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
@@ -25,12 +25,26 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
   });
 }
 
+function handleUpdateCollection(state, {recordName, collectionName, records}) {
+  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  const currentRecords = state.getIn([recordName, 'records']);
+  newRecords = currentRecords.merge(newRecords);
+
+  return state.mergeDeep({
+    [recordName]: {
+      records: newRecords,
+      collections: {[collectionName]: newRecords.keySeq().toArray()},
+      statuses: {[collectionName]: {success: true, loading: false}}
+    }
+  });
+}
+
 export default createReducer(storeInitialState, {
   [loadBatch]: composeHandlers(
     asyncIndicator((state, {recordName, collectionName, records}) => ({
-      loading:   `${recordName}.statuses.${collectionName}.loading`,
-      success:   `${recordName}.statuses.${collectionName}.success`,
-      isError:   `${recordName}.statuses.${collectionName}.isError`,
+      loading: `${recordName}.statuses.${collectionName}.loading`,
+      success: `${recordName}.statuses.${collectionName}.success`,
+      isError: `${recordName}.statuses.${collectionName}.isError`,
       errorCode: `${recordName}.statuses.${collectionName}.errorCode`
     })),
     async({
@@ -39,6 +53,8 @@ export default createReducer(storeInitialState, {
   ),
 
   [setCollection]: handleSetCollection,
+
+  [updateCollection]: handleUpdateCollection,
 
   [releaseCollection]: (state, {recordName, collectionName}) => {
     let next = state;

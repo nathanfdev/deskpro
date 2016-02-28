@@ -1,6 +1,6 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const toggleOverlay = createAction('IM_TOGGLE_OVERLAY');
 
@@ -41,7 +41,7 @@ export const startChat = createAction(
           .success((response) => {
             const records = {};
             records[response.data.id] = response.data;
-            dispatch(setCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
+            dispatch(updateCollection('AgentChat', 'recent', records, [parseInt(response.data.id, 10)]));
             dispatch(markChatAsManuallyClosed(response.data.id));
             return resolve(response.data);
           })
