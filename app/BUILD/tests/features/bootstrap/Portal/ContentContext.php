@@ -55,6 +55,8 @@ class ContentContext extends BasePortalContext
         $article->setCategories(
             $this->em()->getRepository(ArticleCategory::class)->findAll()
         );
+        $article->setStatus(Article::STATUS_PUBLISHED);
+
         $this->persistAndFlush($article);
     }
 
@@ -63,16 +65,18 @@ class ContentContext extends BasePortalContext
      */
     public function haveANews($title)
     {
-        $article = new News();
+        $news = new News();
 
         /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
         $user_details = $this->getContainer()->get('user_details');
         $person       = $user_details->getWho('agent');
-        $article->setPerson($person);
-        $article->setTitle($title);
-        $article->setCategory(
+        $news
+            ->setPerson($person);
+        $news->setTitle($title);
+        $news->setCategory(
             $this->em()->getRepository(NewsCategory::class)->findOneBy(['slug' => 'general'])
         );
-        $this->persistAndFlush($article);
+        $news->setStatus(News::STATUS_PUBLISHED);
+        $this->persistAndFlush($news);
     }
 }
