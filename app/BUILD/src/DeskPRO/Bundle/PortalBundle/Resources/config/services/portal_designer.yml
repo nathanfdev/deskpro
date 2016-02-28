@@ -35,13 +35,13 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
-      - '../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
+      - './assets/BUILD/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
       - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
 
   dp.portal.designer.sass_doc_parser:
     class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
     arguments:
-      - '../web/sassdoc/vars.json'
+      - './assets/BUILD/web/sassdoc/vars.json'
 
   dp.portal.designer.theme_set_copying_service:
     class: DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService
