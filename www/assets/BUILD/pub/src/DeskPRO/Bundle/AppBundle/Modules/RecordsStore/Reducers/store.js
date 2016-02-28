@@ -11,19 +11,22 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
     return state;
   }
 
-  records = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  let newIds;
   if (!ids) {
-    ids = records.keySeq().toArray();
+    newIds = newRecords.keySeq().toArray();
+  } else {
+    newIds = ids;
   }
 
   // records sohuld be merged, while collection should be overriden
   const currentRecords = state.getIn([recordName, 'records']);
-  if(currentRecords) records = records.mergeDeep(currentRecords);
+  if (currentRecords) newRecords = newRecords.mergeDeep(currentRecords);
 
   return state.mergeDeep({
     [recordName]: {
-      records: records,
-      collections: {[collectionName]: ids},
+      records: newRecords,
+      collections: {[collectionName]: newIds},
       statuses: {[collectionName]: {success: true, loading: false}}
     }
   });
@@ -39,7 +42,7 @@ function handleUpdateCollection(state, {recordName, collectionName, records}) {
 
 export default createReducer(storeInitialState, {
   [loadBatch]: composeHandlers(
-    asyncIndicator((state, {recordName, collectionName, records}) => ({
+    asyncIndicator((state, {recordName, collectionName}) => ({
       loading: `${recordName}.statuses.${collectionName}.loading`,
       success: `${recordName}.statuses.${collectionName}.success`,
       isError: `${recordName}.statuses.${collectionName}.isError`,
@@ -58,7 +61,6 @@ export default createReducer(storeInitialState, {
     let next = state;
 
     if (next.hasIn([recordName, 'statuses', collectionName])) {
-
       // remove collection status indicators
       next = next.deleteIn([recordName, 'statuses', collectionName]);
 
