@@ -1,27 +1,36 @@
 import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
-import { loadBatch, setCollection, releaseCollection, updateCollection} from '../Actions/store';
+import { loadBatch, setCollection, releaseCollection, addToCollection} from '../Actions/store';
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const storeInitialState = {};
 
-function handleSetCollection(state, {recordName, collectionName, records, ids, noUpdates}) {
-  if (noUpdates) {
-    return state;
-  }
-
-  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
-  let newIds;
-  if (!ids) {
-    newIds = newRecords.keySeq().toArray();
-  } else {
-    newIds = ids;
-  }
-
-  // records sohuld be merged, while collection should be overriden
+function mergeRecords(state, recordName, records) {
   const currentRecords = state.getIn([recordName, 'records']);
-  if (currentRecords) newRecords = newRecords.mergeDeep(currentRecords);
+  return currentRecords ? currentRecords.merge(records) : records;
+}
+
+function gc(state, recordName) {
+  const validRecordIds = [];
+  state.getIn([recordName, 'collections']).forEach(collection => {
+    collection.forEach(id => {
+      if (validRecordIds.indexOf(id) === -1) {
+        validRecordIds.push(id);
+      }
+    });
+  });
+  const validRecords = state.getIn([recordName, 'records']).filter((record, id) => validRecordIds.indexOf(id) > -1);
+  return state.setIn([recordName, 'records'], validRecords);
+}
+
+function handleSetCollection(state, {recordName, collectionName, records, ids, noUpdates}) {
+  if (noUpdates) return state;
+  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+
+  // count ids BEFORE we will update records. So we just insert new records in records and replace collection ids
+  const newIds = ids ? ids : newRecords.keySeq().toArray();
+  newRecords = mergeRecords(state, recordName, newRecords);
 
   return state.mergeDeep({
     [recordName]: {
@@ -32,12 +41,19 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
   });
 }
 
-function handleUpdateCollection(state, {recordName, collectionName, records}) {
+function handleAddToCollection(state, {recordName, collectionName, records}) {
   let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
-  const currentRecords = state.getIn([recordName, 'records']);
-  newRecords = currentRecords.merge(newRecords);
+  // count ids AFTER we will update records. So we just insert new records in records and replace collection ids
+  newRecords = mergeRecords(state, recordName, newRecords);
+  const newIds = newRecords.keySeq().toArray();
 
-  return handleSetCollection(state, {recordName: recordName, collectionName: collectionName, records: newRecords});
+  return state.mergeDeep({
+    [recordName]: {
+      records: newRecords,
+      collections: {[collectionName]: newIds},
+      statuses: {[collectionName]: {success: true, loading: false}}
+    }
+  });
 }
 
 export default createReducer(storeInitialState, {
@@ -55,7 +71,7 @@ export default createReducer(storeInitialState, {
 
   [setCollection]: handleSetCollection,
 
-  [updateCollection]: handleUpdateCollection,
+  [addToCollection]: handleAddToCollection,
 
   [releaseCollection]: (state, {recordName, collectionName}) => {
     let next = state;
@@ -67,17 +83,7 @@ export default createReducer(storeInitialState, {
       // delete collection
       next = next.deleteIn([recordName, 'collections', collectionName]);
 
-      // clean up records
-      const validRecordIds = [];
-      next.getIn([recordName, 'collections']).forEach(collection => {
-        collection.forEach(id => {
-          if (validRecordIds.indexOf(id) === -1) {
-            validRecordIds.push(id);
-          }
-        });
-      });
-      const validRecords = state.getIn([recordName, 'records']).filter((record, id) => validRecordIds.indexOf(id) > -1);
-      next = next.setIn([recordName, 'records'], validRecords);
+      next = gc(next, recordName); // clean up records
     }
 
     return next;

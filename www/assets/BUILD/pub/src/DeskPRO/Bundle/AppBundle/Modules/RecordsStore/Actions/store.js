@@ -108,8 +108,8 @@ export const setCollection = createAction(
   }
 );
 
-export const updateCollection = createAction(
-  'RECORDS_STORE_UPDATE_COLLECTION',
+export const addToCollection = createAction(
+  'RECORDS_STORE_ADD_TO_COLLECTION',
   (recordName, collectionName, records) => {
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
