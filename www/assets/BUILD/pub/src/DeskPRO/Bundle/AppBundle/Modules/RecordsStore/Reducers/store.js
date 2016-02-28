@@ -16,6 +16,10 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
     ids = records.keySeq().toArray();
   }
 
+  // records sohuld be merged, while collection should be overriden
+  const currentRecords = state.getIn([recordName, 'records']);
+  if(currentRecords) records = records.mergeDeep(currentRecords);
+
   return state.mergeDeep({
     [recordName]: {
       records: records,
@@ -30,13 +34,7 @@ function handleUpdateCollection(state, {recordName, collectionName, records}) {
   const currentRecords = state.getIn([recordName, 'records']);
   newRecords = currentRecords.merge(newRecords);
 
-  return state.mergeDeep({
-    [recordName]: {
-      records: newRecords,
-      collections: {[collectionName]: newRecords.keySeq().toArray()},
-      statuses: {[collectionName]: {success: true, loading: false}}
-    }
-  });
+  return handleSetCollection(state, {recordName: recordName, collectionName: collectionName, records: newRecords});
 }
 
 export default createReducer(storeInitialState, {
