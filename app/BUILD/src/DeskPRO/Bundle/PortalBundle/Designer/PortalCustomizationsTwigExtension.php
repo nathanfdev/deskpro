@@ -84,7 +84,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
             return $this->getRouter()->generate(
                 'dp_portal_designer_custom_css',
                 ['version' => $blob_storage->getId(), 'preview' => intval($this->isPreviewMode())],
-                true
+                RouterInterface::ABSOLUTE_URL
             );
         } else {
             return $this->getAssetsExtension()->getAssetUrl(self::$default_css_asset, 'app_assets');
