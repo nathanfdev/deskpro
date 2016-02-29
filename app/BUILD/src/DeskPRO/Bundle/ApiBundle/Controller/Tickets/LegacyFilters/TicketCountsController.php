@@ -32,9 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -45,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  */
-class TicketCountsController extends BaseController
+class TicketCountsController extends AbstractLegacyFiltersController
 {
     /**
      * @ApiDoc(
@@ -80,7 +78,10 @@ class TicketCountsController extends BaseController
     {
         $data_service = $this->get('data.ticket_legacy_filter_sets');
 
-        return View::create([]);
+        $set   = $this->getFilterSetOr404($id);
+        $count = $data_service->getFilterSetCount($set, $request->get('group_by'));
+
+        return View::create($this->dataSerialize($count));
     }
 
     /**
@@ -109,7 +110,14 @@ class TicketCountsController extends BaseController
     {
         $data_service = $this->get('data.ticket_legacy_filter_sets');
 
-        return View::create([]);
+        $sets   = $data_service->getAllFilterSets();
+        $counts = [];
+
+        foreach ($sets as $set) {
+            $counts[] = $data_service->getFilterSetCount($set, $request->get('group_by'));
+        }
+
+        return View::create($this->dataSerialize($counts));
     }
 
     /**
@@ -180,14 +188,7 @@ class TicketCountsController extends BaseController
     public function getAllTicketFilterCountsAction(Request $request)
     {
         $data_service = $this->get('data.ticket_legacy_filter_sets');
-
-        $count    = Count::fromValue($data_service->getTotalCount());
-        $group_by = $request->get('group_by');
-
-        foreach ($data_service->getAllFilters() as $filter) {
-            $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
-            $count->addNestedInstance($data_service->getFilterCount($filter,  $filter_group_by));
-        }
+        $count        = $data_service->getFiltersCount(null, null, null, $data_service->getAllFilters(), $request->get('group_by'));
 
         return View::create($this->dataSerialize($count));
     }

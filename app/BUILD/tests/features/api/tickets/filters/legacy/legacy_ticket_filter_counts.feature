@@ -15,7 +15,7 @@ Feature: /ticket_filters_counts endpoint
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.count" should be equal to 3
+    And the JSON node "data.count" should be equal to 6
     And the JSON node "data.id" should be equal to 0
     And the JSON node "data.type" should be equal to 0
     And the JSON node "data.title" should be equal to 0
@@ -51,12 +51,11 @@ Feature: /ticket_filters_counts endpoint
     And the JSON node "data.nested[3].nested" should have 0 elements
 
   Scenario: I group by department
-    Given I re-fill ticket search table
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[5]=department"
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data.count" should be equal to 3
+    And the JSON node "data.count" should be equal to 6
     And the JSON node "data.id" should be equal to 0
     And the JSON node "data.type" should be equal to 0
     And the JSON node "data.title" should be equal to 0

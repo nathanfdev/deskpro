@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
@@ -42,7 +41,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
  *
  * @ApiModes("all")
  */
-class TicketFilterSetsController extends BaseController
+class TicketFilterSetsController extends AbstractLegacyFiltersController
 {
     /**
      * @ApiDoc(
@@ -121,22 +120,5 @@ class TicketFilterSetsController extends BaseController
         $set = $this->getFilterSetOr404($id);
 
         return View::create($this->dataSerialize($set->getFilters()));
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return \DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet
-     */
-    protected function getFilterSetOr404($id)
-    {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-        $filter_set   = $data_service->getFilterSet($id);
-
-        if (!$filter_set) {
-            throw $this->createNotFoundException();
-        }
-
-        return $filter_set;
     }
 }

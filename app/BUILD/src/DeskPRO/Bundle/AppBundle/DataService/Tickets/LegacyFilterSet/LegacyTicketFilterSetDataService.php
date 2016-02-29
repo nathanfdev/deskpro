@@ -121,6 +121,39 @@ class LegacyTicketFilterSetDataService
     }
 
     /**
+     * @param LegacyTicketFilterSet $set
+     * @param array|null            $group_by
+     *
+     * @return Count
+     */
+    public function getFilterSetCount(LegacyTicketFilterSet $set, array $group_by = null)
+    {
+        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
+    }
+
+    /**
+     * @param int                  $id
+     * @param string               $type
+     * @param string               $title
+     * @param LegacyTicketFilter[] $filters
+     * @param array|null           $group_by
+     *
+     * @return Count
+     */
+    public function getFiltersCount($id, $type, $title, array $filters, array $group_by = null)
+    {
+        $count    = Count::create(0, $id, $type, $title);
+        $group_by = $group_by ?: [];
+
+        foreach ($filters as $filter) {
+            $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
+            $count->addNestedInstance($this->getFilterCount($filter,  $filter_group_by), true);
+        }
+
+        return $count;
+    }
+
+    /**
      * @param LegacyTicketFilter $filter
      * @param string|null        $group_by
      *

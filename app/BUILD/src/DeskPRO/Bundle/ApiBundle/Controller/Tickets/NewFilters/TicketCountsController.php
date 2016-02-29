@@ -195,8 +195,7 @@ class TicketCountsController extends BaseController
                 isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
             );
 
-            $count->addNestedInstance($filter_count);
-            $count->add($filter_count->getCount());
+            $count->addNestedInstance($filter_count, true);
         }
 
         return View::create($this->dataSerialize($count));
