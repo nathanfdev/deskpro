@@ -2,7 +2,10 @@ Feature: Editing portal templates
 
   Background: Fresh database
     Given I install the fresh data set
-
+    And the following languages are enabled:
+      | default |
+    And the default brand is using the standard theme
+    
   @reinstall
   Scenario: I get custom logo data
     Given I am authenticated as admin
