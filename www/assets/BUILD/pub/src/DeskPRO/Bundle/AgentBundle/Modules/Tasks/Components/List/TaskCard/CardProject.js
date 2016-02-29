@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
@@ -20,12 +19,10 @@ import {
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form';
 import { CardWidget } from './CardWidget';
 
-@connect(state => ({projects: allSelectorFactory('Project')(state)}), null, null, {withRef: true})
-
 export class CardProject extends CardWidget {
 
   static propTypes = {
-    projectId: PropTypes.number,
+    value: PropTypes.number,
     openBySingleClick: PropTypes.bool,
     onSetEditing: PropTypes.func,
     onChange: PropTypes.func.isRequired

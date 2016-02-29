@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
+import { connect } from 'react-redux';
 import {
   Card,
   CardLine,
@@ -13,9 +15,10 @@ import {
   Comments,
   AssignButton,
   TicketLinkContainer,
-  ProjectContainer,
-  CardProject
+  CardProjectContainer
 } from '../../../TaskCard';
+
+@connect()
 
 export class TaskCard extends BaseTaskCard {
 
@@ -24,7 +27,18 @@ export class TaskCard extends BaseTaskCard {
     moving: PropTypes.bool,
     onChangeTitle: PropTypes.func,
     onChangeDate: PropTypes.func,
-    onSetEditing: PropTypes.func
+    onSetEditing: PropTypes.func,
+    dispatch: PropTypes.func.isRequired
+  };
+
+  onChange(prop, value) {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), {[prop]: value}));
+  }
+
+  onAssign = (assignee) => {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), assignee));
   };
 
   renderDetails() {
@@ -35,13 +49,10 @@ export class TaskCard extends BaseTaskCard {
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
                    onChange={onChangeDate}
-                   onSetEditing={onSetEditing}onSetEditing={onSetEditing} />
-
-          {task.get('project') &&
-            <ProjectContainer project={task.get('project')}>
-              <CardProject />
-            </ProjectContainer>
-          }
+                   onSetEditing={onSetEditing} />
+          <CardProjectContainer value={task.get('project')}
+                                onSetEditing={onSetEditing}
+                                onChange={this.onChange.bind(this, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>
@@ -72,7 +83,7 @@ export class TaskCard extends BaseTaskCard {
                    onSetEditing={onSetEditing} />
           </CardLineLeft>
           <CardLineRight>
-            {!task.get('is_done') && <AssignButton task={task} onSetEditing={onSetEditing} />}
+            {!task.get('is_done') && <AssignButton task={task} onAssign={this.onAssign} />}
           </CardLineRight>
         </CardLine>
 

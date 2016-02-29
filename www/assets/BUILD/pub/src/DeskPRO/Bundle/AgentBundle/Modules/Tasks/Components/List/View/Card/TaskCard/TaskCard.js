@@ -17,7 +17,7 @@ import {
   ShowDetailsButton,
   AssignButton,
   TicketLinkContainer,
-  CardProject
+  CardProjectContainer
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard';
 
 export class TaskCard extends BaseTaskCard {
@@ -46,17 +46,15 @@ export class TaskCard extends BaseTaskCard {
 
   renderDetails() {
     const { task, onChangeDate, onSetEditing } = this.props;
-
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
                    onChange={onChangeDate}
                    onSetEditing={onSetEditing} />
-
-          <CardProject projectId={task.get('project')}
-                       onSetEditing={onSetEditing}
-                       onChange={this.onChange.bind(this, 'project')} />
+          <CardProjectContainer value={task.get('project')}
+                                onSetEditing={onSetEditing}
+                                onChange={this.onChange.bind(this, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>

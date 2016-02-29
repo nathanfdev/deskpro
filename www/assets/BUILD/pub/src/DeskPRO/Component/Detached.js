@@ -5,10 +5,6 @@ import invariant from 'invariant';
 /**
  * This component is not the same as DeskPRO/Component/Positioned/Detached
  * it only renders subtree into the body and nothing else
- * Positioned/Detached can be created like this:
- * <Detached>
- *   <Positioned/Simple />
- * </Detached>
  */
 export class Detached extends React.Component {
 

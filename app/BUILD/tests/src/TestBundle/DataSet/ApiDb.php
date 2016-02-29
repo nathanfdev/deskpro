@@ -284,7 +284,7 @@ class ApiDb extends AbstractDbSet
         ;
         $organization2 = new Organization();
         $organization2
-            ->setName('Organization 1')
+            ->setName('Organization 2')
             ->setSummary('test organization')
             ->setImportance(1)
         ;

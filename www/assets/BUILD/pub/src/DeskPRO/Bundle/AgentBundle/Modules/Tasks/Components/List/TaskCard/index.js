@@ -8,5 +8,6 @@ export { ShowDetailsButton } from './ShowDetailsButton';
 export { AssignButton } from './AssignButton';
 export { TicketLinkContainer } from './TicketLinkContainer';
 export { CardProject } from './CardProject';
+export { CardProjectContainer } from './CardProjectContainer';
 export { AssigneeName } from './AssigneeName';
 export { AssigneeAvatar } from './AssigneeAvatar';

@@ -25,7 +25,9 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/workspace/dropdown-workspace";
 @import "global-widgets/datepicker";
 @import "global-widgets/modal";
+@import "global-widgets/select-dropdown";
 @import "animation"; // ReactCSSTransitionGroup
+@import "calendar";
 //@import "raw/styles";
 
 @import "chrome/positioning";

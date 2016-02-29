@@ -11,7 +11,12 @@ export class CalendarCell extends React.Component {
     children: PropTypes.node,
     draggable: PropTypes.shape({
       target: PropTypes.node.isRequired
-    })
+    }),
+    onDoubleClick: PropTypes.func
+  };
+
+  onDoubleClick = (event) => {
+    this.props.onDoubleClick && this.props.onDoubleClick(this.props.date, event);
   };
 
   render() {
@@ -36,7 +41,9 @@ export class CalendarCell extends React.Component {
         {'dpwd-calendar-past-month': dayDate.isBefore(firstDayOfMonth) || dayDate.isAfter(lastDayOfMonth)},
         {'dpwd-calendar-past-day': dayDate.isBefore(today, 'day')},
         {'weekend': [6, 7].indexOf(dayDate.isoWeekday()) !== -1}
-      )}>
+      )}
+          onDoubleClick={this.onDoubleClick}
+      >
         {React.cloneElement(draggable.target, {
           ...targetProps,
 

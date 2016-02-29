@@ -182,7 +182,6 @@ export class CardReset extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.info('component did update', prevState.isChanged, this.state.isChanged);
     this.prev = prevState.isChanged;
   }
 

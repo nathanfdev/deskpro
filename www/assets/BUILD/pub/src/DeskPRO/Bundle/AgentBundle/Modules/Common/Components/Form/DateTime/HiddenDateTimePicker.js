@@ -11,8 +11,10 @@ export class HiddenDateTimePicker extends AbstractDateTimePicker {
 
   render() {
     return (
-      <div>
-        <input type="hidden" ref="input" />
+      <div style={{position: 'relative'}}>
+        <div ref="anchor">
+          <input type="hidden" ref="input" />
+        </div>
       </div>
     );
   }

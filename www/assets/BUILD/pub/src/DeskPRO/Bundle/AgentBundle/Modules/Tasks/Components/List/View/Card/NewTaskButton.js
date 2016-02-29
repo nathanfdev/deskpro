@@ -20,8 +20,6 @@ export class NewTaskButton extends React.Component {
   };
 
   onCloseNewTaskForm = () => {
-    if (this.cardChanged) return;
-
     this.setState({
       newTaskExpanded: false
     });
