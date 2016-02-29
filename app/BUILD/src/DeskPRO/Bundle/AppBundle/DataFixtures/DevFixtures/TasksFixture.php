@@ -329,11 +329,11 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
             $article = null;
 
             if (rand(1, 100) < 25) {
-                $article = 1;
+                $article = $this->faker->randomElement($this->fetchIds(self::TABLE_ARTICLES));
             } elseif (rand(1, 100) < 25) {
-                $chat = 1;
+                $chat = $this->faker->randomElement($this->fetchIds(self::TABLE_CHAT_CONVERSATIONS));
             } else {
-                $ticket = 1;
+                $ticket = $this->faker->randomElement($this->fetchIds(self::TABLE_TICKETS));
             }
 
             $batch[] = [
