@@ -10,6 +10,7 @@ Feature: Editing portal templates
     Then the response status code should be 200
     And the response should contain "Theme::layout.html.twig"
 
+  @reinstall
   Scenario: I get source of the Theme::layout.html.twig template
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig"
