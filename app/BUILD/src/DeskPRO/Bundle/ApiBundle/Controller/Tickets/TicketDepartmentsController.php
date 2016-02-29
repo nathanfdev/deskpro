@@ -32,149 +32,25 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
-use DeskPRO\Bundle\AppBundle\EventListener\CacheWriteListener;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Component\Util\TypeUtils;
-use FOS\RestBundle\Controller\Annotations\Delete;
+use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
+use Doctrine\DBAL\Query\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketDepartmentsController.
  *
  * @ApiModes("all")
  */
-class TicketDepartmentsController extends BaseController implements ClassResourceInterface
+class TicketDepartmentsController extends CrudSubController
 {
-    /**
-     * @ApiDoc(
-     *      description="Get departments list",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/ticket_departments", name="api_departments")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function cgetAction(Request $request)
-    {
-        $query  = $request->query->all();
-        $params = [
-            $this->getVersionService()->getVersion(TypeUtils::getBaseTypeName($this)),
-            $query,
-        ];
-        if ($request->query->getBoolean('my', false)) {
-            $etag = $this->getEtagGenerator()->generate($params);
-            if ($cached_response = $this->getCachedResponse($request, $etag)) {
-                return $cached_response;
-            }
-            /** @var DepartmentDataService $departments_data_service */
-            $departments_data_service = $this->get('data.departments');
-            $departments              = $departments_data_service->getChatDepartmentsForPerson($this->getUser());
-        } else {
-            $etag = $this->getEtagGenerator()->generate($params);
-            if ($cached_response = $this->getCachedResponse($request, $etag)) {
-                return $cached_response;
-            }
-            if (!empty($query['ids'])) {
-                $departments = $this->selectDepartments(explode(',', $query['ids']));
-            } else {
-                $departments = $this->getDoctrine()->getManager()->createQueryBuilder()
-                    ->select('d')->from('DeskPRO:Department', 'd')->getQuery();
-            }
-
-            $departments = $departments->getResult();
-        }
-        /* @var Department[] $departments */
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($departments));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK,
-            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Get a department",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the department",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="Application\DeskPRO\Entity\Department"
-     * )
-     * @Get("/ticket_departments/{id}", name="api_departments_get")
-     *
-     * @param int $id
-     *
-     * @return View
-     */
-    public function getAction(Request $request, $id)
-    {
-        $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
-        if ($cached_response = $this->getCachedResponse($request, $etag)) {
-            return $cached_response;
-        }
-
-        $department = $this->getDepartment($id);
-
-        if (empty($department)) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create(
-            $this->dataSerialize($department),
-            Response::HTTP_OK,
-            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
-        );
-    }
+    public static $entity    = Department::class;
+    public static $type      = DepartmentType::class;
+    public static $listOrder = 'asc';
 
     /**
      * @ApiDoc(
@@ -193,203 +69,38 @@ class TicketDepartmentsController extends BaseController implements ClassResourc
      *      },
      *      output="Application\DeskPRO\Entity\Department"
      * )
-     * @Get("/ticket_departments/{id}/agents", name="api_departments_get_agents")
+     * @Get("/ticket_departments/{department}/agents")
      *
-     * @param int $id
-     *
-     * @throws NotFoundHttpException
-     *
-     * @return View
-     */
-    public function getAgentsAction(Request $request, $id)
-    {
-        $etag = $this->generateEtag([$this->getThisVersionId(), $id]);
-        if ($cached_response = $this->getCachedResponse($request, $etag)) {
-            return $cached_response;
-        }
-
-        $department = $this->findOr404(Department::class, $id);
-
-        return View::create(
-            $this->dataSerialize($department->getPersonList()),
-            Response::HTTP_OK,
-            [CacheWriteListener::X_DP_CACHE_STORE_HEADER => $etag]
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="Create a new department",
-     *      input={"class"="department", "name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="Application\DeskPRO\Entity\Department"
-     * )
-     * @Post("/ticket_departments", name="api_departments_post")
-     *
-     * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        $this->regenerateThisVersionId();
-        $department = new Department($this->getUser());
-
-        return $this->handleFormSubmission($request, $department);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="Update a department",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the department",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="department", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Put("/ticket_departments/{id}", name="api_departments_put")
-     *
-     * @param Request $request
-     * @param $id
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    public function putAction(Request $request, $id)
-    {
-        $this->regenerateThisVersionId();
-        $department = $this->getDepartment($id);
-
-        return $this->handleFormSubmission($request, $department);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="Delete a department",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the department",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Delete("/ticket_departments/{id}", name="api_departments_delete")
-     *
-     * @param $id
-     *
-     * @return View
-     */
-    public function deleteAction($id)
-    {
-        $this->regenerateThisVersionId();
-        $department = $this->getDepartment($id);
-        $this->getDoctrine()->getManager()->remove($department);
-        $this->getDoctrine()->getManager()->flush();
-
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return Department
-     */
-    protected function getDepartment($id)
-    {
-        $id         = (int) $id;
-        $department = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Department')->find($id);
-
-        if (!$department) {
-            throw $this->createNotFoundException();
-        }
-
-        return $department;
-    }
-
-    /**
-     * Will be abstracted for use by other controllers.
-     *
-     * @param Request    $request
      * @param Department $department
      *
-     * @throws WrappedApiErrorException
-     *
      * @return View
      */
-    protected function handleFormSubmission(Request $request, Department $department)
+    public function getAgentsAction(Department $department)
     {
-        $status = $department->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'department', $department)->getForm();
-
-        $submitted = $request->request->all();
-
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($department);
-            $this->getDoctrine()->getManager()->flush();
-
-            $location = $this->generateUrl('api_departments_get', array('id' => $department->getId()));
-
-            return View::create(
-                $this->dataSerialize($department),
-                $status,
-                array(
-                    'Location' => $location,
-                )
-            );
-        }
-
-        throw new InvalidFormException($form);
+        return View::create($this->dataSerialize($department->getPersonList()));
     }
 
     /**
-     * Get specific departments.
-     *
-     * @param $departmentIds
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    protected function selectDepartments($departmentIds)
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        // Clean the IDs
-        $departmentIds = array_map(function ($value) {
-            return (int) $value;
-        }, $departmentIds);
+        if ($request->query->getBoolean('my', false)) {
+            $permission_bag         = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
+            $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
 
-        $entityManager = $this->getDoctrine()->getManager();
+            $qb
+                ->andWhere('d.id IN (:allowed_department_ids) AND d.is_tickets_enabled = true')
+                ->setParameter('allowed_department_ids', $allowed_department_ids)
+            ;
+        }
 
-        $query = $entityManager->createQueryBuilder()->select('d')->from('DeskPRO:Department', 'd')
-            ->where('d.id IN (:departmentIds)')
-            ->setParameter('departmentIds', $departmentIds);
-
-        return $query->getQuery();
+        $ids = $request->query->get('ids');
+        if (!empty($ids)) {
+            $qb
+                ->andWhere('id IN (:ids)')
+                ->setParameter('ids', $ids)
+            ;
+        }
     }
 }
