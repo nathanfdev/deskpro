@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
+use Application\DeskPRO\App\Native\NativeAppsSync;
+use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -52,7 +54,19 @@ class DefaultDataFixture extends DeskProAbstractFixture implements OrderedFixtur
      */
     public function load(ObjectManager $manager)
     {
+        $this->appsSync($manager);
         $data_proc = new DefaultDataProcessor($this->container);
         $data_proc->runInstall();
+    }
+
+    private function appsSync($manager)
+    {
+        $app_syncer = new NativeAppsSync(
+            $this->container,
+            $this->container->getAppManager(),
+            new PackageInstaller($manager, $this->container->getBlobStorage(), $this->container->getImagine()),
+            null
+        );
+        $app_syncer->runSync();
     }
 }
