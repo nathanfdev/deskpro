@@ -42,7 +42,20 @@ use Application\DeskPRO\Entity\NewsCategory;
 class ContentContext extends BasePortalContext
 {
     /**
+     * @Given there are no articles in the Knowledge Base
+     */
+    public function noArticlesInKb()
+    {
+        $articles = $this->em()->getRepository(Article::class)->findAll();
+        foreach ($articles as $article) {
+            $this->em()->remove($article);
+        }
+        $this->em()->flush();
+    }
+
+    /**
      * @Given I have ":title" article
+     * @Given I add ":title" article
      */
     public function haveAnArticle($title)
     {
