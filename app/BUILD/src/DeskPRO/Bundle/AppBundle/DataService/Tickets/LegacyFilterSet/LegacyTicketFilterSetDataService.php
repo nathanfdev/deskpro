@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -44,6 +45,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class LegacyTicketFilterSetDataService
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var TokenStorageInterface
      */
     private $token_storage;
@@ -51,10 +57,12 @@ class LegacyTicketFilterSetDataService
     /**
      * Constructor.
      *
+     * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
      */
-    public function __construct(TokenStorageInterface $token_storage)
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
     {
+        $this->em            = $em;
         $this->token_storage = $token_storage;
     }
 
@@ -89,6 +97,30 @@ class LegacyTicketFilterSetDataService
     }
 
     /**
+     * @return int
+     */
+    public function getTotalCount()
+    {
+        $repository = $this->em->getRepository(LegacyTicketFilter::class);
+
+        $count   = 0;
+        $filters = [
+            $repository->findOneBy(['sys_name' => 'all']),
+            $repository->findOneBy(['sys_name' => 'all_w_hold']),
+        ];
+
+        foreach ($filters as $filter) {
+            if (!$filter) {
+                continue;
+            }
+
+            $count += $this->getFilterCount($filter)->getCount();
+        }
+
+        return $count;
+    }
+
+    /**
      * @param LegacyTicketFilter $filter
      * @param string|null        $group_by
      *
@@ -96,13 +128,8 @@ class LegacyTicketFilterSetDataService
      */
     public function getFilterCount(LegacyTicketFilter $filter, $group_by = null)
     {
-        /** @var Person $user */
-        $user = $this->getUser();
-        $user->loadHelper('AgentTeam');
-        $user->loadHelper('AgentPermissions');
-
         $searcher = $filter->getSearcher();
-        $searcher->setPersonContext($user);
+        $searcher->setPersonContext($this->getUser());
 
         if ($group_by) {
             $ticket_ids = $searcher->getMatches();

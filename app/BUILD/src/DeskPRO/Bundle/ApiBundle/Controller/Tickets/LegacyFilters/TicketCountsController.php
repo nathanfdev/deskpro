@@ -177,12 +177,12 @@ class TicketCountsController extends BaseController
     {
         $data_service = $this->get('data.ticket_legacy_filter_sets');
 
-        $count    = Count::fromValue(0);
+        $count    = Count::fromValue($data_service->getTotalCount());
         $group_by = $request->get('group_by');
 
         foreach ($data_service->getAllFilters() as $filter) {
             $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
-            $count->addNestedInstance($data_service->getFilterCount($filter,  $filter_group_by), true);
+            $count->addNestedInstance($data_service->getFilterCount($filter,  $filter_group_by));
         }
 
         return View::create($this->dataSerialize($count));
