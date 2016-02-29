@@ -72,7 +72,9 @@ class OrganizationType extends AbstractType
                 'property_path' => 'picture_blob',
             ])
             ->add('summary', 'text')
-            ->add('importance', 'integer')
+            ->add('importance', 'integer', [
+                'empty_data' => '0',
+            ])
             ->add('labels', 'api_labels_collection', [
                 'labels_class'   => LabelOrganization::class,
                 'labels_owner'   => $builder->getData(),

@@ -30,9 +30,6 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."
 
-    And the JSON node "errors.fields.importance.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.importance.errors[0].message" should be equal to "This value should not be blank."
-
   Scenario: I try to add a new organization with not valid email domain
     When I send a POST request to "/api/v2/organizations" with body:
     """
@@ -64,7 +61,6 @@ Feature: /organizations endpoint
 {
   "name": "Organization 3",
   "summary": "test organization",
-  "importance": 3,
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
   "labels": ["label 1", "label 1", "label 2"],
   "email_domains": ["domain1.com", "domain2.com"],
@@ -76,7 +72,7 @@ Feature: /organizations endpoint
     And the JSON node "data.id" should be equal to 3
     And the JSON node "data.name" should be equal to "Organization 3"
     And the JSON node "data.summary" should be equal to "test organization"
-    And the JSON node "data.importance" should be equal to 3
+    And the JSON node "data.importance" should be equal to 0
     And the JSON node "data.labels" should have 2 elements
     And the JSON node "data.labels[0]" should be equal to "label 1"
     And the JSON node "data.labels[1]" should be equal to "label 2"
