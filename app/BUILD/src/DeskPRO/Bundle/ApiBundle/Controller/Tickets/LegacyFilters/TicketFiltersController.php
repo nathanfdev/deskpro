@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -74,16 +73,11 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        /** @var Person $user */
-        $user = $this->getUser();
-        $user->loadHelper('AgentTeam');
-        $user->loadHelper('AgentPermissions');
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+        $searcher     = $data_service->getFilterSearcher($filter);
 
         $current_page = $request->query->getInt('page', 1);
-        $max_per_page = $request->query->getInt('count', 10);
-
-        $searcher = $filter->getSearcher();
-        $searcher->setPersonContext($user);
+        $max_per_page = $request->query->getInt('count', self::$listPerPage);
 
         $ticket_ids = $searcher->getMatches([
             'limit'  => $max_per_page,

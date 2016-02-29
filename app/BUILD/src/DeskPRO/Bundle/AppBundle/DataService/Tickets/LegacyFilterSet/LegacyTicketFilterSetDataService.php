@@ -128,8 +128,7 @@ class LegacyTicketFilterSetDataService
      */
     public function getFilterCount(LegacyTicketFilter $filter, $group_by = null)
     {
-        $searcher = $filter->getSearcher();
-        $searcher->setPersonContext($this->getUser());
+        $searcher = $this->getFilterSearcher($filter);
 
         if ($group_by) {
             $ticket_ids = $searcher->getMatches();
@@ -150,6 +149,19 @@ class LegacyTicketFilterSetDataService
         }
 
         return $count;
+    }
+
+    /**
+     * @param LegacyTicketFilter $filter
+     *
+     * @return \Application\DeskPRO\Searcher\TicketSearch
+     */
+    public function getFilterSearcher(LegacyTicketFilter $filter)
+    {
+        $searcher = $filter->getSearcher();
+        $searcher->setPersonContext($this->getUser());
+
+        return $searcher;
     }
 
     /**
