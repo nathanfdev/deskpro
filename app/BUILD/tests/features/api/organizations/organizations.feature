@@ -53,7 +53,7 @@ Feature: /organizations endpoint
   "summary": "test organization",
   "importance": 3,
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
-  "labels": ["label 1", "label 2"],
+  "labels": ["label 1", "label 1", "label 2"],
   "email_domains": ["domain1.com", "domain2.com"],
   "user_groups": [1, 2]
 }

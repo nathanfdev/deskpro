@@ -40,6 +40,21 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class ArrayOfStringsTransformer implements DataTransformerInterface
 {
     /**
+     * @var bool
+     */
+    private $unique_values;
+
+    /**
+     * Constructor.
+     *
+     * @param bool $unique_values
+     */
+    public function __construct($unique_values = false)
+    {
+        $this->unique_values = $unique_values;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function transform($value)
@@ -66,7 +81,14 @@ class ArrayOfStringsTransformer implements DataTransformerInterface
                 throw new TransformationFailedException('Expected scalar');
             }
 
-            $result[] = (string) $string;
+            $string = (string) $string;
+            $string = trim($string);
+
+            $result[] = $string;
+        }
+
+        if ($this->unique_values) {
+            $result = array_values(array_unique($result));
         }
 
         return $result;
