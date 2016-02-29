@@ -243,7 +243,7 @@ class DbalQuerySpec extends ObjectBehavior
 
         $this->setPage(2);
         $this->setFrom('tickets');
-        $this->getPageOffset()->shouldBe(null);
+        $this->getPageOffset()->shouldBe(0);
 
         $this->generateLimitString()->shouldBe('');
         $this->__toString()->shouldBe('SELECT * FROM tickets');
