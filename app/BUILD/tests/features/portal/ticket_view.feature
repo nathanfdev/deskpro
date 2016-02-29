@@ -82,7 +82,7 @@ Feature: Ticket View
     Then I should be on the ticket view page for ticket ID "9"
     And I should see "An agent ticket 3"
     And I should see the ticket reply form
-    When I fill in "ticket_reply_ticket_message_message_text" with "This is my reply"
+    When I fill in "ticket_reply_ticket_message_message" with "This is my reply"
     And I press "Reply"
     Then I should be on "/tickets/9"
     And the response status code should be 200
