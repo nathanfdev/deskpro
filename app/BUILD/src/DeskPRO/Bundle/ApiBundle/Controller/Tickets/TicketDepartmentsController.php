@@ -32,11 +32,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,8 +46,9 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketDepartmentsController.
  *
  * @ApiModes("all")
+ * @Route("/ticket_departments")
  */
-class TicketDepartmentsController extends CrudSubController
+class TicketDepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
     public static $type      = DepartmentType::class;
@@ -69,7 +71,7 @@ class TicketDepartmentsController extends CrudSubController
      *      },
      *      output="Application\DeskPRO\Entity\Department"
      * )
-     * @Get("/ticket_departments/{department}/agents")
+     * @Get("/{department}/agents")
      *
      * @param Department $department
      *
@@ -85,6 +87,8 @@ class TicketDepartmentsController extends CrudSubController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        parent::applyListFilters($qb, $alias, $request);
+
         if ($request->query->getBoolean('my', false)) {
             $permission_bag         = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
             $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
