@@ -16,7 +16,7 @@ export class AbstractDateTimePicker extends React.Component {
 
     this.picker = new Picker({
       input: ReactDOM.findDOMNode(this.refs.input),
-      anchor: ReactDOM.findDOMNode(this),
+      anchor: ReactDOM.findDOMNode(this.refs.anchor || this),
       format: 'MMMM D, YYYY, hh:mm',
       maxYear: Moment().year(),
       initialValue: initial,
