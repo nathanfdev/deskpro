@@ -133,36 +133,37 @@ class TicketGrouping
     }
 
     /**
-     * @param string $col_string
+     * @param string $value
      *
      * @return TicketGrouping
      */
-    public static function fromString($col_string)
+    public static function fromString($value)
     {
-        if (self::isCustom($col_string)) {
-            return new self($col_string);
+        if (self::isCustom($value)) {
+            return new self($value);
         }
 
-        return self::fromConst($col_string);
+        return self::fromConst($value);
     }
 
     /**
-     * @param mixed $value
+     * @param string $value
      *
      * @throws UnknownTicketGroupingColumnException
-     * @return TicketGrouping
      *
+     * @return TicketGrouping
      */
     public static function fromConst($value)
     {
         $refl      = new \ReflectionClass(__CLASS__);
         $constants = $refl->getConstants();
+        $name      = strtoupper($value);
 
-        if (!in_array($value, $constants)) {
+        if (empty($constants[$name])) {
             throw new UnknownTicketGroupingColumnException();
         }
 
-        return new self($value);
+        return new self($constants[$name]);
     }
 
     /**
