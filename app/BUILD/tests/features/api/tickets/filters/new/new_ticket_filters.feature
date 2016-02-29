@@ -38,6 +38,8 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data.title" should be equal to "Filter 2"
     And the JSON node "data.display_order" should be equal to 20
     And the JSON node "data.filter_set" should be equal to 1
+    And the JSON node "data.term.op" should be equal to "is"
+    And the JSON node "data.term.options.status[0]" should be equal to "resolved"
 
   Scenario: I retrieve list of filter's tickets
     When I send a GET request to "/api/v2/new/ticket_filters/1/tickets"
