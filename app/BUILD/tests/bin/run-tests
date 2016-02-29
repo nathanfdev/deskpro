@@ -67,7 +67,7 @@ fi
 ##################################
 IS_JEST_ERROR=0
 
-cd ../../pub
+cd ../../../www/assets/BUILD/pub/
 npm test
 
 if [[ $? -ne 0 ]] ; then
