@@ -38,7 +38,7 @@ export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
   'FEEDBACK_GET_COMMENTS_COUNTER',
-    ids => dispatch => dispatch(loadBatch('FeedbackCommentCounter', recordStoresId, ids))
+    ids => dispatch => dispatch(loadBatch('FeedbackCommentCounter', ids, recordStoresId))
 );
 
 export const setDisplayFields = createAction(
@@ -97,7 +97,7 @@ export const storeDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_STORE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    repository('PersonSetting').create({name: 'feedback_display_fields', value: displayFields});
+    repository('PersonSetting').create({ name: 'feedback_display_fields', value: displayFields });
     dispatch(setViewFieldsSettingStoredFlag(true));
     return displayFields;
   }
@@ -107,7 +107,7 @@ export const updateDisplayFieldsToPersonSetting = createAction(
   'FEEDBACK_UPDATE_DISPLAY_FIELD_TO_PERSON_SETTING',
   () => (dispatch, getState) => {
     const displayFields = visibleFieldsSelector(getState());
-    repository('PersonSetting').update({name: 'feedback_display_fields', value: displayFields});
+    repository('PersonSetting').update({ name: 'feedback_display_fields', value: displayFields });
     return displayFields;
   }
 );

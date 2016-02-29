@@ -35,7 +35,10 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -48,7 +51,7 @@ use Orb\Util\Strings;
  *
  * @PortalLinkRoute("portal_chats_view", route_param_map={"chat":"id"})
  */
-class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
+class ChatConversation extends DomainObject
 {
     const STATUS_OPEN  = 'open';
     const STATUS_ENDED = 'ended';
@@ -265,10 +268,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->participants      = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->messages          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data       = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels            = new ArrayCollection();
+        $this->participants      = new ArrayCollection();
+        $this->messages          = new ArrayCollection();
+        $this->custom_data       = new ArrayCollection();
         $this->date_created      = new \DateTime();
         $this->date_user_waiting = new \DateTime();
     }
@@ -279,9 +282,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager(
-                $this, 'DeskPRO:LabelChatConversation'
-            );
+            $this->_label_manager = new LabelManager($this, 'DeskPRO:LabelChatConversation');
         }
 
         return $this->_label_manager;
@@ -360,6 +361,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Create a new message and then add it to this convo.
+     *
+     * @param string $content
+     * @param Person $author
+     * @param bool   $is_html
+     *
+     * @return
      */
     public function addNewMessage($content, $author, $is_html = false)
     {
@@ -378,7 +385,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Create a new message for a user based on their session.
      *
-     * @return \Application\DeskPRO\Entity\ChatMessage
+     * @param $content
+     * @param $session
+     *
+     * @return ChatMessage
      */
     public function addNewMessageForSession($content, $session)
     {
@@ -397,7 +407,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Add a system message.
      *
-     * @return \Application\DeskPRO\Entity\ChatMessage
+     * @param      $content
+     * @param bool $is_user_hidden
+     *
+     * @return ChatMessage
      */
     public function addSystemMessage($content, $is_user_hidden = false)
     {
@@ -654,7 +667,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
             $this['date_assigned'] = new \DateTime();
         }
 
-        // Make sure the user isnt both assigned and a part
+        // Make sure the user isn't both assigned and a part
         if ($agent) {
             $this->removeParticipant($agent, true);
         }
@@ -897,6 +910,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default.
+     *
+     * @param int       $size
+     * @param null|bool $secure
      *
      * @return null|string
      */

@@ -35,6 +35,11 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 abstract class AbstractLogListener implements EventSubscriberInterface
 {
     /**
+     * @var LogComposer
+     */
+    protected $composer;
+
+    /**
      * @param LogComposer $log_composer
      */
     public function __construct(LogComposer $log_composer)
@@ -42,6 +47,9 @@ abstract class AbstractLogListener implements EventSubscriberInterface
         $this->composer = $log_composer;
     }
 
+    /**
+     * @param FilterResponseEvent $event
+     */
     public function onResponse(FilterResponseEvent $event)
     {
         if ($this->composer->getLog()) {

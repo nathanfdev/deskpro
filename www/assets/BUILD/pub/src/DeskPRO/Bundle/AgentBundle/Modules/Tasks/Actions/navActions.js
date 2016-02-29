@@ -10,6 +10,7 @@ export const createProject = createAction(
     const project = Immutable.fromJS(response.data);
     let projects = collectionSelectorFactory('Project', 'all')(getState());
     projects = projects.set(project.get('id'), project);
+    dispatch(releaseCollection('Project', 'all'));
     dispatch(setCollection('Project', 'all', projects));
   })
 );
@@ -17,6 +18,16 @@ export const createProject = createAction(
 export const editProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
   (projectId, data) => api.sendPut('DP_API/projects/' + projectId, data)
+);
+
+export const deleteProject = createAction(
+  'TASKS_NAV_EDIT_PROJECT',
+  (projectId) => (dispatch, getState) => api.sendDelete('DP_API/projects/' + projectId).success((response) => {
+    let projects = collectionSelectorFactory('Project', 'all')(getState());
+    projects = projects.delete(projectId);
+    dispatch(releaseCollection('Project', 'all'));
+    dispatch(setCollection('Project', 'all', projects));
+  })
 );
 
 export const initialLoad = createAction(

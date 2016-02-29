@@ -16,24 +16,17 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "loading/login", "loading/tip-panel";
 @import "global-widgets/table-view", "global-widgets/id-container", "global-widgets/timer", "global-widgets/pagination", "global-widgets/control-bar", "global-widgets/radio", "global-widgets/cards", "global-widgets/fonts", "global-widgets/checkbox";
 @import "global-widgets/popup", "global-widgets/avatar", "global-widgets/major-buttons";
-@import "global-widgets/window/scrollbar";
-@import "global-widgets/window/sidebar-titles","global-widgets/window/sidebar-hover-interactions", "global-widgets/window/sidebar", "global-widgets/window/app-bar";
-@import "global-widgets/window/top-bar", "global-widgets/window/top-bar-user-options", "global-widgets/window/top-bar-agent-ims";
+@import "global-widgets/window/scrollbar", "global-widgets/window/app-bar","global-widgets/window/main-panel";
+@import "global-widgets/window/sidebar/_index";
+@import "global-widgets/window/top-bar/_index";
 @import "global-widgets/navigation-dropdown/navigation-dropdowns";
 @import "global-widgets/im-container";
 @import "global-widgets/settings-popup/setting-popups";
 @import "global-widgets/workspace/dropdown-workspace";
 @import "global-widgets/datepicker";
+@import "global-widgets/modal";
 @import "animation"; // ReactCSSTransitionGroup
 //@import "raw/styles";
-
-// This are styles required to display labels in navigation
-@import "raw/main-panel";
-@import "raw/sidebar-labels";
-@import "raw/ticket-view";
-
-// This is tickets urgency slider styles (tickets count in navigation when grouping by urgency)
-@import "raw/sidebar-urgent-sliders";
 
 @import "chrome/positioning";
 @import "chrome/tabpane";

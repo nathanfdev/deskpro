@@ -32,7 +32,7 @@ export class MassActionBarContainer extends Component {
       }));
   }
 
-  cancelMassActions() {
+  cancel() {
     const { dispatch } = this.props;
     dispatch(cancelMassActions());
   }
@@ -47,15 +47,13 @@ export class MassActionBarContainer extends Component {
                         onClick={item.onClick}/>
         );
       }
-      if (item.type === 'action' || item.type === 'menu') {
-        return (
-          <ActionContainer key={index} id={index}
-                           item={item}
-                           setParams={setMassActionsParams}
-                           resetSingleAction={resetParam}
-                           currentParams={currentParams}/>
-        );
-      }
+      return (
+        <ActionContainer key={index} id={index}
+                         item={item}
+                         setParams={setMassActionsParams}
+                         resetSingleAction={resetParam}
+                         currentParams={currentParams}/>
+      );
     };
 
     return (
@@ -69,7 +67,7 @@ export class MassActionBarContainer extends Component {
                                    isActive={isActive}/>
         }
         {isActive && <SubmitButton label="Cancel"
-                                   onClick={this.cancelMassActions.bind(this)}
+                                   onClick={this.cancel.bind(this)}
                                    isActive={isActive}/>}
 
       </ul>

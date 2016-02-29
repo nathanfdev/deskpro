@@ -41,4 +41,5 @@ return [
     'adm.api_logs.response_data'   => 'Response data',
     'adm.api_logs.start_time'      => 'Start time',
     'adm.api_logs.end_time'        => 'End time',
+    'adm.api_logs.replay_it'       => 'Replay it!',
 ];

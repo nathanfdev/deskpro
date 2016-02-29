@@ -69,6 +69,11 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private $languages = [];
 
     /**
+     * @var int[]
+     */
+    private $usergroups = [];
+
+    /**
      * @var string[]
      */
     private $statuses = [
@@ -136,11 +141,12 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     public function load(ObjectManager $manager)
     {
-        $this->manager   = $manager;
-        $this->tr        = $this->container->get('deskpro.core.translate');
-        $this->admin     = $this->getReference('admin');
-        $this->people    = $this->fetchIds(self::TABLE_PEOPLE);
-        $this->languages = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->manager    = $manager;
+        $this->tr         = $this->container->get('deskpro.core.translate');
+        $this->admin      = $this->getReference('admin');
+        $this->people     = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->languages  = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->usergroups = $this->fetchIds(self::TABLE_USERGROUPS);
 
         $this->loadExampleArticle();
         $this->loadExampleNew();
@@ -209,9 +215,9 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $categoryTable = $this->content[$content]['category_table'];
         while ($i++ < self::NUM_CATEGORIES) {
             $values = [
-//                'parent_id'     => $this->generateParentId($i),
-'display_order' => rand(1, 2),
-'depth'         => 1,
+                // 'parent_id'     => $this->generateParentId($i),
+                'display_order' => rand(1, 2),
+                'depth'         => 1,
             ];
             if ($categoryTable === self::TABLE_ARTICLE_CATEGORIES) {
                 $values['is_agent'] = rand(0, 1);
@@ -226,7 +232,6 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function generateParentId($i)
     {
-        echo "\nIndex: $i";
         if ($i > 2) {
             $parentId = rand(0, $i - 1);
 
@@ -240,14 +245,14 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $batch      = [];
         $categories = $this->content[$content]['categories'];
-        $table      = $this->content[$content]['permissions_table'];
         foreach ($categories as $category) {
             $values = [
                 'category_id'  => $category,
-                'usergroup_id' => rand(1, 2),
+                'usergroup_id' => $this->faker->randomElement($this->usergroups),
             ];
             $batch[] = $values;
         }
+        $table = $this->content[$content]['permissions_table'];
         $this->db->batchInsert($table, $batch, true);
     }
 

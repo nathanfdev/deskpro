@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -41,6 +44,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_FEEDBACK            = 100;
+    const NUM_FEEDBACK_COMMENTS   = 100;
     const NUM_LABELS              = 30;
     const MIN_LABELS_PER_FEEDBACK = 0;
     const MAX_LABELS_PER_FEEDBACK = 5;
@@ -124,6 +128,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->manager = $manager;
         $this->loadCustomDefFeedback();
         $this->loadStatusCategories();
+        $this->loadLabels();
         $this->manager->flush();
 
         $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
@@ -141,6 +146,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->loadFeedback();
         $this->loadFeedbackCategories();
         $this->loadFeedbackLabels();
+        $this->loadFeedbackComments();
     }
 
     private function loadCustomDefFeedback()
@@ -163,6 +169,31 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 $this->manager->persist($cat);
             }
         }
+    }
+
+    private function loadLabels()
+    {
+        $label_type = LabelDef::TYPE_FEEDBACK;
+        $this->faker->unique(true);
+
+        $batch = [];
+
+        for ($i = 0; $i < self::NUM_LABELS; ++$i) {
+            $l = $this->faker->unique()->company;
+            if ($l) {
+                $l       = strtolower($l);
+                $batch[] = [
+                    'label_type' => $label_type,
+                    'label'      => $l,
+                    'color'      => $this->faker->hexColor,
+                    'total'      => 0,
+                ];
+            }
+        }
+
+        $this->db->batchInsert('label_defs', $batch, true);
+
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
     }
 
     private function loadFeedback()
@@ -266,12 +297,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadFeedbackLabels()
     {
-        $this->faker->unique(true);
-        while (count($this->labels) < self::NUM_LABELS) {
-            if ($label = strtolower($this->faker->unique()->company)) {
-                $this->labels[] = $label;
-            }
-        }
         $batch = [];
         foreach ($this->feedback as $id) {
             $num = rand(self::MIN_LABELS_PER_FEEDBACK, self::MAX_LABELS_PER_FEEDBACK);
@@ -287,5 +312,34 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         }
 
         $this->db->batchInsert(self::TABLE_LABELS_FEEDBACK, $batch, true);
+    }
+
+    private function loadFeedbackComments()
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_FEEDBACK_COMMENTS) {
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+            $values      = [
+                'content'     => $this->faker->realText(300),
+                'feedback_id' => $this->faker->randomElement($this->feedback),
+                'person_id'   => $this->faker->randomElement($this->people),
+                'ip_address'  => $this->faker->ipv4,
+                'status'      => $this->faker->randomElement(
+                    [FeedbackComment::STATUS_VISIBLE, FeedbackComment::STATUS_HIDDEN, FeedbackComment::STATUS_DELETED]
+                ),
+                'date_created' => $dateCreated,
+            ];
+            $values  = $this->setCommentReviewed($values);
+            $batch[] = $values;
+        }
+        $this->db->batchInsert(self::TABLE_FEEDBACK_COMMENTS, $batch, true);
+    }
+
+    private function setCommentReviewed(array $values)
+    {
+        $values['is_reviewed'] = $values['status'] === FeedbackComment::STATUS_HIDDEN ? 0 : 1;
+
+        return $values;
     }
 }

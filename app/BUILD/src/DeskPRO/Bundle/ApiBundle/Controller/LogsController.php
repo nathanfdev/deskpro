@@ -42,6 +42,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -186,6 +187,46 @@ class LogsController extends BaseController
             ),
             Response::HTTP_OK,
             ['Location' => $this->generateUrl('api_logs_options')]
+        );
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="get api logs collection",
+     *      statusCodes={
+     *          200="Success",
+     *      }
+     * )
+     *
+     * @Annotations\Post("/api_logs/{id}/replay", name="api_logs_replay", requirements={"id": "\d+"})
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function replayLogAction(Request $request, $id)
+    {
+        $mode = $request->request->get('mode', 'subrequest');
+
+        if (!$log = $this->get('doctrine.orm.default_entity_manager')->find('\DeskPRO\Bundle\AppBundle\Entity\ApiLog', $id)) {
+            throw new NotFoundHttpException(sprintf('Log with id [ %d ] not found', $id));
+        }
+
+        switch ($mode) {
+            case 'subrequest':
+                $log = $this->get('api_log.replayer')->replay($log->getRequestId(), 'null');
+                break;
+            case 'isolated':
+                $log = $this->get('api_log.replayer')->replayWithCrawler($log->getRequestId(), 'null');
+                break;
+            default:
+                throw new BadRequestHttpException();
+        }
+
+        return View::create(
+            $this->dataSerialize($log, 'data'),
+            Response::HTTP_OK
         );
     }
 }

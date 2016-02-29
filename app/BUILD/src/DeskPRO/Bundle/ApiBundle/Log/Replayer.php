@@ -42,6 +42,26 @@ use Symfony\Component\HttpKernel\Kernel;
 class Replayer
 {
     /**
+     * @var Kernel
+     */
+    private $kernel;
+
+    /**
+     * @var LogComposer
+     */
+    private $composer;
+
+    /**
+     * @var LogServiceFactory
+     */
+    private $factory;
+
+    /**
+     * @var SettingsResolver
+     */
+    private $resolver;
+
+    /**
      * @param Kernel            $kernel
      * @param LogComposer       $composer
      * @param LogServiceFactory $factory
@@ -49,18 +69,19 @@ class Replayer
      */
     public function __construct(Kernel $kernel, LogComposer $composer, LogServiceFactory $factory, SettingsResolver $resolver)
     {
-        $this->kernel     = $kernel;
-        $this->composer   = $composer;
-        $this->serializer = $factory->createSerializer('human_readable');
-        $this->resolver   = $resolver;
+        $this->kernel   = $kernel;
+        $this->composer = $composer;
+        $this->factory  = $factory;
+        $this->resolver = $resolver;
     }
 
     /**
-     * @param $request_id
+     * @param string $request_id
+     * @param string $serializer
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function replay($request_id)
+    public function replay($request_id, $serializer = 'human_readable')
     {
         $log = $this->composer->getLogHelper()->findRequest($request_id);
         if (!$log) {
@@ -70,15 +91,16 @@ class Replayer
         $request  = $this->createSymfonyRequest($log);
         $response = $this->kernel->handle($request, HttpKernelInterface::SUB_REQUEST, true);
 
-        return $this->compose($request, $response);
+        return $this->compose($request, $response, $serializer);
     }
 
     /**
-     * @param $request_id
+     * @param string $request_id
+     * @param string $serializer
      *
      * @return string
      */
-    public function replayWithCrawler($request_id)
+    public function replayWithCrawler($request_id, $serializer = 'human_readable')
     {
         $log = $this->composer->getLogHelper()->findRequest($request_id);
         if (!$log) {
@@ -87,21 +109,24 @@ class Replayer
         $request  = $this->createSymfonyRequest($log);
         $response = $this->sendRequest($log);
 
-        return $this->compose($request, $response);
+        return $this->compose($request, $response, $serializer);
     }
 
     /**
      * @param Request  $request
      * @param Response $response
+     * @param string   $serializer
      *
      * @return string
      */
-    protected function compose(Request $request, Response $response)
+    private function compose(Request $request, Response $response, $serializer)
     {
         $new_log = $this->composer->internalCreate($request);
         $this->composer->internalFinish($response, $new_log);
 
-        return $this->serializer->serialize($new_log);
+        $serializer = $this->factory->createSerializer($serializer);
+
+        return $serializer->serialize($new_log);
     }
 
     /**
@@ -109,11 +134,11 @@ class Replayer
      *
      * @return Response
      */
-    protected function sendRequest(ApiLog $log)
+    private function sendRequest(ApiLog $log)
     {
         // wont work with :8080 ie
         $client = new \GuzzleHttp\Client([
-            'base_uri'        => 'http://localhost/', //$this->resolver->getGlobalSettings()->get('core.deskpro_url'),
+            'base_uri'        => $this->resolver->getGlobalSettings()->get('core.deskpro_url'),
             'allow_redirects' => true,
         ]);
 
@@ -135,7 +160,7 @@ class Replayer
      *
      * @return Request
      */
-    protected function createSymfonyRequest(ApiLog $log)
+    private function createSymfonyRequest(ApiLog $log)
     {
         $request = new Request(
             $log->getRequestData('query'),

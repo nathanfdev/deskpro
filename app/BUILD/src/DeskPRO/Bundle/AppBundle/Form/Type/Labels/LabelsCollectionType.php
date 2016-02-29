@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -67,6 +68,24 @@ class LabelsCollectionType extends ApiType
     /**
      * {@inheritdoc}
      */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->addViewTransformer(new LabelsCollectionTransformer(
+                $this->em,
+                $this->property_accessor,
+                $options['labels_owner'],
+                $options['labels_class'],
+                $options['labels_property'],
+                $options['owner_property']
+            ))
+            ->addViewTransformer(new ArrayOfStringsTransformer(true)
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
         return 'collection';
@@ -94,20 +113,5 @@ class LabelsCollectionType extends ApiType
                 'by_reference'    => true,
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->addViewTransformer(new LabelsCollectionTransformer(
-            $this->em,
-            $this->property_accessor,
-            $options['labels_owner'],
-            $options['labels_class'],
-            $options['labels_property'],
-            $options['owner_property']
-        ));
     }
 }

@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -82,8 +83,14 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     public function listAction()
     {
         $keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
+        $data = [];
+        foreach ($keys as $index => $key) {
+            /* @var ApiKey $key */
+            $data[$index] = $key->toApiData(false);
+            $this->getLimitsData($data[$index], $key);
+        }
 
-        return $this->createApiResponse($this->getApiData($keys, false) ?: array());
+        return $this->createApiResponse($data);
     }
 
     ###################################################################################################################
@@ -114,14 +121,26 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse($this->getApiData($key));
+        $data = $this->getApiData($key);
+        $this->getLimitsData($data, $key);
+
+        return $this->createApiResponse($data);
     }
 
     ####################################################################################################################
     # save
     ####################################################################################################################
 
-    public function saveAction(Request $request, $id)
+    /**
+     * @param   $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
+    public function saveAction($id)
     {
         /* @var $key ApiKey */
         if ($id) {
@@ -134,13 +153,47 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         }
 
         $data = $this->in->getAll('req');
+
         $form = $this->createForm(new ApiKeyType(), $key);
         $form->submit($data);
 
         if ($form->isValid()) {
             $this->em->flush($key);
+
+            $limits_service = $this->get('api_limits.limits_service');
+            $limits         = $limits_service->getKeyLimits($key);
+
+            $limits_data = [
+                AbstractLimit::INTERVAL_DAY  => null,
+                AbstractLimit::INTERVAL_HOUR => null,
+            ];
+
+            foreach ($limits as $limit) {
+                $limits_data[$limit->getIntervalInSeconds()] = $limit;
+            }
+
+            foreach ($limits_data as $interval => $limit) {
+                if (!$limit) {
+                    $limits_data[$interval] = $limits_service->createLimit($interval);
+                }
+            }
+
+            $settings = $this->get('settings_resolver')->getDefaultSettings();
+
+            $hourly_limit = $this->in->getInt('hourly_limit', 'req');
+            $hourly_limit = min($hourly_limit, $settings->get('api_limits.key.hour'));
+
+            $daily_limit = $this->in->getInt('daily_limit', 'req');
+            $daily_limit = min($daily_limit, $settings->get('api_limits.key.day'));
+
+            $limits_data[AbstractLimit::INTERVAL_HOUR]->setLimit($hourly_limit);
+            $limits_data[AbstractLimit::INTERVAL_DAY]->setLimit($daily_limit);
+
+            foreach ($limits_data as $limit) {
+                $limits_service->saveLimit($key, $limit);
+            }
         } else {
-            return $this->createApiErrorInfoResponse('validation_rrror', $this->getFormValidationErrorsString($form), array());
+            return $this->createApiErrorInfoResponse('validation_error', $this->getFormValidationErrorsString($form), array());
         }
 
         return $this->getAction($key['id']);
@@ -150,6 +203,15 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     # remove
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function removeAction($id)
     {
         /** @var $key ApiKey */
@@ -169,6 +231,15 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     # get-logs
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function getLogsAction($id)
     {
         /** @var $key ApiKey */
@@ -189,6 +260,15 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     # regenerate
     ####################################################################################################################
 
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     */
     public function regenerateAction($id)
     {
         /** @var $key ApiKey */
@@ -232,5 +312,34 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         );
 
         return $this->createApiResponse($result);
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getDefaultSettingsAction()
+    {
+        $settings_resolver = $this->get('settings_resolver');
+
+        return $this->createApiResponse([
+            'hourly_limit' => $settings_resolver->getDefaultSettings()->get('api_limits.key.hour'),
+            'daily_limit'  => $settings_resolver->getDefaultSettings()->get('api_limits.key.day'),
+        ]);
+    }
+
+    /**
+     * @param array  $data
+     * @param ApiKey $key
+     */
+    protected function getLimitsData(array &$data, ApiKey $key)
+    {
+        $service = $this->get('api_limits.limits_service');
+        foreach ($service->getKeyLimits($key) as $limit) {
+            if ($limit->getIntervalInSeconds() === AbstractLimit::INTERVAL_HOUR) {
+                $data['hourly_limit'] = $limit->getLimit();
+            } elseif ($limit->getIntervalInSeconds() === AbstractLimit::INTERVAL_DAY) {
+                $data['daily_limit'] = $limit->getLimit();
+            }
+        }
     }
 }

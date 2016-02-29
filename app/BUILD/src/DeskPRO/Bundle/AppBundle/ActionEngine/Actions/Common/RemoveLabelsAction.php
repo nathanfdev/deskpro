@@ -33,19 +33,11 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface, ActionInterface
+class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    public function __construct(array $options)
-    {
-        $resolver = new ActionOptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired(self::OPTION_LABELS);
@@ -56,11 +48,5 @@ class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInte
                 return !empty($value);
             }
         );
-    }
-
-    /** @return array */
-    public function serialize()
-    {
-        return [self::OPTION_LABELS => $this->options[self::OPTION_LABELS]];
     }
 }

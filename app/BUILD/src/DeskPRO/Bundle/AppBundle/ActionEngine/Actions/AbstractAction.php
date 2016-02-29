@@ -32,7 +32,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
-abstract class AbstractAction
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+
+abstract class AbstractAction implements ActionInterface
 {
     const APPROVE_ACTION             = 'approve';
     const DELETE_ACTION              = 'delete';
@@ -48,4 +50,31 @@ abstract class AbstractAction
     const OPTION_ID     = 'id';
 
     protected $options;
+
+    public function __construct(array $options = null)
+    {
+        if (null !== $options) {
+            $resolver = new ActionOptionsResolver();
+            static::configureOptions($resolver);
+            $this->options = $resolver->resolve($options);
+        }
+    }
+
+    /**
+     * Configure your options here. You MUST override this method, if you are implementing ActionWithOptionsInterface.
+     *
+     * @param ActionOptionsResolver $resolver
+     */
+    public static function configureOptions(ActionOptionsResolver $resolver)
+    {
+        throw new \RuntimeException(
+            'Action\'s extending AbstractAction and implementing ActionWithOptionsInterface must override the "configureOptions" method'
+        );
+    }
+
+    /** @return array */
+    public function serialize()
+    {
+        return ['options' => $this->options];
+    }
 }

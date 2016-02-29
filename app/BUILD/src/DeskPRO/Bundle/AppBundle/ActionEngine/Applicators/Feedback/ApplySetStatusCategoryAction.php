@@ -34,27 +34,29 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplySetStatusCategoryAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    const OPTION_STATUS_CATEGORY_ID = 'id';
     private $statusCategory;
+
+    /**
+     * @param Feedback[] $feedback
+     */
+    public function apply(array $feedback)
+    {
+        $this->init();
+        foreach ($feedback as $entity) {
+            $entity->setStatusCategory($this->statusCategory);
+        }
+    }
 
     /**
      * Fetch status category (FeedbackStatusCategory).
      */
-    public function init()
+    private function init()
     {
-        $id                   = $this->options[self::OPTION_STATUS_CATEGORY_ID];
+        $id                   = $this->options['id'];
         $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($id);
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function applyAction($feedback)
-    {
-        $feedback->setStatusCategory($this->statusCategory);
     }
 }

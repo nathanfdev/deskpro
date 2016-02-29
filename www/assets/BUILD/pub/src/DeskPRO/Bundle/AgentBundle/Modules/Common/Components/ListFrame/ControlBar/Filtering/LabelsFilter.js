@@ -45,8 +45,7 @@ export class LabelsFilter extends Component {
                   isActive={isActive}
                   setActiveItem={setActiveItem}
                   selected={selected}
-                  resetFilter={unsetParams.bind(this, param)}
-                  dispatch={dispatch}>
+                  resetFilter={unsetParams.bind(this, param)}>
         <Menu>
           <LabelsForm matchMode={matchMode}
                       params={{'get': () => mode}}

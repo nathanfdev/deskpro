@@ -23,20 +23,20 @@ export default createReducer(initialState, {
       start: (state) => state.set('loadingMessages', true),
       success: (state, payload) => {
         const newState = state.set('searching', Boolean(payload.searchQuery));
-        const transformed = {chatId: payload.chat_id};
-        const chat = messagesHelper.getChat(newState, transformed);
+        const chat = messagesHelper.getChat(newState, payload.chat_id);
+        const path = messagesHelper.getPath(newState, payload.chat_id);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
           payload.messages.map((message) => {messages[message.uuid] = message;});
           payload.messages = Immutable.Map(messages);
-          return newState.setIn(messagesHelper.getPath(newState, transformed), payload);
+          return newState.setIn(path, payload);
         }
 
         payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
         chat.page = Math.max(chat.page, payload.page);
 
-        return newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
+        return newState.setIn(path, {...chat});
       },
       done: (state) => state.set('loadingMessages', false)
     }
@@ -55,28 +55,5 @@ export default createReducer(initialState, {
       done: (state) => state.set('loadingCounts', false)
     }
   ),
-  [newActionAlerts]: (state, payload) => {
-    let newState = state;
-    if (payload.type === 'notification.agent_chat.new_message') {
-      const transformed = {
-        chatId: payload.data.agent_chat_id
-      };
-      const chat = messagesHelper.getChat(newState, transformed);
-      if (chat) {
-        chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-        newState = newState.setIn(messagesHelper.getPath(newState, transformed), {...chat});
-      }
-    } else if (payload.type === 'refresh_counts') {
-      newState = newState.set('counts', payload.data);
-    } else if (payload.type === 'notification.agent_chat.mark_message') {
-      const transformed = {
-        chatId: payload.data.chat_id,
-        uuids: [payload.data.message_uuid],
-        status: payload.data.status
-      };
-      newState = messagesHelper.markMessages(state, transformed);
-    }
-    return newState;
-  }
-
+  [newActionAlerts]: messagesHelper.handleActionAlerts.bind(messagesHelper)
 });

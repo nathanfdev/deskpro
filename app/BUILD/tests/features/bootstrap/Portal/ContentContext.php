@@ -1,0 +1,95 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+namespace DpBehat\Portal;
+
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
+
+/**
+ * Class ContentContext.
+ */
+class ContentContext extends BasePortalContext
+{
+    /**
+     * @Given there are no articles in the Knowledge Base
+     */
+    public function noArticlesInKb()
+    {
+        $articles = $this->em()->getRepository(Article::class)->findAll();
+        foreach ($articles as $article) {
+            $this->em()->remove($article);
+        }
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I have ":title" article
+     * @Given I add ":title" article
+     */
+    public function haveAnArticle($title)
+    {
+        $article = new Article();
+        /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
+        $user_details = $this->getContainer()->get('user_details');
+        $person       = $user_details->getWho('agent');
+        $article->setPerson($person);
+        $article->setTitle($title);
+        $article->setCategories(
+            $this->em()->getRepository(ArticleCategory::class)->findAll()
+        );
+        $article->setStatus(Article::STATUS_PUBLISHED);
+
+        $this->persistAndFlush($article);
+    }
+
+    /**
+     * @Given I have ":title" news
+     */
+    public function haveANews($title)
+    {
+        $news = new News();
+
+        /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
+        $user_details = $this->getContainer()->get('user_details');
+        $person       = $user_details->getWho('agent');
+        $news
+            ->setPerson($person);
+        $news->setTitle($title);
+        $news->setCategory(
+            $this->em()->getRepository(NewsCategory::class)->findOneBy(['slug' => 'general'])
+        );
+        $news->setStatus(News::STATUS_PUBLISHED);
+        $this->persistAndFlush($news);
+    }
+}

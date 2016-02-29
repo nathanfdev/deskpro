@@ -45,7 +45,7 @@ export class IMContainer extends React.Component {
     const node = this.helper.getChatNode(this.props.current, this.props.user.get('id'));
     return (
       <Simple
-        positionMy="left-25 top+1"
+        positionMy="left-25 top+8"
         positionAt="center bottom"
         collision="none"
         positionTarget={node}

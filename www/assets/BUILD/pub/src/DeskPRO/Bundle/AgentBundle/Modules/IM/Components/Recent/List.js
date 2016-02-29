@@ -6,7 +6,7 @@ import * as actions from '../../Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { myDepartmentsSelector, myAgentTeamsSelector, setCollection, loadFromApi, isLoadedCollectionSelectorFactory,
+import { myDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
   collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
@@ -54,13 +54,12 @@ export class List extends React.Component {
       const { dispatch } = this.props;
       const records = {};
       const ids = [];
-      console.log(props.counts);
       Object.keys(props.counts).map((key) => {
         const item = props.counts[key];
         ids.push(parseInt(item.chat_id, 10));
         records[item.chat_id] = item.chat;
       });
-      dispatch(setCollection('AgentChat', 'recent', records));
+      dispatch(addToCollection('AgentChat', 'recent', records));
     }
     this.props = props;
   }

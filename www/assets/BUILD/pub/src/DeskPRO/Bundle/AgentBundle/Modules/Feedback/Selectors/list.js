@@ -65,7 +65,7 @@ export const isLoadedSelector = createSelector(
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listFiltersSelector = createSelector(
-  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('Feedback', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
+  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
   (navState, currentListParams, categories, labels, types) => {
     const checkIfShowStatus = ()=> {
       const navItem = currentListParams.get('navItem');
@@ -135,14 +135,14 @@ export const listFiltersSelector = createSelector(
 /* ==================== Mass actions ===================== */
 
 export const massActionsSelector = createSelector(
-  [navStateSelector, collectionSelectorFactory('Feedback', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
+  [navStateSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
   (navState, categories, types, labels) => {
     const massActions = [];
     // Type options
     const typeOptions = types.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     massActions.push({
       label: 'Type',
-      type: 'action',
+      type: 'set_action',
       param: 'set_type',
       quickFilter: true,
       options: typeOptions
@@ -161,7 +161,7 @@ export const massActionsSelector = createSelector(
       { label: 'Hidden', value: 'hidden', nested: toStatusOptions(statuses.hidden.nested, 'set_hidden_status') }
     ];
     massActions.push({
-      label: 'Status', type: 'action', param: 'set_status', quickFilter: true,
+      label: 'Status', type: 'set_action', param: 'set_status', quickFilter: true,
       options: statusOptions
     });
 
@@ -171,7 +171,7 @@ export const massActionsSelector = createSelector(
       value: cat.get('input')
     }));
     massActions.push({
-      label: 'Category', type: 'action', param: 'set_category', quickFilter: true,
+      label: 'Category', type: 'set_action', param: 'set_category', quickFilter: true,
       options: categoryOptions
     });
 

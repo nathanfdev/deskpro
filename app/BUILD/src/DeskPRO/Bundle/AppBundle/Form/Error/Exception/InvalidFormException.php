@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error\Exception;
 
 use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
@@ -39,7 +40,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Throw this when a form fails validation. Throwing this will trigger our ExceptionController to
  * render the proper response.
  */
-class InvalidFormException extends BadRequestHttpException
+class InvalidFormException extends BadRequestHttpException implements FormExceptionInterface
 {
     /**
      * @var FormInterface
@@ -50,11 +51,10 @@ class InvalidFormException extends BadRequestHttpException
      * Constructor.
      *
      * @param FormInterface $invalid_form the invalid form
-     * @param string        $message      the api error code
      * @param \Exception    $previous     The previous exception, if any exist
      * @param int           $code         The internal exception code
      */
-    public function __construct(FormInterface $invalid_form, $message = null, \Exception $previous = null, $code = 0)
+    public function __construct(FormInterface $invalid_form, \Exception $previous = null, $code = 0)
     {
         $this->form = $invalid_form;
 

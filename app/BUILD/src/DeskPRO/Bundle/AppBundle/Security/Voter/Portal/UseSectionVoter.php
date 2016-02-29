@@ -47,7 +47,7 @@ class UseSectionVoter extends AbstractVoter
     const USE_TICKETS   = 'USE_TICKETS';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
@@ -57,12 +57,12 @@ class UseSectionVoter extends AbstractVoter
             self::USE_CHAT,
             self::USE_DOWNLOADS,
             self::USE_NEWS,
-            self::USE_TICKETS
+            self::USE_TICKETS,
         ));
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
@@ -87,11 +87,10 @@ class UseSectionVoter extends AbstractVoter
                 return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
                 return
-                    (
+
                         $permissionBag->get('tickets.use')
                         || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use')
-                    )
-                    && count($permissionBag->getAllowedTicketDepartmentIds()) > 0;
+                    ;
         }
 
         return false;

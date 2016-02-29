@@ -28,6 +28,7 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -46,6 +47,7 @@ class TicketContext extends BasePortalContext
 
         foreach ($tickets as $ticket_data) {
             $person = $this->getWho($ticket_data['who']);
+            App::setCurrentPerson($person);
             $ticket = new Ticket();
             $ticket->setPerson($person);
             $ticket->setSubject($ticket_data['subject']);
@@ -70,9 +72,8 @@ class TicketContext extends BasePortalContext
             $ticket->addMessage($message);
             $this->em()->persist($message);
             $this->em()->persist($ticket);
+            $this->em()->flush();
         }
-
-        $this->em()->flush();
     }
 
     /**
@@ -91,7 +92,7 @@ class TicketContext extends BasePortalContext
             ++$status_counts[$tr_status];
         }
 
-        expect(@$status_counts[$status] ?: 0)->toBe($num);
+        expect(@$status_counts[$status] ?: null)->toBe($num);
     }
 
     /**
@@ -113,9 +114,9 @@ class TicketContext extends BasePortalContext
     }
 
     /**
-     * @Given I go to the ticket veiw page for ticket ID :id
+     * @Given I go to the ticket view page for ticket ID :id
      */
-    public function iGoToTheTicketVeiwPageForTicketId($id)
+    public function iGoToTheTicketViewPageForTicketId($id)
     {
         $ticket = $this->getTicket($id);
 

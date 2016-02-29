@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\ApiToken;
@@ -39,7 +40,9 @@ use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -75,11 +78,18 @@ class ApiTokensController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        $form = $this->createForm(new AuthenticationType());
-        $form->submit($request->request->all());
+        $request_data = $request->request->all();
 
+        $form = $this->createForm(new AuthenticationRequestType());
+        $form->submit($request_data);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
+        }
+
+        $form = $this->createForm(new AuthenticationType());
+        $form->submit($request_data);
+        if (!$form->isValid()) {
+            throw new BadCredentialsFormException($form);
         }
 
         $data     = $form->getData();

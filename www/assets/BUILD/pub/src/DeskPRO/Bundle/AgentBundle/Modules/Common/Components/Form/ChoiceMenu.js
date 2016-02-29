@@ -6,20 +6,21 @@ import { connect } from 'react-redux';
 export class ChoiceMenu extends Component {
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     quickFilter: PropTypes.bool,
+    submenu: PropTypes.bool,
     children: PropTypes.any.isRequired
   };
 
   render() {
-    const { title, quickFilter, children } = this.props;
-
+    const { title, quickFilter, children, submenu } = this.props;
+    const classes = classNames('dpw-navigation-dropdown-panel', { 'dpw-navigation-dropdown-panel-corner-left': submenu });
     return (
-      <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
+      <div className={classes}>
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              {/* <ChoiceMenuHeader title={title}/> */}
+              { title && <ChoiceMenuHeader title={title}/> }
               <div className="dpw-departments-long-list">
                 {quickFilter && <QuickFilter/>}
                 <div className="dpw--popup-item-collection">
@@ -64,7 +65,9 @@ export class ChoiceMenuOption extends Component {
     return (
       <li>
         <div className={'dpw--popup-item-box'} onClick={onClick.bind(this, value)}>
-          <span className={'dpw--checkbox-boxy'}>{this.state.isActive && <i className="fa fa-check"></i>}</span>
+          <span className={'dpw--checkbox-boxy'}>
+            {this.state.isActive && <i className="fa fa-check"></i>}
+          </span>
           <span className="dpw-popup-item-collection-name">
             {label}
           </span>

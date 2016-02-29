@@ -1,3 +1,4 @@
+@logs
 Feature: Api should log any request
 
   Background:
@@ -5,6 +6,7 @@ Feature: Api should log any request
     And the setting "api_log.enabled" is set to 1
     And my request is authenticated
 
+  @reinstall
   Scenario: I send some request to API
     When I send a GET request to "/api/v2/notify/heartbeat"
     Then the response should be in JSON

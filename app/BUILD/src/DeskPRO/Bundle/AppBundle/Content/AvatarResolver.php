@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
@@ -98,9 +99,9 @@ class AvatarResolver
 
                 return $this->getDefaultCommonAvatar($size);
             }
-        } else {
-            return;
         }
+
+        return;
     }
 
     /**
@@ -171,11 +172,15 @@ class AvatarResolver
         $url  = null;
 
         if ($blob && $blob->isImage()) {
-            $url = $this->router->generate('serve_blob_sizefit', array(
-                'blob_auth_id' => $blob->getAuthId(),
-                'filename'     => $blob->getFilenameSafe(),
-                's'            => $size,
-            ), UrlGeneratorInterface::ABSOLUTE_URL);
+            $url = $this->router->generate(
+                'serve_blob_sizefit',
+                array(
+                    'blob_auth_id' => $blob->getAuthId(),
+                    'filename'     => $blob->getFilenameSafe(),
+                    's'            => $size,
+                ),
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            );
         } elseif ($this->use_gravatar && $person->primary_email) {
             $url = $person->primary_email->getGravatarUrl(true).'&s='.$size;
 
@@ -199,10 +204,14 @@ class AvatarResolver
      */
     public function getDefaultPersonAvatar($size = 80)
     {
-        $url = $this->router->generate('serve_default_picture', array(
-            's'        => $size,
-            'size-fit' => 1,
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->router->generate(
+            'serve_default_picture',
+            array(
+                's'        => $size,
+                'size-fit' => 1,
+            ),
+            UrlGeneratorInterface::ABSOLUTE_PATH
+        );
 
         return $url;
     }
@@ -219,11 +228,15 @@ class AvatarResolver
         $url  = null;
 
         if ($blob && $blob->isImage()) {
-            $url = $this->router->generate('serve_blob_sizefit', array(
-                'blob_auth_id' => $blob->getAuthId(),
-                'filename'     => $blob->getFilenameSafe(),
-                's'            => $size,
-            ), UrlGeneratorInterface::ABSOLUTE_URL);
+            $url = $this->router->generate(
+                'serve_blob_sizefit',
+                array(
+                    'blob_auth_id' => $blob->getAuthId(),
+                    'filename'     => $blob->getFilenameSafe(),
+                    's'            => $size,
+                ),
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            );
         }
 
         return $url;
@@ -236,10 +249,14 @@ class AvatarResolver
      */
     public function getDefaultCommonAvatar($size = 80)
     {
-        $url = $this->router->generate('serve_org_picture_default', array(
-            's'        => $size,
-            'size-fit' => 1,
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->router->generate(
+            'serve_org_picture_default',
+            array(
+                's'        => $size,
+                'size-fit' => 1,
+            ),
+            UrlGeneratorInterface::ABSOLUTE_PATH
+        );
 
         return $url;
     }

@@ -32,34 +32,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionToJsonTransformer;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractActionApplicator
 {
     protected $em;
     protected $options;
-    protected $actions;
-    protected $transformer;
 
-    public function __construct(EntityManager $em, array $options)
+    public function __construct(EntityManager $em, array $options = null)
     {
-        $this->em          = $em;
-        $this->options     = $options;
-        $this->actions     = new ActionCollection();
-        $this->transformer = new ActionToJsonTransformer($this->em);
-    }
-
-    protected function getEntities($class, array $ids)
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('entity')
-            ->from($class, 'entity')
-            ->where('entity.id IN (:ids)')
-            ->setParameter('ids', $ids);
-
-        return $qb->getQuery()->getResult();
+        $this->em      = $em;
+        $this->options = $options;
     }
 }

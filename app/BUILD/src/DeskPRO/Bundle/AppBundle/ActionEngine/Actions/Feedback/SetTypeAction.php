@@ -33,19 +33,11 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class SetTypeAction extends AbstractAction implements ActionInterface, ActionWithOptionsInterface
+class SetTypeAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    public function __construct(array $options)
-    {
-        $resolver = new ActionOptionsResolver();
-        self::configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-    }
-
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
@@ -57,10 +49,5 @@ class SetTypeAction extends AbstractAction implements ActionInterface, ActionWit
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }
         );
-    }
-
-    public function serialize()
-    {
-        return [self::OPTION_ID => $this->options[self::OPTION_ID]];
     }
 }

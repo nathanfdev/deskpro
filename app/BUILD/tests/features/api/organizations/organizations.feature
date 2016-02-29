@@ -45,6 +45,19 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].code" should be equal to "invalid_data_type"
     And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
+  Scenario: I try to add a new organization with duplicate email domains
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Organization 3",
+  "email_domains": ["domain1.com", "domain2.com", "domain2.com"]
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.email_domains.errors[0].code" should be equal to "not_unique_collection"
+    And the JSON node "errors.fields.email_domains.errors[0].message" should be equal to "One or more of the given values is not unique."
+
   Scenario: I create a new organization
     When I send a POST request to "/api/v2/organizations" with body:
     """
@@ -53,9 +66,9 @@ Feature: /organizations endpoint
   "summary": "test organization",
   "importance": 3,
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
-  "labels": ["label 1", "label 2"],
+  "labels": ["label 1", "label 1", "label 2"],
   "email_domains": ["domain1.com", "domain2.com"],
-  "user_groups": [1, 2]
+  "user_groups": [1, 2, 1]
 }
     """
     Then the response status code should be 201

@@ -18,7 +18,7 @@ export default createReducer(initialState, {
     return state.mergeIn([], {'overlayShown': false, 'chating': true});
   },
   [actions.closeChat]: (state) => {
-    return state.set('chating', false);
+    return state.merge({'chating': false, 'current': {}});
   },
   [actions.markChatAsManuallyClosed]: (state, payload) => {
     return state.setIn(['manuallyClosed', payload], true);

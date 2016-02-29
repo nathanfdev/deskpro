@@ -28,7 +28,7 @@
 
 namespace DpBehat\Api;
 
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 
 class ApiLimitsContext extends BaseContext
@@ -65,7 +65,7 @@ class ApiLimitsContext extends BaseContext
     public function globalLimitsAreExhausted()
     {
         $repo   = $this->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
-        $limits = $repo->findBy(['limit_type' => LimitInterface::TYPE_GLOBAL]);
+        $limits = $repo->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
 
         foreach ($limits as $limit) {
             $limit->setCurrent(0);

@@ -34,22 +34,19 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\SingleActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class ApplyDeleteAction extends AbstractActionApplicator implements SingleActionApplicatorInterface
+class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public function init()
-    {
-        return true;
-    }
-
     /**
-     * @param Feedback $feedback
+     * @param Feedback[] $feedback
      */
-    public function applyAction($feedback)
+    public function apply(array $feedback)
     {
-        $feedback->setStatus(Feedback::STATUS_HIDDEN);
-        $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
-        $feedback->setIsReviewed(true);
+        foreach ($feedback as $item) {
+            $item->setStatus(Feedback::STATUS_HIDDEN);
+            $item->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED);
+            $item->setIsReviewed(true);
+        }
     }
 }

@@ -61,7 +61,7 @@ class PortalStylesCompiler
     private $edit_theme_set;
 
     /**
-     * @var string DP_ROOT relative or full path to the portal SCSS file
+     * @var string path to the portal SCSS file
      */
     private $styles_file_path;
 
@@ -75,6 +75,8 @@ class PortalStylesCompiler
      * @param ThemeSet      $edit_theme_set
      * @param string        $styles_file_path
      * @param string        $custom_scss
+     *
+     * @throws \Exception
      */
     public function __construct(
         EntityManager $em,
@@ -82,21 +84,18 @@ class PortalStylesCompiler
         $styles_file_path,
         $custom_scss
     ) {
-        $this->em               = $em;
-        $this->styles_file_path = $styles_file_path;
-        $this->custom_scss      = $custom_scss;
-        $this->edit_theme_set   = $edit_theme_set;
-
-        // try to resolve path in constructor to get early Exception if path isn't valid
-        $this->getStylePath();
+        $this->em = $em;
+        if (!$this->styles_file_path = realpath($styles_file_path)) {
+            throw new \Exception("Can't resolve a file from the given path: {$this->styles_file_path}");
+        }
+        $this->custom_scss    = $custom_scss;
+        $this->edit_theme_set = $edit_theme_set;
     }
 
     /**
      * Recompile portal css.
      *
      * @param array $variables
-     *
-     * @throws \Exception
      */
     public function recompile(array $variables)
     {
@@ -160,12 +159,10 @@ class PortalStylesCompiler
     {
         $compiler = new StylesheetCompiler();
 
-        return $compiler->compile($this->getStylePath(), $variables, $this->custom_scss);
+        return $compiler->compile($this->styles_file_path, $variables, $this->custom_scss);
     }
 
     /**
-     * @throws \Exception
-     *
      * @return Blob|null
      */
     private function getEditThemeSetCssBlob()
@@ -179,24 +176,5 @@ class PortalStylesCompiler
         }
 
         return;
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return string
-     */
-    private function getStylePath()
-    {
-        if (file_exists($this->styles_file_path)) {
-            return $this->styles_file_path;
-        } else {
-            $path = DP_ROOT.'/'.rtrim($this->styles_file_path, '/');
-            if (file_exists($path)) {
-                return $path;
-            } else {
-                throw new \Exception("Can't resolve a file from the given path: {$this->styles_file_path}");
-            }
-        }
     }
 }

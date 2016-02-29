@@ -61,7 +61,7 @@ define [
 
       return deferred.promise
 
-    mutateData: (data) =>
+    mutateData: (data) ->
       models = []
       models.push model for model in data.data
       models.pagination = {
@@ -72,13 +72,22 @@ define [
 
       return models
 
-    loadLog: (id) =>
+    loadLog: (id) ->
       deferred = @$q.defer()
 
       @Api2.sendGet('/api_logs/' + id + '?include=data').success((data) =>
         deferred.resolve(data.data)
       , (data, status, headers, config) ->
         deferred.reject()
+      )
+
+      deferred.promise
+
+    replay: (model, mode) ->
+      deferred = @$q.defer()
+      @Api2.sendPostJson('/api_logs/' + model.id + '/replay', {mode: mode, request_id: model.request_id})
+      .success((data) =>
+        deferred.resolve(data.data)
       )
 
       deferred.promise

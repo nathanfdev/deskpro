@@ -1091,6 +1091,7 @@ return array(
     'api_limits.global.hour' => 500,
     'api_limits.global.day'  => 2500,
 
-    'api_limits.individual.hour' => 100,
-    'api_limits.individual.day'  => 300,
+    'api_limits.key.hour'    => 100,
+    'api_limits.key.day'     => 300,
+    'api_limits.key.default' => 50,
 );

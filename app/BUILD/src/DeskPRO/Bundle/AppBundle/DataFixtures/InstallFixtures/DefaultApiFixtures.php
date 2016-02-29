@@ -32,9 +32,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use DeskPRO\Bundle\ApiBundle\Limits\Model\LimitInterface;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
+use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -58,7 +58,7 @@ class DefaultApiFixtures extends DeskProAbstractFixture implements OrderedFixtur
         $global_hourly_limit->setLimit($limit)
             ->setCurrent($limit)
             ->setInterval(3600)
-            ->setType(LimitInterface::TYPE_GLOBAL);
+            ->setType(AbstractLimit::TYPE_GLOBAL);
         $manager->persist($global_hourly_limit);
 
         $global_daily_limit = new ApiKeyLimit();
@@ -66,7 +66,7 @@ class DefaultApiFixtures extends DeskProAbstractFixture implements OrderedFixtur
         $global_daily_limit->setLimit($limit)
                             ->setCurrent($limit)
                             ->setInterval(86400)
-                            ->setType(LimitInterface::TYPE_GLOBAL);
+                            ->setType(AbstractLimit::TYPE_GLOBAL);
         $manager->persist($global_daily_limit);
 
         $manager->flush();

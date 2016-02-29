@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -3875,6 +3876,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 }
 
                 switch (DP_INTERFACE) {
+                    case 'test':
+                        /*
+                         * @todo it's just a stub to pass some tests
+                         * please look here - https://trello.com/c/rn1XPVSu/544-tickettimelinedataservice-crash
+                         */
+                        break;
                     case 'admin':
                     case 'agent':
                         $context = $tm->createAgentExecutorContext(

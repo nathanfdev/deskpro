@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\UniqueCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -110,6 +111,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
+     * @UniqueCollection()
      */
     protected $labels;
 
@@ -122,6 +126,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
+     * @UniqueCollection()
      */
     protected $email_domains;
 

@@ -1,25 +1,56 @@
 import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
-import { loadBatch, setCollection, releaseCollection } from '../Actions/store'
+import { loadBatch, setCollection, releaseCollection, addToCollection} from '../Actions/store';
 import { async, asyncIndicator, composeHandlers } from 'Ampliflux/reducers/handlers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 const storeInitialState = {};
 
-function handleSetCollection(state, {recordName, collectionName, records, ids, noUpdates}) {
-  if (noUpdates) {
-    return state;
-  }
+function mergeRecords(state, recordName, records) {
+  const currentRecords = state.getIn([recordName, 'records']);
+  return currentRecords ? currentRecords.merge(records) : records;
+}
 
-  records = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
-  if (!ids) {
-    ids = records.keySeq().toArray();
-  }
+function gc(state, recordName) {
+  const validRecordIds = [];
+  state.getIn([recordName, 'collections']).forEach(collection => {
+    collection.forEach(id => {
+      if (validRecordIds.indexOf(id) === -1) {
+        validRecordIds.push(id);
+      }
+    });
+  });
+  const validRecords = state.getIn([recordName, 'records']).filter((record, id) => validRecordIds.indexOf(id) > -1);
+  return state.setIn([recordName, 'records'], validRecords);
+}
+
+function handleSetCollection(state, {recordName, collectionName, records, ids, noUpdates}) {
+  if (noUpdates) return state;
+  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+
+  // count ids BEFORE we will update records. So we just insert new records in records and replace collection ids
+  const newIds = ids ? ids : newRecords.keySeq().toArray();
+  newRecords = mergeRecords(state, recordName, newRecords);
 
   return state.mergeDeep({
     [recordName]: {
-      records: records,
-      collections: {[collectionName]: ids},
+      records: newRecords,
+      collections: {[collectionName]: newIds},
+      statuses: {[collectionName]: {success: true, loading: false}}
+    }
+  });
+}
+
+function handleAddToCollection(state, {recordName, collectionName, records}) {
+  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  // count ids AFTER we will update records. So we just insert new records in records and replace collection ids
+  newRecords = mergeRecords(state, recordName, newRecords);
+  const newIds = newRecords.keySeq().toArray();
+
+  return state.mergeDeep({
+    [recordName]: {
+      records: newRecords,
+      collections: {[collectionName]: newIds},
       statuses: {[collectionName]: {success: true, loading: false}}
     }
   });
@@ -27,10 +58,10 @@ function handleSetCollection(state, {recordName, collectionName, records, ids, n
 
 export default createReducer(storeInitialState, {
   [loadBatch]: composeHandlers(
-    asyncIndicator((state, {recordName, collectionName, records}) => ({
-      loading:   `${recordName}.statuses.${collectionName}.loading`,
-      success:   `${recordName}.statuses.${collectionName}.success`,
-      isError:   `${recordName}.statuses.${collectionName}.isError`,
+    asyncIndicator((state, {recordName, collectionName}) => ({
+      loading: `${recordName}.statuses.${collectionName}.loading`,
+      success: `${recordName}.statuses.${collectionName}.success`,
+      isError: `${recordName}.statuses.${collectionName}.isError`,
       errorCode: `${recordName}.statuses.${collectionName}.errorCode`
     })),
     async({
@@ -40,28 +71,19 @@ export default createReducer(storeInitialState, {
 
   [setCollection]: handleSetCollection,
 
+  [addToCollection]: handleAddToCollection,
+
   [releaseCollection]: (state, {recordName, collectionName}) => {
     let next = state;
 
     if (next.hasIn([recordName, 'statuses', collectionName])) {
-
       // remove collection status indicators
       next = next.deleteIn([recordName, 'statuses', collectionName]);
 
       // delete collection
       next = next.deleteIn([recordName, 'collections', collectionName]);
 
-      // clean up records
-      const validRecordIds = [];
-      next.getIn([recordName, 'collections']).forEach(collection => {
-        collection.forEach(id => {
-          if (validRecordIds.indexOf(id) === -1) {
-            validRecordIds.push(id);
-          }
-        });
-      });
-      const validRecords = state.getIn([recordName, 'records']).filter((record, id) => validRecordIds.indexOf(id) > -1);
-      next = next.setIn([recordName, 'records'], validRecords);
+      next = gc(next, recordName); // clean up records
     }
 
     return next;

@@ -1,0 +1,20 @@
+services:
+
+  action_engine.action_transformer:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+  action_engine.action_collection:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection
+    arguments:
+      - "@action_engine.action_transformer"
+  action_engine.feedback:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackApplicatorService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@action_engine.action_collection"
+  action_engine.feedback_comments:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentApplicatorService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@action_engine.action_collection"

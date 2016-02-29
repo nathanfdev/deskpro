@@ -33,6 +33,9 @@ services:
       arguments:
         - "@doctrine.orm.default_entity_manager"
 
+  api_log.writer.file.serializer.null:
+      class: DeskPRO\Bundle\ApiBundle\Log\Serializer\NullSerializer
+
   api_log.finder:
     class: DeskPRO\Bundle\ApiBundle\Log\Finder\FinderInterface
     factory: ["@api_log.service_factory", createFinder]

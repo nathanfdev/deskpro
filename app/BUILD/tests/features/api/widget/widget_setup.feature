@@ -19,9 +19,9 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
     And the JSON node "data.settings.brand" should exist
-    And the JSON node "data.settings.brand.widget" should not exist
-    And the JSON node "data.settings.brand.button" should not exist
-    And the JSON node "data.settings.brand.chat" should not exist
+    And the JSON node "data.settings.brand.widget" should exist
+    And the JSON node "data.settings.brand.button" should exist
+    And the JSON node "data.settings.brand.chat" should exist
 
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:

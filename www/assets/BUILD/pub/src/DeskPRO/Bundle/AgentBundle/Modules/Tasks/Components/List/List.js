@@ -3,18 +3,18 @@ import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Co
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { ControlBarContainer } from './ControlBarContainer';
+import { MassActionContainer } from './MassActionContainer';
 import { CardView } from './View/Card/CardView';
 import { KanbanView } from './View/Kanban/KanbanView';
 import { TableView } from './View/Table/TableView';
 import { CalendarView } from './View/Calendar/CalendarView';
 import { ListGroupContainer } from './ListGroupContainer';
-import { toggleAll } from '../../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends React.Component {
   static propTypes = {
     currentView: PropTypes.string.isRequired,
-    selectedCount: PropTypes.number.isRequired,
+    selected: PropTypes.object.isRequired,
     currentNav: PropTypes.object,
     isLoaded: PropTypes.bool
   };
@@ -34,19 +34,19 @@ export class List extends React.Component {
   }
 
   render() {
-    const { currentNav, isLoaded, selectedCount } = this.props;
-    const checkbox = { count: selectedCount, action: toggleAll };
+    const { currentNav, isLoaded, selected } = this.props;
     return (
       <ListFrameContainer className="task-list-frame">
-        <ListFrameMenu checkbox={checkbox}>
-          <ControlBarContainer />
+        <ListFrameMenu>
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
         {currentNav &&
-          <ListFrameContents isLoaded={isLoaded}>
-            <ListGroupContainer>
-              {this.renderView()}
-            </ListGroupContainer>
-          </ListFrameContents>
+        <ListFrameContents isLoaded={isLoaded}>
+          <ListGroupContainer>
+            {this.renderView()}
+          </ListGroupContainer>
+        </ListFrameContents>
         }
       </ListFrameContainer>
     );

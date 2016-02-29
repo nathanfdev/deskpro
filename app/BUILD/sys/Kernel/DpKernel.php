@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;

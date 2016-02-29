@@ -106,16 +106,16 @@ export class TaskCardNew extends React.Component {
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={this.onSave} submit={submit} />
-        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged} />
+        <SaveTaskButton onClick={this.onSave} submit={submit}/>
+        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged}/>
         <CardLine>
           <CardLineLeft>
             <div className="dpwd--card-title">
-              <TitleForm ref="title" onChange={this.onChange.bind(this, 'title')} />
+              <TitleForm ref="title" onChange={this.onChange.bind(this, 'title')}/>
             </div>
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
+            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign}/>
           </CardLineRight>
         </CardLine>
 
@@ -124,13 +124,11 @@ export class TaskCardNew extends React.Component {
             <DateDue ref="due"
                      onChange={this.onChange.bind(this, 'due')}
                      onSetEditing={this.onSetEditing}
-                     openBySingleClick={true}
-            />
+                     openBySingleClick/>
             <CardProject ref="project"
                          onChange={this.onChange.bind(this, 'project')}
                          onSetEditing={this.onSetEditing}
-                         openBySingleClick={true}
-            />
+                         openBySingleClick/>
           </CardLineLeft>
         </CardLine>
       </Card>

@@ -4,6 +4,7 @@ import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Mod
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
 import { ListItemContainer } from '../ListItemContainer';
+import Immutable from 'immutable';
 
 export class Projects extends React.Component {
 
@@ -16,34 +17,42 @@ export class Projects extends React.Component {
     super(props);
 
     this.state = {
-      editProject: null,
-      formOpened: false
+      project: null
     };
   }
 
-  onEdit = project => {
-    this.setState({
-      editProject: project,
-      formOpened: true
-    });
-  };
+  /**
+   * hide project edit form
+   * @param nextProps
+   */
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.project) return;
+    const id = this.state.project.get('id');
 
-  onOpenForm = event => {
-    event.preventDefault();
-    this.setState({
-      formOpened: true
-    });
-  };
+    if (id) {
+      // on edit
+      if (nextProps.projects.get(id)) return;
+    } else {
+      // on create
+      if (nextProps.projects.size === this.props.projects.size) return;
+    }
 
-  onCloseForm = () => {
     this.setState({
-      editProject: null,
-      formOpened: false
+      project: null
+    });
+  }
+
+  onEdit = (project, event) => {
+    event && event.preventDefault();
+    this.setState({
+      project: project
     });
   };
 
   render() {
     const { projects, projectsCount = [] } = this.props;
+    const { project } = this.state;
+
     const countMap = [];
     projectsCount.forEach(projectCount => {
       countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
@@ -53,7 +62,7 @@ export class Projects extends React.Component {
       <Section>
         <SectionHeader>
           Projects &nbsp;
-          <a href="#" onClick={this.onOpenForm}>
+          <a href="#" onClick={this.onEdit.bind(this, Immutable.fromJS({}))}>
             <i className="fa fa-plus"/>
           </a>
         </SectionHeader>
@@ -75,12 +84,13 @@ export class Projects extends React.Component {
           )}
         </ul>
 
-        <Detached isOpen={this.state.formOpened}
+        <Detached isOpen={this.state.project}
                   positionTarget={this}
                   positionAt="right+5 top-6">
 
-          <ClickOut onClickOut={this.onCloseForm}>
-            <ProjectFormContainer project={this.state.editProject} onSubmit={this.onCloseForm} />
+          <ClickOut onClickOut={this.onEdit.bind(this, null)}>
+            <ProjectFormContainer project={project}
+                                  tasksCount={project && project.get('id') && countMap[project.get('id')] || 0} />
           </ClickOut>
         </Detached>
       </Section>

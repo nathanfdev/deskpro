@@ -32,17 +32,29 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
 
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetHiddenStatusAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ActionCollection
 {
     /** @var ArrayCollection */
     private $actions;
+    private $transformer;
 
-    public function __construct()
+    public function __construct(ActionTransformer $transformer)
     {
-        $this->actions = new ArrayCollection();
+        $this->actions     = new ArrayCollection();
+        $this->transformer = $transformer;
     }
 
     public function addAction(ActionInterface $action)
@@ -55,5 +67,55 @@ class ActionCollection
     public function getActions()
     {
         return $this->actions;
+    }
+
+    /**
+     * @param string $namespace
+     * @param mixed  $entities
+     * @param array  $actions
+     */
+    public function apply($namespace, $entities, $actions)
+    {
+        $this->prepare($actions);
+        /** @var ActionInterface $action */
+        foreach ($this->actions as $action) {
+            $applicator = $this->transformer->actionToApplicator($namespace, $action);
+            $applicator->apply($entities);
+        }
+    }
+
+    /**
+     * @param array $actions
+     */
+    private function prepare(array $actions)
+    {
+        foreach ($actions as $name => $options) {
+            switch ($name) {
+                case AbstractAction::SET_STATUS_CATEGORY_ACTION:
+                    $this->addAction(new SetStatusCategoryAction([AbstractAction::OPTION_ID => $options]));
+                    break;
+                case AbstractAction::SET_HIDDEN_STATUS_ACTION:
+                    $this->addAction(new SetHiddenStatusAction([AbstractAction::OPTION_INPUT => $options]));
+                    break;
+                case AbstractAction::SET_TYPE_ACTION:
+                    $this->addAction(new SetTypeAction([AbstractAction::OPTION_ID => $options]));
+                    break;
+                case AbstractAction::SET_CATEGORY_ACTION:
+                    $this->addAction(new SetCategoryAction([AbstractAction::OPTION_INPUT => $options]));
+                    break;
+                case AbstractAction::ADD_LABELS_ACTION:
+                    $this->addAction(new AddLabelsAction([AbstractAction::OPTION_LABELS => $options]));
+                    break;
+                case AbstractAction::REMOVE_LABELS_ACTION:
+                    $this->addAction(new RemoveLabelsAction([AbstractAction::OPTION_LABELS => $options]));
+                    break;
+                case AbstractAction::APPROVE_ACTION:
+                    $this->addAction(new ApproveAction());
+                    break;
+                case AbstractAction::DELETE_ACTION:
+                    $this->addAction(new DeleteAction());
+                    break;
+            }
+        }
     }
 }

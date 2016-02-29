@@ -31,17 +31,19 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Basic hierarchicial category entity. Hierarchy is maintained automatically
+ * Basic hierarchical category entity. Hierarchy is maintained automatically
  * by a Doctrine NestedSet implementation.
  */
-class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
+class ChatMessage extends DomainObject
 {
     const ORIGIN_AGENT = 'agent';
     const ORIGIN_USER  = 'user';
@@ -212,6 +214,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
      * Gets the URL to a picture for the person. Note that this will always return
      * a path to an image, even if it's the default.
      *
+     * @param int       $size
+     * @param null|bool $secure
+     *
      * @return null|string
      */
     public function getAuthorPictureUrl($size = 80, $secure = null)
@@ -234,10 +239,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         if (!$url) {
-            $url = App::get('router')->generate('serve_default_picture', array(
-                's'        => $size,
-                'size-fit' => 1,
-            ), true);
+            $url = App::get('router')->generate(
+                'serve_default_picture',
+                array(
+                    's'        => $size,
+                    'size-fit' => 1,
+                ),
+                true
+            );
         }
 
         if ($secure) {
@@ -455,20 +464,165 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array('name' => 'chat_messages'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_setUserName', 'prePersist');
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'tag', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'tag'));
-        $metadata->mapField(array('fieldName' => 'origin', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'origin'));
-        $metadata->mapField(array('fieldName' => 'person_name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_name'));
-        $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
-        $metadata->mapField(array('fieldName' => 'is_sys', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sys'));
-        $metadata->mapField(array('fieldName' => 'is_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user'));
-        $metadata->mapField(array('fieldName' => 'is_user_hidden', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user_hidden'));
-        $metadata->mapField(array('fieldName' => 'is_html', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_html'));
-        $metadata->mapField(array('fieldName' => 'metadata', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'metadata'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_received', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_received'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'tag',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'tag',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'origin',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'origin',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'person_name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'person_name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'content',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_sys',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_sys',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_user',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_user',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_user_hidden',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_user_hidden',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_html',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_html',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'metadata',
+                'type'       => 'array',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'metadata',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'date_created',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'date_received',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_received',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'conversation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'conversation_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'author', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'author_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'conversation',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'conversation_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'author',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'author_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
     }
 }
