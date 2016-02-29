@@ -109,6 +109,7 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
+        /** @var TicketFilterSet[] $sets */
         $sets   = $this->getRepository('App:TicketFilterSet')->findAll();
         $counts = [];
 

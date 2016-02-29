@@ -78,6 +78,8 @@ class TicketCountsController extends BaseController
      */
     public function getTicketFilterSetCountAction(Request $request, $id)
     {
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+
         return View::create([]);
     }
 
@@ -105,6 +107,8 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+
         return View::create([]);
     }
 

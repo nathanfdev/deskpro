@@ -88,14 +88,9 @@ class TicketFilterSetsController extends BaseController
      */
     public function getAction($id)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-        $filter_set   = $data_service->getFilterSet($id);
+        $set = $this->getFilterSetOr404($id);
 
-        if (!$filter_set) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create($this->dataSerialize($filter_set));
+        return View::create($this->dataSerialize($set));
     }
 
     /**
@@ -107,14 +102,7 @@ class TicketFilterSetsController extends BaseController
      *              "requirement"="\d+",
      *              "description"="the id of the filter set",
      *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
+     *          }
      *      },
      *      statusCodes={
      *          200="Success",
@@ -130,6 +118,25 @@ class TicketFilterSetsController extends BaseController
      */
     public function getSetFiltersAction($id)
     {
-        return View::create([]);
+        $set = $this->getFilterSetOr404($id);
+
+        return View::create($this->dataSerialize($set->getFilters()));
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet
+     */
+    protected function getFilterSetOr404($id)
+    {
+        $data_service = $this->get('data.ticket_legacy_filter_sets');
+        $filter_set   = $data_service->getFilterSet($id);
+
+        if (!$filter_set) {
+            throw $this->createNotFoundException();
+        }
+
+        return $filter_set;
     }
 }
