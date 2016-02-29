@@ -68,7 +68,7 @@ Feature: /organizations endpoint
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
   "labels": ["label 1", "label 1", "label 2"],
   "email_domains": ["domain1.com", "domain2.com"],
-  "user_groups": [1, 2]
+  "user_groups": [1, 2, 1]
 }
     """
     Then the response status code should be 201
