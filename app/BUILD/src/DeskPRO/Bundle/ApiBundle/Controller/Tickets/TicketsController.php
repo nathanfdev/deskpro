@@ -87,7 +87,7 @@ class TicketsController extends AbstractTicketsController
      *      parameters={
      *          {
      *              "name"="sort",
-     *              "description"="Tickets list sort. Available options: id, date_last_user_reply, urgency.",
+     *              "description"="Tickets list sort. Available options: 'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply', 'date_last_reply', 'date_user_waiting', 'total_user_waiting'.",
      *              "dataType"="string",
      *              "required"=false
      *          },
@@ -211,10 +211,19 @@ class TicketsController extends AbstractTicketsController
 
             // sort and order params
             if (array_key_exists('sort', $params)) {
+                $allowed = [
+                    'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply',
+                    'date_last_reply', 'date_user_waiting', 'total_user_waiting',
+                ];
                 $sort = $params['sort'];
-                if (!in_array($sort, ['id', 'date_last_user_reply', 'urgency'])) {
+                if (!in_array($sort, $allowed)) {
                     throw $this->createBadRequestException("Unknown sort option value: $sort");
                 }
+
+                if ($sort === 'date_last_reply') {
+                    $sort = 'IF(date_last_agent_reply > date_last_user_reply, date_last_agent_reply, date_last_user_reply)';
+                }
+
                 unset($params['sort']);
             } else {
                 $sort = 'id';
@@ -229,10 +238,12 @@ class TicketsController extends AbstractTicketsController
             $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);
 
             /** @var DbalTermEngine $engine */
-            $engine        = $this->get('term_engine.dbal.engine');
-            $context       = new TermEngineContext($this->getUser());
-            $currentPage   = $request->query->getInt('page', 1);
-            $maxPerPage    = $request->query->getInt('count', self::$listPerPage);
+            $engine      = $this->get('term_engine.dbal.engine');
+            $context     = new TermEngineContext($this->getUser());
+            $currentPage = $request->query->getInt('page', 1);
+            $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+
+            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
             $tickets_query = $engine->evaluate($term, $context);
             $total         = $tickets_query->fetchCount();
             $tickets_query->setCount($maxPerPage);
