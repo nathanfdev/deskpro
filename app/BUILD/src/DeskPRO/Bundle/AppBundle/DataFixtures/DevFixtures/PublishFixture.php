@@ -232,7 +232,6 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function generateParentId($i)
     {
-        echo "\nIndex: $i";
         if ($i > 2) {
             $parentId = rand(0, $i - 1);
 
@@ -244,10 +243,8 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function loadCategoryPermissions($content)
     {
-        echo "\nContent: $content";
         $batch      = [];
         $categories = $this->content[$content]['categories'];
-        print_r($categories);
         foreach ($categories as $category) {
             $values = [
                 'category_id'  => $category,

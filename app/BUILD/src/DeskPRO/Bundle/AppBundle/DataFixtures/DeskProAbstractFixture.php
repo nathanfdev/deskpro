@@ -49,6 +49,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_ARTICLE_PENDING_CREATE     = 'article_pending_create';
     const TABLE_ARTICLE_TO_CATEGORIES      = 'article_to_categories';
     const TABLE_BLOBS                      = 'blobs';
+    const TABLE_CHAT_CONVERSATIONS         = 'chat_conversations';
     const TABLE_CUSTOM_DATA_FEEDBACK       = 'custom_data_feedback';
     const TABLE_CUSTOM_DATA_TICKET         = 'custom_data_ticket';
     const TABLE_CUSTOM_DEF_FEEDBACK        = 'custom_def_feedback';
