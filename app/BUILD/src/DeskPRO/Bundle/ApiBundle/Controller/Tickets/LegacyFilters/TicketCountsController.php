@@ -67,7 +67,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/ticket_filter_sets/{set}/count")
+     * @Get("/ticket_filter_sets/{id}/count")
      *
      * @param Request $request
      * @param int     $id
