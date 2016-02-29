@@ -24,7 +24,6 @@ export class DateTimePicker extends React.Component {
   }
 
   onChange = (val) => {
-    console.info('>>>>>val', val);
     this.setState({value: val});
     this.props.onChange && this.props.onChange(val);
   };

@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { listParamsNavSelector } from '../../../../../Selectors/list';
 import { addTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import Immutable from 'immutable';
-import { SaveTaskButton } from './SaveTaskButton';
 import {
   Card,
-  CardReset,
+  CardCheckbox,
   CardLine,
   CardLineLeft,
   CardLineRight
@@ -14,8 +13,8 @@ import {
 import {
   TitleForm,
   DateDue,
+  TicketLinkContainer,
   CardProjectContainer,
-  Comments,
   AssignButton,
   AssigneeAvatar
 } from '../../../TaskCard';
@@ -27,15 +26,16 @@ export class TaskCardNew extends React.Component {
   static propTypes = {
     onClose: PropTypes.func,
     dispatch: PropTypes.func.isRequired,
-    isChanged: PropTypes.func
+    isChanged: PropTypes.func,
+    task: PropTypes.object.isRequired,
+    onSetEditing: PropTypes.func
   };
 
   constructor(props) {
     super(props);
-
     this.model = {
       title: null,
-      due: null,
+      due: props.task.get('date_due'),
       assignee: Immutable.fromJS({
         agents: [],
         teams: [],
@@ -45,33 +45,14 @@ export class TaskCardNew extends React.Component {
     };
   }
 
-  onReset = () => {
-    this.model = {
-      title: null,
-      due: null,
-      assignee: Immutable.fromJS({
-        agents: [],
-        teams: [],
-        departments: []
-      }),
-      project: null
-    };
-    this.forceUpdate();
-  };
-
-  onSetEditing = (isEditing) => {
-    this.refs.reset.onSetEditing(isEditing);
-  };
-
   onChange(prop, value) {
     this.model[prop] = value;
-    value && this.refs.reset.onChange();
+    this.isChanged = true;
   }
 
   onAssign = (assignee) => {
     return new Promise(resolve => {
       this.model.assignee = assignee;
-      this.refs.reset.onChange();
       resolve();
     });
   };
@@ -98,22 +79,27 @@ export class TaskCardNew extends React.Component {
     onClose && onClose();
   };
 
+  onSetEditing = (isEditing) => {
+    this.props.onSetEditing && this.props.onSetEditing(isEditing);
+  };
+
   render() {
     const { submit, isChanged } = this.props;
     const { title, due, project, assignee } = this.model;
 
     return (
-      <Card type="task">
-        <SaveTaskButton onClick={this.onSave} submit={submit}/>
-        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged}/>
+      <Card statusBars={false}
+            type="task"
+            additionalClasses="calendar-task-card">
+
         <CardLine>
           <CardLineLeft>
-            <div className="dpwd--card-title">
-              <TitleForm value={this.model.title} onChange={this.onChange.bind(this, 'title')} />
-            </div>
+            <TitleForm value={this.model.title} onChange={this.onChange.bind(this, 'title')} />
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
+            <AssignButton ref="assignee" task={assignee}
+                          onAssign={this.onAssign}
+                          onSetEditing={this.onSetEditing} />
           </CardLineRight>
         </CardLine>
 
@@ -121,12 +107,13 @@ export class TaskCardNew extends React.Component {
           <CardLineLeft>
             <DateDue value={this.model.due}
                      onChange={this.onChange.bind(this, 'due')}
-                     onSetEditing={this.onSetEditing}
-                     openBySingleClick/>
+                     openBySingleClick={true}
+                     onSetEditing={this.onSetEditing} />
             <CardProjectContainer value={this.model.project}
                                   onChange={this.onChange.bind(this, 'project')}
-                                  onSetEditing={this.onSetEditing}
-                                  openBySingleClick={true} />
+                                  openBySingleClick={true}
+                                  onSetEditing={this.onSetEditing} />
+            <TicketLinkContainer />
           </CardLineLeft>
         </CardLine>
       </Card>

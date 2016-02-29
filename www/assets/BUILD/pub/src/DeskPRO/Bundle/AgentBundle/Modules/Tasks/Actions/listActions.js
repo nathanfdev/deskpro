@@ -94,10 +94,13 @@ export const applyFilters = createAction(
 
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
-  (data) => new Promise(resolve => {
-    return api
-      .sendPost(`DP_API/tasks`, data)
-      .success(response => resolve(response.data));
+  (data) => (dispatch, getState) => api.sendPost(`DP_API/tasks`, data).success(response => {
+    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
+    const task = Immutable.fromJS(response.data);
+    tasks = tasks.set(task.get('id'), task);
+    tasks = reOrderCollection(tasks, task.get('id'), task.get('display_order'));
+    dispatch(releaseCollection('Task', recordStoresId));
+    dispatch(setCollection('Task', recordStoresId, tasks));
   })
 );
 
@@ -122,6 +125,7 @@ export const editTask = createAction(
     // Re order tasks
     tasks = reOrderCollection(tasks, updatedTask.get('id'), updatedTask.get('display_order'));
     tasks = tasks.set(taskId, updatedTask);
+    dispatch(releaseCollection('Task', recordStoresId));
     dispatch(setCollection('Task', recordStoresId, tasks));
   }
 );

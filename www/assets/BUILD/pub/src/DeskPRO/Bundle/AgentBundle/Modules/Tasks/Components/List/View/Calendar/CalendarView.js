@@ -1,18 +1,48 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 import { Calendar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Calendar/Calendar';
 import { TaskCard } from './TaskCard/TaskCard';
+import { TaskCardNew } from './TaskCard/TaskCardNew';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardDragTarget } from './TaskCard/TaskCardDragTarget';
 import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
+import { Detached as Positioned }  from 'DeskPRO/Component/Positioned/Detached';
 
 export class CalendarView extends React.Component {
 
   static propTypes = {
     tasks: PropTypes.object,
     onChangeGroup: PropTypes.func
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      task: null
+    };
+  }
+
+  createNewTask = (date, targetElement) => {
+    this.newTaskTarget = targetElement;
+    this.setState({
+      task: Immutable.fromJS({date_due: date.format('YYYY-MM-DDTHH:mm:ssZ')})
+    });
+  };
+
+  resetNewTask = () => {
+    if (this.isEditing) return;
+    this.newTaskTarget = null;
+    this.setState({
+      task: null
+    });
+  };
+
+  onSetEditing = (isEditing) => {
+    this.isEditing = isEditing;
   };
 
   render() {
@@ -30,12 +60,23 @@ export class CalendarView extends React.Component {
       draggable: {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
+      },
+      onDoubleClick: (date, event) => {
+        this.createNewTask(date, event.target);
       }
     };
 
     return (
       <div>
         <Calendar {...config} />
+
+        <Positioned positionTarget={this.newTaskTarget}
+                    positionAt="center center"
+                    isOpen={this.state.task}>
+          <ClickOut onClickOut={this.resetNewTask}>
+            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing} />
+          </ClickOut>
+        </Positioned>
 
         <CustomCardDragLayer>
           <TaskCardPreviewContainer>
