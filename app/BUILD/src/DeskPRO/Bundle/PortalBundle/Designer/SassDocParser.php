@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 /**
@@ -38,16 +37,20 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 class SassDocParser
 {
     /**
-     * @var string DP_ROOT relative or absolute path to sassdoc json file
+     * @var string DP_WEB_ROOT relative or absolute path to sassdoc json file
      */
     private $variables_json_file_path;
 
     /**
      * @param string $variables_json_file_path
+     *
+     * @throws \Exception
      */
     public function __construct($variables_json_file_path)
     {
-        $this->variables_json_file_path = $variables_json_file_path;
+        if (!$this->variables_json_file_path = realpath($variables_json_file_path)) {
+            throw new \Exception("Unable to resolve sass doc file {$this->variables_json_file_path}");
+        }
     }
 
     /**
@@ -57,7 +60,7 @@ class SassDocParser
      */
     public function getVariableGroups()
     {
-        return json_decode(file_get_contents($this->resolveFilePath()), true);
+        return json_decode(file_get_contents($this->variables_json_file_path), true);
     }
 
     /**
@@ -113,23 +116,5 @@ class SassDocParser
         }
 
         return ['value' => floatval(trim($matches[1])), 'unit' => $matches[2]];
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return string
-     */
-    private function resolveFilePath()
-    {
-        $path = DP_ROOT.'/'.rtrim($this->variables_json_file_path, '/');
-
-        if (file_exists($path)) {
-            return $path;
-        } elseif (file_exists($this->variables_json_file_path)) {
-            return $this->variables_json_file_path;
-        }
-
-        throw new \Exception("Unable to resolve sass doc file {$this->variables_json_file_path}");
     }
 }
