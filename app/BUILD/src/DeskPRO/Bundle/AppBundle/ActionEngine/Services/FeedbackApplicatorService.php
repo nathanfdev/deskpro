@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Feedback;

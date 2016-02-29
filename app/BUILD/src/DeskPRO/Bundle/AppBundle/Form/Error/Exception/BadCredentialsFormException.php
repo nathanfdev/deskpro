@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error\Exception;
 
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;

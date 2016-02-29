@@ -27,26 +27,46 @@
  */
 
 /**
+ * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Facilitate access to TicketFilterView data from controllers with loose coupling.
+ * Class TicketFilterSetType.
  */
-class TicketFilterViewDataService extends AbstractDataService
+class TicketFilterSetType extends AbstractType
 {
     /**
-     * Retrieve the filter views that are public (don't belong to anyone).
-     * TODO: document the correct return type.
-     *
-     * @return DotrineResultOrSomething the filter views.
+     * {@inheritdoc}
      */
-    public function getUnassignedFilterViews()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $views = $this->em
-            ->getRepository('App:TicketFilterView')
-            ->findBy(array('agent' => null), array('display_order' => 'ASC'));
+        $builder
+            ->add('title', TextType::class)
+            ->add('display_order', IntegerType::class, [
+                'required' => false,
+            ])
+            ->add('is_default', ApiBooleanType::class, [
+                'required' => false,
+            ])
+        ;
+    }
 
-        return $views;
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TicketFilterSet::class,
+        ]);
     }
 }

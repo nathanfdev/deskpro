@@ -32,9 +32,11 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Util;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\CompositeTermInterface;
-use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class TermToJsonConverter.
+ */
 class TermToJsonConverter
 {
     /**
@@ -48,9 +50,7 @@ class TermToJsonConverter
      */
     public function toJson(TermInterface $term)
     {
-        $serialized = $this->termToArray($term);
-
-        return json_encode($serialized);
+        return json_encode($this->termToArray($term));
     }
 
     /**
@@ -62,9 +62,7 @@ class TermToJsonConverter
      */
     public function toTerm($json)
     {
-        $serialized_array = json_decode($json, true);
-
-        return $this->arrayToTerm($serialized_array);
+        return $this->arrayToTerm(json_decode($json, true));
     }
 
     /**
@@ -75,13 +73,10 @@ class TermToJsonConverter
     public function termToArray(TermInterface $term)
     {
         if ($term instanceof CompositeTermInterface) {
-            $serialized = array_merge(
-                array(
-                    'type'  => TermTypeCodes::getTermTypeCode($term),
-                    'terms' => array(),
-                ),
-                $term->serialize()
-            );
+            $serialized = array_merge([
+                'type'  => TermTypeCodes::getTermTypeCode($term),
+                'terms' => [],
+            ], $term->serialize());
 
             foreach ($term->getTerms() as $term) {
                 $serialized['terms'][] = $this->termToArray($term);
@@ -90,39 +85,32 @@ class TermToJsonConverter
             return $serialized;
         }
 
-        return array_merge(
-            array(
-                'type' => TermTypeCodes::getTermTypeCode($term),
-            ),
-            $term->serialize()
-        );
+        return array_merge(['type' => TermTypeCodes::getTermTypeCode($term)], $term->serialize());
     }
 
     /**
      * @param $serialized_array
+     *
+     * @return TermInterface
      */
     public function arrayToTerm($serialized_array)
     {
-        $class = TermTypeCodes::getTermClassForTypeCode($serialized_array['type']);
-        if (!class_exists($class)) {
-            throw new TermTypeDoesNotExistException($serialized_array['type']);
-        }
-        $options = array_key_exists(
-            'options',
-            $serialized_array
-        ) ? $serialized_array['options'] : array();
+        $class   = TermTypeCodes::getTermClassForTypeCode($serialized_array['type']);
+        $options = array_key_exists('options', $serialized_array) ? $serialized_array['options'] : [];
 
+        /** @var TermInterface $term */
         $term = new $class($options);
 
         if ($serialized_array['op']) {
             $term->setOp($serialized_array['op']);
         }
-
         if ($term instanceof CompositeTermInterface) {
             foreach ($serialized_array['terms'] as $child_term) {
                 if (is_array($child_term)) {
                     $child_term = $this->arrayToTerm($child_term);
                 }
+
+                /* @var CompositeTermInterface $term */
                 $term->addTerm($child_term);
             }
         }

@@ -33,9 +33,9 @@
  */
 namespace Application\DeskPRO\Tickets\Notifications;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\EntityRepository\TicketFilterSubscription as TicketFilterSubscriptionRepos;
 use Application\DeskPRO\Monolog\NullLogger;
@@ -231,13 +231,13 @@ class AgentNotifyListBuilder implements PersonContextInterface
     }
 
     /**
-     * @param array        $notify_list
-     * @param Person       $agent
-     * @param TicketFilter $filter
+     * @param array              $notify_list
+     * @param Person             $agent
+     * @param LegacyTicketFilter $filter
      * @param $change_type
      * @param array $notify_types
      */
-    private function addTypesToList(array &$notify_list, Person $agent, TicketFilter $filter, $change_type, array $notify_types)
+    private function addTypesToList(array &$notify_list, Person $agent, LegacyTicketFilter $filter, $change_type, array $notify_types)
     {
         if (!isset($notify_list[$agent->id])) {
             $notify_list[$agent->id] = array(
@@ -266,12 +266,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
     /**
      * @param array                    $event_types
      * @param                          $with_origmatch
-     * @param TicketFilter             $filter
+     * @param LegacyTicketFilter       $filter
      * @param TicketFilterSubscription $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, TicketFilter $filter, TicketFilterSubscription $sub)
+    private function getSubTypesForFilterNewMatch(array $event_types, $with_origmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
     {
         $types = array();
         if ($event_types['new']) {
@@ -306,12 +306,12 @@ class AgentNotifyListBuilder implements PersonContextInterface
     /**
      * @param array $event_types
      * @param $with_newmatch
-     * @param TicketFilter             $filter
+     * @param LegacyTicketFilter       $filter
      * @param TicketFilterSubscription $sub
      *
      * @return array
      */
-    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, TicketFilter $filter, TicketFilterSubscription $sub)
+    private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, LegacyTicketFilter $filter, TicketFilterSubscription $sub)
     {
         $types = array();
 

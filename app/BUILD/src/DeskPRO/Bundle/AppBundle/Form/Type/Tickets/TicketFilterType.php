@@ -29,64 +29,47 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\ReplaceNotSubmittedValuesWithDefaultsListener;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class FilterSetType extends AbstractType
+/**
+ * Class TicketFilterType.
+ */
+class TicketFilterType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ReplaceNotSubmittedValuesWithDefaultsListener());
         $builder
-            ->add(
-                'id',
-                'integer',
-                array(
-                    'description' => 'Object ID',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'title',
-                'text',
-                array(
-                    'description' => 'the filter title',
-                )
-            )
-            ->add(
-                'display_order',
-                'integer',
-                array(
-                    'description' => 'the display order',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'is_default',
-                'checkbox',
-                array(
-                    'description' => 'is part of the default filter set collection',
-                    'required'    => false,
-                )
-            )
-            ;
+            ->add('title', TextType::class)
+            ->add('display_order', IntegerType::class, [
+                'required' => false,
+            ])
+            ->add('filter_set', EntityType::class, [
+                'required' => false,
+                'class'    => TicketFilterSet::class,
+            ])
+            ->add('term', 'term_engine_term')
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet',
-            )
-        );
-    }
-
-    public function getName()
-    {
-        return 'filter_set';
+        $resolver->setDefaults([
+            'data_class' => TicketFilter::class,
+        ]);
     }
 }

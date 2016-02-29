@@ -33,9 +33,9 @@
  */
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class FilterChangeDetector
@@ -51,7 +51,7 @@ class FilterChangeDetector
     private $team_to_agents;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     private $filters;
 
@@ -71,8 +71,8 @@ class FilterChangeDetector
     private $disable_cache = false;
 
     /**
-     * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-     * @param \Application\DeskPRO\Entity\Person[]       $agents
+     * @param \Application\DeskPRO\Entity\LegacyTicketFilter[] $filters
+     * @param \Application\DeskPRO\Entity\Person[]             $agents
      */
     public function __construct(array $filters, array $agents)
     {
@@ -108,10 +108,10 @@ class FilterChangeDetector
      * detection for chagned filters, but sometimes you need to know if a ticket
      * was in an unaffected filter (e.g., for an 'updated' notification).
      *
-     * @param TicketFilter $filter
-     * @param Person       $agent
+     * @param LegacyTicketFilter $filter
+     * @param Person             $agent
      */
-    public function addExplicitFilterScope(TicketFilter $filter, Person $agent)
+    public function addExplicitFilterScope(LegacyTicketFilter $filter, Person $agent)
     {
         if (!isset($this->explicit_filter_scopes[$filter->id])) {
             $this->explicit_filter_scopes[$filter->id] = array('filter' => $filter, 'scopes' => array());

@@ -32,8 +32,8 @@
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
@@ -79,11 +79,11 @@ class TicketResults
 
     /**
      * @param $controller
-     * @param TicketFilter $filter
+     * @param LegacyTicketFilter $filter
      *
      * @return TicketResults
      */
-    public static function newFromFilter($controller, TicketFilter $filter)
+    public static function newFromFilter($controller, LegacyTicketFilter $filter)
     {
         $helper = new self($controller);
         $helper->setTicketIds($filter->getResults($controller->getPerson()));

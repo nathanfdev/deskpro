@@ -51,6 +51,13 @@ class DbalQueryCacher
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param CacheAdapterInterface $cache_adapter
+     * @param DbalQuerySerializer   $serializer
+     * @param LoggerInterface       $logger
+     */
     public function __construct(CacheAdapterInterface $cache_adapter, DbalQuerySerializer $serializer, LoggerInterface $logger)
     {
         $this->cache_adapter = $cache_adapter;
@@ -58,10 +65,14 @@ class DbalQueryCacher
         $this->logger        = $logger;
     }
 
+    /**
+     * @param string $requested_key
+     *
+     * @return DbalQuery
+     */
     public function fetchQuery($requested_key)
     {
-        $key = $this->generateKey($requested_key);
-
+        $key        = $this->generateKey($requested_key);
         $serialized = $this->cache_adapter->get($key);
 
         if ($serialized) {
@@ -75,14 +86,16 @@ class DbalQueryCacher
         return $compiled_query;
     }
 
+    /**
+     * @param string    $requested_key
+     * @param DbalQuery $compiled_query
+     */
     public function saveQuery($requested_key, DbalQuery $compiled_query)
     {
         $serialized = $this->serializer->serialize($compiled_query);
-
-        $key = $this->generateKey($requested_key);
+        $key        = $this->generateKey($requested_key);
 
         $this->cache_adapter->set($key, $serialized);
-
         $this->logger->debug('DbalQueryCacher: serialized and saved compiled query');
     }
 
@@ -99,10 +112,10 @@ class DbalQueryCacher
 
         $this->logger->debug(
             'DbalQueryCacher: Prefixing key',
-            array(
+            [
                 'requested_key'      => $key,
                 'using_prefixed_key' => $add_unique,
-            )
+            ]
         );
 
         return $add_unique;

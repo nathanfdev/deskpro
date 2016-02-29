@@ -827,7 +827,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             ),
         );
 
-        $filter            = new Entity\TicketFilter();
+        $filter            = new Entity\LegacyTicketFilter();
         $filter->title     = $this->_getRandomWords(2);
         $filter->is_global = true;
 

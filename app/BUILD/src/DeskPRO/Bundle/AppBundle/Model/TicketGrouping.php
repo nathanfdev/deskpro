@@ -58,15 +58,33 @@ class TicketGrouping
     const OPEN_TIME        = 'open_time';
     const DATE_CREATED     = 'date_created';
 
-    /** @var Contains this grouping's value. */
+    /**
+     * Contains this grouping's value.
+     *
+     * @var string
+     */
     protected $column = null;
-    /** @var Additional select column, that will probably be used for grouping. */
+
+    /**
+     * Additional select column, that will probably be used for grouping.
+     *
+     * @var array
+     */
     protected $select = null;
-    /** @var Ordering clauses. Useful for some groupings. */
+
+    /**
+     * Ordering clauses. Useful for some groupings.
+     *
+     * @var array
+     */
     protected $order_by = null;
 
     /**
+     * Constructor.
+     *
      * This class must either be instantiated with ::fromString() or ::fromConst().
+     *
+     * @param string $column
      */
     protected function __construct($column)
     {
@@ -114,28 +132,38 @@ class TicketGrouping
         }
     }
 
-    public static function fromString($col_string)
+    /**
+     * @param string $value
+     *
+     * @return TicketGrouping
+     */
+    public static function fromString($value)
     {
-        if (self::isCustom($col_string)) {
-            return new self($col_string);
+        if (self::isCustom($value)) {
+            return new self($value);
         }
 
-        // A tiny bit of magic. Need PHP 5.3+
-        $constant = constant(sprintf('%s::%s', __CLASS__, strtoupper($col_string)));
-
-        return self::fromConst($constant);
+        return self::fromConst($value);
     }
 
+    /**
+     * @param string $value
+     *
+     * @throws UnknownTicketGroupingColumnException
+     *
+     * @return TicketGrouping
+     */
     public static function fromConst($value)
     {
         $refl      = new \ReflectionClass(__CLASS__);
         $constants = $refl->getConstants();
+        $name      = strtoupper($value);
 
-        if (false === array_search($value, $constants)) {
+        if (empty($constants[$name])) {
             throw new UnknownTicketGroupingColumnException();
         }
 
-        return new self($value);
+        return new self($constants[$name]);
     }
 
     /**
@@ -156,16 +184,25 @@ class TicketGrouping
         return self::getCustomFieldIdFromName($this->column);
     }
 
+    /**
+     * @return array
+     */
     public function getSelect()
     {
         return $this->select;
     }
 
+    /**
+     * @return string
+     */
     public function getColumn()
     {
         return $this->column;
     }
 
+    /**
+     * @return array|null
+     */
     public function getOrderBy()
     {
         return $this->order_by;
@@ -182,6 +219,7 @@ class TicketGrouping
         if (strpos($column, self::CUSTOM_FIELD_COLUMN_PREFIX.$separator) !== 0) {
             return false;
         }
+
         $id = substr($column, strlen(self::CUSTOM_FIELD_COLUMN_PREFIX) + strlen($separator));
 
         return preg_match('/^\d+$/', $id);
@@ -200,6 +238,7 @@ class TicketGrouping
         if (!self::isCustom($name, $separator)) {
             throw new \Exception('Field is not custom');
         }
+
         $id = substr($name, strlen(self::CUSTOM_FIELD_COLUMN_PREFIX) + strlen($separator));
 
         return intval($id);

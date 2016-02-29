@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiKey;
@@ -137,8 +136,8 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function saveAction($id)
     {
@@ -209,8 +208,8 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function removeAction($id)
     {
@@ -237,8 +236,8 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getLogsAction($id)
     {
@@ -266,8 +265,8 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
-     * @return \Symfony\Component\HttpFoundation\Response
      *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function regenerateAction($id)
     {

@@ -35,6 +35,9 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketGroupingColumnException;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 
+/**
+ * Class TermEngineContext.
+ */
 class TermEngineContext
 {
     /**
@@ -47,10 +50,15 @@ class TermEngineContext
      */
     protected $groupings;
 
+    /**
+     * Constructor.
+     *
+     * @param Person $agent
+     */
     public function __construct(Person $agent)
     {
         $this->agent     = $agent;
-        $this->groupings = array();
+        $this->groupings = [];
     }
 
     /**
@@ -71,6 +79,10 @@ class TermEngineContext
 
     /**
      * Adds a group-by clause to the resulting query.
+     *
+     * @param TicketGrouping $group_by
+     *
+     * @return $this
      */
     public function addGroupBy(TicketGrouping $group_by)
     {
@@ -84,7 +96,7 @@ class TermEngineContext
      *
      * @param string $group_by_string is a string of comma-separated columns to group the tickets by.
      *
-     * @return itself.
+     * @return $this
      */
     public function addGroupByFromString($group_by_string)
     {

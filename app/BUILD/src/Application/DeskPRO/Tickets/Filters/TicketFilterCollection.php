@@ -33,17 +33,17 @@
  */
 namespace Application\DeskPRO\Tickets\Filters;
 
-use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 
 class TicketFilterCollection
 {
     /**
-     * @var TicketFilter[]
+     * @var LegacyTicketFilter[]
      */
     private $filters;
 
     /**
-     * @param TicketFilter[] $filters
+     * @param LegacyTicketFilter[] $filters
      */
     public function __construct(array $filters)
     {
@@ -51,7 +51,7 @@ class TicketFilterCollection
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getAllFilters()
     {
@@ -59,7 +59,7 @@ class TicketFilterCollection
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getSystemFilters()
     {
@@ -75,7 +75,7 @@ class TicketFilterCollection
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getSystemHoldFilters()
     {
@@ -91,7 +91,7 @@ class TicketFilterCollection
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\TicketFilter[]
+     * @return \Application\DeskPRO\Entity\LegacyTicketFilter[]
      */
     public function getCustomFilters()
     {

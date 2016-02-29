@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\Entity\ApiKey;

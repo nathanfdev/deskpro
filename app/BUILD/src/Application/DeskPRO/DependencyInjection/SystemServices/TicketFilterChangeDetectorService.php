@@ -50,10 +50,10 @@ class TicketFilterChangeDetectorService
             $a->loadHelper('Agent');
         }
 
-        $filters = $container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters();
+        $filters = $container->getEm()->getRepository('DeskPRO:LegacyTicketFilter')->getFilters();
 
         $x = new FilterChangeDetector(
-            $container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters(),
+            $container->getEm()->getRepository('DeskPRO:LegacyTicketFilter')->getFilters(),
             $container->getAgentData()->getAgents()
         );
 

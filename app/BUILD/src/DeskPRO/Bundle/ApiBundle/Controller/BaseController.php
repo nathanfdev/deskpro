@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -99,6 +98,8 @@ class BaseController extends FOSRestController
      * @param mixed $input any array or object
      *
      * @return StandardRepresentation
+     *
+     * @deprecated
      */
     protected function createRepresentation($input)
     {

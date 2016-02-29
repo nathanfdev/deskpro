@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -37,6 +36,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
@@ -109,6 +109,17 @@ class ApiDb extends AbstractDbSet
             true,
             false,
             true
+        );
+
+        // Default language --------------------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `languages`
+                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
+                 `has_agent`, `has_admin`)
+            VALUES
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
+        "
         );
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
@@ -242,6 +253,54 @@ class ApiDb extends AbstractDbSet
 
         $this->getEm()->flush();
 
+        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `agent_teams`
+                (`avatar_blob_id`, `name`)
+            VALUES
+                (NULL, 'Support Managers'),
+                (NULL, '1st Level Support')
+            ;
+
+            INSERT INTO `agent_team_members`
+                (`team_id`, `person_id`)
+            VALUES
+                (1, 1),
+                (1, 2),
+                (2, 3),
+                (2, 4)
+            ;
+        "
+        );
+        // end of "/agent_teams"
+
+        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        $organization1 = new Organization();
+        $organization1
+            ->setName('Organization 1')
+            ->setSummary('test organization')
+            ->setImportance(1)
+        ;
+        $organization2 = new Organization();
+        $organization2
+            ->setName('Organization 1')
+            ->setSummary('test organization')
+            ->setImportance(1)
+        ;
+
+        $this->getEm()->persist($organization1);
+        $this->getEm()->persist($organization2);
+        $this->getEm()->flush();
+
+        $this->getDb()->exec(
+            '
+            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
+            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
+        '
+        );
+        // end of "/organizations"
+
         // Create a ticket in the DB manually
         $this->getDb()->exec(
             "
@@ -345,6 +404,8 @@ class ApiDb extends AbstractDbSet
         $ticket1->setPersonId(3);
         $ticket1->agent = $agent1;
         $ticket1->setDepartmentId(1);
+        $ticket1->setOrganization($organization1);
+        $ticket1->setLanguageId(1);
         $ticket1->setSubject('Ticket #1');
         $ticket1->setRef('DIDXGBLWRL-201622485');
         $em->persist($ticket1);
@@ -353,7 +414,10 @@ class ApiDb extends AbstractDbSet
         $ticket2->setPersonId(3);
         $ticket2->agent = $agent2;
         $ticket2->setDepartmentId(1);
+        $ticket1->setOrganization($organization2);
+        $ticket1->setLanguageId(1);
         $ticket2->setSubject('Ticket #2');
+        $ticket1->setAgentTeamId(1);
         $em->persist($ticket2);
         $ticket3 = new Ticket();
         $ticket3->disableAutoTicketProcess();
@@ -362,6 +426,7 @@ class ApiDb extends AbstractDbSet
         $ticket3->setDepartmentId(2);
         $ticket3->setSubject('Ticket #3');
         $em->persist($ticket3);
+        $ticket1->setAgentTeamId(2);
         $em->flush();
 
         // Add a blue flag on the first ticket.
@@ -674,53 +739,57 @@ class ApiDb extends AbstractDbSet
         );
         // end of ticket workflows
 
-        // "/organizations" endpoint and its' children test data -------------------------------------------------------
+        // Ticket filter sets test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
             "
-            INSERT INTO `organizations`
-                (`picture_blob_id`, `name`, `summary`, `importance`, `date_created`)
+            INSERT INTO `ticket_filter_sets`
+                (`id`, `title`, `display_order`, `is_default`)
             VALUES
-                (NULL, 'Organization 1', 'test organization', 1, '2015-08-03 00:00:00'),
-                (NULL, 'Organization 2', 'test organization', 2, '2015-08-07 00:00:00');
-
-            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
-            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
+              ('1', 'Filter set 1', '10', '1'),
+              ('2', 'Filter set 2', '20', '1'),
+              ('3', 'Filter set 3', '30', '1');
         "
         );
-        // end of "/organizations"
+        // end of ticket filter sets
 
-        // "/agent_teams" endpoint and its' children test data ---------------------------------------------------------
+        // Ticket filters test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
-            "
-            INSERT INTO `agent_teams`
-                (`avatar_blob_id`, `name`)
+            <<<SQL
+            INSERT INTO `custom_ticket_filters`
+                (`id`, `filter_set_id`,  `title`, `term`, `display_order`, `date_created`, `date_updated`)
             VALUES
-                (NULL, 'Support Managers'),
-                (NULL, '1st Level Support')
-            ;
-
-            INSERT INTO `agent_team_members`
-                (`team_id`, `person_id`)
-            VALUES
-                (1, 1),
-                (1, 2),
-                (2, 3),
-                (2, 4)
-            ;
-        "
+              ('1', '1', 'Filter 1', '{"type":"ticket_status","op":"is","options":{"status":["awaiting_agent"]}}', '10', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
+              ('2', '1', 'Filter 2', '{"type":"ticket_status","op":"is","options":{"status":["resolved"]}}', '20', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
+              ('3', '2', 'Filter 3', '{"type":"ticket_status","op":"is","options":{"status":["deleted"]}}', '30', '2016-02-25 00:00:00', '2016-02-25 00:00:00');
+SQL
         );
-        // end of "/agent_teams"
+        // end of ticket filters
 
-        // Default language --------------------------------------------------------------------------------------------
+        // Legacy ticket filters test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(
-            "
-            INSERT INTO `languages`
-                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
-                 `has_agent`, `has_admin`)
+            <<<SQL
+            INSERT INTO `ticket_filters`
+                (`id`, `is_global`, `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`, `display_order`)
             VALUES
-                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
-        "
+                ('1', '1', 'My Tickets', '1', 'agent', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '1'),
+                ('2', '1', 'My Team\'s Tickets', '1', 'agent_team', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '2'),
+                ('3', '1', 'Tickets I Follow', '1', 'participant', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '3'),
+                ('4', '1', 'Unassigned', '1', 'unassigned', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '4'),
+                ('5', '1', 'All', '1', 'all', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '5'),
+                ('6', '1', 'Awaiting User', '1', 'archive_awaiting_user', '[{"type":"status","op":"is","options":{"status":"awaiting_user"}}]', '', 'ticket.urgency:desc', '6'),
+                ('7', '1', 'Resolved', '1', 'archive_resolved', '[{"type":"status","op":"is","options":{"status":"resolved"}}]', '', 'ticket.urgency:desc', '7'),
+                ('8', '1', 'Archived', '1', 'archive_archived', '[{"type":"status","op":"is","options":{"status":"archived"}}]', '', 'ticket.urgency:desc', '8'),
+                ('9', '1', 'Spam', '1', 'archive_spam', '[{"type":"status","op":"is","options":{"status":"hidden.spam"}}]', '', 'ticket.urgency:desc', '9'),
+                ('10', '1', 'Deleted', '1', 'archive_deleted', '[{"type":"status","op":"is","options":{"status":"hidden.deleted"}}]', '', 'ticket.urgency:desc', '10'),
+                ('11', '1', 'My Tickets (Hold)', '1', 'agent_w_hold', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '11'),
+                ('12', '1', 'My Team\'s Tickets (Hold)', '1', 'agent_team_w_hold', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '12'),
+                ('13', '1', 'Tickets I Follow (Hold)', '1', 'participant_w_hold', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '13'),
+                ('14', '1', 'Unassigned (Hold)', '1', 'unassigned_w_hold', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '14'),
+                ('15', '1', 'All (Hold)', '1', 'all_w_hold', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '15'),
+                ('16', '1', 'My custom filter', '1', '', '[{"type":"subject","op":"contains","options":{"subject":"Demo"}}]', '', '', '1000');
+SQL
         );
+        // end of legacy ticket filters
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec(

@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
+/**
+ * Class DbalQuerySerializer.
+ */
 class DbalQuerySerializer
 {
     /**

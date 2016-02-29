@@ -42,7 +42,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->_em->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q
+            FROM DeskPRO:LegacyTicketFilter q
             ORDER BY q.display_order
         ')->execute();
 
@@ -53,7 +53,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->_em->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q
+            FROM DeskPRO:LegacyTicketFilter q
             WHERE q.sys_name IS NULL
             ORDER BY q.display_order
         ')->execute();
@@ -93,7 +93,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
         ')->execute();
 
         return $filters;
@@ -103,7 +103,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             LEFT JOIN q.person p
             WHERE p IS NULL OR (p.is_agent = true AND p.is_deleted = 0)
             ORDER BY q.id ASC
@@ -137,7 +137,7 @@ class TicketFilter extends AbstractEntityRepository
 
         $filters = $this->getEntityManager()->createQuery("
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE
                 q.is_global = true
                 OR q.person IN ($agent_ids)
@@ -151,7 +151,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE q.person = ?0
             ORDER BY q.title ASC
         ')->execute(array($agent));
@@ -171,14 +171,14 @@ class TicketFilter extends AbstractEntityRepository
             $teams   = array_values($teams);
             $filters = $this->getEntityManager()->createQuery('
                 SELECT q
-                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
                 ORDER BY q.title ASC
             ')->execute(array($agent, $teams));
         } else {
             $filters = $this->getEntityManager()->createQuery('
                 SELECT q
-                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
                 ORDER BY q.title ASC
             ')->execute(array($agent));
@@ -198,7 +198,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE q.is_global = true AND q.sys_name IS NULL
             ORDER BY q.title ASC
         ')->execute();
@@ -217,7 +217,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             LEFT JOIN q.agent_team at
             WHERE q.agent_team IS NOT NULL
             ORDER BY at.name ASC, q.title ASC
@@ -249,7 +249,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             LEFT JOIN q.person p
             WHERE q.agent_team IS NULL AND q.is_global = false
             ORDER BY p.name ASC, q.title ASC
@@ -279,7 +279,7 @@ class TicketFilter extends AbstractEntityRepository
             case 'global':
                 $filters = $this->getEntityManager()->createQuery('
                     SELECT q
-                    FROM DeskPRO:TicketFilter q INDEX BY q.id
+                    FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                     WHERE q.is_global = true
                     ORDER BY q.title ASC
                 ')->execute();
@@ -288,7 +288,7 @@ class TicketFilter extends AbstractEntityRepository
             case 'team':
                 $filters = $this->getEntityManager()->createQuery('
                     SELECT q
-                    FROM DeskPRO:TicketFilter q INDEX BY q.id
+                    FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                     WHERE q.is_global = true
                     ORDER BY q.title ASC
                 ')->execute();
@@ -302,7 +302,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE q.sys_name IS NOT NULL AND (q.person = ?1 OR q.is_global = true)
             ORDER BY q.title ASC
         ')->setParameter(1, $person_id)->execute();
@@ -336,14 +336,14 @@ class TicketFilter extends AbstractEntityRepository
         if ($team_ids) {
             $filters = $this->getEntityManager()->createQuery('
                 SELECT q
-                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE q.person = ?1 OR q.is_global = true OR q.agent_team IN (?2)
                 ORDER BY q.title ASC
             ')->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
         } else {
             $filters = $this->getEntityManager()->createQuery('
                 SELECT q
-                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
                 WHERE q.person = ?1 OR q.is_global = true
                 ORDER BY q.title ASC
             ')->setParameter(1, $person_id)->execute();
@@ -361,7 +361,7 @@ class TicketFilter extends AbstractEntityRepository
     {
         $filters = $this->getEntityManager()->createQuery('
             SELECT q
-            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            FROM DeskPRO:LegacyTicketFilter q INDEX BY q.id
             WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
             ORDER BY q.title ASC
         ')->setParameter(1, $person_id)->execute();
@@ -378,7 +378,7 @@ class TicketFilter extends AbstractEntityRepository
         } elseif (is_string($var)) {
             return $this->findOneBy(array('sys_name' => $var));
         } elseif (\is_object($var)) {
-            if ($var instanceof Entity\TicketFilter) {
+            if ($var instanceof Entity\LegacyTicketFilter) {
                 return $var;
             }
         } elseif (isset($var['ticket_filter'])) {

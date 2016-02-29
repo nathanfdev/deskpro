@@ -33,8 +33,8 @@
  */
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketFilter;
 
 /**
  * Represents a changed filter in the FilterChangeDetector.
@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\TicketFilter;
 class FilterChange
 {
     /**
-     * @var \Application\DeskPRO\Entity\TicketFilter
+     * @var \Application\DeskPRO\Entity\LegacyTicketFilter
      */
     private $filter;
 
@@ -67,15 +67,15 @@ class FilterChange
     private $new_match_for_agents = array();
 
     /**
-     * @param TicketFilter $filter
+     * @param LegacyTicketFilter $filter
      */
-    public function __construct(TicketFilter $filter)
+    public function __construct(LegacyTicketFilter $filter)
     {
         $this->filter = $filter;
     }
 
     /**
-     * @return TicketFilter
+     * @return LegacyTicketFilter
      */
     public function getFilter()
     {

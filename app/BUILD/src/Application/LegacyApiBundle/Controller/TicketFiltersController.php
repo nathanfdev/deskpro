@@ -29,10 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -80,7 +79,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      */
     public function listAction()
     {
-        $filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFilters();
+        $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getDefinedFilters();
 
         $data = array();
 
@@ -134,7 +133,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      */
     public function getAction($id)
     {
-        $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
+        $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($id);
 
         if (!$filter || $filter->sys_name) {
             throw $this->createNotFoundException();
@@ -216,13 +215,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     public function saveAction($id)
     {
         if ($id) {
-            $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
+            $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($id);
 
             if (!$filter || $filter->sys_name) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $filter         = new TicketFilter();
+            $filter         = new LegacyTicketFilter();
             $filter->person = $this->person;
         }
 
@@ -296,7 +295,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      */
     public function removeAction($id)
     {
-        $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
+        $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($id);
 
         if (!$filter || $filter->sys_name) {
             throw $this->createNotFoundException();
@@ -339,7 +338,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     public function saveDisplayOrderAction()
     {
         $display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
-        $this->em->getRepository('DeskPRO:TicketFilter')->updateDisplayOrder($display_order);
+        $this->em->getRepository('DeskPRO:LegacyTicketFilter')->updateDisplayOrder($display_order);
 
         return $this->listAction();
     }

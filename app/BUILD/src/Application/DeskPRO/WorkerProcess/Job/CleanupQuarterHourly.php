@@ -89,7 +89,7 @@ class CleanupQuarterHourly extends AbstractJob
                 // Fetch in agent context
                 $filters = App::getOrm()->createQuery("
                     SELECT f
-                    FROM DeskPRO:TicketFilter f
+                    FROM DeskPRO:LegacyTicketFilter f
                     WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
                 ")->execute();
 
@@ -104,7 +104,7 @@ class CleanupQuarterHourly extends AbstractJob
                     $agent->loadHelper('AgentPrefs');
 
                     foreach ($filters as $filter) {
-                        /* @var \Application\DeskPRO\Entity\TicketFilter $filter*/
+                        /* @var \Application\DeskPRO\Entity\LegacyTicketFilter $filter*/
                         $searcher = $filter->getSearcher();
                         $searcher->setPersonContext($agent);
 

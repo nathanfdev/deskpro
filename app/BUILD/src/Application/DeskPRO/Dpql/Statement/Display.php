@@ -241,7 +241,7 @@ class Display
         'ticket_categories'           => 'DeskPRO:TicketCategory',
         'ticket_escalation_logs'      => 'DeskPRO:TicketEscalationLog',
         'ticket_escalations'          => 'DeskPRO:TicketEscalation',
-        'ticket_filters'              => 'DeskPRO:TicketFilter',
+        'ticket_filters'              => 'DeskPRO:LegacyTicketFilter',
         'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
         'ticket_layouts'              => 'DeskPRO:TicketLayout',
         'ticket_macros'               => 'DeskPRO:TicketMacro',

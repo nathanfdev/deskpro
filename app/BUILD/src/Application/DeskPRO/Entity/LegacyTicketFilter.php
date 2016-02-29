@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property string $order_by
  * @property string $display_order
  */
-class TicketFilter extends DomainObject
+class LegacyTicketFilter extends DomainObject
 {
     /**
      * @var int

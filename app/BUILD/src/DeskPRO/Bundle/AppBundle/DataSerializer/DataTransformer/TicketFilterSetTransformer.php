@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
@@ -60,9 +59,6 @@ class TicketFilterSetTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
         return [];
     }
 }

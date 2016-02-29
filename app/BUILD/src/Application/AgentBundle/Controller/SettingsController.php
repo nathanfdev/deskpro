@@ -264,7 +264,7 @@ class SettingsController extends AbstractController
         $loader = new AgentNotifPrefsLoader($this->person, $this->em);
         $prefs  = $loader->getPrefs();
 
-        $filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person));
+        $filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person));
 
         $all_filters      = $filters->getAllFilters();
         $sys_filters      = $filters->getSystemFilters();
@@ -357,8 +357,8 @@ class SettingsController extends AbstractController
      */
     public function ticketFiltersAction()
     {
-        $filters        = $this->em->getRepository('DeskPRO:TicketFilter')->getPersonalFilters($this->person);
-        $filters_shared = $this->em->getRepository('DeskPRO:TicketFilter')->getSharedFilters($this->person);
+        $filters        = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getPersonalFilters($this->person);
+        $filters_shared = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getSharedFilters($this->person);
 
         //agent.ui.filter
         $filter_show_options = $this->db->fetchAllKeyValue("
@@ -380,7 +380,7 @@ class SettingsController extends AbstractController
     public function ticketFilterEditAction($filter_id)
     {
         if ($filter_id) {
-            $filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+            $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
             if ($filter and $filter['sys_name']) {
                 $filter = null;
             }
@@ -389,7 +389,7 @@ class SettingsController extends AbstractController
                 throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
             }
         } else {
-            $filter = new Entity\TicketFilter();
+            $filter = new Entity\LegacyTicketFilter();
         }
 
         $term_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -408,7 +408,7 @@ class SettingsController extends AbstractController
     {
         if ($filter_id) {
             $is_new = false;
-            $filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+            $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
             if ($filter and $filter['sys_name']) {
                 $filter = null;
             }
@@ -418,7 +418,7 @@ class SettingsController extends AbstractController
             }
         } else {
             $is_new = true;
-            $filter = new Entity\TicketFilter();
+            $filter = new Entity\LegacyTicketFilter();
         }
 
         $filter['title']    = $this->in->getString('filter.title');
@@ -439,7 +439,7 @@ class SettingsController extends AbstractController
 
     public function ticketFilterDeleteAction($filter_id)
     {
-        $filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+        $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
         if (!$filter) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Could not find filter');
         }

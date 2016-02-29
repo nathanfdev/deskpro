@@ -73,12 +73,8 @@ class TicketsController extends AbstractTicketsController
             '_controller' => 'ApiBundle:Tickets\Tickets:list',
         ]);
         $request->query->add($params);
-        $response = $kernel->handle(
-            $request,
-            HttpKernelInterface::SUB_REQUEST
-        );
 
-        return $response;
+        return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
     }
 
     /**

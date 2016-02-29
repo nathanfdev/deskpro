@@ -572,8 +572,8 @@ class TicketSearchController extends AbstractController
     public function getSubgroupCountsAction()
     {
         if ($filter_id = $this->in->getUint('filter_id')) {
-            /** @var $filter \Application\DeskPRO\Entity\TicketFilter */
-            $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+            /** @var $filter \Application\DeskPRO\Entity\LegacyTicketFilter */
+            $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($filter_id);
 
             if (!$filter) {
                 throw $this->createNotFoundException();
@@ -987,8 +987,8 @@ class TicketSearchController extends AbstractController
     {
         $view_type = $this->in->getString('view_type');
 
-        /** @var $filter \Application\DeskPRO\Entity\TicketFilter */
-        $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id ?: 0);
+        /** @var $filter \Application\DeskPRO\Entity\LegacyTicketFilter */
+        $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($filter_id ?: 0);
 
         if (!$filter) {
             throw $this->createNotFoundException();
@@ -1094,7 +1094,7 @@ class TicketSearchController extends AbstractController
 
     public function runNamedFilterAction($filter_name)
     {
-        $filter = $this->em->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
+        $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->findOneBy(array('sys_name' => $filter_name));
         if (!$filter) {
             throw $this->createNotFoundException();
         }
@@ -1743,7 +1743,7 @@ class TicketSearchController extends AbstractController
             $sla    = $this->em->getRepository('DeskPRO:Sla')->find($content_id);
             $filter = null;
         } else {
-            $filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($content_id);
+            $filter = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->find($content_id);
             $sla    = null;
         }
 
