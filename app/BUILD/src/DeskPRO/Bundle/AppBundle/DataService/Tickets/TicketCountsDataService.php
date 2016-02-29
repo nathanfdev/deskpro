@@ -43,7 +43,7 @@ use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class TicketCountsDataService.
@@ -61,22 +61,22 @@ class TicketCountsDataService
     private $engine;
 
     /**
-     * @var Person
+     * @var TokenStorageInterface
      */
-    private $user;
+    private $token_storage;
 
     /**
      * Constructor.
      *
      * @param EntityManager          $em
      * @param DbalTicketFilterEngine $engine
-     * @param TokenStorage           $tokenStorage
+     * @param TokenStorageInterface  $token_storage
      */
-    public function __construct(EntityManager $em, DbalTicketFilterEngine $engine, TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, DbalTicketFilterEngine $engine, TokenStorageInterface $token_storage)
     {
-        $this->em     = $em;
-        $this->engine = $engine;
-        $this->user   = $tokenStorage->getToken()->getUser();
+        $this->em            = $em;
+        $this->engine        = $engine;
+        $this->token_storage = $token_storage;
     }
 
     /**
@@ -87,7 +87,7 @@ class TicketCountsDataService
      */
     public function getTicketFilterCount(TicketFilter $filter, $group_by = null)
     {
-        $context = new TermEngineContext($this->user);
+        $context = new TermEngineContext($this->getUser());
         if ($group_by) {
             $context->addGroupByFromString($group_by);
         }
@@ -103,7 +103,7 @@ class TicketCountsDataService
             $total     = 0;
             $is_custom = TicketGrouping::isCustom($group_by);
             if ($is_custom) {
-                $total = $this->engine->evaluate($filter, new TermEngineContext($this->user))->fetchCount();
+                $total = $this->engine->evaluate($filter, new TermEngineContext($this->getUser()))->fetchCount();
             }
 
             $filter_counts = $tickets_query->fetchGroupedCount();
@@ -205,5 +205,13 @@ class TicketCountsDataService
             default:
                 throw new \Exception("Unknown type '$type'");
         }
+    }
+
+    /**
+     * @return Person
+     */
+    private function getUser()
+    {
+        return $this->token_storage->getToken()->getUser();
     }
 }
