@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;

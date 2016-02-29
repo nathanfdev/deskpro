@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
