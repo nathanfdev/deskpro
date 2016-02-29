@@ -80,7 +80,7 @@ class TicketCountsController extends BaseController
      */
     public function getTicketFilterSetCountAction(Request $request, TicketFilterSet $set)
     {
-        $count = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
+        $count = $this->getCountsService()->getFilterSetCount($set, $request->get('group_by'));
 
         return View::create($this->dataSerialize($count));
     }
@@ -114,7 +114,7 @@ class TicketCountsController extends BaseController
         $counts = [];
 
         foreach ($sets as $set) {
-            $counts[] = $this->getCountsService()->getFilterSetTicketsCount($set, $request->get('group_by'));
+            $counts[] = $this->getCountsService()->getFilterSetCount($set, $request->get('group_by'));
         }
 
         return View::create($this->dataSerialize($counts));
@@ -153,7 +153,7 @@ class TicketCountsController extends BaseController
      */
     public function getTicketFilterCountAction(Request $request, TicketFilter $filter)
     {
-        $count = $this->getCountsService()->getTicketFilterCount($filter, $request->get('group_by'));
+        $count = $this->getCountsService()->getFilterCount($filter, $request->get('group_by'));
 
         return View::create($this->dataSerialize($count));
     }
@@ -190,7 +190,7 @@ class TicketCountsController extends BaseController
         /** @var TicketFilter[] $filters */
         $filters = $this->getRepository(TicketFilter::class)->findAll();
         foreach ($filters as $filter) {
-            $filter_count = $this->getCountsService()->getTicketFilterCount(
+            $filter_count = $this->getCountsService()->getFilterCount(
                 $filter,
                 isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
             );

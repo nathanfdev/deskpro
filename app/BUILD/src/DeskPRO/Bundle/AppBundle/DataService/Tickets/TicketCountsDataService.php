@@ -80,12 +80,45 @@ class TicketCountsDataService
     }
 
     /**
+     * @param TicketFilterSet $set
+     * @param array|null      $group_by
+     *
+     * @return Count
+     */
+    public function getFilterSetCount(TicketFilterSet $set, array $group_by = null)
+    {
+        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
+    }
+
+    /**
+     * @param int            $id
+     * @param string         $type
+     * @param string         $title
+     * @param TicketFilter[] $filters
+     * @param array|null     $group_by
+     *
+     * @return Count
+     */
+    public function getFiltersCount($id, $type, $title, $filters, array $group_by = null)
+    {
+        $count    = Count::create(0, $id, $type, $title);
+        $group_by = $group_by ?: [];
+
+        foreach ($filters as $filter) {
+            $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
+            $count->addNestedInstance($this->getFilterCount($filter,  $filter_group_by), true);
+        }
+
+        return $count;
+    }
+
+    /**
      * @param TicketFilter $filter
      * @param string       $group_by
      *
      * @return Count
      */
-    public function getTicketFilterCount(TicketFilter $filter, $group_by = null)
+    public function getFilterCount(TicketFilter $filter, $group_by = null)
     {
         $context = new TermEngineContext($this->getUser());
         if ($group_by) {
@@ -141,31 +174,6 @@ class TicketCountsDataService
                 []
             );
         }
-    }
-
-    /**
-     * @param TicketFilterSet $set
-     * @param array|null      $group_by
-     *
-     * @return Count
-     */
-    public function getFilterSetTicketsCount(TicketFilterSet $set, array $group_by = null)
-    {
-        if (!$group_by) {
-            $group_by = [];
-        }
-
-        $total  = 0;
-        $counts = [];
-
-        foreach ($set->getFilters() as $filter) {
-            $filter_grouping = array_key_exists($filter->getId(), $group_by) ? $group_by[$filter->getId()] : null;
-            $filter_count    = $this->getTicketFilterCount($filter, $filter_grouping);
-            $counts[]        = $filter_count;
-            $total += $filter_count->getCount();
-        }
-
-        return Count::create($total, $set->getId(), 'ticket_filter_set', $set->getTitle(), null, $counts);
     }
 
     /**
