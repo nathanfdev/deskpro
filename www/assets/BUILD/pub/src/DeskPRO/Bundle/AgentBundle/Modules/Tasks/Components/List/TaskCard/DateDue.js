@@ -36,7 +36,7 @@ export class DateDue extends CardWidget {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.trigger]}>
-            <HiddenDateTimePicker value={value} onChange={this.onChange} />
+            <HiddenDateTimePicker value={value} onDone={this.onChange} />
           </ClickOut>
         </Detached>
       </div>

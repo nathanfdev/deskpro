@@ -24,6 +24,7 @@ export class DateTimePicker extends React.Component {
   }
 
   onChange = (val) => {
+    console.info('>>>>>val', val);
     this.setState({value: val});
     this.props.onChange && this.props.onChange(val);
   };
@@ -56,7 +57,7 @@ export class DateTimePicker extends React.Component {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.input]}>
-            <HiddenDateTimePicker value={value} onChange={this.onChange} />
+            <HiddenDateTimePicker value={value} onDone={this.onChange} />
           </ClickOut>
         </Detached>
       </div>
