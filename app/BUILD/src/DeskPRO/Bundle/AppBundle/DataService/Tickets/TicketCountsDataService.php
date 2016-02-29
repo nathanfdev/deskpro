@@ -85,7 +85,7 @@ class TicketCountsDataService
      *
      * @return Count
      */
-    public function getFilterSetCount(TicketFilterSet $set, array $group_by = null)
+    public function getFilterSetCount(TicketFilterSet $set, $group_by = null)
     {
         return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
     }
@@ -99,7 +99,7 @@ class TicketCountsDataService
      *
      * @return Count
      */
-    public function getFiltersCount($id, $type, $title, $filters, array $group_by = null)
+    public function getFiltersCount($id, $type, $title, $filters, $group_by = null)
     {
         $count    = Count::create(0, $id, $type, $title);
         $group_by = $group_by ?: [];

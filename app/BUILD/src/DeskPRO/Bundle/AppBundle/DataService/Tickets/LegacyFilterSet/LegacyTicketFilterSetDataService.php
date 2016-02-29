@@ -126,7 +126,7 @@ class LegacyTicketFilterSetDataService
      *
      * @return Count
      */
-    public function getFilterSetCount(LegacyTicketFilterSet $set, array $group_by = null)
+    public function getFilterSetCount(LegacyTicketFilterSet $set, $group_by = null)
     {
         return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
     }
@@ -140,7 +140,7 @@ class LegacyTicketFilterSetDataService
      *
      * @return Count
      */
-    public function getFiltersCount($id, $type, $title, array $filters, array $group_by = null)
+    public function getFiltersCount($id, $type, $title, array $filters, $group_by = null)
     {
         $count    = Count::create(0, $id, $type, $title);
         $group_by = $group_by ?: [];
