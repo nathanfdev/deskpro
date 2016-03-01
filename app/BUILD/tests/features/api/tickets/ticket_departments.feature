@@ -12,7 +12,7 @@ Feature: /ticket_departments endpoint
     When I send a GET request to "/api/v2/ticket_departments"
     Then the response status code should be 200
 
-    And the JSON node "data" should have 1 elements
+    And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "sales"
 
@@ -73,6 +73,18 @@ Feature: /ticket_departments endpoint
   Scenario: I try to edit chat department
     When I send a PUT request to "/api/v2/ticket_departments/2"
     Then the response status code should be 404
+
+  Scenario: I retrieve a list of ticket departments by ids
+    When I send a GET request to "/api/v2/ticket_departments?ids[0]="
+    Then the response status code should be 200
+    And the JSON node "data" should have 0 elements
+
+    When I send a GET request to "/api/v2/ticket_departments?ids[0]=1&ids[1]=2"
+    Then the response status code should be 200
+
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].title" should be equal to "sales"
 
   Scenario: I delete ticket department
     When I send a DELETE request to "/api/v2/ticket_departments/3"

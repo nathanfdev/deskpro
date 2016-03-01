@@ -100,13 +100,6 @@ class TicketDepartmentsController extends CrudController
                 ->setParameter('allowed_department_ids', $allowed_department_ids)
             ;
         }
-
-        if ($request->query->get('ids')) {
-            $qb
-                ->andWhere('e.id IN (:ids)')
-                ->setParameter('ids', $request->query->get('ids'))
-            ;
-        }
     }
 
     /**
