@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -42,6 +43,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -49,6 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agent_chat")
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
+ * @JMS\ExclusionPolicy("all")
  */
 class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 {
@@ -59,12 +62,18 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getId", setter="setId")
      */
     protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=80)
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Accessor(getter="getType", setter="setType")
      */
     protected $type;
 
@@ -72,6 +81,9 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
      * @Assert\NotNull()
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Accessor(getter="isArchived", setter="setArchived")
      */
     protected $is_archived = false;
 
@@ -79,6 +91,9 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
      * @Assert\NotNull()
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     * @JMS\Accessor(getter="getDateCreated", setter="setDateCreated")
      */
     protected $date_created;
 
@@ -86,12 +101,18 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
      * @Assert\NotNull()
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     * @JMS\Accessor(getter="getDateLastMessage", setter="setDateLastMessage")
      */
     protected $date_last_message;
 
     /**
-     * @var AgentChatParticipant[]
+     * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
      */
     protected $participants;
 
@@ -101,9 +122,14 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $personList = null;
 
     /**
+     * An array if ids corresponding to chat messages.
+     *
      * @var AgentChatMessage[]
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage", mappedBy="chat", cascade={"persist", "remove"})
      * @ORM\OrderBy({"date_created" = "DESC"})
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     * @JMS\Accessor(getter="getMessages", setter="addMessage")
      */
     protected $messages;
 

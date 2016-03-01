@@ -1,0 +1,7 @@
+services:
+  api_doc.extractor.modes_handler:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ModesHandler
+    arguments:
+      - "@api_authorization.action_permissions.metadata_factory"
+    tags:
+      - { name: nelmio_api_doc.extractor.handler }

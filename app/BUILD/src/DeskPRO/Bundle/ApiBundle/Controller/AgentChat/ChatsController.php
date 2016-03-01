@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
@@ -39,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -248,10 +248,15 @@ class ChatsController extends AbstractController
      * @ApiDoc(
      *      description="create an agent-chat with agent",
      *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
+     *          201="Chat was created",
+     *          302="We found already started chat with given parameters",
+     *          400="Couldn't start chat with given parameters"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *     tags={
+     *         "conversation",
+     *         "stable",
+     *     }
      * )
      * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
      *
