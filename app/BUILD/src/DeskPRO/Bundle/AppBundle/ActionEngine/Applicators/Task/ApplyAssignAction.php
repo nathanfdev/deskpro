@@ -30,25 +30,31 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
-use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
+    /** @var  \Application\DeskPRO\Entity\Person */
+    private $person;
 
+    /** @ToDo apply many-to-many relationship between Person and Task */
     /**
-     * @param Feedback[] $feedback
+     * @param Task[] $tasks
      */
-    public function apply(array $feedback)
+    public function apply(array $tasks)
     {
         $this->init();
-        foreach ($feedback as $item) {
-            $item->setCategory($this->type);
+        foreach ($tasks as $task) {
+            $assignment = new TaskAssignment();
+            $assignment->setPerson($this->person);
+            $assignment->setTask($task);
+            $this->em->persist($assignment);
+            $task->addAssigned($assignment);
         }
     }
 
@@ -57,7 +63,7 @@ class ApplySetTypeAction extends AbstractActionApplicator implements ActionAppli
      */
     private function init()
     {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
+        $id           = $this->options['id'];
+        $this->person = $this->em->getRepository('DeskPRO:Person')->find($id);
     }
 }

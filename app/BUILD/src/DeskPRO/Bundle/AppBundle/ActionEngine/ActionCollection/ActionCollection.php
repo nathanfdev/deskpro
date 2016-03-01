@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
@@ -41,6 +42,10 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetHiddenStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\AssignAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetDueDateAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetProjectAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -90,23 +95,35 @@ class ActionCollection
     {
         foreach ($actions as $name => $options) {
             switch ($name) {
+                case AbstractAction::ASSIGN_ACTION:
+                    $this->addAction(new AssignAction(['id' => $options]));
+                    break;
                 case AbstractAction::SET_STATUS_CATEGORY_ACTION:
-                    $this->addAction(new SetStatusCategoryAction([AbstractAction::OPTION_ID => $options]));
+                    $this->addAction(new SetStatusCategoryAction(['id' => $options]));
+                    break;
+                case AbstractAction::SET_STATUS_ACTION:
+                    $this->addAction(new SetStatusAction(['status' => (int) $options]));
+                    break;
+                case AbstractAction::SET_DUE_DATE_ACTION:
+                    $this->addAction(new SetDueDateAction(['date' => $options]));
                     break;
                 case AbstractAction::SET_HIDDEN_STATUS_ACTION:
-                    $this->addAction(new SetHiddenStatusAction([AbstractAction::OPTION_INPUT => $options]));
+                    $this->addAction(new SetHiddenStatusAction(['input' => $options]));
                     break;
                 case AbstractAction::SET_TYPE_ACTION:
-                    $this->addAction(new SetTypeAction([AbstractAction::OPTION_ID => $options]));
+                    $this->addAction(new SetTypeAction(['id' => $options]));
                     break;
                 case AbstractAction::SET_CATEGORY_ACTION:
-                    $this->addAction(new SetCategoryAction([AbstractAction::OPTION_INPUT => $options]));
+                    $this->addAction(new SetCategoryAction(['input' => $options]));
+                    break;
+                case AbstractAction::SET_PROJECT_ACTION:
+                    $this->addAction(new SetProjectAction(['id' => $options]));
                     break;
                 case AbstractAction::ADD_LABELS_ACTION:
-                    $this->addAction(new AddLabelsAction([AbstractAction::OPTION_LABELS => $options]));
+                    $this->addAction(new AddLabelsAction(['labels' => $options]));
                     break;
                 case AbstractAction::REMOVE_LABELS_ACTION:
-                    $this->addAction(new RemoveLabelsAction([AbstractAction::OPTION_LABELS => $options]));
+                    $this->addAction(new RemoveLabelsAction(['labels' => $options]));
                     break;
                 case AbstractAction::APPROVE_ACTION:
                     $this->addAction(new ApproveAction());
