@@ -36,13 +36,15 @@ export class TaskCardEditContainer extends React.Component {
     super(props);
     this.state = {
       editing: false,
-      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task: props.task
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task: props.task
     });
   }
 
@@ -53,43 +55,50 @@ export class TaskCardEditContainer extends React.Component {
   };
 
   onToggleSelected = () => {
-    const { dispatch, task } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
+    this.setState({selected: !this.state.selected});
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
   onToggleDone = () => {
-    const { task, dispatch } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
     const params = {
       is_done: !task.get('is_done')
     };
 
+    this.setState({task: task.set('is_done', params.is_done)});
     dispatch(editTask(task.get('id'), params));
   };
 
   onChangeTitle = value => {
-    const { task, dispatch } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
     const params = {
       title: value
     };
-
+    this.setState({task: task.set('title', params.title)});
     dispatch(editTask(task.get('id'), params));
   };
 
   onChangeDate = value => {
-    const { task, dispatch } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
     const params = {
       date_due: value
     };
-
+    this.setState({task: task.set('date_due', params.date_due)});
     dispatch(editTask(task.get('id'), params));
   };
 
   onChangeDisplayOrder = taskId => {
-    const { task, dispatch } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
     const params = {
       display_order: task.get('display_order')
     };
-
+    this.setState({task: task.set('display_order', params.display_order)});
     dispatch(editTask(taskId, params));
   };
 
@@ -102,7 +111,7 @@ export class TaskCardEditContainer extends React.Component {
       return true;
     }
 
-    if (!Immutable.is(this.props.task, props.task)) {
+    if (!Immutable.is(this.state.task, state.task)) {
       return true;
     }
 
@@ -118,6 +127,7 @@ export class TaskCardEditContainer extends React.Component {
       ...childProps,
       ...props,
 
+      task: this.state.task,
       editing: this.state.editing,
       selected: this.state.selected,
       onToggleSelected: this.onToggleSelected,
