@@ -39,16 +39,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class DepartmentType.
  */
-class DepartmentType extends AbstractType
+class DepartmentChoiceType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_department';
-    }
-
     /**
      * {@inheritdoc}
      */

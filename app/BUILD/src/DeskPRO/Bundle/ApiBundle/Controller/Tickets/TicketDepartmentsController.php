@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentChoiceType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -51,7 +51,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TicketDepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
-    public static $type      = DepartmentType::class;
+    public static $type      = DepartmentChoiceType::class;
     public static $listOrder = 'asc';
 
     /**
