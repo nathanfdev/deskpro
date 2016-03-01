@@ -38,10 +38,6 @@ use InvalidArgumentException;
  */
 class TypeUtils
 {
-    private function __construct()
-    {
-    }
-
     /**
      * @param mixed $var
      *
@@ -84,6 +80,11 @@ class TypeUtils
         return array_pop($parts);
     }
 
+    /**
+     * @param string $var
+     *
+     * @return string
+     */
     public static function getSnakeCaseBaseTypeName($var)
     {
         return StringUtils::toSnakeCase(self::getBaseTypeName($var));

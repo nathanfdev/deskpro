@@ -94,7 +94,8 @@ class DepartmentDataService extends AbstractDataService
                     ->orderBy('d.display_order', 'ASC')
                     ->setParameter('allowed_department_ids', $allowed_department_ids)
                     ->getQuery()
-                    ->getResult();
+                    ->getResult()
+                ;
 
                 return $departments;
             }
@@ -135,7 +136,8 @@ class DepartmentDataService extends AbstractDataService
                     ->orderBy('d.display_order', 'ASC')
                     ->setParameter('allowed_department_ids', $allowed_department_ids)
                     ->getQuery()
-                    ->getResult();
+                    ->getResult()
+                ;
 
                 return $departments;
             }
