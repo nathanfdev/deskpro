@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\Form\AbstractType;
@@ -37,9 +37,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class DepartmentType.
+ * Class TicketDepartmentChoiceType.
  */
-class DepartmentChoiceType extends AbstractType
+class TicketDepartmentChoiceType extends AbstractType
 {
     /**
      * {@inheritdoc}
