@@ -30,34 +30,21 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
-use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetStatusAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
     /**
-     * @param Feedback[] $feedback
+     * @param Task[] $tasks
      */
-    public function apply(array $feedback)
+    public function apply(array $tasks)
     {
-        $this->init();
-        foreach ($feedback as $item) {
-            $item->setCategory($this->type);
+        foreach ($tasks as $task) {
+            $task->setIsDone((bool) $this->options['status']);
         }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 }

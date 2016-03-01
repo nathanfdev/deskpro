@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { selectedSelector, paramsSelector } from '../../../../Application/Selectors/massActions';
-import { cancelMassActions, setMassActionsParams, resetParam, submitMassActions } from '../../../../Application/Actions/massActions';
-import { ActionContainer } from './ActionContainer';
+import { cancelMassActions, submitMassActions } from '../../../../Application/Actions/massActions';
+import { MassActionDropdown } from './MassActionDropdown';
 import { SubmitButton } from './SubmitButton';
 
 import { connect } from 'react-redux';
@@ -48,10 +48,8 @@ export class MassActionBarContainer extends Component {
         );
       }
       return (
-        <ActionContainer key={index} id={index}
+        <MassActionDropdown key={index} id={index}
                          item={item}
-                         setParams={setMassActionsParams}
-                         resetSingleAction={resetParam}
                          currentParams={currentParams}/>
       );
     };

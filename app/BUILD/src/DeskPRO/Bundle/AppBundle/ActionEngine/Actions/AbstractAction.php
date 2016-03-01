@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
@@ -36,11 +37,15 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 abstract class AbstractAction implements ActionInterface
 {
     const APPROVE_ACTION             = 'approve';
+    const ASSIGN_ACTION              = 'assign';
     const DELETE_ACTION              = 'delete';
-    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
-    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
-    const SET_TYPE_ACTION            = 'set_type';
     const SET_CATEGORY_ACTION        = 'set_category';
+    const SET_DUE_DATE_ACTION        = 'set_due_date';
+    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
+    const SET_PROJECT_ACTION         = 'set_project';
+    const SET_STATUS_ACTION          = 'set_status';
+    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
+    const SET_TYPE_ACTION            = 'set_type';
     const ADD_LABELS_ACTION          = 'add_labels';
     const REMOVE_LABELS_ACTION       = 'remove_labels';
 

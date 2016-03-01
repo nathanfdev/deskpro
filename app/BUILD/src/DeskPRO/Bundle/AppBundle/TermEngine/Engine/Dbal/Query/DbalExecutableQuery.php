@@ -41,6 +41,8 @@ use Psr\Log\LoggerInterface;
  */
 class DbalExecutableQuery
 {
+    const GROUPS_LIMIT = 100;
+
     public static $groupAliases = [
         'agent'        => '{from}.agent_id',
         'department'   => '{from}.department_id',
@@ -269,20 +271,25 @@ class DbalExecutableQuery
         }
 
         // ordering
-        foreach ($this->order_by as $order_by => $direction) {
-            $this->log(Logger::DEBUG, 'add order by', ['by' => $order_by, 'dir' => $direction]);
-            $query->addOrderBy($order_by, $direction);
+        if ($this->order_by) {
+            foreach ($this->order_by as $order_by => $direction) {
+                $this->log(Logger::DEBUG, 'add order by', ['by' => $order_by, 'dir' => $direction]);
+                $query->addOrderBy($order_by, $direction);
+            }
+        } else { // by default order by count to show bigger ones first and to not skip them with self::GROUPS_LIMIT
+            $query->addOrderBy('count', 'desc');
         }
 
         // various WHERE manipulations
         $this->manipulateWhere($query);
 
         $query->setPage(null);
-        $query->setLimit(null);
+        $query->setLimit(self::GROUPS_LIMIT);
 
-        $stmt = $this->execute($query);
+        $stmt   = $this->execute($query);
+        $result = $stmt->fetchAll();
 
-        return $stmt->fetchAll();
+        return $result;
     }
 
     /**

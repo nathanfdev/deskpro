@@ -18,3 +18,8 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@action_engine.action_collection"
+  action_engine.tasks:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskApplicatorService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@action_engine.action_collection"

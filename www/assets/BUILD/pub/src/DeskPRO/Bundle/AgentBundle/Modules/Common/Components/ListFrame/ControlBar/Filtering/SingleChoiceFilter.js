@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanel';
+import { SingleChoicePanel } from '../../../Form/SingleChoicePanel';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 
 export class SingleChoiceFilter extends Component {
