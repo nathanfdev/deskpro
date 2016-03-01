@@ -56,11 +56,6 @@ services:
     tags:
       - { name: form.type, alias: entity_hierarchy }
 
-  form.department:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType
-    tags:
-      - { name: form.type, alias: deskpro_department }
-
   form.cc:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CcType
     arguments: ["@person_factory"]

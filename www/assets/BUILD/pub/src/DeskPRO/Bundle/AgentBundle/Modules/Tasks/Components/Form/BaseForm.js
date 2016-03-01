@@ -37,7 +37,8 @@ export class BaseForm extends React.Component {
     });
   };
 
-  onUnassignAll = () => {
+  onUnassignAll = (event) => {
+    event.preventDefault();
     this.setState({
       agents: [],
       agentTeams: [],

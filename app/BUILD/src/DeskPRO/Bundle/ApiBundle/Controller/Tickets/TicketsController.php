@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -283,31 +284,17 @@ class TicketsController extends AbstractTicketsController
     }
 
     /**
-     * @Delete("/{id}", requirements={"id"="\d+"})
-     *
-     * {@inheritdoc}
-     */
-    public function deleteAction($id, Request $request)
-    {
-        /** @var Ticket $entity */
-        $entity = $this->findEntity($id);
-        $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
-
-        $this->persistModel($entity);
-
-        return View::create([], Response::HTTP_OK);
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function deleteEntity($entity)
     {
         /* @var Ticket $entity */
-        $entity->deleteTicket($this->getUser());
+        $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
         $tm      = $this->getTicketManager();
         $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
+
         $tm->saveTicket($entity, $context);
+        $entity->deleteTicket($this->getUser(), '', false);
     }
 }

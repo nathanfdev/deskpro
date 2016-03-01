@@ -80,6 +80,10 @@ table.calendar-content {
 
 
   .dpwd-calendar-day {// Container for each day's content
+    user-select: none; // prevent content selection on doubleclick
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     min-height: 85px;
     vertical-align: top;
     padding: 8px 10px;

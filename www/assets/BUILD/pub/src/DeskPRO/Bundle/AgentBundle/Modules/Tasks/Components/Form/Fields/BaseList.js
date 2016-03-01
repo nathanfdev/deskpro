@@ -11,9 +11,13 @@ export class BaseList extends React.Component {
     return value;
   }
 
+  getKeyword() {
+    return '';
+  }
+
   render() {
     return (
-      <CheckboxList {...this.props} renderLabel={this.renderLabel} />
+      <CheckboxList {...this.props} renderLabel={this.renderLabel} getKeyword={this.getKeyword} />
     );
   }
 }

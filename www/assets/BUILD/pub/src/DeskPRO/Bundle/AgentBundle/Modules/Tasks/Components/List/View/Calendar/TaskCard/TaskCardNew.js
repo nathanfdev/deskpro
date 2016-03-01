@@ -18,6 +18,7 @@ import {
   AssignButton,
   AssigneeAvatar
 } from '../../../TaskCard';
+import { SaveTaskButton } from './SaveTaskButton';
 
 @connect()
 
@@ -33,7 +34,10 @@ export class TaskCardNew extends React.Component {
 
   constructor(props) {
     super(props);
-    this.model = {
+    this.state = {
+      submit: false
+    };
+    this.state = {
       title: null,
       due: props.task.get('date_due'),
       assignee: Immutable.fromJS({
@@ -43,22 +47,46 @@ export class TaskCardNew extends React.Component {
       }),
       project: null
     };
+    this.defaultDate = this.state.due;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      title: null,
+      due: nextProps.task.get('date_due'),
+      assignee: Immutable.fromJS({
+        agents: [],
+        teams: [],
+        departments: []
+      }),
+      project: null
+    });
+    this.defaultDate = this.state.due;
   }
 
   onChange(prop, value) {
     this.model[prop] = value;
-    this.isChanged = true;
+  }
+
+  isChanged() {
+    const { title, due, assignee, project } = this.state;
+    return title || due !== this.defaultDate || project ||
+      assignee.get('agents').size || assignee.get('teams').size || assignee.get('departments').size;
   }
 
   onAssign = (assignee) => {
     return new Promise(resolve => {
-      this.model.assignee = assignee;
+      this.setState({
+        assignee: assignee
+      });
       resolve();
     });
   };
 
   onSave = () => {
+    if (!this.model.title) return;
     const { dispatch, onClose } = this.props;
+
     const submitData = {
       title: this.model.title,
       task_type: 'task',
@@ -80,21 +108,20 @@ export class TaskCardNew extends React.Component {
   };
 
   onSetEditing = (isEditing) => {
-    this.props.onSetEditing && this.props.onSetEditing(isEditing);
+    !this.isChanged() && this.props.onSetEditing && this.props.onSetEditing(isEditing);
   };
 
   render() {
-    const { submit, isChanged } = this.props;
-    const { title, due, project, assignee } = this.model;
+    const { title, due, project, assignee, submit } = this.state;
 
     return (
       <Card statusBars={false}
             type="task"
             additionalClasses="calendar-task-card">
-
+        <SaveTaskButton onClick={this.onSave} submit={submit} />
         <CardLine>
           <CardLineLeft>
-            <TitleForm value={this.model.title} onChange={this.onChange.bind(this, 'title')} />
+            <TitleForm value={title} onChange={this.onChange.bind(this, 'title')} />
           </CardLineLeft>
           <CardLineRight>
             <AssignButton ref="assignee" task={assignee}
@@ -105,11 +132,11 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue value={this.model.due}
+            <DateDue value={due}
                      onChange={this.onChange.bind(this, 'due')}
                      openBySingleClick={true}
                      onSetEditing={this.onSetEditing} />
-            <CardProjectContainer value={this.model.project}
+            <CardProjectContainer value={project}
                                   onChange={this.onChange.bind(this, 'project')}
                                   openBySingleClick={true}
                                   onSetEditing={this.onSetEditing} />

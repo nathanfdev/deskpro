@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
 import {
@@ -47,7 +47,7 @@ export class CardProject extends CardWidget {
           <i className="fa fa-book"/> {project ? project.get('title') : 'N/A'}
         </span>
 
-        <Detached isOpen={this.state.isOpen}
+        <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="left bottom"
                   collision="fit"
@@ -60,7 +60,7 @@ export class CardProject extends CardWidget {
               </CollectionField>
             </Popup>
           </ClickOut>
-        </Detached>
+        </Positioned>
       </div>
     );
   }

@@ -77,7 +77,9 @@ export class TaskCardNew extends React.Component {
   };
 
   onSave = () => {
+    if (!this.model.title) return;
     const { dispatch, onClose } = this.props;
+
     const submitData = {
       title: this.model.title,
       task_type: 'task',

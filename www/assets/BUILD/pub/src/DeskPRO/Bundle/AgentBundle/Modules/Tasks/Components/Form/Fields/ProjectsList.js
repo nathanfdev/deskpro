@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { CheckboxList } from './CheckboxList';
 import { BaseList } from './BaseList';
 
 export class ProjectsList extends BaseList {
@@ -10,4 +9,7 @@ export class ProjectsList extends BaseList {
     );
   }
 
+  getKeyword(value) {
+    return value.get('title');
+  }
 }

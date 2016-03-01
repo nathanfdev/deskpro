@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -225,8 +226,7 @@ class BaseController extends FOSRestController
      */
     protected function getThisVersionId()
     {
-        return $this->getVersionService()
-            ->getVersion(TypeUtils::getBaseTypeName($this));
+        return $this->getVersionService()->getVersion(TypeUtils::getBaseTypeName($this));
     }
 
     /**
@@ -252,8 +252,8 @@ class BaseController extends FOSRestController
      */
     protected function getCachedResponse(Request $request, $etag)
     {
-        if ($response = $this->get('cache.resolver')->resolve($request)) {
-            return $response->getEtag() === $etag ? $this->getCacheResolver()->restoreResponseBody($response) : null;
-        }
+        $response = $this->get('cache.resolver')->resolve($request);
+
+        return $response && $response->getEtag() === $etag ? $this->getCacheResolver()->restoreResponseBody($response) : null;
     }
 }

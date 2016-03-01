@@ -1,6 +1,19 @@
 import React, { PropTypes } from 'react';
 import $ from 'jquery';
 
+/**
+ *
+ * React components tree:
+ * Detached > ClickOut > Content1 > Detached > ClickOut > Content2
+ *
+ * DOM tree:
+ * Detached > ClickOut > Content1
+ * Detached > ClickOut > Content2
+ *
+ * click on Content2 firest click outside of Content1
+ */
+
+
 export class ClickOut extends React.Component {
 
   static propTypes = {
@@ -29,6 +42,8 @@ export class ClickOut extends React.Component {
   }
 
   onClick = event => {
+    event.stopImmediatePropagation();
+
     const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
     // skip if clicking on one of the ignored nodes
     if (ignoreNodes) {

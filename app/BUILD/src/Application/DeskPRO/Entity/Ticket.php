@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2909,8 +2910,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @param null   $person
      * @param string $reason
+     * @param bool   $persist_self
      */
-    public function deleteTicket($person = null, $reason = '')
+    public function deleteTicket($person = null, $reason = '', $persist_self = true)
     {
         $del = $this->getDeletionRecord();
         if (!$del) {
@@ -2927,7 +2929,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         App::getOrm()->persist($del);
         App::getOrm()->flush($del);
-        App::getOrm()->persist($this);
+
+        if ($persist_self) {
+            App::getOrm()->persist($this);
+        }
     }
 
     public function updateWorstSlaStatus()

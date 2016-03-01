@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -43,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
@@ -480,7 +482,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        return new FormField('deskpro_department', [
+        return new FormField(TicketDepartmentChoiceType::class, [
             'label'       => $this->phrase('portal.forms.label_department'),
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { AssignForm } from './AssignForm';
 import { AssigneeAvatar } from './AssigneeAvatar';
@@ -9,15 +9,22 @@ export class AssignButton extends React.Component {
   static propTypes = {
     onSetEditing: PropTypes.func,
     onAssign: PropTypes.func.isRequired,
-    task: PropTypes.object
+    task: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      formOpened: false
+      formOpened: false,
+      task: props.task
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      task: nextProps.task
+    });
   }
 
   componentWillUnmount() {
@@ -33,8 +40,7 @@ export class AssignButton extends React.Component {
   };
 
   onAssign = (assignee) => {
-    console.log('Assignee func',this.props.onAssign);
-    console.log('Assignee',assignee);
+    this.setState({task: assignee});
     this.props.onAssign(assignee).then(this.closeForm);
   };
 
@@ -51,7 +57,7 @@ export class AssignButton extends React.Component {
   };
 
   hasAvatar() {
-    const { task } = this.props;
+    const { task } = this.state;
     return task.get('agents').size || task.get('teams').size || task.get('departments').size;
   }
 
@@ -61,14 +67,14 @@ export class AssignButton extends React.Component {
         <div className="dpwd--card-assigned" onClick={this.onOpenForm} ref="button">
 
           {this.hasAvatar()
-            ? <AssigneeAvatar task={this.props.task}/>
+            ? <AssigneeAvatar task={this.state.task}/>
             : <div className="dpw--avatar-face" style={{position: 'relative'}}>
             <i className="fa fa-caret-down"/>
           </div>
           }
         </div>
 
-        <Detached isOpen={this.state.formOpened}
+        <Positioned isOpen={this.state.formOpened}
                   positionTarget={this}
                   positionAt="right+5 top-10"
                   zIndex={1002}>
@@ -76,7 +82,7 @@ export class AssignButton extends React.Component {
           <ClickOut onClickOut={this.closeForm} additionalNodes={[this.refs.button, 'assign-form']}>
             <AssignForm {...this.props} onSubmit={this.onAssign}/>
           </ClickOut>
-        </Detached>
+        </Positioned>
       </div>
     );
   }

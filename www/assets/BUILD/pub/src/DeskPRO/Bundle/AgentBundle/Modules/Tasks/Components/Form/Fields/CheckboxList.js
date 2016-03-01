@@ -7,6 +7,7 @@ export class CheckboxList extends React.Component {
   static propTypes = {
     values: PropTypes.object.isRequired,
     renderLabel: PropTypes.func.isRequired,
+    getKeyword: PropTypes.func.isRequired,
     multiple: PropTypes.bool,
     selected: PropTypes.array,
     showOnlySelected: PropTypes.bool,
@@ -37,9 +38,10 @@ export class CheckboxList extends React.Component {
   };
 
   renderItem(option, index) {
-    const { selected = [], showOnlySelected = false, filter = '', renderLabel } = this.props;
+    const { selected = [], showOnlySelected = false, filter = '', renderLabel, getKeyword } = this.props;
     const id = option.get('id');
     const checked = selected.indexOf(id) !== -1;
+    const keyword = getKeyword(option);
 
     if (showOnlySelected && !checked) {
       return null;
