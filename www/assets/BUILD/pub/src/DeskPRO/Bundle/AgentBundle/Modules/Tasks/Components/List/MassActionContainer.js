@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { MassActionBarContainer }
   from '../../../../../AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
-import { massActionsSelector } from '../../Selectors/list';
+import { massActionsSelector } from '../../Selectors/massActions';
 import { loadIndicator } from '../../Actions/listActions';
 import { initialLoad } from '../../Actions/navActions';
 

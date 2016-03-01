@@ -48,7 +48,7 @@ export class DateTimePicker extends React.Component {
     return (
       <div className={className}>
         <label>{label}</label>
-        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly={true} />
+        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly />
         <Detached isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="left bottom"

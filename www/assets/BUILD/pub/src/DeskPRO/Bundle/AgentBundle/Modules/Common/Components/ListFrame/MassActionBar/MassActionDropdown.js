@@ -6,6 +6,7 @@ import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 import { setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
 import { ActionMenu } from './ActionMenu';
 import { MultipleActionChoiceContainer } from './MultipleActionChoiceContainer';
+import { SetDateAction } from './SetDateAction';
 
 export class MassActionDropdown extends Component {
   static propTypes = {
@@ -49,6 +50,13 @@ export class MassActionDropdown extends Component {
                     setParams={setMassActionsParams}
                     currentParams={currentParams}
                     resetSingleAction={resetParam}/>
+      );
+    } else if (item.type === 'set_date') {
+      return (
+        <SetDateAction param={item.param}
+                       setParams={setMassActionsParams}
+                       currentParams={currentParams}
+                       resetSingleAction={resetParam}/>
       );
     }
   };
