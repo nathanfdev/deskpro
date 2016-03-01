@@ -1,4 +1,6 @@
 import moment from 'moment';
+import invariant from 'invariant';
+import Immutable from 'immutable';
 
 const dateGroups = {
   hour: {
@@ -169,19 +171,21 @@ const getGroups = ({groupKey, defaultGroupKey, options = []}) => {
 
 export const groupCollection = (groupConfig, collection) => {
   const groups = getGroups(groupConfig);
+  invariant(Immutable.Iterable.isIterable(collection), 'Invalid type of collection');
 
-  groups.forEach(group => {
-    collection.forEach(item => {
-      if (group.match(item)) {
-        group.elements.push(item);
-        delete collection[item];
-      }
+  for (let i = 0; i < groups.length; i++) {
+    let group = groups[i];
+    collection = collection.filter(function(item){
+      return !(group.match(item) && group.elements.push(item));
     });
+    if (!collection.size) {
+      break;
+    }
 
     if (group.sortBy) {
       group.elements.sort(group.sortBy);
     }
-  });
+  }
 
   return groups;
 };
