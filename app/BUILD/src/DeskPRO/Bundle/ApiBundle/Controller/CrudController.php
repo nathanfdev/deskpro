@@ -92,13 +92,15 @@ abstract class CrudController extends BaseController
      * )
      * @Get("/{id}", requirements={"id"="\d+"})
      *
-     * @param int $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return View
      */
-    public function getAction($id)
+    public function getAction(Request $request, $id)
     {
         $this->checkExposed(__METHOD__);
+
         if (!$entity = $this->findEntity($id)) {
             throw $this->createNotFoundException();
         }
@@ -180,7 +182,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->dataSerialize($result));
+        return View::create($this->dataSerialize($result), Response::HTTP_OK);
     }
 
     /**
