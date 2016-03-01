@@ -71,14 +71,16 @@ class TicketDepartmentsController extends CrudController
      *      },
      *      output="Application\DeskPRO\Entity\Department"
      * )
-     * @Get("/{department}/agents")
+     * @Get("/{id}/agents")
      *
-     * @param Department $department
+     * @param int $id
      *
      * @return View
      */
-    public function getAgentsAction(Department $department)
+    public function getAgentsAction($id)
     {
+        $department = $this->findEntity($id);
+
         return View::create($this->dataSerialize($department->getPersonList()));
     }
 

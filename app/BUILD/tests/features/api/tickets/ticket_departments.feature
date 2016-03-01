@@ -30,6 +30,10 @@ Feature: /ticket_departments endpoint
     When I send a GET request to "/api/v2/ticket_departments/1/agents"
     Then the response status code should be 200
 
+  Scenario: I try to get chat department agents
+    When I send a GET request to "/api/v2/ticket_departments/2/agents"
+    Then the response status code should be 404
+
   Scenario: I try to create a new ticket department with empty request
     When I send a POST request to "/api/v2/ticket_departments"
     Then the response status code should be 400
@@ -68,4 +72,11 @@ Feature: /ticket_departments endpoint
 
   Scenario: I try to edit chat department
     When I send a PUT request to "/api/v2/ticket_departments/2"
+    Then the response status code should be 404
+
+  Scenario: I delete ticket department
+    When I send a DELETE request to "/api/v2/ticket_departments/3"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/ticket_departments/3"
     Then the response status code should be 404
