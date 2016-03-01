@@ -12,17 +12,19 @@ Feature: /ticket_departments endpoint
     When I send a GET request to "/api/v2/ticket_departments"
     Then the response status code should be 200
 
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 1 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "sales"
-    And the JSON node "data[1].id" should be equal to 2
-    And the JSON node "data[1].title" should be equal to "support"
 
   Scenario: I get ticket department
     When I send a GET request to "/api/v2/ticket_departments/1"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.title" should be equal to "sales"
+
+  Scenario: I try to get chat department
+    When I send a GET request to "/api/v2/ticket_departments/2"
+    Then the response status code should be 404
 
   Scenario: I get ticket department agents
     When I send a GET request to "/api/v2/ticket_departments/1/agents"
@@ -46,6 +48,8 @@ Feature: /ticket_departments endpoint
     And the JSON node "data.title" should be equal to "new department"
     And the JSON node "data.user_title" should be equal to "new department"
     And the JSON node "data.display_order" should be equal to 0
+    And the JSON node "data.is_tickets_enabled" should be equal to 1
+    And the JSON node "data.is_chat_enabled" should be equal to 0
 
   Scenario: I edit ticket department
     When I send a PUT request to "/api/v2/ticket_departments/3" with body:
@@ -61,3 +65,7 @@ Feature: /ticket_departments endpoint
     And the JSON node "data.id" should be equal to 3
     And the JSON node "data.title" should be equal to "new department"
     And the JSON node "data.user_title" should be equal to "user title for new department"
+
+  Scenario: I try to edit chat department
+    When I send a PUT request to "/api/v2/ticket_departments/2"
+    Then the response status code should be 404

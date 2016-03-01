@@ -87,23 +87,22 @@ class TicketDepartmentsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        parent::applyListFilters($qb, $alias, $request);
+        $qb->andWhere('e.is_tickets_enabled = true');
 
         if ($request->query->getBoolean('my', false)) {
             $permission_bag         = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
             $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
 
             $qb
-                ->andWhere('d.id IN (:allowed_department_ids) AND d.is_tickets_enabled = true')
+                ->andWhere('e.id IN (:allowed_department_ids)')
                 ->setParameter('allowed_department_ids', $allowed_department_ids)
             ;
         }
 
-        $ids = $request->query->get('ids');
-        if (!empty($ids)) {
+        if ($request->query->get('ids')) {
             $qb
-                ->andWhere('id IN (:ids)')
-                ->setParameter('ids', $ids)
+                ->andWhere('e.id IN (:ids)')
+                ->setParameter('ids', $request->query->get('ids'))
             ;
         }
     }
@@ -118,5 +117,21 @@ class TicketDepartmentsController extends CrudController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return object
+     */
+    protected function findEntity($id)
+    {
+        /** @var Department $entity */
+        $entity = parent::findEntity($id);
+        if (!$entity->is_tickets_enabled) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 }

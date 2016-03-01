@@ -38,6 +38,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -73,6 +75,8 @@ class DepartmentType extends AbstractType
             ->add('is_tickets_enabled', ApiBooleanType::class)
             ->add('is_chat_enabled', ApiBooleanType::class)
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
     }
 
     /**
@@ -89,5 +93,23 @@ class DepartmentType extends AbstractType
                 'type' => ['tickets', 'chat'],
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetType(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $type = $form->getConfig()->getOption('type');
+
+        /** @var Department $data */
+        $data = $form->getData();
+
+        if ($type === 'tickets') {
+            $data->is_tickets_enabled = true;
+        } else {
+            $data->is_chat_enabled = true;
+        }
     }
 }
