@@ -30,34 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class AssignAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $this->init();
-        foreach ($feedback as $item) {
-            $item->setCategory($this->type);
-        }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
+        $resolver->setRequired('id');
+        $resolver->setAllowedTypes('id', ['string', 'int']);
+        $resolver->setAllowedValues(
+            'id',
+            function ($value) {
+                return (is_int($value) && $value > 0) || ctype_digit($value);
+            }
+        );
     }
 }

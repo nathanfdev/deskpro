@@ -27,37 +27,14 @@
  */
 
 /**
- * DeskPRO.
+ * Created by PhpStorm.
+ * User: yakut
+ * Date: 01.03.16
+ * Time: 14:03.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyDeleteAction
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
-    {
-        $this->init();
-        foreach ($feedback as $item) {
-            $item->setCategory($this->type);
-        }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
-    }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -405,11 +406,11 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $is_done
+     * @param bool $is_done
      */
-    public function setIsDone($is_done)
+    public function setIsDone($is_done = true)
     {
-        $date_done = !empty($is_done) ? new \DateTime() : null;
+        $date_done = $is_done ? new \DateTime() : null;
 
         $this->setDateDone($date_done);
         $this->setModelField('is_done', $is_done);

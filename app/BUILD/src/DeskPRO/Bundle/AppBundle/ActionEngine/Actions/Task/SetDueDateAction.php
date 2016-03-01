@@ -30,34 +30,26 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class SetDueDateAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $this->init();
-        foreach ($feedback as $item) {
-            $item->setCategory($this->type);
-        }
-    }
+        $resolver->setRequired('date');
+        $resolver->setAllowedTypes('date', 'string');
+        $resolver->setAllowedValues(
+            'date',
+            function ($value) {
+                $dateTime = new \DateTime($value);
+                $errors = \DateTime::getLastErrors();
 
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
+                return empty($errors['error_count']) && empty($errors['warning_count']);
+            }
+        );
     }
 }
