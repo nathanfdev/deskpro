@@ -26,25 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
-
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
-
-class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class Build1456835664 extends AbstractBuild
 {
-    /**
-     * @param Task[] $tasks
-     */
-    public function apply(array $tasks)
+    public function run()
     {
-        foreach ($tasks as $task) {
-            $task->setForDel(true);
-        }
+        $this->out('My Upgrade Class');
+        $this->execMutateSql('ALTER TABLE settings CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE import_datastore CHANGE typename typename VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE import_map CHANGE typename typename VARBINARY(80) NOT NULL, CHANGE old_id old_id VARBINARY(80) NOT NULL, CHANGE new_id new_id VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE tickets_messages_raw CHANGE raw raw LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE blobs_storage CHANGE data data LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE settings_brand CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE tasks_new ADD for_del TINYINT(1) NOT NULL');
+        $this->execMutateSql('ALTER TABLE install_data CHANGE data data BLOB NOT NULL');
     }
 }

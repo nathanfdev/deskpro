@@ -33,6 +33,8 @@ export class AssignButton extends React.Component {
   };
 
   onAssign = (assignee) => {
+    console.log('Assignee func',this.props.onAssign);
+    console.log('Assignee',assignee);
     this.props.onAssign(assignee).then(this.closeForm);
   };
 
