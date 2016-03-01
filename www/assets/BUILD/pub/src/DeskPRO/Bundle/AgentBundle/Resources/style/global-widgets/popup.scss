@@ -15,6 +15,7 @@
     padding: 10px 10px;
     margin-bottom: 5px;
     font-size: 14px;
+    text-align: left;
 
     .fa {
       position: relative;
@@ -156,6 +157,7 @@
   color: #9a9a9a;
   margin: 0 0 7px;
   padding: 0 10px 0 4px;
+  text-align: left;
 
   .dpw--popup-item-collection-options {
     float: right;
@@ -196,6 +198,7 @@
   border-radius: 2px;
   font-size: 12px;
   position: relative;
+  text-align: left;
 
   a {
     color: #333;
@@ -235,6 +238,12 @@
     width: 17px;
     height: 17px;
     margin-right: 2px;
+  }
+
+  .checkbox-button {
+    .name {
+      width: 110px;
+    }
   }
 }
 
