@@ -57,7 +57,10 @@ class FileResolver implements ResolverInterface
     protected $settings_resolver;
 
     /**
-     * @param string $cache_dir
+     * Constructor.
+     *
+     * @param string           $cache_dir
+     * @param SettingsResolver $settings_resolver
      */
     public function __construct($cache_dir, SettingsResolver $settings_resolver)
     {

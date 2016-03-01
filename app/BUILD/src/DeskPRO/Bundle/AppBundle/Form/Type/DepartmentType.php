@@ -31,8 +31,15 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Department;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -43,17 +50,33 @@ class DepartmentType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'deskpro_department';
-    }
+        $builder
+            ->add('title', TextType::class)
+            ->add('user_title', TextType::class)
+            ->add('parent', EntityType::class, [
+                'class'         => Department::class,
+                'required'      => false,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    $type_property = $options['type'] === 'tickets' ? 'is_tickets_enabled' : 'is_chat_enabled';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return 'entity_hierarchy';
+                    return $er
+                        ->createQueryBuilder('d')
+                        ->where("d.$type_property = true AND d.parent IS NULL")
+                        ->orderBy('d.display_order', 'ASC')
+                    ;
+                },
+            ])
+            ->add('avatar', 'auth_blob')
+            ->add('display_order', IntegerType::class, [
+                'empty_data' => '0',
+            ])
+            ->add('is_tickets_enabled', ApiBooleanType::class)
+            ->add('is_chat_enabled', ApiBooleanType::class)
+        ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
     }
 
     /**
@@ -62,23 +85,31 @@ class DepartmentType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
+            ->setRequired(['type'])
             ->setDefaults([
-                'choice_list' => function (Options $options) {
-                    /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                    $hierarchy_generator = $options['hierarchy_generator'];
+                'data_class' => Department::class,
+            ])
+            ->setAllowedValues([
+                'type' => ['tickets', 'chat'],
+            ])
+        ;
+    }
 
-                    return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'], $options['ticket'])->getChoiceList();
-                },
-                'ticket' => null, // provide a ticket so the ticket's dep is always in the hierarchy list
-            ])
-            ->setRequired([
-                'person',
-            ])
-            ->setAllowedTypes([
-                'ticket' => [
-                    'null',
-                    'Application\DeskPRO\Entity\Ticket',
-                ],
-            ]);
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetType(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $type = $form->getConfig()->getOption('type');
+
+        /** @var Department $data */
+        $data = $form->getData();
+
+        if ($type === 'tickets') {
+            $data->is_tickets_enabled = true;
+        } else {
+            $data->is_chat_enabled = true;
+        }
     }
 }
