@@ -93,7 +93,7 @@ export const massActionsSelector = createSelector(
 
     // Other options
     const otherOptions = [
-      { label: 'Delete', value: 'delete' }
+      { label: 'Delete', param: 'delete' }
     ];
     massActions.push({
       icon: 'fa-asterisk',

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import {QuickFilter} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import classNames from 'classnames';
-import { RadioChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
+import {QuickFilter} from './QuickFilter';
+import { RadioOption } from './RadioOption';
 
 export class SingleChoicePanel extends Component {
   static propTypes = {
@@ -22,13 +22,13 @@ export class SingleChoicePanel extends Component {
       return (
         <ul>
           {nested.map((option, index) =>
-              <RadioChoiceMenuOption key={index}
-                                     isActive={currentParams && currentParams.get(option.param) === option.value}
-                                     resetSingleAction={resetSingleAction}
-                                     value={option.value}
-                                     param={option.param}
-                                     label={option.label}
-                                     setParams={setParams.bind(this)}/>
+              <RadioOption key={index}
+                           isActive={currentParams && currentParams.get(option.param) === option.value}
+                           resetSingleAction={resetSingleAction}
+                           value={option.value}
+                           param={option.param}
+                           label={option.label}
+                           setParams={setParams.bind(this)}/>
           )}
         </ul>
       );
@@ -49,15 +49,15 @@ export class SingleChoicePanel extends Component {
               <div className="dpw--popup-item-collection">
                 <ul>
                   {item.options.map((option, index) =>
-                      <RadioChoiceMenuOption key={index}
-                                             isActive={currentParams && currentParams.get(item.param) === option.value}
-                                             resetSingleAction={resetSingleAction}
-                                             value={option.value}
-                                             label={option.label}
-                                             param={item.param}
-                                             setParams={setParams.bind(this)}>
+                      <RadioOption key={index}
+                                   isActive={currentParams && currentParams.get(item.param) === option.value}
+                                   resetSingleAction={resetSingleAction}
+                                   value={option.value}
+                                   label={option.label}
+                                   param={item.param}
+                                   setParams={setParams.bind(this)}>
                         {renderNested(option.nested)}
-                      </RadioChoiceMenuOption>
+                      </RadioOption>
                   )}
                 </ul>
               </div>

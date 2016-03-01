@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import { ChoiceMenu, ChoiceMenuOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
+import { ChoiceMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/ChoiceMenu';
+import { CheckboxOption } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/CheckboxOption';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 
 export class MultipleChoiceFilter extends Component {
@@ -79,18 +80,18 @@ export class MultipleChoiceFilter extends Component {
           <ChoiceMenu title={label} quickFilter={quickFilter} submenu>
             <ul>
               {options.map((option, index) =>
-                  <ChoiceMenuOption key={index}
-                                    value={option.value}
-                                    values={filterValue}
-                                    label={option.label}
-                                    onClick={onClick(option.value)}>
+                  <CheckboxOption key={index}
+                                  value={option.value}
+                                  values={filterValue}
+                                  label={option.label}
+                                  onClick={onClick(option.value)}>
                     {
                       option.nested && option.nested.length > 0
                       && <NestedMultipleChoice nested={option.nested}
                                                filterValue={filterValue}
                                                onClick={onClick}/>
                     }
-                  </ChoiceMenuOption>
+                  </CheckboxOption>
               )}
             </ul>
           </ChoiceMenu>
@@ -113,11 +114,11 @@ export class NestedMultipleChoice extends Component {
     return (
       <ul>
         {nested.map((option, index) =>
-            <ChoiceMenuOption key={index}
-                              value={option.value}
-                              values={filterValue}
-                              label={option.label}
-                              onClick={onClick(option.value, option.param)}/>
+            <CheckboxOption key={index}
+                            value={option.value}
+                            values={filterValue}
+                            label={option.label}
+                            onClick={onClick(option.value, option.param)}/>
         )}
       </ul>
     );
