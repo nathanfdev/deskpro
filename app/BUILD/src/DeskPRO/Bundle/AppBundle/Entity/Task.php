@@ -218,6 +218,12 @@ class Task implements EntityInterface, NotifyPropertyChanged
     protected $display_order = 1;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    protected $for_del = false;
+
+    /**
      * @param Person $creator
      */
     public function __construct(Person $creator)
@@ -720,6 +726,26 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isForDel()
+    {
+        return $this->for_del;
+    }
+
+    /**
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function setForDel($bool)
+    {
+        $this->for_del = $bool;
+
+        return $this;
+    }
+
+    /**
      * Re order display positions of related tasks.
      *
      * @ORM\PrePersist
@@ -736,8 +762,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
             ->getObjectManager()
             ->getRepository('App:Task')
             ->createQueryBuilder('t')
-            ->select('MAX(t.display_order)')
-        ;
+            ->select('MAX(t.display_order)');
 
         $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
     }
@@ -769,11 +794,13 @@ class Task implements EntityInterface, NotifyPropertyChanged
                     't.display_order > :min_order',
                     't.display_order <= :max_order'
                 )
-                ->setParameters([
-                    'task_id'   => $this->getId(),
-                    'min_order' => min($old_order, $new_order),
-                    'max_order' => max($old_order, $new_order),
-                ]);
+                ->setParameters(
+                    [
+                        'task_id'   => $this->getId(),
+                        'min_order' => min($old_order, $new_order),
+                        'max_order' => max($old_order, $new_order),
+                    ]
+                );
 
             $qb->getQuery()->execute();
 
