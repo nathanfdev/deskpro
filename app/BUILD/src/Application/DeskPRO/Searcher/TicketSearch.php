@@ -1062,7 +1062,7 @@ class TicketSearch extends SearcherAbstract
                 $limit_sql
             ";
         } else {
-            $select_query = $sql.$limit_sql;
+            $select_query = $sql.' '.$limit_sql;
         }
 
         $this->_last_sql = $select_query;
