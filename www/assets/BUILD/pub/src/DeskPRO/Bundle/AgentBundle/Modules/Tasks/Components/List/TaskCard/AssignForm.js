@@ -39,7 +39,7 @@ export class AssignForm extends BaseForm {
 
     const localState = this.state;
     const emptyObject = Immutable.fromJS({});
-    const task = props.task || emptyObject;
+    const task = props.task;
 
     this.state = {
       ...localState,
@@ -48,6 +48,17 @@ export class AssignForm extends BaseForm {
       agentTeams: task.get('teams', emptyObject).toArray(),
       departments: task.get('departments', emptyObject).toArray()
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const task = nextProps.task;
+    const emptyObject = Immutable.fromJS({});
+
+    this.setState({
+      agents: task.get('agents', emptyObject).toArray(),
+      agentTeams: task.get('teams', emptyObject).toArray(),
+      departments: task.get('departments', emptyObject).toArray()
+    });
   }
 
   onSubmit = event => {

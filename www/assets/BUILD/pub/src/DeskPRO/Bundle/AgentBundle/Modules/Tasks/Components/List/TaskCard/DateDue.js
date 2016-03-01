@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
 import { HiddenDateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/HiddenDateTimePicker';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DateString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DateString';
 import { CardWidget } from './CardWidget';
@@ -29,7 +29,7 @@ export class DateDue extends CardWidget {
 
           Due: <DateString value={value} />
         </span>
-        <Detached isOpen={this.state.isOpen}
+        <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="left bottom"
                   collision="fit"
@@ -38,7 +38,7 @@ export class DateDue extends CardWidget {
           <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.trigger]}>
             <HiddenDateTimePicker value={value} onDone={this.onChange} />
           </ClickOut>
-        </Detached>
+        </Positioned>
       </div>
     );
   }

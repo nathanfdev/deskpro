@@ -34,6 +34,11 @@ export class CalendarCellContentItem extends React.Component {
     });
   };
 
+  onDoubleClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+  };
+
   onCloseTaskCard = () => {
     if (this.isUnmounted) {
       return;
@@ -54,7 +59,7 @@ export class CalendarCellContentItem extends React.Component {
         {'urgent': moment(item.get(dateField)).isBefore(moment(), 'day')}
       )}>
 
-        <a href="#" ref="button" onClick={this.onOpenCard}>
+        <a href="#" ref="button" onClick={this.onOpenCard} onDoubleClick={this.onDoubleClick}>
           {React.cloneElement(draggable.source, {...sourceCardProps, [elementName]: item})}
         </a>
 

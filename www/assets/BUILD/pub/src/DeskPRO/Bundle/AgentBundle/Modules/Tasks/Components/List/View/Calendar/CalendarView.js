@@ -33,8 +33,8 @@ export class CalendarView extends React.Component {
     });
   };
 
-  resetNewTask = () => {
-    if (this.isEditing) return;
+  resetNewTask = (force) => {
+    if (!force && this.isEditing) return;
     this.newTaskTarget = null;
     this.setState({
       task: null
@@ -72,9 +72,11 @@ export class CalendarView extends React.Component {
 
         <Positioned positionTarget={this.newTaskTarget}
                     positionAt="center center"
-                    isOpen={this.state.task}>
-          <ClickOut onClickOut={this.resetNewTask}>
-            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing} />
+                    isOpen={!!this.state.task}>
+          <ClickOut onClickOut={this.resetNewTask.bind(this, false)}>
+            <TaskCardNew task={this.state.task}
+                         onSetEditing={this.onSetEditing}
+                         onClose={this.resetNewTask.bind(this, true)} />
           </ClickOut>
         </Positioned>
 

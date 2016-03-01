@@ -16,7 +16,7 @@ export class CalendarCell extends React.Component {
   };
 
   onDoubleClick = (event) => {
-    this.props.onDoubleClick && this.props.onDoubleClick(this.props.date, event);
+    this.props.onDoubleClick && this.props.onDoubleClick(this.props.dayDate, event);
   };
 
   render() {
