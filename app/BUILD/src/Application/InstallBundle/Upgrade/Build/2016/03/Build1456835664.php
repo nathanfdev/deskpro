@@ -26,42 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
-
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
-
-/**
- * Class TaskListController.
- *
- * @ApiModes("all")
- */
-class TaskListController extends BaseController implements ClassResourceInterface
+class Build1456835664 extends AbstractBuild
 {
-    /**
-     * @ApiDoc(
-     *      description="get a list of task lists",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/task_lists", name="api_task_lists")
-     *
-     * @return View
-     */
-    public function cgetAction()
+    public function run()
     {
-        $lists = $this->getDoctrine()->getRepository('App:TaskList')->findAll();
-
-        return View::create($this->dataSerialize($lists), Response::HTTP_OK);
+        $this->out('My Upgrade Class');
+        $this->execMutateSql('ALTER TABLE settings CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE import_datastore CHANGE typename typename VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE import_map CHANGE typename typename VARBINARY(80) NOT NULL, CHANGE old_id old_id VARBINARY(80) NOT NULL, CHANGE new_id new_id VARBINARY(80) NOT NULL');
+        $this->execMutateSql('ALTER TABLE tickets_messages_raw CHANGE raw raw LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE blobs_storage CHANGE data data LONGBLOB NOT NULL');
+        $this->execMutateSql('ALTER TABLE settings_brand CHANGE value value BLOB DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE tasks_new ADD for_del TINYINT(1) NOT NULL');
+        $this->execMutateSql('ALTER TABLE install_data CHANGE data data BLOB NOT NULL');
     }
 }

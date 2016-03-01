@@ -26,42 +26,65 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
-
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc as BaseApiDoc;
 
 /**
- * Class TaskListController.
- *
- * @ApiModes("all")
+ * @Annotation
  */
-class TaskListController extends BaseController implements ClassResourceInterface
+class ApiDoc extends BaseApiDoc
 {
-    /**
-     * @ApiDoc(
-     *      description="get a list of task lists",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/task_lists", name="api_task_lists")
-     *
-     * @return View
-     */
-    public function cgetAction()
-    {
-        $lists = $this->getDoctrine()->getRepository('App:TaskList')->findAll();
+    protected $api_modes;
 
-        return View::create($this->dataSerialize($lists), Response::HTTP_OK);
+    protected $api_tags;
+
+    /**
+     * @param mixed $modes
+     *
+     * @return $this
+     */
+    public function setApiModes($modes)
+    {
+        $this->api_modes = $modes;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $tags
+     *
+     * @return $this
+     */
+    public function setApiTags($tags)
+    {
+        $this->api_tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiModes()
+    {
+        return $this->api_modes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiTags()
+    {
+        return $this->api_tags;
+    }
+
+    public function toArray()
+    {
+        $data              = parent::toArray();
+        $data['api_modes'] = $this->api_modes;
+        $data['api_tags']  = $this->api_tags;
+
+        return $data;
     }
 }

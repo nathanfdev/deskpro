@@ -27,14 +27,24 @@
  */
 
 /**
- * Created by PhpStorm.
- * User: yakut
- * Date: 01.03.16
- * Time: 14:03.
+ * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
-class ApplyDeleteAction
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+
+class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
+    /**
+     * @param Task[] $tasks
+     */
+    public function apply(array $tasks)
+    {
+        foreach ($tasks as $task) {
+            $task->setForDel(true);
+        }
+    }
 }

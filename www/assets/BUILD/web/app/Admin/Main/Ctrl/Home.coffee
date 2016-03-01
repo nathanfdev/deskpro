@@ -140,7 +140,7 @@ define [
         responseType: "text",
         cache: false
       }).success((res) =>
-        return if not res or if res.success
+        return if not res or res.success
         if typeof res is 'string' and res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DP_DATABASE_PASSWORD') != -1
           @$scope.readable_config = true
       )

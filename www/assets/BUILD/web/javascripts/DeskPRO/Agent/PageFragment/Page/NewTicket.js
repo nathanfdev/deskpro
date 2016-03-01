@@ -1515,6 +1515,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: BASE_URL + 'agent/text-snippets/tickets/widget-shell.txt',
 			positionMode: this.meta.isPopover ? 'over' : 'side',
 			onBeforeOpen: function() {
 				var redactor = self.getEl('message').data('redactor');

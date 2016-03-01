@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
@@ -57,6 +58,7 @@ class TasksDataService extends AbstractTasksDataService
             ->leftJoin('t.assigned', 'ta')
             ->leftJoin('t.project', 'p')
             ->leftJoin('t.labels', 'l')
+            ->andWhere('t.for_del <> 1')
             ->addGroupBy('t.id')
         ;
 
