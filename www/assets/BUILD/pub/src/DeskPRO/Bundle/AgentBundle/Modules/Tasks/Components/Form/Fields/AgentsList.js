@@ -15,4 +15,7 @@ export class AgentsList extends BaseList {
     );
   }
 
+  getKeyword(value) {
+    return value.get('name');
+  }
 }
