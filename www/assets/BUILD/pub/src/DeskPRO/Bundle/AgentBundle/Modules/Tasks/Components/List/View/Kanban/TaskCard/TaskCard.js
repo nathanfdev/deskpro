@@ -46,7 +46,7 @@ export class TaskCard extends BaseTaskCard {
         <div className="content">
           <Title value={task.get('title')}
                  isDone={task.get('is_done')}
-                 onChange={onChangeTitle}
+                 onSubmit={onChangeTitle}
                  onSetEditing={onSetEditing} />
 
           <div className="card-line task-details">

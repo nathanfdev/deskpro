@@ -107,25 +107,36 @@ export const addTask = createAction(
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
-    api.sendPut(`DP_API/tasks/${taskId}`, data);
+    let promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
     let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
-    let updatedTask = tasks.get(taskId);
-    const changedProps = Object.keys(data).filter(taskProp => updatedTask.get(taskProp) !== data[taskProp]);
+    let oldTask = tasks.get(taskId);
+    let newTask = tasks.get(taskId);
+    const changedProps = Object.keys(data).filter(taskProp => newTask.get(taskProp) !== data[taskProp]);
+    if (undefined !== data.display_order) {
+      // Re order tasks
+      tasks = reOrderCollection(tasks, newTask.get('id'), data.display_order);
+    }
     changedProps.forEach(changedProp => {
       let newValue = data[changedProp];
       if (Array.isArray(newValue)) {
         newValue = Immutable.fromJS(newValue);
       }
-
-      updatedTask = updatedTask.set(changedProp, newValue);
+      newTask = newTask.set(changedProp, newValue);
     });
 
-    // Re order tasks
-    tasks = reOrderCollection(tasks, updatedTask.get('id'), updatedTask.get('display_order'));
-    tasks = tasks.set(taskId, updatedTask);
-    dispatch(releaseCollection('Task', recordStoresId));
-    dispatch(setCollection('Task', recordStoresId, tasks));
+    // todo show errors (alert?)
+    promise.success(() => {
+      tasks = tasks.set(taskId, newTask);
+      dispatch(releaseCollection('Task', recordStoresId));
+      dispatch(setCollection('Task', recordStoresId, tasks));
+    }).error(() => {
+      tasks = tasks.set(taskId, oldTask);
+      dispatch(releaseCollection('Task', recordStoresId));
+      dispatch(setCollection('Task', recordStoresId, tasks));
+    });
+
+    return promise;
   }
 );

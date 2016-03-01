@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../Application/Actions/massActions';
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import Immutable from 'immutable';
 import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
@@ -21,6 +22,7 @@ import jQuery from 'jquery';
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
   currentSort: currentSortSelector(state)
 }))
+
 export class TaskCardEditContainer extends React.Component {
 
   static propTypes = {
@@ -33,8 +35,15 @@ export class TaskCardEditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: false
+      editing: false,
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1
     };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1
+    });
   }
 
   onSetEditing = value => {
@@ -84,24 +93,40 @@ export class TaskCardEditContainer extends React.Component {
     dispatch(editTask(taskId, params));
   };
 
+  shouldComponentUpdate(props, state) {
+    if (state.editing !== this.state.editing) {
+      return true;
+    }
+
+    if (state.selected !== this.state.selected) {
+      return true;
+    }
+
+    if (!Immutable.is(this.props.task, props.task)) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const props = this.props;
-    const { selectedTasks, task, children } = props;
+    const { children, dispatch } = props;
     const childProps = children.props;
-    const selected = selectedTasks.indexOf(task.get('id')) !== -1;
 
     return React.cloneElement(children, {
       ...childProps,
       ...props,
 
       editing: this.state.editing,
-      selected: selected,
+      selected: this.state.selected,
       onToggleSelected: this.onToggleSelected,
       onToggleDone: this.onToggleDone,
       onChangeDisplayOrder: this.onChangeDisplayOrder,
       onChangeTitle: this.onChangeTitle,
       onChangeDate: this.onChangeDate,
-      onSetEditing: this.onSetEditing
+      onSetEditing: this.onSetEditing,
+      dispatch: dispatch
     });
   }
 }

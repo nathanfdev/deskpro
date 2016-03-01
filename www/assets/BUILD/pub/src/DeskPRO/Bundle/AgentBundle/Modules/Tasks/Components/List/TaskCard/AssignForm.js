@@ -3,10 +3,6 @@ import { editTask } from '../../../Actions/listActions';
 import classNames from 'classnames';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Immutable from 'immutable';
-import { connect } from 'react-redux';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import {
   BaseForm,
   Header,
@@ -22,12 +18,6 @@ import {
   DepartmentsList
 } from '../../Form';
 
-@connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  agentTeams: allSelectorFactory('AgentTeam')(state),
-  departments: allSelectorFactory('Department')(state)
-}))
 export class AssignForm extends BaseForm {
   static propTypes = {
     task: PropTypes.object.isRequired,
@@ -68,10 +58,6 @@ export class AssignForm extends BaseForm {
       agents: this.state.agents,
       teams: this.state.agentTeams,
       departments: this.state.departments
-    });
-
-    this.setState({
-      submit: true
     });
 
     this.props.onSubmit(submitData);
@@ -132,11 +118,10 @@ export class AssignForm extends BaseForm {
               <FullField>
                 <button type="submit"
                         value="Save"
-                        className={classNames('dpw--popup-button', {'hidden': this.state.submit})}
+                        className="dpw--popup-button"
                         onClick={this.onSubmit}>
                   {task.get('id') ? 'Save' : 'Ok'}
                 </button>
-                <LoadIndicator width={3} loaded={!this.state.submit} />
               </FullField>
             </FieldGroup>
           </div>

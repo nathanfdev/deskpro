@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
-import { connect } from 'react-redux';
 import {
   Card,
   CardLine,
@@ -18,8 +16,6 @@ import {
   CardProjectContainer
 } from '../../../TaskCard';
 
-@connect()
-
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
@@ -35,11 +31,6 @@ export class TaskCard extends BaseTaskCard {
     const { dispatch, task } = this.props;
     return dispatch(editTask(task.get('id'), {[prop]: value}));
   }
-
-  onAssign = (assignee) => {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), assignee));
-  };
 
   renderDetails() {
     const { task, onChangeDate, onSetEditing } = this.props;
@@ -79,7 +70,7 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={onChangeTitle}
+                   onSubmit={onChangeTitle}
                    onSetEditing={onSetEditing} />
           </CardLineLeft>
           <CardLineRight>

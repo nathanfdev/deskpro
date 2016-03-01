@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 import { MarkDoneButton } from './MarkDoneButton';
 import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import {
@@ -39,11 +40,6 @@ export class TaskCard extends BaseTaskCard {
     return dispatch(editTask(task.get('id'), {[prop]: value}));
   }
 
-  onAssign = (assignee) => {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), assignee));
-  };
-
   renderDetails() {
     const { task, onChangeDate, onSetEditing } = this.props;
     return (
@@ -80,13 +76,13 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={onChangeTitle}
+                   onSubmit={onChangeTitle}
                    onSetEditing={onSetEditing} />
           </CardLineLeft>
           <CardLineRight>
             {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
-              : <AssignButton task={task} onSetEditing={onSetEditing} onAssign={this.onAssign} />
+              : <AssignButton value={task} onSetEditing={onSetEditing} onChange={this.onAssign} />
             }
           </CardLineRight>
         </CardLine>

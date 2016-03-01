@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
+
 
 export class BaseTaskCard extends React.Component {
 
@@ -20,6 +22,15 @@ export class BaseTaskCard extends React.Component {
     this.setState({
       expanded: !this.state.expanded
     });
+  };
+
+  onAssign = (value) => {
+    const { dispatch, task } = this.props;
+    return dispatch(editTask(task.get('id'), {
+      agents: value.get('agents').toArray(),
+      teams: value.get('teams').toArray(),
+      departments: value.get('departments').toArray()
+    }));
   };
 
   isMinimized() {

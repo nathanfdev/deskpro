@@ -4,47 +4,24 @@ import { TitleForm } from './TitleForm';
 import classNames from 'classnames';
 import { CardWidget } from './CardWidget';
 
-export class Title extends React.Component{
+export class Title extends CardWidget {
 
   static propTypes = {
     value: PropTypes.string,
     isDone: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {isOpen: false};
-    this.value = props.value;
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.value !== nextProps.value || this.state.isOpen !== nextState.isOpen;
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    this.value = nextProps.value;
-  }
-
-  onChange = (val) => {
-    this.value = val;
-  };
-
-  onOpen = () => {
-    if (this.state.isOpen) return;
-    this.setState({isOpen: true});
-  };
-
-  onClose = () => {
-    if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
-    this.props.onChange && this.props.onChange(this.value);
+  onSubmit = () => {
+    this.onClose();
+    this.props.onSubmit && this.props.onSubmit(this.state.value);
   };
 
   renderHeader() {
     return (
       <h1 onDoubleClick={this.onOpen}>
-        {this.value}
+        {this.state.value}
       </h1>
     );
   }
@@ -52,7 +29,7 @@ export class Title extends React.Component{
   renderForm() {
     return (
       <ClickOut onClickOut={this.onClose}>
-        <TitleForm value={this.value} onChange={this.onChange} onSubmit={this.onClose} />
+        <TitleForm value={this.state.value} onChange={this.onChange} onSubmit={this.onSubmit} />
       </ClickOut>
     );
   }

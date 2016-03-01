@@ -11,7 +11,6 @@ export class Detached extends Abstract {
 
   componentWillUnmount() {
     if (this.cont) {
-      ReactDOM.unmountComponentAtNode(this.cont);
       this.cont.parentNode.removeChild(this.cont);
       this.cont = null;
     }
@@ -34,7 +33,6 @@ export class Detached extends Abstract {
 
     } else {
       if (this.cont) {
-        ReactDOM.unmountComponentAtNode(this.cont);
         this.cont.parentNode.removeChild(this.cont);
         this.cont = null;
       }
