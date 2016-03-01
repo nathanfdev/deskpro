@@ -3,7 +3,8 @@ import { MassActionBarContainer }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
 import { submitMassActions } from '../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
-import { massActionsSelector, isCommentsSelector, navItemSelector } from '../../../Selectors/list';
+import { isCommentsSelector, navItemSelector } from '../../../Selectors/list';
+import { massActionsSelector } from '../../../Selectors/massActions';
 import { loadIndicator } from '../../../Actions/FeedbackListActions';
 import { initialLoad } from '../../../Actions/feedbackNavActions';
 

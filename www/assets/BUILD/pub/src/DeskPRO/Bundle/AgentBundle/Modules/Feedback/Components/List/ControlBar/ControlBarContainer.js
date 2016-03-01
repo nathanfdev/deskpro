@@ -2,8 +2,9 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import {
   currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
-  visibleFieldsSelector, listFiltersSelector
+  visibleFieldsSelector
 } from '../../../Selectors/list';
+import { listFiltersSelector} from '../../../Selectors/filters';
 import { setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from '../../../Actions/FeedbackListActions';
