@@ -1050,8 +1050,8 @@ class TicketSearch extends SearcherAbstract
             }
         }
 
-        $sql .= " GROUP BY tickets.id $order_by $limit_sql";
-        $sql2 .= " GROUP BY part_perm.id $order_by $limit_sql ";
+        $sql .= " GROUP BY tickets.id $order_by";
+        $sql2 .= " GROUP BY part_perm.id $order_by";
 
         if ($with_part_union) {
             $select_query = "
@@ -1062,7 +1062,7 @@ class TicketSearch extends SearcherAbstract
                 $limit_sql
             ";
         } else {
-            $select_query = $sql;
+            $select_query = $sql.$limit_sql;
         }
 
         $this->_last_sql = $select_query;
