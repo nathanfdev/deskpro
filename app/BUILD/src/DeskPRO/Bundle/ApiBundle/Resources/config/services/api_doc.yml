@@ -1,6 +1,6 @@
 services:
   api_doc.extractor.modes_handler:
-    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ModesHandler
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ModesTagsHandler
     arguments:
       - "@api_authorization.action_permissions.metadata_factory"
     tags:

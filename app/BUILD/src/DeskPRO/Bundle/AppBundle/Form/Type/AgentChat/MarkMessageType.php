@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
-use Proxies\__CG__\DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
