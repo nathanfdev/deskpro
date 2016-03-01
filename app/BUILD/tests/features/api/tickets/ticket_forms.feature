@@ -27,7 +27,6 @@ Feature: /ticket_forms endpoint
   }
 }
     """
-    And print last JSON response
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"

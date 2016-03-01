@@ -124,10 +124,13 @@ class ApiDb extends AbstractDbSet
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
         // we need some deps, and some other entities
-        $dep1              = Department::createTicketDepartment();
-        $dep1->title       = 'sales';
-        $dep2              = Department::createChatDepartment();
-        $dep2->title       = 'support';
+        $dep1        = Department::createTicketDepartment();
+        $dep1->title = 'sales';
+        $dep2        = Department::createTicketDepartment();
+        $dep2->title = 'support';
+        $dep3        = Department::createChatDepartment();
+        $dep3->title = 'support';
+
         $team              = new AgentTeam();
         $team->name        = 'test team';
         $ticket_def        = new CustomDefTicket();
@@ -229,6 +232,7 @@ class ApiDb extends AbstractDbSet
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
+        $em->persist($dep3);
         $em->persist($ticket_layout1);
         $em->persist($ticket_layout2);
         $em->persist($task);
