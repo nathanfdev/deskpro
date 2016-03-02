@@ -25,7 +25,7 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "data[1].title" should be equal to "Ticket Category 2"
 
   Scenario: I retrieve global categories
-    When I send a GET request to "/api/v2/ticket_snippet_categories?is_global=1"
+    When I send a GET request to "/api/v2/ticket_snippet_categories?global=1"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1

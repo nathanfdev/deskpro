@@ -100,7 +100,7 @@ class TicketSnippetCategoriesController extends CrudController
                 ->andWhere('e.person = :user_id')
                 ->setParameter('user_id', $this->getUser()->getId())
             ;
-        } elseif ($request->get('is_global')) {
+        } elseif ($request->get('global')) {
             $qb->andWhere('e.is_global = true');
         } else {
             $qb
