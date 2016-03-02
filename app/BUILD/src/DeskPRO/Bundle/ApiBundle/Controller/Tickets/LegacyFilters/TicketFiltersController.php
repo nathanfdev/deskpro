@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -73,8 +74,15 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-        $searcher     = $data_service->getFilterSearcher($filter);
+        $order_dir = $request->get('order') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
+        $order_by  = $request->get('sort') ? 'ticket.'.$request->get('sort') : '';
+
+        $searcher = $this->get('data.ticket_legacy_filter_sets')->getFilterSearcher($filter);
+        $searcher->setPersonContext($this->getUser());
+
+        if ($order_by) {
+            $searcher->setOrderBy($order_by, $order_dir);
+        }
 
         $current_page = $request->query->getInt('page', 1);
         $max_per_page = $request->query->getInt('count', self::$listPerPage);

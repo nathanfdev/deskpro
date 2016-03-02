@@ -602,22 +602,22 @@ class TicketSearch extends SearcherAbstract
     /**
      * Run the search and return an array of matching ID's.
      *
-     * @param int $limit
+     * @param array $page_info
      *
      * @return array
      */
-    public function getMatches(array $pageinfo = null)
+    public function getMatches(array $page_info = null)
     {
-        $sql = $this->getSql($pageinfo);
+        $sql = $this->getSql($page_info);
         $this->getLogger()->logDebug('Search Query: '.$sql);
         $time = microtime(true);
 
-        $db = App::getDbRead('search.filter.tickets', array('query' => $sql));
+        $db = App::getDbRead('search.filter.tickets', ['query' => $sql]);
 
         try {
             $ticket_ids = $db->fetchAllCol($sql);
         } catch (\PDOException $e) {
-            $ticket_ids = array();
+            $ticket_ids = [];
             SystemErrorHandler::logException($e, true);
 
             if (defined('DP_DEBUG') && DP_DEBUG) {
@@ -848,9 +848,11 @@ class TicketSearch extends SearcherAbstract
     /**
      * Get the SQL query that'll fetch the results.
      *
+     * @param array $page_info
+     *
      * @return string
      */
-    public function getSql(array $pageinfo = null)
+    public function getSql(array $page_info = null)
     {
         $ticket_parts = $this->getSqlParts();
         $user_parts   = null;
@@ -1039,10 +1041,10 @@ class TicketSearch extends SearcherAbstract
         }
 
         $limit_sql = '';
-        if ($pageinfo) {
+        if ($page_info) {
             // A null limit means no limit :o
-            if ($pageinfo['limit'] !== null) {
-                $limit_sql = " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
+            if ($page_info['limit'] !== null) {
+                $limit_sql = " LIMIT {$page_info['offset']}, {$page_info['limit']} ";
             }
         } else {
             if ($this->limit) {
