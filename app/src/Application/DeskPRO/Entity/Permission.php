@@ -214,6 +214,7 @@ class Permission extends DomainObject
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
+                'options'    => array('default' => '1'),
                 'columnName' => 'is_active',
             )
         );

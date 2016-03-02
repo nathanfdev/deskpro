@@ -184,7 +184,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $this->getOrm()->flush();
         }
 
-        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1, 'is_active' => 1));
 
         // Install data stuff
         $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php

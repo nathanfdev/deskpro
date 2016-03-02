@@ -102,22 +102,22 @@ class DataInitializer
         $this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
 
         // Initial agent has access to all deps
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'person_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
 
         // The everyone group has access to all deps too
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 1, 'app' => 'chat', 'name' => 'full', 'value' => 1));
 
         // The registered group has access to all deps too
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
-        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 2, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 3, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
+        $this->container->getDb()->insert('department_permissions', array('department_id' => 4, 'is_active' => 1, 'usergroup_id' => 2, 'app' => 'chat', 'name' => 'full', 'value' => 1));
     }
 
     public function runSearchIndex()

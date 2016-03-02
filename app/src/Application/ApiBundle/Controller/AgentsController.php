@@ -730,9 +730,9 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -745,7 +745,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
