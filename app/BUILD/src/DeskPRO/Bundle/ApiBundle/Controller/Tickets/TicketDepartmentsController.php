@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -116,9 +115,7 @@ class TicketDepartmentsController extends CrudController
     }
 
     /**
-     * @param int $id
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function findEntity($id)
     {

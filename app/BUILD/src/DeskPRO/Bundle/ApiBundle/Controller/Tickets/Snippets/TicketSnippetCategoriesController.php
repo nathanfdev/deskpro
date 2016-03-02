@@ -95,13 +95,23 @@ class TicketSnippetCategoriesController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        if ($request->get('my')) {
+            $qb
+                ->andWhere('e.person = :user_id')
+                ->setParameter('user_id', $this->getUser()->getId())
+            ;
+        } elseif ($request->get('is_global')) {
+            $qb->andWhere('e.is_global = true');
+        } else {
+            $qb
+                ->andWhere('e.person = :user_id OR e.is_global = true')
+                ->setParameter('user_id', $this->getUser()->getId())
+            ;
+        }
+
         $qb
-            ->andWhere(
-                'e.typename = :typename',
-                'e.person = :user_id OR e.is_global = true'
-            )
+            ->andWhere('e.typename = :typename')
             ->setParameter('typename', TextSnippetCategory::TYPE_TICKET)
-            ->setParameter('user_id', $this->getUser()->getId())
         ;
     }
 
@@ -119,9 +129,7 @@ class TicketSnippetCategoriesController extends CrudController
     }
 
     /**
-     * @param int $id
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function findEntity($id)
     {
