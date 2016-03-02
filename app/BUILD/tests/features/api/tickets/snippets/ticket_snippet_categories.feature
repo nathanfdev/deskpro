@@ -61,6 +61,10 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "data[0].category" should be equal to 1
     And the JSON node "data[1].shortcut_code" should be equal to "ticket_snippet2"
 
+  Scenario: I get list of category snippets from another person
+    When I send a GET request to "/api/v2/ticket_snippet_categories/3/snippets"
+    Then the response status code should be 404
+
   Scenario: I try to create a category with empty request
     When I send a POST request to "/api/v2/ticket_snippet_categories"
     Then the response status code should be 400

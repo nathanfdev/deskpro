@@ -91,6 +91,22 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return TextSnippetCategory
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
      * @param string $sc
      */
     public function setShortcutCode($sc)

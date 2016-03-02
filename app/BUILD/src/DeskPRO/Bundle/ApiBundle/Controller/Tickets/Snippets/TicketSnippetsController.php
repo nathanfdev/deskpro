@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Snippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
@@ -76,6 +77,12 @@ class TicketSnippetsController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb
+            ->join('e.category', 'c')
+            ->andWhere('c.typename = :category_type')
+            ->setParameter('category_type', TextSnippetCategory::TYPE_TICKET)
+        ;
+
+        $qb
             ->andWhere('e.person = :user_id OR e.person is null')
             ->setParameter('user_id', $this->getUser()->getId())
         ;
@@ -86,5 +93,24 @@ class TicketSnippetsController extends CrudController
                 ->setParameter('category_id', $request->get('category'))
             ;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id)
+    {
+        /** @var TextSnippet $entity */
+        $entity   = parent::findEntity($id);
+        $category = $entity->getCategory();
+
+        if ($category && $category->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
+            throw $this->createNotFoundException();
+        }
+        if ($entity->getPerson() && $entity->getPerson() !== $this->getUser()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 }

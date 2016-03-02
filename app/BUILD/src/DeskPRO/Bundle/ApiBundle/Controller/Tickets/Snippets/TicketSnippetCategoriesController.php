@@ -83,7 +83,11 @@ class TicketSnippetCategoriesController extends CrudController
     {
         /** @var HttpKernelInterface $kernel */
         $kernel   = $this->get('kernel');
-        $category = $this->findOr404(TextSnippetCategory::class, $id);
+        $category = $this->findEntity($id);
+
+        if (!$category) {
+            throw $this->createNotFoundException();
+        }
 
         return TicketSnippetsController::subRequestSearch($kernel, $request, [
             'category' => $category->getId(),
