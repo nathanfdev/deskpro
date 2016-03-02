@@ -36,8 +36,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType;
 use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class TicketSnippetCategoriesController.
@@ -49,6 +53,41 @@ class TicketSnippetCategoriesController extends CrudController
 {
     public static $entity = TextSnippetCategory::class;
     public static $type   = TextSnippetCategoryType::class;
+
+    /**
+     * @ApiDoc(
+     *      description="Get the snippets within a category",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the category",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Not Found"
+     *      },
+     *      output="Application\DeskPRO\Entity\TextSnippet"
+     * )
+     * @Get("/{id}/snippets")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getSnippetsAction(Request $request, $id)
+    {
+        /** @var HttpKernelInterface $kernel */
+        $kernel   = $this->get('kernel');
+        $category = $this->findOr404(TextSnippetCategory::class, $id);
+
+        return TicketSnippetsController::subRequestSearch($kernel, $request, [
+            'category' => $category->getId(),
+        ]);
+    }
 
     /**
      * {@inheritdoc}

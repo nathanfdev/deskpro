@@ -13,3 +13,12 @@ Feature: /text_snippets endpoint
     When I send a GET request to "/api/v2/ticket_snippets"
     And the response status code should be 200
     And print last JSON response
+
+  Scenario: I add a new text snippet
+    When I send a POST request to "/api/v2/ticket_snippets" with body:
+    """
+{
+
+}
+    """
+    Then the response status code should be 201

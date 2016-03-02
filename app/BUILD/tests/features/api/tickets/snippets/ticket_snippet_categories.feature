@@ -51,6 +51,10 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "data.title" should be equal to "My Edited Category"
     And the JSON node "data.is_global" should be equal to 1
 
+  Scenario: I get list of category snippets
+    When I send a GET request to "/api/v2/ticket_snippet_categories/1/snippets"
+    Then the response status code should be 200
+
   Scenario: I delete a category
     When I send a DELETE request to "/api/v2/ticket_snippet_categories/1"
     Then the response status code should be 200

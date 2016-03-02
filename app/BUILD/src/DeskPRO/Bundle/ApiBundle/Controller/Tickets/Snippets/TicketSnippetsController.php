@@ -36,6 +36,9 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
 use FOS\RestBundle\Controller\Annotations\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class TicketSnippetsController.
@@ -47,4 +50,21 @@ class TicketSnippetsController extends CrudController
 {
     public static $entity = TextSnippet::class;
     public static $type   = TextSnippetType::class;
+
+    /**
+     * @param HttpKernelInterface $kernel
+     * @param Request             $masterRequest
+     * @param array               $params
+     *
+     * @return Response
+     */
+    public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
+    {
+        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
+            '_controller' => 'ApiBundle:Tickets\Snippets\TicketSnippets:list',
+        ]);
+        $request->query->add($params);
+
+        return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    }
 }
