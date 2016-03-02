@@ -36,7 +36,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Nelmio\ApiDocBundle\Extractor\HandlerInterface;
 use Symfony\Component\Routing\Route;
 
-class ModesHandler implements HandlerInterface
+class ModesTagsHandler implements HandlerInterface
 {
     protected $factory;
 

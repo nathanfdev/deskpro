@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -52,6 +54,28 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MessagesController extends AbstractController
 {
     /**
+     * Get messages for chat with given id.
+     *
+     * @ApiDoc(
+     *      section="Agent`s chat",
+     *      resourceDescription="Operations about agent`s chat messages",
+     *      description="get agent`s chat`s messages",
+     *      filters={
+     *          {"name"="search", "dataType"="string"},
+     *          {"name"="order", "dataType"="string", "pattern"="date_created"}
+     *      },
+     *      statusCodes={
+     *          200="Returned if success",
+     *          403="Returned if user has no access to current chat",
+     *          404="Returned if there is no chat with given id",
+     *          400="Returned if filters was wrong"
+     *      },
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage>"
+     * )
+     *
+     * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
+     * @ApiModes("all")
+     *
      * @param $id
      * @param Request $request
      *
@@ -59,33 +83,14 @@ class MessagesController extends AbstractController
      * @throws AccessDeniedHttpException
      *
      * @return View
-     * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
-     * @ApiModes("all")
      */
     public function getMessagesAction($id, Request $request)
     {
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        $user      = $this->getUser();
-        $chat      = $this->getChat($id);
-
-        if (!$user || !$messenger->isPersonInvolvedInChat($user, $chat)) {
-            throw new AccessDeniedHttpException();
-        }
+        $chat = $this->getChat($id);
 
         $form = $this->submitForm('api_agent_chat_search_messages', $request->query);
         if (!$form->isValid()) {
-            $errors = $this->createFormErrorsData($form);
-            $status = Response::HTTP_BAD_REQUEST;
-
-            return View::create(
-                $this->createErrorRepresentation(
-                    $status,
-                    'request_error',
-                    "Couldn't process your request",
-                    $errors
-                ),
-                $status
-            );
+            throw new InvalidFormException($form);
         }
 
         $search_service = $this->get('deskpro.agentchat.history');
@@ -102,6 +107,43 @@ class MessagesController extends AbstractController
     }
 
     /**
+     * Create a new message in chat with given id.
+     *
+     * @ApiDoc(
+     *      section="Agent`s chat",
+     *      resourceDescription="Operations about agent`s chat messages",
+     *      description="post a message",
+     *      requirements={
+     *          {
+     *              "name"="chat",
+     *              "requirement"="\d+",
+     *              "dataType"="integer",
+     *              "description"="ID of chat where to add a message (in uri)"
+     *          },
+     *          {
+     *              "name"="message",
+     *              "requirement"=".*",
+     *              "dataType"="string",
+     *              "description"="any string to add as message"
+     *          },
+     *          {
+     *              "name"="uuid",
+     *              "requirement"="[0-9a-Z-]+",
+     *              "dataType"="string",
+     *              "description"="an unique identificator of message"
+     *          },
+     *      },
+     *      statusCodes={
+     *          201="Returned when message was successfully added",
+     *          400={
+     *              "Returned if message was empty",
+     *              "Returned if uuid was empty or wrong formatted"
+     *          },
+     *          403="Returned if person is not participating in chat"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage"
+     * )
+     *
      * @param AgentChat $chat
      * @param Request   $request
      *
@@ -143,6 +185,24 @@ class MessagesController extends AbstractController
     }
 
     /**
+     * Get messages count.
+     *
+     * @ApiDoc(
+     *      section="Agent`s chat",
+     *      resourceDescription="Operations about agent`s chat messages",
+     *      description="get messages count",
+     *      statusCodes={
+     *          200="Returned if success"
+     *      },
+     *      output={
+     *          "\d+" = {
+     *              "chat_id" = "\d+",
+     *              "cnt" = "\d+",
+     *              "chat" = "DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *          }
+     *      }
+     * )
+     *
      * @return View
      * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
      */
@@ -157,6 +217,35 @@ class MessagesController extends AbstractController
     }
 
     /**
+     * Mark message with given id as sent/read.
+     *
+     * @ApiDoc(
+     *      section="Agent`s chat",
+     *      resourceDescription="Operations about agent`s chat messages",
+     *      description="mark message as sent/read",
+     *      requirements={
+     *          {
+     *              "name"="ids",
+     *              "requirement"="[\d+]",
+     *              "dataType"="integer[]",
+     *              "description"="Array of ids to update with given status"
+     *          },
+     *          {
+     *              "name"="status",
+     *              "requirement"="1|2",
+     *              "dataType"="integer",
+     *              "description"="Read status. 1 => sent, 2 => read"
+     *          },
+     *      },
+     *      statusCodes={
+     *          204="Returned if success",
+     *          400={
+     *              "Returned if given status was wrong",
+     *              "Returned if ids list was wrong formed"
+     *          }
+     *      },
+     * )
+     *
      * @param Request $request
      *
      * @return View
@@ -167,18 +256,7 @@ class MessagesController extends AbstractController
         $status = Response::HTTP_ACCEPTED;
         $form   = $this->submitForm('api_agent_chat_mark_message', $request->request);
         if (!$form->isValid()) {
-            $status = Response::HTTP_BAD_REQUEST;
-            $errors = $this->createFormErrorsData($form);
-
-            return View::create(
-                $this->createErrorRepresentation(
-                    $status,
-                    'form_error',
-                    "Couldn't mark messages",
-                    $errors
-                ),
-                $status
-            );
+            throw new InvalidFormException($form);
         }
 
         $messenger = $this->get('deskpro.agentchat.messenger');
@@ -188,9 +266,6 @@ class MessagesController extends AbstractController
             $this->getUser()
         );
 
-        return View::create(
-            $this->createRepresentation([]),
-            $status
-        );
+        return new Response('', $status);
     }
 }
