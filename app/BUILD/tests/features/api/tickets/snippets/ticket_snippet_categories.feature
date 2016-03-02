@@ -18,6 +18,7 @@ Feature: /text_snippet_categories endpoint
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
     """
 {
+  "title": "My Category",
   "person": 1
 }
     """

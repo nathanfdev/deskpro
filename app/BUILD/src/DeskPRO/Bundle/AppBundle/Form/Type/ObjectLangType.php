@@ -29,23 +29,20 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TextSnippetCategory;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ObjectLangType;
+use Application\DeskPRO\Entity\Language;
+use Application\ImportBundle\Entity\ObjectLang;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class TextSnippetCategoryType.
+ * Class ObjectLangType.
  */
-class TextSnippetCategoryType extends AbstractType
+class ObjectLangType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -53,17 +50,11 @@ class TextSnippetCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', ObjectLangType::class, [
-                'ref_type'  => 'text_snippet_categories',
-                'prop_name' => 'title',
+            ->add('language', EntityType::class, [
+                'class' => Language::class,
             ])
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
-            ])
-            ->add('is_global', ApiBooleanType::class)
+            ->add('value', 'html_textarea')
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
     }
 
     /**
@@ -73,25 +64,28 @@ class TextSnippetCategoryType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TextSnippetCategory::class,
+                'default_language' => false,
+                'class'            => ObjectLang::class,
+                'compound'         => function (Options $options) {
+                    return !$options['default_language'];
+                },
             ])
-            ->setRequired(['type'])
-            ->setAllowedValues([
-                'type' => [TextSnippetCategory::TYPE_TICKET, TextSnippetCategory::TYPE_CHAT],
+            ->setRequired([
+                'ref_type',
+                'prop_name',
+            ])
+            ->addAllowedTypes([
+                'ref_type'  => 'string',
+                'prop_name' => 'string',
             ])
         ;
     }
 
     /**
-     * @param FormEvent $event
+     * {@inheritdoc}
      */
-    public function onSetType(FormEvent $event)
+    public function getParent()
     {
-        $form = $event->getForm();
-        $type = $form->getConfig()->getOption('type');
-
-        /** @var TextSnippetCategory $data */
-        $data = $form->getData();
-        $data->setTypename($type);
+        return 'collection';
     }
 }

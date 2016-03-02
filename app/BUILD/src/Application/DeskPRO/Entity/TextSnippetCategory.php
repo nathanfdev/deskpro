@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -49,6 +50,11 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
      * @var int
      */
     protected $id = null;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $title;
 
     /**
      * The type of snippets this cat contains.
@@ -70,6 +76,14 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_global = false;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->title = new ArrayCollection();
+    }
 
     /**
      * @return int
