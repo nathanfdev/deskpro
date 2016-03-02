@@ -25,4 +25,5 @@ Feature: /text_snippet_categories endpoint
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.person" should be equal to 1
+    And the JSON node "data.title" should be equal to "My Category"
     And the JSON node "data.is_global" should be equal to 0

@@ -31,12 +31,13 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
 
+use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ObjectLangType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -53,16 +54,14 @@ class TextSnippetCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', ObjectLangType::class, [
-                'ref_type'  => 'text_snippet_categories',
-                'prop_name' => 'title',
-            ])
+            ->add('title', TextType::class)
             ->add('person', EntityType::class, [
                 'class' => Person::class,
             ])
             ->add('is_global', ApiBooleanType::class)
         ;
 
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetObjectTranslatable']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
     }
 
@@ -75,11 +74,26 @@ class TextSnippetCategoryType extends AbstractType
             ->setDefaults([
                 'data_class' => TextSnippetCategory::class,
             ])
-            ->setRequired(['type'])
+            ->setRequired(['type', 'person'])
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
             ->setAllowedValues([
                 'type' => [TextSnippetCategory::TYPE_TICKET, TextSnippetCategory::TYPE_CHAT],
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetObjectTranslatable(FormEvent $event)
+    {
+        /** @var Person $person */
+        $person = $event->getForm()->getConfig()->getOption('person');
+
+        $object_translatable = ObjectTranslatable::loadObjectTranslatable($event->getData());
+        $object_translatable->setLang($person->getLanguage());
     }
 
     /**

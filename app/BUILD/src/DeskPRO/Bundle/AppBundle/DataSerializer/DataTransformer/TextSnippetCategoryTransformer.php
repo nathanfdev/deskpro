@@ -43,7 +43,7 @@ class TextSnippetCategoryTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'person', 'is_global'];
+        return ['id', 'title', 'person', 'is_global'];
     }
 
     /**

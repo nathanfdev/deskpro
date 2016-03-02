@@ -67,7 +67,8 @@ class TicketSnippetCategoriesController extends CrudController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'type' => TextSnippetCategory::TYPE_TICKET,
+            'type'   => TextSnippetCategory::TYPE_TICKET,
+            'person' => $this->getUser(),
         ]);
 
         return parent::handleForm($model, $request, $options);
