@@ -571,7 +571,6 @@ class Department extends DomainObject implements HasPhraseName
                  'mappedBy'     => 'parent',
                  'orderBy'      => array('display_order' => 'ASC'),
                  'indexBy'      => 'id',
-                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
             )
         );
 
