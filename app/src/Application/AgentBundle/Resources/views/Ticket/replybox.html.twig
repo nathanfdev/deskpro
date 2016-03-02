@@ -304,11 +304,11 @@
 						<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
 						<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
 							{% if ticket_perms.modify_assign_self %}
-								<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me">{{ phrase('agent.general.me') }}</option>
+								<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" selected="selected" data-name-short="Me">{{ phrase('agent.general.me') }}</option>
 							{% endif %}
 							{% for agent in agents %}
 								{% if agent.id != app.user.id and ticket_perms.modify_assign_agent %}
-									<option {% if not app.getSetting(assign_opt) or (app.getSetting(assign_opt) == 'assign' and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
+									<option {% if (not app.getSetting(assign_opt) or (app.getSetting(assign_opt) == 'assign' and agent.id == app.user.id)) and not ticket_perms.modify_assign_self %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
 										{{ agent.display_name }}
 									</option>
 								{% endif %}
