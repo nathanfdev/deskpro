@@ -214,6 +214,43 @@ gulp.task('bundle:dev-server:widget', () => {
   startWebpackServer(getWebpackConfig('widget', true, false));
 });
 
+var slate = require('gulp-slate');
+
+gulp.task('slate', function() {
+
+  return Promise.all(
+    [
+      new Promise(function(resolve, reject) {
+        var options = {
+          scss: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
+          style: 'androidstudio',
+          logo: 'static/Common/deskpro-logo_2x.png',
+          template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html',
+        };
+        gulp.src(
+          [
+            '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
+          ]
+          )
+          .pipe(slate(options))
+          .on('erorr', reject)
+          .pipe(gulp.dest('build/apidocs'))
+          .on('end', resolve)
+        ;
+      }),
+
+      new Promise(function(resolve) {
+        gulp.src(['build/apidocs/index.html.twig'])
+          .pipe(gulp.dest(
+            '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/'
+          ))
+          .on('end', resolve)
+        ;
+      })
+    ]
+  );
+});
+
 // ######################################################################################################################
 // # Helpers
 // ######################################################################################################################
