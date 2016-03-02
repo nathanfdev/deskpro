@@ -35,7 +35,19 @@ Feature: /text_snippet_categories endpoint
   Scenario: I get list of category snippets
     When I send a GET request to "/api/v2/ticket_snippet_categories/1/snippets"
     Then the response status code should be 200
-    And print last JSON response
+    And the JSON node "data" should have 2 elements
+
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].is_draft" should be equal to 1
+    And the JSON node "data[0].person" should be equal to 0
+    And the JSON node "data[0].category" should be equal to 1
+    And the JSON node "data[0].shortcut_code" should be equal to "ticket_snippet1"
+
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].is_draft" should be equal to 1
+    And the JSON node "data[1].person" should be equal to 1
+    And the JSON node "data[0].category" should be equal to 1
+    And the JSON node "data[1].shortcut_code" should be equal to "ticket_snippet2"
 
   Scenario: I try to create a category with empty request
     When I send a POST request to "/api/v2/ticket_snippet_categories"

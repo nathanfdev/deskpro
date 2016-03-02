@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,5 +68,23 @@ class TicketSnippetsController extends CrudController
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb
+            ->andWhere('e.person = :user_id OR e.person is null')
+            ->setParameter('user_id', $this->getUser()->getId())
+        ;
+
+        if ($request->get('category')) {
+            $qb
+                ->andWhere('e.category = :category_id')
+                ->setParameter('category_id', $request->get('category'))
+            ;
+        }
     }
 }
