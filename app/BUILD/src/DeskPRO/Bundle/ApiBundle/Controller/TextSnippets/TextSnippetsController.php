@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Snippets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
@@ -43,12 +43,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * Class TicketSnippetsController.
+ * Class TextSnippetsController.
  *
  * @ApiModes("all")
- * @Route("/ticket_snippets")
+ * @Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
  */
-class TicketSnippetsController extends CrudController
+class TextSnippetsController extends CrudController
 {
     public static $entity    = TextSnippet::class;
     public static $type      = TextSnippetType::class;
@@ -64,7 +64,7 @@ class TicketSnippetsController extends CrudController
     public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
         $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
-            '_controller' => 'ApiBundle:Tickets\Snippets\TicketSnippets:list',
+            '_controller' => 'ApiBundle:TextSnippets\TextSnippets:list',
         ]);
         $request->query->add($params);
 

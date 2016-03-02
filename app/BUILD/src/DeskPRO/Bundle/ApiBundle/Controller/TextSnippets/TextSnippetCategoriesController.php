@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Snippets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -44,12 +44,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
- * Class TicketSnippetCategoriesController.
+ * Class TextSnippetCategoriesController.
  *
  * @ApiModes("all")
- * @Route("/ticket_snippet_categories")
+ * @Route("/{context}_snippet_categories", requirements={"context"="(ticket|chat)"})
  */
-class TicketSnippetCategoriesController extends CrudController
+class TextSnippetCategoriesController extends CrudController
 {
     public static $entity    = TextSnippetCategory::class;
     public static $type      = TextSnippetCategoryType::class;
@@ -89,7 +89,7 @@ class TicketSnippetCategoriesController extends CrudController
             throw $this->createNotFoundException();
         }
 
-        return TicketSnippetsController::subRequestSearch($kernel, $request, [
+        return TextSnippetsController::subRequestSearch($kernel, $request, [
             'category' => $category->getId(),
         ]);
     }
