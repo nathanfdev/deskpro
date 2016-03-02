@@ -104,12 +104,14 @@ export const addTask = createAction(
   })
 );
 
-// todo dispatch setCollection only after all editTask actions are done
+let latestPromise, latestTasks;
+
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
     let promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
-    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
+    latestPromise = promise;
+    let tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
     let oldTask = tasks.get(taskId);
@@ -126,19 +128,22 @@ export const editTask = createAction(
       }
       newTask = newTask.set(changedProp, newValue);
     });
+    latestTasks = tasks;
 
     // todo show errors (alert?)
     promise.success(() => {
-      // should use a fresh copy of collection
-      tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
-      tasks = tasks.set(taskId, newTask);
+      latestTasks = latestTasks.set(taskId, newTask);
+      if (latestPromise !== promise) return;
+
       console.time('set collections');
-      dispatch(setCollection('Task', recordStoresId, tasks));
+      dispatch(setCollection('Task', recordStoresId, latestTasks));
+      latestTasks = null;
       console.timeEnd('set collections');
     }).error(() => {
-      tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
-      tasks = tasks.set(taskId, oldTask);
-      dispatch(setCollection('Task', recordStoresId, tasks));
+      latestTasks = latestTasks.set(taskId, oldTask);
+      if (latestPromise !== promise) return;
+      dispatch(setCollection('Task', recordStoresId, latestTasks));
+      latestTasks = null;
     });
 
     return promise;
