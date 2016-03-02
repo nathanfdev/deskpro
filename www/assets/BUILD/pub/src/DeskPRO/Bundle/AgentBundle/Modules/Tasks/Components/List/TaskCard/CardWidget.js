@@ -16,7 +16,10 @@ export class CardWidget extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    this.setState({value: props.value});
+    this.setState({
+      isOpen: props.isOpen,
+      value: props.value
+    });
   }
 
   reset() {

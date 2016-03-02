@@ -13,6 +13,27 @@ export class Title extends CardWidget {
     onSubmit: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false,
+      value: props.value,
+      isDone: props.isDone
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      isOpen: false,
+      value: props.value,
+      isDone: props.isDone
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen !== state.isOpen || this.state.value !== state.value || this.state.isDone !== state.isDone;
+  }
+
   onSubmit = () => {
     this.onClose();
     this.props.onSubmit && this.props.onSubmit(this.state.value);

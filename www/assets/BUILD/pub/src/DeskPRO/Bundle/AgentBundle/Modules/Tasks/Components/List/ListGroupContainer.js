@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { groupCollection } from 'Util/ListGroup';
 import { currentSortSelector, elementsSelector } from '../../Selectors/list';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -16,6 +17,7 @@ import { editTask } from '../../Actions/listActions';
   agentTeams: allSelectorFactory('AgentTeam')(state),
   departments: allSelectorFactory('Department')(state)
 }))
+
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
@@ -34,6 +36,14 @@ export class ListGroupContainer extends React.Component {
   onChangeGroup = (taskId, updateData) => {
     this.props.dispatch(editTask(taskId, updateData));
   };
+
+  componentWillReceiveProps(props) {
+    console.time('ListGroupContainer did update');
+  }
+
+  componentDidUpdate() {
+    console.timeEnd('ListGroupContainer did update');
+  }
 
   render() {
     const { sort, lists, projects, agents, agentTeams, departments } = this.props;
@@ -104,7 +114,7 @@ export class ListGroupContainer extends React.Component {
 
       ids: ids,
       tasks: tasks,
-      taskGroups: groupCollection(groupConfig, tasks),
+      taskGroups: Immutable.fromJS(groupCollection(groupConfig, tasks)),
       onChangeGroup: this.onChangeGroup
     });
   }

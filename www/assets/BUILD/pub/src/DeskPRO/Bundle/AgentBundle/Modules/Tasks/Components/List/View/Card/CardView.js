@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 import { ListGroup } from './ListGroup';
-import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
-import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
@@ -10,30 +9,45 @@ import { NewTaskButton } from './NewTaskButton';
 export class CardView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.array,
+    taskGroups: PropTypes.object.isRequired,
     onChangeGroup: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      groups: props.taskGroups.filter(taskGroup => taskGroup.get('elements').size)
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      groups: props.taskGroups.filter(taskGroup => taskGroup.get('elements').size)
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return !Immutable.is(this.state.groups, state.groups);
+  }
+
+  onUpdate(index, elements) {
+    let group = this.state.groups.get(index);
+    group.set('elements', elements);
+    this.setState({
+      groups: this.state.groups.set(index, group)
+    });
+  }
+
   render() {
-    const { taskGroups = [], onChangeGroup } = this.props;
-    const filtered = taskGroups.filter(taskGroup => taskGroup.elements.length);
+    const { onChangeGroup } = this.props;
+    const { groups } = this.state;
 
     return (
       <div>
-        {filtered.map((taskGroup, index) =>
-          <ListGroup title={taskGroup.title}
-                     key={index}
-                     updateData={taskGroup.updateData}
-                     onChangeGroup={onChangeGroup}>
-
-            {taskGroup.elements.map(task =>
-              <TaskCardEditContainer task={task}
-                                     key={task.get('id')}
-                                     updateData={taskGroup.updateData}>
-                <TaskDragCard />
-              </TaskCardEditContainer>
-            )}
-          </ListGroup>
+        {groups.valueSeq().map((taskGroup, index) =>
+          <ListGroup group={taskGroup}
+                     onChangeGroup={onChangeGroup}
+                     onUpdate={this.onUpdate.bind(this, index)} />
         )}
 
         <NewTaskButton />

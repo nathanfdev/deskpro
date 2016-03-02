@@ -104,6 +104,7 @@ export const addTask = createAction(
   })
 );
 
+// todo dispatch setCollection only after all editTask actions are done
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
@@ -128,12 +129,15 @@ export const editTask = createAction(
 
     // todo show errors (alert?)
     promise.success(() => {
+      // should use a fresh copy of collection
+      tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
       tasks = tasks.set(taskId, newTask);
-      dispatch(releaseCollection('Task', recordStoresId));
+      console.time('set collections');
       dispatch(setCollection('Task', recordStoresId, tasks));
+      console.timeEnd('set collections');
     }).error(() => {
+      tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
       tasks = tasks.set(taskId, oldTask);
-      dispatch(releaseCollection('Task', recordStoresId));
       dispatch(setCollection('Task', recordStoresId, tasks));
     });
 

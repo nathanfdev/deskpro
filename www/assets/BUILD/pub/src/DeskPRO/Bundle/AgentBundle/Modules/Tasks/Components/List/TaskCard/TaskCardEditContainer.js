@@ -29,7 +29,8 @@ export class TaskCardEditContainer extends React.Component {
     dispatch: PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    onUpdate: PropTypes.func
   };
 
   constructor(props) {
@@ -116,6 +117,10 @@ export class TaskCardEditContainer extends React.Component {
     }
 
     return false;
+  }
+
+  componentWillUpdate(props, state) {
+    this.props.onUpdate && this.props.onUpdate(state.task);
   }
 
   render() {
