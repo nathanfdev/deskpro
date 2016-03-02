@@ -37,8 +37,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Class TextSnippetCategory.
+ *
+ * @method string getTitle()
+ * @method setTitle()
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -79,13 +84,12 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getPermType()
     {
-        if ($this->is_global) {
-            return 'global';
-        } else {
-            return 'me';
-        }
+        return $this->is_global ? 'global' : 'me';
     }
 
     /**
@@ -106,6 +110,16 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('typename', $typename);
 
         return $this;
+    }
+
+    /**
+     * @Assert\NotBlank()
+     *
+     * @return string
+     */
+    public function getTranslatedTitle()
+    {
+        return $this->getTitle();
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())

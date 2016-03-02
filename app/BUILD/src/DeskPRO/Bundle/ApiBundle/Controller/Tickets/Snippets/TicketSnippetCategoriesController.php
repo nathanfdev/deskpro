@@ -83,7 +83,7 @@ class TicketSnippetCategoriesController extends CrudController
     {
         /** @var TextSnippetCategory $entity */
         $entity = parent::findEntity($id);
-        if (!$entity->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
+        if ($entity->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
             throw $this->createNotFoundException();
         }
 

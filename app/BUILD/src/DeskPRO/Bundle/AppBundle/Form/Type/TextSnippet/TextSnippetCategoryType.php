@@ -54,7 +54,9 @@ class TextSnippetCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
+            ->add('title', TextType::class, [
+                'error_bubbling' => false,
+            ])
             ->add('person', EntityType::class, [
                 'class' => Person::class,
             ])
@@ -72,7 +74,10 @@ class TextSnippetCategoryType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TextSnippetCategory::class,
+                'data_class'    => TextSnippetCategory::class,
+                'error_mapping' => [
+                    'translatedTitle' => 'title',
+                ],
             ])
             ->setRequired(['type', 'person'])
             ->setAllowedTypes([

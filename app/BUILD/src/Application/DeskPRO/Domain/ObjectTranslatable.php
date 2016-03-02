@@ -152,7 +152,10 @@ class ObjectTranslatable
     }
 
     /**
-     * @param string $prop
+     * @param string   $prop
+     * @param Language $lang
+     *
+     * @return string
      */
     public function getObjectProp($prop, $lang = null)
     {
@@ -160,7 +163,7 @@ class ObjectTranslatable
             $lang = $this->getTryLangs();
         }
 
-        $langs = is_array($lang) ? $lang : array($lang);
+        $langs = is_array($lang) ? $lang : [$lang];
 
         foreach ($langs as $lang) {
             if (!$lang) {
@@ -183,16 +186,18 @@ class ObjectTranslatable
                 $prop    = strtolower($prop);
                 $lang_id = $lang->getId();
 
-                return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
-            }
-
-            $ret = $this->getObjLangRepos()->get($lang, $this->entity, $prop);
-            if ($ret) {
-                return $ret;
+                if (isset($this->unsaved[$lang_id][$prop])) {
+                    return $this->unsaved[$lang_id][$prop]->text;
+                }
+            } else {
+                $ret = $this->getObjLangRepos()->get($lang, $this->entity, $prop);
+                if ($ret) {
+                    return $ret;
+                }
             }
         }
 
-        return;
+        return '';
     }
 
     /**
