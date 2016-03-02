@@ -51,7 +51,6 @@ pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}fal
 pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
-pageMeta.agents_with_perm = {{ agents_with_perm|json_encode|raw }};
 
 pageMeta.agentMap = {{ agent_map|json_encode|raw }};
 pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
