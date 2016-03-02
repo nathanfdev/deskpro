@@ -19,31 +19,23 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
+    selected: PropTypes.bool.isRequired,
+    onToggleSelected: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     task: PropTypes.object,
-    moving: PropTypes.bool,
-    onChangeTitle: PropTypes.func,
-    onChangeDate: PropTypes.func,
-    onSetEditing: PropTypes.func,
-    dispatch: PropTypes.func.isRequired
+    moving: PropTypes.bool
   };
 
-  onChange(prop, value) {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), {[prop]: value}));
-  }
-
   renderDetails() {
-    const { task, onChangeDate, onSetEditing } = this.props;
+    const { task, onChange } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={onChangeDate}
-                   onSetEditing={onSetEditing} />
+                   onChange={onChange.bind(null, 'date_due')} />
           <CardProjectContainer value={task.get('project')}
-                                onSetEditing={onSetEditing}
-                                onChange={this.onChange.bind(this, 'project')} />
+                                onChange={onChange.bind(null, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>
@@ -58,7 +50,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, onChangeTitle, onSetEditing } = this.props;
+    const { task, moving, onChange } = this.props;
 
     return (
       <Card statusBars={false}
@@ -70,11 +62,10 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onSubmit={onChangeTitle}
-                   onSetEditing={onSetEditing} />
+                   onSubmit={onChange.bind(null, 'title')} />
           </CardLineLeft>
           <CardLineRight>
-            {!task.get('is_done') && <AssignButton task={task} onAssign={this.onAssign} />}
+            {!task.get('is_done') && <AssignButton value={task} onChange={onChange.bind(null, 'assignee')} />}
           </CardLineRight>
         </CardLine>
 

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
+import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
 import {
@@ -30,7 +30,13 @@ export class CardProject extends CardWidget {
 
   onChange = (value) => {
     this.setState({value: value[0]});
-    this.props.onChange && this.props.onChange(value[0] || null);
+  };
+
+  onClose = () => {
+    if (!this.state.isOpen) return;
+    this.setState({isOpen: false});
+    this.props.onSetEditing && this.props.onSetEditing(false);
+    this.props.onChange && this.props.onChange(this.state.value);
   };
 
   render() {
@@ -53,7 +59,8 @@ export class CardProject extends CardWidget {
                   collision="fit"
                   zIndex={1002}>
 
-          <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.button]}>
+          <ClickOut onClickOut={this.onClose}
+                    additionalNodes={[this.refs.button, 'popup', '.fa-check']}>
             <Popup ref="popup" additionalClassNames="one-column">
               <CollectionField title="Project">
                 <ProjectsList values={projects} onChange={this.onChange} selected={selected} />

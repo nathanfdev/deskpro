@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
-import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
-
+import Immutable from 'immutable';
 
 export class BaseTaskCard extends React.Component {
 
   static propTypes = {
-    task: PropTypes.object
+    selected: PropTypes.bool,
+    task: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -24,18 +24,8 @@ export class BaseTaskCard extends React.Component {
     });
   };
 
-  onAssign = (value) => {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), {
-      agents: value.get('agents').toArray(),
-      teams: value.get('teams').toArray(),
-      departments: value.get('departments').toArray()
-    }));
-  };
-
   isMinimized() {
     const { task } = this.props;
-
     return !this.state.expanded && task.get('is_done');
   }
 }

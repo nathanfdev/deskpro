@@ -23,7 +23,8 @@ export class MarkDoneButton extends React.Component {
   }
 
   render() {
-    const { isDone, onToggle } = this.props;
+    const { onToggle } = this.props;
+    const { isDone } = this.state;
 
     if (isDone) {
       return (

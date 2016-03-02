@@ -109,8 +109,6 @@ let latestPromise, latestTasks;
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
-    let promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
-    latestPromise = promise;
     let tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
@@ -128,6 +126,13 @@ export const editTask = createAction(
       }
       newTask = newTask.set(changedProp, newValue);
     });
+
+    if (Immutable.is(newTask, oldTask)) {
+      return;
+    }
+
+    let promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
+    latestPromise = promise;
     latestTasks = tasks;
 
     // todo show errors (alert?)

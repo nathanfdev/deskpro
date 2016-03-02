@@ -49,12 +49,6 @@ export class TaskCardEditContainer extends React.Component {
     });
   }
 
-  onSetEditing = value => {
-    this.setState({
-      editing: !!value
-    });
-  };
-
   onToggleSelected = () => {
     const { dispatch } = this.props;
     const { task } = this.state;
@@ -62,52 +56,28 @@ export class TaskCardEditContainer extends React.Component {
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
-  onToggleDone = () => {
+  onChange = (prop, value) => {
     const { dispatch } = this.props;
-    const { task } = this.state;
-    const params = {
-      is_done: !task.get('is_done')
-    };
+    let { task } = this.state;
+    let params;
 
-    this.setState({task: task.set('is_done', params.is_done)});
+    if ('assignee' === prop) {
+      params = {
+        agents: value.get('agents').toArray(),
+        teams: value.get('teams').toArray(),
+        departments: value.get('departments').toArray()
+      };
+      task = task.mergeWith(value);
+    } else {
+      params = {[prop]: value};
+      task = task.set(prop, value);
+    }
+
+    this.setState({task: task});
     dispatch(editTask(task.get('id'), params));
-  };
-
-  onChangeTitle = value => {
-    const { dispatch } = this.props;
-    const { task } = this.state;
-    const params = {
-      title: value
-    };
-    this.setState({task: task.set('title', params.title)});
-    dispatch(editTask(task.get('id'), params));
-  };
-
-  onChangeDate = value => {
-    const { dispatch } = this.props;
-    const { task } = this.state;
-    const params = {
-      date_due: value
-    };
-    this.setState({task: task.set('date_due', params.date_due)});
-    dispatch(editTask(task.get('id'), params));
-  };
-
-  onChangeDisplayOrder = taskId => {
-    const { dispatch } = this.props;
-    const { task } = this.state;
-    const params = {
-      display_order: task.get('display_order')
-    };
-    this.setState({task: task.set('display_order', params.display_order)});
-    dispatch(editTask(taskId, params));
   };
 
   shouldComponentUpdate(props, state) {
-    if (state.editing !== this.state.editing) {
-      return true;
-    }
-
     if (state.selected !== this.state.selected) {
       return true;
     }
@@ -133,15 +103,9 @@ export class TaskCardEditContainer extends React.Component {
       ...props,
 
       task: this.state.task,
-      editing: this.state.editing,
       selected: this.state.selected,
       onToggleSelected: this.onToggleSelected,
-      onToggleDone: this.onToggleDone,
-      onChangeDisplayOrder: this.onChangeDisplayOrder,
-      onChangeTitle: this.onChangeTitle,
-      onChangeDate: this.onChangeDate,
-      onSetEditing: this.onSetEditing,
-      dispatch: dispatch
+      onChange: this.onChange
     });
   }
 }
