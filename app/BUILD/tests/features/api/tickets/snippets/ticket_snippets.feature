@@ -11,28 +11,70 @@ Feature: /text_snippets endpoint
   @reinstall
   Scenario: I retrieve a list of text snippets
     When I send a GET request to "/api/v2/ticket_snippets"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the JSON node "data" should have 4 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].category" should be equal to 1
+    And the JSON node "data[0].person" should be equal to 0
     And the JSON node "data[0].shortcut_code" should be equal to "ticket_snippet1"
     And the JSON node "data[0].is_draft" should be equal to 1
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].category" should be equal to 1
+    And the JSON node "data[1].person" should be equal to 1
     And the JSON node "data[1].shortcut_code" should be equal to "ticket_snippet2"
     And the JSON node "data[1].is_draft" should be equal to 1
 
     And the JSON node "data[2].id" should be equal to 3
     And the JSON node "data[2].category" should be equal to 2
+    And the JSON node "data[2].person" should be equal to 1
     And the JSON node "data[2].shortcut_code" should be equal to "ticket_snippet3"
     And the JSON node "data[2].is_draft" should be equal to 0
 
     And the JSON node "data[3].id" should be equal to 5
     And the JSON node "data[3].category" should be equal to 3
+    And the JSON node "data[3].person" should be equal to 1
     And the JSON node "data[3].shortcut_code" should be equal to "ticket_snippet5"
     And the JSON node "data[3].is_draft" should be equal to 1
+
+  Scenario: I retrieve a list of text snippets filtered by category
+    When I send a GET request to "/api/v2/ticket_snippets?category=1"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[1].id" should be equal to 2
+
+    When I send a GET request to "/api/v2/ticket_snippets?category=3"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 5
+
+  Scenario: I filter by person
+    When I send a GET request to "/api/v2/ticket_snippets?global=1"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+
+    When I send a GET request to "/api/v2/ticket_snippets?my=1"
+    Then the response status code should be 200
+    And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to 2
+    And the JSON node "data[1].id" should be equal to 3
+    And the JSON node "data[2].id" should be equal to 5
+
+  Scenario: I filter by draft
+    When I send a GET request to "/api/v2/ticket_snippets?draft=1"
+    Then the response status code should be 200
+    And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[2].id" should be equal to 5
+
+    When I send a GET request to "/api/v2/ticket_snippets?draft=0"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 3
 
   Scenario: I add a new text snippet
     When I send a POST request to "/api/v2/ticket_snippets" with body:

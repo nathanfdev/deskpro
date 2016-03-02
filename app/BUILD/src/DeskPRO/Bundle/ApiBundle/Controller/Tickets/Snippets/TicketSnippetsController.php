@@ -82,15 +82,30 @@ class TicketSnippetsController extends CrudController
             ->setParameter('category_type', TextSnippetCategory::TYPE_TICKET)
         ;
 
-        $qb
-            ->andWhere('e.person = :user_id OR e.person is null')
-            ->setParameter('user_id', $this->getUser()->getId())
-        ;
+        if ($request->query->get('my')) {
+            $qb
+                ->andWhere('e.person = :user_id')
+                ->setParameter('user_id', $this->getUser()->getId())
+            ;
+        } elseif ($request->query->get('global')) {
+            $qb->andWhere('e.person is null');
+        } else {
+            $qb
+                ->andWhere('e.person = :user_id OR e.person is null')
+                ->setParameter('user_id', $this->getUser()->getId())
+            ;
+        }
 
-        if ($request->get('category')) {
+        if ($request->query->get('category')) {
             $qb
                 ->andWhere('e.category = :category_id')
                 ->setParameter('category_id', $request->get('category'))
+            ;
+        }
+        if ($request->query->has('draft')) {
+            $qb
+                ->andWhere('e.is_draft = :is_draft')
+                ->setParameter('is_draft', $request->query->getInt('draft'))
             ;
         }
     }
