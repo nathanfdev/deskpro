@@ -32,7 +32,7 @@ export class CardView extends React.Component {
 
   onUpdate(index, elements) {
     let group = this.state.groups.get(index);
-    group.set('elements', elements);
+    group = group.set('elements', elements);
     this.setState({
       groups: this.state.groups.set(index, group)
     });
