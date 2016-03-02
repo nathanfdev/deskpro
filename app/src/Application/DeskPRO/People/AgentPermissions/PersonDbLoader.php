@@ -104,8 +104,8 @@ class PersonDbLoader
         $perm_recs = $this->db->fetchAll('
             SELECT name, usergroup_id, person_id
             FROM permissions
-            WHERE (usergroup_id IN (?) OR person_id = ?)
-                AND value = 1
+            WHERE (usergroup_id IN (?) OR (person_id = ?))
+                AND value = 1 AND is_active = 1
         ', array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
 
         if ($has_all_perms || $has_all_safe_perms) {

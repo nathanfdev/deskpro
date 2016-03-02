@@ -68,6 +68,7 @@ class DepartmentPermission extends AbstractEntityRepository
             $q = $this->_em->getConnection()->query('
                 SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
                 FROM department_permissions dp
+                WHERE is_active = 1
             ');
 
             while ($rec = $q->fetch()) {

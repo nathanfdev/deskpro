@@ -47,6 +47,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\DeskPRO\People\PermissionUtil;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -783,6 +784,8 @@ class AgentsController extends AbstractController implements ProtectedController
         if (!$id && !$skip_email) {
             $this->sendWelcomeEmail($agent);
         }
+
+        PermissionUtil::optimizePermissions($agent);
 
         #-------------------------
         # Return

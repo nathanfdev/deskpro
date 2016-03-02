@@ -107,7 +107,7 @@ class PermissionsLoader
         $this->agent_override_perms = $this->db->fetchAllGrouped('
             SELECT person_id, name, value
             FROM permissions
-            WHERE person_id IS NOT NULL
+            WHERE person_id IS NOT NULL AND is_active = 1
         ', array(), 'person_id');
 
         return $this->agent_override_perms;
