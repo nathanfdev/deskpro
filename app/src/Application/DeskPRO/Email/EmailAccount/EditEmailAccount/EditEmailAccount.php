@@ -135,8 +135,11 @@ class EditEmailAccount
 
     /**
      * Applies form to the entities.
+     *
+     * @param bool $save_incoming True to save incoming account
+     * @param bool $save_outgoing True to save outgoing account
      */
-    public function apply()
+    public function apply($save_incoming = true, $save_outgoing = true)
     {
         $this->account->address      = strtolower($this->address);
         $this->account->is_enabled   = $this->is_enabled;
@@ -157,12 +160,16 @@ class EditEmailAccount
             $this->account->other_addresses = null;
         }
 
-        $this->account->incoming_account = $this->getIncomingAccountConfig();
-        if (!$this->account->incoming_account) {
-            $this->account->account_type = EmailAccount::TYPE_OUT;
+        if ($save_incoming) {
+            $this->account->incoming_account = $this->getIncomingAccountConfig();
+            if (!$this->account->incoming_account) {
+                $this->account->account_type = EmailAccount::TYPE_OUT;
+            }
         }
 
-        $this->account->outgoing_account = $this->getOutgoingAccountConfig();
+        if ($save_outgoing) {
+            $this->account->outgoing_account = $this->getOutgoingAccountConfig();
+        }
     }
 
     /**
