@@ -24,8 +24,6 @@ import {
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    onToggleSelected: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
     moving: PropTypes.bool
   };
 

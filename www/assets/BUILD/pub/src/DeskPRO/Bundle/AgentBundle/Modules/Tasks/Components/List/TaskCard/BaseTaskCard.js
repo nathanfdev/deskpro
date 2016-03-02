@@ -4,8 +4,10 @@ import Immutable from 'immutable';
 export class BaseTaskCard extends React.Component {
 
   static propTypes = {
+    task: PropTypes.object,
     selected: PropTypes.bool,
-    task: PropTypes.object.isRequired
+    onToggleSelected: PropTypes.func,
+    onChange: PropTypes.func
   };
 
   constructor(props) {

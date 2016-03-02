@@ -4,7 +4,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../../TaskCard/TaskCardEditContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { BaseTaskCard, ProjectContainer, AssigneeName } from '../../../TaskCard';
+import { BaseTaskCard, CardProjectContainer, AssigneeName } from '../../../TaskCard';
 import { Project } from './Project';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import classNames from 'classnames';
@@ -15,9 +15,6 @@ import moment from 'moment';
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    selected: PropTypes.bool,
-    onToggleSelected: PropTypes.func,
-    task: PropTypes.object,
     tableVisibleFields: PropTypes.object,
     currentSort: PropTypes.string,
     connectDragSource: PropTypes.func.isRequired,
@@ -33,7 +30,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, selected, currentSort, onToggleSelected, tableVisibleFields, isOver, isDragging } = this.props;
+    const { task, onChange, selected, currentSort, onToggleSelected, tableVisibleFields, isOver, isDragging } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     const isVisible = type => tableVisibleFields.includes(type);
@@ -51,9 +48,8 @@ export class TaskCard extends BaseTaskCard {
         <TdId visible={isVisible('id')}>{task.get('id')}</TdId>
         <TdTitle>{task.get('title')}</TdTitle>
         <Td visible={isVisible('project')}>
-          <ProjectContainer project={task.get('project')}>
-            <Project />
-          </ProjectContainer>
+          <CardProjectContainer  value={task.get('project')}
+                                 onChange={onChange.bind(null, 'project')} />
         </Td>
         <Td visible={isVisible('date_due')}>
           {task.get('date_due') ? moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}

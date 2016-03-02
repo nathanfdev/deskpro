@@ -13,10 +13,6 @@ import classNames from 'classnames';
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    selected: PropTypes.bool.isRequired,
-    onToggleSelected: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    task: PropTypes.object,
     className: PropTypes.string,
     moving: PropTypes.bool,
     dragging: PropTypes.bool

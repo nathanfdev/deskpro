@@ -9,20 +9,22 @@ import { NewTaskButton } from './NewTaskButton';
 export class CardView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object.isRequired,
+    taskGroups: PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
   constructor(props) {
     super(props);
+    const groups = props.taskGroups || Immutable.fromJS([]);
     this.state = {
-      groups: props.taskGroups.filter(taskGroup => taskGroup.get('elements').size)
+      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
     };
   }
 
   componentWillReceiveProps(props) {
+    const groups = props.taskGroups || Immutable.fromJS([]);
     this.setState({
-      groups: props.taskGroups.filter(taskGroup => taskGroup.get('elements').size)
+      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
     });
   }
 
@@ -45,7 +47,8 @@ export class CardView extends React.Component {
     return (
       <div>
         {groups.valueSeq().map((taskGroup, index) =>
-          <ListGroup group={taskGroup}
+          <ListGroup key={index}
+                     group={taskGroup}
                      onChangeGroup={onChangeGroup}
                      onUpdate={this.onUpdate.bind(this, index)} />
         )}
