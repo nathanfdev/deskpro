@@ -12,8 +12,7 @@ Feature: /text_snippet_categories endpoint
   Scenario: I retrieve a list of ticket snippet categories
     When I send a GET request to "/api/v2/ticket_snippet_categories"
     Then the response status code should be 200
-    And print last JSON response
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 2 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].is_global" should be equal to 1
@@ -25,10 +24,13 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "data[1].person" should be equal to 1
     And the JSON node "data[1].title" should be equal to 0
 
-    And the JSON node "data[2].id" should be equal to 3
-    And the JSON node "data[2].is_global" should be equal to 0
-    And the JSON node "data[2].person" should be equal to 2
-    And the JSON node "data[2].title" should be equal to 0
+  Scenario: I try to get category from another person
+    When I send a GET request to "/api/v2/ticket_snippet_categories/3"
+    Then the response status code should be 404
+
+  Scenario: I try to get chat category
+    When I send a GET request to "/api/v2/ticket_snippet_categories/4"
+    Then the response status code should be 404
 
   Scenario: I get list of category snippets
     When I send a GET request to "/api/v2/ticket_snippet_categories/1/snippets"
@@ -45,8 +47,7 @@ Feature: /text_snippet_categories endpoint
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
     """
 {
-  "title": "My Category",
-  "person": 1
+  "title": "My Category"
 }
     """
     Then the response status code should be 201
@@ -60,7 +61,6 @@ Feature: /text_snippet_categories endpoint
     """
 {
   "title": "My Edited Category",
-  "person": 2,
   "is_global": 1
 }
     """
@@ -69,7 +69,7 @@ Feature: /text_snippet_categories endpoint
     When I send a GET request to "/api/v2/ticket_snippet_categories/7"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 7
-    And the JSON node "data.person" should be equal to 2
+    And the JSON node "data.person" should be equal to 1
     And the JSON node "data.title" should be equal to "My Edited Category"
     And the JSON node "data.is_global" should be equal to 1
 

@@ -96,8 +96,12 @@ class TicketSnippetCategoriesController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb
-            ->andWhere('e.typename = :typename')
+            ->andWhere(
+                'e.typename = :typename',
+                'e.person = :user_id OR e.is_global = true'
+            )
             ->setParameter('typename', TextSnippetCategory::TYPE_TICKET)
+            ->setParameter('user_id', $this->getUser()->getId())
         ;
     }
 
@@ -124,6 +128,9 @@ class TicketSnippetCategoriesController extends CrudController
         /** @var TextSnippetCategory $entity */
         $entity = parent::findEntity($id);
         if ($entity->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
+            throw $this->createNotFoundException();
+        }
+        if (!$entity->getIsGlobal() && $entity->getPerson() !== $this->getUser()) {
             throw $this->createNotFoundException();
         }
 

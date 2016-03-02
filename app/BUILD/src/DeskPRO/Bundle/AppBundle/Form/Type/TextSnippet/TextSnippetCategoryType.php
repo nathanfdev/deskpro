@@ -35,7 +35,6 @@ use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -57,14 +56,11 @@ class TextSnippetCategoryType extends AbstractType
             ->add('title', TextType::class, [
                 'error_bubbling' => false,
             ])
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
-            ])
             ->add('is_global', ApiBooleanType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetObjectTranslatable']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTypeAndPerson']);
     }
 
     /**
@@ -104,13 +100,19 @@ class TextSnippetCategoryType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetType(FormEvent $event)
+    public function onSetTypeAndPerson(FormEvent $event)
     {
-        $form = $event->getForm();
-        $type = $form->getConfig()->getOption('type');
+        $form   = $event->getForm();
+        $config = $event->getForm()->getConfig();
+
+        $person = $config->getOption('person');
+        $type   = $config->getOption('type');
 
         /** @var TextSnippetCategory $data */
         $data = $form->getData();
-        $data->setTypename($type);
+        $data
+            ->setTypename($type)
+            ->setPerson($person)
+        ;
     }
 }

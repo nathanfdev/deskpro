@@ -113,6 +113,34 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsGlobal()
+    {
+        return $this->is_global;
+    }
+
+    /**
      * @Assert\NotBlank()
      *
      * @return string
