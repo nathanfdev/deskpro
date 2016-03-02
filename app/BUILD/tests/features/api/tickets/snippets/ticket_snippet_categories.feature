@@ -12,6 +12,28 @@ Feature: /text_snippet_categories endpoint
   Scenario: I retrieve a list of ticket snippet categories
     When I send a GET request to "/api/v2/ticket_snippet_categories"
     Then the response status code should be 200
+    And print last JSON response
+    And the JSON node "data" should have 3 elements
+
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].is_global" should be equal to 1
+    And the JSON node "data[0].person" should be equal to 0
+    And the JSON node "data[0].title" should be equal to 0
+
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].is_global" should be equal to 0
+    And the JSON node "data[1].person" should be equal to 1
+    And the JSON node "data[1].title" should be equal to 0
+
+    And the JSON node "data[2].id" should be equal to 3
+    And the JSON node "data[2].is_global" should be equal to 0
+    And the JSON node "data[2].person" should be equal to 2
+    And the JSON node "data[2].title" should be equal to 0
+
+  Scenario: I get list of category snippets
+    When I send a GET request to "/api/v2/ticket_snippet_categories/1/snippets"
+    Then the response status code should be 200
+    And print last JSON response
 
   Scenario: I try to create a category with empty request
     When I send a POST request to "/api/v2/ticket_snippet_categories"
@@ -28,13 +50,13 @@ Feature: /text_snippet_categories endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.id" should be equal to 7
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.title" should be equal to "My Category"
     And the JSON node "data.is_global" should be equal to 0
 
   Scenario: I modify category
-    When I send a PUT request to "/api/v2/ticket_snippet_categories/1" with body:
+    When I send a PUT request to "/api/v2/ticket_snippet_categories/7" with body:
     """
 {
   "title": "My Edited Category",
@@ -44,20 +66,16 @@ Feature: /text_snippet_categories endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/ticket_snippet_categories/1"
+    When I send a GET request to "/api/v2/ticket_snippet_categories/7"
     Then the response status code should be 200
-    And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.id" should be equal to 7
     And the JSON node "data.person" should be equal to 2
     And the JSON node "data.title" should be equal to "My Edited Category"
     And the JSON node "data.is_global" should be equal to 1
 
-  Scenario: I get list of category snippets
-    When I send a GET request to "/api/v2/ticket_snippet_categories/1/snippets"
-    Then the response status code should be 200
-
   Scenario: I delete a category
-    When I send a DELETE request to "/api/v2/ticket_snippet_categories/1"
+    When I send a DELETE request to "/api/v2/ticket_snippet_categories/7"
     Then the response status code should be 200
 
-    When I send a GET request to "/api/v2/ticket_snippet_categories/1"
+    When I send a GET request to "/api/v2/ticket_snippet_categories/7"
     Then the response status code should be 404

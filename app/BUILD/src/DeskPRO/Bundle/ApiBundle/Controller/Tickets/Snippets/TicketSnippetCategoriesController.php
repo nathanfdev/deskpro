@@ -51,8 +51,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketSnippetCategoriesController extends CrudController
 {
-    public static $entity = TextSnippetCategory::class;
-    public static $type   = TextSnippetCategoryType::class;
+    public static $entity    = TextSnippetCategory::class;
+    public static $type      = TextSnippetCategoryType::class;
+    public static $listOrder = 'asc';
 
     /**
      * @ApiDoc(

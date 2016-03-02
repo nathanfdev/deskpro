@@ -991,6 +991,39 @@ SQL
         );
         // end of AgentAlerts
 
+        // Snippets test data ------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `text_snippet_categories` (`id`, `person_id`, `typename`, `is_global`)
+            VALUES
+                (1, null, 'tickets', 1),
+                (2, 1, 'tickets', 0),
+                (3, 2, 'tickets', 0),
+
+                (4, null, 'chat', 1),
+                (5, 1, 'chat', 0),
+                (6, 2, 'chat', 0)
+            ;
+
+            INSERT INTO `text_snippets` (`id`, `person_id`, `category_id`, `shortcut_code`, `is_draft`)
+            VALUES
+                (1, null, 1, 'ticket_snippet1', 1),
+                (2, 1, 1, 'ticket_snippet2', 1),
+                (3, 1, 2, 'ticket_snippet3', 0),
+                (4, 2, 1, 'ticket_snippet4', 0),
+                (5, 1, 3, 'ticket_snippet5', 1),
+
+                (6, null, 4, 'chat_snippet1', 1),
+                (7, 1, 4, 'chat_snippet2', 1),
+                (8, 1, 5, 'chat_snippet3', 0),
+                (9, 2, 4, 'chat_snippet4', 0),
+                (10, 1, 6, 'chat_snippet5', 1)
+            ;
+SQL
+
+        );
+        // end of Snippets
+
         $date = new \DateTime();
 
         $global_limits = [
