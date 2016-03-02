@@ -17,12 +17,12 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].is_global" should be equal to 1
     And the JSON node "data[0].person" should be equal to 0
-    And the JSON node "data[0].title" should be equal to 0
+    And the JSON node "data[0].title" should be equal to "Ticket Category 1"
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].is_global" should be equal to 0
     And the JSON node "data[1].person" should be equal to 1
-    And the JSON node "data[1].title" should be equal to 0
+    And the JSON node "data[1].title" should be equal to "Ticket Category 2"
 
   Scenario: I try to get category from another person
     When I send a GET request to "/api/v2/ticket_snippet_categories/3"

@@ -1019,8 +1019,19 @@ SQL
                 (9, 2, 4, 'chat_snippet4', 0),
                 (10, 1, 6, 'chat_snippet5', 1)
             ;
-SQL
 
+            INSERT INTO `object_lang`
+                (`language_id`, `ref`, `ref_type`, `ref_id`, `prop_name`, `value`)
+            VALUES
+                ('1', 'text_snippet_categories.1', 'text_snippet_categories', '1', 'title', 'Ticket Category 1'),
+                ('1', 'text_snippet_categories.2', 'text_snippet_categories', '2', 'title', 'Ticket Category 2'),
+                ('1', 'text_snippet_categories.3', 'text_snippet_categories', '3', 'title', 'Ticket Category 3'),
+
+                ('1', 'text_snippet_categories.4', 'text_snippet_categories', '4', 'title', 'Chat Category 1'),
+                ('1', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
+                ('1', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3')
+            ;
+SQL
         );
         // end of Snippets
 
