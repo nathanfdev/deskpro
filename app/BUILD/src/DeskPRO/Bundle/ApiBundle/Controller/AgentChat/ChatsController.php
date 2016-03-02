@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +66,9 @@ class ChatsController extends AbstractController
      *      statusCodes={
      *          200="Success",
      *      },
-     *      output="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>"
+     *      output={
+     *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *      }
      * )
      *
      * @param Request $request
@@ -104,11 +107,14 @@ class ChatsController extends AbstractController
      *      statusCodes={
      *          200="Success",
      *      },
-     *      output="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>"
+     *      output={
+     *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *      }
      * )
      *
      * @param Request $request
      * @Annotations\Get("/agent_chats/recent", name="agent_chats_list_recent")
+     * @FOS\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
      */
@@ -151,7 +157,9 @@ class ChatsController extends AbstractController
      *          200="Success when chat was found",
      *          404="Returned when chat was not found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *      output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *      }
      * )
      *
      * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
@@ -196,7 +204,9 @@ class ChatsController extends AbstractController
      *       302 = "We found already started chat with given parameters",
      *       400 = "Couldn't start chat with given parameters"
      *     },
-     *     output = "DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *     output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *      }
      * )
      * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
      *
