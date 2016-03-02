@@ -32,11 +32,14 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class TextSnippetCategoryType.
@@ -52,13 +55,35 @@ class TextSnippetCategoryType extends AbstractType
             ->add('person', EntityType::class, [
                 'class' => Person::class,
             ])
-            ->add('typename', ChoiceType::class, [
-                'choices' => [
-                    'tickets' => 'Tickets',
-                    'chat'    => 'Chat',
-                ],
-            ])
             ->add('is_global', ApiBooleanType::class)
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetType']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setRequired(['type'])
+            ->setAllowedValues([
+                'type' => [TextSnippetCategory::TYPE_TICKET, TextSnippetCategory::TYPE_CHAT],
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetType(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $type = $form->getConfig()->getOption('type');
+
+        /** @var TextSnippetCategory $data */
+        $data = $form->getData();
+        $data->setTypename($type);
     }
 }

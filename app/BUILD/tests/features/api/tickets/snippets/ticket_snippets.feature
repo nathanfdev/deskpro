@@ -10,6 +10,6 @@ Feature: /text_snippets endpoint
 
   @reinstall
   Scenario: I retrieve a list of text snippets
-    When I send a GET request to "/api/v2/text_snippets"
+    When I send a GET request to "/api/v2/ticket_snippets"
     And the response status code should be 200
     And print last JSON response

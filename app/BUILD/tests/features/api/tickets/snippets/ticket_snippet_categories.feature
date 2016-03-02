@@ -10,21 +10,18 @@ Feature: /text_snippet_categories endpoint
 
   @reinstall
   Scenario: I retrieve a list of text snippet categories
-    When I send a GET request to "/api/v2/text_snippet_categories"
+    When I send a GET request to "/api/v2/ticket_snippet_categories"
     And the response status code should be 200
     And print last JSON response
 
   Scenario: I create a new snippet category
-    When I send a POST request to "/api/v2/text_snippet_categories" with body:
+    When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
     """
 {
-  "typename": "tickets"
+  "person": 1
 }
     """
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 1
-    And the JSON node "data.typename" should be equal to "tickets"
-    And the JSON node "data.person" should be equal to 0
+    And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_global" should be equal to 0
-
-

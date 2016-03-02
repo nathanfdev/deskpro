@@ -42,8 +42,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
-    const TPYE_TICKET = 'tickets';
-    const TPYE_CHAT   = 'chat';
+    const TYPE_TICKET = 'tickets';
+    const TYPE_CHAT   = 'chat';
 
     /**
      * @var int
@@ -86,6 +86,26 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
         } else {
             return 'me';
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypename()
+    {
+        return $this->typename;
+    }
+
+    /**
+     * @param string $typename
+     *
+     * @return $this
+     */
+    public function setTypename($typename)
+    {
+        $this->setModelField('typename', $typename);
+
+        return $this;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())

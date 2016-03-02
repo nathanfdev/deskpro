@@ -29,22 +29,28 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
+namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
-use Application\DeskPRO\Entity\TextSnippet;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
 /**
- * Class TextSnippetsController.
- *
- * @ApiModes("all")
- * @Route("/text_snippets")
+ * Class TextSnippetTransformer.
  */
-class TextSnippetsController extends CrudController
+class TextSnippetTransformer extends AbstractDataSerializerTransformer
 {
-    public static $entity = TextSnippet::class;
-    public static $type   = TextSnippetType::class;
+    /**
+     * {@inheritdoc}
+     */
+    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    {
+        return ['id', 'person', 'category', 'shortcut_code', 'is_draft'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    {
+        return [];
+    }
 }
