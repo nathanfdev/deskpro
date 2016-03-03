@@ -109,8 +109,10 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     /**
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
-     * @JMS\Type("array")
-     * @JMS\Accessor(getter="getParticipantsIds", setter="addParticipant")
+     * @JMS\Expose()
+     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant>>")
+     * @JMS\MaxDepth(1)
+     * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
      */
     protected $participants;
 

@@ -26,38 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
-namespace DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
-/**
- * A piece of data that has a meaningful identity in the system.
- *
- * Doctrine entities implement this interface, but other models could implement the EntityInterface as well.
- */
-interface EntityInterface
+class EntitySerializationHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var string used to identify special JMS serializer handler
-     */
-    const SERIALIZER_TYPE = 'entity';
+    public static function getSubscribingMethods()
+    {
+        return array(
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => EntityInterface::SERIALIZER_TYPE,
+                'method'    => 'serializeEntity',
+            ],
+        );
+    }
 
-    /**
-     * A unique identifier for this entity. Usually an integer, but can also be an array for a composite ID.
-     *
-     * Empty or bolean values are all considered to be equal, and can safely be interpreted as "null". For instance all
-     * of these values would be considered to be a "null" id:
-     *  - boolean (true or false)
-     *  - empty string
-     *  - empty array
-     *  - null
-     *  - an array of the above values.
-     *
-     * It is important to note that the integer zero is NOT considered null, and is a valid ID.
-     *
-     * @return mixed
-     */
-    public function getId();
+    public function serializeEntity(
+        JsonSerializationVisitor $visitor,
+        EntityInterface $entity
+    ) {
+        return $entity = $entity->getId();
+    }
 }

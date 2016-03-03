@@ -73,6 +73,7 @@ class ChatsController extends AbstractController
      *
      * @param Request $request
      * @Annotations\Get("/agent_chats", name="agent_chats_list")
+     * @FOS\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
      */

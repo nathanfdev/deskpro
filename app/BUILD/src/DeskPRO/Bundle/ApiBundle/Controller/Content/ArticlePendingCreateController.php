@@ -56,13 +56,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticlePendingCreateController extends BaseController
 {
     /**
+     * Get count of articles that need to be created.
+     *
      * @ApiDoc(
-     *      description="Get ArticlePendingCreate total count",
+     *      description="total count of articles should be created",
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Assigned person not found"
-     *      }
+     *          200="Returned if request was succeeded",
+     *          400="Returned if provided filters was wrong",
+     *      },
+     *     filters={
+     *
+     *     }
      * )
      * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
      *
