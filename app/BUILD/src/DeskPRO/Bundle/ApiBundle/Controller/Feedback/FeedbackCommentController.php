@@ -39,6 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Patch;
@@ -60,12 +61,90 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FeedbackCommentController extends BaseController
 {
     /**
+     * Fetch all feedback comments list.
+     *
      * @ApiDoc(
+     *      section="feedback",
+     *      tags={"comments"},
      *      description="get list of feedback comments",
      *      statusCodes={
-     *          200="Success"
+     *          200="Returned if everything is ok",
+     *          400="Returned if your filters was invalid"
+     *      },
+     *      filters={
+     *          {
+     *              "name"="page",
+     *              "type"="integer",
+     *              "default"=1,
+     *              "description"="current page",
+     *          },
+     *          {
+     *              "name"="count",
+     *              "type"="integer",
+     *              "default"=5,
+     *              "description"="per page comments quantity",
+     *          },
+     *          {
+     *              "name"="awaiting_validation",
+     *              "type"="boolean",
+     *              "description"="set it if you want to fetch new comments",
+     *          },
+     *          {
+     *              "name"="ids",
+     *              "dataType"="string",
+     *              "description"="a comma separated list of comment`s ids",
+     *          },
+     *          {
+     *              "name"="category",
+     *              "dataType"="string",
+     *              "description"="category to search, exact name"
+     *          },
+     *          {
+     *              "name"="statusCategory",
+     *              "dataType"="integer",
+     *              "description"="integer represents status category",
+     *          },
+     *          {
+     *              "name"="label",
+     *              "dataType"="string",
+     *              "description"="a comma separated list of exact label names",
+     *          },
+     *          {
+     *              "name"="no_labels",
+     *              "dataType"="boolean",
+     *              "description"="boolean value",
+     *          },
+     *          {
+     *              "name"="custom_category",
+     *              "dataType"="string[]",
+     *              "description"="an array of exact custom categories names",
+     *          },
+     *          {
+     *              "name"="status",
+     *              "dataType"="integer",
+     *              "description"="an integer value represents current status",
+     *          },
+     *          {
+     *              "name"="hidden_status",
+     *              "dataType"="string",
+     *              "description"="an integer value represents current hidden_status",
+     *          },
+     *          {
+     *              "name"="created_from",
+     *              "dataType"="datetime",
+     *              "description"="a datetime string to search comments since",
+     *          },
+     *          {
+     *              "name"="created_to",
+     *              "dataType"="datetime",
+     *              "description"="a datetime string to search comments until",
+     *          },
+     *      },
+     *      output={
+     *        "class"="<Application\DeskPRO\Entity\FeedbackComment>"
      *      }
      * )
+     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
      * @Get("/feedback_comments_list", name="api_feedback_comments_list")
      *
      * @param Request $request
@@ -96,12 +175,24 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * Count overall feedback comments or count for given feedbacks.
+     *
      * @ApiDoc(
+     *      section="feedback",
+     *      tags={"comments"},
      *      description="get counter of comments for feedback",
      *      statusCodes={
      *          200="Success"
-     *      }
+     *      },
+     *      filters={
+     *          {
+     *              "name"="ids",
+     *              "dataType"="string",
+     *              "description"="a comma separated list of feedback ids",
+     *          }
+     *     }
      * )
+     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
      * @Get("/feedback_comments_counter", name="api_feedback_comments_counter")
      *
      * @param Request $request
@@ -135,7 +226,11 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * Get a specific comment.
+     *
      * @ApiDoc(
+     *      section="feedback",
+     *      tags={"comments"},
      *      description="get a comment",
      *      requirements={
      *          {
@@ -146,11 +241,12 @@ class FeedbackCommentController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
+     *          200="Returned if comment was found",
+     *          404="Returned if comment with specified id wasn't found"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\FeedbackComment"
      * )
+     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
      * @Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
      *
      * @param int $id
@@ -168,17 +264,39 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * The endpoint gives you an ability to modify comments status, content and  'status',.
+     *
      * @APIDoc(
+     *      section="feedback",
+     *      tags={"comments"},
      *      description="update a comment",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of the comment",
      *              "dataType"="integer"
-     *          }
+     *          },
+     *          {
+     *              "name"="status",
+     *              "requirement"="hidden|visible",
+     *              "description"="text representation of comment status",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="is_reviewed",
+     *              "requirement"="0|1|true|false",
+     *              "description"="is comment was reviewed",
+     *              "dataType"="integer|boolean"
+     *          },
+     *          {
+     *              "name"="content",
+     *              "requirement"=".*",
+     *              "description"="comment message",
+     *              "dataType"="string"
+     *          },
      *      },
-     *      input={"class"="comment", "name"=""},
+     *      input={"class"="DeskPRO\Bundle\ApiBundle\Form\Type\FeedbackCommentType", "name"=""},
      *      statusCodes={
      *          204="Updated",
      *          400="Bad Request",
@@ -188,7 +306,7 @@ class FeedbackCommentController extends BaseController
      * @Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
      *
      * @param Request $request
-     * @param         $id
+     * @param int     $id
      *
      * @throws WrappedApiErrorException
      * @throws \InvalidArgumentException
@@ -204,19 +322,23 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * This endpoint gives you an ability do delete exactly one feedback comment.
+     *
      * @APIDoc(
-     *      description="delete feedback comments",
+     *      section="feedback",
+     *      tags={"comments"},
+     *      description="delete feedback comment",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the task",
+     *              "description"="the id of comment to delete",
      *              "dataType"="integer"
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
+     *          200="Returned if comment was successfuly deleted",
+     *          404="Returned if comment with specified id was not found"
      *      }
      * )
      * @Delete("/feedback_comments", name="api_feedback_comments_delete", requirements={"id": "\d+"})
@@ -255,6 +377,26 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * This endpoint gives you an ability to approve comments with given ids.
+     *
+     * @APIDoc(
+     *      section="feedback",
+     *      tags={"comments"},
+     *      description="approve comments",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="[\d+]",
+     *              "array"=true,
+     *              "description"="an array of comment ids",
+     *              "dataType"="[integer]"
+     *          }
+     *      },
+     *      statusCodes={
+     *          204="Returned if everything was OK",
+     *      }
+     * )
+     *
      * @param Request $request
      * @Patch("/feedback_comments/approve", name="feedback_comments_approve_mass_action")
      *
@@ -284,7 +426,11 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
+     * Fetch a list of feedback comments awaiting validation.
+     *
      * @ApiDoc(
+     *      section="feedback",
+     *      tags={"comments"},
      *      description="get count of feedback comment awaiting validation",
      *      parameters={
      *          {
@@ -296,7 +442,7 @@ class FeedbackCommentController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success"
+     *          200="Returned if everything is ok"
      *      }
      * )
      *

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -52,16 +53,16 @@ class FeedbackCommentType extends AbstractType
             ->add(
                 'status',
                 'text',
-                ['description' => 'status', 'required' => false]
+                ['description' => 'text representation of comment status', 'required' => false]
             )
             ->add(
                 'is_reviewed',
                 'api_boolean',
-                ['required' => false]
+                ['required' => false, 'description' => 'is comment was reviewed']
             )->add(
                 'content',
                 'text',
-                ['required' => false]
+                ['required' => false, 'description' => 'comment message']
             );
     }
 

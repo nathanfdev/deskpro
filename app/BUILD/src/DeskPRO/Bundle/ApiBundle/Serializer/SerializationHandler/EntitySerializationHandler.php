@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
+use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -49,8 +50,9 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
 
     public function serializeEntity(
         JsonSerializationVisitor $visitor,
-        EntityInterface $entity
+        $entity
     ) {
+        /* @var EntityInterface|DomainObject $entity */
         return $entity->getId();
     }
 }

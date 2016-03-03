@@ -34,11 +34,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
  * Base comments.
+ *
+ * @JMS\ExclusionPolicy("none")
  */
 abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -67,46 +70,62 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $person = null;
 
     /**
      * @var string
+     * @JMS\Type("string")
      */
     protected $ip_address = '';
 
     /**
+     * @JMS\Exclude()
+     *
      * @var string
      */
     protected $visitor_id = '';
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $email = null;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $name = null;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $website = null;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $content;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status = 'visible';
@@ -114,12 +133,17 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Has this comment been reviewed by an agent?
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_reviewed = false;
 
     /**
      * @var \DateTime
+     * @JMS\Expose()
+     * @JMS\Type("DateTime<'Y-m-d\TH:i:sO'>")
      */
     protected $date_created;
 
