@@ -103,6 +103,18 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     }
 
     /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()

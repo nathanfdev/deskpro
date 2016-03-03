@@ -40,6 +40,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -75,7 +77,12 @@ class TextSnippetType extends AbstractType
             ])
             ->add('shortcut_code', TextType::class)
             ->add('is_draft', ApiBooleanType::class)
+            ->add('is_global', ApiBooleanType::class, [
+                'mapped' => false,
+            ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson']);
     }
 
     /**
@@ -102,5 +109,25 @@ class TextSnippetType extends AbstractType
                 ],
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetPerson(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $event->getForm()->getConfig();
+
+        /* @var TextSnippet $data */
+        $snippet = $form->getData();
+
+        $data = $event->getData();
+        if (isset($data['is_global']) && $data['is_global']) {
+            $snippet->setPerson(null);
+        } else {
+            $person = $config->getOption('person');
+            $snippet->setPerson($person);
+        }
     }
 }

@@ -1,6 +1,6 @@
 @text-snippets
-Feature: /text_snippets endpoint
-  To CRUD DeskPRO text snippets
+Feature: /ticket_snippets endpoint
+  To CRUD DeskPRO ticket snippets
   As a developer
   I want an API endpoint
 
@@ -149,6 +149,25 @@ Feature: /text_snippets endpoint
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 11
     And the JSON node "data.title" should be equal to "My Snippet"
-    And the JSON node "data.person" should be equal to 0
+    And the JSON node "data.person" should be equal to 1
     And the JSON node "data.shortcut_code" should be equal to "my_snippet"
     And the JSON node "data.is_draft" should be equal to 0
+
+  Scenario: I modify text snippet
+    When I send a PUT request to "/api/v2/ticket_snippets/11" with body:
+    """
+{
+  "category": 2,
+  "is_draft": 1,
+  "is_global": 1
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/ticket_snippets/11"
+    Then the response status code should be 200
+    And the JSON node "data.id" should be equal to 11
+    And the JSON node "data.title" should be equal to "My Snippet"
+    And the JSON node "data.person" should be equal to 0
+    And the JSON node "data.shortcut_code" should be equal to "my_snippet"
+    And the JSON node "data.is_draft" should be equal to 1
