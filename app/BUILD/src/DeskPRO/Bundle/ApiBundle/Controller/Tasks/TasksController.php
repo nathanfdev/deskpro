@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -233,7 +234,7 @@ class TasksController extends CrudController
      * @Get("/{id}/comments", name="api_tasks_comments_get")
      *
      * @param Request $request
-     * @param $id
+     * @param         $id
      *
      * @return View
      */
@@ -291,7 +292,7 @@ class TasksController extends CrudController
      * @Get("/{id}/attachments", name="api_tasks_attachments_get")
      *
      * @param Request $request
-     * @param $id
+     * @param         $id
      *
      * @return View
      */
@@ -330,20 +331,21 @@ class TasksController extends CrudController
      *      }
      * )
      *
-     * @Get("/{id}/linked_items", name="api_tasks_links_get")
+     * @Get("/{id}/linked_items/{type}", name="api_tasks_links_get")
      *
-     * @param $id
+     * @param int    $id
+     * @param string $type
      *
      * @return View
      */
-    public function getLinksAction($id)
+    public function getLinksAction($id, $type = 'tickets')
     {
         $task = $this->findEntity($id);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
-
-        $links = $task->getLinkedItems();
+        $method = 'getLinked'.ucfirst($type);
+        $links  = $task->$method();
 
         return View::create($this->dataSerialize($links), Response::HTTP_OK);
     }

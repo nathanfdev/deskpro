@@ -94,7 +94,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
-            'linked_items',
+            'linked_tickets',
             'date_done',
             'display_order',
         ];
@@ -172,10 +172,12 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         // Make sure we only execute the query once
         if ($this->commentCounts === null) {
             $this->commentCounts = [];
-            $statement           = $this->connection->prepare('SELECT task_id, COUNT(*) AS total
+            $statement           = $this->connection->prepare(
+                'SELECT task_id, COUNT(*) AS total
                     FROM task_comments_new
                     WHERE task_id IN (:task_ids)
-                    GROUP BY task_id');
+                    GROUP BY task_id'
+            );
 
             $taskIds = implode(',', $this->count_ids);
             $statement->bindValue('task_ids', $taskIds);
@@ -232,10 +234,12 @@ class TaskTransformer extends AbstractDataSerializerTransformer
     {
         if ($this->subtaskCounts === null) {
             $this->subtaskCounts = [];
-            $statement           = $this->connection->prepare('SELECT task_id, count(task_id) AS total, sum(is_done) AS done
+            $statement           = $this->connection->prepare(
+                'SELECT task_id, count(task_id) AS total, sum(is_done) AS done
                     FROM task_subtask
                     WHERE task_id IN (:task_ids)
-                    GROUP BY task_id');
+                    GROUP BY task_id'
+            );
 
             $taskIds = implode(',', $this->count_ids);
             $statement->bindValue('task_ids', $taskIds);
@@ -262,21 +266,15 @@ class TaskTransformer extends AbstractDataSerializerTransformer
      */
     private function getLinkedTickets($data)
     {
-        $tickets = [];
-
-        $linkedItems = $data->getLinkedItems();
-
-        // NB The below may be overkill as we're unlikely to have more than one
-        // ticket assigned to a task, and there should be no duplicate links
-        if ($linkedItems) {
-            foreach ($linkedItems as $linkedItem) {
-                $ticket = $linkedItem->getTicket();
-                if ($ticket && !in_array($ticket->getId(), $tickets)) {
-                    $tickets[] = $ticket->getId();
-                }
+        $tickets       = [];
+        $linkedTickets = $data->getLinkedTickets();
+        if ($linkedTickets) {
+            /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket */
+            foreach ($linkedTickets as $linkedTicket) {
+                $tickets[] = $linkedTicket->getTicket()->getId();
             }
         }
 
-        return $tickets;
+        return array_unique($tickets);
     }
 }

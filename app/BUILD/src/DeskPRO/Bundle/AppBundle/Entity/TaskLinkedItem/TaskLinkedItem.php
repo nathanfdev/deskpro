@@ -31,11 +31,12 @@
  *
  * @category Entities
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\Ticket;
+namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,8 +47,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="ticket_unique", columns={"task_id", "ticket_id"}),
  *      @ORM\UniqueConstraint(name="chat_unique", columns={"task_id", "chat_id"}),
  *      @ORM\UniqueConstraint(name="article_unique", columns={"task_id", "article_id"})
- *  }
- * )
+ *  })
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
+ * @ORM\DiscriminatorMap({
+ *     "item" = "TaskLinkedItem",
+ *     "ticket" = "TaskLinkedTicket",
+ *     "article" = "TaskLinkedArticle",
+ *     "chat" = "TaskLinkedChat"
+ * })
  */
 class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
 {
@@ -64,32 +72,11 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
     /**
      * @var Task
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull()
      * @Assert\Valid()
      */
     protected $task;
-
-    /**
-     * @var Ticket
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
-     */
-    protected $ticket;
-
-    /**
-     * @var ChatConversation
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
-     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
-     */
-    protected $chat;
-
-    /**
-     * @var Article
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
-     */
-    protected $article;
 
     /**
      * @return int
@@ -109,63 +96,13 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function setTask(Task $task)
     {
         $this->setModelField('task', $task);
-    }
 
-    /**
-     * @return Ticket
-     */
-    public function getTicket()
-    {
-        return $this->ticket;
-    }
-
-    /**
-     * @param Ticket $ticket
-     */
-    public function setTicket(Ticket $ticket)
-    {
-        $this->chat    = null;
-        $this->article = null;
-        $this->setModelField('ticket', $ticket);
-    }
-
-    /**
-     * @return ChatConversation
-     */
-    public function getChat()
-    {
-        return $this->chat;
-    }
-
-    /**
-     * @param ChatConversation $chat
-     */
-    public function setChat(ChatConversation $chat)
-    {
-        $this->ticket  = null;
-        $this->article = null;
-        $this->setModelField('chat', $chat);
-    }
-
-    /**
-     * @return Article
-     */
-    public function getArticle()
-    {
-        return $this->article;
-    }
-
-    /**
-     * @param Article $article
-     */
-    public function setArticle(Article $article)
-    {
-        $this->ticket = null;
-        $this->chat   = null;
-        $this->setModelField('article', $article);
+        return $this;
     }
 }

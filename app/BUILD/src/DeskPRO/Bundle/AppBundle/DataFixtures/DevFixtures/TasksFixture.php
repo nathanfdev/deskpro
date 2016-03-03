@@ -29,9 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -125,6 +129,8 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
         $this->loadComments();
         $this->loadAttachments();
         $this->loadLinks();
+
+        $this->manager->flush();
 
         $this->labels         = [];
         $this->agent_ids      = [];
@@ -320,29 +326,43 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
 
     public function loadLinks()
     {
-        $i     = 0;
-        $batch = [];
+        $articles = $this->fetchIds(self::TABLE_ARTICLES);
+        $chats    = $this->fetchIds(self::TABLE_CHAT_CONVERSATIONS);
+        $tickets  = $this->fetchIds(self::TABLE_TICKETS);
+        $i        = 0;
         while ($i++ < $this->num_links) {
-            $ticket  = null;
-            $chat    = null;
-            $article = null;
-
+            /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $task */
+            $task = $this->manager->getRepository('App:Task')->find($this->faker->randomElement($this->task_ids));
             if (rand(1, 100) < 25) {
-                $article = $this->faker->randomElement($this->fetchIds(self::TABLE_ARTICLES));
-            } elseif (rand(1, 100) < 25) {
-                $chat = $this->faker->randomElement($this->fetchIds(self::TABLE_CHAT_CONVERSATIONS));
+                /* @var \Application\DeskPRO\Entity\Article $article */
+                $articleId     = $this->faker->randomElement($articles);
+                $article       = $this->manager->getRepository('DeskPRO:Article')->find($articleId);
+                $articles      = $this->removeId($articles, $articleId);
+                $linkedArticle = new TaskLinkedArticle();
+                $linkedArticle->setTask($task)->setArticle($article);
+                $this->manager->persist($linkedArticle);
+            } elseif (rand(1, 100) < 40) {
+                /* @var \Application\DeskPRO\Entity\ChatConversation $chat */
+                $chatId         = $this->faker->randomElement($chats);
+                $chat           = $this->manager->getRepository('DeskPRO:ChatConversation')->find($chatId);
+                $this->task_ids = $this->removeId($this->task_ids, $task->getId());
+                $linkedChat     = new TaskLinkedChat();
+                $linkedChat->setTask($task)->setChat($chat);
+                $this->manager->persist($linkedChat);
             } else {
-                $ticket = $this->faker->randomElement($this->fetchIds(self::TABLE_TICKETS));
+                /* @var \Application\DeskPRO\Entity\Ticket $ticket */
+                $ticketId     = $this->faker->randomElement($tickets);
+                $ticket       = $this->manager->getRepository('DeskPRO:Ticket')->find($ticketId);
+                $tickets      = $this->removeId($tickets, $ticketId);
+                $linkedTicket = new TaskLinkedTicket();
+                $linkedTicket->setTask($task)->setTicket($ticket);
+                $this->manager->persist($linkedTicket);
             }
-
-            $batch[] = [
-                'task_id'    => $this->faker->randomElement($this->task_ids),
-                'ticket_id'  => $ticket,
-                'chat_id'    => $chat,
-                'article_id' => $article,
-            ];
         }
+    }
 
-        $this->db->batchInsert('task_links', $batch, true);
+    private function removeId(array $array, $id)
+    {
+        return array_diff($array, [$id]);
     }
 }

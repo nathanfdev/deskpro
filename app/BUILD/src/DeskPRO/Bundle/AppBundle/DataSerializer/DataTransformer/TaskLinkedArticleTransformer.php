@@ -34,17 +34,14 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 
-/**
- * Class TaskLinkedItemTransformer.
- */
-class TaskLinkedItemTransformer extends AbstractDataSerializerTransformer
+class TaskLinkedArticleTransformer extends AbstractDataSerializerTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'task', 'ticket', 'chat', 'article'];
+        return ['id', 'task', 'article'];
     }
 
     /**
