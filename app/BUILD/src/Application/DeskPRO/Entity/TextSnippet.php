@@ -130,12 +130,24 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
         }
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     *
+     * @Assert\Count(min=1)
+     */
     public function getTitleTranslations()
     {
+        return $this->getObjectPropTranslations('title');
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     *
+     * @Assert\Count(min=1)
+     */
     public function getSnippetTranslations()
     {
+        return $this->getObjectPropTranslations('snippet');
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())

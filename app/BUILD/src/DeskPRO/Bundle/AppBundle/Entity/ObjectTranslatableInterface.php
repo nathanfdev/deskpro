@@ -36,9 +36,7 @@ use Doctrine\Common\Collections\Selectable;
 
 /**
  * Uses to work with ObjectLang entities.
- * Add this interface to an entity to enable post load set of property translations lazy collection.
- *
- * It will work with object lang data via ObjectTranslatableListener.
+ * Add this interface to an entity to enable ObjectTranslatableListener callbacks.
  *
  * Interface ObjectTranslatableInterface.
  */
