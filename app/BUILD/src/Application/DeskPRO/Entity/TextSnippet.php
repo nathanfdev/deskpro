@@ -35,6 +35,9 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -42,8 +45,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class TextSnippet.
  */
-class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
+class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements ObjectTranslatableInterface
 {
+    use ObjectTranslatableTrait;
+
     /**
      * @var int
      */
@@ -76,11 +81,17 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     protected $is_draft = false;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $props_translations;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->getObjectTranslatable();
+        $this->props_translations = new ArrayCollection();
     }
 
     /**
@@ -117,6 +128,14 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $this->setModelField('shortcut_code', $sc);
         }
+    }
+
+    public function getTitleTranslations()
+    {
+    }
+
+    public function getSnippetTranslations()
+    {
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())

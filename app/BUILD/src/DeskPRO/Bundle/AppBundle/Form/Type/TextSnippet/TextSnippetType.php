@@ -34,10 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class TextSnippetType.
@@ -50,14 +52,53 @@ class TextSnippetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person', EntityType::class, [
-                'class' => Person::class,
+            ->add('title', 'object_lang_collection', [
+                'mapped'    => false,
+                'prop_name' => 'title',
+                'owner'     => $builder->getData(),
+            ])
+            ->add('snippet', 'object_lang_collection', [
+                'mapped'    => false,
+                'prop_name' => 'snippet',
+                'owner'     => $builder->getData(),
             ])
             ->add('category', EntityType::class, [
-                'class' => TextSnippetCategory::class,
+                'class'         => TextSnippetCategory::class,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er
+                        ->createQueryBuilder('d')
+                        ->where('d.typename = :typename')
+                        ->setParameter('typename', $options['type'])
+                    ;
+                },
             ])
             ->add('shortcut_code', TextType::class)
             ->add('is_draft', ApiBooleanType::class)
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'data_class'    => TextSnippetCategory::class,
+                'error_mapping' => [
+                    'props_translations' => 'title',
+                ],
+            ])
+            ->setRequired(['type', 'person'])
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
+            ->setAllowedValues([
+                'type' => [
+                    TextSnippetCategory::TYPE_TICKET,
+                    TextSnippetCategory::TYPE_CHAT,
+                ],
+            ])
         ;
     }
 }

@@ -115,6 +115,19 @@ class TextSnippetsController extends CrudController
     /**
      * {@inheritdoc}
      */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'type'   => $this->getSnippetTypeName($request),
+            'person' => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function findEntity($id, Request $request)
     {
         /** @var TextSnippet $entity */
