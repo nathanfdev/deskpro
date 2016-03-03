@@ -63,16 +63,6 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     protected $shortcut_code = '';
 
     /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $snippet;
-
-    /**
      * @var bool
      */
     protected $is_draft = false;
