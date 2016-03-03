@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -403,15 +404,7 @@ abstract class CrudController extends BaseController
             return;
         }
 
-        // remove class name if __METHOD__ was passed
-        if (strpos($actionMethodName, '::')) {
-            $actionMethodName = explode('::', $actionMethodName)[1];
-        }
-
-        // remove 'Action' postfix to get the short action name in case if __METHOD__ or __FUNCTION__ is passed
-        $action = strpos($actionMethodName, 'Action') === strlen($actionMethodName) - strlen('Action')
-                ? substr($actionMethodName, 0, strlen($actionMethodName) - strlen('Action'))
-                : $actionMethodName;
+        $action = TypeUtils::cleanAction($actionMethodName);
 
         if (!in_array($action, static::$exposeOnly)) {
             throw $this->createAccessDeniedException('Action is restricted');
