@@ -51,6 +51,6 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
         JsonSerializationVisitor $visitor,
         EntityInterface $entity
     ) {
-        return $entity = $entity->getId();
+        return $entity->getId();
     }
 }
