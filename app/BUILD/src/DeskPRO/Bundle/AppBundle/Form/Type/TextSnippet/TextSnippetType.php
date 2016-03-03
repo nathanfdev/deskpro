@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Doctrine\ORM\EntityRepository;
@@ -84,9 +85,10 @@ class TextSnippetType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'    => TextSnippetCategory::class,
+                'data_class'    => TextSnippet::class,
                 'error_mapping' => [
-                    'props_translations' => 'title',
+                    'titleTranslations'   => 'title',
+                    'snippetTranslations' => 'snippet',
                 ],
             ])
             ->setRequired(['type', 'person'])

@@ -80,11 +80,45 @@ Feature: /text_snippets endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 3
 
+  Scenario: I try to create a ticket snippet with empty request
+    When I send a POST request to "/api/v2/ticket_snippets"
+    Then the response status code should be 400
+
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This collection should contain 1 elements or more."
+
+    And the JSON node "errors.fields.snippet.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.snippet.errors[0].message" should be equal to "This collection should contain 1 elements or more."
+
+    And the JSON node "errors.fields.category.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.category.errors[0].message" should be equal to "This value should not be blank."
+
+    And the JSON node "errors.fields.shortcut_code.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.shortcut_code.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I add a new text snippet
     When I send a POST request to "/api/v2/ticket_snippets" with body:
     """
 {
-
+  "category": 1,
+  "shortcut_code": "my_snippet",
+  "title": [
+    {
+      "language": 1,
+      "value": "My Snippet"
+    }
+  ],
+  "snippet": [
+    {
+      "language": 1,
+      "value": "My Snippet Content"
+    }
+  ]
 }
     """
     Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 11
+    And the JSON node "data.title" should be equal to "My Snippet"
+    And the JSON node "data.person" should be equal to 0
+    And the JSON node "data.shortcut_code" should be equal to "my_snippet"
+    And the JSON node "data.is_draft" should be equal to 0
