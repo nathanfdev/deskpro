@@ -71,6 +71,41 @@ Feature: /text_snippet_categories endpoint
     And the JSON node "errors.fields.title.errors[0].code" should be equal to "too_few_elements"
     And the JSON node "errors.fields.title.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
+  Scenario: I try to create a category with wrong object lang format
+    When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
+    """
+{
+  "title": [
+    {
+      "language": 1,
+      "value": "My Category"
+    },
+    "My Category (french)"
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.title.fields.title_1.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.title.fields.title_1.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I try to create a category with empty object lang data
+    When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
+    """
+{
+  "title": [
+    {
+      "language": 0,
+      "value": ""
+    }
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.title.fields.title_0.fields.language.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.title.fields.title_0.fields.language.errors[0].message" should be equal to "One or more of the given values is invalid."
+    And the JSON node "errors.fields.title.fields.title_0.fields.value.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.title.fields.title_0.fields.value.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I create a new ticket snippet category
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
     """

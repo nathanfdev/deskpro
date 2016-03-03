@@ -134,6 +134,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
      * @return \Doctrine\Common\Collections\Collection
      *
      * @Assert\Count(min=1)
+     * @Assert\Valid()
      */
     public function getTitleTranslations()
     {
@@ -144,6 +145,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
      * @return \Doctrine\Common\Collections\Collection
      *
      * @Assert\Count(min=1)
+     * @Assert\Valid()
      */
     public function getSnippetTranslations()
     {

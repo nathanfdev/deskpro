@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -46,31 +47,43 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref_type;
 
     /**
+     * Note: Don't validate this property because it will be set up in the doctrine lifecycle callback.
+     *
      * @var string
      */
     protected $ref_id;
 
     /**
      * @var Language
+     *
+     * @Assert\NotNull()
      */
     protected $language;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $prop_name;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $value = '';
 

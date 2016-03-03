@@ -36,6 +36,11 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\ObjectLang;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
+/**
+ * Class ObjectTranslatable.
+ *
+ * @deprecated Use ObjectTranslatableInterface instead.
+ */
 class ObjectTranslatable
 {
     /**
