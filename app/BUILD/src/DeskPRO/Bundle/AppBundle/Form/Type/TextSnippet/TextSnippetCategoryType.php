@@ -39,7 +39,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TextSnippetCategoryType.
@@ -53,12 +52,9 @@ class TextSnippetCategoryType extends AbstractType
     {
         $builder
             ->add('title', 'object_lang_collection', [
-                'mapped'      => false,
-                'prop_name'   => 'title',
-                'owner'       => $builder->getData(),
-                'constraints' => [
-                    new Assert\Count(['min' => 1]),
-                ],
+                'mapped'    => false,
+                'prop_name' => 'title',
+                'owner'     => $builder->getData(),
             ])
             ->add('is_global', ApiBooleanType::class)
         ;
@@ -73,7 +69,10 @@ class TextSnippetCategoryType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TextSnippetCategory::class,
+                'data_class'    => TextSnippetCategory::class,
+                'error_mapping' => [
+                    'props_translations' => 'title',
+                ],
             ])
             ->setRequired(['type', 'person'])
             ->setAllowedTypes([

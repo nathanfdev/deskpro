@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TextSnippetCategory.
@@ -79,6 +80,13 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
      * @var bool
      */
     protected $is_global = false;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @Assert\Count(min=1)
+     */
+    protected $props_translations;
 
     /**
      * Constructor.

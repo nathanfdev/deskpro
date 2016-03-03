@@ -32,18 +32,14 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
  * Class ObjectTranslatableTrait.
+ *
+ * @property Collection $props_translations
  */
 trait ObjectTranslatableTrait
 {
-    /**
-     * @var LazyCriteriaCollection
-     */
-    protected $props_translations;
-
     /**
      * {@inheritdoc}
      */
