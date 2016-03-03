@@ -113,13 +113,17 @@ class ApiDb extends AbstractDbSet
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
-            "
+            <<<SQL
             INSERT INTO `languages`
                 (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
                  `has_agent`, `has_admin`)
             VALUES
-                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
-        "
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1),
+                (2, 'french', 'fre', 'Français', '%DP_ROOT%/languages/french', 'fr', 'fr.png', '0', '1', '1', '0'),
+                (3, 'russian', 'rus', 'Pусский', '%DP_ROOT%/languages/russian', 'ru', 'ru.png', '0', '1', '1', '0')
+
+            ;
+SQL
         );
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data

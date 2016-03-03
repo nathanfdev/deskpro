@@ -80,6 +80,14 @@ Feature: /text_snippet_categories endpoint
     {
       "language": 1,
       "value": "My Category"
+    },
+    {
+      "language": 2,
+      "value": "My Category (french)"
+    },
+    {
+      "language": 3,
+      "value": "My Category (russian)"
     }
   ]
 }
