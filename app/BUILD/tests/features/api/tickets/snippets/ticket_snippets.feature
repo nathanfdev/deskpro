@@ -126,6 +126,28 @@ Feature: /ticket_snippets endpoint
     And the JSON node "errors.fields.snippet.fields.snippet_0.fields.value.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.snippet.fields.snippet_0.fields.value.errors[0].message" should be equal to "This value should not be blank."
 
+  Scenario: I try to select chat category
+    When I send a POST request to "/api/v2/ticket_snippets" with body:
+    """
+{
+  "category": 4
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.category.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.category.errors[0].message" should be equal to "One or more of the given values is invalid."
+
+  Scenario: I try to select category from another person
+    When I send a POST request to "/api/v2/ticket_snippets" with body:
+    """
+{
+  "category": 3
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.category.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.category.errors[0].message" should be equal to "One or more of the given values is invalid."
+
   Scenario: I add a new text snippet
     When I send a POST request to "/api/v2/ticket_snippets" with body:
     """

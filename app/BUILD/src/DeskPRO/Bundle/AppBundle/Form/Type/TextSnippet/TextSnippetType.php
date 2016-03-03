@@ -68,11 +68,19 @@ class TextSnippetType extends AbstractType
             ->add('category', EntityType::class, [
                 'class'         => TextSnippetCategory::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
-                    return $er
+                    $qb = $er
                         ->createQueryBuilder('d')
-                        ->where('d.typename = :typename')
-                        ->setParameter('typename', $options['type'])
+                        ->where(
+                            'd.typename = :typename',
+                            'd.person = :person or d.is_global = true'
+                        )
+                        ->setParameters([
+                            'typename' => $options['type'],
+                            'person'   => $options['person'],
+                        ])
                     ;
+
+                    return $qb;
                 },
             ])
             ->add('shortcut_code', TextType::class)
