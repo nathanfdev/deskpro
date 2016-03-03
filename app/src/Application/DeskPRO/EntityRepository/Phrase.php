@@ -82,8 +82,8 @@ class Phrase extends AbstractEntityRepository
         $phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
-            WHERE language_id = ? AND groupname = ?
-        ', array($language['id'], $group));
+            WHERE language_id = ? AND groupname LIKE ?
+        ', array($language['id'], $group.'%'));
 
         return $phrases;
     }
