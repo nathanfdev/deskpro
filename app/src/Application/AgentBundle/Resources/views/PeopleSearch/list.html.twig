@@ -1,5 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-
+{% set baseId = el_uid() %}
 {######################################################################################################################}
 {# METADATA #}
 {######################################################################################################################}
@@ -20,7 +20,6 @@
         pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
         pageMeta.resultId = {{cache_id}};
         pageMeta.cache_id = {{cache_id}};
-        {% set baseId = el_uid() %}
         pageMeta.baseId = '{{ baseId }}';
         pageMeta.displayFields = {{ display_fields|json_encode|raw }};
         pageMeta.page = {{ page }};
