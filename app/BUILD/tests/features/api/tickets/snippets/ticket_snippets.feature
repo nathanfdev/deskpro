@@ -193,3 +193,10 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data.person" should be equal to 0
     And the JSON node "data.shortcut_code" should be equal to "my_snippet"
     And the JSON node "data.is_draft" should be equal to 1
+
+  Scenario: I delete ticket snippet
+    When I send a DELETE request to "/api/v2/ticket_snippets/11"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/ticket_snippets/11"
+    Then the response status code should be 404
