@@ -67,10 +67,9 @@ Feature: /text_snippet_categories endpoint
 
   Scenario: I try to create a category with empty request
     When I send a POST request to "/api/v2/ticket_snippet_categories"
-    And print last JSON response
     Then the response status code should be 400
-    And the JSON node "errors.fields.title.errors[0].code" should be equal to "too_few_count"
-    And the JSON node "errors.fields.title.errors[0].message" should be equal to "too_few_count"
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
   Scenario: I create a new ticket snippet category
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
