@@ -39,7 +39,7 @@ export class NewTaskButton extends React.Component {
 
   renderNewTaskForm() {
     return (
-      <ClickOut onClickOut={this.onCloseNewTaskForm} ignoreNodes={[this.refs.button, 'popup']}>
+      <ClickOut onClickOut={this.onCloseNewTaskForm} ignoreNodes={[this.refs.button, '.popup']}>
         {this.state.newTaskExpanded
           ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} isChanged={this.isChanged} />
           : null

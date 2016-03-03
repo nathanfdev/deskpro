@@ -28,30 +28,46 @@
 
 /**
  * DeskPRO.
+ *
+ * @category Entities
  */
+namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class TaskLinkedItemTransformer.
+ * @ORM\Entity
  */
-class TaskLinkedItemTransformer extends AbstractDataSerializerTransformer
+class TaskLinkedChat extends TaskLinkedItem
 {
+    use NotifyPropertyChangedTrait;
+
     /**
-     * {@inheritdoc}
+     * @var ChatConversation
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
+     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    protected $chat;
+
+    /**
+     * @return ChatConversation
+     */
+    public function getChat()
     {
-        return ['id', 'task', 'ticket', 'chat', 'article'];
+        return $this->chat;
     }
 
     /**
-     * {@inheritdoc}
+     * @param ChatConversation $chat
+     *
+     * @return $this
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public function setChat(ChatConversation $chat)
     {
-        return [];
+        $this->setModelField('chat', $chat);
+
+        return $this;
     }
 }

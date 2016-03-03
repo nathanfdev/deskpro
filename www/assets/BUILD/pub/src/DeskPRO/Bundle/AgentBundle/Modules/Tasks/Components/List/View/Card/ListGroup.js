@@ -1,29 +1,32 @@
 import React, { PropTypes } from 'react';
+import { CardGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
+import classNames from 'classnames';
+import { BaseListGroup } from '../BaseListGroup';
+import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
+import { TaskDragCard } from './TaskCard/TaskDragCard';
+
 import { DropTarget } from 'react-dnd';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
-import { CardGroupDivider } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
-import { NewTaskButton } from './NewTaskButton';
-import classNames from 'classnames';
-
 @DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
-export class ListGroup extends React.Component {
 
-  static propTypes = {
-    title: PropTypes.any,
-    children: PropTypes.node,
-    isOver: PropTypes.bool,
-    connectDropTarget: PropTypes.func.isRequired
-  };
+export class ListGroup extends BaseListGroup {
 
   render() {
-    const { title, children, isOver, connectDropTarget } = this.props;
+    const { connectDropTarget } = this.props;
+    const { isOver, elements, title, updateData } = this.state;
 
     return connectDropTarget(
       <div className={classNames({'list-group-hover': isOver})}>
         <CardGroupDivider title={title} />
 
-        {children}
+        {elements.valueSeq().map((task, key) =>
+          <TaskCardEditContainer task={task}
+                                 updateData={updateData}
+                                 onUpdate={this.onUpdate.bind(this, key)}>
+            <TaskDragCard />
+          </TaskCardEditContainer>
+        )}
       </div>
     );
   }

@@ -9,8 +9,8 @@ import $ from 'jquery';
  * DOM tree:
  * Detached > ClickOut > Content1
  * Detached > ClickOut > Content2
- *
- * click on Content2 firest click outside of Content1
+ * fixme:
+ * click on Content2 fires click outside of Content1
  */
 
 

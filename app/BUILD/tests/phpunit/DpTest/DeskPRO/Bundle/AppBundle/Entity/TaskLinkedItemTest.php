@@ -34,7 +34,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DpTest\ApiTestCase;
 
 class TaskLinkedItemTest extends ApiTestCase
@@ -47,7 +47,7 @@ class TaskLinkedItemTest extends ApiTestCase
         $task      = $this->getValidTask();
         $validator = $this->getValidator();
 
-        $item = new TaskLinkedItem();
+        $item = new TaskLinkedArticle();
         $item->setTask($task);
         $item->setArticle($this->getArticle());
 
@@ -64,7 +64,7 @@ class TaskLinkedItemTest extends ApiTestCase
         $task      = $this->getInvalidTask();
         $validator = $this->getValidator();
 
-        $item = new TaskLinkedItem();
+        $item = new TaskLinkedArticle();
         $item->setTask($task);
         $item->setArticle($this->getArticle());
 

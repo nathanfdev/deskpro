@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
-import { connect } from 'react-redux';
 import {
   Card,
   CardLine,
@@ -18,41 +16,22 @@ import {
   CardProjectContainer
 } from '../../../TaskCard';
 
-@connect()
-
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    task: PropTypes.object,
-    moving: PropTypes.bool,
-    onChangeTitle: PropTypes.func,
-    onChangeDate: PropTypes.func,
-    onSetEditing: PropTypes.func,
-    dispatch: PropTypes.func.isRequired
-  };
-
-  onChange(prop, value) {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), {[prop]: value}));
-  }
-
-  onAssign = (assignee) => {
-    const { dispatch, task } = this.props;
-    return dispatch(editTask(task.get('id'), assignee));
+    moving: PropTypes.bool
   };
 
   renderDetails() {
-    const { task, onChangeDate, onSetEditing } = this.props;
+    const { task, onChange } = this.props;
 
     return (
       <CardLine>
         <CardLineLeft>
           <DateDue value={task.get('date_due')}
-                   onChange={onChangeDate}
-                   onSetEditing={onSetEditing} />
+                   onChange={onChange.bind(null, 'date_due')} />
           <CardProjectContainer value={task.get('project')}
-                                onSetEditing={onSetEditing}
-                                onChange={this.onChange.bind(this, 'project')} />
+                                onChange={onChange.bind(null, 'project')} />
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
         </CardLineLeft>
         <CardLineRight>
@@ -67,7 +46,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, onChangeTitle, onSetEditing } = this.props;
+    const { task, moving, onChange } = this.props;
 
     return (
       <Card statusBars={false}
@@ -79,11 +58,10 @@ export class TaskCard extends BaseTaskCard {
           <CardLineLeft>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
-                   onChange={onChangeTitle}
-                   onSetEditing={onSetEditing} />
+                   onSubmit={onChange.bind(null, 'title')} />
           </CardLineLeft>
           <CardLineRight>
-            {!task.get('is_done') && <AssignButton task={task} onAssign={this.onAssign} />}
+            {!task.get('is_done') && <AssignButton value={task} onChange={onChange.bind(null, 'assignee')} />}
           </CardLineRight>
         </CardLine>
 

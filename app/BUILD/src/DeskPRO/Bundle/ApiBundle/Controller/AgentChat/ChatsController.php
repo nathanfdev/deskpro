@@ -29,16 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\AgentChat\History;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,14 +53,21 @@ class ChatsController extends AbstractController
 {
     /**
      * @ApiDoc(
-     *      description="get agent-chat collection",
+     *      section = "Agent`s chat",
+     *      resourceDescription="Operations about agent chats",
+     *      description="get agent`s chats collection",
      *      filters={
-     *          {"name"="search", "dataType"="string"}
+     *          {
+     *              "name"="search",
+     *              "dataType"="string"
+     *          }
      *      },
      *      statusCodes={
      *          200="Success",
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *      output={
+     *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *      }
      * )
      *
      * @param Request $request
@@ -91,18 +97,23 @@ class ChatsController extends AbstractController
 
     /**
      * @ApiDoc(
-     *      description="get agent-chat collection",
+     *      section="Agent`s chat",
+     *      resourceDescription="Operations about agent chats",
+     *      description="get recently participating agent`s chats collection",
      *      filters={
      *          {"name"="search", "dataType"="string"}
      *      },
      *      statusCodes={
      *          200="Success",
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *      output={
+     *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *      }
      * )
      *
      * @param Request $request
      * @Annotations\Get("/agent_chats/recent", name="agent_chats_list_recent")
+     * @FOS\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
      */
@@ -127,21 +138,27 @@ class ChatsController extends AbstractController
     }
 
     /**
+     * Get an agent`s chat with given id.
+     *
      * @ApiDoc(
-     *      description="get an agent-chat",
+     *      section = "Agent`s chat",
+     *      resourceDescription="Operations about agent chats",
+     *      description="get an agent`s chat",
      *      requirements={
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of the chat",
+     *              "description"="the id of a chat",
      *              "dataType"="integer"
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
+     *          200="Success when chat was found",
+     *          404="Returned when chat was not found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+     *      output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *      }
      * )
      *
      * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
@@ -161,102 +178,34 @@ class ChatsController extends AbstractController
     }
 
     /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
      * @ApiDoc(
-     *      description="create an agent-chat",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
+     *     section = "Agent`s chat",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "create an agent`s chat",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="an entity identificator"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
-     * )
-     * @ Annotations\Post("/agent_chats", name="agent_chats_add_chat")
-     *
-     * @param Request $request
-     *
-     * @throws InvalidFormException
-     * @throws BadRequestHttpException
-     *
-     * @return View
-     *
-     * @deprecated
-     *
-     * @todo looks like we have to implement some custom logic here, cause we have to handle agents/teams/departments
-     * @todo manually, and just do it with form is too complicated, maybe we can auto generate form for every AgentChat
-     * @todo participant entity, and then a big one for this participants collection?
-     */
-    public function postAction(Request $request)
-    {
-        $status    = Response::HTTP_CREATED;
-        $submitted = $request->request->all();
-        if (!count($submitted)) {
-            throw new BadRequestHttpException();
-        }
-        $participants = array();
-        if (isset($submitted['agents'])) {
-            foreach ($submitted['agents'] as $agentId) {
-                $participant = $this->em()
-                    ->getRepository('DeskPRO:Person')
-                    ->find((int) $agentId);
-                if ($participant) {
-                    $participants[] = $participant;
-                    $participant    = null;
-                }
-            }
-        }
-        if (isset($submitted['teams'])) {
-            foreach ($submitted['teams'] as $teamId) {
-                $participant = $this->em()
-                    ->getRepository('DeskPRO:AgentTeam')
-                    ->find((int) $teamId);
-                if ($participant) {
-                    $participants[] = $participant;
-                    $participant    = null;
-                }
-            }
-        }
-        if (isset($submitted['departments'])) {
-            foreach ($submitted['departments'] as $departmentId) {
-                $participant = $this->em()
-                    ->getRepository('DeskPRO:Department')
-                    ->find((int) $departmentId);
-                if ($participant) {
-                    $participants[] = $participant;
-                    $participant    = null;
-                }
-            }
-        }
-        if (!count($participants)) {
-            throw new BadRequestHttpException();
-        }
-        /** @var Messenger $messenger */
-        $messenger = $this->get('deskpro.agentchat.messenger');
-        $user      = $this->getUser();
-        $chat      = $messenger->createChat(array_merge($user, $participants), Chatable::PARTICIPANT_TYPE_GROUP);
-        $this->em()->persist($chat);
-        $this->em()->flush();
-
-        return View::create(
-            $this->dataSerialize($chat),
-            $status,
-            array(
-                'Location' => $this->generateUrl('agent_chats_view_chat', array('id' => $chat->getId())),
-            )
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="create an agent-chat with agent",
-     *      statusCodes={
-     *          201="Chat was created",
-     *          302="We found already started chat with given parameters",
-     *          400="Couldn't start chat with given parameters"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
-     *     tags={
-     *         "conversation",
-     *         "stable",
-     *     }
+     *      {
+     *          "name"="type",
+     *          "dataType"="integer",
+     *          "requirement"="(agent|team|department|everyone)",
+     *          "description"="an entity type to start chat with"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       201 = "Chat was created",
+     *       302 = "We found already started chat with given parameters",
+     *       400 = "Couldn't start chat with given parameters"
+     *     },
+     *     output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+     *      }
      * )
      * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
      *

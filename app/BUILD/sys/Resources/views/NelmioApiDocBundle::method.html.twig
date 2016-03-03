@@ -274,7 +274,11 @@
                                 {% endif %}
 
                                 <legend>Headers</legend>
-
+                                    <p class="tuple">
+                                        <input type="text" class="key" value="X-Agent-Request" />
+                                        <span>=</span>
+                                        <input type="text" class="value" value="true" />
+                                    </p>
                                 {% if acceptType %}
                                     <p class="tuple">
                                         <input type="text" class="key" value="Accept" />
@@ -282,6 +286,7 @@
                                         <input type="text" class="value" value="{{ acceptType }}" /> <span class="remove">-</span>
                                     </p>
                                 {% endif %}
+
 
                                 <p class="tuple">
                                     <input type="text" class="key" placeholder="Key" />

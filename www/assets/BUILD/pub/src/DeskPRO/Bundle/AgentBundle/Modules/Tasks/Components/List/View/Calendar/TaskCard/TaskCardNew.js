@@ -65,7 +65,7 @@ export class TaskCardNew extends React.Component {
   }
 
   onChange(prop, value) {
-    this.model[prop] = value;
+    this.setState({[prop]: value});
   }
 
   isChanged() {
@@ -74,34 +74,21 @@ export class TaskCardNew extends React.Component {
       assignee.get('agents').size || assignee.get('teams').size || assignee.get('departments').size;
   }
 
-  onAssign = (assignee) => {
-    return new Promise(resolve => {
-      this.setState({
-        assignee: assignee
-      });
-      resolve();
-    });
-  };
-
   onSave = () => {
-    if (!this.model.title) return;
+    if (!this.state.title) return;
     const { dispatch, onClose } = this.props;
 
     const submitData = {
-      title: this.model.title,
+      title: this.state.title,
       task_type: 'task',
       visibility: 'public',
       urgency: 1,
-      date_due: this.model.due,
-      project: this.model.project,
-      agents: this.model.assignee.get('agents') || [],
-      departments: this.model.assignee.get('departments') || [],
-      teams: this.model.assignee.get('teams') || []
+      date_due: this.state.due,
+      project: this.state.project,
+      agents: this.state.assignee.get('agents').toArray(),
+      departments: this.state.assignee.get('departments').toArray(),
+      teams: this.state.assignee.get('teams').toArray()
     };
-
-    this.setState({
-      submit: true
-    });
 
     dispatch(addTask(submitData));
     onClose && onClose();
@@ -118,14 +105,14 @@ export class TaskCardNew extends React.Component {
       <Card statusBars={false}
             type="task"
             additionalClasses="calendar-task-card">
-        <SaveTaskButton onClick={this.onSave} submit={submit} />
+        <SaveTaskButton onClick={this.onSave} />
         <CardLine>
           <CardLineLeft>
             <TitleForm value={title} onChange={this.onChange.bind(this, 'title')} />
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton ref="assignee" task={assignee}
-                          onAssign={this.onAssign}
+            <AssignButton value={assignee}
+                          onChange={this.onChange.bind(this, 'assignee')}
                           onSetEditing={this.onSetEditing} />
           </CardLineRight>
         </CardLine>
@@ -134,12 +121,12 @@ export class TaskCardNew extends React.Component {
           <CardLineLeft>
             <DateDue value={due}
                      onChange={this.onChange.bind(this, 'due')}
-                     openBySingleClick={true}
-                     onSetEditing={this.onSetEditing} />
+                     onSetEditing={this.onSetEditing}
+                     openBySingleClick />
             <CardProjectContainer value={project}
                                   onChange={this.onChange.bind(this, 'project')}
-                                  openBySingleClick={true}
-                                  onSetEditing={this.onSetEditing} />
+                                  onSetEditing={this.onSetEditing}
+                                  openBySingleClick />
             <TicketLinkContainer />
           </CardLineLeft>
         </CardLine>

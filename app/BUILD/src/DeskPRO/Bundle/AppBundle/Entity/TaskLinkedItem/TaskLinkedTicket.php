@@ -26,3 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
+namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class TaskLinkedTicket extends TaskLinkedItem
+{
+    use NotifyPropertyChangedTrait;
+
+    /**
+     * @var Ticket
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", nullable=true)
+     */
+    protected $ticket;
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+}

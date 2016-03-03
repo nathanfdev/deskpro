@@ -31,12 +31,14 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
@@ -192,10 +194,22 @@ class Task implements EntityInterface, NotifyPropertyChanged
     protected $attachments;
 
     /**
-     * @var TaskLinkedItem[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="TaskLinkedItem", mappedBy="task")
+     * @var TaskLinkedArticle[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle", mappedBy="task")
      */
-    protected $linked_items;
+    protected $linked_articles;
+
+    /**
+     * @var TaskLinkedChat[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat", mappedBy="task")
+     */
+    protected $linked_chats;
+
+    /**
+     * @var TaskLinkedTicket[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket", mappedBy="task")
+     */
+    protected $linked_tickets;
 
     /**
      * @var TaskAssignment[]|ArrayCollection
@@ -380,11 +394,27 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return TaskLinkedItem[]|ArrayCollection
+     * @return TaskLinkedArticle[]|ArrayCollection
      */
-    public function getLinkedItems()
+    public function getLinkedArticles()
     {
-        return $this->linked_items;
+        return $this->linked_articles;
+    }
+
+    /**
+     * @return TaskLinkedChat[]|ArrayCollection
+     */
+    public function getLinkedChats()
+    {
+        return $this->linked_chats;
+    }
+
+    /**
+     * @return TaskLinkedTicket[]|ArrayCollection
+     */
+    public function getLinkedTickets()
+    {
+        return $this->linked_tickets;
     }
 
     /**
@@ -567,11 +597,27 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param TaskLinkedItem $linked_item
+     * @param TaskLinkedArticle $linked_article
      */
-    public function addLinkedItem(TaskLinkedItem $linked_item)
+    public function addLinkedArticle(TaskLinkedArticle $linked_article)
     {
-        $this->linked_items->add($linked_item);
+        $this->linked_articles->add($linked_article);
+    }
+
+    /**
+     * @param TaskLinkedChat $linked_chat
+     */
+    public function addLinkedChat(TaskLinkedChat $linked_chat)
+    {
+        $this->linked_chats->add($linked_chat);
+    }
+
+    /**
+     * @param TaskLinkedTicket $linked_ticket
+     */
+    public function addLinkedTicket(TaskLinkedTicket $linked_ticket)
+    {
+        $this->linked_tickets->add($linked_ticket);
     }
 
     /**

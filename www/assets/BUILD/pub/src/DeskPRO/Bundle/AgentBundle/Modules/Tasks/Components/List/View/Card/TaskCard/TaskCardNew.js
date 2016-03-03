@@ -115,7 +115,7 @@ export class TaskCardNew extends React.Component {
             </div>
           </CardLineLeft>
           <CardLineRight>
-            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} task={assignee} onAssign={this.onAssign} />
+            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} value={assignee} onChange={this.onAssign} />
           </CardLineRight>
         </CardLine>
 

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
 import { HiddenDateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/DateTime/HiddenDateTimePicker';
-import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
+import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { DateString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/DateString';
 import { CardWidget } from './CardWidget';

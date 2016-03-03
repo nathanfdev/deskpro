@@ -1,86 +1,79 @@
 import React, { PropTypes } from 'react';
-import { Simple as Positioned } from 'DeskPRO/Component/Positioned/Simple';
+import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { AssignForm } from './AssignForm';
+import { AssignFormContainer } from './AssignFormContainer';
 import { AssigneeAvatar } from './AssigneeAvatar';
+import { CardWidget } from './CardWidget';
+import Immutable from 'immutable';
 
-export class AssignButton extends React.Component {
+export class AssignButton extends CardWidget {
 
   static propTypes = {
     onSetEditing: PropTypes.func,
-    onAssign: PropTypes.func.isRequired,
-    task: PropTypes.object.isRequired
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      formOpened: false,
-      task: props.task
+      isOpen: false,
+      value: Immutable.fromJS({
+        agents: props.value.get('agents'),
+        teams: props.value.get('teams'),
+        departments: props.value.get('departments')
+      })
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(props) {
     this.setState({
-      task: nextProps.task
+      value: Immutable.fromJS({
+        agents: props.value.get('agents'),
+        teams: props.value.get('teams'),
+        departments: props.value.get('departments')
+      })
     });
   }
 
-  componentWillUnmount() {
-    this.isUnmounted = true;
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen || this.state.isOpen !== state.isOpen || !Immutable.is(this.state.value, state.value);
   }
-
-  onOpenForm = () => {
-    const { onSetEditing } = this.props;
-    onSetEditing && onSetEditing(true);
-    this.setState({
-      formOpened: true
-    });
-  };
-
-  onAssign = (assignee) => {
-    this.setState({task: assignee});
-    this.props.onAssign(assignee).then(this.closeForm);
-  };
-
-  closeForm = () => {
-    const { onSetEditing } = this.props;
-    onSetEditing && onSetEditing(false);
-    if (this.isUnmounted) {
-      return;
-    }
-
-    this.setState({
-      formOpened: false
-    });
-  };
 
   hasAvatar() {
-    const { task } = this.state;
-    return task.get('agents').size || task.get('teams').size || task.get('departments').size;
+    const { value } = this.state;
+    return value.get('agents').size || value.get('teams').size || value.get('departments').size;
   }
+
+  onChange = (val) => {
+    this.setState({
+      value: val,
+      isOpen: false
+    });
+    this.props.onChange(val);
+  };
 
   render() {
     return (
       <div>
-        <div className="dpwd--card-assigned" onClick={this.onOpenForm} ref="button">
+        <div className="dpwd--card-assigned" onClick={this.onOpen} ref="button">
 
           {this.hasAvatar()
-            ? <AssigneeAvatar task={this.state.task}/>
+            ? <AssigneeAvatar task={this.state.value}/>
             : <div className="dpw--avatar-face" style={{position: 'relative'}}>
             <i className="fa fa-caret-down"/>
           </div>
           }
         </div>
 
-        <Positioned isOpen={this.state.formOpened}
+        <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="right+5 top-10"
                   zIndex={1002}>
 
-          <ClickOut onClickOut={this.closeForm} additionalNodes={[this.refs.button, 'assign-form']}>
-            <AssignForm {...this.props} onSubmit={this.onAssign}/>
+          <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.assign-form', '.fa-check']}>
+            <AssignFormContainer task={this.state.value} onSubmit={this.onChange} />
           </ClickOut>
         </Positioned>
       </div>

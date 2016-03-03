@@ -234,7 +234,7 @@ class TasksController extends CrudController
      * @Get("/{id}/comments", name="api_tasks_comments_get")
      *
      * @param Request $request
-     * @param $id
+     * @param         $id
      *
      * @return View
      */
@@ -292,7 +292,7 @@ class TasksController extends CrudController
      * @Get("/{id}/attachments", name="api_tasks_attachments_get")
      *
      * @param Request $request
-     * @param $id
+     * @param         $id
      *
      * @return View
      */
@@ -331,21 +331,22 @@ class TasksController extends CrudController
      *      }
      * )
      *
-     * @Get("/{id}/linked_items", name="api_tasks_links_get")
+     * @Get("/{id}/linked_items/{type}", name="api_tasks_links_get")
      *
      * @param Request $request
      * @param int     $id
+     * @param string  $type
      *
      * @return View
      */
-    public function getLinksAction(Request $request, $id)
+    public function getLinksAction(Request $request, $id, $type = 'tickets')
     {
         $task = $this->findEntity($id, $request);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
-
-        $links = $task->getLinkedItems();
+        $method = 'getLinked'.ucfirst($type);
+        $links  = $task->$method();
 
         return View::create($this->dataSerialize($links), Response::HTTP_OK);
     }

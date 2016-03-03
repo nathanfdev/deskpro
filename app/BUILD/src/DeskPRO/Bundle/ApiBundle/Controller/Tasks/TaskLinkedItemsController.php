@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use Doctrine\DBAL\DBALException;
 use FOS\RestBundle\Controller\Annotations\Delete;
@@ -48,6 +46,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class TaskLinkedItemsController.
@@ -58,7 +57,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
 {
     /**
      * @ApiDoc(
-     *      description="get a list of links",
+     *      description="get a list of links by the type",
      *      statusCodes={
      *          200="Success"
      *      }
@@ -72,12 +71,15 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     public function cgetAction(Request $request)
     {
         $query = $request->query->all();
-
+        if (!array_key_exists('type', $query)) {
+            throw new BadRequestHttpException('You must specify "type" parameter');
+        }
+        $type = 'App:TaskLinkedItem\TaskLinked'.ucfirst($query['type']);
         if (!empty($query['ids'])) {
-            $taskLinks = $this->selectLinks(explode(',', $query['ids']));
+            $taskLinks = $this->selectLinks(explode(',', $query['ids']), $type);
             $taskLinks = $taskLinks->getResult();
         } else {
-            $taskLinks = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->findAll();
+            $taskLinks = $this->getDoctrine()->getManager()->getRepository($type)->findAll();
         }
 
         return View::create($this->dataSerialize($taskLinks), Response::HTTP_OK);
@@ -98,7 +100,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
      * @Get("/task_links/{id}", name="api_task_links_get")
      *
@@ -124,22 +126,25 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Post("/task_links", name="api_task_links_post")
+     * @Post("/task_links/{type}", name="api_task_links_post")
      *
      * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
+     * @param string  $type
      *
      * @return View
      */
-    public function postAction(Request $request)
+    public function postAction(Request $request, $type)
     {
-        $link = new TaskLinkedItem($this->getUser());
+        if (!$type) {
+            throw new BadRequestHttpException('You must specify "type" parameter');
+        }
+        $class = 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinked'.ucfirst($type);
+        echo $class;
+        $link = new $class();
 
-        return $this->handleFormSubmission($request, $link);
+        return $this->handleFormSubmission($request, $link, $type);
     }
 
     /**
@@ -160,20 +165,19 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      *          404="Not Found"
      *      }
      * )
-     * @Put("/task_links/{id}", name="api_task_links_put")
+     * @Put("/task_links/{type}/{id}", name="api_task_links_put")
      *
      * @param Request $request
-     * @param $id
-     *
-     * @throws WrappedApiErrorException
+     * @param         $id
+     * @param string  $type
      *
      * @return View
      */
-    public function putAction(Request $request, $id)
+    public function putAction(Request $request, $id, $type)
     {
         $link = $this->getLink($id);
 
-        return $this->handleFormSubmission($request, $link);
+        return $this->handleFormSubmission($request, $link, $type);
     }
 
     /**
@@ -215,7 +219,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     protected function getLink($id)
     {
         $id   = (int) $id;
-        $link = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem')->find($id);
+        $link = $this->getDoctrine()->getManager()->getRepository('App:TaskLinkedItem\TaskLinkedItem')->find($id);
 
         if (!$link) {
             throw $this->createNotFoundException();
@@ -229,21 +233,18 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
      *
      * @param Request        $request
      * @param TaskLinkedItem $link
-     *
-     * @throws WrappedApiErrorException
+     * @param string         $type
      *
      * @return View
      */
-    protected function handleFormSubmission(Request $request, TaskLinkedItem $link)
+    protected function handleFormSubmission(Request $request, TaskLinkedItem $link, $type)
     {
         $status = $link->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_link', $link)->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_link_'.$type, $link)->getForm();
 
         $submitted = $request->request->all();
-        $submitted = $this->cleanLinkTypes($submitted);
-
         $form->submit($submitted, $request->getMethod() !== 'PUT');
 
         if ($form->isValid()) {
@@ -265,50 +266,30 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
                 ]
             );
         }
-
         throw new InvalidFormException($form);
-    }
-
-    /**
-     * Cleans up the submitted array so that we only have one ticket, article or chat.
-     *
-     * @param array $submitted
-     *
-     * @return array
-     */
-    private function cleanLinkTypes(array $submitted)
-    {
-        $types   = ['article', 'ticket', 'chat'];
-        $cleaned = false;
-
-        foreach ($types as $type) {
-            if (false === $cleaned && !empty($submitted[$type])) {
-                $cleaned = true;
-            } else {
-                $submitted[$type] = '';
-            }
-        }
-
-        return $submitted;
     }
 
     /**
      * Get a Doctrine Query for getting certain links.
      *
-     * @param $linkIds
+     * @param array  $linkIds
+     * @param string $type
      *
      * @return \Doctrine\ORM\Query
      */
-    protected function selectLinks($linkIds)
+    protected function selectLinks(array $linkIds, $type)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
         // Clean the IDs
-        $linkIds = array_map(function ($value) {
-            return (int) $value;
-        }, $linkIds);
+        $linkIds = array_map(
+            function ($value) {
+                return (int) $value;
+            },
+            $linkIds
+        );
 
-        $query = $entityManager->createQueryBuilder()->select('l')->from('App:TaskLinkedItem', 'l')
+        $query = $entityManager->createQueryBuilder()->select('l')->from($type, 'l')
             ->where('l.id IN (:linkIds)')
             ->setParameter('linkIds', $linkIds);
 

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -73,6 +72,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="string", length=80)
      * @JMS\Expose()
      * @JMS\Type("string")
+     * @JMS\SerializedName("chat_type")
      * @JMS\Accessor(getter="getType", setter="setType")
      */
     protected $type;
@@ -81,9 +81,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
      * @Assert\NotNull()
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     * @JMS\Accessor(getter="isArchived", setter="setArchived")
      */
     protected $is_archived = false;
 
@@ -110,7 +107,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     /**
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
-     * @JMS\Expose()
      * @JMS\Type("array")
      * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
      */
@@ -127,7 +123,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var AgentChatMessage[]
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage", mappedBy="chat", cascade={"persist", "remove"})
      * @ORM\OrderBy({"date_created" = "DESC"})
-     * @JMS\Expose()
      * @JMS\Type("array")
      * @JMS\Accessor(getter="getMessages", setter="addMessage")
      */

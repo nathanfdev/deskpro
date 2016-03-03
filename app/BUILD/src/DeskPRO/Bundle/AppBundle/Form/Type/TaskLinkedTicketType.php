@@ -31,18 +31,17 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TaskToIdTransformer;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskLinkType extends AbstractType
+class TaskLinkedTicketType extends AbstractType
 {
-    /**
-     * @return string
-     */
-    public function getName()
+    public function __construct(ObjectManager $manager)
     {
-        return 'task_link';
+        $this->manager = $manager;
     }
 
     /**
@@ -51,51 +50,30 @@ class TaskLinkType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-                'task',
-                'entity',
-                array(
-                    'class'    => 'App:Task',
-                    'property' => 'title',
-                    'required' => true,
-                )
-            )
+        $builder
             ->add(
                 'ticket',
                 'entity',
-                array(
+                [
                     'class'    => 'DeskPRO:Ticket',
-                    'property' => 'subject',
-                    'required' => false,
-                )
-            )
-            ->add(
-                'chat',
-                'entity',
-                array(
-                    'class'    => 'DeskPRO:ChatConversation',
-                    'property' => 'subject',
-                    'required' => false,
-                )
-            )
-            ->add(
-                'article',
-                'entity',
-                array(
-                    'class'    => 'DeskPRO:Article',
                     'property' => 'title',
                     'required' => false,
-                )
+                ]
+            )
+            ->add(
+                'task',
+                TextType::class,
+                ['invalid_message' => 'That is not a valid task number']
             );
+
+        $builder->get('task')->addModelTransformer(new TaskToIdTransformer($this->manager));
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @return string
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getName()
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem',
-        ));
+        return 'task_link_ticket';
     }
 }

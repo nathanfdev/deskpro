@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 import { ListGroup } from './ListGroup';
-import { TaskDragCard } from './TaskCard/TaskDragCard';
-import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
@@ -9,29 +8,48 @@ import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/C
 export class KanbanView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.array,
+    taskGroups: PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    const groups = props.taskGroups || Immutable.fromJS([]);
+    this.state = {
+      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    const groups = props.taskGroups || Immutable.fromJS([]);
+    this.setState({
+      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return !Immutable.is(this.state.groups, state.groups);
+  }
+
+  onUpdate(index, elements) {
+    let group = this.state.groups.get(index);
+    group = group.set('elements', elements);
+    this.setState({
+      groups: this.state.groups.set(index, group)
+    });
+  }
+
   render() {
-    const { taskGroups = [], onChangeGroup } = this.props;
+    const { onChangeGroup } = this.props;
+    const { groups } = this.state;
 
     return (
       <div className="kanban kanban-columns">
-        {taskGroups.map((taskGroup, index) =>
-          <ListGroup title={taskGroup.title}
-                     key={index}
-                     updateData={taskGroup.updateData}
-                     onChangeGroup={onChangeGroup}>
-
-            {taskGroup.elements.map(task =>
-              <TaskCardEditContainer task={task}
-                                     key={task.get('id')}
-                                     updateData={taskGroup.updateData}>
-                <TaskDragCard />
-              </TaskCardEditContainer>
-            )}
-          </ListGroup>
+        {groups.valueSeq().map((taskGroup, index) =>
+          <ListGroup key={index}
+                     group={taskGroup}
+                     onChangeGroup={onChangeGroup}
+                     onUpdate={this.onUpdate.bind(this, index)} />
         )}
 
         <CustomCardDragLayer>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../Application/Actions/massActions';
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import Immutable from 'immutable';
 import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
@@ -21,87 +22,90 @@ import jQuery from 'jquery';
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
   currentSort: currentSortSelector(state)
 }))
+
 export class TaskCardEditContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    onUpdate: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      editing: false
+      editing: false,
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task: props.task
     };
   }
 
-  onSetEditing = value => {
+  componentWillReceiveProps(props) {
     this.setState({
-      editing: !!value
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task: props.task
     });
-  };
+  }
 
   onToggleSelected = () => {
-    const { dispatch, task } = this.props;
+    const { dispatch } = this.props;
+    const { task } = this.state;
+    this.setState({selected: !this.state.selected});
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
-  onToggleDone = () => {
-    const { task, dispatch } = this.props;
-    const params = {
-      is_done: !task.get('is_done')
-    };
+  onChange = (prop, value) => {
+    const { dispatch } = this.props;
+    let { task } = this.state;
+    let params;
 
+    if ('assignee' === prop) {
+      params = {
+        agents: value.get('agents').toArray(),
+        teams: value.get('teams').toArray(),
+        departments: value.get('departments').toArray()
+      };
+      task = task.mergeWith(value);
+    } else {
+      params = {[prop]: value};
+      task = task.set(prop, value);
+    }
+
+    this.setState({task: task});
     dispatch(editTask(task.get('id'), params));
   };
 
-  onChangeTitle = value => {
-    const { task, dispatch } = this.props;
-    const params = {
-      title: value
-    };
+  shouldComponentUpdate(props, state) {
+    if (state.selected !== this.state.selected) {
+      return true;
+    }
 
-    dispatch(editTask(task.get('id'), params));
-  };
+    if (!Immutable.is(this.state.task, state.task)) {
+      return true;
+    }
 
-  onChangeDate = value => {
-    const { task, dispatch } = this.props;
-    const params = {
-      date_due: value
-    };
+    return false;
+  }
 
-    dispatch(editTask(task.get('id'), params));
-  };
-
-  onChangeDisplayOrder = taskId => {
-    const { task, dispatch } = this.props;
-    const params = {
-      display_order: task.get('display_order')
-    };
-
-    dispatch(editTask(taskId, params));
-  };
+  componentWillUpdate(props, state) {
+    this.props.onUpdate && this.props.onUpdate(state.task);
+  }
 
   render() {
     const props = this.props;
-    const { selectedTasks, task, children } = props;
+    const { children, dispatch } = props;
     const childProps = children.props;
-    const selected = selectedTasks.indexOf(task.get('id')) !== -1;
 
     return React.cloneElement(children, {
       ...childProps,
       ...props,
 
-      editing: this.state.editing,
-      selected: selected,
+      task: this.state.task,
+      selected: this.state.selected,
       onToggleSelected: this.onToggleSelected,
-      onToggleDone: this.onToggleDone,
-      onChangeDisplayOrder: this.onChangeDisplayOrder,
-      onChangeTitle: this.onChangeTitle,
-      onChangeDate: this.onChangeDate,
-      onSetEditing: this.onSetEditing
+      onChange: this.onChange
     });
   }
 }

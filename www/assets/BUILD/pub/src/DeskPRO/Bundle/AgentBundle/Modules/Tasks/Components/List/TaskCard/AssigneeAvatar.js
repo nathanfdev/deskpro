@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { PersonAvatar, DepartmentAvatar, AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import Immutable from 'immutable';
 
 @connect(state => ({
   agents: agentsSelector(state),
@@ -16,6 +17,23 @@ export class AssigneeAvatar extends React.Component {
     agentTeams: PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      task: props.task
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      task: props.task
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return !Immutable.is(this.state.task, state.task);
+  }
 
   render() {
     const { task, agents, agentTeams, departments } = this.props;

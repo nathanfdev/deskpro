@@ -4,19 +4,24 @@ export class CardWidget extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
-      isOpen: false,
+      isOpen: props.isOpen,
       value: props.value
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    this.setState({value: newProps.value});
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen !== state.isOpen || this.state.value !== state.value;
   }
 
-  reset() {
-    this.setState({value: null});
+  componentWillReceiveProps(props) {
+    let state = {
+      value: props.value
+    };
+    if (undefined !== props.isOpen) {
+      state.isOpen = props.isOpen;
+    }
+    this.setState(state);
   }
 
   onChange = (val) => {

@@ -29,63 +29,51 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TaskToIdTransformer;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class MarkMessageType extends AbstractType
+class TaskLinkedArticleType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function __construct(ObjectManager $manager)
     {
-        return 'api_agent_chat_mark_message';
+        $this->manager = $manager;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add(
-                'ids',
-                'collection',
+                'article',
+                'entity',
                 [
-                    'entry_type'    => 'integer',
-                    'entry_options' => [
-                        'constraints' => [
-                            new Assert\GreaterThan(['value' => 0]),
-                        ],
-                    ],
-                    'allow_add' => true,
+                    'class'    => 'DeskPRO:Article',
+                    'property' => 'id',
+                    'required' => false,
                 ]
             )
-            ->add('status', 'choice', [
-                'choices' => [
-                        'New'       => AgentChatMessage::STATUS_NEW,
-                        'Delivered' => AgentChatMessage::STATUS_DELIVERED,
-                        'Read'      => AgentChatMessage::STATUS_READ,
-                    ],
-                'choices_as_values' => true,
-                'required'          => true,
-            ])
-        ;
+            ->add(
+                'task',
+                TextType::class,
+                ['invalid_message' => 'That is not a valid task number']
+            );
+
+        $builder->get('task')->addModelTransformer(new TaskToIdTransformer($this->manager));
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getName()
     {
-        $resolver->setDefaults([
-            'csrf_protection'               => false,
-            'csrf_double_submit_protection' => false,
-        ]);
+        return 'task_link_article';
     }
 }
