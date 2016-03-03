@@ -37,7 +37,6 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
@@ -82,8 +81,8 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param $page
-     * @param $max_per_page
+     * @param                $page
+     * @param                $max_per_page
      * @param FeedbackFilter $filter
      * @param Person         $person
      *
@@ -307,13 +306,13 @@ class FeedbackDataService extends AbstractDataService
     /**
      * Select filtered list of feedback.
      *
-     * @param CriteriaInterface $criteria
-     * @param int               $page
-     * @param int               $count
+     * @param FeedbackSelectCriteria $criteria
+     * @param int                    $page
+     * @param int                    $count
      *
      * @return array
      */
-    public function selectFeedback(CriteriaInterface $criteria, $page, $count)
+    public function selectFeedback(FeedbackSelectCriteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -326,6 +325,8 @@ class FeedbackDataService extends AbstractDataService
             ->leftJoin('f.person', 'person')
             ->addGroupBy('f.id');
         $criteria->applyFilters($qb);
+        $criteria->applySorting($qb);
+
         $feedback = $qb->getQuery()->getResult();
 
         $filters  = $criteria->getFilters();

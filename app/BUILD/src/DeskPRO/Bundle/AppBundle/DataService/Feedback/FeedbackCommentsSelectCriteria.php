@@ -32,18 +32,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\OptionsResolver\Exception\AccessException;
-use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FeedbackSelectCriteria extends Criteria implements SortableCriteriaInterface
+class FeedbackCommentsSelectCriteria extends FeedbackSelectCriteria implements SortableCriteriaInterface
 {
     use Sortable;
+
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues()
+    {
+        return ['date_created'];
+    }
+
     /**
      * @param QueryBuilder $qb
      */
@@ -97,15 +101,15 @@ class FeedbackSelectCriteria extends Criteria implements SortableCriteriaInterfa
                     break;
                 case 'status':
                     if (is_array($value)) {
-                        $qb->andWhere("$alias.status IN (:status)");
+                        $qb->andWhere('feedback.status IN (:status)');
                     } else {
-                        $qb->andWhere("$alias.status = :status");
+                        $qb->andWhere('feedback.status = :status');
                     }
                     $qb->setParameter('status', $value);
                     break;
                 case 'hidden_status':
                     $qb
-                        ->andWhere("$alias.hidden_status = :hidden_status")
+                        ->andWhere('feedback.hidden_status = :hidden_status')
                         ->setParameter('hidden_status', $value);
                     break;
                 case 'created_from':
@@ -120,57 +124,5 @@ class FeedbackSelectCriteria extends Criteria implements SortableCriteriaInterfa
                     break;
             }
         }
-    }
-
-    /**
-     * @param OptionsResolver $resolver
-     * @param array           $data
-     *
-     * @throws AccessException
-     * @throws UndefinedOptionsException
-     */
-    public static function configureResolver(OptionsResolver $resolver, array $data = [])
-    {
-        $resolver->setDefined(
-            [
-                'awaiting_validation',
-                'status',
-                'hidden_status',
-                'status_category',
-                'category',
-                'custom_category',
-                'labels_mode',
-                'label',
-                'no_labels',
-                'ids',
-                'created_from',
-                'created_to',
-            ]
-        );
-        $resolver->setAllowedValues('awaiting_validation', '1');
-        $resolver->setAllowedValues('no_labels', '1');
-        $resolver->setAllowedValues('labels_mode', ['any', 'all']);
-        $resolver->setAllowedValues(
-            'status',
-            function ($value) {
-                $allowed = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
-                is_array($value) or $value = [$value];
-                foreach ($value as $status) {
-                    if (!in_array($status, $allowed)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function getSortAllowedValues()
-    {
-        return ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'person'];
     }
 }
