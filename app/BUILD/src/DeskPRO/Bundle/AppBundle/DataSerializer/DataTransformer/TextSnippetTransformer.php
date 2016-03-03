@@ -43,7 +43,7 @@ class TextSnippetTransformer extends AbstractDataSerializerTransformer
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'person', 'category', 'shortcut_code', 'is_draft'];
+        return ['id', 'title', 'person', 'category', 'shortcut_code', 'is_draft'];
     }
 
     /**

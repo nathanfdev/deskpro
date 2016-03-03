@@ -1029,7 +1029,29 @@ SQL
 
                 ('1', 'text_snippet_categories.4', 'text_snippet_categories', '4', 'title', 'Chat Category 1'),
                 ('1', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
-                ('1', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3')
+                ('1', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
+
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet 1'),
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content 1'),
+                ('1', 'text_snippets.2', 'text_snippets', '2', 'title', 'Ticket Snippet 2'),
+                ('1', 'text_snippets.2', 'text_snippets', '2', 'snippet', 'Ticket Snippet Content 2'),
+                ('1', 'text_snippets.3', 'text_snippets', '3', 'title', 'Ticket Snippet 3'),
+                ('1', 'text_snippets.3', 'text_snippets', '3', 'snippet', 'Ticket Snippet Content 3'),
+                ('1', 'text_snippets.4', 'text_snippets', '4', 'title', 'Ticket Snippet 4'),
+                ('1', 'text_snippets.4', 'text_snippets', '4', 'snippet', 'Ticket Snippet Content 4'),
+                ('1', 'text_snippets.5', 'text_snippets', '5', 'title', 'Ticket Snippet 5'),
+                ('1', 'text_snippets.5', 'text_snippets', '5', 'snippet', 'Ticket Snippet Content 5'),
+
+                ('1', 'text_snippets.6', 'text_snippets', '6', 'title', 'Chat Snippet 1'),
+                ('1', 'text_snippets.6', 'text_snippets', '6', 'snippet', 'Chat Snippet Content 1'),
+                ('1', 'text_snippets.7', 'text_snippets', '7', 'title', 'Chat Snippet 2'),
+                ('1', 'text_snippets.7', 'text_snippets', '7', 'snippet', 'Chat Snippet Content 2'),
+                ('1', 'text_snippets.8', 'text_snippets', '8', 'title', 'Chat Snippet 3'),
+                ('1', 'text_snippets.8', 'text_snippets', '8', 'snippet', 'Chat Snippet Content 3'),
+                ('1', 'text_snippets.9', 'text_snippets', '9', 'title', 'Chat Snippet 4'),
+                ('1', 'text_snippets.9', 'text_snippets', '9', 'snippet', 'Chat Snippet Content 4'),
+                ('1', 'text_snippets.10', 'text_snippets', '10', 'title', 'Chat Snippet 5'),
+                ('1', 'text_snippets.10', 'text_snippets', '10', 'snippet', 'Chat Snippet Content 5')
             ;
 SQL
         );

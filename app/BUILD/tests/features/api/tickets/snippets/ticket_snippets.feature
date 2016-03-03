@@ -15,24 +15,28 @@ Feature: /text_snippets endpoint
     And the JSON node "data" should have 4 elements
 
     And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].title" should be equal to "Ticket Snippet 1"
     And the JSON node "data[0].category" should be equal to 1
     And the JSON node "data[0].person" should be equal to 0
     And the JSON node "data[0].shortcut_code" should be equal to "ticket_snippet1"
     And the JSON node "data[0].is_draft" should be equal to 1
 
     And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].title" should be equal to "Ticket Snippet 2"
     And the JSON node "data[1].category" should be equal to 1
     And the JSON node "data[1].person" should be equal to 1
     And the JSON node "data[1].shortcut_code" should be equal to "ticket_snippet2"
     And the JSON node "data[1].is_draft" should be equal to 1
 
     And the JSON node "data[2].id" should be equal to 3
+    And the JSON node "data[2].title" should be equal to "Ticket Snippet 3"
     And the JSON node "data[2].category" should be equal to 2
     And the JSON node "data[2].person" should be equal to 1
     And the JSON node "data[2].shortcut_code" should be equal to "ticket_snippet3"
     And the JSON node "data[2].is_draft" should be equal to 0
 
     And the JSON node "data[3].id" should be equal to 5
+    And the JSON node "data[3].title" should be equal to "Ticket Snippet 5"
     And the JSON node "data[3].category" should be equal to 3
     And the JSON node "data[3].person" should be equal to 1
     And the JSON node "data[3].shortcut_code" should be equal to "ticket_snippet5"
