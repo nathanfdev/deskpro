@@ -33,11 +33,11 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
  * Class ObjectTranslatableListener.
@@ -50,10 +50,24 @@ class ObjectTranslatableListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return [
+            'postLoad',
             'postPersist',
             'postUpdate',
             'preRemove',
         ];
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        if (!$entity instanceof ObjectTranslatableInterface) {
+            return;
+        }
+
+        $entity->setObjectPropsTranslations($this->getLazyCriteriaCollection($entity, $args->getEntityManager()));
     }
 
     /**
@@ -83,9 +97,12 @@ class ObjectTranslatableListener implements EventSubscriber
         }
 
         $em    = $args->getEntityManager();
-        $query = $this
-            ->prepareQueryBuilder($entity, $em)
+        $query = $em
+            ->createQueryBuilder()
             ->delete()
+            ->from(ObjectLang::class, 'e')
+            ->where('e.ref = :ref')
+            ->setParameter('ref', $entity->getObjectRef())
             ->getQuery()
         ;
 
@@ -102,53 +119,48 @@ class ObjectTranslatableListener implements EventSubscriber
             return;
         }
 
-        $em           = $args->getEntityManager();
-        $object_langs = new ArrayCollection(
-            $this
-                ->prepareQueryBuilder($entity, $em)
-                ->select('e')
-                ->getQuery()
-                ->getResult()
-        );
+        $em = $args->getEntityManager();
 
-        /* @var ObjectLang $object_lang */
-        foreach ($entity->getObjectPropsTranslations() as $prop_name => $property_translations) {
-            // persist new and changed entities
-            foreach ($property_translations as $object_lang) {
-                $object_lang->setObject($entity);
-                $em->persist($object_lang);
+        $old_translations = $this->getLazyCriteriaCollection($entity, $em);
+        $new_translations = $entity->getObjectPropsTranslations();
+
+        // persist new and changed entities
+        foreach ($new_translations as $object_lang) {
+            /* @var ObjectLang $object_lang */
+            $object_lang->setObject($entity);
+            $em->persist($object_lang);
+            $em->flush($object_lang);
+        }
+
+        // remove deleted
+        foreach ($old_translations as $object_lang) {
+            if (!$new_translations->contains($object_lang)) {
+                $em->remove($object_lang);
                 $em->flush($object_lang);
-            }
-
-            // remove deleted
-            foreach ($object_langs as $object_lang) {
-                if ($object_lang->getPropName() === $prop_name && !$property_translations->contains($object_lang)) {
-                    $em->remove($object_lang);
-                    $em->flush($object_lang);
-                }
             }
         }
     }
 
     /**
-     * Returns entity related translations.
+     * @param ObjectTranslatableInterface $entity
      *
+     * @return Criteria
+     */
+    private function getCriteria(ObjectTranslatableInterface $entity)
+    {
+        return new Criteria(Criteria::expr()->eq('ref', $entity->getObjectRef()));
+    }
+
+    /**
      * @param ObjectTranslatableInterface $entity
      * @param EntityManager               $em
      *
-     * @return QueryBuilder
+     * @return LazyCriteriaCollection
      */
-    private function prepareQueryBuilder(ObjectTranslatableInterface $entity, EntityManager $em)
+    private function getLazyCriteriaCollection(ObjectTranslatableInterface $entity, EntityManager $em)
     {
-        $qb = $em->createQueryBuilder();
-        $qb
-            ->from(ObjectLang::class, 'e')
-            ->where('e.ref = :ref')
-            ->setParameters([
-                'ref' => $entity->getObjectRef(),
-            ])
-        ;
+        $persister = $em->getUnitOfWork()->getEntityPersister(ObjectLang::class);
 
-        return $qb;
+        return new LazyCriteriaCollection($persister, $this->getCriteria($entity));
     }
 }

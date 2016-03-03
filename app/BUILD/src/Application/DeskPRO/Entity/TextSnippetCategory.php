@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -85,6 +86,7 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
     public function __construct()
     {
         $this->getObjectTranslatable();
+        $this->props_translations = new ArrayCollection();
     }
 
     /**

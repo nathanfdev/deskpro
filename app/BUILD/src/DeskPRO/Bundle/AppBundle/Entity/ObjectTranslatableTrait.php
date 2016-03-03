@@ -31,7 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
  * Class ObjectTranslatableTrait.
@@ -39,17 +40,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 trait ObjectTranslatableTrait
 {
     /**
-     * @var array
+     * @var LazyCriteriaCollection
      */
-    protected $props_translations = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setObjectPropTranslations($prop_name, ArrayCollection $data)
-    {
-        $this->props_translations[$prop_name] = $data;
-    }
+    protected $props_translations;
 
     /**
      * {@inheritdoc}
@@ -57,5 +50,13 @@ trait ObjectTranslatableTrait
     public function getObjectPropsTranslations()
     {
         return $this->props_translations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setObjectPropsTranslations(Collection $collection)
+    {
+        $this->props_translations = $collection;
     }
 }

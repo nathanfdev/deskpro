@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,7 +69,7 @@ class ObjectLangCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onLoadData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDeferredData']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeData']);
     }
 
     /**
@@ -121,19 +122,19 @@ class ObjectLangCollectionType extends AbstractType
      */
     public function onLoadData(FormEvent $event)
     {
-        $context  = new ObjectLangContext($event);
-        $owner_id = $context->getOwner()->getId();
+        $context = new ObjectLangContext($event);
+        $owner   = $context->getOwner();
 
-        if ($owner_id) {
-            $data = $this->em->getRepository(ObjectLang::class)->findBy([
-                'ref'       => $context->getOwner()->getObjectRef(),
-                'prop_name' => $context->getPropName(),
-            ]);
+        if ($owner->getId()) {
+            $data = $owner
+                ->getObjectPropsTranslations()
+                ->matching(new Criteria(Criteria::expr()->eq('propName', $context->getPropName())))
+            ;
         } else {
-            $data = [];
+            $data = new ArrayCollection();
         }
 
-        $event->setData(new ArrayCollection($data));
+        $event->setData($data);
     }
 
     /**
@@ -142,9 +143,26 @@ class ObjectLangCollectionType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetDeferredData(FormEvent $event)
+    public function onMergeData(FormEvent $event)
     {
         $context = new ObjectLangContext($event);
-        $context->getOwner()->setObjectPropTranslations($context->getPropName(), $event->getData());
+        $owner   = $context->getOwner();
+
+        $all_objects  = $owner->getObjectPropsTranslations();
+        $prop_objects = $event->getData();
+
+        /** @var ObjectLang $object_lang */
+        foreach ($prop_objects as $object_lang) {
+            if (!$all_objects->contains($object_lang)) {
+                $all_objects->add($object_lang);
+            }
+        }
+        foreach ($all_objects as $object_lang) {
+            if ($object_lang->getPropName() === $context->getPropName() && !$prop_objects->contains($object_lang)) {
+                $all_objects->removeElement($object_lang);
+            }
+        }
+
+        $event->setData($all_objects);
     }
 }

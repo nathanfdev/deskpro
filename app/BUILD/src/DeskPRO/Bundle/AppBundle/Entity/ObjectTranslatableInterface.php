@@ -31,7 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Selectable;
 
 /**
  * Interface ObjectTranslatableInterface.
@@ -44,13 +45,12 @@ interface ObjectTranslatableInterface extends EntityInterface
     public function getObjectRef();
 
     /**
-     * @param string          $prop_name
-     * @param ArrayCollection $data
+     * @param Collection $collection
      */
-    public function setObjectPropTranslations($prop_name, ArrayCollection $data);
+    public function setObjectPropsTranslations(Collection $collection);
 
     /**
-     * @return ArrayCollection[]
+     * @return Collection|Selectable
      */
     public function getObjectPropsTranslations();
 }
