@@ -108,7 +108,10 @@ class ChatsController extends AbstractController
      *          200="Success",
      *      },
      *      output={
-     *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *          "class" = "array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
+     *          "parsers" = {
+     *              "Nelmio\ApiDocBundle\Parser\JmsMetadataParser"
+     *          }
      *      }
      * )
      *

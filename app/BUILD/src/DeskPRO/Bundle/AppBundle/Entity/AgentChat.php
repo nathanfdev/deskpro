@@ -82,6 +82,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
      * @Assert\NotNull()
+     * @JMS\Exclude()
      */
     protected $is_archived = false;
 
@@ -109,7 +110,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
      * @JMS\Type("array")
-     * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
+     * @JMS\Accessor(getter="getParticipantsIds", setter="addParticipant")
      */
     protected $participants;
 
@@ -230,6 +231,63 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     public function getParticipants()
     {
         return $this->participants;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("departments")
+     *
+     * @return array
+     */
+    public function getDepartments()
+    {
+        $ids = [];
+        foreach ($this->participants as $participant) {
+            if ($participant->getDepartmentId()) {
+                $ids[] = $participant->getDepartmentId();
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("agent_teams")
+     *
+     * @return array
+     */
+    public function getAgentTeamsIds()
+    {
+        $ids = [];
+        foreach ($this->participants as $participant) {
+            if ($participant->getTeamId()) {
+                $ids[] = $participant->getTeamId();
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("agents")
+     *
+     * @return array
+     */
+    public function getAgentsIds()
+    {
+        $ids = [];
+        foreach ($this->participants as $participant) {
+            if ($participant->getPersonId()) {
+                $ids[] = $participant->getPersonId();
+            }
+        }
+
+        return $ids;
     }
 
     public function getPersonList()
