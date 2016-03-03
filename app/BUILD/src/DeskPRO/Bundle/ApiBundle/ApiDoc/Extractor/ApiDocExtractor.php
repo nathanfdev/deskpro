@@ -60,13 +60,13 @@ class ApiDocExtractor extends BaseApiDocExtractor
             $exposed = true;
             if ($is_controller && $parts[0]) {
                 $reflection = new \ReflectionClass($parts[0]);
-                $action = TypeUtils::cleanAction($ctrl);
+                $action = TypeUtils::cleanAction($ctrl, true);
                 if (
                     $reflection->isSubclassOf(CrudController::class)
                     && in_array($action, $this->action_list)
                     && $expose = $reflection->getProperty('exposeOnly')->getValue()
                 ) {
-                    $exposed = in_array(TypeUtils::cleanAction($ctrl), $expose);
+                    $exposed = in_array($action, $expose);
                 }
             }
 
