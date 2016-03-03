@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -126,10 +125,7 @@ class ObjectLangCollectionType extends AbstractType
         $owner   = $context->getOwner();
 
         if ($owner->getId()) {
-            $data = $owner
-                ->getObjectPropsTranslations()
-                ->matching(new Criteria(Criteria::expr()->eq('propName', $context->getPropName())))
-            ;
+            $data = $owner->getObjectPropTranslations($context->getPropName());
         } else {
             $data = new ArrayCollection();
         }

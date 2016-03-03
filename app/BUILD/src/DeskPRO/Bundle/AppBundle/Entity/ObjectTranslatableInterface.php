@@ -53,4 +53,11 @@ interface ObjectTranslatableInterface extends EntityInterface
      * @return Collection|Selectable
      */
     public function getObjectPropsTranslations();
+
+    /**
+     * @param string $prop_name
+     *
+     * @return Collection
+     */
+    public function getObjectPropTranslations($prop_name);
 }

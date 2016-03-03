@@ -32,11 +32,13 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 
 /**
  * Class ObjectTranslatableTrait.
  *
- * @property Collection $props_translations
+ * @property Collection|Selectable $props_translations
  */
 trait ObjectTranslatableTrait
 {
@@ -54,5 +56,16 @@ trait ObjectTranslatableTrait
     public function setObjectPropsTranslations(Collection $collection)
     {
         $this->props_translations = $collection;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectPropTranslations($prop_name)
+    {
+        return $this
+            ->props_translations
+            ->matching(new Criteria(Criteria::expr()->eq('propName', $prop_name)))
+        ;
     }
 }
