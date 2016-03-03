@@ -71,6 +71,8 @@ return array(
     'api.error_codes.email_wrong_validation_code' => 'Wrong email validation code.',
     'api.error_codes.already_in_organization'     => 'That user is already in an organization.',
     'api.error_codes.not_unique_collection'       => 'One or more of the given values is not unique.',
+    'api.error_codes.too_few_count'               => '',
+    'api.error_codes.too_many_count'              => '',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

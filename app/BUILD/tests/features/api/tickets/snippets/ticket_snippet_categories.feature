@@ -67,15 +67,21 @@ Feature: /text_snippet_categories endpoint
 
   Scenario: I try to create a category with empty request
     When I send a POST request to "/api/v2/ticket_snippet_categories"
+    And print last JSON response
     Then the response status code should be 400
-    And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "too_few_count"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "too_few_count"
 
   Scenario: I create a new ticket snippet category
     When I send a POST request to "/api/v2/ticket_snippet_categories" with body:
     """
 {
-  "title": "My Category"
+  "title": [
+    {
+      "language": 1,
+      "value": "My Category"
+    }
+  ]
 }
     """
     Then the response status code should be 201
@@ -88,7 +94,12 @@ Feature: /text_snippet_categories endpoint
     When I send a PUT request to "/api/v2/ticket_snippet_categories/7" with body:
     """
 {
-  "title": "My Edited Category",
+  "title": [
+    {
+      "language": 1,
+      "value": "My Edited Category"
+    }
+  ],
   "is_global": 1
 }
     """

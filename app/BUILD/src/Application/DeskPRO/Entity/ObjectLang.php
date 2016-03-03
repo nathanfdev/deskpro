@@ -123,15 +123,21 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param object $object
+     *
+     * @return $this
      */
     public function setObject($object)
     {
         $this->_set_object = $object;
         $this->setRef($object->getObjectRef());
+
+        return $this;
     }
 
     /**
      * @param string $ref
+     *
+     * @return $this
      */
     public function setRef($ref)
     {
@@ -145,14 +151,28 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('ref_type', null);
             $this->setModelField('ref_id', null);
         }
+
+        return $this;
     }
 
     /**
      * @param string $prop_name
+     *
+     * @return $this
      */
     public function setPropName($prop_name)
     {
         $this->setModelField('prop_name', strtolower($prop_name));
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropName()
+    {
+        return $this->prop_name;
     }
 
     /**

@@ -35,9 +35,10 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TextSnippetCategory.
@@ -45,8 +46,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @method string getTitle()
  * @method setTitle()
  */
-class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
+class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject implements ObjectTranslatableInterface
 {
+    use ObjectTranslatableTrait;
+
     const TYPE_TICKET = 'tickets';
     const TYPE_CHAT   = 'chat';
 
@@ -75,6 +78,14 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
      * @var bool
      */
     protected $is_global = false;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->getObjectTranslatable();
+    }
 
     /**
      * @return int
@@ -140,16 +151,6 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
         return $this->is_global;
     }
 
-    /**
-     * @Assert\NotBlank()
-     *
-     * @return string
-     */
-    public function getTranslatedTitle()
-    {
-        return $this->getTitle();
-    }
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data          = parent::toApiData($primary, $deep, $visited);
@@ -174,7 +175,7 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 
     public static function loadObjectTranslatableMetadata()
     {
-        return array('fields' => array('title'));
+        return ['fields' => ['title']];
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

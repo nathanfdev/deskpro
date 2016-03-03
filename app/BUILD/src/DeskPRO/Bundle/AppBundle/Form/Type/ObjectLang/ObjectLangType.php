@@ -29,14 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 
 use Application\DeskPRO\Entity\Language;
-use Application\ImportBundle\Entity\ObjectLang;
+use Application\DeskPRO\Entity\ObjectLang;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -55,6 +58,8 @@ class ObjectLangType extends AbstractType
             ])
             ->add('value', 'html_textarea')
         ;
+
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetRelations']);
     }
 
     /**
@@ -62,30 +67,35 @@ class ObjectLangType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        /* @var OptionsResolver $resolver */
         $resolver
             ->setDefaults([
-                'default_language' => false,
-                'class'            => ObjectLang::class,
-                'compound'         => function (Options $options) {
-                    return !$options['default_language'];
-                },
+                'data_class'     => ObjectLang::class,
+                'error_bubbling' => false,
             ])
             ->setRequired([
-                'ref_type',
                 'prop_name',
+                'owner',
             ])
             ->addAllowedTypes([
-                'ref_type'  => 'string',
                 'prop_name' => 'string',
+                'owner'     => ObjectTranslatableInterface::class,
             ])
         ;
     }
 
     /**
-     * {@inheritdoc}
+     * @param FormEvent $event
      */
-    public function getParent()
+    public function onSetRelations(FormEvent $event)
     {
-        return 'collection';
+        $context = new ObjectLangContext($event);
+
+        /* @var ObjectLang $object_lang */
+        $data = $event->getData();
+        $data
+            ->setObject($context->getOwner())
+            ->setPropName($context->getPropName())
+        ;
     }
 }

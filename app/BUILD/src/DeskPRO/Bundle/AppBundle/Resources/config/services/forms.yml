@@ -312,3 +312,9 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType
     tags:
       - { name: form.type, alias: ticket_description }
+
+  form.object_lang_collection:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang\ObjectLangCollectionType
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: form.type, alias: object_lang_collection }

@@ -37,7 +37,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TextSnippet.
+ */
 class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
@@ -54,11 +58,15 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\TextSnippetCategory
+     *
+     * @Assert\NotNull()
      */
     protected $category;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $shortcut_code = '';
 
@@ -67,6 +75,9 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $is_draft = false;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->getObjectTranslatable();
