@@ -52,7 +52,7 @@ class ObjectTranslatableListener implements EventSubscriber
         return [
             'postPersist',
             'postUpdate',
-            'postRemove',
+            'preRemove',
         ];
     }
 
@@ -75,19 +75,21 @@ class ObjectTranslatableListener implements EventSubscriber
     /**
      * @param LifecycleEventArgs $args
      */
-    public function postRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
         if (!$entity instanceof ObjectTranslatableInterface) {
             return;
         }
 
-        $this
-            ->prepareQueryBuilder($entity, $args->getEntityManager())
+        $em    = $args->getEntityManager();
+        $query = $this
+            ->prepareQueryBuilder($entity, $em)
             ->delete()
             ->getQuery()
-            ->execute()
         ;
+
+        $query->execute();
     }
 
     /**
