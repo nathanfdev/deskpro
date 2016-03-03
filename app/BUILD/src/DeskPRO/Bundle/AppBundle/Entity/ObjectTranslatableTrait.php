@@ -36,7 +36,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 
 /**
- * Class ObjectTranslatableTrait.
+ * Helper to work with ObjectLang entities.
  *
  * @property Collection|Selectable $props_translations
  */

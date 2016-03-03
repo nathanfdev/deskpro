@@ -35,26 +35,39 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Selectable;
 
 /**
+ * Uses to work with ObjectLang entities.
+ * Add this interface to an entity to enable post load set of property translations lazy collection.
+ *
+ * It will work with object lang data via ObjectTranslatableListener.
+ *
  * Interface ObjectTranslatableInterface.
  */
 interface ObjectTranslatableInterface extends EntityInterface
 {
     /**
+     * Returns object ref in format like entity_name.{id}.
+     *
      * @return string
      */
     public function getObjectRef();
 
     /**
+     * Set a collection of entity translations.
+     *
      * @param Collection $collection
      */
     public function setObjectPropsTranslations(Collection $collection);
 
     /**
+     * Returns a collection of entity translations.
+     *
      * @return Collection|Selectable
      */
     public function getObjectPropsTranslations();
 
     /**
+     * Returns a collection of entity translations filtered by property name.
+     *
      * @param string $prop_name
      *
      * @return Collection
