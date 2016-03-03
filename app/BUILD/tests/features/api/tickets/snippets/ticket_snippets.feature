@@ -96,6 +96,36 @@ Feature: /text_snippets endpoint
     And the JSON node "errors.fields.shortcut_code.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.shortcut_code.errors[0].message" should be equal to "This value should not be blank."
 
+  Scenario: I try to create a ticket snippet with wrong object lang data
+    When I send a POST request to "/api/v2/ticket_snippets" with body:
+    """
+{
+  "title": [
+    {
+      "language": 0,
+      "value": ""
+    }
+  ],
+  "snippet": [
+    {
+      "language": 0,
+      "value": ""
+    }
+  ]
+}
+    """
+    Then the response status code should be 400
+
+    And the JSON node "errors.fields.title.fields.title_0.fields.language.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.title.fields.title_0.fields.language.errors[0].message" should be equal to "One or more of the given values is invalid."
+    And the JSON node "errors.fields.title.fields.title_0.fields.value.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.title.fields.title_0.fields.value.errors[0].message" should be equal to "This value should not be blank."
+
+    And the JSON node "errors.fields.snippet.fields.snippet_0.fields.language.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.snippet.fields.snippet_0.fields.language.errors[0].message" should be equal to "One or more of the given values is invalid."
+    And the JSON node "errors.fields.snippet.fields.snippet_0.fields.value.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.snippet.fields.snippet_0.fields.value.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I add a new text snippet
     When I send a POST request to "/api/v2/ticket_snippets" with body:
     """

@@ -175,11 +175,17 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     # Doctrine Metadata
     ############################################################################
 
+    /**
+     * @deprecated use $props_translations instead
+     */
     public function getObjectTranslatable()
     {
         return ObjectTranslatable::loadObjectTranslatable($this);
     }
 
+    /**
+     * @deprecated use $props_translations instead
+     */
     public static function loadObjectTranslatableMetadata()
     {
         return array('fields' => array('title', 'snippet'));

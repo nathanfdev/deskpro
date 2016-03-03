@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
@@ -63,9 +64,11 @@ trait ObjectTranslatableTrait
      */
     public function getObjectPropTranslations($prop_name)
     {
-        return $this
+        $filtered = $this
             ->props_translations
             ->matching(new Criteria(Criteria::expr()->eq('propName', $prop_name)))
         ;
+
+        return new ArrayCollection($filtered->getValues());
     }
 }
