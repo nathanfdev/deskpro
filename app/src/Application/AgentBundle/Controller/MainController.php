@@ -127,11 +127,30 @@ class MainController extends AbstractController
             WHERE p.is_agent = true AND s.date_last > ?
         ', array($cutoff));
 
-        $with_chat_perm = array();
+        $online_chat_agent_ids = $this->db->fetchAllCol('
+            SELECT p.id
+            FROM sessions s
+            JOIN people AS p ON p.id = s.person_id
+            WHERE s.is_chat_available = 1 AND p.is_agent = true AND s.date_last > ?
+        ', array($cutoff));
+
+        $with_chat_perm    = array();
+        $without_chat_perm = array();
         foreach ($this->container->getAgentData()->getAgents() as $a) {
             if ($a->hasPerm('agent_chat.use')) {
                 $with_chat_perm[] = $a->id;
+            } elseif (in_array($a->id, $online_chat_agent_ids)) {
+                $without_chat_perm[] = $a->id;
             }
+        }
+
+        if ($without_chat_perm) {
+            $this->db->update(
+                'sessions',
+                array('is_chat_available' => 0),
+                array('person_id'         => $without_chat_perm),
+                array('person_id'         => Connection::PARAM_INT_ARRAY)
+            );
         }
 
         if ($with_chat_perm) {
