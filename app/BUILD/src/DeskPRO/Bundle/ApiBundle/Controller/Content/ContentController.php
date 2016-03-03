@@ -82,7 +82,7 @@ class ContentController extends BaseController
 
         $params = $this->removeAdditionalParameters($request);
         try {
-
+            /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria $criteria */
             // API interfaces for all content types are identical, however articles is different from
             // news and downloads internally because of Category relation (Article::$categories, while
             // News::$category and Download::$category)
@@ -130,6 +130,7 @@ class ContentController extends BaseController
 
         $params = $params = $this->removeAdditionalParameters($request);
         try {
+            /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria $criteria */
             $criteria = $type === 'articles'
                 ? ArticlesCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()])
                 : ContentCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);

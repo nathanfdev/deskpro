@@ -100,14 +100,8 @@ class ArticlePendingCreateController extends BaseController
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService $dataService */
         $dataService = $this->get('data.apc');
-
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('apc')
-            ->from(ArticlePendingCreate::class, 'apc');
-
-        $params = $this->removeAdditionalParameters($request);
-        $params = $dataService->normalizeAssigned($params, $this->getUser());
+        $params      = $this->removeAdditionalParameters($request);
+        $params      = $dataService->normalizeAssigned($params, $this->getUser());
 
         try {
             $criteria = ArticlePendingCreateCriteria::fromParameters(

@@ -33,22 +33,24 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ArticlePendingCreateCriteria.
  */
-class ArticlePendingCreateCriteria extends Criteria
+class ArticlePendingCreateCriteria extends Criteria implements SortableCriteriaInterface
 {
+    use Sortable;
+
     /**
      * @param QueryBuilder $qb
      */
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
-        $order = 'asc';
 
         foreach ($this->filters as $field => $value) {
             switch ($field) {
@@ -56,15 +58,16 @@ class ArticlePendingCreateCriteria extends Criteria
                     $qb->andWhere("$alias.assigned_person = :id");
                     $qb->setParameter('id', $value);
                     break;
-                case 'sort':
-                    $sort = "$alias.$value";
-                    break;
-                case 'order':
-                    $order = "$value";
-                    break;
             }
         }
-        $qb->orderBy($sort, $order);
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues()
+    {
+        return ['date_created', 'assigned_person'];
     }
 
     /**
@@ -72,13 +75,7 @@ class ArticlePendingCreateCriteria extends Criteria
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {
-        $resolver->setDefined(
-            [
-                'assigned_person',
-                'order',
-                'sort',
-            ]
-        );
+        $resolver->setDefined(['assigned_person']);
 
         $resolver->setAllowedValues(
             'assigned_person',
@@ -86,7 +83,5 @@ class ArticlePendingCreateCriteria extends Criteria
                 return is_int($value) || ctype_digit($value) || ($value === 'me');
             }
         );
-
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

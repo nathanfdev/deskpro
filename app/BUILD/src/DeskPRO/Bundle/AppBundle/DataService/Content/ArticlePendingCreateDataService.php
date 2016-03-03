@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -63,7 +63,7 @@ class ArticlePendingCreateDataService
      *
      * @return Pagerfanta
      */
-    public function selectAPC(Criteria $criteria, $page, $count)
+    public function selectAPC(ArticlePendingCreateCriteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -71,8 +71,9 @@ class ArticlePendingCreateDataService
             ->select('apc')
             ->from('DeskPRO:ArticlePendingCreate', 'apc');
         $criteria->applyFilters($qb);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $criteria->applySorting($qb);
+        $apc   = $qb->getQuery()->getResult();
+        $pager = new Pagerfanta(new ArrayAdapter($apc));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 

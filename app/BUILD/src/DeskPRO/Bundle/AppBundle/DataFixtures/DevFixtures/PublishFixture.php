@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
@@ -44,6 +45,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     const NUM_PUBLISH    = 100;
     const NUM_CATEGORIES = 10;
     const NUM_COMMENTS   = 30;
+    const NUM_APC        = 10;
     const MIN_CATEGORIES = 0;
     const MAX_CATEGORIES = 3;
 
@@ -149,6 +151,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
         $this->loadExampleArticle();
         $this->loadExampleNew();
+        $this->loadAPC();
         $manager->flush();
 
         foreach ($this->content as $content => $params) {
@@ -336,5 +339,22 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         }
 
         return $batch;
+    }
+
+    private function loadAPC()
+    {
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_APC) {
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+            $values      = [
+                'comment'            => $this->faker->realText(300),
+                'person_id'          => $this->getReference('admin')->getId(),
+                'assigned_person_id' => $this->faker->randomElement($this->people),
+                'date_created'       => $dateCreated,
+            ];
+            $batch[] = $values;
+        }
+        $this->db->batchInsert(self::TABLE_ARTICLE_PENDING_CREATE, $batch, true);
     }
 }
