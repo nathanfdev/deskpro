@@ -155,7 +155,7 @@ class FeedbackController extends BaseController
         $count = $dataService->countFeedback($criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }

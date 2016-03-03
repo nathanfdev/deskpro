@@ -70,7 +70,7 @@ class FeedbackTypeController extends BaseController
         $types = $qb->getQuery()->getArrayResult();
 
         return View::create(
-            $this->createRepresentation($types),
+            $this->dataSerialize($types),
             Response::HTTP_OK
         );
     }

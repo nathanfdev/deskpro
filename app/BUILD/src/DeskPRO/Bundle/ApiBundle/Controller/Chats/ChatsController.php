@@ -63,6 +63,10 @@ class ChatsController extends BaseController
      *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Get("/user_chats/counts", name="api_chats_count")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function getCountsAction(Request $request)
     {
@@ -71,6 +75,7 @@ class ChatsController extends BaseController
 
         $params = $this->removeAdditionalParameters($request);
         try {
+            /** @var ChatCountCriteria $criteria */
             $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -79,7 +84,7 @@ class ChatsController extends BaseController
         $count = $dataService->countChats($criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }
@@ -94,6 +99,10 @@ class ChatsController extends BaseController
      *      }
      * )
      * @Get("/user_chats", name="api_chats")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function getAction(Request $request)
     {
@@ -109,6 +118,7 @@ class ChatsController extends BaseController
         }
 
         try {
+            /** @var ChatSelectCriteria $criteria */
             $criteria = ChatSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());

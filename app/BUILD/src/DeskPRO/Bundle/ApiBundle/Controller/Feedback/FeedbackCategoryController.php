@@ -56,11 +56,11 @@ class FeedbackCategoryController extends BaseController
      * )
      * @Get("/feedback_categories", name="api_feedback_categories")
      *
-     * @param Request $request
-     *
      * @return View
+     *
+     * @internal param Request $request
      */
-    public function cgetAction(Request $request)
+    public function cgetAction()
     {
         /* @ToDo move below functionality into repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
@@ -76,7 +76,7 @@ class FeedbackCategoryController extends BaseController
         $categories = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($categories),
+            $this->dataSerialize($categories),
             Response::HTTP_OK
         );
     }

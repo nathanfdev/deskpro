@@ -96,7 +96,7 @@ class ContentController extends BaseController
         $count = $dataService->countContent($this->getClass($type), $criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }

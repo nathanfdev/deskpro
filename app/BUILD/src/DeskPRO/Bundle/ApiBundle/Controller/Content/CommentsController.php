@@ -92,7 +92,7 @@ class CommentsController extends BaseController
         $count = $dataService->countComments($this->getClass($type), $criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }

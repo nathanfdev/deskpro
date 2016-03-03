@@ -129,7 +129,7 @@ class FeedbackCommentController extends BaseController
         $comments = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($comments),
+            $this->dataSerialize($comments),
             Response::HTTP_OK
         );
     }
@@ -278,7 +278,7 @@ class FeedbackCommentController extends BaseController
         $em->flush();
 
         return View::create(
-            $this->createRepresentation([]),
+            $this->dataSerialize([]),
             Response::HTTP_ACCEPTED
         );
     }
@@ -311,7 +311,7 @@ class FeedbackCommentController extends BaseController
         $count = $this->get('data.feedback_comments')->countAwaitingValidation();
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }
