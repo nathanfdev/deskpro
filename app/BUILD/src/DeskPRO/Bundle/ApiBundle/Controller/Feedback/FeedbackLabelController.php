@@ -80,7 +80,7 @@ class FeedbackLabelController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation($labels),
+            $this->dataSerialize($labels),
             Response::HTTP_OK
         );
     }

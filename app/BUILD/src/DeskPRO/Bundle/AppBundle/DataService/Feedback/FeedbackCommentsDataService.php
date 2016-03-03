@@ -36,9 +36,44 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use Doctrine\ORM\Query\QueryException;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
 
 class FeedbackCommentsDataService extends AbstractDataService
 {
+    /**
+     * Select filtered list of feedback.
+     *
+     * @param FeedbackCommentsSelectCriteria $criteria
+     * @param int                            $page
+     * @param int                            $count
+     *
+     * @return array
+     */
+    public function selectComments(FeedbackCommentsSelectCriteria $criteria, $page, $count)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from('DeskPRO:FeedbackComment', 'c')
+            ->innerJoin('c.feedback', 'feedback')
+            ->leftJoin('feedback.status_category', 'statusCategory')
+            ->leftJoin('feedback.custom_data', 'customCat')
+            ->leftJoin('feedback.labels', 'labels')
+            ->leftJoin('feedback.category', 'category')
+            ->leftJoin('feedback.person', 'person');
+        $criteria->applyFilters($qb);
+        $criteria->applySorting($qb);
+
+        $comments = $qb->getQuery()->getResult();
+
+        $pager = new Pagerfanta(new ArrayAdapter($comments));
+        $pager->setMaxPerPage($count);
+        $pager->setCurrentPage($page);
+
+        return $pager;
+    }
+
     /**
      * @return Count
      */

@@ -37,6 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -47,6 +48,9 @@ use Symfony\Component\Form\Exception\AlreadySubmittedException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * API access to feedback comments.
@@ -72,69 +76,18 @@ class FeedbackCommentController extends BaseController
      */
     public function cgetAction(Request $request)
     {
-        /* @ToDo move below functionality into FeedbackComment repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $qb
-            ->select('c')
-            ->from('DeskPRO:FeedbackComment', 'c')
-            ->innerJoin('c.feedback', 'feedback');
-        $awaitingValidation = $request->get('awaiting_validation');
-        $sort               = $request->get('sort');
-        $order              = $request->get('order');
-        $category           = $request->get('category');
-        $custom_category    = $request->get('custom_category');
-        $status             = $request->get('status');
-        $status_category    = $request->get('status_category');
-        $labels             = $request->get('labels');
-        $created_from       = $request->get('created_from');
-        $created_to         = $request->get('created_to');
-        if ($awaitingValidation) {
-            $qb
-                ->orWhere('c.is_reviewed = 0');
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsDataService $dataService */
+        $dataService = $this->get('data.feedback_comments');
+        $params      = $this->removeAdditionalParameters($request);
+        try {
+            /** @var FeedbackCommentsSelectCriteria $criteria */
+            $criteria = FeedbackCommentsSelectCriteria::fromParameters($params, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
         }
-        if ($sort && $order) {
-            $qb->orderBy("c.$sort", $order);
-        }
-        if ($category) {
-            $qb
-                ->innerJoin('feedback.category', 'type')
-                ->andWhere('type.title IN (:type)')
-                ->setParameter('type', $category);
-        }
-        if ($custom_category) {
-            $qb
-                ->innerJoin('feedback.custom_data', 'category')
-                ->andWhere('category.input IN (:category)')
-                ->setParameter('category', $custom_category);
-        }
-        if ($status) {
-            $qb
-                ->andWhere('feedback.status IN (:status)')
-                ->setParameter('status', $status);
-        }
-        if ($status_category) {
-            $qb
-                ->innerJoin('feedback.status_category', 'statusCategory')
-                ->andWhere('statusCategory.title IN (:title)')
-                ->setParameter('title', $status_category);
-        }
-        if ($labels) {
-            $qb
-                ->innerJoin('feedback.labels', 'labels')
-                ->andWhere('labels.label IN (:labels)')
-                ->setParameter('labels', $labels);
-        }
-        if ($created_from) {
-            $qb
-                ->andWhere('c.date_created >= DATE(:created_from)')
-                ->setParameter('created_from', $created_from);
-        }
-        if ($created_to) {
-            $qb
-                ->andWhere('c.date_created <= DATE(:created_to)')
-                ->setParameter('created_to', $created_to);
-        }
-        $comments = $qb->getQuery()->getResult();
+        $page     = $request->query->get('page', 1);
+        $count    = $request->query->get('count', 5);
+        $comments = $dataService->selectComments($criteria, $page, $count);
 
         return View::create(
             $this->dataSerialize($comments),
@@ -176,7 +129,7 @@ class FeedbackCommentController extends BaseController
         $comments = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($comments),
+            $this->dataSerialize($comments),
             Response::HTTP_OK
         );
     }
@@ -325,7 +278,7 @@ class FeedbackCommentController extends BaseController
         $em->flush();
 
         return View::create(
-            $this->createRepresentation([]),
+            $this->dataSerialize([]),
             Response::HTTP_ACCEPTED
         );
     }
@@ -358,7 +311,7 @@ class FeedbackCommentController extends BaseController
         $count = $this->get('data.feedback_comments')->countAwaitingValidation();
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }

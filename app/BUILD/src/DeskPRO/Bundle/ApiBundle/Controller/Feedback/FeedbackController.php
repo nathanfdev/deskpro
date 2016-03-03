@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
 use Application\ImportBundle\Generator\Exporter\DeskPRO;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -148,6 +147,7 @@ class FeedbackController extends BaseController
         $dataService = $this->get('data.feedback');
         $params      = $this->removeAdditionalParameters($request);
         try {
+            /** @var FeedbackCountCriteria $criteria */
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -155,7 +155,7 @@ class FeedbackController extends BaseController
         $count = $dataService->countFeedback($criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }

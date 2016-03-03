@@ -79,6 +79,6 @@ class AgentsController extends CrudController
     {
         $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
 
-        return View::create($this->createRepresentation($agent_ids));
+        return View::create($this->dataSerialize($agent_ids));
     }
 }

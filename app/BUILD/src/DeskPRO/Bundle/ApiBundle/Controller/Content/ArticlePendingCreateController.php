@@ -65,6 +65,10 @@ class ArticlePendingCreateController extends BaseController
      *      }
      * )
      * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function getTotalCountAction(Request $request)
     {
@@ -80,7 +84,7 @@ class ArticlePendingCreateController extends BaseController
         $count = Count::fromValue($total);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }
@@ -95,19 +99,17 @@ class ArticlePendingCreateController extends BaseController
      *      }
      * )
      * @Get("/article_pending_creates", name="api_article_pending_creates")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function listAction(Request $request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService $dataService */
         $dataService = $this->get('data.apc');
-
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('apc')
-            ->from(ArticlePendingCreate::class, 'apc');
-
-        $params = $this->removeAdditionalParameters($request);
-        $params = $dataService->normalizeAssigned($params, $this->getUser());
+        $params      = $this->removeAdditionalParameters($request);
+        $params      = $dataService->normalizeAssigned($params, $this->getUser());
 
         try {
             $criteria = ArticlePendingCreateCriteria::fromParameters(

@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
-use DeskPRO\Bundle\AppBundle\Data\Criteria\CriteriaInterface;
+use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -55,22 +56,24 @@ class ContentDataService
     }
 
     /**
-     * @param string            $class    Concrete content entity class
-     * @param CriteriaInterface $criteria
-     * @param int               $page
-     * @param int               $count
+     * @param string              $class    Concrete content entity class
+     * @param BaseContentCriteria $criteria
+     * @param int                 $page
+     * @param int                 $count
      *
      * @return Pagerfanta
      */
-    public function selectContent($class, CriteriaInterface $criteria, $page, $count)
+    public function selectContent($class, BaseContentCriteria $criteria, $page, $count)
     {
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('c')
            ->from($class, 'c');
         $criteria->applyFilters($qb);
+        $criteria->applySorting($qb);
+        $content = $qb->getQuery()->getResult();
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager = new Pagerfanta(new ArrayAdapter($content));
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
