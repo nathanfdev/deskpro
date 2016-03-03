@@ -678,7 +678,7 @@ define [
       return def
 
     getFilterOrgId: (options = {}) ->
-      options.propName = 'org_ids'
+      options.propName = 'id'
       options.operators = ['is', 'not']
       options.url = '/organizations'
       options.isMulti = true

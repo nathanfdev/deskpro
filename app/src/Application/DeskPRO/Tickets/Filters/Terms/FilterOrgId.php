@@ -49,7 +49,7 @@ class FilterOrgId extends AbstractFilterTerm
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addRequiredNames('org_ids');
+        $options->addRequiredNames('id');
 
         return $options;
     }
@@ -60,7 +60,7 @@ class FilterOrgId extends AbstractFilterTerm
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
         $options = $this->getTermOptions();
-        $query   = $this->getIdMatchQuery('tickets.organization_id', $options->get('org_ids'));
+        $query   = $this->getIdMatchQuery('tickets.organization_id', $options->get('id'));
 
         return $query;
     }
