@@ -173,6 +173,9 @@ class TicketListRenderer
 
         foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
             if ($ticket->$field) {
+                if ($timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null) {
+                    $ticket->$field->setTimezone($timezone);
+                }
                 $data[$field]        = $ticket->$field->format('Y-m-d H:i:s');
                 $data["{$field}_ts"] = $ticket->$field->getTimestamp();
             }

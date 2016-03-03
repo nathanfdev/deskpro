@@ -352,9 +352,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
 			var ticketId = parseInt(info.ticket_id),
 				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
-				isLocked = info.is_locked;
+				data;
 
-			self.mergeTicketData(ticketId, { locked_by_agent: byAgentId });
+			if (info.is_locked) {
+				data = {
+					locked_by_agent: {
+						id: byAgentId,
+						display_name: info.locked_by_name
+					},
+					date_locked: moment().format('YYYY-MM-DD HH:mm:ss')
+				};
+			} else {
+				data = {
+					locked_by_agent: null,
+					date_locked: null
+				}
+			}
+
+			self.mergeTicketData(ticketId, data);
 		}, null, [this.OBJ_ID]);
 
 		if (this.meta.groupBy && this.filterId) {
