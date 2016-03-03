@@ -41,7 +41,6 @@ use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -56,11 +55,9 @@ class PersonNotesController extends CrudController
     public static $type       = PersonNoteType::class;
 
     /**
+     * {@inheritdoc}
+     *
      * @Get("/people/{id}/notes")
-     *
-     * @param Request $request
-     *
-     * @return View
      */
     public function listAction(Request $request)
     {
@@ -68,11 +65,9 @@ class PersonNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Post("/people/{id}/notes")
-     *
-     * @param Request $request
-     *
-     * @return View
      */
     public function postAction(Request $request)
     {
@@ -80,16 +75,13 @@ class PersonNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Put("/people/{person_id}/notes/{id}")
-     *
-     * @param int     $id
-     * @param Request $request
-     *
-     * @return View
      */
     public function putAction($id, Request $request)
     {
-        $entity = $this->findEntity($id);
+        $entity = $this->findEntity($id, $request);
         if ($entity->getPerson()->getId() !== (int) $request->get('person_id')) {
             throw $this->createBadRequestException();
         }
@@ -101,16 +93,13 @@ class PersonNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Delete("/people/{person_id}/notes/{id}")
-     *
-     * @param int     $id
-     * @param Request $request
-     *
-     * @return View
      */
     public function deleteAction($id, Request $request)
     {
-        $entity = $this->findEntity($id);
+        $entity = $this->findEntity($id, $request);
         if ($entity->getPerson()->getId() !== (int) $request->get('person_id')) {
             throw $this->createBadRequestException();
         }
@@ -122,9 +111,7 @@ class PersonNotesController extends CrudController
     }
 
     /**
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
+     * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
@@ -134,9 +121,7 @@ class PersonNotesController extends CrudController
     }
 
     /**
-     * @param Request $request
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function instantiateEntity(Request $request)
     {

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -102,7 +101,7 @@ abstract class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        if (!$entity = $this->findEntity($id)) {
+        if (!$entity = $this->findEntity($id, $request)) {
             throw $this->createNotFoundException();
         }
 
@@ -222,12 +221,17 @@ abstract class CrudController extends BaseController
      *      }
      * )
      * @Put("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return View
      */
     public function putAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm($entity = $this->findEntity($id), $request);
+        return $this->handleForm($entity = $this->findEntity($id, $request), $request);
     }
 
     /**
@@ -248,12 +252,17 @@ abstract class CrudController extends BaseController
      *      }
      * )
      * @Delete("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return View
      */
     public function deleteAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
 
-        $entity = $this->findEntity($id);
+        $entity = $this->findEntity($id, $request);
         $this->deleteEntity($entity);
 
         return View::create([], Response::HTTP_OK);
@@ -313,11 +322,12 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * @param int $id
+     * @param int     $id
+     * @param Request $request
      *
      * @return object
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         return $this->findOr404(static::$entity, $id);
     }

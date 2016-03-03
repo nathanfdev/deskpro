@@ -55,6 +55,8 @@ class OrganizationNotesController extends CrudController
     public static $type       = OrganizationNoteType::class;
 
     /**
+     * {@inheritdoc}
+     *
      * @Get("/organizations/{id}/notes")
      */
     public function listAction(Request $request)
@@ -63,6 +65,8 @@ class OrganizationNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Post("/organizations/{id}/notes")
      */
     public function postAction(Request $request)
@@ -71,11 +75,13 @@ class OrganizationNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Put("/organizations/{organization_id}/notes/{id}")
      */
     public function putAction($id, Request $request)
     {
-        $entity = $this->findEntity($id);
+        $entity = $this->findEntity($id, $request);
         if ($entity->getOrganization()->getId() !== (int) $request->get('organization_id')) {
             throw $this->createBadRequestException();
         }
@@ -87,11 +93,13 @@ class OrganizationNotesController extends CrudController
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @Delete("/organizations/{organization_id}/notes/{id}")
      */
     public function deleteAction($id, Request $request)
     {
-        $entity = $this->findEntity($id);
+        $entity = $this->findEntity($id, $request);
         if ($entity->getOrganization()->getId() !== (int) $request->get('organization_id')) {
             throw $this->createBadRequestException();
         }
@@ -103,9 +111,7 @@ class OrganizationNotesController extends CrudController
     }
 
     /**
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
+     * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
@@ -115,9 +121,7 @@ class OrganizationNotesController extends CrudController
     }
 
     /**
-     * @param Request $request
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function instantiateEntity(Request $request)
     {

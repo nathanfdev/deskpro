@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
-use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
@@ -50,6 +49,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TextSnippetsController extends CrudController
 {
+    use ContextTypeTrait;
+
     public static $entity    = TextSnippet::class;
     public static $type      = TextSnippetType::class;
     public static $listOrder = 'asc';
@@ -65,6 +66,7 @@ class TextSnippetsController extends CrudController
     {
         $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
             '_controller' => 'ApiBundle:TextSnippets\TextSnippets:list',
+            'context'     => $masterRequest->attributes->get('context'),
         ]);
         $request->query->add($params);
 
@@ -79,7 +81,7 @@ class TextSnippetsController extends CrudController
         $qb
             ->join('e.category', 'c')
             ->andWhere('c.typename = :category_type')
-            ->setParameter('category_type', TextSnippetCategory::TYPE_TICKET)
+            ->setParameter('category_type', $this->getSnippetTypeName($request))
         ;
 
         if ($request->query->get('my')) {
@@ -113,13 +115,13 @@ class TextSnippetsController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         /** @var TextSnippet $entity */
-        $entity   = parent::findEntity($id);
+        $entity   = parent::findEntity($id, $request);
         $category = $entity->getCategory();
 
-        if ($category && $category->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
+        if ($category && $category->getTypename() !== $this->getSnippetTypeName($request)) {
             throw $this->createNotFoundException();
         }
         if ($entity->getPerson() && $entity->getPerson() !== $this->getUser()) {

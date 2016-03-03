@@ -51,6 +51,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TextSnippetCategoriesController extends CrudController
 {
+    use ContextTypeTrait;
+
     public static $entity    = TextSnippetCategory::class;
     public static $type      = TextSnippetCategoryType::class;
     public static $listOrder = 'asc';
@@ -83,7 +85,7 @@ class TextSnippetCategoriesController extends CrudController
     {
         /** @var HttpKernelInterface $kernel */
         $kernel   = $this->get('kernel');
-        $category = $this->findEntity($id);
+        $category = $this->findEntity($id, $request);
 
         if (!$category) {
             throw $this->createNotFoundException();
@@ -115,7 +117,7 @@ class TextSnippetCategoriesController extends CrudController
 
         $qb
             ->andWhere('e.typename = :typename')
-            ->setParameter('typename', TextSnippetCategory::TYPE_TICKET)
+            ->setParameter('typename', $this->getSnippetTypeName($request))
         ;
     }
 
@@ -125,7 +127,7 @@ class TextSnippetCategoriesController extends CrudController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'type'   => TextSnippetCategory::TYPE_TICKET,
+            'type'   => $this->getSnippetTypeName($request),
             'person' => $this->getUser(),
         ]);
 
@@ -135,11 +137,11 @@ class TextSnippetCategoriesController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         /** @var TextSnippetCategory $entity */
-        $entity = parent::findEntity($id);
-        if ($entity->getTypename() !== TextSnippetCategory::TYPE_TICKET) {
+        $entity = parent::findEntity($id, $request);
+        if ($entity->getTypename() !== $this->getSnippetTypeName($request)) {
             throw $this->createNotFoundException();
         }
         if (!$entity->getIsGlobal() && $entity->getPerson() !== $this->getUser()) {

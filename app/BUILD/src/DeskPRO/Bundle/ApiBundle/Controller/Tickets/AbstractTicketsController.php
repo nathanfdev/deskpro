@@ -68,7 +68,7 @@ abstract class AbstractTicketsController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         $entity = $this->getTicketManager()->getTicket($id);
         if (!$entity) {
