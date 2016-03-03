@@ -31,7 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class TextSnippetCategoryTransformer.
@@ -39,11 +41,26 @@ use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 class TextSnippetCategoryTransformer extends AbstractDataSerializerTransformer
 {
     /**
+     * @var TokenStorageInterface
+     */
+    private $token_storage;
+
+    /**
+     * Constructor.
+     *
+     * @param TokenStorageInterface $token_storage
+     */
+    public function __construct(TokenStorageInterface $token_storage)
+    {
+        $this->token_storage = $token_storage;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAutomaticProperties(DataTransformerRequest $transformation_request)
     {
-        return ['id', 'title', 'person', 'is_global'];
+        return ['id', 'person', 'is_global'];
     }
 
     /**
@@ -51,6 +68,12 @@ class TextSnippetCategoryTransformer extends AbstractDataSerializerTransformer
      */
     public function getCustomProperties(DataTransformerRequest $transformation_request)
     {
-        return [];
+        /** @var TextSnippetCategory $data */
+        $data = $transformation_request->getDataToBeTransformed();
+        $user = $this->token_storage->getToken()->getUser();
+
+        return [
+            'title' => $data->getTitle(),
+        ];
     }
 }
