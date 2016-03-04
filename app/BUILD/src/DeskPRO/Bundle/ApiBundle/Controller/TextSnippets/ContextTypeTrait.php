@@ -31,8 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
-use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -83,7 +81,7 @@ trait ContextTypeTrait
         } else {
             // look by lang code or locale
             $language = $this
-                ->getRepository(Language::class)
+                ->getRepository('DeskPRO:Language')
                 ->createQueryBuilder('l')
                 ->where('l.locale = :language OR l.lang_code = :language')
                 ->setParameter('language', $query->get('language'))
@@ -95,7 +93,7 @@ trait ContextTypeTrait
         }
 
         $qb
-            ->join(ObjectLang::class, 'o', Join::WITH, 'o.ref_id = e.id')
+            ->join('DeskPRO:ObjectLang', 'o', Join::WITH, 'o.ref_id = e.id')
             ->andWhere(
                 'o.language = :language',
                 'o.ref_type = :ref_type'
