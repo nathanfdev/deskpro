@@ -82,14 +82,30 @@ class TextSnippetsController extends CrudController
      *
      * @param Request $request
      * @param int     $id
+     * @param string  $context
      *
      * @return TextSnippetContent[]
      */
-    public function getContentAction(Request $request, $id)
+    public function getContentAction(Request $request, $id, $context)
     {
-        $entity = $this->findEntity($id, $request);
+        $entity   = $this->findEntity($id, $request);
+        $contents = $entity->getTextSnippetContents();
 
-        return $this->dataSerialize($entity->getTextSnippetContent());
+        // if related entity id was provided then we need to process the text replacements
+        $context_entity_id = $request->query->getInt($context);
+        if ($context_entity_id) {
+            $twig_renderer            = $this->get('twig_template_renderer');
+            $context_params[$context] = $this->findOr404($this->getContextEntityClass($request), $context_entity_id)->toApiData();
+
+            foreach ($contents as $content) {
+                $content
+                    ->setTitle($twig_renderer->renderStringTemplate($content->getTitle(), $context_params))
+                    ->setContent($twig_renderer->renderStringTemplate($content->getContent(), $context_params))
+                ;
+            }
+        }
+
+        return $this->dataSerialize($contents);
     }
 
     /**

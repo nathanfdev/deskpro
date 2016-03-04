@@ -1035,8 +1035,8 @@ SQL
                 ('2', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
                 ('3', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
 
-                ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet (en) 1'),
-                ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content (en) 1'),
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet {{ ticket.subject }} (en) 1'),
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content {{ ticket.person.name }} (en) 1'),
                 ('2', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet (fr) 1'),
                 ('2', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content (fr) 1'),
 

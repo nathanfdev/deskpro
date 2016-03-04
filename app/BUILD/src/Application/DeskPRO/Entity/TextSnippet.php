@@ -168,7 +168,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     /**
      * @return TextSnippetContent[]
      */
-    public function getTextSnippetContent()
+    public function getTextSnippetContents()
     {
         $result = [];
         foreach ($this->props_translations as $translation) {

@@ -65,6 +65,21 @@ trait ContextTypeTrait
     }
 
     /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getContextEntityClass(Request $request)
+    {
+        switch ($this->getSnippetTypeName($request)) {
+            case TextSnippetCategory::TYPE_TICKET:
+                return 'DeskPRO:Ticket';
+            default:
+                throw new NotFoundHttpException();
+        }
+    }
+
+    /**
      * @param Request      $request
      * @param QueryBuilder $qb
      * @param string       $ref_type
