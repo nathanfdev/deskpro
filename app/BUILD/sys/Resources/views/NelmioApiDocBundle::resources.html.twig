@@ -1,0 +1,53 @@
+{% extends "NelmioApiDocBundle::layout.html.twig" %}
+
+{% block content %}
+    <style type="text/css">
+        .content span.tag {
+            color: #FFFFFF;
+            font-size: 0.7em;
+            vertical-align: baseline;
+            background-color: #d9534f;
+            padding-bottom: 3px;
+            padding-left: 6px;
+            padding-right: 6px;
+            padding-top: 2px;
+            border-radius: 4px;
+        }
+    </style>
+    {% for section, sections in resources  %}
+
+        <li class="section">
+            <div class="actions">
+                <a class="action-show-hide">Show/hide</a>
+                <a class="action-list">List Operations</a>
+                <a class="action-expand">Expand Operations</a>
+            </div>
+            <h1>{{ section != '_others' ? section : 'Others' }}</h1>
+            <ul class="section-list" style="display: none">
+
+                {% for resource, methods in sections %}
+                    <li class="resource">
+                        <div class="heading">
+                            {% if section == '_others' and resource != 'others' %}
+                                <h2>{{ resource }}</h2>
+                            {% elseif resource != 'others' %}
+                                <h2>{{ resource }}</h2>
+                            {% endif %}
+                        </div>
+                        <ul class="endpoints">
+                            <li class="endpoint">
+                                <ul class="operations">
+                                    {% for data in methods %}
+                                        {% include 'NelmioApiDocBundle::method.html.twig' %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </li>
+
+    {% endfor %}
+{% endblock content %}

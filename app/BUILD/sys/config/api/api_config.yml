@@ -86,6 +86,8 @@ fos_rest:
 
 nelmio_api_doc:
     name: 'DeskPRO API Documentation'
+    motd:
+      template: 'ApiBundle::apidocs/motd.html.twig'
     sandbox:
       authentication:
         name: Authorization
