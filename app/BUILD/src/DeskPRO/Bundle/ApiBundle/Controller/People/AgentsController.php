@@ -37,12 +37,14 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 
 /**
  * Class AgentsController.
  *
  * @ApiModes("all")
+ * @Route("/agents")
  */
 class AgentsController extends CrudController
 {
@@ -53,7 +55,7 @@ class AgentsController extends CrudController
      *          200="Success"
      *      }
      * )
-     * @Get("/agents", name="api_agents")
+     * @Get("/", name="api_agents")
      *
      * @return View
      */
@@ -71,7 +73,7 @@ class AgentsController extends CrudController
      *          200="Success"
      *      }
      * )
-     * @Get("/agents/online", name="api_agents_online")
+     * @Get("/online", name="api_agents_online")
      *
      * @return View
      */

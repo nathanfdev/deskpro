@@ -43,7 +43,6 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
