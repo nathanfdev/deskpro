@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -36,15 +37,19 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 
 /**
  * Class AgentsController.
  *
  * @ApiModes("all")
+ * @Route("/agents")
  */
 class AgentsController extends CrudController
 {
+    public static $exposeOnly = ['list'];
+
     /**
      * @ApiDoc(
      *      description="get a list of all agents w/o pagination",
@@ -52,11 +57,11 @@ class AgentsController extends CrudController
      *          200="Success"
      *      }
      * )
-     * @Get("/agents", name="api_agents")
+     * @Get("", name="api_agents")
      *
      * @return View
      */
-    public function getAllAgentsAction()
+    public function listAction()
     {
         $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
 
