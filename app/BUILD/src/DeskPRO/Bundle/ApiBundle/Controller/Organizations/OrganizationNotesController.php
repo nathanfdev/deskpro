@@ -31,16 +31,10 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationNoteType;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -48,91 +42,23 @@ use Symfony\Component\HttpFoundation\Request;
  * Class OrganizationNotesController.
  *
  * @ApiModes("all")
- * @Route("/organizations")
+ * @Route("/organizations/{parentId}/notes")
  */
-class OrganizationNotesController extends CrudController
+class OrganizationNotesController extends CrudSubController
 {
-    public static $exposeOnly = ['list', 'post', 'put', 'delete'];
-    public static $entity     = OrganizationNote::class;
-    public static $type       = OrganizationNoteType::class;
+    public static $entity         = OrganizationNote::class;
+    public static $parentProperty = 'organization';
+    public static $type           = OrganizationNoteType::class;
 
     /**
      * {@inheritdoc}
-     *
-     * @Get("/{id}/notes")
      */
-    public function listAction(Request $request)
+    protected function findEntity($id, Request $request)
     {
-        return parent::listAction($request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Post("/{id}/notes")
-     */
-    public function postAction(Request $request)
-    {
-        return parent::postAction($request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Put("/{organization_id}/notes/{id}")
-     */
-    public function putAction($id, Request $request)
-    {
-        $entity = $this->findEntity($id, $request);
-        if ($entity->getOrganization()->getId() !== (int) $request->get('organization_id')) {
-            throw $this->createBadRequestException();
-        }
+        $entity = parent::findEntity($id, $request);
         if ($entity->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
-
-        return parent::putAction($id, $request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Delete("/{organization_id}/notes/{id}")
-     */
-    public function deleteAction($id, Request $request)
-    {
-        $entity = $this->findEntity($id, $request);
-        if ($entity->getOrganization()->getId() !== (int) $request->get('organization_id')) {
-            throw $this->createBadRequestException();
-        }
-        if ($entity->getAgent() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        return parent::deleteAction($id, $request);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $organization = $this->findOr404(Organization::class, $request->get('id'));
-        $qb->andWhere("{$alias}.organization = :organization");
-        $qb->setParameter('organization', $organization->getId());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        $organization = $this->findOr404(Organization::class, $request->get('id'));
-
-        /** @var OrganizationNote $entity */
-        $entity               = new static::$entity();
-        $entity->agent        = $this->getUser();
-        $entity->organization = $organization;
 
         return $entity;
     }
