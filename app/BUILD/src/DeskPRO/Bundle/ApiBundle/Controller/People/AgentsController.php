@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AgentsController.
@@ -59,9 +60,11 @@ class AgentsController extends CrudController
      * )
      * @Get("", name="api_agents")
      *
+     * @param Request $request
+     *
      * @return View
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
         $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
 
