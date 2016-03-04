@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
@@ -59,7 +58,12 @@ class Helper
         $this->serializer = $serializer;
     }
 
-    public function createCountResponse($count)
+    /**
+     * @param array $count
+     *
+     * @return array
+     */
+    public function createCountResponse(array $count)
     {
         $data = [];
         foreach ($count as $cnt) {
@@ -68,9 +72,9 @@ class Helper
         $chat_ids = array_keys($data);
 
         // this looks like very, VERY dirty hack. Smells :(
-        $chats_data = $this->serializer->serialize($this->messenger->getChats($chat_ids));
-        foreach ($chats_data['data'] as $chat) {
-            $data[$chat['id']]['chat'] = $chat;
+        $chats = $this->messenger->getChats($chat_ids);
+        foreach ($chats as $chat) {
+            $data[$chat->getId()]['chat'] = $chat;
         }
 
         return $data;

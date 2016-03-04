@@ -182,7 +182,7 @@ class Messenger
     /**
      * @param array $ids
      *
-     * @return array
+     * @return AgentChat[]
      */
     public function getChats(array $ids)
     {
