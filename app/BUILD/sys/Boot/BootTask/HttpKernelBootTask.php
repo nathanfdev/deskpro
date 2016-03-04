@@ -109,22 +109,72 @@ class HttpKernelBootTask implements BootTaskInterface
     {
         $path = $request->getPathInfo();
 
-        if (preg_match('#^/agent(/|\?|$)#', $path)) {
-            return 'agent';
-        } elseif (preg_match('#^/new-agent(/|\?|$)#', $path)) {
-            return 'agentv2';
-        } elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
-            return 'admin';
-        } elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
-            return 'reports';
-        } elseif (preg_match('#^/api/v2(/|\?|$)#', $path)) {
-            return 'apiv2';
-        } elseif (preg_match('#^/api(/|\?|$)#', $path)) {
-            return 'api';
-        } elseif (preg_match('#^/install(/|\?|$)#', $path)) {
-            return 'install';
-        } else {
+        if ($this->isUrlSegmentPrefix($path, '/dp')
+            || $path === '/favicon.ico'
+            || $path === '/sitemap.xml'
+            || $path === '/robots.txt'
+        ) {
             return 'user';
         }
+
+        if ($this->isUrlSegmentPrefix($path, '/agent')) {
+            return 'agent';
+        }
+        if ($this->isUrlSegmentPrefix($path, '/new-agent')) {
+            return 'agentv2';
+        }
+        if ($this->isUrlSegmentPrefix($path, '/admin')) {
+            return 'admin';
+        }
+        if ($this->isUrlSegmentPrefix($path, '/reports')) {
+            return 'reports';
+        }
+        if ($this->isUrlSegmentPrefix($path, '/api/v2')) {
+            return 'apiv2';
+        }
+        if ($this->isUrlSegmentPrefix($path, '/api')) {
+            return 'apiv2';
+        }
+
+        return 'user';
+    }
+
+    /**
+     * Checks $path to see if it has $seg prefix.
+     *
+     * <code>
+     * isUrlSegmentPrefix('/foo/bar/baz', '/foo');
+     * // roughly same as regex:
+     * // (but we use this func as a micro-optimisation)
+     * preg_match('/^\/foo(\/|$)/', '/foo/bar/baz')
+     * </code>
+     *
+     * @param string $path The request path
+     * @param string $seg  The URL prefix we are testing for
+     *
+     * @return bool
+     */
+    private function isUrlSegmentPrefix($path, $seg)
+    {
+        $len = strlen($seg);
+
+        if (
+            // has at least that many chars
+            isset($path[$len - 1])
+
+            // has that prefix
+            && substr($path, 0, $len) === $seg
+
+            // Make sure nothing else (other than a slash) after the prefix
+            // e.g. this is so matching '/foo' matches '/foo/' but not '/foobar'
+            && (
+                !isset($path[$len])
+                || $path[$len] === '/'
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
