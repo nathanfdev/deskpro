@@ -44,13 +44,13 @@ Feature: /ticket_snippet_categories endpoint
 
     When I send a GET request to "/api/v2/ticket_snippet_categories?language=fre"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 2
 
-    When I send a GET request to "/api/v2/ticket_snippet_categories?language=3"
+    When I send a GET request to "/api/v2/ticket_snippet_categories?language=2"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 3
+    And the JSON node "data[0].id" should be equal to 2
 
     When I send a GET request to "/api/v2/ticket_snippet_categories?language=Unknown_Lang"
     Then the response status code should be 200
