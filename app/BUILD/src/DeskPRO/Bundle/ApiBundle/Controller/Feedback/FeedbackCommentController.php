@@ -65,7 +65,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="get list of feedback comments",
      *      statusCodes={
      *          200="Returned if everything is ok",
@@ -179,7 +179,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="get counter of comments for feedback",
      *      statusCodes={
      *          200="Success"
@@ -230,7 +230,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="get a comment",
      *      requirements={
      *          {
@@ -268,7 +268,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="update a comment",
      *      requirements={
      *          {
@@ -326,7 +326,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="delete feedback comment",
      *      requirements={
      *          {
@@ -381,7 +381,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="approve comments",
      *      requirements={
      *          {
@@ -430,7 +430,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"comments"},
+     *      tags={"feedback"="#4422bb", "comments"},
      *      description="get count of feedback comment awaiting validation",
      *      parameters={
      *          {

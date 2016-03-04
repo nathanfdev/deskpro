@@ -57,6 +57,8 @@ class FeedbackController extends BaseController
 {
     /**
      * @ApiDoc(
+     *      section="Feedback",
+     *      tags={"feedback"="#4422bb"},
      *      description="get a filtered list of feedback",
      *      parameters={
      *          {
@@ -122,6 +124,8 @@ class FeedbackController extends BaseController
 
     /**
      * @ApiDoc(
+     *      section="Feedback",
+     *      tags={"feedback"="#4422bb"},
      *      description="Get feedback counts",
      *      statusCodes={
      *          200="Success",
