@@ -64,7 +64,7 @@ class FeedbackCommentController extends BaseController
      * Fetch all feedback comments list.
      *
      * @ApiDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="get list of feedback comments",
      *      statusCodes={
@@ -178,7 +178,7 @@ class FeedbackCommentController extends BaseController
      * Count overall feedback comments or count for given feedbacks.
      *
      * @ApiDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="get counter of comments for feedback",
      *      statusCodes={
@@ -229,7 +229,7 @@ class FeedbackCommentController extends BaseController
      * Get a specific comment.
      *
      * @ApiDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="get a comment",
      *      requirements={
@@ -267,7 +267,7 @@ class FeedbackCommentController extends BaseController
      * The endpoint gives you an ability to modify comments status, content and  'status',.
      *
      * @APIDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="update a comment",
      *      requirements={
@@ -325,7 +325,7 @@ class FeedbackCommentController extends BaseController
      * This endpoint gives you an ability do delete exactly one feedback comment.
      *
      * @APIDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="delete feedback comment",
      *      requirements={
@@ -380,7 +380,7 @@ class FeedbackCommentController extends BaseController
      * This endpoint gives you an ability to approve comments with given ids.
      *
      * @APIDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="approve comments",
      *      requirements={
@@ -429,7 +429,7 @@ class FeedbackCommentController extends BaseController
      * Fetch a list of feedback comments awaiting validation.
      *
      * @ApiDoc(
-     *      section="feedback",
+     *      section="Feedback",
      *      tags={"comments"},
      *      description="get count of feedback comment awaiting validation",
      *      parameters={
