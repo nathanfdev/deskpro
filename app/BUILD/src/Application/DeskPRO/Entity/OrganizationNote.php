@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -45,6 +46,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
+     *
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -54,6 +57,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Organization
      *
      * @Assert\NotNull()
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      */
     protected $organization;
 
@@ -64,11 +69,15 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      *
      * @Assert\NotNull()
      * @AppAssert\User(type="agent")
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $agent;
 
     /**
      * @var \DateTime
+     *
+     * @JMS\Type("DateTime")
      */
     protected $date_created;
 
@@ -78,6 +87,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * @var string
      *
      * @Assert\NotBlank()
+     *
+     * @JMS\Type("string")
      */
     protected $note;
 
