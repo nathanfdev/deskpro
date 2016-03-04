@@ -143,6 +143,17 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             return $this->lang_code;
         }
 
+        /**
+         * @return string
+         */
+        public function getLocale()
+        {
+            return $this->locale;
+        }
+
+        /**
+         * @return string
+         */
         public function getSystemName()
         {
             return $this->sys_name;

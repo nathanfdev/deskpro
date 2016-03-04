@@ -34,9 +34,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
 use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -71,6 +74,22 @@ class TextSnippetsController extends CrudController
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    }
+
+    /**
+     * @Get("/{id}/content")
+     * @View()
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return TextSnippetContent[]
+     */
+    public function getContentAction(Request $request, $id)
+    {
+        $entity = $this->findEntity($id, $request);
+
+        return $this->dataSerialize($entity->getTextSnippetContent());
     }
 
     /**

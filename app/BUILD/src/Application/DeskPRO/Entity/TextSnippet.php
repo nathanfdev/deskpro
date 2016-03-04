@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -81,7 +82,7 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     protected $is_draft = false;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|ObjectLang[]
      */
     protected $props_translations;
 
@@ -162,6 +163,32 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
     public function getSnippetTranslations()
     {
         return $this->getObjectPropTranslations('snippet');
+    }
+
+    /**
+     * @return TextSnippetContent[]
+     */
+    public function getTextSnippetContent()
+    {
+        $result = [];
+        foreach ($this->props_translations as $translation) {
+            $language = $translation->getLanguage();
+
+            if (!isset($result[$language->getLocale()])) {
+                $content                        = new TextSnippetContent($language);
+                $result[$language->getLocale()] = $content;
+            } else {
+                $content = $result[$language->getLocale()];
+            }
+
+            if ($translation->getPropName() === 'snippet') {
+                $content->setContent($translation->getValue());
+            } else {
+                $content->setTitle($translation->getValue());
+            }
+        }
+
+        return $result;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())

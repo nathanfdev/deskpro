@@ -15,7 +15,7 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data" should have 4 elements
 
     And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[0].title" should be equal to "Ticket Snippet 1"
+    And the JSON node "data[0].title" should be equal to "Ticket Snippet (en) 1"
     And the JSON node "data[0].category" should be equal to 1
     And the JSON node "data[0].person" should be equal to 0
     And the JSON node "data[0].shortcut_code" should be equal to "ticket_snippet1"
@@ -88,9 +88,10 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?language=fre"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
-    And the JSON node "data[0].id" should be equal to 2
-    And the JSON node "data[1].id" should be equal to 5
+    And the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[2].id" should be equal to 5
 
     When I send a GET request to "/api/v2/ticket_snippets?language=3"
     Then the response status code should be 200
@@ -104,6 +105,14 @@ Feature: /ticket_snippets endpoint
     When I send a GET request to "/api/v2/ticket_snippets?language=404"
     Then the response status code should be 200
     And the JSON node "data" should have 0 elements
+
+  Scenario: I retrieve ticket snippet content
+    When I send a GET request to "/api/v2/ticket_snippets/1/content"
+    Then the response status code should be 200
+    And the JSON node "data.en_US.title" should be equal to "Ticket Snippet (en) 1"
+    And the JSON node "data.en_US.content" should be equal to "Ticket Snippet Content (en) 1"
+    And the JSON node "data.fr.title" should be equal to "Ticket Snippet (fr) 1"
+    And the JSON node "data.fr.content" should be equal to "Ticket Snippet Content (fr) 1"
 
   Scenario: I try to create a ticket snippet with empty request
     When I send a POST request to "/api/v2/ticket_snippets"
