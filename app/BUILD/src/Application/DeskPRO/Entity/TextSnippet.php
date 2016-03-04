@@ -173,14 +173,12 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements Ob
         $result = [];
         foreach ($this->props_translations as $translation) {
             $language = $translation->getLanguage();
-
             if (!isset($result[$language->getLocale()])) {
-                $content                        = new TextSnippetContent($language);
-                $result[$language->getLocale()] = $content;
-            } else {
-                $content = $result[$language->getLocale()];
+                $result[$language->getLocale()] = new TextSnippetContent($language);
             }
 
+            /** @var TextSnippetContent $content */
+            $content = $result[$language->getLocale()];
             if ($translation->getPropName() === 'snippet') {
                 $content->setContent($translation->getValue());
             } else {
