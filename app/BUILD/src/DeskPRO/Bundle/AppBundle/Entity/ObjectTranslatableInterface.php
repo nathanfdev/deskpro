@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\ObjectLang;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Selectable;
 
@@ -52,14 +54,14 @@ interface ObjectTranslatableInterface extends EntityInterface
     /**
      * Set a collection of entity translations.
      *
-     * @param Collection $collection
+     * @param Collection|ObjectLang[] $collection
      */
     public function setObjectPropsTranslations(Collection $collection);
 
     /**
      * Returns a collection of entity translations.
      *
-     * @return Collection|Selectable
+     * @return Collection|Selectable|ObjectLang[]
      */
     public function getObjectPropsTranslations();
 
@@ -68,7 +70,27 @@ interface ObjectTranslatableInterface extends EntityInterface
      *
      * @param string $prop_name
      *
-     * @return Collection
+     * @return Collection|ObjectLang[]
      */
     public function getObjectPropTranslations($prop_name);
+
+    /**
+     * Returns language specific translation.
+     *
+     * @param string   $prop_name
+     * @param Language $language
+     *
+     * @return ObjectLang|null
+     */
+    public function getObjectPropLanguageTranslation($prop_name, Language $language = null);
+
+    /**
+     * Returns language specific translation value.
+     *
+     * @param string        $prop_name
+     * @param Language|null $language
+     *
+     * @return string
+     */
+    public function getObjectPropLanguageTranslationValue($prop_name, Language $language = null);
 }

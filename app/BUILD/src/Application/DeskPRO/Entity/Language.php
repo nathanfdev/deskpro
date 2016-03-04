@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -134,6 +133,14 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             } else {
                 return $this->locale;
             }
+        }
+
+        /**
+         * @return string
+         */
+        public function getLangCode()
+        {
+            return $this->lang_code;
         }
 
         public function getSystemName()

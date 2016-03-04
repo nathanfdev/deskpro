@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -70,10 +71,11 @@ class TextSnippetTransformer extends AbstractDataSerializerTransformer
     {
         /** @var TextSnippet $data */
         $data = $transformation_request->getDataToBeTransformed();
+        /** @var Person $user */
         $user = $this->token_storage->getToken()->getUser();
 
         return [
-            'title' => $data->getTitle(),
+            'title' => $data->getObjectPropLanguageTranslationValue('title', $user->getLanguage()),
         ];
     }
 }

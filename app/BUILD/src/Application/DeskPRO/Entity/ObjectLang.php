@@ -196,6 +196,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $this->value;
     }
 
+    /**
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
     public function _resetRefCode()
     {
         if ($this->_set_object) {
