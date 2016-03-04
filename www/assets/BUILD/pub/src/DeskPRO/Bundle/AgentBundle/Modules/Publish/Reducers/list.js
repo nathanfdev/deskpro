@@ -11,8 +11,8 @@ const initialState = {
   view: constants.VIEW_MODE_CARD,
   // currently viewed list GET parameters map
   currentListParams: {
-    sort: 'date_created',
-    order: constants.ORDER_DESC,
+    order_by: 'date_created',
+    order_dir: constants.ORDER_DESC,
     // which list is displayed
     content: 'articles'
   }

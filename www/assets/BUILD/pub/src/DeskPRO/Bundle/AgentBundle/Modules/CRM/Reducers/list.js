@@ -12,8 +12,8 @@ const initialState = {
   // currently viewed list GET parameters map
   currentListParams: {
     content: 'people',
-    sort: 'name',
-    order: constants.ORDER_ASC,
+    order_by: 'name',
+    order_dir: constants.ORDER_ASC,
     is_deleted: 0
   }
 };

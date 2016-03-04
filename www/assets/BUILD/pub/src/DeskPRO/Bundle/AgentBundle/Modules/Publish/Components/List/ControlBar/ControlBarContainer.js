@@ -1,24 +1,24 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector }
+import { currentListOrderBySelector, currentListOrderDirSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector }
   from '../../../Selectors/list';
-import { setSort, setOrder, applyParams }
+import { setOrderBy, setOrderDir, applyParams }
   from '../../../Actions/publishListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  sort: currentListSortSelector(state),
-  order: currentListOrderSelector(state),
+  orderBy: currentListOrderBySelector(state),
+  orderDir: currentListOrderDirSelector(state),
   filterParams: currentListParamsSelector(state),
   filters: listFiltersSelector(state),
   viewMode: currentViewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     filterParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired
@@ -33,10 +33,10 @@ export class ControlBarContainer extends Component {
           date_updated: { label: 'Updated', icon: 'calendar-o' },
           person: { label: 'Author', icon: 'calendar' }
         },
-        sort: this.props.sort,
-        order: this.props.order,
-        sortAction: setSort,
-        orderAction: setOrder
+        orderBy: this.props.orderBy,
+        orderDir: this.props.orderDir,
+        orderByAction: setOrderBy,
+        orderDirAction: setOrderDir
       },
       filtering: {
         filters: this.props.filters,

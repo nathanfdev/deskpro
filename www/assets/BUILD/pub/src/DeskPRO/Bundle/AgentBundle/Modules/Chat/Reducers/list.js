@@ -1,13 +1,13 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload } from 'Ampliflux/reducers/handlers';
+import { async, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/chatListActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const initialState = {
   viewMode: constants.VIEW_MODE_CARD,
   currentListParams: {
-    sort: 'date_created',
-    order: constants.ORDER_DESC
+    order_by: 'date_created',
+    order_dir: constants.ORDER_DESC
   }
 };
 

@@ -80,11 +80,11 @@ export const applyParams = createAction(
   }
 );
 
-export const setSort = createAction(
-  'CRM_LIST_SET_SORT',
-    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
+export const setOrderBy = createAction(
+  'CRM_LIST_SET_ORDER_BY',
+    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy, delayReload: true }))
 );
-export const setOrder = createAction(
-  'CRM_LIST_SET_ORDER',
-    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
+export const setOrderDir = createAction(
+  'CRM_LIST_SET_ORDER_DIR',
+    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir, delayReload: true }))
 );

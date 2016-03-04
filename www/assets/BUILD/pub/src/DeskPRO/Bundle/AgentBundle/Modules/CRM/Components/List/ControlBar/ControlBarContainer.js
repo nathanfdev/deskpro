@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { currentListSortSelector, currentListOrderSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector, currentContentSelector }
+import { currentListOrderBySelector, currentListOrderDirSelector, currentListParamsSelector, listFiltersSelector, currentViewModeSelector, currentContentSelector }
   from '../../../Selectors/list';
-import { setSort, setOrder, applyParams }
+import { setOrderBy, setOrderDir, applyParams }
   from '../../../Actions/crmListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -10,8 +10,8 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 @connect(state => ({
   content: currentContentSelector(state),
-  sort: currentListSortSelector(state),
-  order: currentListOrderSelector(state),
+  orderBy: currentListOrderBySelector(state),
+  orderDir: currentListOrderDirSelector(state),
   filters: listFiltersSelector(state),
   filterParams: currentListParamsSelector(state),
   viewMode: currentViewModeSelector(state)
@@ -20,8 +20,8 @@ export class ControlBarContainer extends Component {
 
   static propTypes = {
     content: PropTypes.string.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     filters: PropTypes.array.isRequired,
     filterParams: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired
@@ -36,10 +36,10 @@ export class ControlBarContainer extends Component {
           date_created: { label: 'Created', icon: 'calendar' },
           name: { label: 'Name', icon: 'sort-alpha-asc' }
         },
-        sort: this.props.sort,
-        order: this.props.order,
-        sortAction: setSort,
-        orderAction: setOrder
+        orderBy: this.props.orderBy,
+        orderDir: this.props.orderDir,
+        orderByAction: setOrderBy,
+        orderDirAction: setOrderDir
       },
       filtering: {
         filters: this.props.filters,

@@ -42,7 +42,7 @@ export class Nav extends Component {
               <ul>
                 <ListItemContainer group="organizations"
                                    label="all"
-                                   listOptions={{content: 'organizations', sort: 'name', order: constants.ORDER_ASC}}>
+                                   listOptions={{content: 'organizations', orderBy: 'name', orderDir: constants.ORDER_ASC}}>
                   <ListItem count={organizations.get('count')} label="All Organizations"/>
                 </ListItemContainer>
               </ul>

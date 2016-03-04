@@ -6,8 +6,8 @@ const stateSelector = state => state.Tasks.list;
 
 export const currentNavSelector = hashStateSelectorFactory(['nav', 'active']);
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
-export const currentSortSelector = hashStateSelectorFactory(['list', 'sort'], 'date_created');
-export const currentOrderSelector = hashStateSelectorFactory(['list', 'order'], 'desc');
+export const currentOrderBySelector = hashStateSelectorFactory(['list', 'order_by'], 'date_created');
+export const currentOrderDirSelector = hashStateSelectorFactory(['list', 'order_dir'], 'desc');
 
 export const listParamsNavSelector = createSelector(
   stateSelector,

@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import {
-  currentListSortSelector, currentListOrderSelector, currentListParamsSelector, currentViewModeSelector,
+  currentListOrderBySelector, currentListOrderDirSelector, currentListParamsSelector, currentViewModeSelector,
   visibleFieldsSelector
 } from '../../../Selectors/list';
 import { listFiltersSelector} from '../../../Selectors/filters';
-import { setSort, setOrder, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
+import { setOrderBy, setOrderDir, applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from '../../../Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
@@ -13,8 +13,8 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  sort: currentListSortSelector(state),
-  order: currentListOrderSelector(state),
+  orderBy: currentListOrderBySelector(state),
+  orderDir: currentListOrderDirSelector(state),
   filterParams: currentListParamsSelector(state),
   filters: listFiltersSelector(state),
   viewMode: currentViewModeSelector(state),
@@ -22,8 +22,8 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     filterParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
@@ -39,10 +39,10 @@ export class ControlBarContainer extends Component {
           total_rating: { label: 'Rating', icon: 'calendar-o' },
           num_ratings: { label: 'Votes', icon: 'calendar' }
         },
-        sort: this.props.sort,
-        order: this.props.order,
-        sortAction: setSort,
-        orderAction: setOrder
+        orderBy: this.props.orderBy,
+        orderDir: this.props.orderDir,
+        orderByAction: setOrderBy,
+        orderDirAction: setOrderDir
       },
       filtering: {
         filters: this.props.filters,

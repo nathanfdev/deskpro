@@ -3,21 +3,21 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { connect } from 'react-redux';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
-import { listSortSelector, listOrderSelector, viewModeSelector }
+import { listOrderBySelector, listOrderDirSelector, viewModeSelector }
   from '../../../Selectors/list';
 import { changeSort, toggleOrder, applyParams }
   from '../../../Actions/chatListActions';
 
 @connect(state => ({
-  sort: listSortSelector(state),
-  order: listOrderSelector(state),
+  orderBy: listOrderBySelector(state),
+  orderDir: listOrderDirSelector(state),
   viewMode: viewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
@@ -30,8 +30,8 @@ export class ControlBarContainer extends Component {
           agent: { label: 'Agent', icon: 'calendar' },
           department: { label: 'Department', icon: 'calendar-o' }
         },
-        sort: this.props.sort,
-        order: this.props.order,
+        orderBy: this.props.orderBy,
+        orderDir: this.props.orderDir,
         sortAction: changeSort,
         orderAction: toggleOrder
       },

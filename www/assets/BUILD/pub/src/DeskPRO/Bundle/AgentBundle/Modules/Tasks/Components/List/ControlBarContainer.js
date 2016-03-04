@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { applySort, applyOrder, applyFilters } from '../../Actions/listActions';
+import { applyOrderBy, applyOrderDir, applyFilters } from '../../Actions/listActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 import {
   currentViewModeSelector,
-  currentSortSelector,
-  currentOrderSelector,
+  currentOrderBySelector,
+  currentOrderDirSelector,
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
@@ -26,8 +26,8 @@ import {
 
 @connect(state => ({
   viewMode: currentViewModeSelector(state),
-  sort: currentSortSelector(state),
-  order: currentOrderSelector(state),
+  orderBy: currentOrderBySelector(state),
+  orderDir: currentOrderDirSelector(state),
   cardVisibleFields: cardVisibleFieldsSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
@@ -39,8 +39,8 @@ export class ControlBarContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired,
     cardVisibleFields: PropTypes.object.isRequired,
     tableVisibleFields: PropTypes.object.isRequired,
@@ -56,7 +56,7 @@ export class ControlBarContainer extends React.Component {
   }
 
   render() {
-    const { sort, order, labels = [], listFilters, viewMode } = this.props;
+    const { orderBy, orderDir, labels = [], listFilters, viewMode } = this.props;
     const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields } = this.props;
 
     const config = {
@@ -70,11 +70,11 @@ export class ControlBarContainer extends React.Component {
           assignee: {label: 'Assignee', icon: 'user'}
         },
 
-        sort: sort,
-        sortAction: applySort,
+        orderBy: orderBy,
+        orderByAction: applyOrderBy,
 
-        order: order,
-        orderAction: applyOrder
+        orderDir: orderDir,
+        orderDirAction: applyOrderDir
       },
       filtering: {
         filters: [

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
@@ -179,8 +180,8 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
-                case 'sort':
-                    $order = isset($this->filters['order']) ? $this->filters['order'] : 'asc';
+                case 'orderBy':
+                    $order = isset($this->filters['orderDir']) ? $this->filters['orderDir'] : 'asc';
 
                     switch ($value) {
                         case 'id':
@@ -293,8 +294,8 @@ class TasksSelectCriteria extends Criteria
                 'not_assigned_department',
                 'creator',
                 'project',
-                'sort',
-                'order',
+                'orderBy',
+                'orderDir',
                 'label',
                 'label_mode',
                 'created_from',
@@ -330,7 +331,7 @@ class TasksSelectCriteria extends Criteria
 
             ->setAllowedValues('label_mode', ['any', 'all'])
             ->setAllowedValues('done', ['done', 'undone'])
-            ->setAllowedValues('sort', [
+            ->setAllowedValues('orderBy', [
                 'id',
                 'title',
                 'list',
@@ -340,7 +341,7 @@ class TasksSelectCriteria extends Criteria
                 'date_created',
                 'assignee',
             ])
-            ->setAllowedValues('order', [
+            ->setAllowedValues('orderDir', [
                 'asc',
                 'desc',
             ])
