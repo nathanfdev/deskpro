@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\ImportBundle\Generator\Exporter\DeskPRO;

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect;
 
 use DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria;

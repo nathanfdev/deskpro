@@ -1028,12 +1028,12 @@ SQL
                 (`language_id`, `ref`, `ref_type`, `ref_id`, `prop_name`, `value`)
             VALUES
                 ('1', 'text_snippet_categories.1', 'text_snippet_categories', '1', 'title', 'Ticket Category 1'),
-                ('1', 'text_snippet_categories.2', 'text_snippet_categories', '2', 'title', 'Ticket Category 2'),
-                ('1', 'text_snippet_categories.3', 'text_snippet_categories', '3', 'title', 'Ticket Category 3'),
+                ('2', 'text_snippet_categories.2', 'text_snippet_categories', '2', 'title', 'Ticket Category 2'),
+                ('3', 'text_snippet_categories.3', 'text_snippet_categories', '3', 'title', 'Ticket Category 3'),
 
                 ('1', 'text_snippet_categories.4', 'text_snippet_categories', '4', 'title', 'Chat Category 1'),
-                ('1', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
-                ('1', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
+                ('2', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
+                ('3', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
 
                 ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet 1'),
                 ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content 1'),
