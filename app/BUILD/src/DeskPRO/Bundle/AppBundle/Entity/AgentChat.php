@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -39,6 +38,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AgentChat\Exceptions\WrongChatableTypeException;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -237,21 +237,14 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\Type("array")
+     * @JMS\Type("array<objectId>")
      * @JMS\SerializedName("departments")
      *
      * @return array
      */
     public function getDepartments()
     {
-        $ids = [];
-        foreach ($this->participants as $participant) {
-            if ($participant->getDepartmentId()) {
-                $ids[] = $participant->getDepartmentId();
-            }
-        }
-
-        return $ids;
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getDepartment(); });
     }
 
     /**

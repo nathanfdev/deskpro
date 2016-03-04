@@ -108,6 +108,28 @@ class ListUtils
     }
 
     /**
+     * Calls $fn on each value in $array and any that are not null are returned as part of a new array.
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn
+     *
+     * @return array
+     */
+    public static function filterMap($array, $fn)
+    {
+        $arr = [];
+
+        foreach ($array as $v) {
+            $v2 = $fn($v);
+            if ($v2 !== null) {
+                $arr[] = $v2;
+            }
+        }
+
+        return $arr;
+    }
+
+    /**
      * Check $array to see if $value exists in it anywhere.
      *
      * @param \Traversable|array $array
