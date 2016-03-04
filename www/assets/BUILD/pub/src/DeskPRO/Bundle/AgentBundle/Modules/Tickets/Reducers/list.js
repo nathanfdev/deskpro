@@ -1,12 +1,12 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassAction } from 'Ampliflux/reducers/handlers';
+import { setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
 import { toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode } from '../Actions/listActions';
 
 export const ticketsListInitialState = {
   viewMode: 'card',
   listParams: {
-    sort: 'urgency',
-    order: 'desc',
+    order_by: 'urgency',
+    order_dir: 'desc',
     filter: null
   },
   pagination: {},

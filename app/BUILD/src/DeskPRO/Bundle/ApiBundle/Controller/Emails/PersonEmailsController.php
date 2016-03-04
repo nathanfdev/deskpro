@@ -47,6 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PersonEmailsController extends BaseController
 {
+    /** @ToDo Do we need this controller at all? */
     /**
      * @ApiDoc(
      *      description="get list of emails",
@@ -78,7 +79,7 @@ class PersonEmailsController extends BaseController
         $comments = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($comments),
+            $this->dataSerialize($comments),
             Response::HTTP_OK
         );
     }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
 use Doctrine\ORM\QueryBuilder;
@@ -108,15 +109,15 @@ trait Sortable
     public static function extractSorting(array &$params)
     {
         $sort = null;
-        if (array_key_exists('sort', $params)) {
-            $sort = $params['sort'];
-            unset($params['sort']);
+        if (array_key_exists('order_by', $params)) {
+            $sort = $params['order_by'];
+            unset($params['order_by']);
         }
 
         $order = 'desc';
-        if (array_key_exists('order', $params)) {
-            $order = $params['order'];
-            unset($params['order']);
+        if (array_key_exists('order_dir', $params)) {
+            $order = $params['order_dir'];
+            unset($params['order_dir']);
         }
 
         return [$sort, $order];
@@ -138,8 +139,8 @@ trait Sortable
      */
     public static function configureSortingResolver(OptionsResolver $resolver)
     {
-        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['sort', 'order']));
-        $resolver->setAllowedValues('sort', (new self())->getSortAllowedValues());
-        $resolver->setAllowedValues('order', (new self())->getOrderAllowedValues());
+        $resolver->setDefined(array_merge($resolver->getDefinedOptions(), ['order_by', 'order_dir']));
+        $resolver->setAllowedValues('order_by', (new self())->getSortAllowedValues());
+        $resolver->setAllowedValues('order_dir', (new self())->getOrderAllowedValues());
     }
 }

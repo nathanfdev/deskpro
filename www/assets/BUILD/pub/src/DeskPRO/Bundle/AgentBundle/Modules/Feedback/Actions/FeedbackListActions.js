@@ -125,6 +125,7 @@ export const applyParams = createAction(
         }
       });
     }
+    console.log('OverWrite', overwrite);
     const params = { ...current, ...overwrite };
     const { delayReload } = params;
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
@@ -138,13 +139,13 @@ export const applyParams = createAction(
   }
 );
 
-export const setSort = createAction(
-  'FEEDBACK_LIST_SET_SORT',
-    sort => dispatch => dispatch(applyParams({ sort, delayReload: true }))
+export const setOrderBy = createAction(
+  'FEEDBACK_LIST_SET_ORDER_BY',
+    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy, delayReload: true }))
 );
-export const setOrder = createAction(
-  'FEEDBACK_LIST_SET_ORDER',
-    order => dispatch => dispatch(applyParams({ order, delayReload: true }))
+export const setOrderDir = createAction(
+  'FEEDBACK_LIST_SET_ORDER_DIR',
+    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir, delayReload: true }))
 );
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');

@@ -19,6 +19,7 @@
     "flux-standard-action": "0.6.0",
     "font-awesome": "4.4.0",
     "formsy-react": "0.17.0",
+    "gulp-slate": "^1.0.3",
     "history": "1.17.0",
     "hover.css": "2.0.2",
     "html5-history-api": "4.2.2",

@@ -13,10 +13,10 @@ export class SortingMenu extends Component {
 
   static propTypes = {
     options: PropTypes.object.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
-    sortAction: PropTypes.func.isRequired,
-    orderAction: PropTypes.func.isRequired
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
+    orderByAction: PropTypes.func.isRequired,
+    orderDirAction: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -28,19 +28,17 @@ export class SortingMenu extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { sort, order, options } = this.props;
-    const current = options[sort];
+    const { orderBy, orderDir, options } = this.props;
+    const current = options[orderBy];
 
     return (
       <li ref="menuItem">
-        <Button
-          isActive={this.state.expanded}
-          onClick={this.toggleExpanded}
-          ref="button"
-          title="Order by:"
-          icon={current ? current.icon : null}
-          label={current ? `${current.label} (${order})` : '(no order)'}
-          />
+        <Button isActive={this.state.expanded}
+                onClick={this.toggleExpanded}
+                ref="button"
+                title="Order by:"
+                icon={current ? current.icon : null}
+                label={current ? `${current.label} (${orderDir})` : '(no order)'}/>
 
         <Detached isOpen={this.state.expanded}
                   positionAt="left bottom"
@@ -60,11 +58,11 @@ export class SortingMenu extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     options: PropTypes.object.isRequired,
-    sort: PropTypes.string.isRequired,
-    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     onMenuUnmount: PropTypes.func,
-    sortAction: PropTypes.func.isRequired,
-    orderAction: PropTypes.func.isRequired
+    orderByAction: PropTypes.func.isRequired,
+    orderDirAction: PropTypes.func.isRequired
   };
 
   componentWillUnmount() {
@@ -75,28 +73,29 @@ export class SortingMenu extends Component {
     }
   }
 
+  changeOrder(orderDir, e) {
+    e.preventDefault();
+    const { dispatch, orderDirAction } = this.props;
+    dispatch(orderDirAction(orderDir));
+  }
+
   renderOptions() {
-    const { dispatch, sort, sortAction, options } = this.props;
+    const { dispatch, orderBy, orderByAction, options } = this.props;
+
     return (
       jQuery.map(options, (option, type) =>
           <Item key={type}
                 label={option.label}
-                isActive={sort === type}
-                checked={sort === type}
-                onClick={() => dispatch(sortAction(type))}
+                isActive={orderBy === type}
+                checked={orderBy === type}
+                onClick={() => dispatch(orderByAction(type))}
                 icon={option.icon}/>
       )
     );
   }
 
-  changeOrder(order, e) {;
-    e.preventDefault();
-    const { dispatch, orderAction } = this.props;
-    dispatch(orderAction(order));
-  }
-
   render() {
-    const { order } = this.props;
+    const { orderDir } = this.props;
     const options = [
       { id: 'asc', onClick: this.changeOrder.bind(this, 'asc'), label: 'Asc' },
       { id: 'desc', onClick: this.changeOrder.bind(this, 'desc'), label: 'Desc' }
@@ -106,7 +105,7 @@ export class SortingMenu extends Component {
       <Menu>
         {this.renderOptions()}
         <MenuFooter>
-          <MenuFooterOptions options={options} active={order}>
+          <MenuFooterOptions options={options} active={orderDir}>
             Sort
           </MenuFooterOptions>
         </MenuFooter>

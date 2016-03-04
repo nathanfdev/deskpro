@@ -41,12 +41,14 @@ use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class OrganizationNotesController.
  *
  * @ApiModes("all")
+ * @Route("/organizations")
  */
 class OrganizationNotesController extends CrudController
 {
@@ -57,7 +59,7 @@ class OrganizationNotesController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @Get("/organizations/{id}/notes")
+     * @Get("/{id}/notes")
      */
     public function listAction(Request $request)
     {
@@ -67,7 +69,7 @@ class OrganizationNotesController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @Post("/organizations/{id}/notes")
+     * @Post("/{id}/notes")
      */
     public function postAction(Request $request)
     {
@@ -77,7 +79,7 @@ class OrganizationNotesController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @Put("/organizations/{organization_id}/notes/{id}")
+     * @Put("/{organization_id}/notes/{id}")
      */
     public function putAction($id, Request $request)
     {
@@ -95,7 +97,7 @@ class OrganizationNotesController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @Delete("/organizations/{organization_id}/notes/{id}")
+     * @Delete("/{organization_id}/notes/{id}")
      */
     public function deleteAction($id, Request $request)
     {

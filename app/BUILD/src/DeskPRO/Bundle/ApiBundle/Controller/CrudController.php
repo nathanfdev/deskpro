@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -41,7 +42,6 @@ use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -294,7 +294,7 @@ abstract class CrudController extends BaseController
         $order = static::$listOrder;
 
         if (is_array(static::$sortOptions)) {
-            $sortParam = strtolower($request->get('sort'));
+            $sortParam = strtolower($request->get('order_by'));
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
                 throw $this->createBadRequestException('Unknown sort field');
             }
@@ -302,7 +302,7 @@ abstract class CrudController extends BaseController
                   ? static::$sortOptions[$sortParam]
                   : static::$listSort;
 
-            $order = strtolower($request->get('order'));
+            $order = strtolower($request->get('order_dir'));
             if ($order && !in_array($order, ['asc', 'desc'])) {
                 throw $this->createBadRequestException('Unknown order value');
             }
@@ -413,15 +413,7 @@ abstract class CrudController extends BaseController
             return;
         }
 
-        // remove class name if __METHOD__ was passed
-        if (strpos($actionMethodName, '::')) {
-            $actionMethodName = explode('::', $actionMethodName)[1];
-        }
-
-        // remove 'Action' postfix to get the short action name in case if __METHOD__ or __FUNCTION__ is passed
-        $action = strpos($actionMethodName, 'Action') === strlen($actionMethodName) - strlen('Action')
-                ? substr($actionMethodName, 0, strlen($actionMethodName) - strlen('Action'))
-                : $actionMethodName;
+        $action = TypeUtils::cleanAction($actionMethodName);
 
         if (!in_array($action, static::$exposeOnly)) {
             throw $this->createAccessDeniedException('Action is restricted');

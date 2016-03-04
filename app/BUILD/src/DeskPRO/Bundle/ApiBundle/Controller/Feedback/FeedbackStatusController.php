@@ -78,7 +78,7 @@ class FeedbackStatusController extends BaseController
         $statuses = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($statuses),
+            $this->dataSerialize($statuses),
             Response::HTTP_OK
         );
     }

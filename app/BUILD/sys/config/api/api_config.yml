@@ -117,7 +117,7 @@ security:
 
     firewalls:
         api_doc:
-            pattern: ^/api/v2/doc
+            pattern: ^/api/v2/(doc|man)
             stateless: true
             anonymous: ~
         api_tokens_request:
@@ -135,7 +135,7 @@ security:
                 authenticator: api_authenticator
 
     access_control:
-        - { path: '^/api/v2(?!/api_tokens|/doc|/get_session|/helpdesk/discover)', roles: ['ROLE_API'] }
+        - { path: '^/api/v2(?!/api_tokens|/doc|/man|/get_session|/helpdesk/discover)', roles: ['ROLE_API'] }
 
 sensio_framework_extra:
     cache:    { annotations: true }

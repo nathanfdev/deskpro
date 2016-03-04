@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use Application\DeskPRO\Entity\CommentAbstract as Comment;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -41,16 +43,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class CommentsSelectCriteria.
  */
-class CommentsSelectCriteria extends Criteria
+class CommentsSelectCriteria extends Criteria implements SortableCriteriaInterface
 {
+    use Sortable;
+
     /**
      * {@inheritdoc}
      */
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
-        $order = 'desc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'article':
@@ -67,15 +69,16 @@ class CommentsSelectCriteria extends Criteria
                     $qb->andWhere("$datePeriodCaseWhen = :period_created");
                     $qb->setParameter('period_created', $value);
                     break;
-                case 'sort':
-                    $sort = "$alias.$value";
-                    break;
-                case 'order':
-                    $order = "$value";
-                    break;
             }
-            $qb->orderBy($sort, $order);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues()
+    {
+        return ['date_created', 'person'];
     }
 
     /**
@@ -91,8 +94,6 @@ class CommentsSelectCriteria extends Criteria
                 'status',
                 'period_created',
                 'is_reviewed',
-                'sort',
-                'order',
             ]
         );
 
@@ -113,10 +114,5 @@ class CommentsSelectCriteria extends Criteria
         );
         $resolver->setAllowedValues('period_created', DatePeriods::$names);
         $resolver->setAllowedValues('is_reviewed', ['0', '1']);
-        $resolver->setAllowedValues(
-            'sort',
-            ['date_created', 'person', 'id', 'status']
-        );
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
     }
 }

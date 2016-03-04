@@ -34,21 +34,22 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FeedbackSelectCriteria extends Criteria
+class FeedbackSelectCriteria extends Criteria implements SortableCriteriaInterface
 {
+    use Sortable;
     /**
      * @param QueryBuilder $qb
      */
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
-        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'ids':
@@ -117,14 +118,7 @@ class FeedbackSelectCriteria extends Criteria
                         ->andWhere("$alias.date_created <= DATE(:to_date)")
                         ->setParameter('to_date', $value);
                     break;
-                case 'sort':
-                    $sort = "$alias.$value";
-                    break;
-                case 'order':
-                    $order = "$value";
-                    break;
             }
-            $qb->orderBy($sort, $order);
         }
     }
 
@@ -148,8 +142,6 @@ class FeedbackSelectCriteria extends Criteria
                 'labels_mode',
                 'label',
                 'no_labels',
-                'sort',
-                'order',
                 'ids',
                 'created_from',
                 'created_to',
@@ -172,10 +164,13 @@ class FeedbackSelectCriteria extends Criteria
                 return true;
             }
         );
-        $resolver->setAllowedValues(
-            'sort',
-            ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'person']
-        );
-        $resolver->setAllowedValues('order', ['asc', 'desc']);
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues()
+    {
+        return ['date_created', 'total_rating', 'num_ratings', 'id', 'title', 'status', 'category', 'person'];
     }
 }

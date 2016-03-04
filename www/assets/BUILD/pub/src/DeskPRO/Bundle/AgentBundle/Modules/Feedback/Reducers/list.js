@@ -16,8 +16,8 @@ const initialState = {
   // currently viewed list GET parameters map
   currentListParams: {
     isComments: false,
-    sort: 'date_created',
-    order: constants.ORDER_DESC,
+    order_by: 'date_created',
+    order_dir: constants.ORDER_DESC,
     labels_mode: 'any'
   }
 };

@@ -30,14 +30,14 @@ export const currentListParamsSelector = createSelector(
     state => state.get('currentListParams')
 );
 
-export const currentListSortSelector = createSelector(
+export const currentListOrderBySelector = createSelector(
   currentListParamsSelector,
-    params => params.get('sort')
+    params => params.get('order_by')
 );
 
-export const currentListOrderSelector = createSelector(
+export const currentListOrderDirSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order')
+    params => params.get('order_dir')
 );
 
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');

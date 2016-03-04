@@ -4,7 +4,6 @@ import { setFullPayload, setValue, async, togglePayloadInCollection, handleMassA
 import * as actions from '../Actions/listActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import invariant from 'invariant';
-import { setCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 const initialState = {
   listParams: {

@@ -10,7 +10,7 @@ import {
   tableVisibleFieldsSelector,
   kanbanVisibleFieldsSelector,
   calendarVisibleFieldsSelector,
-  currentSortSelector
+  currentOrderBySelector
 } from '../../../Selectors/list';
 import jQuery from 'jquery';
 
@@ -20,7 +20,7 @@ import jQuery from 'jquery';
   tableVisibleFields: tableVisibleFieldsSelector(state),
   kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentSort: currentSortSelector(state)
+  currentOrderBy: currentOrderBySelector(state)
 }))
 
 export class TaskCardEditContainer extends React.Component {
@@ -49,10 +49,22 @@ export class TaskCardEditContainer extends React.Component {
     });
   }
 
+  shouldComponentUpdate(props, state) {
+    if (state.selected !== this.state.selected) {
+      return true;
+    }
+
+    return !Immutable.is(this.state.task, state.task);
+  }
+
+  componentWillUpdate(props, state) {
+    this.props.onUpdate && this.props.onUpdate(state.task);
+  }
+
   onToggleSelected = () => {
     const { dispatch } = this.props;
     const { task } = this.state;
-    this.setState({selected: !this.state.selected});
+    this.setState({ selected: !this.state.selected });
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
@@ -61,7 +73,7 @@ export class TaskCardEditContainer extends React.Component {
     let { task } = this.state;
     let params;
 
-    if ('assignee' === prop) {
+    if (prop === 'assignee') {
       params = {
         agents: value.get('agents').toArray(),
         teams: value.get('teams').toArray(),
@@ -69,33 +81,17 @@ export class TaskCardEditContainer extends React.Component {
       };
       task = task.mergeWith(value);
     } else {
-      params = {[prop]: value};
+      params = { [prop]: value };
       task = task.set(prop, value);
     }
 
-    this.setState({task: task});
+    this.setState({ task: task });
     dispatch(editTask(task.get('id'), params));
   };
 
-  shouldComponentUpdate(props, state) {
-    if (state.selected !== this.state.selected) {
-      return true;
-    }
-
-    if (!Immutable.is(this.state.task, state.task)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  componentWillUpdate(props, state) {
-    this.props.onUpdate && this.props.onUpdate(state.task);
-  }
-
   render() {
     const props = this.props;
-    const { children, dispatch } = props;
+    const { children } = props;
     const childProps = children.props;
 
     return React.cloneElement(children, {

@@ -26,44 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-
-/**
- * Class FeedbackTransformer.
- */
-class FeedbackCommentTransformer extends AbstractDataSerializerTransformer
+class EntitySerializationHandler implements SubscribingHandlerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getSubscribingMethods()
     {
-        return [
-            'id',
-            'feedback',
-            'person',
-            'ip_address',
-            'email',
-            'name',
-            'website',
-            'content',
-            'status',
-            'is_reviewed',
-            'date_created',
-        ];
+        return array(
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => EntityInterface::SERIALIZER_TYPE,
+                'method'    => 'serializeEntity',
+            ],
+        );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        return [];
+    public function serializeEntity(
+        JsonSerializationVisitor $visitor,
+        $entity
+    ) {
+        /* @var EntityInterface|DomainObject $entity */
+        return $entity->getId();
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 /**
@@ -38,6 +39,11 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
  */
 interface EntityInterface
 {
+    /**
+     * @var string used to identify special JMS serializer handler
+     */
+    const SERIALIZER_TYPE = 'entity';
+
     /**
      * A unique identifier for this entity. Usually an integer, but can also be an array for a composite ID.
      *

@@ -69,6 +69,11 @@ class CommentsController extends BaseController
      *         "type"="article|news|download"
      *     }
      * )
+     *
+     * @param string  $type
+     * @param Request $request
+     *
+     * @return View
      */
     public function getCommentCountsAction($type, Request $request)
     {
@@ -78,6 +83,7 @@ class CommentsController extends BaseController
         $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
         try {
+            /** @var CommentsCountCriteria $criteria */
             $criteria = CommentsCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -86,7 +92,7 @@ class CommentsController extends BaseController
         $count = $dataService->countComments($this->getClass($type), $criteria);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }
@@ -105,6 +111,11 @@ class CommentsController extends BaseController
      *         "type"="article|news|download"
      *     }
      * )
+     *
+     * @param string  $type
+     * @param Request $request
+     *
+     * @return View
      */
     public function listCommentsAction($type, Request $request)
     {
@@ -114,6 +125,7 @@ class CommentsController extends BaseController
         $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
         try {
+            /** @var CommentsSelectCriteria $criteria */
             $criteria = CommentsSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());

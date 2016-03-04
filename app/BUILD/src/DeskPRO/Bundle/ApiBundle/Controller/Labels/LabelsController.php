@@ -118,7 +118,7 @@ class LabelsController extends BaseController
         $definitions = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->createRepresentation($definitions),
+            $this->dataSerialize($definitions),
             Response::HTTP_OK
         );
     }

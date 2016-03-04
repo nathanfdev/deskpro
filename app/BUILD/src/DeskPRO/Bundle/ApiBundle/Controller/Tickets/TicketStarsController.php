@@ -156,7 +156,7 @@ class TicketStarsController extends BaseController
             $count->addNested($flag_count, $flag_id, 'ticket_star', TicketStar::idToColorLabel($flag_id), true);
         }
 
-        return View::create($this->createRepresentation($count), Response::HTTP_OK);
+        return View::create($this->dataSerialize($count), Response::HTTP_OK);
     }
 
     /**
@@ -173,7 +173,7 @@ class TicketStarsController extends BaseController
     {
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
-        return View::create($this->createRepresentation(Count::fromValue(count($tickets))), Response::HTTP_OK);
+        return View::create($this->dataSerialize(Count::fromValue(count($tickets))), Response::HTTP_OK);
     }
 
     /**

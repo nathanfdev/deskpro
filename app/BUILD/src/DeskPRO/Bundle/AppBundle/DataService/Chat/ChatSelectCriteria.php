@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;

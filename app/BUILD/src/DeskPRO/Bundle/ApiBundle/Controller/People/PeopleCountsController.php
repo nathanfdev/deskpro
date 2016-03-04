@@ -78,6 +78,10 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
      *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Get("/people/counts", name="api_people_counts")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function countAction(Request $request)
     {
@@ -86,6 +90,7 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
 
         $params = $this->removeAdditionalParameters($request);
         try {
+            /** @var PeopleCountCriteria $criteria */
             $criteria = PeopleCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -93,6 +98,6 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
 
         $count = $dataService->countPeople($criteria);
 
-        return View::create($this->createRepresentation($count));
+        return View::create($this->dataSerialize($count));
     }
 }

@@ -60,7 +60,7 @@ class TaskCountsController extends BaseController
             'unassigned' => $count_service->getUnassignedCount(),
         ];
 
-        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
+        return View::create($this->dataSerialize($counts), Response::HTTP_OK);
     }
 
     /**
@@ -70,7 +70,7 @@ class TaskCountsController extends BaseController
     {
         $counts = $this->get('data.task_counts')->getAgentsCounts();
 
-        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
+        return View::create($this->dataSerialize($counts), Response::HTTP_OK);
     }
 
     /**
@@ -80,6 +80,6 @@ class TaskCountsController extends BaseController
     {
         $counts = $this->get('data.task_counts')->getProjectsCounts();
 
-        return View::create($this->createRepresentation($counts), Response::HTTP_OK);
+        return View::create($this->dataSerialize($counts), Response::HTTP_OK);
     }
 }

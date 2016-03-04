@@ -84,7 +84,7 @@ class CategoriesController extends BaseController
         ];
 
         return View::create(
-            $this->createRepresentation($categories),
+            $this->dataSerialize($categories),
             Response::HTTP_OK
         );
     }

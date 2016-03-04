@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\ContentAbstract as Content;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Groupable;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;
+use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -43,9 +45,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class BaseContentCriteria.
  */
-abstract class BaseContentCriteria extends Criteria implements GroupableCriteriaInterface
+class BaseContentCriteria extends Criteria implements GroupableCriteriaInterface, SortableCriteriaInterface
 {
     use Groupable;
+    use Sortable;
 
     /**
      * @param QueryBuilder $qb
@@ -53,8 +56,6 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
     public function applyFilters(QueryBuilder $qb)
     {
         $alias = $qb->getRootAliases()[0];
-        $sort  = "$alias.date_created";
-        $order = 'asc';
         foreach ($this->filters as $field => $value) {
             switch ($field) {
                 case 'status':
@@ -99,16 +100,16 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
                     $qb->andWhere("$alias.person = :person");
                     $qb->setParameter('person', $value);
                     break;
-
-                case 'sort':
-                    $sort = "$alias.$value";
-                    break;
-                case 'order':
-                    $order = "$value";
-                    break;
             }
-            $qb->orderBy($sort, $order);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortAllowedValues()
+    {
+        return ['date_created', 'date_updated', 'person'];
     }
 
     /**
@@ -159,6 +160,7 @@ abstract class BaseContentCriteria extends Criteria implements GroupableCriteria
 
     /**
      * @param OptionsResolver $resolver
+     * @param array           $data
      */
     public static function configureResolver(OptionsResolver $resolver, array $data = [])
     {

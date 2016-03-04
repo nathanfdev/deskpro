@@ -50,3 +50,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@job.scheduler"
+
+  entity_serialization_handler:
+    class: DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\EntitySerializationHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }

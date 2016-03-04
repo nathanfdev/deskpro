@@ -80,7 +80,8 @@
     "gnugat/nomo-spaco": "~0.4",
     "pusher/pusher-php-server": "^2.2",
     "behat/mink-goutte-driver": "^1.2",
-    "richsage/rms-push-notifications-bundle": "^0.1.9"
+    "richsage/rms-push-notifications-bundle": "^0.1.9",
+    "symfony/assetic-bundle": "^2.7"
   },
   "preferred-install": "dist"
 }

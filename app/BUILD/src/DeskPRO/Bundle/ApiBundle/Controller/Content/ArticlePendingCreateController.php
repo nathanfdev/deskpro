@@ -56,15 +56,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticlePendingCreateController extends BaseController
 {
     /**
+     * Get count of articles that need to be created.
+     *
      * @ApiDoc(
-     *      description="Get ArticlePendingCreate total count",
+     *      description="total count of articles should be created",
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Assigned person not found"
-     *      }
+     *          200="Returned if request was succeeded",
+     *          400="Returned if provided filters was wrong",
+     *      },
+     *     filters={
+     *
+     *     }
      * )
      * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function getTotalCountAction(Request $request)
     {
@@ -80,7 +88,7 @@ class ArticlePendingCreateController extends BaseController
         $count = Count::fromValue($total);
 
         return View::create(
-            $this->createRepresentation($count),
+            $this->dataSerialize($count),
             Response::HTTP_OK
         );
     }
@@ -95,19 +103,17 @@ class ArticlePendingCreateController extends BaseController
      *      }
      * )
      * @Get("/article_pending_creates", name="api_article_pending_creates")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function listAction(Request $request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService $dataService */
         $dataService = $this->get('data.apc');
-
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('apc')
-            ->from(ArticlePendingCreate::class, 'apc');
-
-        $params = $this->removeAdditionalParameters($request);
-        $params = $dataService->normalizeAssigned($params, $this->getUser());
+        $params      = $this->removeAdditionalParameters($request);
+        $params      = $dataService->normalizeAssigned($params, $this->getUser());
 
         try {
             $criteria = ArticlePendingCreateCriteria::fromParameters(

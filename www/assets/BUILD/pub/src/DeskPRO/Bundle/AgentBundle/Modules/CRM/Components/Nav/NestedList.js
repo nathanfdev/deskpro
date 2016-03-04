@@ -9,7 +9,7 @@ export class NestedList extends BaseNestedList {
     const { isAgent, group } = this.props;
     const { title, count, type, id } = item;
     const label = title ? title[0].toUpperCase() + title.slice(1) : '-';
-    const listOptions = { content: 'people', is_agent: isAgent, sort: 'name', order: constants.ORDER_ASC };
+    const listOptions = { content: 'people', is_agent: isAgent, orderBy: 'name', orderDir: constants.ORDER_ASC };
     if (type) {
       listOptions.navItem = { [type]: id };
     }

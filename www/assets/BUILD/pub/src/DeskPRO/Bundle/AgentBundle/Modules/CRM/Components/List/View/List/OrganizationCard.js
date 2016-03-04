@@ -63,8 +63,8 @@ export class OrganizationCard extends Component {
             <CardLineItem icon="fa-users"
                           onClick={viewEmployees}
                           clickParams={{content: 'people',
-                          sort: 'name',
-                          order: constants.ORDER_ASC,
+                          orderBy: 'name',
+                          orderDir: constants.ORDER_ASC,
                           organization: organization.get('id')}}>
               {organization.get('employees_count')}
             </CardLineItem>

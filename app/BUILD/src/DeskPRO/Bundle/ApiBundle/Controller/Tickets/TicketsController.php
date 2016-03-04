@@ -207,29 +207,29 @@ class TicketsController extends AbstractTicketsController
             }
 
             // sort and order params
-            if (array_key_exists('sort', $params)) {
+            if (array_key_exists('order_by', $params)) {
                 $allowed = [
                     'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply',
                     'date_last_reply', 'date_user_waiting', 'total_user_waiting',
                 ];
-                $sort = $params['sort'];
-                if (!in_array($sort, $allowed)) {
-                    throw $this->createBadRequestException("Unknown sort option value: $sort");
+                $orderBy = $params['order_by'];
+                if (!in_array($orderBy, $allowed)) {
+                    throw $this->createBadRequestException("Unknown order by option value: $orderBy");
                 }
 
-                if ($sort === 'date_last_reply') {
-                    $sort = 'IF(date_last_agent_reply > date_last_user_reply, date_last_agent_reply, date_last_user_reply)';
+                if ($orderBy === 'date_last_reply') {
+                    $orderBy = 'IF(date_last_agent_reply > date_last_user_reply, date_last_agent_reply, date_last_user_reply)';
                 }
 
-                unset($params['sort']);
+                unset($params['order_by']);
             } else {
-                $sort = 'id';
+                $orderBy = 'id';
             }
-            if (array_key_exists('order', $params)) {
-                $order = $params['order'];
-                unset($params['order']);
+            if (array_key_exists('order_dir', $params)) {
+                $orderDir = $params['order_dir'];
+                unset($params['order_dir']);
             } else {
-                $order = 'asc';
+                $orderDir = 'asc';
             }
 
             $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);
@@ -245,7 +245,7 @@ class TicketsController extends AbstractTicketsController
             $total         = $tickets_query->fetchCount();
             $tickets_query->setCount($maxPerPage);
             $tickets_query->setPage($currentPage);
-            $tickets_query->addOrderBy($sort, $order);
+            $tickets_query->addOrderBy($orderBy, $orderDir);
             $ids = $tickets_query->fetchIds();
         }
 

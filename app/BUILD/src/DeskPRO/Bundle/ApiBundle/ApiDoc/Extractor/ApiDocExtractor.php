@@ -29,13 +29,24 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Component\Util\TypeUtils;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
 
 class ApiDocExtractor extends BaseApiDocExtractor
 {
+    protected $action_list = [
+        'list',
+        'get',
+        'post',
+        'put',
+        'delete',
+    ];
+
     /**
      * @return Route[]
      */
@@ -43,8 +54,23 @@ class ApiDocExtractor extends BaseApiDocExtractor
     {
         return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
             $ctrl = $r->getDefault('_controller');
+            $parts = explode('::', $ctrl);
+            $is_controller = preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
 
-            return $ctrl && preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
+            $exposed = true;
+            if ($is_controller && $parts[0]) {
+                $reflection = new \ReflectionClass($parts[0]);
+                $action = TypeUtils::cleanAction($ctrl, true);
+                if (
+                    $reflection->isSubclassOf(CrudController::class)
+                    && in_array($action, $this->action_list)
+                    && $expose = $reflection->getProperty('exposeOnly')->getValue()
+                ) {
+                    $exposed = in_array($action, $expose);
+                }
+            }
+
+            return $ctrl && $is_controller && $exposed;
         });
     }
 }

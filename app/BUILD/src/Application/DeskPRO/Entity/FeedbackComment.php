@@ -36,15 +36,21 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Comments on feedback.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class FeedbackComment extends CommentAbstract
 {
     const OBJ_PROP = 'feedback';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Groups({"feedback"})
      */
     protected $feedback;
 

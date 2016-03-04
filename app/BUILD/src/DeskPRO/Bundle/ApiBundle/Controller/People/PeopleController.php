@@ -179,14 +179,14 @@ class PeopleController extends CrudController
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
         if (is_array(static::$sortOptions)) {
-            $sortParam = strtolower($request->get('sort'));
+            $sortParam = strtolower($request->get('order_by'));
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
                 throw $this->createBadRequestException('Unknown sort field');
             }
             if ($sortParam === 'organization') {
                 $qb->leftJoin("$alias.organization", 'organization');
                 $sort  = 'organization.name';
-                $order = strtolower($request->get('order'));
+                $order = strtolower($request->get('order_dir'));
                 if ($order && !in_array($order, ['asc', 'desc'])) {
                     throw $this->createBadRequestException('Unknown order value');
                 }
