@@ -12,10 +12,10 @@ export class ControlBar extends Component {
         label: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired
       })),
-      sort: PropTypes.string.isRequired,
-      order: PropTypes.string.isRequired,
-      sortAction: PropTypes.func.isRequired,
-      orderAction: PropTypes.func.isRequired
+      orderBy: PropTypes.string.isRequired,
+      orderDir: PropTypes.string.isRequired,
+      orderByAction: PropTypes.func.isRequired,
+      orderDirAction: PropTypes.func.isRequired
     }),
     filtering: PropTypes.shape({
       filters: PropTypes.arrayOf(PropTypes.oneOfType([

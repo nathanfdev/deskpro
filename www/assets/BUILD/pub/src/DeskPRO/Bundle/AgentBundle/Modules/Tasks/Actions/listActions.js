@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
-import { listParamsNavSelector, listParamsFiltersSelector, currentSortSelector, currentOrderSelector, elementsSelector }
+import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelector, currentOrderDirSelector }
   from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
@@ -47,8 +47,8 @@ export const loadList = createAction(
     const params = {
       ...navParams,
       ...filtersParams,
-      sort: currentSortSelector(state),
-      order: currentOrderSelector(state)
+      orderBy: currentOrderBySelector(state),
+      orderDir: currentOrderDirSelector(state)
     };
 
     return api
@@ -65,18 +65,18 @@ export const loadList = createAction(
   }
 );
 
-export const applySort = createAction(
-  'TASKS_LIST_APPLY_SORT',
+export const applyOrderBy = createAction(
+  'TASKS_LIST_APPLY_ORDER_BY',
   (value) => dispatch => {
-    dispatch(updateRoutingState('list', 'sort', value));
+    dispatch(updateRoutingState('list', 'order_by', value));
     dispatch(loadList());
   }
 );
 
-export const applyOrder = createAction(
-  'TASKS_LIST_APPLY_ORDER',
+export const applyOrderDir = createAction(
+  'TASKS_LIST_APPLY_ORDER_DIR',
   (value) => dispatch => {
-    dispatch(updateRoutingState('list', 'order', value));
+    dispatch(updateRoutingState('list', 'order_dir', value));
     dispatch(loadList());
   }
 );

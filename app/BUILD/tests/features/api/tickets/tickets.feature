@@ -16,7 +16,7 @@ Feature: /tickets endpoint
 
   @basic
   Scenario: I retrieve list of tickets
-    When I send a GET request to "/api/v2/tickets?sort=id&order=desc"
+    When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc"
     And the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should exist

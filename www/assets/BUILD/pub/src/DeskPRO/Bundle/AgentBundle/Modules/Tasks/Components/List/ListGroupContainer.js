@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import { groupCollection } from 'Util/ListGroup';
-import { currentSortSelector, elementsSelector } from '../../Selectors/list';
+import { currentOrderBySelector, elementsSelector } from '../../Selectors/list';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { editTask } from '../../Actions/listActions';
@@ -10,7 +10,7 @@ import { editTask } from '../../Actions/listActions';
 @connect(state => ({
   ids: elementsSelector(state),
   tasks: collectionSelectorFactory('Task', 'tasks')(state),
-  sort: currentSortSelector(state),
+  orderBy: currentOrderBySelector(state),
   lists: allSelectorFactory('TaskList')(state),
   projects: allSelectorFactory('Project')(state),
   agents: agentsSelector(state),
@@ -22,7 +22,7 @@ export class ListGroupContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    sort: PropTypes.string,
+    orderBy: PropTypes.string,
     ids: PropTypes.object,
     tasks: PropTypes.object,
     lists: PropTypes.object.isRequired,
@@ -33,11 +33,7 @@ export class ListGroupContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
-  onChangeGroup = (taskId, updateData) => {
-    this.props.dispatch(editTask(taskId, updateData));
-  };
-
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps() {
     console.time('ListGroupContainer did update');
   }
 
@@ -45,13 +41,17 @@ export class ListGroupContainer extends React.Component {
     console.timeEnd('ListGroupContainer did update');
   }
 
+  onChangeGroup = (taskId, updateData) => {
+    this.props.dispatch(editTask(taskId, updateData));
+  };
+
   render() {
-    const { sort, lists, projects, agents, agentTeams, departments } = this.props;
+    const { orderBy, lists, projects, agents, agentTeams, departments } = this.props;
     const { ids, tasks, children } = this.props;
     const childProps = children.props;
 
     const groupConfig = {
-      groupKey: sort,
+      groupKey: orderBy,
       defaultGroupKey: 'list',
       options: {
         project: {

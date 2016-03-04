@@ -22,14 +22,14 @@ export const cardVisibleFieldsSelector = createSelector(
     state => state.get('cardVisibleFields')
 );
 
-export const listSortSelector = createSelector(
+export const listOrderBySelector = createSelector(
   listParamsSelector,
-    params => params.get('sort')
+    params => params.get('order_by')
 );
 
-export const listOrderSelector = createSelector(
+export const listOrderDirSelector = createSelector(
   listParamsSelector,
-    params => params.get('order')
+    params => params.get('order_dir')
 );
 
 export const paginationSelector = createSelector(

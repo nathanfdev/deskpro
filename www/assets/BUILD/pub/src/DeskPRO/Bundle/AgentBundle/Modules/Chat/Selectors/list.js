@@ -8,14 +8,14 @@ export const currentListParamsSelector = createSelector(
   list => list.get('currentListParams')
 );
 
-export const listSortSelector = createSelector(
+export const listOrderBySelector = createSelector(
   currentListParamsSelector,
-    params => params.get('sort')
+    params => params.get('order_by')
 );
 
-export const listOrderSelector = createSelector(
+export const listOrderDirSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order')
+    params => params.get('order_dir')
 );
 
 export const paginationSelector = createSelector(

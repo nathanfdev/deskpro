@@ -19,7 +19,7 @@ Feature: /user_chats endpoint search (GET)
     And the JSON node "data[0].subject" should be equal to "Test chat 1"
 
   Scenario: I search for chats sorting them by date_created in DESC order
-    When I send a GET request to "/api/v2/user_chats?sort=date_created&order=desc"
+    When I send a GET request to "/api/v2/user_chats?order_by=date_created&order_dir=desc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination.count" should be equal to 5
@@ -27,7 +27,7 @@ Feature: /user_chats endpoint search (GET)
     And the JSON node "data[4].subject" should be equal to "Test chat 1"
 
   Scenario: I search for chats sorting them by date_created in ASC order
-    When I send a GET request to "/api/v2/user_chats?sort=date_created&order=asc"
+    When I send a GET request to "/api/v2/user_chats?order_by=date_created&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination.count" should be equal to 5
@@ -35,7 +35,7 @@ Feature: /user_chats endpoint search (GET)
     And the JSON node "data[4].subject" should be equal to "Test chat 5"
 
   Scenario: I search for chats sorting them by agent in DESC order
-    When I send a GET request to "/api/v2/user_chats?sort=agent&order=desc"
+    When I send a GET request to "/api/v2/user_chats?order_by=agent&order_dir=desc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination.count" should be equal to 5

@@ -25,7 +25,7 @@ export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
-    let params = {...current, ...overwrite};
+    const params = {...current, ...overwrite};
 
     // reset pagination when switching to another filter
     if (overwrite.filter) {
@@ -46,13 +46,13 @@ export const applyListParams = createAction(
 
 // Public (control bar) ------------------------------------------------------------------------------------------------
 
-export const setSort = createAction(
-  'TICKETS_LIST_SET_SORT',
-  sort => dispatch => dispatch(applyListParams({sort}))
+export const setOrderBy = createAction(
+  'TICKETS_LIST_SET_ORDER_BY',
+  orderBy => dispatch => dispatch(applyListParams({order_by: orderBy}))
 );
-export const setOrder = createAction(
-  'TICKETS_LIST_SET_ORDER',
-  order => dispatch => dispatch(applyListParams({order}))
+export const setOrderDir = createAction(
+  'TICKETS_LIST_SET_ORDER_DIR',
+  orderDir => dispatch => dispatch(applyListParams({order_dir: orderDir}))
 );
 export const toggleTableFieldVisibility = createAction('TICKETS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
 export const toggleCardFieldVisibility = createAction('TICKETS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
