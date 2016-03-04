@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Sortable;

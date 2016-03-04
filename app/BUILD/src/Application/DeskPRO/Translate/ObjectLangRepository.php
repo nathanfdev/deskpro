@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ObjectLang;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class ObjectLangRepository.
+ *
+ * @deprecated use ObjectTranslatableInterface instead.
+ */
 class ObjectLangRepository
 {
     /**

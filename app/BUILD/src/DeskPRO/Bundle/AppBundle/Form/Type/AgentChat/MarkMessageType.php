@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;

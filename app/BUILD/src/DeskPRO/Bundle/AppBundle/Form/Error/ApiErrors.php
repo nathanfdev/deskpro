@@ -71,6 +71,8 @@ class ApiErrors
     const BAD_CHOICE                  = 'bad_choice';
     const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
+    const TOO_FEW_ELEMENTS            = 'too_few_elements';
+    const TOO_MANY_ELEMENTS           = 'too_many_elements';
     const RESOURCE_NOT_FOUND          = 'resource_not_found';
     const INVALID_PHONE_NUMBER        = 'invalid_phone_number_format';
     const DUPE_EMAIL                  = 'dupe_email';

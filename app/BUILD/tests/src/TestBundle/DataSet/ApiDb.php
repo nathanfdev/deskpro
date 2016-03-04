@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -114,13 +113,17 @@ class ApiDb extends AbstractDbSet
 
         // Default language --------------------------------------------------------------------------------------------
         $this->getDb()->exec(
-            "
+            <<<SQL
             INSERT INTO `languages`
                 (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
                  `has_agent`, `has_admin`)
             VALUES
-                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1);
-        "
+                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1),
+                (2, 'french', 'fre', 'Français', '%DP_ROOT%/languages/french', 'fr', 'fr.png', '0', '1', '1', '0'),
+                (3, 'russian', 'rus', 'Pусский', '%DP_ROOT%/languages/russian', 'ru', 'ru.png', '0', '1', '1', '0')
+
+            ;
+SQL
         );
 
         // this will be refactored into a better "entity creator" once the api data set needs more elaborate data
@@ -991,6 +994,75 @@ SQL
             "
         );
         // end of AgentAlerts
+
+        // Snippets test data ------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `text_snippet_categories` (`id`, `person_id`, `typename`, `is_global`)
+            VALUES
+                (1, null, 'tickets', 1),
+                (2, 1, 'tickets', 0),
+                (3, 2, 'tickets', 0),
+
+                (4, null, 'chat', 1),
+                (5, 1, 'chat', 0),
+                (6, 2, 'chat', 0)
+            ;
+
+            INSERT INTO `text_snippets` (`id`, `person_id`, `category_id`, `shortcut_code`, `is_draft`)
+            VALUES
+                (1, null, 1, 'ticket_snippet1', 1),
+                (2, 1, 1, 'ticket_snippet2', 1),
+                (3, 1, 2, 'ticket_snippet3', 0),
+                (4, 2, 1, 'ticket_snippet4', 0),
+                (5, 1, 3, 'ticket_snippet5', 1),
+
+                (6, null, 4, 'chat_snippet1', 1),
+                (7, 1, 4, 'chat_snippet2', 1),
+                (8, 1, 5, 'chat_snippet3', 0),
+                (9, 2, 4, 'chat_snippet4', 0),
+                (10, 1, 6, 'chat_snippet5', 1)
+            ;
+
+            INSERT INTO `object_lang`
+                (`language_id`, `ref`, `ref_type`, `ref_id`, `prop_name`, `value`)
+            VALUES
+                ('1', 'text_snippet_categories.1', 'text_snippet_categories', '1', 'title', 'Ticket Category 1'),
+                ('2', 'text_snippet_categories.2', 'text_snippet_categories', '2', 'title', 'Ticket Category 2'),
+                ('3', 'text_snippet_categories.3', 'text_snippet_categories', '3', 'title', 'Ticket Category 3'),
+
+                ('1', 'text_snippet_categories.4', 'text_snippet_categories', '4', 'title', 'Chat Category 1'),
+                ('2', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
+                ('3', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
+
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet {{ ticket.subject }} (en) 1'),
+                ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content {{ ticket.person.name }} (en) 1'),
+                ('2', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet (fr) 1'),
+                ('2', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content (fr) 1'),
+
+                ('2', 'text_snippets.2', 'text_snippets', '2', 'title', 'Ticket Snippet 2'),
+                ('2', 'text_snippets.2', 'text_snippets', '2', 'snippet', 'Ticket Snippet Content 2'),
+                ('3', 'text_snippets.3', 'text_snippets', '3', 'title', 'Ticket Snippet 3'),
+                ('3', 'text_snippets.3', 'text_snippets', '3', 'snippet', 'Ticket Snippet Content 3'),
+                ('1', 'text_snippets.4', 'text_snippets', '4', 'title', 'Ticket Snippet 4'),
+                ('1', 'text_snippets.4', 'text_snippets', '4', 'snippet', 'Ticket Snippet Content 4'),
+                ('2', 'text_snippets.5', 'text_snippets', '5', 'title', 'Ticket Snippet 5'),
+                ('2', 'text_snippets.5', 'text_snippets', '5', 'snippet', 'Ticket Snippet Content 5'),
+
+                ('1', 'text_snippets.6', 'text_snippets', '6', 'title', 'Chat Snippet 1'),
+                ('1', 'text_snippets.6', 'text_snippets', '6', 'snippet', 'Chat Snippet Content 1'),
+                ('2', 'text_snippets.7', 'text_snippets', '7', 'title', 'Chat Snippet 2'),
+                ('2', 'text_snippets.7', 'text_snippets', '7', 'snippet', 'Chat Snippet Content 2'),
+                ('3', 'text_snippets.8', 'text_snippets', '8', 'title', 'Chat Snippet 3'),
+                ('3', 'text_snippets.8', 'text_snippets', '8', 'snippet', 'Chat Snippet Content 3'),
+                ('1', 'text_snippets.9', 'text_snippets', '9', 'title', 'Chat Snippet 4'),
+                ('1', 'text_snippets.9', 'text_snippets', '9', 'snippet', 'Chat Snippet Content 4'),
+                ('2', 'text_snippets.10', 'text_snippets', '10', 'title', 'Chat Snippet 5'),
+                ('2', 'text_snippets.10', 'text_snippets', '10', 'snippet', 'Chat Snippet Content 5')
+            ;
+SQL
+        );
+        // end of Snippets
 
         $date = new \DateTime();
 

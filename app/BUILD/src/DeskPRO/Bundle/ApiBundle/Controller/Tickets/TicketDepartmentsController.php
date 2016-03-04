@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -74,13 +73,14 @@ class TicketDepartmentsController extends CrudController
      * )
      * @Get("/{id}/agents")
      *
-     * @param int $id
+     * @param int     $id
+     * @param Request $request
      *
      * @return View
      */
-    public function getAgentsAction($id)
+    public function getAgentsAction($id, Request $request)
     {
-        $department = $this->findEntity($id);
+        $department = $this->findEntity($id, $request);
 
         return View::create($this->dataSerialize($department->getPersonList()));
     }
@@ -116,14 +116,12 @@ class TicketDepartmentsController extends CrudController
     }
 
     /**
-     * @param int $id
-     *
-     * @return object
+     * {@inheritdoc}
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         /** @var Department $entity */
-        $entity = parent::findEntity($id);
+        $entity = parent::findEntity($id, $request);
         if (!$entity->is_tickets_enabled) {
             throw $this->createNotFoundException();
         }

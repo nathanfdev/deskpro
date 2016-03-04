@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 use InvalidArgumentException;

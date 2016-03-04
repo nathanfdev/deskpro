@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -138,7 +137,7 @@ class TasksController extends CrudController
         $taskIds = $submitted['ids'];
         unset($submitted['ids']);
 
-        $task = $this->findEntity($taskIds[0]);
+        $task = $this->findEntity($taskIds[0], $request);
 
         $this->validateForm($request, $task, $submitted);
 
@@ -183,13 +182,14 @@ class TasksController extends CrudController
      *
      * @Get("/{id}/subtasks", name="api_tasks_subtasks_get")
      *
-     * @param $id
+     * @param int     $id
+     * @param Request $request
      *
      * @return View
      */
-    public function getSubtasksAction($id)
+    public function getSubtasksAction($id, Request $request)
     {
-        $task = $this->findEntity($id);
+        $task = $this->findEntity($id, $request);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -240,7 +240,7 @@ class TasksController extends CrudController
      */
     public function getCommentsAction(Request $request, $id)
     {
-        $task = $this->findEntity($id);
+        $task = $this->findEntity($id, $request);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -298,7 +298,7 @@ class TasksController extends CrudController
      */
     public function getAttachmentsAction(Request $request, $id)
     {
-        $task = $this->findEntity($id);
+        $task = $this->findEntity($id, $request);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }
@@ -333,14 +333,15 @@ class TasksController extends CrudController
      *
      * @Get("/{id}/linked_items/{type}", name="api_tasks_links_get")
      *
-     * @param int    $id
-     * @param string $type
+     * @param Request $request
+     * @param int     $id
+     * @param string  $type
      *
      * @return View
      */
-    public function getLinksAction($id, $type = 'tickets')
+    public function getLinksAction(Request $request, $id, $type = 'tickets')
     {
-        $task = $this->findEntity($id);
+        $task = $this->findEntity($id, $request);
         if (empty($task)) {
             throw $this->createNotFoundException();
         }

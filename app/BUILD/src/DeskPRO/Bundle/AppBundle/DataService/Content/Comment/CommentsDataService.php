@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Content\Comment;
 
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;

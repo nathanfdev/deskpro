@@ -81,6 +81,10 @@ class ValidatorErrorCodeFactory
                     return ApiErrors::BAD_CHOICE;
                 case Assert\Email::class:
                     return ApiErrors::INVALID_EMAIL;
+                case Assert\Count::class:
+                    return $violation->getCode() === Assert\Count::TOO_FEW_ERROR
+                        ? ApiErrors::TOO_FEW_ELEMENTS
+                        : ApiErrors::TOO_MANY_ELEMENTS;
                 case UniqueEntity::class:
                     return ApiErrors::UNIQUE_ENTITY;
             }

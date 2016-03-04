@@ -73,3 +73,13 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer
     arguments:
       - "@doctrine.orm.default_entity_manager"
+
+  data_serializer.transformer.text_snippet:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TextSnippetTransformer
+    arguments:
+      - "@security.token_storage"
+
+  data_serializer.transformer.text_snippet_category:
+    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TextSnippetCategoryTransformer
+    arguments:
+      - "@security.token_storage"

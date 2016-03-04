@@ -36,6 +36,11 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\ObjectLang;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
+/**
+ * Class ObjectTranslatable.
+ *
+ * @deprecated Use ObjectTranslatableInterface instead.
+ */
 class ObjectTranslatable
 {
     /**
@@ -93,6 +98,14 @@ class ObjectTranslatable
     }
 
     /**
+     * @param Language $lang
+     */
+    public function setLang(Language $lang = null)
+    {
+        $this->lang = $lang;
+    }
+
+    /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
      */
     public function setTryLangs(array $try_langs = null)
@@ -120,6 +133,9 @@ class ObjectTranslatable
         if ($this->with_lang_prop) {
             $try[] = $this->entity[$this->with_lang_prop];
         }
+        if ($this->lang) {
+            $try[] = $this->lang;
+        }
 
         return $try;
     }
@@ -141,7 +157,10 @@ class ObjectTranslatable
     }
 
     /**
-     * @param string $prop
+     * @param string   $prop
+     * @param Language $lang
+     *
+     * @return string
      */
     public function getObjectProp($prop, $lang = null)
     {
@@ -149,7 +168,7 @@ class ObjectTranslatable
             $lang = $this->getTryLangs();
         }
 
-        $langs = is_array($lang) ? $lang : array($lang);
+        $langs = is_array($lang) ? $lang : [$lang];
 
         foreach ($langs as $lang) {
             if (!$lang) {
@@ -172,16 +191,18 @@ class ObjectTranslatable
                 $prop    = strtolower($prop);
                 $lang_id = $lang->getId();
 
-                return isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop]->text : null;
-            }
-
-            $ret = $this->getObjLangRepos()->get($lang, $this->entity, $prop);
-            if ($ret) {
-                return $ret;
+                if (isset($this->unsaved[$lang_id][$prop])) {
+                    return $this->unsaved[$lang_id][$prop]->text;
+                }
+            } else {
+                $ret = $this->getObjLangRepos()->get($lang, $this->entity, $prop);
+                if ($ret) {
+                    return $ret;
+                }
             }
         }
 
-        return;
+        return '';
     }
 
     /**
@@ -193,6 +214,9 @@ class ObjectTranslatable
         if ($lang === null) {
             if ($this->with_lang_prop) {
                 $lang = $this->entity[$this->with_lang_prop];
+            }
+            if ($this->lang) {
+                $lang = $this->lang;
             }
         }
         if (!is_object($lang)) {
@@ -215,7 +239,7 @@ class ObjectTranslatable
 
             $rec = isset($this->unsaved[$lang_id][$prop]) ? $this->unsaved[$lang_id][$prop] : null;
             if (!$rec) {
-                $rec = ObjectLang::createObjectLang($this->getLang(), $this->entity, $prop, $value);
+                $rec = ObjectLang::createObjectLang($lang, $this->entity, $prop, $value);
             }
             $rec->text = $value;
 
@@ -270,17 +294,23 @@ class ObjectTranslatable
     {
         if ($this->unsaved) {
             foreach ($this->unsaved as $group) {
+                /** @var ObjectLang $rec */
                 foreach ($group as $rec) {
+                    $rec->setObject($this->entity);
+
                     $this->getEm()->persist($rec);
+                    $this->getEm()->flush($rec);
                 }
             }
-            $this->unsaved = array();
+
+            $this->unsaved = [];
         }
 
         if ($this->entity->getId()) {
             foreach ($this->getObjLangRepos()->getLoadedRecs($this->entity) as $prop_recs) {
                 foreach ($prop_recs as $rec) {
                     $this->getEm()->persist($rec);
+                    $this->getEm()->flush($rec);
                 }
             }
         }
@@ -288,6 +318,11 @@ class ObjectTranslatable
 
     ####################################################################################################################
 
+    /**
+     * @param DomainObject $object
+     *
+     * @return ObjectTranslatable
+     */
     public static function loadObjectTranslatable(DomainObject $object)
     {
         if (isset($object->_dp_object_translatable) && $object->_dp_object_translatable) {
@@ -299,10 +334,11 @@ class ObjectTranslatable
 
         foreach ($config['fields'] as $f) {
             $fl = strtolower($f);
-            $object->addCustomCallable("get$fl", array($object->_dp_object_translatable, '_dynGetObjectProp'), array('property' => $f));
-            $object->addCustomCallable("set$fl", array($object->_dp_object_translatable, '_dynSetObjectProp'), array('property' => $f));
+            $object->addCustomCallable("get$fl", [$object->_dp_object_translatable, '_dynGetObjectProp'], ['property' => $f]);
+            $object->addCustomCallable("set$fl", [$object->_dp_object_translatable, '_dynSetObjectProp'], ['property' => $f]);
         }
-        $object->addCustomCallable('setTranslateLanguage', array($object->_dp_object_translatable, '_dynSetLanguage'));
+
+        $object->addCustomCallable('setTranslateLanguage', [$object->_dp_object_translatable, '_dynSetLanguage']);
 
         return $object->_dp_object_translatable;
     }
@@ -313,5 +349,6 @@ class ObjectTranslatable
     public static function loadEntityMetadata(ClassMetadata $metadata)
     {
         $metadata->addLifecycleCallback('getObjectTranslatable', 'postLoad');
+        $metadata->addLifecycleCallback('persistTranslatable', 'postPersist');
     }
 }

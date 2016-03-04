@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
@@ -355,6 +354,13 @@ abstract class DomainObject extends BasicDomainObject
             }
         } else {
             return "<$me:".spl_object_hash($this).'>';
+        }
+    }
+
+    public function persistTranslatable()
+    {
+        if (isset($this->_dp_object_translatable)) {
+            $this->_dp_object_translatable->_dpTranslatePersistChanges();
         }
     }
 }

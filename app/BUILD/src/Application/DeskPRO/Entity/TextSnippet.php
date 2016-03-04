@@ -35,11 +35,21 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
+/**
+ * Class TextSnippet.
+ */
+class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements ObjectTranslatableInterface
 {
+    use ObjectTranslatableTrait;
+
     /**
      * @var int
      */
@@ -54,32 +64,35 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\TextSnippetCategory
+     *
+     * @Assert\NotNull()
      */
     protected $category;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $shortcut_code = '';
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $snippet;
 
     /**
      * @var bool
      */
     protected $is_draft = false;
 
+    /**
+     * @var ArrayCollection|ObjectLang[]
+     */
+    protected $props_translations;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->getObjectTranslatable();
+        $this->props_translations = new ArrayCollection();
     }
 
     /**
@@ -88,6 +101,34 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return TextSnippetCategory
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 
     /**
@@ -100,6 +141,52 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         } else {
             $this->setModelField('shortcut_code', $sc);
         }
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     *
+     * @Assert\Count(min=1)
+     * @Assert\Valid()
+     */
+    public function getTitleTranslations()
+    {
+        return $this->getObjectPropTranslations('title');
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     *
+     * @Assert\Count(min=1)
+     * @Assert\Valid()
+     */
+    public function getSnippetTranslations()
+    {
+        return $this->getObjectPropTranslations('snippet');
+    }
+
+    /**
+     * @return TextSnippetContent[]
+     */
+    public function getTextSnippetContents()
+    {
+        $result = [];
+        foreach ($this->props_translations as $translation) {
+            $language = $translation->getLanguage();
+            if (!isset($result[$language->getLocale()])) {
+                $result[$language->getLocale()] = new TextSnippetContent($language);
+            }
+
+            /** @var TextSnippetContent $content */
+            $content = $result[$language->getLocale()];
+            if ($translation->getPropName() === 'snippet') {
+                $content->setContent($translation->getValue());
+            } else {
+                $content->setTitle($translation->getValue());
+            }
+        }
+
+        return $result;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -125,11 +212,17 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     # Doctrine Metadata
     ############################################################################
 
+    /**
+     * @deprecated use $props_translations instead
+     */
     public function getObjectTranslatable()
     {
         return ObjectTranslatable::loadObjectTranslatable($this);
     }
 
+    /**
+     * @deprecated use $props_translations instead
+     */
     public static function loadObjectTranslatableMetadata()
     {
         return array('fields' => array('title', 'snippet'));

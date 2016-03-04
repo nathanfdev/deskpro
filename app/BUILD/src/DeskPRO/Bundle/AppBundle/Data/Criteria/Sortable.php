@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
 
 use Doctrine\ORM\QueryBuilder;

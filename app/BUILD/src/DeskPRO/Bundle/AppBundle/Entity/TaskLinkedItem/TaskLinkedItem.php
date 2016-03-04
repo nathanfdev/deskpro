@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;

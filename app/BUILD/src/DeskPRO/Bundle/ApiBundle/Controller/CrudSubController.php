@@ -72,7 +72,7 @@ abstract class CrudSubController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function findEntity($id)
+    protected function findEntity($id, Request $request)
     {
         $parent = $this->findParentOr404();
 

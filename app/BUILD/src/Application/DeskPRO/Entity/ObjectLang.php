@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -46,31 +47,43 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $ref_type;
 
     /**
+     * Note: Don't validate this property because it will be set up in the doctrine lifecycle callback.
+     *
      * @var string
      */
     protected $ref_id;
 
     /**
      * @var Language
+     *
+     * @Assert\NotNull()
      */
     protected $language;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $prop_name;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $value = '';
 
@@ -123,15 +136,21 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param object $object
+     *
+     * @return $this
      */
     public function setObject($object)
     {
         $this->_set_object = $object;
         $this->setRef($object->getObjectRef());
+
+        return $this;
     }
 
     /**
      * @param string $ref
+     *
+     * @return $this
      */
     public function setRef($ref)
     {
@@ -145,14 +164,28 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
             $this->setModelField('ref_type', null);
             $this->setModelField('ref_id', null);
         }
+
+        return $this;
     }
 
     /**
      * @param string $prop_name
+     *
+     * @return $this
      */
     public function setPropName($prop_name)
     {
         $this->setModelField('prop_name', strtolower($prop_name));
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPropName()
+    {
+        return $this->prop_name;
     }
 
     /**
@@ -161,6 +194,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
     }
 
     public function _resetRefCode()

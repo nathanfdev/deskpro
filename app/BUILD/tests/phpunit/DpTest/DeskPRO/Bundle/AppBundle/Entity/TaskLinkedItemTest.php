@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Article;
