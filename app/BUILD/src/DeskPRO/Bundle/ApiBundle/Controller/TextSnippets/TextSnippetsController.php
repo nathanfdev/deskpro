@@ -31,10 +31,13 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,12 +87,15 @@ class TextSnippetsController extends CrudController
             ->setParameter('category_type', $this->getSnippetTypeName($request))
         ;
 
-        if ($request->query->get('my')) {
+        $query = $request->query;
+
+        // filter by person
+        if ($query->get('my')) {
             $qb
                 ->andWhere('e.person = :user_id')
                 ->setParameter('user_id', $this->getUser()->getId())
             ;
-        } elseif ($request->query->get('global')) {
+        } elseif ($query->get('global')) {
             $qb->andWhere('e.person is null');
         } else {
             $qb
@@ -98,16 +104,48 @@ class TextSnippetsController extends CrudController
             ;
         }
 
-        if ($request->query->get('category')) {
+        // filter by category
+        if ($query->get('category')) {
             $qb
                 ->andWhere('e.category = :category_id')
                 ->setParameter('category_id', $request->get('category'))
             ;
         }
-        if ($request->query->has('draft')) {
+
+        // filter by draft
+        if ($query->has('draft')) {
             $qb
                 ->andWhere('e.is_draft = :is_draft')
-                ->setParameter('is_draft', $request->query->getInt('draft'))
+                ->setParameter('is_draft', $query->getInt('draft'))
+            ;
+        }
+
+        // filter by language
+        if ($query->get('language')) {
+            if (is_numeric($query->get('language'))) {
+                $language_id = (int) $query->get('language');
+            } else {
+                // look by lang code or locale
+                $language = $this
+                    ->getRepository(Language::class)
+                    ->createQueryBuilder('l')
+                    ->where('l.locale = :language OR l.lang_code = :language')
+                    ->setParameter('language', $query->get('language'))
+                    ->getQuery()
+                    ->getOneOrNullResult()
+                ;
+
+                $language_id = $language ? $language->getId() : 0;
+            }
+
+            $qb
+                ->join(ObjectLang::class, 'o', Join::WITH, 'o.ref_id = e.id')
+                ->andWhere(
+                    'o.language = :language',
+                    'o.ref_type = :ref_type'
+                )
+                ->setParameter('language', $language_id)
+                ->setParameter('ref_type', 'text_snippets')
             ;
         }
     }
