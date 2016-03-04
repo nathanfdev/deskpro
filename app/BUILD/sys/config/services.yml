@@ -87,12 +87,3 @@ services:
   hitrecord.cleaner:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Cleaner\HitDbCleaner
     arguments: ["@doctrine.dbal.default_connection"]
-
-  ######################################################################################################################
-  # Serializer
-  ######################################################################################################################
-
-  dp.serializer.handler.id:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\IdHandler
-    tags:
-      - { name: jms_serializer.handler, type: "objectId", direction: "serialization", format: "json", method: "serializeId"}

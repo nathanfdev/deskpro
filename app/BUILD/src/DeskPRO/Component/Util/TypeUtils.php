@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 use InvalidArgumentException;
@@ -81,7 +82,7 @@ class TypeUtils
     }
 
     /**
-     * @param string $var
+     * @param object $var
      *
      * @return string
      */

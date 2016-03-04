@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -237,12 +238,12 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\Type("array<objectId>")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Department>>")
      * @JMS\SerializedName("departments")
      *
      * @return array
      */
-    public function getDepartments()
+    public function getDepartmentsIds()
     {
         return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getDepartment(); });
     }
