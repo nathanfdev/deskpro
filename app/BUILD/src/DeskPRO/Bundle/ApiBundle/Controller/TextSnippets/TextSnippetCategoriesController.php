@@ -101,6 +101,11 @@ class TextSnippetCategoriesController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $qb
+            ->andWhere('e.typename = :typename')
+            ->setParameter('typename', $this->getSnippetTypeName($request))
+        ;
+
         if ($request->get('my')) {
             $qb
                 ->andWhere('e.person = :user_id')
@@ -115,10 +120,7 @@ class TextSnippetCategoriesController extends CrudController
             ;
         }
 
-        $qb
-            ->andWhere('e.typename = :typename')
-            ->setParameter('typename', $this->getSnippetTypeName($request))
-        ;
+        $this->applyFilterByLanguage($request, $qb, 'text_snippet_categories');
     }
 
     /**

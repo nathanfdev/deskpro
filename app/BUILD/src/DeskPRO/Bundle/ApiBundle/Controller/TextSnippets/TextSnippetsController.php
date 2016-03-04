@@ -31,8 +31,6 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
-use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -120,34 +118,7 @@ class TextSnippetsController extends CrudController
             ;
         }
 
-        // filter by language
-        if ($query->get('language')) {
-            if (is_numeric($query->get('language'))) {
-                $language_id = (int) $query->get('language');
-            } else {
-                // look by lang code or locale
-                $language = $this
-                    ->getRepository(Language::class)
-                    ->createQueryBuilder('l')
-                    ->where('l.locale = :language OR l.lang_code = :language')
-                    ->setParameter('language', $query->get('language'))
-                    ->getQuery()
-                    ->getOneOrNullResult()
-                ;
-
-                $language_id = $language ? $language->getId() : 0;
-            }
-
-            $qb
-                ->join(ObjectLang::class, 'o', Join::WITH, 'o.ref_id = e.id')
-                ->andWhere(
-                    'o.language = :language',
-                    'o.ref_type = :ref_type'
-                )
-                ->setParameter('language', $language_id)
-                ->setParameter('ref_type', 'text_snippets')
-            ;
-        }
+        $this->applyFilterByLanguage($request, $qb, 'text_snippets');
     }
 
     /**

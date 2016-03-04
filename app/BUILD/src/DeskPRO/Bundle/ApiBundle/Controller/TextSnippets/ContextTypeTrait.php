@@ -31,12 +31,19 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\TextSnippetCategory;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ContextTypeTrait.
+ *
+ * @method EntityRepository getRepository($class)
  */
 trait ContextTypeTrait
 {
@@ -57,5 +64,44 @@ trait ContextTypeTrait
             default:
                 throw new NotFoundHttpException();
         }
+    }
+
+    /**
+     * @param Request      $request
+     * @param QueryBuilder $qb
+     * @param string       $ref_type
+     */
+    protected function applyFilterByLanguage(Request $request, QueryBuilder $qb, $ref_type)
+    {
+        $query = $request->query;
+        if (!$query->get('language')) {
+            return;
+        }
+
+        if (is_numeric($query->get('language'))) {
+            $language_id = (int) $query->get('language');
+        } else {
+            // look by lang code or locale
+            $language = $this
+                ->getRepository(Language::class)
+                ->createQueryBuilder('l')
+                ->where('l.locale = :language OR l.lang_code = :language')
+                ->setParameter('language', $query->get('language'))
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+
+            $language_id = $language ? $language->getId() : 0;
+        }
+
+        $qb
+            ->join(ObjectLang::class, 'o', Join::WITH, 'o.ref_id = e.id')
+            ->andWhere(
+                'o.language = :language',
+                'o.ref_type = :ref_type'
+            )
+            ->setParameter('language', $language_id)
+            ->setParameter('ref_type', $ref_type)
+        ;
     }
 }
