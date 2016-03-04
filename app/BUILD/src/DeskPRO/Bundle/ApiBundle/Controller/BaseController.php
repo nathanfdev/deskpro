@@ -38,7 +38,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class BaseController.
@@ -142,7 +142,7 @@ class BaseController extends FOSRestController
     }
 
     /**
-     * @return HttpKernel
+     * @return HttpKernelInterface
      */
     protected function getKernel()
     {

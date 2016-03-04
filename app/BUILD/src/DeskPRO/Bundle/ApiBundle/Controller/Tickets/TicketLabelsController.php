@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -57,6 +56,6 @@ class TicketLabelsController extends BaseController
      */
     public function getTicketsAction(Request $request, $label)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['labels' => [$label]]);
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['labels' => [$label]]);
     }
 }

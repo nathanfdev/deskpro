@@ -40,7 +40,6 @@ use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * API access to TicketFilterSet entities.
@@ -80,10 +79,7 @@ class TicketFilterSetsController extends CrudController
      */
     public function getFiltersAction(Request $request, TicketFilterSet $set)
     {
-        /** @var HttpKernelInterface $kernel */
-        $kernel = $this->get('kernel');
-
-        return TicketFiltersController::subRequestSearch($kernel, $request, [
+        return TicketFiltersController::subRequestSearch($this->getKernel(), $request, [
             'filter_set' => $set->getId(),
         ]);
     }
