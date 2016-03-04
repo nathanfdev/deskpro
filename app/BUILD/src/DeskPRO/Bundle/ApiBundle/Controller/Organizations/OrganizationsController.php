@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
@@ -81,7 +80,7 @@ class OrganizationsController extends CrudController
      */
     public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['organization' => $id]);
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
     }
 
     /**

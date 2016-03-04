@@ -85,7 +85,7 @@ class PeopleController extends CrudController
      */
     public function getTicketsAction(Request $request)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['person' => $request->get('id')]);
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['person' => $request->get('id')]);
     }
 
     // This exists temporarily until we have some real versioned actions ###############################################
