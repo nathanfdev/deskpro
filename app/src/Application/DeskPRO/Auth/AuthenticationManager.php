@@ -94,6 +94,11 @@ class AuthenticationManager
     private $appSettings;
 
     /**
+     * @var string
+     */
+    private $authBy;
+
+    /**
      * @param UsersourceManager            $usersourceManager    system service
      * @param AuthSettings                 $authSettings         system service
      * @param UsersourceAuthAdapterFactory $auth_adapter_factory
@@ -218,8 +223,9 @@ class AuthenticationManager
                     $login_processor = new LoginProcessor($us, $result->getIdentity());
                     $person          = $login_processor->getPerson();
 
-                    $identity = new Identity($person->id, array('person' => $person));
-                    $result   = new Result(Result::SUCCESS, $identity);
+                    $identity     = new Identity($person->id, array('person' => $person));
+                    $result       = new Result(Result::SUCCESS, $identity);
+                    $this->authBy = $us->source_type;
 
                     return $result;
                 }
@@ -399,5 +405,10 @@ class AuthenticationManager
     public function getInterface()
     {
         return $this->interface;
+    }
+
+    public function getAuthBy()
+    {
+        return $this->authBy;
     }
 }

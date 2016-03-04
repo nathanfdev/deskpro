@@ -34,8 +34,8 @@ namespace Application\DeskPRO\People;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
 use Application\DeskPRO\Settings\PasswordPolicy;
-use Application\DeskPRO\Usersource\UsersourceManager;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class PasswordPolicyValidator
 {
@@ -64,21 +64,21 @@ class PasswordPolicyValidator
     private $history_repos;
 
     /**
-     * @var UsersourceManager
+     * @var Session
      */
-    private $um;
+    private $session;
 
     /**
      * @param PasswordPolicy       $user_policy
      * @param PasswordPolicy       $agent_policy
      * @param PasswordHistoryRepos $history_repos
      */
-    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos, UsersourceManager $um)
+    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos, Session $session)
     {
         $this->user_policy   = $user_policy;
         $this->agent_policy  = $agent_policy;
         $this->history_repos = $history_repos;
-        $this->um            = $um;
+        $this->session       = $session;
     }
 
     /**
@@ -146,10 +146,8 @@ class PasswordPolicyValidator
             return false;
         }
 
-        foreach ($this->um->getAll() as $us) {
-            if ('DeskPRO' === $us->title && !$us->is_enabled && 'agent' === $us->type) {
-                return false;
-            }
+        if ($this->session->get('auth_by') !== 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+            return false;
         }
 
         // Matches special expired date

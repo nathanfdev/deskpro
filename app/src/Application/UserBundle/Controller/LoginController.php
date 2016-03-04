@@ -32,6 +32,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
@@ -501,6 +502,7 @@ HTML;
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->setFlash('is_from_login', 'yes');
+        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         App::setCurrentPerson($person);

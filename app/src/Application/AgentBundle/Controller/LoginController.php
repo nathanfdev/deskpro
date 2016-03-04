@@ -221,6 +221,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $this->session->invalidate();
         $this->session->set('auth_person_id', $person->id);
         $this->session->set('dp_interface', DP_INTERFACE);
+        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
