@@ -195,6 +195,10 @@ abstract class CrudController extends BaseController
      *      }
      * )
      * @Post("")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
