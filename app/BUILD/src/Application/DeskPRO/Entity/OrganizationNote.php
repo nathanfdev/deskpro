@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,6 +63,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Person
      *
      * @Assert\NotNull()
+     * @AppAssert\User(type="agent")
      */
     protected $agent;
 
