@@ -31,8 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class OrganizationNoteType.
@@ -45,5 +51,43 @@ class OrganizationNoteType extends ApiType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('note', 'text');
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setRequired(['person', 'organization'])
+            ->setDefaults([
+                'data_class' => OrganizationNote::class,
+            ])
+            ->setAllowedTypes([
+                'person'       => Person::class,
+                'organization' => Organization::class,
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var OrganizationNote $data */
+        $data = $form->getData();
+
+        $person       = $config->getOption('person');
+        $organization = $config->getOption('organization');
+
+        $data
+            ->setOrganization($organization)
+            ->setAgent($person)
+        ;
     }
 }

@@ -53,6 +53,19 @@ class OrganizationNotesController extends CrudSubController
     /**
      * {@inheritdoc}
      */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'organization' => $this->findParentOr404(),
+            'person'       => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function findEntity($id, Request $request)
     {
         $entity = parent::findEntity($id, $request);

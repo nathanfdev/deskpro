@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A note is a private note added by an agent to a persons account.
@@ -50,6 +51,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * The org the note is attached to.
      *
      * @var \Application\DeskPRO\Entity\Organization
+     *
+     * @Assert\NotNull()
      */
     protected $organization;
 
@@ -57,6 +60,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * The agent that added the note.
      *
      * @var \Application\DeskPRO\Entity\Person
+     *
+     * @Assert\NotNull()
      */
     protected $agent;
 
@@ -69,9 +74,14 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * The note contents.
      *
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $note;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -85,9 +95,52 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getNoteHtml()
     {
         return nl2br(htmlspecialchars($this->note), true);
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param Organization $organization
+     *
+     * @return $this
+     */
+    public function setOrganization($organization)
+    {
+        $this->setModelField('organization', $organization);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Person $agent
+     *
+     * @return $this
+     */
+    public function setAgent($agent)
+    {
+        $this->setModelField('agent', $agent);
+
+        return $this;
     }
 
     ############################################################################
