@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ApiDocPass implements CompilerPassInterface
 {
@@ -43,5 +45,9 @@ class ApiDocPass implements CompilerPassInterface
         if (strpos($def->getClass(), 'CachingApiDocExtractor') !== false) {
             $def->setClass('DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\CachingApiDocExtractor');
         }
+
+        $definition = $container->getDefinition('nelmio_api_doc.extractor.api_doc_extractor');
+        $definition->removeMethodCall('addParser');
+        $definition->addMethodCall('addParser', [new Reference('dp_api_doc.parser.jms_metadata_parser')]);
     }
 }

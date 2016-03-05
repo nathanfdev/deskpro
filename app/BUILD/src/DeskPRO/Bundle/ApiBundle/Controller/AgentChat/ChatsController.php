@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -107,12 +108,7 @@ class ChatsController extends AbstractController
      *      statusCodes={
      *          200="Success",
      *      },
-     *      output={
-     *          "class" = "array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
-     *          "parsers" = {
-     *              "Nelmio\ApiDocBundle\Parser\JmsMetadataParser"
-     *          }
-     *      }
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>"
      * )
      *
      * @param Request $request
@@ -160,9 +156,7 @@ class ChatsController extends AbstractController
      *          200="Success when chat was found",
      *          404="Returned when chat was not found"
      *      },
-     *      output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
-     *      }
+     *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
      *
      * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
@@ -207,9 +201,7 @@ class ChatsController extends AbstractController
      *       302 = "We found already started chat with given parameters",
      *       400 = "Couldn't start chat with given parameters"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
      * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
      *
