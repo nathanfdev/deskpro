@@ -65,6 +65,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The unique ID.
      *
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 

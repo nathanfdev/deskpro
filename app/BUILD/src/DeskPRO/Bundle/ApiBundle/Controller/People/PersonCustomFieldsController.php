@@ -48,6 +48,7 @@ class PersonCustomFieldsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get'];
     public static $entity     = CustomDefPerson::class;
+    public static $listOrder  = 'asc';
 
     /**
      * {@inheritdoc}

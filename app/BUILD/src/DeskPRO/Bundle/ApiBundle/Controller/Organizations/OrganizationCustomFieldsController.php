@@ -48,6 +48,7 @@ class OrganizationCustomFieldsController extends CrudController
 {
     public static $exposeOnly = ['list', 'get'];
     public static $entity     = CustomDefOrganization::class;
+    public static $listOrder  = 'asc';
 
     /**
      * {@inheritdoc}
