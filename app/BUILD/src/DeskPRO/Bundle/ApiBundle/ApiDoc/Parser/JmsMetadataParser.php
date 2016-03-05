@@ -32,8 +32,23 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Nelmio\ApiDocBundle\DataTypes;
 
+/**
+ * Class JmsMetadataParser.
+ */
 class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
 {
+    /**
+     * It's use to handle our super-trouper custom type called "entity"
+     * So if it's entity array - then in doc you'll see something like
+     * "array of interger ids (EntityName)".
+     * In case it's not an array, but entity - then you'll see text like below:
+     * "integer id (EntityName)"
+     * Everybody dance now!
+     *
+     * @param PropertyMetadata $item
+     *
+     * @return array
+     */
     protected function processDataType(PropertyMetadata $item)
     {
         // check for a type inside something that could be treated as an array
@@ -60,6 +75,11 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         }
     }
 
+    /**
+     * @param PropertyMetadata $item
+     *
+     * @return array|bool
+     */
     protected function checkIfDpCustomEntity(PropertyMetadata $item)
     {
         if (isset($item->type['name']) && in_array($item->type['name'], array('array', 'ArrayCollection'))) {
