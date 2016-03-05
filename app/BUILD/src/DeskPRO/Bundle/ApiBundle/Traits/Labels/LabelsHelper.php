@@ -29,7 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
+
+namespace DeskPRO\Bundle\ApiBundle\Traits\Labels;
 
 /**
  * Class LabelsHelper.

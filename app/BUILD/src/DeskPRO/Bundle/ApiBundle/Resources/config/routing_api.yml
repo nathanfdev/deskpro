@@ -5,7 +5,3 @@ api_routes:
     requirements:
     type: annotation
     resource: "@ApiBundle/Controller"
-
-api_versioned_actions:
-    resource: "@ApiBundle/Resources/config/versioned_actions.yml"
-    type: versioned_action

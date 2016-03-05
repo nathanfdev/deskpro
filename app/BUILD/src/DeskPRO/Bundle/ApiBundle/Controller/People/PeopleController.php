@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Controller\Labels\LabelsHelper;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
@@ -52,7 +52,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PeopleController extends CrudController
 {
-    use LabelsHelper;
+    use \DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 
     public static $entity      = Person::class;
     public static $type        = 'api_person';

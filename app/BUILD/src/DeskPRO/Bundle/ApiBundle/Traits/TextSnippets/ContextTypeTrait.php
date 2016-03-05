@@ -29,7 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
+
+namespace DeskPRO\Bundle\ApiBundle\Traits\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use Doctrine\ORM\EntityRepository;
