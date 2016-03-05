@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -39,6 +38,7 @@ use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 
 /**
@@ -47,6 +47,8 @@ use Orb\Util\Numbers;
  * @property int $display_order
  * @property CustomDefAbstract|null $parent
  * @property CustomDefAbstract[]|null $children
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -117,6 +119,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The title.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $title = '';
 
@@ -124,6 +129,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The description.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $description = '';
 
@@ -139,18 +147,27 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Options for the field.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Can the field be viewed by the user?
      *
      * @var bool
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $is_user_enabled = true;
 
     /**
      * @var bool
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $is_enabled = true;
 
@@ -161,11 +178,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $default_value = null;
 
     /**
      * @var bool
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $is_agent_field = false;
 
