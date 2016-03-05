@@ -31,16 +31,19 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class AgentChatMessage.
  *
+ * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage")
  * @ORM\Table(name="agent_chat_message", uniqueConstraints={@ORM\UniqueConstraint(name="uuid_unique",columns={"uuid"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
@@ -58,6 +61,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
+     * @JMS\Type("integer")
+     * @JMS\Expose()
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
@@ -65,8 +70,9 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="string", length=36)
-     *
+     * @JMS\Type("string")
      * @Assert\NotNull()
+     * @JMS\Expose()
      * @Assert\Uuid()
      */
     protected $uuid;
@@ -75,6 +81,9 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      * @var AgentChat
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChat", inversedBy="messages")
      * @ORM\JoinColumn(name="agent_chat_id", referencedColumnName="id", onDelete="CASCADE")
+     * @JMS\Type("entity")
+     * @JMS\Expose()
+     * @JMS\MaxDepth(1);
      */
     protected $chat;
 
@@ -82,13 +91,17 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
+     * @JMS\Type("entity")
+     * @JMS\Expose()
+     * @JMS\MaxDepth(1);
      */
     protected $person;
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
-     *
+     * @JMS\Type("string")
+     * @JMS\Expose()
      * @Assert\NotNull()
      */
     protected $person_name;
@@ -96,7 +109,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(type="text", nullable=false)
-     *
+     * @JMS\Type("string")
+     * @JMS\Expose()
      * @Assert\NotNull()
      * @Assert\NotBlank()
      */
@@ -105,7 +119,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=false)
-     *
+     * @JMS\Type("array")
+     * @JMS\Expose()
      * @Assert\NotNull()
      */
     protected $metadata = [];
@@ -113,7 +128,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
-     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
      * @Assert\NotNull()
      */
     protected $date_created;
@@ -121,7 +137,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     /**
      * @var int
      * @ORM\Column(type="integer", nullable=false)
-     *
+     * @JMS\Type("integer")
+     * @JMS\Expose()
      * @Assert\NotNull()
      */
     protected $status = 0;

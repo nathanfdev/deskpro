@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -73,6 +75,7 @@ class MessagesController extends AbstractController
      * )
      *
      * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
+     * @Annotations\View(serializerEnableMaxDepthChecks=true)
      * @ApiModes("all")
      *
      * @param $id
@@ -100,7 +103,7 @@ class MessagesController extends AbstractController
         $pager->setCurrentPage($request->query->getInt('page', 1));
 
         return View::create(
-            $this->dataSerialize($pager),
+            new ApiWrapper($pager),
             Response::HTTP_OK
         );
     }
@@ -212,7 +215,7 @@ class MessagesController extends AbstractController
         $count          = $search_service->countMessages($this->getUser());
         $data           = $helper_service->createCountResponse($count);
 
-        return View::create($this->createRepresentation($data), Response::HTTP_OK);
+        return View::create(new ApiWrapper($data), Response::HTTP_OK);
     }
 
     /**

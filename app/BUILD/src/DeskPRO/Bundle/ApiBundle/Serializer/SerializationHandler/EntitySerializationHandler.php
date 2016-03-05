@@ -30,12 +30,17 @@ namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Component\Util\TypeUtils;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 class EntitySerializationHandler implements SubscribingHandlerInterface
 {
+    protected $sideloads;
+
+    protected $classmap;
+
     public static function getSubscribingMethods()
     {
         return array(
@@ -52,7 +57,17 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
         JsonSerializationVisitor $visitor,
         $entity
     ) {
+        $fqcn = get_class($entity);
+        if (!isset($this->sideloads[$fqcn])) {
+            $this->sideloads[$fqcn] = [];
+        }
+        $entity_id = $entity->getId();
+
+        // todo move it to separate object
+        $this->sideloads[$fqcn][]                                     = $entity_id;
+        $this->classmap[TypeUtils::getSnakeCaseBaseTypeName($entity)] = $fqcn;
+
         /* @var EntityInterface|DomainObject $entity */
-        return $entity->getId();
+        return $entity_id;
     }
 }
