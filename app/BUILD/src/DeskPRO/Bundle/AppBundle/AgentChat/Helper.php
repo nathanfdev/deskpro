@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
+use DeskPRO\Bundle\ApiBundle\Serializer\Model\AgentChat\MessageCount;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 
 /**
@@ -65,16 +67,20 @@ class Helper
      */
     public function createCountResponse(array $count)
     {
+        /** @var MessageCount[] $data */
         $data = [];
         foreach ($count as $cnt) {
-            $data[$cnt['chat_id']] = $cnt;
+            $message_count = new MessageCount();
+            $message_count->setChatId($cnt['chat_id']);
+            $message_count->setCnt($cnt['chat_id']);
+            $data[$cnt['chat_id']] = $message_count;
         }
         $chat_ids = array_keys($data);
 
         // this looks like very, VERY dirty hack. Smells :(
         $chats = $this->messenger->getChats($chat_ids);
         foreach ($chats as $chat) {
-            $data[$chat->getId()]['chat'] = $chat;
+            $data[$chat->getId()]->setChat($chat);
         }
 
         return $data;

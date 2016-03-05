@@ -196,17 +196,13 @@ class MessagesController extends AbstractController
      *      statusCodes={
      *          200="Returned if success"
      *      },
-     *      output={
-     *          "\d+" = {
-     *              "chat_id" = "\d+",
-     *              "cnt" = "\d+",
-     *              "chat" = "DeskPRO\Bundle\AppBundle\Entity\AgentChat"
-     *          }
-     *      }
+     *      output="array<DeskPRO\Bundle\ApiBundle\Serializer\Model\AgentChat\MessageCount>"
      * )
+     
+     * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
+     * @Annotations\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
-     * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
      */
     public function countsAction()
     {

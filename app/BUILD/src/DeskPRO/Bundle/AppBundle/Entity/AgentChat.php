@@ -45,7 +45,6 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat")
@@ -59,6 +58,8 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
+     * Id of chat.
+     *
      * @var int
      * @ORM\Id()
      * @ORM\Column(type="integer")
@@ -70,6 +71,8 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
+     * Current chat type, could be agent, agent_team, department or everyone (one instance per whole helpdesk).
+     *
      * @var string
      * @ORM\Column(type="string", length=80)
      * @JMS\Expose()
@@ -80,17 +83,19 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $type;
 
     /**
+     * Indicate is chat archived or not.
+     *
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
-     * @Assert\NotNull()
      * @JMS\Exclude()
      */
     protected $is_archived = false;
 
     /**
+     * DateTime when chat was first time created.
+     *
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotNull()
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      * @JMS\Accessor(getter="getDateCreated", setter="setDateCreated")
@@ -98,9 +103,10 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $date_created;
 
     /**
+     * Obviously - last message date time.
+     *
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
-     * @Assert\NotNull()
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      * @JMS\Accessor(getter="getDateLastMessage", setter="setDateLastMessage")
@@ -108,9 +114,10 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $date_last_message;
 
     /**
+     * List of participating in chat entities.
+     *
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
-     * @JMS\Expose()
      * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant>>")
      * @JMS\MaxDepth(1)
      * @JMS\Accessor(getter="getParticipants", setter="addParticipant")

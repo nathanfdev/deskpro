@@ -34,8 +34,6 @@ use Pagerfanta\Pagerfanta;
 class ApiWrapper
 {
     /**
-     * @JMS\Type("array")
-     *
      * @var array|Pagerfanta
      */
     protected $data = [];
@@ -56,6 +54,12 @@ class ApiWrapper
 
     public function __construct($data)
     {
+        $this->checkPagination($data);
+        $this->data = $data;
+    }
+
+    protected function checkPagination($data)
+    {
         if ($data instanceof Pagerfanta) {
             $total_pages = ceil($data->count() / $data->getMaxPerPage());
             if ($total_pages < 1) {
@@ -72,6 +76,5 @@ class ApiWrapper
 
             $this->meta['pagination'] = $pagination;
         }
-        $this->data = $data;
     }
 }
