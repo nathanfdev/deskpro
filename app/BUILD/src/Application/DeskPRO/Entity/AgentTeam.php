@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -42,14 +43,14 @@ use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
  *
- * @Serializer\ExclusionPolicy("ALL")
+ * @JMS\ExclusionPolicy("ALL")
  */
 class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwner
 {
@@ -57,18 +58,22 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
      * The unique ID.
      *
      * @var int
-     * @Serializer\Expose()
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
     /**
+     * The name of agent team.
+     *
      * @var string
-     * @Serializer\Expose()
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $name;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $members = null;
 

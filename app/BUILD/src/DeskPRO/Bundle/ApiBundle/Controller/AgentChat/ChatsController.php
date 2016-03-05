@@ -148,7 +148,7 @@ class ChatsController extends AbstractController
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of a chat",
+     *              "description"="the id of chat",
      *              "dataType"="integer"
      *          }
      *      },

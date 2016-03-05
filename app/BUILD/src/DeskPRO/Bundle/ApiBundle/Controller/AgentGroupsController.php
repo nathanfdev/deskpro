@@ -74,9 +74,17 @@ class AgentGroupsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      section = "Agents",
-     *      resourceDescription="Operations about agent groups",
-     *      description="get agents group list",
+     *     section = "Agents",
+     *     resourceDescription="Operations about agent groups",
+     *     description="get agents group list",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of agent",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *      statusCodes={
      *          200="Returned if request was successful",
      *      },

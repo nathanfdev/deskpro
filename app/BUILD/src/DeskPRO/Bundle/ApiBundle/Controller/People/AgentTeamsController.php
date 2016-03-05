@@ -37,11 +37,9 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations as Annotations;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
@@ -62,7 +60,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          200="Success"
      *      }
      * )
-     * @Get("/agent_teams", name="api_agent_teams")
+     * @Annotations\Get("/agent_teams", name="api_agent_teams")
      *
      * @param Request $request
      *
@@ -120,7 +118,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      },
      *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
-     * @Get("/agent_teams/{id}", name="api_agent_teams_get")
+     * @Annotations\Get("/agent_teams/{id}", name="api_agent_teams_get")
      *
      * @param int $id
      *
@@ -142,6 +140,42 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
 
     /**
      * @ApiDoc(
+     *      section="Agents",
+     *      resourceDescription="Opertaions about agent teams",
+     *      description="Return agents from team given team",
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of team",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success when chat was found",
+     *          404="Returned when chat was not found"
+     *      },
+     *      output="DeskPRO\Application\Entity\AgentTeam"
+     * )
+     * @Annotations\Get("/agent_teams/{id}/agents", name="api_agent_teams_agents")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function getAgentsAction($id)
+    {
+        /** @var AgentTeamsDataService $service */
+        $service = $this->get('data.agent_teams');
+
+        return View::create(
+            $this->dataSerialize($service->getAgentsFromTeam((int) $id)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @ApiDoc(
      *      description="create a new team",
      *      input={"class"="team", "name"=""},
      *      statusCodes={
@@ -150,7 +184,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *      },
      *      output="Application\DeskPRO\Entity\AgentTeam"
      * )
-     * @Post("/agent_teams", name="api_agent_teams_post")
+     * @Annotations\Post("/agent_teams", name="api_agent_teams_post")
      *
      * @param Request $request
      *
@@ -184,7 +218,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          404="Not Found"
      *      }
      * )
-     * @Put("/agent_teams/{id}", name="api_agent_teams_put")
+     * @Annotations\Put("/agent_teams/{id}", name="api_agent_teams_put")
      *
      * @param Request $request
      * @param $id
@@ -216,7 +250,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          404="Not Found"
      *      }
      * )
-     * @Delete("/agent_teams/{id}", name="api_agent_teams_delete")
+     * @Annotations\Delete("/agent_teams/{id}", name="api_agent_teams_delete")
      *
      * @param $id
      *
