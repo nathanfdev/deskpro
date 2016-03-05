@@ -15,6 +15,7 @@ function __in_array {
 }
 
 function __fail {
+    local EXIT_STATUS=${1}||1
     echo "
 Usage:
  cache-clear [OPTIONS]
@@ -26,7 +27,7 @@ OPTIONS:
 EXAMPLE:
  cache-clear -m api_permissions -e dev         Clear api_permissions in dev environment
 "
-    exit 1
+    exit ${EXIT_STATUS}
 
 }
 
@@ -36,11 +37,14 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ENV='dev'
 MODE='all'
-while getopts "e:m:" opt
+while getopts "e:m:h" opt
 do
     case $opt in
         'e')
             ENV=$OPTARG
+            ;;
+        'h')
+            __fail 0
             ;;
         'm')
             MODE=$OPTARG
