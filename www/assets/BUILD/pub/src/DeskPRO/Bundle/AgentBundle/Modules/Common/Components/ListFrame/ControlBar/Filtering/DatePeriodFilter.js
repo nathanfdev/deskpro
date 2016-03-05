@@ -57,8 +57,7 @@ export class DatePeriodFilter extends Component {
                   setActiveItem={setActiveItem}
                   resetFilter={unsetParams.bind(this)}>
         <Menu>
-          <div
-            className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
+          <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-navigation-dropdown-panel-content">
               <div className="dpw-navigation-dropdown-panel-content-line">
                 <div className="dpw-navigation-dropdown-panel-content-full">
@@ -82,7 +81,7 @@ export class DatePeriodFilter extends Component {
               </div>
             </div>
           </div>
-        </Menu >
+        </Menu>
       </FilterItem>
     );
   }

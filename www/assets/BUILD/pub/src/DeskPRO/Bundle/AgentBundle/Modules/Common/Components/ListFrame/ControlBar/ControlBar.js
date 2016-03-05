@@ -66,13 +66,9 @@ export class ControlBar extends Component {
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
         {sorting && <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>}
-        <li>
-          <hr/>
-        </li>
+
         {filtering && <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>}
-        <li>
-          <hr/>
-        </li>
+
         {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
       </ul>
     );

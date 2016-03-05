@@ -45,16 +45,14 @@ export class DateFilter extends Component {
 
               <div className="dpw-date-picker-panel-container">
                 <form>
-                  <DateTimePicker
-                    label="From"
-                    className="dpw-date-picker-left"
-                    value={from}
-                    onChange={value => dispatch(setParamsAction({[fromParam]: value, delayReload: true}))}/>
-                  <DateTimePicker
-                    label="To"
-                    className="dpw-date-picker-right"
-                    value={to}
-                    onChange={value => dispatch(setParamsAction({[toParam]: value, delayReload: true}))}/>
+                  <DateTimePicker label="From"
+                                  className="dpw-date-picker-left"
+                                  value={from}
+                                  onChange={value => dispatch(setParamsAction({[fromParam]: value, delayReload: true}))}/>
+                  <DateTimePicker label="To"
+                                  className="dpw-date-picker-right"
+                                  value={to}
+                                  onChange={value => dispatch(setParamsAction({[toParam]: value, delayReload: true}))}/>
                 </form>
               </div>
             </div>
