@@ -32,10 +32,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * API access to agent groups.
@@ -45,29 +48,52 @@ use Symfony\Component\HttpFoundation\Response;
 class AgentGroupsController extends BaseController
 {
     /**
-     * Retrieve the list of custom fields available for tickets.
+     * Retrieve the list of agent groups.
      *
-     * @Get("/agent_groups", name="api_agent_groups")
+     * @ApiDoc(
+     *      section = "Agents",
+     *      resourceDescription="Operations about agent groups",
+     *      description="get agents group list",
+     *      statusCodes={
+     *          200="Returned if request was successful",
+     *      },
+     *      output="array<Application\DeskPRO\Entity\Usergroup>"
+     * )
+     *
+     * @Annotations\Get("/agent_groups", name="api_agent_groups")
      */
     public function cgetAction()
     {
         $service = $this->get('data.user_groups');
 
         return View::create(
-            $this->dataSerialize($service->loadAgentGroupsEnabled()),
+            new ApiWrapper($service->loadAgentGroupsEnabled()),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Get("/agent_groups/{id}", name="api_single_agent_group")
+     * @ApiDoc(
+     *      section = "Agents",
+     *      resourceDescription="Operations about agent groups",
+     *      description="get agents group list",
+     *      statusCodes={
+     *          200="Returned if request was successful",
+     *      },
+     *      output="array<Application\DeskPRO\Entity>"
+     * )
+     * @Annotations\Get("/agent_groups/{id}", name="api_single_agent_group")
      */
     public function getAgentGroupAction($id)
     {
         $service = $this->get('data.user_groups');
 
+        if (!$agent_group = $service->loadSingleAgentGroupEnabled($id)) {
+            throw new NotFoundHttpException(sprintf('Agent group with specified [ %d ] id was not found', $id));
+        }
+
         return View::create(
-            $this->dataSerialize($service->loadSingleAgentGroupEnabled($id)),
+            new ApiWrapper($agent_group),
             Response::HTTP_OK
         );
     }

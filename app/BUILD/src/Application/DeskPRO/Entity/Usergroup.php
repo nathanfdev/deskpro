@@ -38,7 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Swagger\Annotations as SWG;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -52,11 +52,15 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property string $sys_name
  * @property bool $is_enabled
  * @property Permission[] $permissions
+ * @JMS\ExclusionPolicy("all")
  */
 class Usergroup extends DomainObject
 {
     /**
-     * The unique ID.
+     * The unique ID, DB-generated.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -65,12 +69,18 @@ class Usergroup extends DomainObject
     /**
      * Title of the usergroup.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
 
     /**
      * A note or description about the usergroup.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -79,6 +89,9 @@ class Usergroup extends DomainObject
     /**
      * Is this an agent group?
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent_group = false;
@@ -86,12 +99,18 @@ class Usergroup extends DomainObject
     /**
      * When non-null, the group is a special system group (hidden from most interfaces).
      *
-     * @var bool
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string|null
      */
     protected $sys_name = null;
 
     /**
      * Is the group enabled?
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */

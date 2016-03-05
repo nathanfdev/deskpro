@@ -64,7 +64,7 @@ class ChatsController extends AbstractController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
+     *          200="Returned if response was succesful",
      *      },
      *      output={
      *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
