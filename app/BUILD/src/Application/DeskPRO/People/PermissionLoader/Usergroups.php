@@ -31,6 +31,7 @@
  *
  * @category Tickets
  */
+
 namespace Application\DeskPRO\People\PermissionLoader;
 
 use Application\DeskPRO\App;

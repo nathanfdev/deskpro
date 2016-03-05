@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use Doctrine\Common\Annotations\Reader;

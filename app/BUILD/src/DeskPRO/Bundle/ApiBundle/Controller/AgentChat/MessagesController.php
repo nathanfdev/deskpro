@@ -196,7 +196,7 @@ class MessagesController extends AbstractController
      *      statusCodes={
      *          200="Returned if success"
      *      },
-     *      output="array<DeskPRO\Bundle\ApiBundle\Serializer\Model\AgentChat\MessageCount>"
+     *      output="array<DeskPRO\Bundle\ApiBundle\Model\AgentChat\MessageCount>"
      * )
      
      * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")

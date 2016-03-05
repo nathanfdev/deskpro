@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
-use DeskPRO\Bundle\ApiBundle\Serializer\Model\AgentChat\MessageCount;
+use DeskPRO\Bundle\ApiBundle\Model\AgentChat\MessageCount;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 
 /**
