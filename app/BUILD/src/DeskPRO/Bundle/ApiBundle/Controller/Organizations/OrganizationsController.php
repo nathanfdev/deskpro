@@ -40,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\Controller\Annotations\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -82,15 +81,6 @@ class OrganizationsController extends CrudController
     public function getTicketsAction(Request $request, $id)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
-    }
-
-    /**
-     * @Get("/custom_fields")
-     * @View()
-     */
-    public function getCustomFieldsAction()
-    {
-        return [];
     }
 
     /**

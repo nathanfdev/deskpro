@@ -41,7 +41,6 @@ use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\Controller\Annotations\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -87,15 +86,6 @@ class PeopleController extends CrudController
     public function getTicketsAction(Request $request)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['person' => $request->get('id')]);
-    }
-
-    /**
-     * @Get("/custom_fields")
-     * @View()
-     */
-    public function getCustomFieldsAction()
-    {
-        return [];
     }
 
     // This exists temporarily until we have some real versioned actions ###############################################
