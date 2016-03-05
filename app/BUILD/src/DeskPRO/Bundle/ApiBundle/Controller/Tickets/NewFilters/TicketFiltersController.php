@@ -90,10 +90,7 @@ class TicketFiltersController extends CrudController
      */
     public function getTicketsAction(Request $request, TicketFilter $filter)
     {
-        /** @var HttpKernelInterface $kernel */
-        $kernel = $this->get('kernel');
-
-        return TicketsController::subRequestSearch($kernel, $request, [
+        return TicketsController::subRequestSearch($this->getKernel(), $request, [
             'filter' => $filter->getId(),
         ]);
     }

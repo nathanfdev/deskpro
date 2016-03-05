@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
@@ -65,7 +64,7 @@ class TicketProblemsController extends CrudController
      */
     public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['problem' => $id]);
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['problem' => $id]);
     }
 
     /**

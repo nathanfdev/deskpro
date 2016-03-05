@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -39,6 +38,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class BaseController.
@@ -139,6 +139,14 @@ class BaseController extends FOSRestController
         }
 
         return $entity;
+    }
+
+    /**
+     * @return HttpKernelInterface
+     */
+    protected function getKernel()
+    {
+        return $this->get('kernel');
     }
 
     /**

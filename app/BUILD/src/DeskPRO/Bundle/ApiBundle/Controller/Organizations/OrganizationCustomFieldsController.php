@@ -29,33 +29,32 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * API access to ticket labels.
+ * Class OrganizationCustomFieldsController.
  *
  * @ApiModes("all")
+ * @Route("/organization_custom_fields")
  */
-class TicketLabelsController extends BaseController
+class OrganizationCustomFieldsController extends CrudController
 {
+    public static $exposeOnly = ['list', 'get'];
+    public static $entity     = CustomDefOrganization::class;
+    public static $listOrder  = 'asc';
+
     /**
-     * @ApiDoc(
-     *      description="Get tickets with the given label",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     *
-     * @Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
+     * {@inheritdoc}
      */
-    public function getTicketsAction(Request $request, $label)
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        return TicketsController::subRequestSearch($this->getKernel(), $request, ['labels' => [$label]]);
+        $qb->andWhere('e.parent is null');
     }
 }

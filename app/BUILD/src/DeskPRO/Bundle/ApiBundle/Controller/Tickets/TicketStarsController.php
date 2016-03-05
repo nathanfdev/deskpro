@@ -187,7 +187,7 @@ class TicketStarsController extends BaseController
      */
     public function getTicketsAction(Request $request, $star)
     {
-        return TicketsController::subRequestSearch($this->get('kernel'), $request, ['star' => $star]);
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['star' => $star]);
     }
 
     /**
