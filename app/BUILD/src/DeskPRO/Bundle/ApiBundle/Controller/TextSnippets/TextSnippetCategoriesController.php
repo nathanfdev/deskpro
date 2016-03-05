@@ -37,11 +37,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Class TextSnippetCategoriesController.
@@ -52,6 +54,9 @@ use Symfony\Component\HttpFoundation\Request;
 class TextSnippetCategoriesController extends CrudController
 {
     use ContextTypeTrait;
+
+    public static $entity = TextSnippetCategory::class;
+    public static $type   = TextSnippetCategoryType::class;
 
     public static $listOrder = 'asc';
 
@@ -81,12 +86,15 @@ class TextSnippetCategoriesController extends CrudController
      */
     public function getSnippetsAction(Request $request, $id)
     {
+        /** @var HttpKernelInterface $kernel */
+        $kernel   = $this->get('kernel');
         $category = $this->findEntity($id, $request);
+
         if (!$category) {
             throw $this->createNotFoundException();
         }
 
-        return TextSnippetsController::subRequestSearch($this->getKernel(), $request, [
+        return TextSnippetsController::subRequestSearch($kernel, $request, [
             'category' => $category->getId(),
         ]);
     }
