@@ -21,7 +21,8 @@ export class ListGroup extends BaseListGroup {
         <h1 className="kanban-list-header">{title}</h1>
 
         {elements.valueSeq().map((task, key) =>
-          <TaskCardEditContainer task={task}
+          <TaskCardEditContainer key={key}
+                                 task={task}
                                  updateData={updateData}
                                  onUpdate={this.onUpdate.bind(this, key)}>
             <TaskDragCard />
