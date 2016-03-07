@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -166,10 +166,15 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     public function getAgentsAction($id)
     {
         /** @var AgentTeamsDataService $service */
-        $service = $this->get('data.agent_teams');
+        $service            = $this->get('data.agent_teams');
+        $api_person_factory = $this->get('api_person_factory');
 
         return View::create(
-            $this->dataSerialize($service->getAgentsFromTeam((int) $id)),
+            new ApiWrapper(
+                $api_person_factory->createArray(
+                    $service->getAgentsFromTeam((int) $id)
+                )
+            ),
             Response::HTTP_OK
         );
     }

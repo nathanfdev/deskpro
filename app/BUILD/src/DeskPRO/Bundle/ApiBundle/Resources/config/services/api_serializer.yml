@@ -1,0 +1,6 @@
+services:
+  api_person_factory:
+    class: DeskPRO\Bundle\ApiBundle\Model\Factory\ApiPersonFactory
+    arguments:
+      - "@avatar_resolver"
+      - "@data.agent"
