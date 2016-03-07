@@ -33,9 +33,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
-use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
@@ -43,630 +41,380 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class ApiPerson.
  *
- * @JMS\ExclusionPolicy("all")
+ * @JMS\ExclusionPolicy("none")
  */
 class ApiPerson
 {
     /**
-     * @var AvatarResolver
-     */
-    protected $avatar_resolver;
-
-    /**
-     * @var AgentDataService
-     */
-    protected $agent_data_service;
-
-    /**
-     * @var Person
-     */
-    protected $person;
-
-    /**
-     * @param AvatarResolver   $avatar_resolver
-     * @param AgentDataService $agent_data_service
-     * @param Person           $person
-     */
-    public function __construct(Person $person, AvatarResolver $avatar_resolver, AgentDataService $agent_data_service)
-    {
-        $this->avatar_resolver    = $avatar_resolver;
-        $this->agent_data_service = $agent_data_service;
-        $this->person             = $person;
-    }
-
-    /**
      * The unique ID.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     * @JMS\SerializedName("id")
-     *
-     * @return int
+     * @var int
      */
-    public function getId()
-    {
-        return $this->person->getId();
-    }
+    protected $id;
 
     /**
      * The user`s profile picture.
      *
-     * @JMS\VirtualProperty()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
-     * @JMS\SerializedName("picture_blob")
      *
-     * @return Blob
+     * @var Blob
      */
-    public function getPictureBlob()
-    {
-        return $this->person->picture_blob;
-    }
+    protected $picture_blob;
 
     /**
-     * The user`s profile picture.
+     * True if user`s picture disabled.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("disable_picture")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isDisablePicture()
-    {
-        return $this->person->disable_picture;
-    }
+    protected $disable_picture;
 
     /**
      * The URL to the users gravatar if any.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("gravatar_url")
-     *
-     * @return string
+     * @var string
      */
-    public function getGravatarUrl()
-    {
-        return $this->person->getGravatarUrl();
-    }
+    protected $gravatar_url;
 
     /**
      * Is this person a contact?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_contact")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isContact()
-    {
-        return $this->person->isContact();
-    }
+    protected $is_contact;
 
     /**
      * Is this person a user?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_user")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isUser()
-    {
-        return $this->person->isUser();
-    }
+    protected $is_user;
 
     /**
      * Is this person an agent?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_agent")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isAgent()
-    {
-        return $this->person->isAgent();
-    }
+    protected $is_agent;
 
     /**
      * Was this person an agent?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("was_agent")
-     *
-     * @return bool
+     * @var bool
      */
-    public function wasAgent()
-    {
-        return $this->person->was_agent;
-    }
+    protected $was_agent;
 
     /**
      * Is person allowed to use agent interface.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("can_agent")
-     *
-     * @return bool
+     * @var bool
      */
-    public function canAgent()
-    {
-        return $this->person->can_agent;
-    }
+    protected $can_agent;
 
     /**
      * Is person allowed to use admin interface.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("can_admin")
-     *
-     * @return bool
+     * @var bool
      */
-    public function canAdmin()
-    {
-        return $this->person->can_admin;
-    }
+    protected $can_admin;
 
     /**
      * Is person allowed to use billing interface.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("can_bolling")
-     *
-     * @return bool
+     * @var bool
      */
-    public function canBilling()
-    {
-        return $this->person->can_billing;
-    }
+    protected $can_billing;
 
     /**
      * Are autoresponses disabled?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("disable_autoresponses")
-     *
-     * @return bool
+     * @var bool
      */
-    public function areAutoresponsesDisabled()
-    {
-        return $this->person->disable_autoresponses;
-    }
+    protected $disable_autoresponses;
 
     /**
      * Disabled autoresponses log.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("disable_autoresponses_log")
-     *
-     * @return bool
+     * @var string
      */
-    public function getDisableAutoresponsesLog()
-    {
-        return $this->person->disable_autoresponses_log;
-    }
+    protected $disable_autoresponses_log;
 
     /**
      * Does person has confirmed their email?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_confirmed")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isConfirmed()
-    {
-        return $this->person->isConfirmed();
-    }
+    protected $is_confirmed;
 
     /**
      * Is the user deleted?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_deleted")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isDeleted()
-    {
-        return $this->person->isDeleted();
-    }
+    protected $is_deleted;
 
     /**
      * Is the user disabled?
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_disabled")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isDisabled()
-    {
-        return $this->person->isDisabled();
-    }
+    protected $is_disabled;
 
     /**
      * The way person was created.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("creation_system")
-     *
-     * @return string
+     * @var string
      */
-    public function getCreationSystem()
-    {
-        return $this->person->creation_system;
-    }
+    protected $creation_system;
 
     /**
      * The users name (best guess from other sources etc).
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("name")
-     *
-     * @return string
+     * @var string
      */
-    public function getName()
-    {
-        return $this->person->name;
-    }
+    protected $name;
 
     /**
      * The users name (best guess from other sources etc).
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("first_name")
-     *
-     * @return string
+     * @var string
      */
-    public function getFirstName()
-    {
-        return $this->person->first_name;
-    }
+    protected $first_name;
 
     /**
      * The users name (best guess from other sources etc).
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("last_name")
-     *
-     * @return string
+     * @var string
      */
-    public function getLastName()
-    {
-        return $this->person->last_name;
-    }
+    protected $last_name;
 
     /**
      * The users title prefix (Mr., Mrs., etc).
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("title_prefix")
-     *
-     * @return string
+     * @var string
      */
-    public function getTitlePrefix()
-    {
-        return $this->person->title_prefix;
-    }
+    protected $title_prefix;
 
     /**
      * Overrides the display name of an person in the user interface (agents only).
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("override_display_name")
-     *
-     * @return string
+     * @var string
      */
-    public function getOverrideDisplayName()
-    {
-        return $this->person->override_display_name;
-    }
+    protected $override_display_name;
 
     /**
      * The summary field as filled in by agents.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("summary")
-     *
-     * @return string
+     * @var string
      */
-    public function getSummary()
-    {
-        return $this->person->summary;
-    }
+    protected $summary;
 
     /**
-     * The summary field as filled in by agents.
+     * Default person`s language.
      *
-     * @JMS\VirtualProperty()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
-     * @JMS\SerializedName("language")
      *
-     * @return Language
+     * @var Language
      */
-    public function getLanguage()
-    {
-        return $this->person->getLanguage();
-    }
+    protected $language;
 
     /**
-     * The users organization.
+     * The person`s organization.
      *
-     * @JMS\VirtualProperty()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
-     * @JMS\SerializedName("organization")
      *
-     * @return Organization
+     * @var Organization
      */
-    public function getOrganization()
-    {
-        return $this->person->getOrganization();
-    }
+    protected $organization;
 
     /**
      * The persons position at the organization.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("organization_position")
-     *
-     * @return string
+     * @var string
      */
-    public function getOrganizationPosition()
-    {
-        return $this->person->organization_position;
-    }
+    protected $organization_position;
 
     /**
      * True if the person is a manager of their organization.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("organization_position")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isOrganizationManager()
-    {
-        return $this->person->organization_manager;
-    }
+    protected $organization_manager;
 
     /**
      * The timezone associated with this user.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("timezone")
-     *
-     * @return string
+     * @var string
      */
-    public function getTimezone()
-    {
-        return $this->person->getTimezone();
-    }
+    protected $timezone;
 
     /**
      * The date the user was inserted into the system.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_created")
-     *
-     * @return \DateTime
+     * @var \DateTime
      */
-    public function getDateCreated()
-    {
-        return $this->person->date_created;
-    }
+    protected $date_created;
 
     /**
-     * The date the user was inserted into the system.
+     * The date the user was logged in last time.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_last_login")
-     *
-     * @return \DateTime
+     * @var \DateTime
      */
-    public function getDateLastLogin()
-    {
-        return $this->person->date_last_login;
-    }
+    protected $date_last_login;
 
     /**
      * The browser person was used last time.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("browser")
-     *
-     * @return string
+     * @var string
      */
-    public function getBrowser()
-    {
-        return $this->person->browser;
-    }
+    protected $browser;
 
     /**
      * Usergroups the user belongs to.
      *
-     * @JMS\VirtualProperty()
-     * @ JMS\Type("ArrayCollection<entity<Application\DeskPRO\Entity\Usergroup>>")
-     * @JMS\SerializedName("usergroups")
+     * @JMS\Type("ArrayCollection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
-     * @return ArrayCollection
+     * @var ArrayCollection
      */
-    public function getUsergroups()
-    {
-        return $this->person->getUsergroups();
-    }
+    protected $usergroups;
 
     /**
      * Labels associated with this user.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array<string>")
-     * @JMS\SerializedName("labels")
-     *
-     * @return array
+     * @var array
      */
-    public function getLabels()
-    {
-        return $this->person->getLabelsArray();
-    }
+    protected $labels;
 
     /**
-     * Get the primary email address, or null if this person has none.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     * @JMS\SerializedName("primary_emails")
-     *
-     * @return string
+     * @var string
      */
-    public function getPrimaryEmail()
-    {
-        return $this->person->getPrimaryEmailAddress();
-    }
+    protected $primary_email;
 
     /**
-     * Get the primary email address, or null if this person has none.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array<string>")
-     * @JMS\SerializedName("emails")
-     *
-     * @return array
+     * @var array
      */
-    public function getEmails()
-    {
-        return ListUtils::filterMap($this->person->getEmails(), function ($email) {
-            /* @var \Application\DeskPRO\Entity\PersonEmail $email */
-            return $email->getEmail();
-        });
-    }
+    protected $emails;
 
     /**
-     * Get user`s avatar model.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
-     * @JMS\SerializedName("avatar")
-     *
-     * @return Avatar
+     * @var Avatar
      */
-    public function getAvatar()
-    {
-        return $this->avatar_resolver->getAvatarModel($this->person);
-    }
+    protected $avatar;
 
     /**
-     * Is the agent online?
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
-     * @JMS\SerializedName("online")
-     *
-     * @return bool
+     * @var bool
      */
-    public function isOnline()
-    {
-        return $this->agent_data_service->isAgentOnline($this->person);
-    }
+    protected $online;
 
     /**
-     * Get the DateTime when the agent was last seen online.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("DateTime")
-     * @JMS\SerializedName("last_seen")
-     *
-     * @return \DateTime
+     * @var \DateTime
      */
-    public function getLastSeen()
-    {
-        $last_seen = $this->agent_data_service->getLastSeen($this->person);
-        if ($last_seen) {
-            $last_seen = new \DateTime($last_seen);
-        }
-
-        return $last_seen ?: null;
-    }
+    protected $last_seen;
 
     /**
-     * Get person`s phones.
-     *
-     * @JMS\VirtualProperty()
      * @JMS\Type("array<array<string>>")
-     * @JMS\SerializedName("phone_numbers")
      *
-     * @return array
+     * @var array
      */
-    public function getPhoneNumbersArray()
+    protected $phone_numbers;
+
+    /**
+     * @var int
+     */
+    protected $tickets_count;
+
+    /**
+     * @var int
+     */
+    protected $chats_count;
+
+    /**
+     * @var CustomDataCollection
+     */
+    protected $fields;
+
+    /**
+     * @param Person $person
+     */
+    public function __construct(Person $person)
     {
-        return $this->person->getPhoneNumbersArray();
+        $this->id                        = $person->getId();
+        $this->picture_blob              = $person->picture_blob;
+        $this->disable_picture           = $person->disable_picture;
+        $this->gravatar_url              = $person->getGravatarUrl();
+        $this->is_contact                = $person->is_contact;
+        $this->is_user                   = $person->isUser();
+        $this->is_agent                  = $person->isAgent();
+        $this->was_agent                 = $person->was_agent;
+        $this->can_agent                 = $person->can_agent;
+        $this->can_admin                 = $person->can_admin;
+        $this->can_billing               = $person->getRealCanBilling();
+        $this->disable_autoresponses     = $person->disable_autoresponses;
+        $this->disable_autoresponses_log = $person->disable_autoresponses_log;
+        $this->is_confirmed              = $person->isConfirmed();
+        $this->is_deleted                = $person->isDeleted();
+        $this->is_disabled               = $person->isDisabled();
+        $this->creation_system           = $person->creation_system;
+        $this->name                      = $person->name;
+        $this->first_name                = $person->first_name;
+        $this->last_name                 = $person->last_name;
+        $this->title_prefix              = $person->title_prefix;
+        $this->override_display_name     = $person->override_display_name;
+        $this->summary                   = $person->summary;
+        $this->language                  = $person->getLanguage();
+        $this->organization              = $person->getOrganization();
+        $this->organization_position     = $person->organization_position;
+        $this->organization_manager      = $person->isOrganizationManager();
+        $this->timezone                  = $person->getTimezone();
+        $this->date_created              = $person->date_created;
+        $this->date_last_login           = $person->date_last_login;
+        $this->browser                   = $person->browser;
+        $this->usergroups                = $person->getUsergroups();
+        $this->labels                    = $person->getLabelsArray();
+        $this->primary_email             = $person->getPrimaryEmailAddress();
+        $this->tickets_count             = $person->getTicketsCount();
+        $this->chats_count               = $person->getChatsCount();
+        $this->phone_numbers             = $person->getPhoneNumbersArray();
+        $this->fields                    = new CustomDataCollection($person->custom_data);
+
+        $this->emails = ListUtils::filterMap($person->getEmails(), function ($email) {
+                /* @var \Application\DeskPRO\Entity\PersonEmail $email */
+                return $email->getEmail();
+            }
+        );
     }
 
     /**
-     * Count of tickets person was assigned.
+     * @param Avatar $avatar
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     * @JMS\SerializedName("tickets_count")
-     *
-     * @return int
+     * @return $this
      */
-    public function getTicketsCount()
+    public function setAvatar(Avatar $avatar)
     {
-        return $this->person->getTicketsCount();
+        $this->avatar = $avatar;
+
+        return $this;
     }
 
     /**
-     * Count of tickets person participating.
+     * @param bool $online
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     * @JMS\SerializedName("chats_count")
-     *
-     * @return int
+     * @return $this
      */
-    public function getChatsCount()
+    public function setOnline($online)
     {
-        return $this->person->getChatsCount();
+        $this->online = $online;
+
+        return $this;
     }
 
     /**
-     * Custom person`s field.
+     * @param \DateTime $last_seen
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection")
-     * @JMS\SerializedName("fields")
-     *
-     * @return CustomDataCollection
+     * @return $this
      */
-    public function getCustomData()
+    public function setLastSeen(\DateTime $last_seen = null)
     {
-        return new CustomDataCollection($this->person->custom_data);
+        $this->last_seen = $last_seen;
+
+        return $this;
     }
 }

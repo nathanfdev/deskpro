@@ -67,7 +67,16 @@ class ApiPersonFactory
      */
     public function create(Person $person)
     {
-        return new ApiPerson($person, $this->resolver, $this->service);
+        $api_person = new ApiPerson($person, $this->resolver, $this->service);
+        $api_person
+            ->setAvatar($this->resolver->getAvatarModel($person))
+            ->setOnline($this->service->isAgentOnline($person));
+        $last_seen = $this->service->getLastSeen($person);
+        if ($last_seen) {
+            $api_person->setLastSeen(new \DateTime($last_seen));
+        }
+
+        return $api_person;
     }
 
     /**
