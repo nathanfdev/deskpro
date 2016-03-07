@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,6 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
@@ -135,10 +134,8 @@ SQL
         $dep3        = Department::createChatDepartment();
         $dep3->title = 'support';
 
-        $team              = new AgentTeam();
-        $team->name        = 'test team';
-        $ticket_def        = new CustomDefTicket();
-        $ticket_def->title = 'def';
+        $team       = new AgentTeam();
+        $team->name = 'test team';
 
         // Create ticket layouts
         // prepare custom defs for people, organizations and tickets
@@ -232,7 +229,6 @@ SQL
         $article->date_created = new \DateTime();
 
         // Persist them in the entity manager
-        $em->persist($ticket_def);
         $em->persist($team);
         $em->persist($dep1);
         $em->persist($dep2);
