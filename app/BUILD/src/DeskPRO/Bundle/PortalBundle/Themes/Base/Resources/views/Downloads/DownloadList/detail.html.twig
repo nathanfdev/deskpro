@@ -4,14 +4,6 @@
             <li class="download-item">
                 <div class="controls">
                     <ul>
-                        {%- if dl.num_comments > 0 -%}
-                            <li>
-                                <a href="{{ portal_path(dl) }}#comments">
-                                    <i class="fa fa-comments"></i>
-                                    {{ phrase('portal.general.comments-count', {count: dl.num_comments}) }}
-                                </a>
-                            </li>
-                        {%- endif -%}
                         <li class="the-file">
                             <a href="{{ portal_path(dl, 'serve') }}?dl=1"
                                class="dpx-download-popup"
@@ -22,9 +14,17 @@
                                data-vote-url="{{ portal_path(dl, 'vote_up') }}">
 
                                 {{ phrase('portal.downloads.download') }}
-                                {{ content_icon(dl) }}
+                                <i class="fa fa-download"></i>
                             </a>
                         </li>
+                        {%- if dl.num_comments > 0 -%}
+                            <li>
+                                <a href="{{ portal_path(dl) }}#comments">
+                                    <i class="fa fa-comments"></i>
+                                    {{ dl.num_comments }}
+                                </a>
+                            </li>
+                        {%- endif -%}
                         <li class="the-cudos as-vote-widget">
                             <a href="{{ portal_path(dl, 'vote_up') }}" class="post-link as-vote-btn">
                                 <i class="fa fa-thumbs-up as-vote-animate"></i> <span class="as-vote-count" data-votes="{{ dl.total_rating }}">{{ dl.total_rating }}</span>

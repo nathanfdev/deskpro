@@ -4274,7 +4274,7 @@ ul.kb-checkbox-extra {
   }
 
   .avatar {
-    display: block;
+    display: inline-block;
     margin-top: 10px;
     margin-bottom: 5px;
 
@@ -4291,7 +4291,7 @@ ul.kb-checkbox-extra {
   }
 
   .author {
-    display: block;
+    display: inline-block;
     @media screen and (max-width: 760px) {
       display: inline-block;
       vertical-align: middle;
@@ -4303,6 +4303,7 @@ ul.kb-checkbox-extra {
   }
 
   .date {
+    display: block;
     color: $text-faded;
     font-size: 0.9em;
   }
@@ -4314,6 +4315,7 @@ ul.kb-checkbox-extra {
     padding: 10px;
     padding-left: 20px;
     border-left: 1px solid $divider-color;
+    min-height: 60px;
 
     @media screen and (max-width: 760px) {
       margin-left: 0px;
@@ -5918,10 +5920,8 @@ h1.fancy-header {
     margin-top: 20px;
 
     > li {
-      margin-bottom: 10px;
-      padding-bottom: 10px;
+      padding-bottom: 2px;
       padding-left: 10px;
-      border-bottom: 1px solid $divider-color;
 
       a {
         text-decoration: none;
@@ -5950,6 +5950,11 @@ h1.fancy-header {
       .date {
         margin-left: 5px;
         color: $text-faded;
+      }
+
+      &.download-item {
+        border-bottom: 1px solid #E0E0E0;
+        margin-bottom: 10px;
       }
     }
   }
@@ -6613,8 +6618,12 @@ ul.categories-article-list {
     border-bottom: 2px solid $divider-color;
     border-radius: 2px;
     background: $surface-main;
-    font-weight: 100;
     font-size: 0.9em;
+
+    &.as-top {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
 
     strong {
       font-weight: 500;
