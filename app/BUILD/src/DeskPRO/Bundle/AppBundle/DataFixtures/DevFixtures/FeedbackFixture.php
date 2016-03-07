@@ -154,8 +154,24 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $cat_field->sys_name      = 'cat';
         $cat_field->title         = 'Category';
         $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
-        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
         $this->manager->persist($cat_field);
+        $this->manager->flush();
+
+        foreach (['Windows', 'Mac', 'Linux'] as $order => $title) {
+            $opt_f                  = new CustomDefFeedback();
+            $opt_f->parent          = $cat_field;
+            $opt_f->title           = $title;
+            $opt_f->description     = '';
+            $opt_f->is_user_enabled = true;
+            $opt_f->is_enabled      = true;
+            $opt_f->display_order   = $order;
+            $opt_f->setOption('parent_id', 0);
+
+            $this->manager->persist($opt_f);
+        }
+
+        $this->manager->flush();
     }
 
     private function loadStatusCategories()
