@@ -106,6 +106,7 @@ return array(
     'portal.general.x-search-results'            => '{{ num }} search results for "{{ query }}"',
     'portal.general.x-search-results-no-query'   => '{{ num }} search results',
     'portal.general.no-search-results'           => 'We couldn\'t find any results for "{{ query }}"',
+    'portal.general.no-search-results-general'   => 'We couldn\'t find any results',
     'portal.general.no-search-query'             => 'Please type a search query into the search box.',
     'portal.general.software_provided_by'        => 'Helpdesk software provided by',
     'portal.general.impersonation_mode'          => 'Impersonation Mode',
