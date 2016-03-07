@@ -1,35 +1,58 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
-import {
-  BaseForm,
-  Header,
-  Popup,
-  FieldGroup,
-  FullField,
-  FloatField,
-  CollectionField,
-  QuickFilter,
-  Unassign,
-  AgentsList,
-  AgentTeamsList,
-  DepartmentsList
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form';
+import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { CardWidget } from './CardWidget';
 
 export class CardProject extends CardWidget {
 
   static propTypes = {
     value: PropTypes.number,
+    projects: PropTypes.object.isRequired,
     openBySingleClick: PropTypes.bool,
     onSetEditing: PropTypes.func,
     onChange: PropTypes.func.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: props.isOpen,
+      projects: props.projects,
+      value: props.value
+    };
+  }
+
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen !== state.isOpen
+      || this.state.value !== state.value
+      || !Immutable.is(this.state.projects, state.projects);
+  }
+
+  componentWillReceiveProps(props) {
+    let state = {
+      value: props.value,
+      projects: props.projects
+    };
+    if (undefined !== props.isOpen) {
+      state.isOpen = props.isOpen;
+    }
+    this.setState(state);
+  }
+
+  filterProjects = (str) => {
+    str = str || '';
+    this.setState({
+      projects: this.props.projects.filter((item) => {
+        return (item.get('title') || '').toLowerCase().indexOf(str.toLowerCase()) !== -1
+      })
+    });
+  };
+
   onChange = (value) => {
-    this.setState({value: value[0]});
+    this.setState({value: this.state.value === value ? null : value});
   };
 
   onClose = () => {
@@ -40,10 +63,8 @@ export class CardProject extends CardWidget {
   };
 
   render() {
-    const { projects } = this.props;
-    const { value } = this.state;
+    const { projects, value } = this.state;
     const project = value ? projects.get(value) : null;
-    const selected = value ? [value] : [];
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
 
     return (
@@ -55,17 +76,40 @@ export class CardProject extends CardWidget {
 
         <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}
-                  positionAt="left bottom"
+                  positionAt="right+5 top-23"
                   collision="fit"
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose}
                     additionalNodes={[this.refs.button, 'popup', '.fa-check']}>
-            <Popup ref="popup" additionalClassNames="one-column">
-              <CollectionField title="Project">
-                <ProjectsList values={projects} onChange={this.onChange} selected={selected} />
-              </CollectionField>
-            </Popup>
+
+            <div className="dpw-navigation-dropdown-panel" style={{width: 240}}>
+              <div className="dpw-navigation-dropdown-panel-content">
+                <div className="dpw-navigation-dropdown-panel-content-line">
+                  <div className="dpw-navigation-dropdown-panel-content-full">
+                    <div className="dpw-departments-long-list">
+                      <QuickFilter onChange={this.filterProjects} />
+                      <div className="dpw--popup-item-collection">
+                        <ul>
+                          {projects.map((item) =>
+                            <li>
+                              <div className="dpw--popup-item-box" onClick={this.onChange.bind(this, item.get('id'))}>
+                                <span className="dpw--checkbox-boxy">
+                                  {project === item ? <i className="fa fa-check"></i> : null}
+                                </span>
+                                <span className="dpw-popup-item-collection-name">
+                                  {item.get('title')}
+                                </span>
+                              </div>
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ClickOut>
         </Positioned>
       </div>
