@@ -43,7 +43,7 @@ class TicketMessageTranslated extends AbstractEntityRepository
      * @param TicketMessageEntity  $ticket_message
      * @param string|string[]|null $lang           Optionally only fetch these lang codes
      *
-     * @return array|TicketMessageEntity|Null
+     * @return array|TicketMessageEntity|null
      */
     public function getForMessage(TicketMessageEntity $ticket_message, $lang_code = null)
     {
