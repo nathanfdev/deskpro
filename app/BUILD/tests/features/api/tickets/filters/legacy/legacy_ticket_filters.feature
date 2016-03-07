@@ -18,17 +18,21 @@ Feature: /ticket_filters endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "My Tickets"
     And the JSON node "data[0].display_order" should be equal to 1
-    And the JSON node "data[0].filter_set" should be equal to 0
+    And the JSON node "data[0].ticket_filter_set" should be equal to 1
+    And the JSON node "data[0].filter_views" should exist
+    And the JSON node "data[0].filter_preferences" should exist
+    And the JSON node "data[0].date_created" should exist
+    And the JSON node "data[0].date_updated" should exist
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "My Team's Tickets"
     And the JSON node "data[1].display_order" should be equal to 2
-    And the JSON node "data[1].filter_set" should be equal to 0
+    And the JSON node "data[1].ticket_filter_set" should be equal to 1
 
     And the JSON node "data[2].id" should be equal to 3
     And the JSON node "data[2].title" should be equal to "Tickets I Follow"
     And the JSON node "data[2].display_order" should be equal to 3
-    And the JSON node "data[2].filter_set" should be equal to 0
+    And the JSON node "data[2].ticket_filter_set" should be equal to 1
 
   Scenario: I get ticket filter
     When I send a GET request to "/api/v2/ticket_filters/2"
@@ -37,7 +41,7 @@ Feature: /ticket_filters endpoint
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.title" should be equal to "My Team's Tickets"
     And the JSON node "data.display_order" should be equal to 2
-    And the JSON node "data.filter_set" should be equal to 0
+    And the JSON node "data.ticket_filter_set" should be equal to 1
     And the JSON node "data.term" should have 3 elements
     And the JSON node "data.term[0].type" should be equal to "agent_team"
     And the JSON node "data.term[1].type" should be equal to "status"
