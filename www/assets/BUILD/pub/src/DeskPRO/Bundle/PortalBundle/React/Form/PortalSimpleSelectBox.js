@@ -117,16 +117,9 @@ export class PortalSimpleSelectBox extends React.Component {
   };
 
   onClickOut = () => {
-    if (!this.state.expanded) {
-      return;
+    if (this.state.expanded) {
+      this.toggleExpanded();
     }
-    if (this.refs.filterInput) {
-      this.refs.filterInput.blur();
-    }
-
-    this.setState({
-      expanded: false
-    });
   };
 
   onClickOption = option => {
@@ -321,7 +314,7 @@ export class PortalSimpleSelectBox extends React.Component {
 
     const className = classes.join(' ');
 
-    if (!this.state.expanded && (multiple ? this.state.value.length > 0 : this.state.value)) {
+    if (!this.state.expanded) {
       return (
         <div className={className}
              onClick={this.onClickHeader}
@@ -405,7 +398,7 @@ export class PortalSimpleSelectBox extends React.Component {
                 additionalNodes={[`.multiselect-title_${this.state.id}`]}
                 context={context}>
 
-        <div className={classNames('multiselect', `level-${this.state.level}`)}>
+        <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>
             {this.renderStaticHeader()}
             {this.renderDropdownList()}
         </div>

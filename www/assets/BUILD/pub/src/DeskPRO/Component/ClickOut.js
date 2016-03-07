@@ -42,7 +42,10 @@ export class ClickOut extends React.Component {
   }
 
   onClick = event => {
-    event.stopImmediatePropagation();
+    // dont use stopImmediatePropagation here because there may be multiple
+    // event listeners on the same context, and if we immediately stop propagation,
+    // it stops all listeners, not just the bubble
+    event.stopPropagation();
 
     const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
     // skip if clicking on one of the ignored nodes

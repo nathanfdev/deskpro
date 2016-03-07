@@ -14,11 +14,6 @@
         <li>
             <a href="{{ path('portal_feedback_browse', { filter_uri: 'closed' }) }}"{% if status == 'closed' %} class="active"{% endif %}>{{ phrase('portal.feedback.filter_closed_items') }} <span class="control"><i class="fa fa-caret-down"></i></span></a>
         </li>
-
-        {# My votes & stars not supported yet #}
-        {#<li>#}
-            {#<a href="#">{{ phrase('portal.feedback.filter_my_votes_and_stars') }}</a>#}
-        {#</li>#}
     </ul>
 
     {% if feedback_types is defined and feedback_types|length > 0 %}

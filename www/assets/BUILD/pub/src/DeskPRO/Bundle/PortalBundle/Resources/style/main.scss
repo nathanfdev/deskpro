@@ -5199,10 +5199,6 @@ h1.fancy-header {
     margin: 0 5px;
   }
 
-  .slider-panel {
-    border: 1px solid $divider-color;
-  }
-
   a.slider {
     display: inline-block;
     margin: 2px;
@@ -5268,7 +5264,7 @@ h1.fancy-header {
   }
 
   .slider-label {
-    margin: 0 4px;
+    margin: 0 5px 0 3px;
     color: $text-color-lighter;
     font-size: 0.9em;
     cursor: pointer;
@@ -5290,13 +5286,14 @@ h1.fancy-header {
   margin-bottom: 10px;
   border-bottom: 1px solid $divider-color;
 
-  li {
+  > li {
     display: inline-block;
-    margin: 0 15px;
+    margin: 0;
   }
 
   a {
     display: block;
+    padding: 0 15px;
     padding-bottom: 3px;
     color: $text-color-lighter;
     text-decoration: none;
@@ -5368,7 +5365,7 @@ h1.fancy-header {
     position: absolute;
     margin-left: 0;
     top: 27px;
-    left: 0;
+    left: 15px;
     display: none;
 
     ul {
@@ -5422,61 +5419,45 @@ h1.fancy-header {
 .feedback-form {
   .main-input {
     @include clearfix;
-    margin-top: 50px;
-    margin-bottom: 60px;
+    margin-left: 15px;
+    margin-top: 20px;
+    margin-bottom: 40px;
 
     @media screen and (max-width: 760px) {
       margin-top: 10px;
       margin-bottom: 20px;
     }
 
-    > div {
-      display: inline;
+    h3 {
+      font-size: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: $fonts;
+      font-weight: normal;
+      float: left;
+      line-height: 35px;
     }
 
-    .input, .button, span {
-      display: inline-block;
-      padding: 5px 10px;
-      font-size: 1.2em;
-      line-height: 1em;
-      margin-top: 10px;
+    .question-type {
+      display: block;
+      float: left;
+      min-width: 200px;
+      width: 45%;
+      max-width: 450px;
+      margin: 0 15px;
     }
 
-    .deskpro-choice-widget {
-      display: inline-block;
-    }
-
-    select {
-      padding: 5px;
-      display: inline-block;
-      width: 55%;
-      position: relative;
-      top: -2px;
-    }
-
-    .input {
-      width: 55%;
-      border: 1px solid $divider-color;
-      color: $text-color-lighter;
-      text-align: left;
-      text-decoration: none;
-
-      i {
-        position: relative;
-        top: 2px;
-        float: right;
-        font-size: 0.8em;
-      }
+    .start-btn {
+      float: left;
     }
 
     .button {
       width: auto;
       border: 1px solid $button-color-secondary;
-      border-bottom: none;
       background: $button-color-secondary;
       text-align: center;
       text-shadow: none;
-      margin-top: 10px;
+      margin: 0;
       padding: 10px;
     }
 
@@ -5499,6 +5480,10 @@ h1.fancy-header {
   max-width: 600px;
   border-radius: 4px;
   background: darken($page-background, 5%);
+
+  .bucket {
+    margin-bottom: 15px;
+  }
 
   .button {
     width: 34%;
@@ -9146,6 +9131,26 @@ table .form-help {
       }
       z-index: 99;
     }
+  }
+
+  &.small .default {
+    padding: 4px;
+    i[class^='fa-caret'], i[class*=' fa-caret'] {
+      top: 6px;
+      right: 7px;
+    }
+  }
+
+  &.borderless .default {
+    border: none;
+    &.expanded {
+      border: none;
+    }
+  }
+
+  &.borderless.right .default {
+    text-align: right;
+    padding-right: 23px;
   }
 
   &.level-1 {
