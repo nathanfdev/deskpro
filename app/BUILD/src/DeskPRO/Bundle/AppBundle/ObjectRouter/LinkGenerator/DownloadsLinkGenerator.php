@@ -79,6 +79,10 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
         /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $object */
         $blob = $object->getBlob();
 
+        if (!$blob) {
+            return '';
+        }
+
         return $this->url_generator->generate(
             'serve_blob',
             array_merge([

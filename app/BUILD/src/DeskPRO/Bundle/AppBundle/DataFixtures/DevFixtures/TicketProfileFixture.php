@@ -391,7 +391,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $person->setPassword('password');
 
         $ava_file = $this->ava_files->next();
-        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromString(
+        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
             $ava_file->getRealPath(),
             $ava_file->getFilename(),
             ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
