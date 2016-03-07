@@ -10,12 +10,12 @@ import {
   FullField,
   FloatField,
   CollectionField,
-  QuickFilter,
   Unassign,
   AgentsList,
   AgentTeamsList,
   DepartmentsList
 } from '../../Form';
+import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 
 export class AssignForm extends BaseForm {
   static propTypes = {

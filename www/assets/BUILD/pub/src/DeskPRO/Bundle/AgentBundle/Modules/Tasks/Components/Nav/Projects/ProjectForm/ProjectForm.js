@@ -12,13 +12,13 @@ import {
   FullField,
   FloatField,
   CollectionField,
-  QuickFilter,
   ShowOnlySelected,
   Unassign,
   AgentsList,
   AgentTeamsList,
   DepartmentsList
 } from '../../../Form';
+import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { Modal } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Modal';
 
 export class ProjectForm extends BaseForm {
