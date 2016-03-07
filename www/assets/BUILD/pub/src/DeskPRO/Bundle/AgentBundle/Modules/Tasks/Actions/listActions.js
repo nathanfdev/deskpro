@@ -6,7 +6,7 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelecto
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -95,12 +95,8 @@ export const applyFilters = createAction(
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
   (data) => (dispatch, getState) => api.sendPost(`DP_API/tasks`, data).success(response => {
-    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
     const task = Immutable.fromJS(response.data);
-    tasks = tasks.set(task.get('id'), task);
-    tasks = reOrderCollection(tasks, task.get('id'), task.get('display_order'));
-    dispatch(releaseCollection('Task', recordStoresId));
-    dispatch(setCollection('Task', recordStoresId, tasks));
+    dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
   })
 );
 
@@ -137,16 +133,18 @@ export const editTask = createAction(
 
     // todo show errors (alert?)
     promise.success(() => {
-      latestTasks = latestTasks.set(taskId, newTask);
+      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, newTask);
       if (latestPromise !== promise) return;
 
       console.time('set collections');
+      dispatch(releaseCollection('Task', recordStoresId));
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
       console.timeEnd('set collections');
     }).error(() => {
-      latestTasks = latestTasks.set(taskId, oldTask);
+      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, oldTask);
       if (latestPromise !== promise) return;
+      dispatch(releaseCollection('Task', recordStoresId));
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
     });
