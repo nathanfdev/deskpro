@@ -33,12 +33,28 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSetDataService;
 
 /**
  * Class LegacyTicketFilterTransformer.
  */
 class LegacyTicketFilterTransformer extends AbstractDataSerializerTransformer
 {
+    /**
+     * @var LegacyTicketFilterSetDataService
+     */
+    private $data_service;
+
+    /**
+     * Constructor.
+     *
+     * @param LegacyTicketFilterSetDataService $data_service
+     */
+    public function __construct(LegacyTicketFilterSetDataService $data_service)
+    {
+        $this->data_service = $data_service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -57,11 +73,18 @@ class LegacyTicketFilterTransformer extends AbstractDataSerializerTransformer
     {
         /** @var LegacyTicketFilter $data */
         $data = $transformation_request->getDataToBeTransformed();
+        $type = $this->data_service->getFilterSetType($data);
+        $set  = $this->data_service->getFilterSet($type);
+
+        $context = $transformation_request->getSerializerContext();
+        if ($context->isTypeIncluded('ticket_filter_set')) {
+            $context->getSideloads()->addSideloadDataId('ticket_filter_set', $set->getId(), $set);
+        }
 
         return [
             'title'              => $data->getRawTitle(),
             'term'               => $data->terms,
-            'filter_set'         => null,
+            'filter_set'         => $set->getId(),
             'filter_views'       => null,
             'filter_preferences' => null,
             'date_created'       => null,

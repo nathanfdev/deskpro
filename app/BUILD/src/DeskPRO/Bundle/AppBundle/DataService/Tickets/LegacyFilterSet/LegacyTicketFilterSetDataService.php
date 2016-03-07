@@ -83,7 +83,7 @@ class LegacyTicketFilterSetDataService
      */
     public function getFilterSet($id)
     {
-        $sets = $this->getFilterSetsData();
+        $sets = $this->getFilterSetsWithData();
 
         return isset($sets[$id]) ? $sets[$id] : null;
     }
@@ -93,7 +93,7 @@ class LegacyTicketFilterSetDataService
      */
     public function getAllFilterSets()
     {
-        return array_values($this->getFilterSetsData());
+        return array_values($this->getFilterSetsWithData());
     }
 
     /**
@@ -187,6 +187,22 @@ class LegacyTicketFilterSetDataService
     /**
      * @param LegacyTicketFilter $filter
      *
+     * @return int
+     */
+    public function getFilterSetType(LegacyTicketFilter $filter)
+    {
+        if (!$filter->sys_name) {
+            return LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS;
+        } elseif (strpos($filter->sys_name, 'archive_') === 0) {
+            return LegacyTicketFilterSet::TYPE_ALL_TICKETS;
+        }
+
+        return LegacyTicketFilterSet::TYPE_AWAITING_AGENT;
+    }
+
+    /**
+     * @param LegacyTicketFilter $filter
+     *
      * @return \Application\DeskPRO\Searcher\TicketSearch
      */
     public function getFilterSearcher(LegacyTicketFilter $filter)
@@ -198,29 +214,28 @@ class LegacyTicketFilterSetDataService
     }
 
     /**
+     * @return LegacyTicketFilterSet[]
+     */
+    private function getFilterSets()
+    {
+        return [
+            LegacyTicketFilterSet::TYPE_AWAITING_AGENT => new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_AWAITING_AGENT, 'Awaiting agent', 1),
+            LegacyTicketFilterSet::TYPE_ALL_TICKETS    => new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets', 2),
+            LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS => new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters', 3),
+        ];
+    }
+
+    /**
      * @return array
      */
-    private function getFilterSetsData()
+    private function getFilterSetsWithData()
     {
-        $awaiting_agent_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_AWAITING_AGENT, 'Awaiting agent', 1);
-        $all_tickets_set    = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_ALL_TICKETS, 'All tickets', 2);
-        $custom_filters_set = new LegacyTicketFilterSet(LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS, 'Custom filters', 3);
-
+        $filter_sets = $this->getFilterSets();
         foreach ($this->getAllFilters() as $filter) {
-            if (!$filter->sys_name) {
-                $custom_filters_set->addFilter($filter);
-            } elseif (strpos($filter->sys_name, 'archive_') === 0) {
-                $all_tickets_set->addFilter($filter);
-            } else {
-                $awaiting_agent_set->addFilter($filter);
-            }
+            $filter_sets[$this->getFilterSetType($filter)]->addFilter($filter);
         }
 
-        return [
-            LegacyTicketFilterSet::TYPE_AWAITING_AGENT => $awaiting_agent_set,
-            LegacyTicketFilterSet::TYPE_ALL_TICKETS    => $all_tickets_set,
-            LegacyTicketFilterSet::TYPE_CUSTOM_FILTERS => $custom_filters_set,
-        ];
+        return $filter_sets;
     }
 
     /**
