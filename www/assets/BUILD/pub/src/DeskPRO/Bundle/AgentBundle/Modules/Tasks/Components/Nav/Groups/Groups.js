@@ -6,23 +6,23 @@ import jQuery from 'jquery';
 export class Groups extends React.Component {
 
   static propTypes = {
-    groupsOptions: PropTypes.object.isRequired,
-    groupsCount: PropTypes.object.isRequired
+    options: PropTypes.object.isRequired,
+    count: PropTypes.object.isRequired
   };
 
   render() {
-    const { groupsOptions, groupsCount } = this.props;
+    const { options, count } = this.props;
 
     return (
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          {jQuery.map(groupsOptions, (params, type) =>
+          {jQuery.map(options, (params, type) =>
             <ListItemContainer key={type}
                                urlHash={params.label}
                                listOptions={params.filter}>
 
-              <ListItem count={groupsCount.get(type)}
+              <ListItem count={count.get(type)}
                         label={params.label} />
             </ListItemContainer>
           )}
