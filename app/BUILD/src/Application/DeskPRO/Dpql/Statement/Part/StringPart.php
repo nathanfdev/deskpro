@@ -37,7 +37,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 /**
  * Represents a literal value in DPQL.
  */
-class String extends AbstractPart
+class StringPart extends AbstractPart
 {
     /**
      * @var string

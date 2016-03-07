@@ -485,12 +485,12 @@ expression(res) ::= COLUMN(A) .
 
 expression(res) ::= LITERAL(A) .
 {
-	res = new Statement\Part\String(A);
+	res = new Statement\Part\StringPart(A);
 }
 
 expression(res) ::= QUOTED(A) .
 {
-	res = new Statement\Part\String($this->processQuoted(A));
+	res = new Statement\Part\StringPart($this->processQuoted(A));
 }
 
 expression(res) ::= PLACEHOLDER(A) .

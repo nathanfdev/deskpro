@@ -364,7 +364,7 @@ class Column extends AbstractPart
                     new self(array_merge($this->parts, array('parent', 'id'))),
                     new FunctionCall('concat', array(
                         new self(array_merge($this->parts, array('parent', 'title'))),
-                        new String(' > '),
+                        new StringPart(' > '),
                         new self(array_merge($this->parts, array('title'))),
                     )),
                     new self(array_merge($this->parts, array('title'))),

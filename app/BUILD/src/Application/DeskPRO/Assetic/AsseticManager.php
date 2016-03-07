@@ -317,7 +317,7 @@ class AsseticManager
         $build_time  = filemtime($build_file);
         $bundle_time = $asset->getLastModified();
 
-        return ($build_time < $bundle_time);
+        return $build_time < $bundle_time;
     }
 
     /**
@@ -477,7 +477,7 @@ class AsseticManager
                 $filter = new \Assetic\Filter\CssRewriteFilter();
                 break;
             case 'null':
-                $filter = new \Orb\Assetic\Filter\Null();
+                $filter = new \Orb\Assetic\Filter\NullFilter();
                 break;
             case 'smartsprites':
                 $filter = new \Orb\Assetic\Filter\SmartSprites(

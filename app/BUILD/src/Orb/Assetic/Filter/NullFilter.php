@@ -36,7 +36,7 @@ namespace Orb\Assetic\Filter;
 use Assetic\Asset\AssetInterface;
 use Assetic\Filter\FilterInterface;
 
-class Null implements FilterInterface
+class NullFilter implements FilterInterface
 {
     public function __construct()
     {

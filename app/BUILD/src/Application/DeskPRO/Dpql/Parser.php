@@ -1581,13 +1581,13 @@ class Parser#line 102 "Parser.php"
 #line 487 "Parser.y"
     public function yy_r62()
     {
-        $this->_retvalue = new Statement\Part\String($this->yystack[$this->yyidx + 0]->minor);
+        $this->_retvalue = new Statement\Part\StringPart($this->yystack[$this->yyidx + 0]->minor);
     }
 #line 1493 "Parser.php"
 #line 492 "Parser.y"
     public function yy_r63()
     {
-        $this->_retvalue = new Statement\Part\String($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
+        $this->_retvalue = new Statement\Part\StringPart($this->processQuoted($this->yystack[$this->yyidx + 0]->minor));
     }
 #line 1498 "Parser.php"
 #line 497 "Parser.y"
