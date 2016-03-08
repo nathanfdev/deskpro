@@ -49,7 +49,7 @@ export class SortWidget extends React.Component {
     });
 
     return (
-      <div style={{float:"right", minWidth: '120px'}}>
+      <div className="float-right" style={{minWidth: '120px'}}>
         <PortalSimpleSelectBox widgetOptions={widgetOptions} options={options} value={selectedSort} onChange={this.onChangeSort} />
       </div>
     );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,14 +46,20 @@ class PortalController extends AbstractApiController
     use HelperMethods;
 
     /**
-     * @Route("/portal/api/style/portal.css", name="dp_portal_designer_custom_css")
+     * @Route("/portal/api/style/portal.css", name="dp_portal_designer_custom_css", defaults={"direction": "LTR"})
+     * @Route("/portal/api/style/portal-rtl.css", name="dp_portal_designer_custom_css_rtl", defaults={"direction": "RTL"})
      * @Method({"GET"})
+     *
+     * @param string  $direction
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function getCssFileAction(Request $request)
+    public function getCssFileAction($direction = 'LTR', Request $request)
     {
         $blob_storage = $request->get('preview')
-                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage()
-                      : $this->getStylesManager()->getCssBlobStorage();
+                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage($direction)
+                      : $this->getStylesManager()->getCssBlobStorage($direction);
 
         if (!$blob_storage) {
             throw $this->createNotFoundException('Custom styles not found');

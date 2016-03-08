@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -108,6 +108,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('no_cache_url', [$this, 'noCacheUrl']),
             new \Twig_SimpleFunction('is_multi_lang', [$this, 'isMultLang']),
             new \Twig_SimpleFunction('lang_code', [$this, 'langCode']),
+            new \Twig_SimpleFunction('lang_dir', [$this, 'langDir']),
             new \Twig_SimpleFunction('enabled_languages', [$this, 'enabledLanguages']),
             new \Twig_SimpleFunction('date', [$this, 'date']),
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
@@ -265,6 +266,18 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $lang->getUrlCode();
+    }
+
+    /**
+     * @return string
+     */
+    public function langDir()
+    {
+        if (!$lang = $this->container->get('language_stack')->getActive()) {
+            $lang = $this->container->get('language_stack')->getDefaultLanguage();
+        }
+
+        return $lang->getDirection();
     }
 
     /**
