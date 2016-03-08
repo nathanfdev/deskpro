@@ -317,6 +317,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->children;
     }
 
+    /**
+     * @return bool
+     */
     public function hasChildren()
     {
         return count($this->children) > 0;
@@ -328,6 +331,53 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("choices")
+     *
+     * @return array
+     */
+    public function getChoices()
+    {
+        $map      = [];
+        $children = $this->getChildren();
+        foreach ($children as $c) {
+            $pid = (int) $c->getOption('parent_id', 0);
+            if (!isset($map[$pid])) {
+                $map[$pid] = [];
+            }
+
+            $map[$pid][$c->getId()] = $c;
+        }
+
+        $iter = function ($parent_id, $depth = 0) use ($map, &$iter) {
+            if (empty($map[$parent_id])) {
+                return [];
+            }
+
+            $level_choices = [];
+            /** @var CustomDefAbstract $c */
+            foreach ($map[$parent_id] as $c) {
+                $subs = $iter($c->getId(), $depth + 1);
+                $row  = [
+                    'id'            => $c->getId(),
+                    'title'         => $c->getTitle(),
+                    'is_selectable' => empty($subs),
+                ];
+
+                if ($subs) {
+                    $row['children'] = $subs;
+                }
+
+                $level_choices[] = $row;
+            }
+
+            return $level_choices;
+        };
+
+        return $iter(0);
     }
 
     /**
