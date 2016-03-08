@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -89,21 +89,25 @@ class StylesManager
     }
 
     /**
+     * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
      * @return BlobStorage|null
      */
-    public function getCssBlobStorage()
+    public function getCssBlobStorage($direction = 'LTR')
     {
-        if ($blob = $this->getCssBlob()) {
+        if ($blob = $this->getCssBlob($direction)) {
             return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
         }
     }
 
     /**
+     * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
      * @return BlobStorage|null
      */
-    public function getEditThemeSetCssBlobStorage()
+    public function getEditThemeSetCssBlobStorage($direction = 'LTR')
     {
-        if ($blob = $this->getEditThemeSetCssBlob()) {
+        if ($blob = $this->getEditThemeSetCssBlob($direction)) {
             return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
         }
     }
@@ -144,15 +148,19 @@ class StylesManager
     }
 
     /**
+     *
+     * @param string $direction Stylesheet for which direction? LTR or RTL
      * @throws \Exception
      *
      * @return Blob|null
      */
-    private function getCssBlob()
+    private function getCssBlob($direction = 'LTR')
     {
+        $direction = strtoupper($direction);
+
         $criteria = [
             'theme_set' => $this->theme_set,
-            'name'      => 'portal.css',
+            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
             return $asset->getBlob();
@@ -162,15 +170,19 @@ class StylesManager
     }
 
     /**
+     *
+     * @param string $direction Stylesheet for which direction? LTR or RTL
      * @throws \Exception
      *
      * @return Blob|null
      */
-    private function getEditThemeSetCssBlob()
+    private function getEditThemeSetCssBlob($direction = 'LTR')
     {
+        $direction = strtoupper($direction);
+
         $criteria = [
             'theme_set' => $this->edit_theme_set,
-            'name'      => 'portal.css',
+            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
             return $asset->getBlob();

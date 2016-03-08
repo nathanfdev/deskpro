@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class PortalCustomizationsTwigExtension extends \Twig_Extension
 {
-    private static $default_css_asset = 'DeskPRO_PortalBundle_style.css';
+    private static $default_ltr_css_asset = 'DeskPRO_PortalBundle_style.css';
+    private static $default_rtl_css_asset = 'DeskPRO_PortalBundle_rtl_style.css';
 
     /**
      * @var ContainerInterface
@@ -73,21 +74,38 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
      * Get URL of the portal CSS file.
      *
      * Depending on custom styles availability returns link to the custom .css or link to the default file
+     *
+     * @param string $text_direction LTR or RTL, or null to use the current language
+     *
+     * @return string
      */
-    public function getPortalCssUrl()
+    public function getPortalCssUrl($text_direction = null)
     {
+        if ($text_direction === null) {
+            if (!$lang = $this->container->get('language_stack')->getActive()) {
+                $lang = $this->container->get('language_stack')->getDefaultLanguage();
+            }
+            $text_direction = $lang->getDirection();
+        }
+
+        $text_direction = strtoupper($text_direction);
+
         $blob_storage = $this->isPreviewMode()
-                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage()
-                      : $this->getStylesManager()->getCssBlobStorage();
+                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage($text_direction)
+                      : $this->getStylesManager()->getCssBlobStorage($text_direction);
 
         if ($blob_storage) {
             return $this->getRouter()->generate(
-                'dp_portal_designer_custom_css',
+                $text_direction === 'RTL' ? 'dp_portal_designer_custom_css_rtl' : 'dp_portal_designer_custom_css',
                 ['version' => $blob_storage->getId(), 'preview' => intval($this->isPreviewMode())],
                 RouterInterface::ABSOLUTE_URL
             );
         } else {
-            return $this->getAssetsExtension()->getAssetUrl(self::$default_css_asset, 'app_assets');
+            if ($text_direction === 'RTL') {
+                return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
+            } else {
+                return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
+            }
         }
     }
 
