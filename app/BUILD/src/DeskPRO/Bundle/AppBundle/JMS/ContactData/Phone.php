@@ -29,45 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
-
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace DeskPRO\Bundle\AppBundle\JMS\ContactData;
 
 /**
- * Class PhoneType.
+ * Class Phone.
  */
-class PhoneType extends AbstractContactDataItemType
+class Phone
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getContactType()
-    {
-        return 'phone';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('type', ChoiceType::class, [
-                'property_path' => 'field_3',
-                'choices'       => [
-                    'phone'  => 'Phone',
-                    'mobile' => 'Mobile',
-                    'fax'    => 'Fax',
-                ],
-            ])
-            ->add('code', TextType::class, [
-                'property_path' => 'field_1',
-            ])
-            ->add('number', TextType::class, [
-                'property_path' => 'field_2',
-            ])
-        ;
-    }
 }

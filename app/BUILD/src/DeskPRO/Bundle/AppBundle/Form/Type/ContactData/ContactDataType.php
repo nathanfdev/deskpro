@@ -60,7 +60,7 @@ class ContactDataType extends AbstractType
                 'entry_type' => WebsiteType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('im', ContactDataCollectionType::class, [
+            ->add('instant_message', ContactDataCollectionType::class, [
                 'entry_type' => InstantMessageType::class,
                 'owner'      => $options['owner'],
             ])

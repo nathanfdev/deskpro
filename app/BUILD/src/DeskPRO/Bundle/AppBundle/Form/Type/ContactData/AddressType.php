@@ -70,7 +70,7 @@ class AddressType extends AbstractContactDataItemType
             ])
             ->add('country', ChoiceType::class, [
                 'property_path' => 'field_5',
-                'choices'       => Countries::getCountryNames(),
+                'choices'       => Countries::getCountryArray(),
             ])
         ;
     }

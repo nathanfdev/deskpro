@@ -29,45 +29,24 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
+namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Application\DeskPRO\Entity\PersonContactData;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
- * Class PhoneType.
+ * Class PersonContactDataController.
+ *
+ * @ApiModes("all")
+ * @Route("/people/{parentId}/contact_data")
  */
-class PhoneType extends AbstractContactDataItemType
+class PersonContactDataController extends CrudSubController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getContactType()
-    {
-        return 'phone';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('type', ChoiceType::class, [
-                'property_path' => 'field_3',
-                'choices'       => [
-                    'phone'  => 'Phone',
-                    'mobile' => 'Mobile',
-                    'fax'    => 'Fax',
-                ],
-            ])
-            ->add('code', TextType::class, [
-                'property_path' => 'field_1',
-            ])
-            ->add('number', TextType::class, [
-                'property_path' => 'field_2',
-            ])
-        ;
-    }
+    public static $entity         = PersonContactData::class;
+    public static $parentProperty = 'organization';
+    public static $type           = ContactDataType::class;
+    public static $listOrder      = 'asc';
 }

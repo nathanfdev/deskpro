@@ -87,8 +87,10 @@ class ContactDataItemType extends AbstractType
         if (!$event->getData()) {
             if ($owner instanceof Person) {
                 $data = new PersonContactData();
+                $data->setPerson($owner);
             } elseif ($owner instanceof Organization) {
                 $data = new OrganizationContactData();
+                $data->setOrganization($owner);
             } else {
                 $data = null;
             }

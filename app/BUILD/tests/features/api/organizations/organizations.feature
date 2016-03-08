@@ -68,6 +68,44 @@ Feature: /organizations endpoint
   "contact_data": {
     "website": [
       {"url": "http://site.com"}
+    ],
+    "facebook": [
+      {"url": "http://facebook.com/profile"}
+    ],
+    "twitter": [
+      {
+        "username": "twitter_username",
+        "comment": "some text"
+      }
+    ],
+    "linked_in": [
+      {"url": "http://linked_in.com/profile"}
+    ],
+    "instant_message": [
+      {
+        "username": "aim_user",
+        "service": "aim"
+      },
+      {
+        "username": "skype_user",
+        "service": "skype"
+      }
+    ],
+    "phone": [
+      {
+        "type": "mobile",
+        "code": "123",
+        "number": "1234567"
+      }
+    ],
+    "address": [
+      {
+        "address": "address",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "country": "UK"
+      }
     ]
   }
 }
@@ -87,8 +125,47 @@ Feature: /organizations endpoint
     And the JSON node "data.usergroups" should have 2 elements
     And the JSON node "data.usergroups[0]" should be equal to 1
     And the JSON node "data.usergroups[1]" should be equal to 2
-    And the JSON node "data.contact_data" should have 1 element
+    And the JSON node "data.contact_data" should have 8 elements
     And the JSON node "data.contact_data[0]" should be equal to 1
+    And the JSON node "data.contact_data[1]" should be equal to 2
+    And the JSON node "data.contact_data[2]" should be equal to 3
+
+    When I send a GET request to "/api/v2/organizations/3/contact_data"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should have 8 elements
+
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].organization" should be equal to 3
+    And the JSON node "data[0].contact_type" should be equal to "phone"
+
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].organization" should be equal to 3
+    And the JSON node "data[1].contact_type" should be equal to "website"
+
+    And the JSON node "data[2].id" should be equal to 3
+    And the JSON node "data[2].organization" should be equal to 3
+    And the JSON node "data[2].contact_type" should be equal to "im"
+
+    And the JSON node "data[3].id" should be equal to 4
+    And the JSON node "data[3].organization" should be equal to 3
+    And the JSON node "data[3].contact_type" should be equal to "im"
+
+    And the JSON node "data[4].id" should be equal to 5
+    And the JSON node "data[4].organization" should be equal to 3
+    And the JSON node "data[4].contact_type" should be equal to "twitter"
+
+    And the JSON node "data[5].id" should be equal to 6
+    And the JSON node "data[5].organization" should be equal to 3
+    And the JSON node "data[5].contact_type" should be equal to "linked_in"
+
+    And the JSON node "data[6].id" should be equal to 7
+    And the JSON node "data[6].organization" should be equal to 3
+    And the JSON node "data[6].contact_type" should be equal to "facebook"
+
+    And the JSON node "data[7].id" should be equal to 8
+    And the JSON node "data[7].organization" should be equal to 3
+    And the JSON node "data[7].contact_type" should be equal to "address"
 
   Scenario: I update an organization
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"

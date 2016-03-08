@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\ContactData\ContactData;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Contact data is stuff like address, instant messaging, phone etc.
@@ -41,6 +42,8 @@ use Application\DeskPRO\ContactData\ContactData;
  *
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -48,6 +51,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The unique ID.
      *
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -55,6 +61,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The handler class.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $contact_type;
 
