@@ -12,7 +12,6 @@ Feature: /person_custom_fields endpoint
     When I send a GET request to "/api/v2/ticket_custom_fields"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
 
     And the JSON node "data" should have 5 elements
     And the JSON node "data[0].id" should be equal to 1
@@ -20,6 +19,7 @@ Feature: /person_custom_fields endpoint
     And the JSON node "data[0].description" should be equal to "A custom  field"
     And the JSON node "data[0].parent" should be equal to 0
     And the JSON node "data[0].widget_type" should be equal to "choice"
+    And the JSON node "data[0].children" should not exist
     And the JSON node "data[0].choices" should have 3 elements
     And the JSON node "data[0].choices[0].id" should be equal to 2
     And the JSON node "data[0].choices[0].title" should be equal to "Small"

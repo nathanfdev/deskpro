@@ -45,7 +45,6 @@ class CustomDefPerson extends CustomDefAbstract
     /**
      * @var CustomDefPerson
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefPerson>")
      */
     protected $parent = null;
@@ -54,6 +53,8 @@ class CustomDefPerson extends CustomDefAbstract
      * Field children.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Exclude()
      */
     protected $children = null;
 

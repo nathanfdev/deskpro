@@ -18,6 +18,7 @@ Feature: /organization_custom_fields endpoint
     And the JSON node "data[0].title" should be equal to "Desired Sizes"
     And the JSON node "data[0].description" should be equal to "A custom  field"
     And the JSON node "data[0].parent" should be equal to 0
+    And the JSON node "data[0].children" should not exist
     And the JSON node "data[0].choices" should have 3 elements
     And the JSON node "data[0].choices[0].id" should be equal to 2
     And the JSON node "data[0].choices[1].id" should be equal to 3

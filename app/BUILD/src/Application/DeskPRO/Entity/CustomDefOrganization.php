@@ -45,7 +45,6 @@ class CustomDefOrganization extends CustomDefAbstract
     /**
      * @var CustomDefOrganization
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefOrganization>")
      */
     protected $parent = null;
@@ -54,6 +53,8 @@ class CustomDefOrganization extends CustomDefAbstract
      * Field children.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Exclude()
      */
     protected $children = null;
 
