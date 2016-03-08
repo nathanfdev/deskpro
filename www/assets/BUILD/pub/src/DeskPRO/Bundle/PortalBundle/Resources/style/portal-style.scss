@@ -1,4 +1,5 @@
 $default-layout-direction: "LTR" !default;
+$layout-direction: "LTR" !default;
 
 @if $default-layout-direction == "LTR" {
   @import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-ltr";

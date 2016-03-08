@@ -65,7 +65,7 @@ body {
   font-size: $font-default;
   font-family: $fonts;
   line-height: 1.75em;
-
+  text-align: $text-left;
 }
 
 @media screen and (max-width: 760px) {
@@ -149,10 +149,17 @@ hr {
   background: $divider-color;
 }
 
+.float-left {
+  float: $float-left;
+}
+.float-right {
+  float: $float-right;
+}
+
 .titled-header {
   position: relative;
   margin-bottom: 10px;
-  padding-left: 0;
+  @include padding-left(0);
   border-bottom: 1px solid $divider-color;
   text-align: center;
 
@@ -161,8 +168,8 @@ hr {
     top: 10px;
     z-index: 100;
     display: inline-block;
-    padding-right: 1em;
-    padding-left: 1em;
+    @include padding-right(1em);
+    @include padding-left(1em);
     background: $page-background;
     color: $text-color-darker;
     font-weight: 400;
@@ -170,11 +177,11 @@ hr {
   }
 
   &.minor {
-    text-align: left;
+    text-align: $text-left;
     margin-top: 10px;
     margin-bottom: 10px;
     h1, h2 {
-      padding-left: 0;
+      @include padding-left(0);
     }
   }
 }
@@ -184,18 +191,18 @@ hr {
 
   margin-top: 5px;
   margin-bottom: 35px;
-  padding-left: 0;
-  text-align: left;
+  @include padding-left(0);
+  text-align: $text-left;
 
   h1, h2 {
-    padding-left: $universal-left-padding;
+    @include padding-left($universal-left-padding);
   }
 }
 
 .section-header {
   margin-top: 15px;
   margin-bottom: 15px;
-  padding-left: 0;
+  @include padding-left(0);
 
   @media screen and (max-width: 760px) {
     margin-bottom: 15px;
@@ -206,11 +213,11 @@ hr {
 .section-subheader {
   margin-top: 15px;
   margin-bottom: 30px;
-  padding-left: $universal-left-padding;
+  @include padding-left($universal-left-padding);
 }
 
 .section-body {
-  padding-left: $universal-left-padding;
+  @include padding-left($universal-left-padding);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,16 +318,16 @@ section {
 
 // clears
 .omega {
-  margin-right: 0;
+  @include margin-right(0);
 }
 
 .divide-left {
-  padding-left: 20px;
-  border-left: 1px dashed $divider-color;
+  @include padding-left(20px);
+  @include border-left(1px dashed $divider-color);
 
   @media screen and (max-width: 760px) {
-    border-left: 0px;
-    padding-left: 0px;
+    @include border-left(0px);
+    @include padding-left(0px);
   }
 
 }
@@ -343,13 +350,13 @@ section {
   position: relative;
   display: inline-block;
   padding: 1em 2em;
-  padding-left: 140px;
-  padding-left: 50px;
+  @include padding-left(140px);
+  @include padding-left(50px);
   border: 1px solid $divider-color;
   border-radius: 2px;
   background: none repeat scroll 0 0 $page-background;
   color: $text-color;
-  text-align: left;
+  text-align: $text-left;
   text-decoration: none;
   font-weight: 300;
   line-height: 1em;
@@ -358,7 +365,7 @@ section {
   img {
     position: absolute;
     top: 5px;
-    left: 5px;
+    @include left(5px);
     max-width: 30px;
     max-height: 30px;
     vertical-align: middle;
@@ -387,7 +394,7 @@ button, .button, input[type="submit"] {
   }
 
   &.right {
-    float: right;
+    float: $float-right;
   }
 
   &.button-small {
@@ -429,15 +436,15 @@ button, .button, input[type="submit"] {
 
     .extra {
       position: relative;
-      left: 10px;
-      margin-left: 10px;
-      padding-left: 10px;
-      border-left: 1px solid $divider-color;
+      @include left(10px);
+      @include margin-left(10px);
+      @include padding-left(10px);
+      @include border-left(1px solid $divider-color);
 
       @media screen and (max-width: 760px) {
         position: absolute;
-        right: 15px;
-        left: auto;
+        @include right(15px);
+        @include left(auto);
       }
     }
   }
@@ -448,7 +455,7 @@ button, .button, input[type="submit"] {
     border-radius: 0;
     color: $button-color;
     i {
-      margin-left: 10px;
+      @include margin-left(10px);
     }
   }
 
@@ -468,7 +475,7 @@ button, .button, input[type="submit"] {
     i {
       position: relative;
       top: 2px;
-      margin-right: 4px;
+      @include margin-right(4px);
       font-size: 1.3em;
       line-height: 1px;
     }
@@ -496,11 +503,11 @@ button, .button, input[type="submit"] {
     &:before {
       position: absolute;
       top: 40%;
-      left: -8px;
+      @include left(-8px);
       display: block;
       width: 0;
       border: 5px solid rgba(0, 0, 0, 0);
-      border-right: 5px solid $button-color;
+      @include border-right(5px solid $button-color);
       background: none;
       content: " ";
     }
@@ -511,7 +518,7 @@ button, .button, input[type="submit"] {
   }
 
   &[type="reset"] {
-    margin-left: 10px;
+    @include margin-left(10px);
   }
 }
 
@@ -530,13 +537,13 @@ button, .button, input[type="submit"] {
       margin: 12px 0;
       margin-bottom: 0.3em;
       padding: 0 1.2em;
-      @media screen and (max-width: 760px) { padding-left: 10px; }
+      @media screen and (max-width: 760px) { @include padding-left(10px); }
 
       font-weight: 400;
       line-height: 1.3em;
 
       i {
-        margin-right: 5px;
+        @include margin-right(5px);
         color: #b4b0b0;
         position: relative;
         top: -1px;
@@ -548,7 +555,7 @@ button, .button, input[type="submit"] {
         text-decoration: none;
 
         i {
-          margin-right: 5px;
+          @include margin-right(5px);
           color: #b4b0b0;
           position: relative;
           top: -1px;
@@ -576,7 +583,7 @@ button, .button, input[type="submit"] {
           content: "";
           position: inherit;
           top: 0;
-          left: 0;
+          @include left(0);
         }
       }
     }
@@ -595,8 +602,8 @@ button, .button, input[type="submit"] {
 }
 
 .sidebar-content {
-  padding-left: 5px;
-  padding-right: 5px;
+  @include padding-left(5px);
+  @include padding-right(5px);
 }
 
 
@@ -608,14 +615,14 @@ button, .button, input[type="submit"] {
     @include blank-list;
 
     display: inline-block;
-    margin-right: 20px;
+    @include margin-right(20px);
     width: 65px;
     vertical-align: top;
   }
 
   .year-list > li {
     margin-bottom: 20px;
-    text-align: right;
+    text-align: $text-right;
   }
 
   a {
@@ -625,8 +632,8 @@ button, .button, input[type="submit"] {
 
   .year-list a {
     padding-top: 2px;
-    padding-right: 10px;
-    border-right: 2px solid $divider-color;
+    @include padding-right(10px);
+    @include border-right(2px solid $divider-color);
   }
 
   a:hover, a.active {
@@ -659,7 +666,7 @@ button, .button, input[type="submit"] {
     @include blank-list;
 
     display: inline-block;
-    border-left: 2px solid $divider-color;
+    @include border-left(2px solid $divider-color);
     text-transform: uppercase;
     font-weight: 500;
     font-size: 0.8em;
@@ -669,7 +676,7 @@ button, .button, input[type="submit"] {
       margin-bottom: 5px;
       padding-top: 3px;
       padding-bottom: 3px;
-      padding-left: 10px;
+      @include padding-left(10px);
       border: 2px solid rgba(0, 0, 0, 0);
 
       &.active, &:hover {
@@ -688,15 +695,15 @@ button, .button, input[type="submit"] {
 }
 
 .sidebar {
-  padding-left: 10px;
-  padding-right: 10px;
+  @include padding-left(10px);
+  @include padding-right(10px);
   padding-top: 5px;
-  border-left: 2px solid #e6e6e6;
-  border-right: 2px solid #e6e6e6;
+  @include border-left(2px solid #e6e6e6);
+  @include border-right(2px solid #e6e6e6);
 
   @media screen and (max-width: 760px) {
-    padding-left: 0;
-    border-left: 0;
+    @include padding-left(0);
+    @include border-left(0);
   }
 
   .button {
@@ -747,14 +754,14 @@ button, .button, input[type="submit"] {
     }
 
     h1 {
-      margin-left: 35px;
+      @include margin-left(35px);
       position: relative;
 
       .agent-avatar {
         width: 23px;
         height: 23px;
         position: absolute;
-        left: -35px;
+        @include left(-35px);
         top: 5px;
       }
     }
@@ -817,7 +824,7 @@ button, .button, input[type="submit"] {
 
     h1 {
       top: 0;
-      left: 0;
+      @include left(0);
       margin-bottom: 10px;
       padding: 0;
     }
@@ -825,7 +832,7 @@ button, .button, input[type="submit"] {
 
   .panel-tiny {
     ul {
-      margin-left: 0;
+      @include margin-left(0);
     }
 
   }
@@ -837,7 +844,7 @@ button, .button, input[type="submit"] {
     list-style: none;
 
     a {
-      padding-right: 3px;
+      @include padding-right(3px);
       text-decoration: none;
 
       &:hover {
@@ -868,7 +875,7 @@ button, .button, input[type="submit"] {
       &:after {
         position: absolute;
         bottom: 0;
-        left: 0;
+        @include left(0);
         display: block;
         width: 100%;
         height: 2px;
@@ -918,7 +925,7 @@ button, .button, input[type="submit"] {
   font-size: 1.1em;
 
   i {
-    margin-right: 5px;
+    @include margin-right(5px);
     font-size: 1.1em;
   }
 }
@@ -957,7 +964,7 @@ button, .button, input[type="submit"] {
   ul.simple-ticket {
     li {
       a {
-        padding-left: 25px;
+        @include padding-left(25px);
         background: url(../img/icon-article.png) no-repeat center left;
       }
     }
@@ -968,7 +975,7 @@ button, .button, input[type="submit"] {
       a {
         i {
           display: inline-block;
-          margin-right: 5px;
+          @include margin-right(5px);
           width: 20px;
           color: $text-faded;
           text-align: center;
@@ -984,7 +991,7 @@ button, .button, input[type="submit"] {
     line-height: 1em;
 
     span:first-of-type {
-      margin-left: 5px;
+      @include margin-left(5px);
     }
   }
 
@@ -1013,7 +1020,7 @@ button, .button, input[type="submit"] {
   span {
     display: inline-block;
     margin-top: 5px;
-    margin-right: 2%;
+    @include margin-right(2%);
     width: 16%;
     height: 20px;
   }
@@ -1043,13 +1050,13 @@ button, .button, input[type="submit"] {
   ul {
     display: block;
     margin: 0;
-    margin-left: 10px;
+    @include margin-left(10px);
     padding: 0;
     font-weight: 400;
 
     li {
       i[class*=" fa-file-"] {
-        margin-right: 5px;
+        @include margin-right(5px);
       }
     }
 
@@ -1087,7 +1094,7 @@ button, .button, input[type="submit"] {
   margin-bottom: 10px;
   color: $text-color;
   position: relative;
-  text-align: right;
+  text-align: $text-right;
 
   .logo {
     max-height: 100px;
@@ -1096,13 +1103,13 @@ button, .button, input[type="submit"] {
   @media screen and (max-width: 760px) {
     border: 1px solid $divider-color;
     border-radius: 2px;
-    text-align: left;
+    text-align: $text-left;
     margin-top: 10px;
     padding: 0px;
     .brand {
       padding: 5px;
       // border-bottom: 1px solid $divider-color;
-      padding-right: 30px;
+      @include padding-right(30px);
       a {
         display: block;
       }
@@ -1115,7 +1122,7 @@ button, .button, input[type="submit"] {
         display: inline-block;
         z-index: 299;
         position: absolute;
-        right: 12px;
+        @include right(12px);
         top: 6px;
         opacity: 0.5;
 
@@ -1141,7 +1148,7 @@ button, .button, input[type="submit"] {
     }
 
     span {
-      padding-left: 4px;
+      @include padding-left(4px);
 
       hr {
         display: inline-block;
@@ -1160,7 +1167,7 @@ button, .button, input[type="submit"] {
 
   .brand {
     display: inline-block;
-    float: left;
+    float: $float-left;
     a {
       color: inherit;
       text-decoration: none;
@@ -1207,7 +1214,7 @@ button, .button, input[type="submit"] {
       text-transform: uppercase;
       font-size: 10px;
       font-weight: 500;
-      margin-right: 10px;
+      @include margin-right(10px);
 
       .agent-avatar {
         position: relative;
@@ -1236,7 +1243,7 @@ button, .button, input[type="submit"] {
           border-top: 1px solid $divider-color;
           border-bottom: 1px solid $divider-color;
           .agent-avatar {
-            margin-right: 2px;
+            @include margin-right(2px);
             top: -2px;
           }
         }
@@ -1274,17 +1281,17 @@ button, .button, input[type="submit"] {
       font-size: 10px;
       font-weight: 500;
       cursor: pointer;
-      margin-left: 4px;
+      @include margin-left(4px);
 
       @media screen and (max-width: 760px) {
         display: block;
-        margin-left: 0;
+        @include margin-left(0);
         border-radius: 0px;
         padding: 10px 5px;
       }
 
       .fa-caret-down {
-        margin-left: 4px;
+        @include margin-left(4px);
         line-height: 4px;
         position: relative;
         top: 0;
@@ -1314,13 +1321,14 @@ button, .button, input[type="submit"] {
 
     .language-changer-widget {
       .button-small.button-language {
-        padding-left: 35px;
-        margin-left: 10px;
+        @include padding-left(35px);
+        @include margin-left(10px);
+        white-space: nowrap;
 
         img {
           position: absolute;
           top: 6px;
-          left: 5px;
+          @include left(5px);
           height: 13px;
         }
       }
@@ -1328,7 +1336,7 @@ button, .button, input[type="submit"] {
         display: none; // this is displayed on hover, via css, above
         position: absolute;
         top: 35px;
-        right: 0;
+        @include right(0);
         border: 1px solid #e3e3e3;
         min-width: 110px;
         z-index: 999;
@@ -1357,8 +1365,8 @@ button, .button, input[type="submit"] {
           font-size: 10px;
           font-weight: 500;
           cursor: pointer;
-          text-align: left;
-          padding-left: 35px;
+          text-align: $text-left;
+          @include padding-left(35px);
           text-decoration: none;
 
           &:hover {
@@ -1368,7 +1376,7 @@ button, .button, input[type="submit"] {
           img {
             top: 5px;
             position: absolute;
-            left: 5px;
+            @include left(5px);
             height: 13px;
           }
         }
@@ -1431,13 +1439,13 @@ button, .button, input[type="submit"] {
   }
   .text-tag {
     top: -1px;
-    margin-right: 4px;
+    @include margin-right(4px);
     background: $button-color-secondary;
     font-weight: 500;
   }
 
   .pagination {
-    margin-left: 10px;
+    @include margin-left(10px);
     a {
       cursor: pointer;
     }
@@ -1474,7 +1482,7 @@ button, .button, input[type="submit"] {
   @include blank-list;
 
   display: inline-block;
-  float: right;
+  float: $float-right;
   text-transform: uppercase;
   font-weight: 500;
   font-size: 0.8em;
@@ -1490,14 +1498,14 @@ button, .button, input[type="submit"] {
 
   li {
     display: inline-block;
-    margin-left: 15px;
-    padding-right: 15px;
-    border-right: 1px solid $divider-color;
+    @include margin-left(15px);
+    @include padding-right(15px);
+    @include border-right(1px solid $divider-color);
 
     &:last-child {
-      margin-right: 0;
-      padding-right: 0;
-      border-right: none;
+      @include margin-right(0);
+      @include padding-right(0);
+      @include border-right(none);
     }
   }
 }
@@ -1516,7 +1524,7 @@ button, .button, input[type="submit"] {
 
   i {
     display: inline-block;
-    margin-right: 5px;
+    @include margin-right(5px);
     width: 20px;
     text-align: center;
     opacity: 0.5;
@@ -1561,29 +1569,29 @@ $search-btn-height: $search-height - 24;
     .input-wrap {
       position: absolute;
       top: 12px;
-      left: 12px;
+      @include left(12px);
       width: 100%;
-      padding-right: 200px;
+      @include padding-right(200px);
       //Space for the search button
-      @media screen and (max-width: 760px) {padding-right: 160px; }
-      @media screen and (max-width: 460px) { padding-right: 100px; }
+      @media screen and (max-width: 760px) {@include padding-right(160px); }
+      @media screen and (max-width: 460px) { @include padding-right(100px); }
 
       [type="text"] {
         width: 100%;
-        padding-right: 60px;
+        @include padding-right(60px);
         // Where the typed search in the input should end (ie not overlap the clear search button)
-        @media screen and (max-width: 460px) { padding-right: 30px; }
+        @media screen and (max-width: 460px) { @include padding-right(30px); }
       }
 
       .search-clear {
         position: absolute;
         top: 18px;
-        right: 220px;
+        @include right(220px);
         color: #cecece;
         line-height: 1em;
         &:hover { color: #333; }
         @media screen and (max-width: 760px) {
-          right: 200px;
+          @include right(200px);
         }
         // Position the clear search button
         @media screen and (max-width: 460px) {
@@ -1595,7 +1603,7 @@ $search-btn-height: $search-height - 24;
     button {
       position: absolute;
       top: 12px;
-      right: 12px;
+      @include right(12px);
       bottom: 12px;
       width: 150px;
       cursor: pointer;
@@ -1610,7 +1618,7 @@ $search-btn-height: $search-height - 24;
     .fa-search {
       position: absolute;
       top: 17px;
-      left: 16px;
+      @include left(16px);
       color: #cecece;
     }
   }
@@ -1624,8 +1632,8 @@ $search-btn-height: $search-height - 24;
         position: relative;
         width: 100%;
         top: 0;
-        left: 0;
-        right: 0;
+        @include left(0);
+        @include right(0);
         bottom: 0;
       }
 
@@ -1633,8 +1641,8 @@ $search-btn-height: $search-height - 24;
         position: relative;
         width: 100%;
         top: 0;
-        left: 0;
-        right: 0;
+        @include left(0);
+        @include right(0);
         bottom: 0;
         width: 100%;
       }
@@ -1646,7 +1654,7 @@ $search-btn-height: $search-height - 24;
   .expanded-search-results {
     position: absolute;
     top: 70px;
-    left: 12px;
+    @include left(12px);
     background: #fafafa;
     border: 1px solid #dedede;
     padding-top: 3px;
@@ -1655,7 +1663,7 @@ $search-btn-height: $search-height - 24;
     min-width: 600px;
 
     @media screen and (max-width: 760px) {
-      left: 0;
+      @include left(0);
     }
 
     @media screen and (max-width: 760px) {
@@ -1673,11 +1681,11 @@ $search-btn-height: $search-height - 24;
     }
 
     &:before {
-      left: -1px;
+      @include left(-1px);
     }
 
     &:after {
-      right: -1px;
+      @include right(-1px);
     }
 
     .search-result-collection-loading, .search-result-collection-empty {
@@ -1757,11 +1765,11 @@ $search-btn-height: $search-height - 24;
         @media screen and (max-width: 760px) {
           display: block;
           width: 100%;
-          text-align: left;
+          text-align: $text-left;
           span {
             display: inline-block !important;
             margin: 0;
-            padding-left: 10px;
+            @include padding-left(10px);
           }
         }
 
@@ -1796,7 +1804,7 @@ $search-btn-height: $search-height - 24;
     }
 
     h1 > i {
-      margin-right: 4px;
+      @include margin-right(4px);
       color: #8f8f8f;
       position: relative;
       top: -1px;
@@ -1821,7 +1829,7 @@ $search-btn-height: $search-height - 24;
     }
 
     ul i {
-      margin-right: 4px;
+      @include margin-right(4px);
       color: #c8c8c8;
     }
 
@@ -1831,10 +1839,10 @@ $search-btn-height: $search-height - 24;
       border: 1px solid #cecece;
       padding: 2px 5px;
       font-weight: bold;
-      margin-right: 5px;
+      @include margin-right(5px);
       border-radius: 2px;
       i {
-        margin-right: 2px;
+        @include margin-right(2px);
       }
     }
 
@@ -1844,12 +1852,12 @@ $search-btn-height: $search-height - 24;
       border: 1px solid #cecece;
       padding: 2px 5px;
       font-weight: bold;
-      margin-right: 5px;
+      @include margin-right(5px);
       border-radius: 2px;
       color: #cecece;
       text-transform: uppercase;
       i {
-        margin-right: 2px;
+        @include margin-right(2px);
       }
     }
 
@@ -1872,7 +1880,7 @@ $search-btn-height: $search-height - 24;
       line-height: 1em;
       padding: 4px 10px;
       position: absolute;
-      right: 10px;
+      @include right(10px);
       bottom: 10px;
 
       &:hover {
@@ -1886,7 +1894,7 @@ $search-btn-height: $search-height - 24;
 
   [type="text"], [type="submit"] {
     display: block;
-    float: left;
+    float: $float-left;
     margin: 0;
 
     @media screen and (max-width: 760px) {
@@ -1900,12 +1908,12 @@ $search-btn-height: $search-height - 24;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border: 1px solid #dedede;
-    border-right: 0;
+    @include border-right(0);
     @media screen and (max-width: 760px) { border: 1px solid #dedede; border-radius: 2px; }
     font-size: 1em;
     padding: 10px;
     height: $search-btn-height;
-    padding-left: 40px;
+    @include padding-left(40px);
     font-size: 1em;
 
     &:focus, &.active {
@@ -1919,8 +1927,8 @@ $search-btn-height: $search-height - 24;
   [type="submit"] {
     height: $search-btn-height;
 
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    @include border-top-left-radius(0);
+    @include border-bottom-left-radius(0);
 
     background: #3575bd;
     text-shadow: none;
@@ -1953,7 +1961,7 @@ $search-btn-height: $search-height - 24;
       position: absolute;
       top: 10px;
       bottom: 0;
-      left: 12px;
+      @include left(12px);
       z-index: 299;
     }
 
@@ -1968,7 +1976,7 @@ $search-btn-height: $search-height - 24;
       position: absolute;
       z-index: 300;
 
-      left: 5px;
+      @include left(5px);
       top: (($search-height / 2) - 11);
       // @media all and (-ms-high-contrast: none) {// Ie fix fir the "or" positioning
       //   top: 25px;
@@ -1994,7 +2002,7 @@ $search-btn-height: $search-height - 24;
     .dropdown-content {
       position: absolute;
       top: 62px;
-      left: -4px;
+      @include left(-4px);
       border: 1px solid #d6d6d6;
       padding-top: 3px;
       background: #f9f9f9;
@@ -2012,17 +2020,17 @@ $search-btn-height: $search-height - 24;
       }
 
       &:before {
-        left: -1px;
+        @include left(-1px);
       }
 
       &:after {
-        right: -1px;
+        @include right(-1px);
       }
 
       .agent-avatar {
         border: 2px solid #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        margin-right: -8px;
+        @include margin-right(-8px);
       }
 
       .fa-map-marker {
@@ -2032,7 +2040,7 @@ $search-btn-height: $search-height - 24;
 
       .flag {
         vertical-align: middle;
-        margin-right: 2px;
+        @include margin-right(2px);
       }
 
       ul {
@@ -2052,7 +2060,7 @@ $search-btn-height: $search-height - 24;
             text-decoration: none;
             color: #454545;
             position: relative;
-            padding-left: 50px;
+            @include padding-left(50px);
             line-height: 1em;
 
             &:hover {
@@ -2080,7 +2088,7 @@ $search-btn-height: $search-height - 24;
               color: #bababa;
               font-size: 1.2em;
               position: absolute;
-              left: 15px;
+              @include left(15px);
               top: 20px;
             }
           }
@@ -2090,7 +2098,7 @@ $search-btn-height: $search-height - 24;
             width: 5px;
             height: 5px;
             vertical-align: middle;
-            margin-right: 4px;
+            @include margin-right(4px);
             position: relative;
             top: -1px;
             border-radius: 19px;
@@ -2128,7 +2136,7 @@ $search-btn-height: $search-height - 24;
 
             i.fa-map-marker {
               color: #aaaaa7;
-              margin-right: 8px;
+              @include margin-right(8px);
               font-size: 1.3em;
             }
           }
@@ -2145,14 +2153,14 @@ $search-btn-height: $search-height - 24;
 
     .select-action {
       display: block;
-      float: left;
+      float: $float-left;
       width: 100%;
       font-size: 13px;
       box-shadow: none;
       line-height: 1em;
       cursor: pointer;
-      padding-right: $search-btn-height;
-      padding-left: 0;
+      @include padding-right($search-btn-height);
+      @include padding-left(0);
       text-align: center;
       height: $search-btn-height;
       line-height: inherit;
@@ -2165,10 +2173,10 @@ $search-btn-height: $search-height - 24;
       .fa-comments {
         position: relative;
         top: -1px;
-        margin-right: 4px;
+        @include margin-right(4px);
       }
       .fa-support {
-        margin-right: 4px;
+        @include margin-right(4px);
       }
 
       @media screen and (max-width: 760px) {
@@ -2183,7 +2191,7 @@ $search-btn-height: $search-height - 24;
       width: $search-btn-height;
       position: absolute;
       top: 0;
-      right: 0;
+      @include right(0);
       text-align: center;
       line-height: 1em;
 
@@ -2200,7 +2208,7 @@ $search-btn-height: $search-height - 24;
   font-style: italic;
   color: #9f9b9b;
   line-height: 1.2em;
-  padding-left: 10px;
+  @include padding-left(10px);
   margin-bottom: 10px;
 
   @media screen and (max-width: 760px) {
@@ -2225,7 +2233,7 @@ $tab-border: $divider-color;
     @include clearfix;
     @include blank-list;
 
-    padding-left: 20px;
+    @include padding-left(20px);
     border-bottom: 1px solid $tab-border;
     line-height: 1em;
 
@@ -2265,7 +2273,7 @@ $tab-border: $divider-color;
     position: relative;
     top: 1px;
     display: block;
-    float: left;
+    float: $float-left;
     border: 1px solid rgba(255, 255, 255, 0);
 
     .title {
@@ -2280,7 +2288,7 @@ $tab-border: $divider-color;
     &:after {
       position: absolute;
       top: 10%;
-      right: -2px;
+      @include right(-2px);
       display: block;
       width: 1px;
       height: 80%;
@@ -2299,7 +2307,7 @@ $tab-border: $divider-color;
 
     img {
       margin-top: 5px;
-      margin-right: 7px;
+      @include margin-right(7px);
       vertical-align: top;
       // Needs to be ~18px height for now
       opacity: 0.3;
@@ -2354,7 +2362,7 @@ $tab-border: $divider-color;
   }
 
   ul {
-    padding-left: 0;
+    @include padding-left(0);
   }
 
   li.tab-active {
@@ -2371,7 +2379,7 @@ $tab-border: $divider-color;
         display: inline;
         top: 0px;
         padding: 5px;
-        margin-left: 4px;
+        @include margin-left(4px);
         font-weight: 500;
         font-size: 0.75em;
       }
@@ -2380,12 +2388,12 @@ $tab-border: $divider-color;
 
   li.tab-solo {
     position: absolute;
-    right: 0;
-    left: auto;
+    @include right(0);
+    @include left(auto);
 
     @media screen and (max-width: 760px) {
-      left: 0px;
-      right: initial;
+      @include left(0px);
+      @include right(initial);
       top: 100%;
       margin-top: 10px;
     }
@@ -2407,8 +2415,8 @@ hr.divider {
 }
 
 .padded {
-  padding-left: 10px;
-  // @media screen and (max-width: 760px) { padding-left: 0px !important; }
+  @include padding-left(10px);
+  // @media screen and (max-width: 760px) { @include padding-left(0px !important); }
 }
 
 .centered {
@@ -2427,8 +2435,8 @@ header {
   .category-jumper {
     position: relative;
     top: -1px;
-    margin-right: 5px;
-    margin-left: -10px;
+    @include margin-right(5px);
+    @include margin-left(-10px);
     padding: 5px 10px;
     border: 1px solid $divider-color;
     border-radius: 2px;
@@ -2456,7 +2464,7 @@ header {
     i {
       position: absolute;
       top: 2px;
-      left: -10px;
+      @include left(-10px);
       padding: 3px;
       background: $page-background;
     }
@@ -2468,13 +2476,13 @@ header {
       position: relative;
       display: inline-block;
       padding: 0 10px;
-      border-right: 1px solid $divider-color;
+      @include border-right(1px solid $divider-color);
       color: $text-faded;
       vertical-align: middle;
       font-size: 0.9em;
 
       &:last-child {
-        border-right: 0;
+        @include border-right(0);
       }
     }
 
@@ -2492,7 +2500,7 @@ header {
 // All sort of small popups for buttons/forms etc
 .popup-tiny {
   position: absolute;
-  right: 0;
+  @include right(0);
   display: block;
   margin-bottom: 20px;
   padding: 10px;
@@ -2544,7 +2552,7 @@ header {
   .popup-controls {
     position: absolute;
     top: 10px;
-    right: 15px;
+    @include right(15px);
     a {
       color: $text-color;
       font-size: 0.8em;
@@ -2569,7 +2577,7 @@ header {
     }
 
     i {
-      float: right;
+      float: $float-right;
       color: $text-color;
     }
 
@@ -2599,7 +2607,7 @@ header {
   display: none; // by default this should be display: none;
   position: absolute;
   top: 37px;
-  right: 0;
+  @include right(0);
   z-index: 4999;
   padding: 3px 11px 11px 11px;
   min-width: 135px;
@@ -2607,7 +2615,7 @@ header {
   border-radius: 2px;
   border-top-right-radius: 0;
   background: #ffffff;
-  text-align: left;
+  text-align: $text-left;
 
   &:before, &:after {
     content: "";
@@ -2620,11 +2628,11 @@ header {
   }
 
   &:before {
-    left: -1px;
+    @include left(-1px);
   }
 
   &:after {
-    right: -1px;
+    @include right(-1px);
   }
 
   @media screen and (max-width: 760px) {
@@ -2658,10 +2666,10 @@ header {
   line-height: 1.2em;
   padding-bottom: 10px;
   margin-bottom: 10px;
-  padding-left: 10px;
+  @include padding-left(10px);
 
   @media screen and (max-width: 760px) {
-    padding-left: 0px;
+    @include padding-left(0px);
   }
 
   .news-header-info {
@@ -2692,7 +2700,7 @@ header {
   line-height: 1.2em;
   border-bottom: 1px solid $divider-color;
   padding-bottom: 20px;
-  padding-left: 10px;
+  @include padding-left(10px);
   margin-bottom: 20px;
 
   .news-header-info {
@@ -2717,8 +2725,8 @@ header {
 
 .article-excerpt {
   position: relative;
-  padding-left: 15px;
-  padding-right: 15px;
+  @include padding-left(15px);
+  @include padding-right(15px);
   padding-top: 2px;
 
   &:before, &:after {
@@ -2731,12 +2739,12 @@ header {
 
   &:before {
     content: open-quote;
-    left: 0px;
+    @include left(0px);
   }
 
   &:after {
     content: close-quote;
-    right: 0px;
+    @include right(0px);
   }
 
 
@@ -2754,7 +2762,7 @@ header {
     &:hover { text-decoration: underline; }
   }
 
-  .updated { margin-left: 10px; }
+  .updated { @include margin-left(10px); }
 
   hr {
     display: inline-block;
@@ -2766,22 +2774,22 @@ header {
   }
 
   .agent-avatar {
-    margin-right: 5px;
-    margin-left: 2px;
+    @include margin-right(5px);
+    @include margin-left(2px);
     margin-top: -1px;
   }
 
-  i { margin-right: 2px; }
+  i { @include margin-right(2px); }
 
   .comments {
-    // margin-left: 5px;
+    // @include margin-left(5px);
     i { color: #cecece; }
   }
 }
 
 .deskpro-calendar-decoration-flat {
   display: inline-block;
-  margin-right: 10px;
+  @include margin-right(10px);
   width: 44px;
   height: 37px;
   border: 1px solid #dcdcdc;
@@ -2805,7 +2813,7 @@ header {
     width: 44px;
     height: 18px;
     margin-top: -1px;
-    margin-left: -1px;
+    @include margin-left(-1px);
     text-align: center;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
@@ -2830,8 +2838,8 @@ header {
   display: block;
   margin-top: 25px;
   margin-bottom: 35px;
-  padding-left: 10px;
-  text-align: left;
+  @include padding-left(10px);
+  text-align: $text-left;
 
   @media screen and (max-width: 760px) {
     margin-top: 10px;
@@ -2860,17 +2868,17 @@ header {
 }
 
 .header-buttons {
-  float: right;
+  float: $float-right;
   font-size: 0.9em;
-  margin-left: 10px;
-  margin-right: 5px;
+  @include margin-left(10px);
+  @include margin-right(5px);
 
   @media screen and (max-width: 760px) {
     display: block;
     float: none;
     width: 100%;
     margin: 0;
-    text-align: right;
+    text-align: $text-right;
   }
 
   a {
@@ -2882,6 +2890,7 @@ header {
     color: $text-color;
     text-decoration: none;
     line-height: 2em;
+    white-space: nowrap;
 
     &:hover { background: darken($surface-secondary, 10%); }
     &.unsubscribe { background: darken($surface-secondary, 5%); }
@@ -2889,8 +2898,8 @@ header {
     i {
       position: relative;
       top: -1px;
-      margin-right: 2px;
-      margin-left: 6px;
+      @include margin-right(2px);
+      @include margin-left(6px);
       color: $text-color-lighter;
       vertical-align: middle;
       font-size: 0.9em;
@@ -2909,7 +2918,7 @@ header {
 .header-button-container {
   position: relative;
   display: block;
-  float: right;
+  float: $float-right;
 
   .header-buttons {
     position: relative;
@@ -2926,10 +2935,10 @@ header {
 
 //Simple input one liner next to random headers
 .simple-search {
-  float: right;
+  float: $float-right;
 
   label {
-    margin-right: 5px;
+    @include margin-right(5px);
     font-size: 0.9em;
   }
 
@@ -2947,7 +2956,7 @@ header {
 .admin-bar {
   position: fixed;
   top: 0;
-  left: 0;
+  @include left(0);
   z-index: 9999;
   padding: 1px 0;
   width: 100%;
@@ -2965,8 +2974,8 @@ header {
 
   a {
     display: block;
-    float: right;
-    margin-left: 1px;
+    float: $float-right;
+    @include margin-left(1px);
     padding: 7px 10px;
     background: #4c4c4c;
     color: #d2d2d2;
@@ -2983,7 +2992,7 @@ header {
     }
 
     i {
-      margin-left: 5px;
+      @include margin-left(5px);
       color: #838383;
     }
 
@@ -2998,12 +3007,12 @@ header {
 .admin-bar-extended {
   position: fixed;
   top: 38px;
-  left: 0;
+  @include left(0);
   z-index: 9999;
   width: 100%;
   background: #3d3d3d;
   color: #d2d2d2;
-  text-align: right;
+  text-align: $text-right;
   font-weight: 300;
   font-size: $font-mid;
 
@@ -3015,12 +3024,12 @@ header {
     width: auto;
     background: #323232;
     color: $text-color-lighter;
-    text-align: right;
+    text-align: $text-right;
     text-decoration: none;
 
     img {
-      float: right;
-      margin-left: 10px;
+      float: $float-right;
+      @include margin-left(10px);
     }
 
     .title {
@@ -3075,7 +3084,7 @@ header {
   i {
     position: relative;
     top: 0;
-    left: 2px;
+    @include left(2px);
   }
 }
 
@@ -3084,7 +3093,7 @@ h1 {
   .text-tag {
     position: relative;
     top: -2px;
-    left: 4px;
+    @include left(4px);
     background: $button-color-secondary;
     color: #ffffff;
     font-size: 10px;
@@ -3092,12 +3101,12 @@ h1 {
     &:after {
       position: absolute;
       top: 5px;
-      left: -6px;
+      @include left(-6px);
       display: block;
       width: 0;
       height: 0;
       border: 4px solid rgba(0, 0, 0, 0);
-      border-right: 4px solid $button-color-secondary;
+      @include border-right(4px solid $button-color-secondary);
       content: " ";
     }
   }
@@ -3129,12 +3138,12 @@ h1 {
 // View more button
 .list-meta {
   margin-top: 0.5em;
-  text-align: right;
+  text-align: $text-right;
   font-size: 0.9em;
 
   a {
     position: relative;
-    left: -5px;
+    @include left(-5px);
     display: inline-block;
     color: $text-color-lighter;
     text-decoration: none;
@@ -3144,14 +3153,14 @@ h1 {
       text-decoration: underline;
     }
     i {
-      margin-left: 7px;
+      @include margin-left(7px);
       position: relative;
       top: 1px;
     }
     img {
       position: relative;
       top: 4px;
-      left: 5px;
+      @include left(5px);
       opacity: 0.3;
     }
 
@@ -3176,7 +3185,7 @@ table {
 
       &:first-child {
         color: $text-color-lighter;
-        text-align: left;
+        text-align: $text-left;
       }
     }
   }
@@ -3206,7 +3215,7 @@ table {
   @extend .text-tag;
 
   display: inline-block;
-  margin-right: 10px;
+  @include margin-right(10px);
   min-width: 40px;
   background: darken($page-background, 3%);
   color: $text-color-lighter;
@@ -3221,12 +3230,12 @@ table {
   &:after {
     position: absolute;
     top: 4px;
-    right: -8px;
+    @include right(-8px);
     display: block;
     width: 0;
     height: 0;
     border: 4px solid rgba(0, 0, 0, 0);
-    border-left: 4px solid darken($page-background, 11%);
+    @include border-left(4px solid darken($page-background, 11%));
     content: " ";
   }
 }
@@ -3234,7 +3243,7 @@ table {
 // Files & file icons
 .file-tag {
   display: inline-block;
-  margin-right: 5px;
+  @include margin-right(5px);
   min-width: 40px;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.6em;
@@ -3269,13 +3278,13 @@ table {
     border-top: 1px solid #d6d6d6;
 
     > div {
-      float: left;
+      float: $float-left;
       width: 60%;
     }
 
     > div + div {
       width: 40%;
-      padding-left: 5px;
+      @include padding-left(5px);
     }
   }
 
@@ -3363,7 +3372,7 @@ table {
 
   .expand-content {
     position: absolute;
-    right: 15px;
+    @include right(15px);
   }
 
   li {
@@ -3381,7 +3390,7 @@ table {
   }
 
   li.related-list-meta {
-    text-align: right;
+    text-align: $text-right;
     padding: 5px;
   }
 
@@ -3406,7 +3415,7 @@ table {
     }
 
     i {
-      margin-right: 5px;
+      @include margin-right(5px);
       color: #9f9f9f;
       position: relative;
       top: -2px;
@@ -3428,12 +3437,12 @@ table {
     }
 
     i {
-      margin-right: 4px;
+      @include margin-right(4px);
     }
   }
 
   .expanded-content {
-    margin-left: 25px;
+    @include margin-left(25px);
     padding: 0 10px 10px 10px;
     overflow: hidden;
 
@@ -3457,10 +3466,10 @@ table {
   }
 
   .expanded-content.intro {
-    padding-right: 5px;
+    @include padding-right(5px);
     padding-bottom: 5px;
     .show-more-content-container {
-      text-align: right;
+      text-align: $text-right;
       opacity: 0.5;
     }
   }
@@ -3490,8 +3499,8 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     display: inline-block;
     z-index: 199;
     background: #fff;
-    padding-left: 10px;
-    padding-right: 10px;
+    @include padding-left(10px);
+    @include padding-right(10px);
   }
 }
 
@@ -3582,13 +3591,13 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   margin-top: 0;
   position: absolute;
   top: 5px;
-  right: -10px;
+  @include right(-10px);
 
   .answer-icon {
     display: inline-block;
     vertical-align: middle;
-    float: right;
-    margin-left: 5px;
+    float: $float-right;
+    @include margin-left(5px);
     background: #d3d3d3;
   }
 
@@ -3600,21 +3609,21 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 
   @media screen and (max-width: 760px) {
     position: relative;
-    text-align: left;
+    text-align: $text-left;
     display: block;
     top: initial;
-    right: initial;
-    left: 0;
+    @include right(initial);
+    @include left(0);
     top: 0;
     margin-bottom: 5px;
     .answer-icon {
       float: none;
-      margin-left: 0;
-      margin-right: 5px;
+      @include margin-left(0);
+      @include margin-right(5px);
       text-align: center;
     }
     .answer-yes {
-      margin-left: 5px;
+      @include margin-left(5px);
     }
   }
 }
@@ -3634,7 +3643,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 .agent {
   // Overall user container
   display: inline-block;
-  margin-right: 10px;
+  @include margin-right(10px);
   font-weight: 400;
   line-height: 1.2em;
 
@@ -3669,7 +3678,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 .agent-avatar {
   position: relative;
   display: inline-block;
-  margin-right: 5px;
+  @include margin-right(5px);
   width: 36px;
   height: 36px;
   border-radius: 199px;
@@ -3684,18 +3693,18 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     position: relative;
     top: 6px;
     color: #ffffff;
-    left: 0px;
+    @include left(0px);
     font-size: 12px;
   }
 
   @-moz-document url-prefix() {
     i {
-      left: 1px;
+      @include left(1px);
     }
   }
 
   &.agent-avatar-tiny {
-    margin-left: 2px;
+    @include margin-left(2px);
     width: 25px;
     height: 25px;
     i {
@@ -3728,7 +3737,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   .remove-agent {
     position: absolute;
     top: -5px;
-    right: -5px;
+    @include right(-5px);
     display: none;
     width: 15px;
     height: 15px;
@@ -3753,7 +3762,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 }
 
 .search-results-sidebar, .search-results-content {
-  float: left;
+  float: $float-left;
 }
 
 .search-results-sidebar {
@@ -3772,9 +3781,9 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     width: 0;
     height: 0;
     border: 4px solid rgba(0, 0, 0, 0);
-    border-left: 4px solid #dcdcdc;
+    @include border-left(4px solid #dcdcdc);
     position: absolute;
-    right: -8px;
+    @include right(-8px);
     top: 10px;
   }
 
@@ -3786,7 +3795,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     font-size: 0.85em;
     font-weight: 500;
     top: -12px;
-    left: 5px;
+    @include left(5px);
     background: #fff;
     color: #d6d6d6;
   }
@@ -3881,7 +3890,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   }
 
   .fa-tags {
-    margin-right: 4px;
+    @include margin-right(4px);
   }
 
   a {
@@ -3910,11 +3919,11 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 
   li {
     display: block;
-    float: left;
-    border-right: 1px solid $divider-color;
+    float: $float-left;
+    @include border-right(1px solid $divider-color);
 
     &:last-child {
-      border-right: none;
+      @include border-right(none);
     }
   }
 
@@ -3925,8 +3934,8 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     text-decoration: none;
 
     @media screen and (max-width: 760px) {
-      padding-left: 7px;
-      padding-right: 7px;
+      @include padding-left(7px);
+      @include padding-right(7px);
     }
   }
 
@@ -3939,7 +3948,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
       color: #fff;
     }
     background-color: #B0B0B0;
-    border-right: 1px solid rgba(0, 0, 0, 0.0);
+    @include border-right(1px solid rgba(0, 0, 0, 0.0));
   }
 
   a:hover {
@@ -3992,8 +4001,8 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   i {
     position: relative;
     top: 0;
-    margin-right: 4px;
-    margin-left: 5px;
+    @include margin-right(4px);
+    @include margin-left(5px);
     font-size: 10px;
     &.fa-home {
       font-size: 15px;
@@ -4043,13 +4052,13 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
       position: relative;
 
       i {
-        margin-left: 3px;
+        @include margin-left(3px);
       }
 
       .dropdown-content {
         position: absolute;
         top: 25px;
-        left: 0;
+        @include left(0);
         border: 1px solid #e3e3e3;
         width: 100%;
         max-height: 100px;
@@ -4103,7 +4112,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     text-align: center;
     vertical-align: middle;
     margin-top: -1px;
-    margin-right: 4px;
+    @include margin-right(4px);
 
     i {
       position: relative;
@@ -4128,7 +4137,7 @@ ul.kb-checkbox-extra {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-left: 20px;
+  @include margin-left(20px);
   position: relative;
 
   &:before {
@@ -4138,9 +4147,9 @@ ul.kb-checkbox-extra {
     width: 8px;
     height: 8px;
     border: 1px solid #e7e7e7;
-    border-right: 0;
+    @include border-right(0);
     border-top: 0;
-    left: -14px;
+    @include left(-14px);
     top: 0;
   }
 
@@ -4176,18 +4185,18 @@ ul.kb-checkbox-extra {
   line-height: 1em;
   padding: 9px 10px;
   font-size: 0.85em;
-  padding-right: 25px;
+  @include padding-right(25px);
   cursor: pointer;
 
   i {
     color: #9c9c9c;
-    margin-right: 4px;
+    @include margin-right(4px);
   }
 
   i.fa-caret-down, i.fa-caret-up {
     position: absolute;
     top: 10px;
-    right: 10px;
+    @include right(10px);
     margin: 0;
     color: #333;
   }
@@ -4200,7 +4209,7 @@ ul.kb-checkbox-extra {
     background: #fff;
     position: absolute;
     border: 1px solid #d5d5d5;
-    left: -1px;
+    @include left(-1px);
     top: 10px;
     border-radius: 2px;
     z-index: 1999;
@@ -4245,21 +4254,21 @@ ul.kb-checkbox-extra {
 
   .agent-response {
     .blurb {
-      border-left: 4px solid $button-color;
+      @include border-left(4px solid $button-color);
       background: $surface-secondary;
     }
   }
 
   .comment-info, .comment-content {
-    float: left;
+    float: $float-left;
   }
 
   .comment-info {
     width: 20%;
-    text-align: right;
+    text-align: $text-right;
     line-height: 1.3em;
     @media screen and (max-width: 760px) {
-      text-align: left;
+      text-align: $text-left;
       width: 100%;
       padding-top: 10px;
       padding-bottom: 20px;
@@ -4281,7 +4290,7 @@ ul.kb-checkbox-extra {
     @media screen and (max-width: 760px) {
       display: inline-block;
       margin: 0px;
-      margin-right: 3px;
+      @include margin-right(3px);
     }
   }
 
@@ -4311,21 +4320,21 @@ ul.kb-checkbox-extra {
   .blurb {
     @include clearfix;
 
-    margin-left: 20px;
+    @include margin-left(20px);
     padding: 10px;
-    padding-left: 20px;
-    border-left: 1px solid $divider-color;
+    @include padding-left(20px);
+    @include border-left(1px solid $divider-color);
     min-height: 60px;
 
     @media screen and (max-width: 760px) {
-      margin-left: 0px;
+      @include margin-left(0px);
       padding: 0px;
-      border-left: 0px;
+      @include border-left(0px);
     }
 
     .response {
       border: 0;
-      border-left: 4px solid $button-color;
+      @include border-left(4px solid $button-color);
       border-radius: 0;
       background: $surface-secondary;
 
@@ -4357,23 +4366,23 @@ ul.kb-checkbox-extra {
   position: relative;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 160px;
+  @include margin-left(160px);
   padding: 5px 10px;
   border: 1px solid $divider-color;
   border-radius: 4px;
   background: $form-input;
 
   @media screen and (max-width: 760px) {
-    margin-left: 0px;
+    @include margin-left(0px);
   }
 
   .response-meta {
     position: absolute;
-    left: -160px;
-    padding-right: 50px;
+    @include left(-160px);
+    @include padding-right(50px);
     width: 160px;
     color: $text-color-lighter;
-    text-align: right;
+    text-align: $text-right;
     font-size: 0.85em;
     line-height: 1.5em;
 
@@ -4386,11 +4395,11 @@ ul.kb-checkbox-extra {
 
     .avatar {
       position: absolute;
-      right: 15px;
+      @include right(15px);
       display: block;
-      float: right;
+      float: $float-right;
       margin-top: 7px;
-      margin-left: 10px;
+      @include margin-left(10px);
       width: 22px;
       height: 22px;
       border-radius: 199px;
@@ -4400,18 +4409,18 @@ ul.kb-checkbox-extra {
     @media screen and (max-width: 760px) {
       position: relative;
       top: 0px;
-      left: 0px;
+      @include left(0px);
       width: 100%;
-      text-align: left;
+      text-align: $text-left;
       padding: 0px;
-      padding-left: 35px;
+      @include padding-left(35px);
       margin-bottom: 10px;
 
       .avatar {
-        float: left;
-        left: 0px;
+        float: $float-left;
+        @include left(0px);
         top: 0px;
-        margin-left: 0px;
+        @include margin-left(0px);
       }
     }
   }
@@ -4424,7 +4433,7 @@ ul.kb-checkbox-extra {
 .cover {
   position: fixed;
   top: 0;
-  left: 0;
+  @include left(0);
   z-index: 1108;
   width: 100%;
   height: 100%;
@@ -4438,7 +4447,7 @@ ul.kb-checkbox-extra {
 
   position: fixed;
   top: 50%;
-  left: 50%;
+  @include left(50%);
   z-index: 1109;
   display: block;
   padding: 20px;
@@ -4477,7 +4486,7 @@ ul.kb-checkbox-extra {
   .cancel {
     position: absolute;
     top: -4px;
-    right: -4px;
+    @include right(-4px);
     width: 19px;
     height: 19px;
     border-radius: 19px;
@@ -4501,7 +4510,7 @@ ul.kb-checkbox-extra {
     .cancel {
       position: absolute;
       top: 10px;
-      right: 10px;
+      @include right(10px);
       color: $text-color-lighter;
       font-size: 0.85em;
       text-decoration: none;
@@ -4529,7 +4538,7 @@ ul.kb-checkbox-extra {
       border: 4px solid $popup-background;
       &:hover { background: darken($button-color-secondary, 10%); }
 
-      i { margin-right: 2px; }
+      i { @include margin-right(2px); }
 
     }
 
@@ -4603,7 +4612,7 @@ ul.kb-checkbox-extra {
       font-size: 13px;
       position: relative;
       top: -1px;
-      margin-right: 3px;
+      @include margin-right(3px);
     }
   }
 }
@@ -4635,7 +4644,7 @@ ul.kb-checkbox-extra {
     }
 
     i {
-      margin-right: 2px;
+      @include margin-right(2px);
     }
   }
 
@@ -4695,7 +4704,7 @@ ul.kb-checkbox-extra {
   &:before {
     position: absolute;
     top: -8px;
-    left: 20px;
+    @include left(20px);
     display: block;
     width: 0;
     height: 0;
@@ -4708,7 +4717,7 @@ ul.kb-checkbox-extra {
 .glossary-tooltip {
   position: absolute;
   bottom: 20px;
-  left: 0;
+  @include left(0);
   display: block;
   padding: 10px;
   width: 380px;
@@ -4723,13 +4732,13 @@ ul.kb-checkbox-extra {
   }
 
   h1, p {
-    padding-left: 10px;
+    @include padding-left(10px);
   }
 
   &:before {
     position: absolute;
     bottom: -10px;
-    left: 10px;
+    @include left(10px);
     display: block;
     width: 0;
     height: 0;
@@ -4766,7 +4775,7 @@ ul.kb-checkbox-extra {
   }
 
   .all-tickets {
-    margin-left: 15px;
+    @include margin-left(15px);
     font-size: $font-mid;
   }
 }
@@ -4777,7 +4786,7 @@ ul.kb-checkbox-extra {
   overflow: hidden;
   margin-bottom: 10px;
   padding: 0.75em 1em;
-  padding-right: 50px;
+  @include padding-right(50px);
   border-radius: 2px;
   background: darken($page-background, 6%);
   color: $text-color;
@@ -4793,7 +4802,7 @@ ul.kb-checkbox-extra {
   .click-to-dismiss {
     position: absolute;
     top: -2px;
-    right: 0;
+    @include right(0);
     padding: 10px 15px;
     cursor: pointer;
     z-index: 9999;
@@ -4836,7 +4845,7 @@ ul.kb-checkbox-extra {
     overflow: hidden;
     margin-bottom: 10px;
     padding: 0.75em 1em;
-    padding-right: 50px;
+    @include padding-right(50px);
     border-radius: 2px;
     background: darken($page-background, 6%);
     color: $text-color;
@@ -4854,7 +4863,7 @@ ul.kb-checkbox-extra {
     i {
       position: absolute;
       top: 36%;
-      right: 20px;
+      @include right(20px);
       color: $text-color-lighter;
     }
   }
@@ -4885,7 +4894,7 @@ ul.kb-checkbox-extra {
 .expand {
   position: absolute;
   top: 13px;
-  right: 13px;
+  @include right(13px);
   display: block;
   width: 32px;
   height: 32px;
@@ -4910,7 +4919,7 @@ ul.kb-checkbox-extra {
 .article-metrics {
   display: inline-block;
   overflow: hidden;
-  margin-left: 10px;
+  @include margin-left(10px);
   border-radius: 2px;
 
   ul {
@@ -4960,8 +4969,8 @@ ul.kb-checkbox-extra {
 }
 
 //.calendar-decoration {
-//  float: left;
-//  margin-right: 0.66em;
+//  float: $float-left;
+//  @include margin-right(0.66em);
 //  width: 45px;
 //  height: 45px;
 //  border-radius: $border-radius-main;
@@ -5009,8 +5018,8 @@ ul.kb-checkbox-extra {
 //  height: 50px;
 //  text-align: center;
 //  position: relative;
-//  float: left;
-//  margin-right: 0.66em;
+//  float: $float-left;
+//  @include margin-right(0.66em);
 //  margin-top: -5px;
 //  color: #c8c8c8;
 //
@@ -5020,7 +5029,7 @@ ul.kb-checkbox-extra {
 //    line-height: 50px;
 //    position: absolute;
 //    top: 0;
-//    left: 0;
+//    @include left(0);
 //  }
 //
 //  .month {
@@ -5030,7 +5039,7 @@ ul.kb-checkbox-extra {
 //    text-align: center;
 //    position: relative;
 //    top: 15px;
-//    left: -1px;
+//    @include left(-1px);
 //    color: #b1afaf;
 //  }
 //
@@ -5041,7 +5050,7 @@ ul.kb-checkbox-extra {
 //    text-align: center;
 //    position: relative;
 //    top: 10px;
-//    left: -1px;
+//    @include left(-1px);
 //    color: #b1afaf;
 //  }
 //
@@ -5052,8 +5061,8 @@ h1.fancy-header {
   position: relative;
   z-index: 100;
   display: inline-block;
-  padding-right: 2em;
-  padding-left: 2em;
+  @include padding-right(2em);
+  @include padding-left(2em);
   background: $page-background;
   font-weight: 600;
   font-size: 1.15em;
@@ -5087,12 +5096,12 @@ h1.fancy-header {
 
       position: relative;
       padding: 0px 7px;
-      @media screen and (max-width: 760px) { padding-left: 10px; }
+      @media screen and (max-width: 760px) { @include padding-left(10px); }
       border-radius: 4px;
       line-height: 1.4em;
 
       .news-header {
-        @media screen and (max-width: 760px) { padding-left: 0px !important; }
+        @media screen and (max-width: 760px) { @include padding-left(0px !important); }
       }
 
       h1 {
@@ -5202,8 +5211,8 @@ h1.fancy-header {
   a.slider {
     display: inline-block;
     margin: 2px;
-    padding-right: 2px;
-    padding-left: 2px;
+    @include padding-right(2px);
+    @include padding-left(2px);
     height: 18px;
     border-radius: 2px;
     background: $button-color-secondary;
@@ -5218,7 +5227,7 @@ h1.fancy-header {
         background: #9f9f9f;
         color: #ffffff;
         i {
-          left: 3px;
+          @include left(3px);
         }
       }
     }
@@ -5226,8 +5235,8 @@ h1.fancy-header {
     .slider-status {
       position: relative;
       top: -2px;
-      margin-right: 4px;
-      margin-left: 4px;
+      @include margin-right(4px);
+      @include margin-left(4px);
       text-transform: uppercase;
       font-weight: 700;
       font-size: 0.65em;
@@ -5249,16 +5258,16 @@ h1.fancy-header {
       i {
         position: absolute;
         top: 2px;
-        left: 3px;
+        @include left(3px);
 
         @media all and (-ms-high-contrast: none) {// Align the check mark on explorer
           top: 3px;
-          left: 2px;
+          @include left(2px);
         }
       }
 
       @media screen and (-webkit-min-device-pixel-ratio: 0) {
-        i { left: 2px; }
+        i { @include left(2px); }
       }
     }
   }
@@ -5273,7 +5282,7 @@ h1.fancy-header {
   .slider-options {
 
     padding: 0 8px;
-    border-left: 1px solid $divider-color;
+    @include border-left(1px solid $divider-color);
     font-size: 0.9em;
     opacity: 0.5;
   }
@@ -5335,7 +5344,7 @@ h1.fancy-header {
     cursor: pointer;
 
     .fa {
-      padding-left: 5px;
+      @include padding-left(5px);
     }
 
     small {
@@ -5365,23 +5374,23 @@ h1.fancy-header {
 
   .quick-jump .dropdown-content {
     @include generate-background-and-border($surface-secondary);
-    text-align: left;
+    text-align: $text-left;
     border-top: 3px solid $button-color-secondary;
     min-width: 120px;
     position: absolute;
-    margin-left: 0;
+    @include margin-left(0);
     top: 27px;
-    left: 15px;
+    @include left(15px);
     display: none;
 
     ul {
-      text-align: left;
+      text-align: $text-left;
       width: 100%;
       display: block;
       padding: 0;
       border-bottom: 1px solid $divider-color;
-      border-left: 1px solid $divider-color;
-      border-right: 1px solid $divider-color;
+      @include border-left(1px solid $divider-color);
+      @include border-right(1px solid $divider-color);
       font-size: 11px;
       li {
         .cat-checkbox-title {
@@ -5396,7 +5405,7 @@ h1.fancy-header {
           }
           input {
             display: inline-block;
-            margin-right: 4px;
+            @include margin-right(4px);
 
             @media all and (-ms-high-contrast: none) {// Reposition the checkboxes
               position: relative;
@@ -5414,7 +5423,7 @@ h1.fancy-header {
         white-space: nowrap;
         padding: 3px 5px;
         margin: 0;
-        text-align: left;
+        text-align: $text-left;
         width: 100%;
         display: block;
       }
@@ -5425,7 +5434,7 @@ h1.fancy-header {
 .feedback-form {
   .main-input {
     @include clearfix;
-    margin-left: 15px;
+    @include margin-left(15px);
     margin-top: 20px;
     margin-bottom: 40px;
 
@@ -5440,13 +5449,13 @@ h1.fancy-header {
       padding: 0;
       font-family: $fonts;
       font-weight: normal;
-      float: left;
+      float: $float-left;
       line-height: 35px;
     }
 
     .question-type {
       display: block;
-      float: left;
+      float: $float-left;
       min-width: 200px;
       width: 45%;
       max-width: 450px;
@@ -5454,7 +5463,7 @@ h1.fancy-header {
     }
 
     .start-btn {
-      float: left;
+      float: $float-left;
     }
 
     .button {
@@ -5480,7 +5489,7 @@ h1.fancy-header {
 .feedback-form-expanded {
   position: relative;
   top: -30px;
-  left: 20px;
+  @include left(20px);
   padding: 10px;
   padding-bottom: 10px;
   max-width: 600px;
@@ -5513,7 +5522,7 @@ h1.fancy-header {
   }
 
   @media screen and (max-width: 760px) {
-    left: 0;
+    @include left(0);
     max-width: none;
     width: 100%;
   }
@@ -5579,7 +5588,7 @@ h1.fancy-header {
 
   .feedback-status, .feedback-item-type {// Tags for feedback items
     display: inline-block;
-    float: right;
+    float: $float-right;
     padding: 1px 10px;
     border-radius: 2px;
     background: #36c562;
@@ -5593,14 +5602,14 @@ h1.fancy-header {
     }
 
     i {
-      margin-right: 4px;
+      @include margin-right(4px);
     }
   }
 
   .feedback-item-type {
     background: #e3e0e0;
-    float: left;
-    margin-right: 10px;
+    float: $float-left;
+    @include margin-right(10px);
     a { color: #707070; }
   }
 
@@ -5609,7 +5618,7 @@ h1.fancy-header {
   }
 
   .feedback-item-controls {
-    float: left;
+    float: $float-left;
     width: 105px;
 
     a {
@@ -5628,7 +5637,7 @@ h1.fancy-header {
 
       @media screen and (max-width: 760px) {
         position: absolute;
-        right: 0px;
+        @include right(0px);
         z-index: 1111;
       }
     }
@@ -5654,7 +5663,7 @@ h1.fancy-header {
     .star {
       div {
         display: inline-block;
-        margin-left: 10px;
+        @include margin-left(10px);
         font-size: 1.15em;
       }
 
@@ -5693,13 +5702,13 @@ h1.fancy-header {
 
       position: absolute;
       top: -7px;
-      right: -7px;
+      @include right(-7px);
     }
 
     .counter {
       position: relative;
       top: 4px;
-      left: 4px;
+      @include left(4px);
       display: block;
       width: 20px;
       height: 20px;
@@ -5716,7 +5725,7 @@ h1.fancy-header {
 
     @-moz-document url-prefix() {
       .counter {
-        padding-left: 1px;
+        @include padding-left(1px);
       }
     }
 
@@ -5728,7 +5737,7 @@ h1.fancy-header {
     // .counter {
     //   position: absolute;
     //   top: -6px;
-    //   right: -7px;
+    //   @include right(-7px);
     //   display: block;
     //   min-width: 27px;
     //   height: 27px;
@@ -5741,18 +5750,18 @@ h1.fancy-header {
     //   line-height: 1em;
     //   border: 4px solid #fff;
     //   padding-top: 5px;
-    //   padding-left: 1px;
+    //   @include padding-left(1px);
     //
     //   @media screen and (-webkit-min-device-pixel-ratio:0) {
-    //     padding-left: 0px;
-    //     padding-right: 1px;
+    //     @include padding-left(0px);
+    //     @include padding-right(1px);
     //     padding-top: 4px;
     //   }
     //
     //
     //   @media all and (-ms-high-contrast: none) { // reposition number for ie
     //     padding-top: 4px;
-    //     padding-left: 0px;
+    //     @include padding-left(0px);
     //   }
     //
     // }
@@ -5760,8 +5769,8 @@ h1.fancy-header {
 
   .feedback-item-content {
     overflow: hidden;
-    padding-left: 10px;
-    border-left: 1px solid $divider-color;
+    @include padding-left(10px);
+    @include border-left(1px solid $divider-color);
 
     h1 {
       font-weight: 400;
@@ -5770,8 +5779,8 @@ h1.fancy-header {
 
       .text-tag {
         top: -3px;
-        left: 0;
-        margin-right: 10px;
+        @include left(0);
+        @include margin-right(10px);
         padding: 7px 10px;
         background: #eaeaea;
         color: #ababab;
@@ -5781,7 +5790,7 @@ h1.fancy-header {
         a {
           text-decoration: none;
           color: inherit;
-          padding-left: 2px;
+          @include padding-left(2px);
         }
       }
       a {
@@ -5793,7 +5802,7 @@ h1.fancy-header {
     @media screen and (max-width: 760px) {
       h1 {
         display: block;
-        padding-right: 110px;
+        @include padding-right(110px);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -5835,7 +5844,7 @@ h1.fancy-header {
 
       li {
         display: inline-block;
-        margin-right: 25px;
+        @include margin-right(25px);
       }
     }
 
@@ -5845,7 +5854,7 @@ h1.fancy-header {
     }
 
     i {
-      margin-right: 3px;
+      @include margin-right(3px);
     }
   }
 }
@@ -5879,7 +5888,7 @@ h1.fancy-header {
           font-size: 11px;
           line-height: 11px;
           cursor: default;
-          padding-left: 20px;
+          @include padding-left(20px);
 
           &:hover {
             border: 1px solid $divider-color;
@@ -5889,8 +5898,8 @@ h1.fancy-header {
           i {
             position: absolute;
             top: 3px;
-            left: 5px;
-            /* padding-right: 3px; */
+            @include left(5px);
+            /* @include padding-right(3px); */
             color: $button-color;
           }
         }
@@ -5912,7 +5921,7 @@ h1.fancy-header {
 
     > li {
       padding-bottom: 2px;
-      padding-left: 10px;
+      @include padding-left(10px);
 
       a {
         text-decoration: none;
@@ -5934,12 +5943,12 @@ h1.fancy-header {
         i {
           position: relative;
           top: -2px;
-          margin-right: 3px;
+          @include margin-right(3px);
           font-size: 0.8em;
         }
       }
       .date {
-        margin-left: 5px;
+        @include margin-left(5px);
         color: $text-faded;
       }
 
@@ -5951,7 +5960,7 @@ h1.fancy-header {
   }
 
   .controls {
-    float: right;
+    float: $float-right;
     font-weight: 400;
 
     ul {
@@ -5994,7 +6003,7 @@ h1.fancy-header {
       }
 
       .the-cudos {
-        border-left: 1px solid $divider-color;
+        @include border-left(1px solid $divider-color);
 
         &.with-voted .as-vote-animate {
           @include wobble-to-top-right-apply();
@@ -6003,7 +6012,7 @@ h1.fancy-header {
       }
 
       .the-cudos.has-cudos {
-        border-left: 1px solid $button-color-secondary;
+        @include border-left(1px solid $button-color-secondary);
         background: $button-color-secondary;
 
         a {
@@ -6023,7 +6032,7 @@ h1.fancy-header {
     li {
       .file-icon {
         display: inline-block;
-        margin-right: 10px;
+        @include margin-right(10px);
         padding: 5px;
         min-width: 35px;
         border-radius: 2px;
@@ -6064,13 +6073,13 @@ h1.fancy-header {
 
   header {
     position: relative;
-    padding-left: 5px;
+    @include padding-left(5px);
     line-height: 1em;
 
     img {
       position: relative;
       top: -2px;
-      margin-right: 10px;
+      @include margin-right(10px);
       vertical-align: middle;
       opacity: 0.2;
     }
@@ -6094,7 +6103,7 @@ h1.fancy-header {
   .article-controls {
     position: absolute;
     top: 3px;
-    right: 0;
+    @include right(0);
     display: block;
 
     &.single-line {
@@ -6121,13 +6130,13 @@ h1.fancy-header {
   .list-meta {
     margin-top: 0;
     background: $page-background;
-    text-align: left;
+    text-align: $text-left;
 
     a {
       position: relative;
       top: -13px;
-      left: 0;
-      margin-left: 20px;
+      @include left(0);
+      @include margin-left(20px);
       color: $button-color;
       text-decoration: underline;
       text-transform: uppercase;
@@ -6157,7 +6166,7 @@ h1.fancy-header {
         position: relative;
         top: -2px;
         display: inline-block;
-        margin-right: 10px;
+        @include margin-right(10px);
         width: 5px;
         height: 5px;
         border-radius: 199px;
@@ -6179,7 +6188,7 @@ h1.fancy-header {
   .text-tag {
     position: relative;
     top: -1px;
-    margin-left: 3px;
+    @include margin-left(3px);
     background: $button-color-secondary;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
     font-size: 0.6em;
@@ -6195,7 +6204,7 @@ h1.fancy-header {
 .article-tag {
   position: relative;
   display: inline-block;
-  margin-right: 4px;
+  @include margin-right(4px);
   padding: 8px;
   border-bottom: 1px solid $divider-color;
   border-radius: 2px;
@@ -6217,12 +6226,12 @@ h1.fancy-header {
     &:after {
       position: absolute;
       top: 35%;
-      right: -8px;
+      @include right(-8px);
       display: block;
       width: 0;
       height: 0;
       border: 4px solid rgba(255, 255, 255, 0);
-      border-left: 4px solid $page-background;
+      @include border-left(4px solid $page-background);
       content: " ";
     }
   }
@@ -6232,7 +6241,7 @@ h1.fancy-header {
 .expandable-control {
   position: relative;
   display: inline-block;
-  margin-left: 20px;
+  @include margin-left(20px);
   padding: 10px 20px 10px 30px;
   color: $text-color-darker;
   line-height: 1px;
@@ -6247,7 +6256,7 @@ h1.fancy-header {
   &:after {
     position: absolute;
     top: -7px;
-    left: 0;
+    @include left(0);
     display: block;
     width: 1px;
     height: 40px;
@@ -6289,19 +6298,19 @@ h1.fancy-header {
     position: relative;
     z-index: 100;
     display: inline-block;
-    padding-right: 19px;
-    padding-left: 19px;
+    @include padding-right(19px);
+    @include padding-left(19px);
     background: $page-background;
     color: $text-color-lighter;
     font-weight: 400;
     font-size: 1.1em;
 
     &.with-icon {
-      padding-left: 20px;
+      @include padding-left(20px);
     }
 
     i {
-      margin-right: 6px;
+      @include margin-right(6px);
       opacity: 0.8;
       font-size: 1em;
       color: #cecece;
@@ -6314,7 +6323,7 @@ h1.fancy-header {
         display: inline-block;
         margin: 0;
         padding: 0;
-        margin-left: 5px;
+        @include margin-left(5px);
       }
       &:hover {
         text-decoration: underline;
@@ -6352,9 +6361,9 @@ h1.fancy-header {
     }
 
     img {
-      float: left;
+      float: $float-left;
       margin-top: 1em;
-      margin-right: 10px;
+      @include margin-right(10px);
       opacity: 0.3;
     }
 
@@ -6392,8 +6401,8 @@ h1.fancy-header {
 
     li {
       margin-bottom: 15px;
-      margin-left: 10px;
-      padding-left: 45px;
+      @include margin-left(10px);
+      @include padding-left(45px);
       background: no-repeat 10px center url(../img/icon-article-large.png);
     }
 
@@ -6446,8 +6455,8 @@ ul.categories-article-list {
       // color: $text-color-lighter;
 
       // span {
-      //   margin-right: 0;
-      //   margin-left: 0;
+      //   @include margin-right(0);
+      //   @include margin-left(0);
       // }
 
       .focus {
@@ -6455,11 +6464,11 @@ ul.categories-article-list {
       }
 
       // .agent-avatar {
-      //   margin-right: 3px;
+      //   @include margin-right(3px);
       // }
 
       // .comments {
-      //   margin-left: 10px;
+      //   @include margin-left(10px);
       // }
     }
   }
@@ -6482,9 +6491,9 @@ ul.categories-article-list {
   }
 
   header, .padded {
-    padding-left: 10px;
+    @include padding-left(10px);
     @media screen and (max-width: 760px) {
-      padding-left: 0px;
+      @include padding-left(0px);
     }
   }
 
@@ -6506,10 +6515,10 @@ ul.categories-article-list {
     }
 
     img.left {
-      float: left;
-      margin-right: 10px;
+      float: $float-left;
+      @include margin-right(10px);
       margin-bottom: 10px;
-      margin-left: 0;
+      @include margin-left(0);
     }
 
     img.full {
@@ -6542,7 +6551,7 @@ ul.categories-article-list {
     a:after {
       position: absolute;
       top: -6px;
-      right: 18px;
+      @include right(18px);
       display: block;
       width: 0;
       border: 3px solid rgba(0, 0, 0, 0);
@@ -6570,9 +6579,9 @@ ul.categories-article-list {
       }
 
       span {
-        margin-left: 10px;
+        @include margin-left(10px);
         padding: 3px 10px;
-        border-left: 1px solid $divider-color;
+        @include border-left(1px solid $divider-color);
       }
     }
 
@@ -6584,20 +6593,20 @@ ul.categories-article-list {
       }
 
       &:after {
-        left: 20px;
+        @include left(20px);
         border-bottom: 3px solid #dc7575;
       }
 
       span {
-        margin-right: 10px;
+        @include margin-right(10px);
         padding: 3px 10px;
-        border-right: 1px solid $divider-color;
+        @include border-right(1px solid $divider-color);
       }
     }
 
     .rated {
       &:after {
-        left: 50%;
+        @include left(50%);
       }
     }
   }
@@ -6629,7 +6638,7 @@ ul.categories-article-list {
         position: relative;
         top: -2px;
         display: inline-block;
-        margin-right: 4px;
+        @include margin-right(4px);
         width: 5px;
         height: 5px;
         border-radius: 99px;
@@ -6649,7 +6658,7 @@ ul.categories-article-list {
 
       li {
         margin-bottom: 5px;
-        margin-left: 5px;
+        @include margin-left(5px);
       }
 
       a {
@@ -6665,7 +6674,7 @@ ul.categories-article-list {
       i {
         position: relative;
         top: -1px;
-        margin-right: 3px;
+        @include margin-right(3px);
         font-size: 0.85em;
       }
     }
@@ -6693,7 +6702,7 @@ ul.categories-article-list {
       .comment-content, .comment-info {
         float: none;
         width: 100%;
-        text-align: left;
+        text-align: $text-left;
       }
 
       .comment-info {
@@ -6705,7 +6714,7 @@ ul.categories-article-list {
     }
 
     .blurb {
-      margin-left: 0;
+      @include margin-left(0);
       border: 0;
       border-bottom: 1px solid $divider-color;
     }
@@ -6719,18 +6728,18 @@ ul.categories-article-list {
   }
 
   .response {
-    margin-left: 0;
-    padding-left: 10px;
+    @include margin-left(0);
+    @include padding-left(10px);
     width: 100%;
 
     .response-meta {
       position: relative;
       top: 0;
-      left: 0;
+      @include left(0);
       margin-top: 10px;
       margin-bottom: 10px;
       width: 100%;
-      text-align: left;
+      text-align: $text-left;
       font-size: 1em;
 
       span {
@@ -6742,11 +6751,11 @@ ul.categories-article-list {
 
       .avatar {
         position: relative;
-        left: 0;
+        @include left(0);
         display: inline-block;
         float: none;
         margin: 0;
-        margin-right: 5px;
+        @include margin-right(5px);
         vertical-align: bottom;
       }
 
@@ -6765,7 +6774,7 @@ ul.categories-article-list {
   position: relative;
   top: -4px;
   display: inline-block;
-  margin-left: 5px;
+  @include margin-left(5px);
   width: 25px;
   height: 25px;
   border: 1px solid $divider-color;
@@ -6787,14 +6796,14 @@ ul.categories-article-list {
 
 .dropdown-active {
   position: absolute;
-  right: 20px;
+  @include right(20px);
   display: block;
   padding: 0 15px;
   min-width: 220px;
   border: 1px solid $divider-color;
   border-radius: 2px;
   background: $surface-secondary;
-  text-align: left;
+  text-align: $text-left;
 
   ul {
     margin: 0;
@@ -6818,7 +6827,7 @@ ul.categories-article-list {
   .dropdown-control {
     position: absolute;
     top: -25px;
-    right: -1px;
+    @include right(-1px);
     border-bottom: 0;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
@@ -6831,7 +6840,7 @@ ul.categories-article-list {
 
 .ticket-agents, .agent-extras {
   position: relative;
-  float: left;
+  float: $float-left;
   margin: 5px 0;
   min-height: 40px;
   width: 50%;
@@ -6849,8 +6858,8 @@ ul.categories-article-list {
 .agent-extras {
   padding-top: 7px;
   // The cc'ed people in this ticket
-  border-left: 1px solid $divider-color;
-  text-align: right;
+  @include border-left(1px solid $divider-color);
+  text-align: $text-right;
 }
 
 @media screen and (max-width: 760px) {
@@ -6869,8 +6878,8 @@ ul.categories-article-list {
     .agent-avatar {
       position: relative;
       top: -5px;
-      float: left;
-      margin-right: 5px;
+      float: $float-left;
+      @include margin-right(5px);
     }
 
     .grey {
@@ -6881,7 +6890,7 @@ ul.categories-article-list {
     .dropdown-active {
       position: relative;
       top: 0;
-      left: 0;
+      @include left(0);
       display: inline;
       padding: 0;
       width: 100%;
@@ -6941,7 +6950,7 @@ ul.categories-article-list {
   position: relative;
   top: -5px;
   display: inline-block;
-  margin-left: 1em;
+  @include margin-left(1em);
   padding: 0.4em 1em;
   border-radius: 199px;
   background: #d0ca6e;
@@ -7007,7 +7016,7 @@ ul.categories-article-list {
     h1 {
       position: relative;
       z-index: 100;
-      padding-right: 20px;
+      @include padding-right(20px);
       background: $page-background;
       font-size: 1.7em;
     }
@@ -7016,8 +7025,8 @@ ul.categories-article-list {
       position: relative;
       top: 2px;
       z-index: 100;
-      float: right;
-      padding-left: 20px;
+      float: $float-right;
+      @include padding-left(20px);
       background: $page-background;
       color: $text-color-lighter;
       font-weight: normal;
@@ -7046,7 +7055,7 @@ ul.categories-article-list {
 
   .ticket-timeline {
     margin-top: 60px;
-    padding-left: 60px;
+    @include padding-left(60px);
     position: relative;
 
     p {
@@ -7062,7 +7071,7 @@ ul.categories-article-list {
     .line {
       position: absolute;
       display: block;
-      margin-left: -32px;
+      @include margin-left(-32px);
       width: 1px;
       background: $divider-color;
       top: 0;
@@ -7092,7 +7101,7 @@ ul.categories-article-list {
 
     .badge {
       position: absolute;
-      left: -50px;
+      @include left(-50px);
       display: block;
       width: 36px;
       height: 36px;
@@ -7167,7 +7176,7 @@ ul.categories-article-list {
 
       .face {
         display: inline-block;
-        margin-right: 3px;
+        @include margin-right(3px);
         padding: 5px;
         width: 20px;
         height: 20px;
@@ -7197,7 +7206,7 @@ ul.categories-article-list {
 
     &.not-rated {
       a {
-        float: right;
+        float: $float-right;
         margin-top: -10px;
         border-bottom: none;
         color: #a2a2a2;
@@ -7227,7 +7236,7 @@ ul.categories-article-list {
     }
 
     img {
-      margin-right: 20px;
+      @include margin-right(20px);
       max-width: 80px;
       border-radius: 4px;
       vertical-align: middle;
@@ -7235,7 +7244,7 @@ ul.categories-article-list {
 
     .file-type {
       display: inline-block;
-      margin-right: 15px;
+      @include margin-right(15px);
       width: 25px;
       height: 25px;
       border-radius: 2px;
@@ -7252,7 +7261,7 @@ ul.categories-article-list {
         background: #ca1e00;
 
         i {
-          left: 1px;
+          @include left(1px);
         }
       }
 
@@ -7262,8 +7271,8 @@ ul.categories-article-list {
     }
 
     .attachement-size {
-      margin-right: 10px;
-      margin-left: 10px;
+      @include margin-right(10px);
+      @include margin-left(10px);
       opacity: 0.5;
     }
   }
@@ -7306,14 +7315,14 @@ ul.categories-article-list {
 
     a {
       display: inline-block;
-      margin-right: 3%;
+      @include margin-right(3%);
       color: inherit;
       text-decoration: none;
       font-weight: 300;
 
       span {
         display: inline-block;
-        margin-right: 10px;
+        @include margin-right(10px);
         width: 32px;
         height: 32px;
         border-radius: 199px;
@@ -7345,7 +7354,7 @@ ul.categories-article-list {
 
   position: relative;
   top: -5px;
-  float: right;
+  float: $float-right;
 }
 
 .table-meta {
@@ -7355,7 +7364,7 @@ ul.categories-article-list {
 .table-controls {
   position: absolute;
   top: -20px;
-  right: 4px;
+  @include right(4px);
   padding: 0 5px;
   background: $page-background;
 
@@ -7377,7 +7386,7 @@ ul.categories-article-list {
     &:before {
       position: relative;
       top: 4px;
-      left: 4px;
+      @include left(4px);
       display: block;
       width: 5px;
       height: 5px;
@@ -7393,7 +7402,7 @@ ul.categories-article-list {
     span {
       position: absolute;
       top: 2px;
-      left: 14px;
+      @include left(14px);
       display: block;
       color: $text-color-lighter;
       text-transform: uppercase;
@@ -7411,7 +7420,7 @@ ul.categories-article-list {
     i {
       position: absolute;
       top: 1px;
-      left: 5px;
+      @include left(5px);
       font-size: 0.8em;
     }
   }
@@ -7439,7 +7448,7 @@ ul.categories-article-list {
 .filter-text-results {
   margin-top: 15px;
   margin-bottom: 6px;
-  padding-left: 25px;
+  @include padding-left(25px);
   font-style: italic;
   font-size: 0.9em;
 }
@@ -7452,7 +7461,7 @@ ul.categories-article-list {
   font-size: 0.85em;
 
   i {
-    margin-right: 10px;
+    @include margin-right(10px);
   }
 
   a {
@@ -7496,15 +7505,15 @@ ul.categories-article-list {
   td, td:first-child {
     padding: 0;
     vertical-align: middle;
-    text-align: left;
+    text-align: $text-left;
 
     &.ticket-ref {
       width: 50px;
-      padding-left: 12px;
+      @include padding-left(12px);
       > span {
         display: block;
         padding: 0.75em 1em;
-        padding-left: 10px;
+        @include padding-left(10px);
         color: #606060;
         text-decoration: none;
       }
@@ -7521,7 +7530,7 @@ ul.categories-article-list {
 
     span {
       display: inline-block;
-      margin-left: 5px;
+      @include margin-left(5px);
     }
 
     &:first-child {
@@ -7541,13 +7550,13 @@ ul.categories-article-list {
   }
 
   .right {
-    text-align: right;
+    text-align: $text-right;
   }
 
   .item-row a {
     display: block;
     padding: $form-padding-vertical $form-padding-horizontal;
-    padding-left: $universal-left-padding;
+    @include padding-left($universal-left-padding);
     color: $text-color;
     text-decoration: none;
 
@@ -7556,7 +7565,7 @@ ul.categories-article-list {
     }
 
     .focus {
-      margin-right: 3px;
+      @include margin-right(3px);
       color: $text-color-darker;
       text-transform: uppercase;
       font-weight: 800;
@@ -7576,7 +7585,7 @@ ul.categories-article-list {
     }
     &.first-in-line {
       border-bottom: 0;
-      // padding-left: 10px !important;
+      // @include padding-left(10px !important);
     }
 
 
@@ -7599,7 +7608,7 @@ ul.categories-article-list {
         display: block;
         position: absolute;
         top: 0px;
-        left: 0px;
+        @include left(0px);
         width: 500px;// ticket table - remove this
         height: 4px;
         background: #fff;
@@ -7610,7 +7619,7 @@ ul.categories-article-list {
         display: block;
         position: absolute;
         bottom: 1px;
-        left: 0px;
+        @include left(0px);
         width: 500px;// ticket table - remove this
         height: 4px;
         background: #fff;
@@ -7625,7 +7634,7 @@ ul.categories-article-list {
 
   .status-tag {
     display: inline-block;
-    margin-right: 5px;
+    @include margin-right(5px);
     width: 16px;
     height: 16px;
     border-radius: 2px;
@@ -7641,15 +7650,15 @@ ul.categories-article-list {
   .info-block {
     position: relative;
     width: 220px;
-    border-left: 1px solid $divider-color;
-    text-align: right;
+    @include border-left(1px solid $divider-color);
+    text-align: $text-right;
 
     &.centered {
       text-align: center;
     }
 
     &.left {
-      text-align: left;
+      text-align: $text-left;
     }
 
     &.long {
@@ -7680,12 +7689,12 @@ ul.categories-article-list {
     //
     // &:before {
     //   top: 0;
-    //   left: -3px;
+    //   @include left(-3px);
     // }
     //
     // &:after {
     //   bottom: 0px;
-    //   left: -3px;
+    //   @include left(-3px);
     // }
   }
 
@@ -7700,7 +7709,7 @@ ul.categories-article-list {
     display: inline-block;
     margin: 0;
     vertical-align: middle;
-    margin-left: 4px;
+    @include margin-left(4px);
     position: relative;
     top: -1px;
   }
@@ -7710,9 +7719,9 @@ ul.categories-article-list {
   }
 
   .avatar {
-    float: right;
+    float: $float-right;
     margin-top: 2px;
-    margin-left: 6px;
+    @include margin-left(6px);
     width: 22px;
     height: 22px;
     border-radius: 199px;
@@ -7748,18 +7757,18 @@ ul.categories-article-list {
 // Welcome block placement
 // Keeping the styles clean - these make sure the overlapping double borders on the
 // welcome block work.
-.welcome-block-wrapper { padding-right: 5px; }
+.welcome-block-wrapper { @include padding-right(5px); }
 
 .welcome-block-second-border {
   border: 1px solid $welcome-block-border-color;
   position: relative;
-  right: -6px;
+  @include right(-6px);
   bottom: -5px;
 }
 
 .welcome-block {
   position: relative;
-  left: -6px;
+  @include left(-6px);
   top: -5px;
 }
 
@@ -7812,8 +7821,8 @@ ul.categories-article-list {
         background: $welcome-block-border-color;
         top: 13px;
       }
-      &:before { left: -100px; }
-      &:after { right: -100px; }
+      &:before { @include left(-100px); }
+      &:after { @include right(-100px); }
 
       @media screen and (max-width: 760px) {
         &:before, &:after {
@@ -7854,7 +7863,7 @@ ul.big-button-collection {
     position: fixed;
     display: none; // JS toggles this
     top: 0px;
-    left: 0px;
+    @include left(0px);
     background: #fff;
     width: 70%;
     max-width: 320px;
@@ -7868,7 +7877,7 @@ ul.big-button-collection {
   }
 
   &.left {
-    text-align: left;
+    text-align: $text-left;
   }
 
   &.thin {
@@ -7877,7 +7886,7 @@ ul.big-button-collection {
   }
 
   .big-button-collection-contract-mobile {
-    text-align: left;
+    text-align: $text-left;
     margin-bottom: 10px;
     display: none;
     i { font-size: 20px; }
@@ -7893,7 +7902,7 @@ ul.big-button-collection {
     margin: 0 10px;
     vertical-align: top;
     &:first-child {
-      margin-left: 0;
+      @include margin-left(0);
     }
   }
 
@@ -7951,11 +7960,11 @@ ul.big-button-collection {
     margin-bottom: 10px;
 
     li {
-      margin-right: 0;
-      margin-left: 4px;
+      @include margin-right(0);
+      @include margin-left(4px);
 
       &:first-child {
-        margin-left: 0;
+        @include margin-left(0);
       }
 
       &.active a {
@@ -7980,7 +7989,7 @@ ul.big-button-collection {
 
       .fa {
         font-size: inherit;
-        margin-right: 5px;
+        @include margin-right(5px);
         display: inline-block;
         vertical-align: middle;
       }
@@ -8019,7 +8028,7 @@ ul.big-button-collection {
       display: block;
       width: 100%;
       height: auto;
-      text-align: left;
+      text-align: $text-left;
       padding: 0;
       margin: 0;
       padding: 10px;
@@ -8033,7 +8042,7 @@ ul.big-button-collection {
       }
 
       .fa {
-        margin-right: 2px;
+        @include margin-right(2px);
         font-size: 17px;
       }
 
@@ -8047,7 +8056,7 @@ ul.big-button-collection {
 }
 
 .big-button-collection-expand-mobile {
-  float: left;
+  float: $float-left;
   display: inline-block;
   text-align: center;
   color: #cecece;
@@ -8058,14 +8067,14 @@ ul.big-button-collection {
   position: fixed;
   background: #fff;
   top: 0px;
-  left: 0px;
+  @include left(0px);
   width: 100%;
   z-index: 1999;
-  text-align: left;
+  text-align: $text-left;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
 
   padding-top: 14px;
-  padding-left: 14px;
+  @include padding-left(14px);
 
   a {
     display: inline-block;
@@ -8099,7 +8108,7 @@ ul.big-button-collection {
   margin: 10px 0;
 
   li:first-child {
-    margin-left: 0;
+    @include margin-left(0);
   }
 }
 
@@ -8112,7 +8121,7 @@ ul.big-button-collection {
     border: 1px solid #e3e3e3;
     border-radius: 2px;
     padding: 20px;
-    text-align: left;
+    text-align: $text-left;
 
     h1 {
       color: #407bbd;
@@ -8160,7 +8169,7 @@ ul.big-button-collection {
     font-size: 0.9em;
     position: absolute;
     display: inline-block;
-    left: 10px;
+    @include left(10px);
     z-index: 300;
     cursor: pointer;
     font-weight: 500;
@@ -8169,7 +8178,7 @@ ul.big-button-collection {
       position: relative;
       font-size: 14px;
       top: 1px;
-      margin-right: 2px;
+      @include margin-right(2px);
     }
 
     &:hover {
@@ -8190,11 +8199,11 @@ ul.big-button-collection {
   }
 
   .quick-jump .dropdown-content {
-    text-align: left;
+    text-align: $text-left;
     border-bottom: 3px solid #3d77b6;
     min-width: 250px;
     position: absolute;
-    margin-left: -8px;
+    @include margin-left(-8px);
     bottom: 30px;
     display: none;
 
@@ -8207,7 +8216,7 @@ ul.big-button-collection {
       border: 3px solid rgba(0, 0, 0, 0);
       border-top: 3px solid #3d77b6;
       bottom: -9px;
-      left: 10px;
+      @include left(10px);
     }
 
     ul {
@@ -8238,8 +8247,8 @@ ul.big-button-collection {
         }
 
         i {
-          margin-right: 4px;
-          margin-left: 5px;
+          @include margin-right(4px);
+          @include margin-left(5px);
         }
       }
     }
@@ -8248,7 +8257,7 @@ ul.big-button-collection {
   .back-to-top {
     position: absolute;
     z-index: 300;
-    right: 10px;
+    @include right(10px);
     top: 5px;
     background: #fff;
     padding: 0 4px;
@@ -8281,8 +8290,8 @@ ul.big-button-collection {
       z-index: 300;
       margin-top: 4px;
       display: inline-block;
-      padding-left: 5px;
-      padding-right: 5px;
+      @include padding-left(5px);
+      @include padding-right(5px);
       background: #fff;
       margin-bottom: 5px;
     }
@@ -8324,7 +8333,7 @@ ul.big-button-collection {
   display: block;
   position: fixed;
   top: 0;
-  left: 0;
+  @include left(0);
   width: 100%;
   background: #35383a;
   margin-bottom: 43px;
@@ -8365,7 +8374,7 @@ body.with-agent-bar {
   background: #2f649c;
   color: #6e93ba;
   text-transform: uppercase;
-  padding-left: 20px;
+  @include padding-left(20px);
   &.on {
     color: #c1d1e1;
   }
@@ -8389,16 +8398,16 @@ body.with-agent-bar {
     vertical-align: middle;
     position: relative;
     top: -1px;
-    margin-right: 4px;
+    @include margin-right(4px);
   }
 
   a {
     background: #3269a4;
     color: #fff;
-    border-left: 1px solid #3c71a9;
-    padding-left: 12px;
-    padding-right: 12px;
-    margin-left: 4px;
+    @include border-left(1px solid #3c71a9);
+    @include padding-left(12px);
+    @include padding-right(12px);
+    @include margin-left(4px);
     &:hover {
       background: #2e6198;
     }
@@ -8411,12 +8420,12 @@ body.with-agent-bar {
   background: #444648;
   position: fixed;
   top: 40px;
-  right: 10px;
+  @include right(10px);
 
   &:befre {
     position: absolute;
     top: -4px;
-    left: -10px;
+    @include left(-10px);
 
   }
 
@@ -8429,7 +8438,7 @@ body.with-agent-bar {
 
     i {
       opacity: 0.5;
-      margin-right: 5px;
+      @include margin-right(5px);
     }
 
     li + li {
@@ -8444,7 +8453,7 @@ body.with-agent-bar {
       display: inline-block;
       position: absolute;
       bottom: -4px;
-      left: -4px;
+      @include left(-4px);
       width: 20px;
       height: 20px;
       border: 2px solid #444648;
@@ -8506,7 +8515,7 @@ body.with-agent-bar {
 .datb-interface-switcher {
   display: block;
   height: 40px;
-  float: right;
+  float: $float-right;
   color: #868889;
   font-size: 10px;
 
@@ -8514,7 +8523,7 @@ body.with-agent-bar {
     display: inline-block;
     text-transform: uppercase;
     padding-top: 14px;
-    padding-right: 10px;
+    @include padding-right(10px);
   }
 
   a {
@@ -8522,15 +8531,15 @@ body.with-agent-bar {
     vertical-align: top;
     height: 40px;
     color: inherit;
-    border-left: 1px solid #4a4c4e;
-    padding-left: 10px;
-    padding-right: 10px;
+    @include border-left(1px solid #4a4c4e);
+    @include padding-left(10px);
+    @include padding-right(10px);
 
     i {
       display: inline-block;
       vertical-align: middle;
       font-size: 14px;
-      margin-right: 10px;
+      @include margin-right(10px);
       position: relative;
       top: 4px;
       opacity: 0.5;
@@ -8554,7 +8563,7 @@ body.with-agent-bar {
     .datb-button-dropdown {
       padding: 10px;
       position: relative;
-      left: 10px;
+      @include left(10px);
       &:hover {
         opacity: 1;
         color: #fff;
@@ -8585,7 +8594,7 @@ body.with-agent-bar {
     i {
       opacity: 0.5;
       top: 13px;
-      left: 5px;
+      @include left(5px);
     }
   }
 }
@@ -8621,16 +8630,16 @@ body.with-agent-bar {
     display: block;
     list-style: none;
     padding: 0;
-    padding-left: 10px;
+    @include padding-left(10px);
     margin: 0;
     height: 34px;
 
     li {
       display: block;
-      float: left;
+      float: $float-left;
       height: 34px;
-      margin-left: -1px;
-      margin-right: -1px;
+      @include margin-left(-1px);
+      @include margin-right(-1px);
       position: relative;
       top: 1px;
     }
@@ -8639,14 +8648,14 @@ body.with-agent-bar {
       text-decoration: none;
       color: #787878;
       display: block;
-      padding-left: 10px;
-      padding-right: 10px;
+      @include padding-left(10px);
+      @include padding-right(10px);
       padding-top: 10px;
       height: 34px;
       background: #f0f0f0;
       border-bottom: 1px solid #dadada;
-      border-right: 1px solid #dadada;
-      border-left: 1px solid #dadada;
+      @include border-right(1px solid #dadada);
+      @include border-left(1px solid #dadada);
       outline: 0;
       transition: all 0.2s ease;
       i {
@@ -8678,7 +8687,7 @@ body.with-agent-bar {
         background: #3d75b4;
         width: 100%;
         height: 4px;
-        left: -1px;
+        @include left(-1px);
         top: 0;
       }
       &:after {
@@ -8689,7 +8698,7 @@ body.with-agent-bar {
         background: #3d75b4;
         width: 50%;
         height: 4px;
-        right: -1px;
+        @include right(-1px);
         top: 0;
         z-index: 299;
       }
@@ -8713,7 +8722,7 @@ body.with-agent-bar {
   i {
     position: relative;
     top: 1px;
-    margin-right: 4px;
+    @include margin-right(4px);
     color: $text-color-lighter;
     font-size: 1.3em;
   }
@@ -8726,7 +8735,7 @@ body.with-agent-bar {
   div {
     position: absolute;
     top: 7px;
-    right: 10px;
+    @include right(10px);
     display: inline-block;
     padding: $form-padding-vertical $form-padding-horizontal;
     border-radius: 2px;
@@ -8742,7 +8751,7 @@ body.with-agent-bar {
     div {
       position: relative;
       top: 0;
-      left: 0;
+      @include left(0);
       display: block;
       margin-top: 10px;
     }
@@ -8780,8 +8789,8 @@ body.with-agent-bar {
   i {
     color: #c5cbce;
     font-size: 14px;
-    margin-right: 7px;
-    margin-left: 7px;
+    @include margin-right(7px);
+    @include margin-left(7px);
     position: relative;
     top: 2px;
   }
@@ -8795,7 +8804,7 @@ body.with-agent-bar {
     background: #b9c6d5;
     color: #51575f;
     padding: 7px 50px;
-    margin-left: 10px;
+    @include margin-left(10px);
     display: inline-block;
     vertical-align: middle;
     border-radius: 2px;
@@ -8813,8 +8822,8 @@ body.with-agent-bar {
     position: absolute;
     opacity: 0;
     top: 0;
-    left: 0;
-    right: 0;
+    @include left(0);
+    @include right(0);
     bottom: 0;
     width: 100%;
     cursor: pointer;
@@ -8828,7 +8837,7 @@ body.with-agent-bar {
     color: $grey;
     font-size: 0.9em;
     line-height: 1em;
-    margin-right: 5px;
+    @include margin-right(5px);
     text-align: center;
     span {
       color: #ffffff;
@@ -8884,9 +8893,9 @@ body.with-agent-bar {
     li {
       position: relative;
       font-size: 0.9em;
-      padding-left: 10px;
+      @include padding-left(10px);
       i {
-        margin-right: 4px;
+        @include margin-right(4px);
       }
     }
 
@@ -8898,7 +8907,7 @@ body.with-agent-bar {
     }
 
     .file-size {
-      margin-left: 3px;
+      @include margin-left(3px);
       font-size: 0.9em;
       opacity: $text-opacue;
     }
@@ -8921,13 +8930,13 @@ body.with-agent-bar {
 }
 
 .remove-attachement {
-  margin-left: 10px;
+  @include margin-left(10px);
   color: inherit;
   font-size: 0.9em;
   opacity: 0.3;
 
   i {
-    margin-right: 3px;
+    @include margin-right(3px);
   }
 
   &:hover {
@@ -8964,10 +8973,10 @@ body.with-agent-bar {
       &:after {
         position: absolute;
         top: 5px;
-        left: 5px;
+        @include left(5px);
         display: block;
-        float: left;
-        margin-right: 3px;
+        float: $float-left;
+        @include margin-right(3px);
         width: 7px;
         height: 7px;
         border: 1px solid #fff;
@@ -8983,13 +8992,13 @@ body.with-agent-bar {
     font-size: 0.9em;
     line-height: 18px;
     &.title {
-      padding-left: 0;
+      @include padding-left(0);
     }
 
     &:before {
       display: block;
-      float: left;
-      margin-right: 6px;
+      float: $float-left;
+      @include margin-right(6px);
       width: 17px;
       height: 17px;
       line-height: 1.3em;
@@ -9009,16 +9018,16 @@ table.dp-formtable-tablerow {
   td {
     border-collapse: collapse;
     padding: 0;
-    padding-right: $universal-left-padding;
+    @include padding-right($universal-left-padding);
     vertical-align: top;
 
     &:last-child {
-      padding-right: 0;
+      @include padding-right(0);
     }
   }
 
   td.dp-formtable-help {
-    border-left: 1px solid $divider-color;
+    @include border-left(1px solid $divider-color);
   }
 }
 
@@ -9047,7 +9056,7 @@ table .form-help {
   position: relative;
   z-index: 199;
   top: 6px;
-  float: right;
+  float: $float-right;
   font-style: italic;
   font-size: 0.9em;
   line-height: 1em;
@@ -9128,7 +9137,7 @@ table .form-help {
     i[class^='fa-caret'], i[class*=' fa-caret'] {
       position: absolute;
       top: 11px;
-      right: 15px;
+      @include right(15px);
     }
 
     i[class^='fa-times'], i[class*=' fa-times'] {
@@ -9136,7 +9145,7 @@ table .form-help {
       height: 100%;
       position: absolute;
       top: 0;
-      right: 0;
+      @include right(0);
       &:hover {
         background: $main-color-light;
         color: #444;
@@ -9149,7 +9158,7 @@ table .form-help {
     padding: 4px;
     i[class^='fa-caret'], i[class*=' fa-caret'] {
       top: 6px;
-      right: 7px;
+      @include right(7px);
     }
   }
 
@@ -9161,8 +9170,8 @@ table .form-help {
   }
 
   &.borderless.right .default {
-    text-align: right;
-    padding-right: 23px;
+    text-align: $text-right;
+    @include padding-right(23px);
   }
 
   &.level-1 {
@@ -9173,8 +9182,8 @@ table .form-help {
 
     .options-wrapper {
       position: absolute;
-      right: 0;
-      left: 0;
+      @include right(0);
+      @include left(0);
       z-index: $zindex-very-top;
       display: block;
     }
@@ -9241,22 +9250,22 @@ table .form-help {
   &.level-2 {
     @extend .level-1;
     margin-top: 10px;
-    margin-left: 30px;
-    padding-right: 30px;
+    @include margin-left(30px);
+    @include padding-right(30px);
     .options-wrapper {
-      padding-right: 30px;
+      @include padding-right(30px);
     }
 
     &:before {
       position: absolute;
       top: 0;
-      left: -20px;
+      @include left(-20px);
       display: block;
       width: 10px;
       height: 20px;
       border: 1px dotted $text-color-lighter;
       border-top: none;
-      border-right: none;
+      @include border-right(none);
       content: " ";
     }
   }
@@ -9264,64 +9273,64 @@ table .form-help {
   &.level-3 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 60px;
-    padding-right: 60px;
+    @include margin-left(60px);
+    @include padding-right(60px);
   }
 
   &.level-4 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 90px;
-    padding-right: 90px;
+    @include margin-left(90px);
+    @include padding-right(90px);
   }
 
   &.level-5 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 
   &.level-6 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 
   &.level-7 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 
   &.level-8 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 
   &.level-9 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 
   &.level-10 {
     @extend .level-1;
     @extend .level-2;
-    margin-left: 120px;
-    padding-right: 120px;
+    @include margin-left(120px);
+    @include padding-right(120px);
   }
 }
 
 .form-item-valid {
   color: #93d06e;
   i {
-    margin-left: 5px;
+    @include margin-left(5px);
   }
   &.hidden {
     display: none;
@@ -9335,52 +9344,52 @@ table .form-help {
 
 .display-depth-1 {
   position: relative;
-  left: 25px;
+  @include left(25px);
 }
 
 .display-depth-2 {
   @extend .display-depth-1;
-  left: 50px;
+  @include left(50px);
 }
 
 .display-depth-3 {
   @extend .display-depth-1;
-  left: 75px;
+  @include left(75px);
 }
 
 .display-depth-4 {
   @extend .display-depth-1;
-  left: 100px;
+  @include left(100px);
 }
 
 .display-depth-5 {
   @extend .display-depth-1;
-  left: 125px;
+  @include left(125px);
 }
 
 .display-depth-6 {
   @extend .display-depth-1;
-  left: 150px;
+  @include left(150px);
 }
 
 .display-depth-7 {
   @extend .display-depth-1;
-  left: 175px;
+  @include left(175px);
 }
 
 .display-depth-8 {
   @extend .display-depth-1;
-  left: 200px;
+  @include left(200px);
 }
 
 .display-depth-9 {
   @extend .display-depth-1;
-  left: 225px;
+  @include left(225px);
 }
 
 .display-depth-10 {
   @extend .display-depth-1;
-  left: 250px;
+  @include left(250px);
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .multiselect {
@@ -9491,8 +9500,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
   blockquote, .dp-bq {
     display: block;
     margin: 15px 0 15px 0;
-    padding-left: 5px;
-    border-left: 2px solid #777;
+    @include padding-left(5px);
+    @include border-left(2px solid #777);
     color: #777;
   }
 
@@ -9597,8 +9606,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
     box-shadow: none;
 
     top: 1px;
-    right: 1px;
-    left: 1px;
+    @include right(1px);
+    @include left(1px);
 
     &.medium-editor-toolbar-active {
       button {
@@ -9647,8 +9656,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
     background-color: rgba(175, 192, 213, 0.7);
     position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
+    @include left(0);
+    @include right(0);
     bottom: 0;
     z-index: 3000;
     text-align: center;
@@ -9675,7 +9684,7 @@ form {
   .title {
     display: block;
     margin-bottom: 7px;
-    padding-left: 0;
+    @include padding-left(0);
     color: $text-color;
     font-size: 100%;
     &.with-sub {
@@ -9688,7 +9697,7 @@ form {
     top: -5px;
     display: block;
     margin-bottom: 5px;
-    padding-left: $form-padding-horizontal;
+    @include padding-left($form-padding-horizontal);
     font-size: 0.9em;
     line-height: 1em;
   }
@@ -9721,7 +9730,7 @@ form {
   vertical-align: middle;
   text-align: center;
   margin-top: -3px;
-  margin-right: 6px;
+  @include margin-right(6px);
   color: #333;
   cursor: pointer;
 
@@ -9750,7 +9759,7 @@ form {
 
 .form-ticket {
   header {
-    // padding-left: 5px;
+    // @include padding-left(5px);
     h1 {
       font-weight: 300;
       font-size: 1.3em;
@@ -9758,11 +9767,11 @@ form {
   }
 
   .deskpro-choice-widget {
-    padding-left: $form-padding-horizontal;
+    @include padding-left($form-padding-horizontal);
     .title {
       display: inline;
       font-weight: lighter;
-      padding-left: 0;
+      @include padding-left(0);
     }
   }
 
@@ -9770,7 +9779,7 @@ form {
     display: inline;
   }
   .form-widget {
-    // padding-left: $form-padding-horizontal;
+    // @include padding-left($form-padding-horizontal);
   }
 
   .bucket {
@@ -9790,7 +9799,7 @@ form {
         position: relative;
         bottom: 20px;
         max-width: 480px;
-        margin-left: 10px;
+        @include margin-left(10px);
       }
     }
 
@@ -9806,9 +9815,9 @@ form {
 
     .form-label-link {
       position: absolute;
-      right: 0;
+      @include right(0);
       i {
-        margin-left: 4px;
+        @include margin-left(4px);
       }
     }
   }
@@ -9823,7 +9832,7 @@ form {
   .bucket {
     span {
       display: inline;
-      margin-right: 3px;
+      @include margin-right(3px);
       font-size: 0.9em;
     }
   }
@@ -9892,7 +9901,7 @@ form {
 
 .remember-me {
   display: inline-block;
-  margin-left: 10px;
+  @include margin-left(10px);
   vertical-align: top;
   font-size: 0.9em;
   line-height: 1em;
@@ -9905,7 +9914,7 @@ form {
   input {
     display: inline-block;
     vertical-align: middle;
-    margin-right: 2px;
+    @include margin-right(2px);
   }
 }
 
@@ -9928,7 +9937,7 @@ form {
   }
 
   .panel {
-    margin-left: 5px;
+    @include margin-left(5px);
   }
   h1 {
     font-size: 1.2em;
@@ -9944,7 +9953,7 @@ form {
 
     span {
       display: block;
-      padding-left: 0;
+      @include padding-left(0);
     }
   }
 
@@ -9952,7 +9961,7 @@ form {
     // Password reminder
     font-size: 0.85em;
     a {
-      margin-left: 5px;
+      @include margin-left(5px);
       color: #333333;
       text-decoration: none;
       &:hover {
@@ -9963,7 +9972,7 @@ form {
 
   input[type="checkbox"] {
     margin: 0;
-    margin-right: 4px;
+    @include margin-right(4px);
   }
 }
 
@@ -10011,7 +10020,7 @@ form {
     &:before {
       position: absolute;
       top: -8px;
-      left: 40px;
+      @include left(40px);
       display: block;
       width: 0;
       border: 4px solid rgba(0, 0, 0, 0);
@@ -10028,7 +10037,7 @@ form {
       &:before {
         position: absolute;
         top: -8px;
-        left: 40px;
+        @include left(40px);
         display: block;
         width: 0;
         border: 4px solid rgba(0, 0, 0, 0);
@@ -10041,11 +10050,11 @@ form {
   .error {
     .message {
       position: absolute;
-      right: 0;
+      @include right(0);
       bottom: 10px;
       display: block;
-      padding-right: 4px;
-      padding-left: 4px;
+      @include padding-right(4px);
+      @include padding-left(4px);
       background: $red;
       color: #ffffff;
       font-weight: 500;
@@ -10073,7 +10082,7 @@ form {
 
   .level-indent {
     display: inline-block;
-    margin-right: 3px;
+    @include margin-right(3px);
     vertical-align: middle;
 
     i {
@@ -10099,10 +10108,10 @@ form {
   }
 
   .level > .level > .level-indent {
-    margin-left: 5px;
+    @include margin-left(5px);
   }
   .level > .level > .level > .level-indent {
-    margin-left: 23px;
+    @include margin-left(23px);
   }
 }
 
@@ -10140,17 +10149,17 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 
   position: relative;
-  padding-right: 340px;
+  @include padding-right(340px);
 
   .ticket-view-sidebar-wrapper {
     width: 330px;
     position: absolute;
     top: 0px;
-    right: 0px;
+    @include right(0px);
   }
   // Small screens
   @media screen and (max-width: 760px) {
-    padding-right: 0px;
+    @include padding-right(0px);
 
     .ticket-view-sidebar-wrapper {
       width: auto;
@@ -10205,7 +10214,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
           margin: 0;
           padding: 0;
           list-style: none;
-          padding-left: 5px;
+          @include padding-left(5px);
         }
 
         li {
@@ -10263,8 +10272,8 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     border: 6px solid rgba(0, 0, 0, 0.0);
     border-bottom: 6px solid #dedede;
     top: -12px;
-    left: 50%;
-    margin-left: -6px;
+    @include left(50%);
+    @include margin-left(-6px);
   }
   &:after {
     border: 6px solid rgba(0, 0, 0, 0.0);
@@ -10309,7 +10318,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 }
 
 .ticket-action-date {
-  float: right;
+  float: $float-right;
   font-size: 10.5px;
   font-weight: 500;
   margin-top: 1px;
@@ -10321,7 +10330,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   font-size: 12.5px;
 
   .agent-avatar {
-    float: left;
+    float: $float-left;
   }
 
   > span, a {
@@ -10339,19 +10348,19 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .ticket-owner-email {
   @extend .ticket-owner-name;
   opacity: 0.5;
-  margin-left: 2px;
+  @include margin-left(2px);
 }
 
 .ticket-actual-date {
   display: inline-block;
   color: #c0c0c0;
   font-weight: 600;
-  margin-left: 2px;
+  @include margin-left(2px);
   font-size: 11px;
 }
 
 .ticket-message-content {
-  padding-left: 29px;
+  @include padding-left(29px);
   margin-top: 5px;
 
   @extend .deskpro-standard-message-formatting;
@@ -10368,13 +10377,13 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 }
 
 .ticket-message-files {
-  border-left: 2px solid #dedede;
-  padding-left: 10px;
+  @include border-left(2px solid #dedede);
+  @include padding-left(10px);
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 12px;
   line-height: 1.2em;
-  margin-left: 30px;
+  @include margin-left(30px);
   margin-top: 15px;
 
   h1 {
@@ -10395,7 +10404,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     text-decoration: none;
 
     i {
-      margin-right: 3px;
+      @include margin-right(3px);
       position: relative;
       top: -2px;
     }
@@ -10424,7 +10433,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     font-weight: normal;
     font-size: inherit;
     position: absolute;
-    left: 0px;
+    @include left(0px);
     display: block;
   }
 
@@ -10450,7 +10459,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   .sidebar-person {
     display: block;
-    padding-left: 30px;
+    @include padding-left(30px);
     margin-bottom: 10px;
     position: relative;
     min-height: 30px;
@@ -10459,7 +10468,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       color: #d6d6d6;
 
       i {
-        left: 0px;
+        @include left(0px);
         top: 1px;
       }
       .agent-avatar {
@@ -10467,7 +10476,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       }
       .agent-avatar i {
         @media all and (-ms-high-contrast: none) {// align top button text alignment
-          left: 0px;
+          @include left(0px);
           // top: 7.5px;
         }
         color: #cdcdcd;
@@ -10490,7 +10499,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
     .agent-avatar {
       position: absolute;
-      left: 0px;
+      @include left(0px);
       top: 2px;
     }
 
@@ -10526,9 +10535,9 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       color: #a9abae;
       text-decoration: none;
       font-size: 11px;
-      float: right;
+      float: $float-right;
       i {
-        margin-left: 3px;
+        @include margin-left(3px);
       }
       &:hover {
         color: #3e77b7;
@@ -10557,7 +10566,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     ul.major {
       position: relative;
       > li {
-        padding-left: 115px;
+        @include padding-left(115px);
       }
     }
   }
@@ -10591,7 +10600,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
         font-size: 18px;
         display: inline;
         vertical-align: middle;
-        margin-right: 5px;
+        @include margin-right(5px);
         margin-top: -1px;
       }
 
@@ -10609,7 +10618,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
         font-size: 10px;
         display: inline;
         vertical-align: middle;
-        margin-left: 3px;
+        @include margin-left(3px);
         // margin-bottom: -1px;
       }
     }
@@ -10632,7 +10641,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
         font-weight: normal;
         display: inline-block;
         color: inherit;
-        margin-right: 3px;
+        @include margin-right(3px);
       }
 
       p {
@@ -10671,8 +10680,8 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   width: 400px;
   position: absolute;
   top: 0px;
-  left: 0px;
-  margin-left: -410px;
+  @include left(0px);
+  @include margin-left(-410px);
   z-index: 2002;
   background: #fff;
   padding: 10px;
@@ -10687,17 +10696,17 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     height: 0px;
     z-index: 1002;
     border: 5px solid rgba(0, 0, 0, 0.0);
-    border-left: 5px solid #dedede;
+    @include border-left(5px solid #dedede);
     position: absolute;
     top: 9px;
-    right: -10px;
+    @include right(-10px);
   }
 
   &:after {
     border: 5px solid rgba(0, 0, 0, 0.0);
-    border-left: 5px solid #fff;
+    @include border-left(5px solid #fff);
     z-index: 1003;
-    right: -8px;
+    @include right(-8px);
   }
 
   form .title {
@@ -10721,7 +10730,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 // Chat log mentioned files
 .files {
   position: relative;
-  left: 30px;
+  @include left(30px);
   top: 5px;
 
   .meta {
@@ -10729,7 +10738,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     color: $text-color-lighter;
     font-weight: 400;
     position: relative;
-    left: -22px;
+    @include left(-22px);
     margin-bottom: 7px;
   }
 
@@ -10742,11 +10751,11 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       display: block;
       border: 1px dotted $divider-color;
       border-top: 0px;
-      border-right: 0px;
+      @include border-right(0px);
       position: absolute;
       width: 10px;
       height: 25px;
-      left: -20px;
+      @include left(-20px);
       top: -12px;
     }
   }
@@ -10781,7 +10790,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     background-color: $button-color;
     border-radius: 2px;
     vertical-align: middle;
-    margin-right: 8px;
+    @include margin-right(8px);
     text-align: center;
     color: #fff;
     position: relative;
@@ -10801,9 +10810,9 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     width: 0px;
     height: 0px;
     border: 4px solid rgba(0, 0, 0, 0);
-    border-left: 4px solid $button-color;
+    @include border-left(4px solid $button-color);
     position: absolute;
-    right: -8px;
+    @include right(-8px);
     top: 11px;
   }
 }
@@ -10815,7 +10824,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   font-weight: 400;
 
   td, td:first-child {
-    text-align: left;
+    text-align: $text-left;
     vertical-align: middle;
     padding: 0;
     @include whitespace;
@@ -10838,7 +10847,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 
   .right {
-    text-align: right;
+    text-align: $text-right;
   }
 
   p {
@@ -10851,7 +10860,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     text-decoration: none;
     display: block;
     padding: $form-padding-vertical * 1.5 $form-padding-horizontal * 1.5;
-    padding-left: $universal-left-padding;
+    @include padding-left($universal-left-padding);
     font-weight: 300;
 
     .focus {
@@ -10859,10 +10868,10 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       text-transform: uppercase;
       color: $text-color-darker;
       font-size: 0.8em;
-      margin-right: 3px;
+      @include margin-right(3px);
       display: inline-block;
       width: 60px;
-      text-align: right;
+      text-align: $text-right;
     }
 
     .positive {
@@ -10890,8 +10899,8 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 
   .info-block {
-    text-align: right;
-    border-left: 1px solid $divider-color;
+    text-align: $text-right;
+    @include border-left(1px solid $divider-color);
     position: relative;
     font-size: 0.9em;
     color: $text-color-lighter;
@@ -10912,12 +10921,12 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
     &:before {
       top: 0px;
-      left: -3px;
+      @include left(-3px);
     }
 
     &:after {
       bottom: 1px;
-      left: -3px;
+      @include left(-3px);
     }
   }
 
@@ -10925,8 +10934,8 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     width: 22px;
     height: 22px;
     border-radius: 199px;
-    float: right;
-    margin-left: 10px;
+    float: $float-right;
+    @include margin-left(10px);
     position: relative;
     top: -2px;
   }
@@ -10961,26 +10970,26 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     padding-top: 5px;
     padding-bottom: 5px;
     display: block;
-    float: left;
+    float: $float-left;
   }
 
   .author {
     @include whitespace;
     width: 20%;
-    text-align: right;
-    padding-right: 10px;
+    text-align: $text-right;
+    @include padding-right(10px);
     color: $text-color-lighter;
   }
 
   .messages {
-    border-left: 3px solid $divider-color;
+    @include border-left(3px solid $divider-color);
     width: 80%;
-    padding-left: 10px;
+    @include padding-left(10px);
     position: relative;
 
     .message-time {
       position: absolute;
-      right: 20px;
+      @include right(20px);
       top: 5px;
       opacity: 0.25;
       font-weight: 700;
@@ -10997,7 +11006,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .chat-message-agent {
   .messages {
     background: $surface-main;
-    border-left: 3px solid $button-color;
+    @include border-left(3px solid $button-color);
   }
 }
 
@@ -11034,8 +11043,8 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     font-size: 10px;
     display: inline-block;
     background: $page-background;
-    padding-left: 15px;
-    padding-right: 15px;
+    @include padding-left(15px);
+    @include padding-right(15px);
     position: relative;
     z-index: 100;
   }
@@ -11058,12 +11067,12 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       height: 22px;
       background: $page-background;
       position: absolute;
-      left: -10px;
+      @include left(-10px);
     }
 
     &:after {
-      left: auto;
-      right: -10px;
+      @include left(auto);
+      @include right(-10px);
     }
   }
 }
@@ -11072,7 +11081,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .chat-image-attached {
   max-width: 460px;
   position: relative;
-  left: -13px;
+  @include left(-13px);
   top: 5px;
   border-top: 4px solid $page-background;
   border-bottom: 4px solid $page-background;
@@ -11098,7 +11107,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     background-size: cover;
     border-radius: 199px;
     vertical-align: middle;
-    margin-right: 2px;
+    @include margin-right(2px);
   }
 }
 
@@ -11107,7 +11116,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   margin-top: 25px;
   margin-bottom: 10px;
   font-size: 1.1em;
-  padding-left: 20px;
+  @include padding-left(20px);
 
   a {
     text-decoration: none;
@@ -11115,7 +11124,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   .button {
     padding: 7px 15px;
-    margin-left: 10px;
+    @include margin-left(10px);
     min-width: initial;
   }
 }
@@ -11200,7 +11209,7 @@ body.portal-mode-focus-window {
   border-radius: 2px;
   position: relative;
   top: -5px;
-  left: -5px;
+  @include left(-5px);
   padding: 10px;
 
   .content-wrapper, .form-alert-icon {
@@ -11215,14 +11224,14 @@ body.portal-mode-focus-window {
     height: 28px;
     line-height: 1.2em;
     text-align: center;
-    margin-right: 8px;
-    margin-left: 6px;
+    @include margin-right(8px);
+    @include margin-left(6px);
     i {
       position: relative;
       top: 5px;
       opacity: 0.5;
       @-moz-document url-prefix() {
-        margin-left: 1px;
+        @include margin-left(1px);
       }
     }
   }
@@ -11324,7 +11333,7 @@ body.portal-mode-focus-window {
   border-radius: 2px;
   position: absolute;
   z-index: 1999;
-  left: 40px;
+  @include left(40px);
   top: 10px;
   padding: 7px 10px;
   color: $sturgeon-silver;
@@ -11334,13 +11343,13 @@ body.portal-mode-focus-window {
   i {
     position: relative;
     &.fa-tag {
-      margin-right: 10px;
+      @include margin-right(10px);
       font-size: 14px;
       top: 1px;
     }
 
     &.fa-times {
-      margin-left: 10px;
+      @include margin-left(10px);
       top: -1px;
       &:hover {
         color: #333;
@@ -11361,7 +11370,7 @@ body.portal-mode-focus-window {
     font-size: 15px;
     display: inline-block;
     font-weight: 400;
-    margin-right: 10px;
+    @include margin-right(10px);
     opacity: 0.5;
   }
 
@@ -11395,7 +11404,7 @@ body.portal-mode-focus-window {
 
     i {
       font-size: 12px;
-      margin-right: 5px;
+      @include margin-right(5px);
     }
   }
 }
@@ -11412,14 +11421,14 @@ body.portal-mode-focus-window {
     font-weight: bold;
     position: relative;
     line-height: 1.2em;
-    padding-left: 20px;
+    @include padding-left(20px);
     margin-bottom: 13px;
 
     i {
       position: absolute;
-      left: 0px;
+      @include left(0px);
       background: #fff;
-      padding-right: 20px;
+      @include padding-right(20px);
       z-index: 199;
       color: $sturgeon-silver;
       &.fa-list-alt { top: 1px; }
@@ -11428,7 +11437,7 @@ body.portal-mode-focus-window {
     .title {
       display: inline-block;
       background: #fff;
-      padding-right: 10px;
+      @include padding-right(10px);
       z-index: 199;
       position: relative;
     }
@@ -11436,7 +11445,7 @@ body.portal-mode-focus-window {
     hr {
       position: absolute;
       top: 50%;
-      left: 0px;
+      @include left(0px);
       width: 100%;
       margin: 0px;
       padding: 0;
@@ -11449,7 +11458,7 @@ body.portal-mode-focus-window {
     margin: 0;
     margin: 5px 0px;
     list-style: none;
-    margin-left: 20px;
+    @include margin-left(20px);
   }
 
   li {
@@ -11467,7 +11476,7 @@ body.portal-mode-focus-window {
       }
       hr {
         margin: 0px 10px;
-        margin-left: 12px;
+        @include margin-left(12px);
       }
       a {
         color: $sturgeon-silver;
@@ -11478,7 +11487,7 @@ body.portal-mode-focus-window {
   }
 
   .button-wrapper {
-    margin-left: -5px;
+    @include margin-left(-5px);
     .show-more-content { color: $sturgeon-silver; }
     .show-more-content:hover { color: #fff; }
   }
@@ -11499,13 +11508,13 @@ body.portal-mode-focus-window {
 
       .download-icon {
         color: $sturgeon-silver;
-        margin-right: 5px;
+        @include margin-right(5px);
         font-size: 12px;
       }
 
       .feedback-count {
         color: $sturgeon-silver;
-        margin-right: 5px;
+        @include margin-right(5px);
         display: inline-block;
         position: relative;
         top: -1px;
@@ -11517,7 +11526,7 @@ body.portal-mode-focus-window {
         padding: 2px 5px;
 
         i {
-          margin-right: 4px;
+          @include margin-right(4px);
           position: relative;
           top: -1px;
           opacity: 0.8;
@@ -11531,12 +11540,12 @@ body.portal-mode-focus-window {
         color: $sturgeon-silver;
         font-size: 10px;
         line-height: 1.2em;
-        margin-right: 6px;
+        @include margin-right(6px);
 
         i {
           position: relative;
           top: -2px;
-          margin-right: 3px;
+          @include margin-right(3px);
         }
       }
     }
