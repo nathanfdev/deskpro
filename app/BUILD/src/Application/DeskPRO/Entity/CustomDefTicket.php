@@ -45,7 +45,6 @@ class CustomDefTicket extends CustomDefAbstract
     /**
      * @var CustomDefTicket
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefTicket>")
      */
     protected $parent = null;
@@ -55,8 +54,7 @@ class CustomDefTicket extends CustomDefAbstract
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @JMS\Expose()
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\CustomDefTicket>>")
+     * @JMS\Exclude()
      */
     protected $children = null;
 
