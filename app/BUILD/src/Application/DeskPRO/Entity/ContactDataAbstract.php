@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -133,6 +133,14 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContactType()
+    {
+        return $this->contact_type;
     }
 
     /**
@@ -426,8 +434,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
         $pieces = implode(',', $pieces);
         if (!$prevent) {
-        $pieces = preg_replace('#\s#', '', $pieces);
-        $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+            $pieces = preg_replace('#\s#', '', $pieces);
+            $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
         }
 
         return $pieces;
@@ -443,7 +451,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $string = preg_replace('#\s#', '', $string);
         $string = \Orb\Util\Strings::utf8_strtolower($string);
 
-        return (strpos($this->getSearchString(), $string) !== false);
+        return strpos($this->getSearchString(), $string) !== false;
     }
 
     public function addSaveCallback(\Closure $callback)
