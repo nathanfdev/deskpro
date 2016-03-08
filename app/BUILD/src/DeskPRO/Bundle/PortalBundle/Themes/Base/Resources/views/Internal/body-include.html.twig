@@ -12,9 +12,15 @@
         ;
 
         if (window.WITH_DPUI) {
-            document.body.className = document.body.className + ' with-dpui';
+            document.body.className += ' with-dpui';
         } else {
-            document.body.className = document.body.className + ' without-dpui';
+            document.body.className += ' without-dpui';
+        }
+
+        if ("ontouchstart" in document.documentElement) {
+            document.body.className += ' with-touch-device';
+        } else {
+            document.body.className += ' without-touch-device';
         }
 
         window.DP_LOAD_FN = [];

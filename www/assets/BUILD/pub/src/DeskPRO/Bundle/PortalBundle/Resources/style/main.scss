@@ -5353,7 +5353,13 @@ h1.fancy-header {
     border-bottom: 3px solid $button-color-secondary;
   }
 
-  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+  .without-touch-device & {
+    .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+      display: block;
+    }
+  }
+
+  .quick-jump.is-focused .dropdown-content {
     display: block;
   }
 
@@ -8173,7 +8179,13 @@ ul.big-button-collection {
     }
   }
 
-  .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+  .without-touch-device & {
+    .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
+      display: block;
+    }
+  }
+
+  .quick-jump.is-focused .dropdown-content {
     display: block;
   }
 

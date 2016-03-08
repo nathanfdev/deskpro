@@ -26,7 +26,7 @@ export class ClickOut extends React.Component {
   };
 
   componentDidMount() {
-    $(this.getContext()).on('click', this.onClick);
+    $(this.getContext()).on('click touchend', this.onClick);
 
     const events = $._data(this.getContext(), 'events');
     if (events) {
@@ -38,7 +38,7 @@ export class ClickOut extends React.Component {
   }
 
   componentWillUnmount() {
-    $(this.getContext()).off('click', this.onClick);
+    $(this.getContext()).off('click touchend', this.onClick);
   }
 
   onClick = event => {

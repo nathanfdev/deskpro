@@ -10,8 +10,8 @@ export class StatusCategory extends React.Component {
   render() {
     return (
       <div className="cat-checkbox-title">
-        <input type="checkbox" checked={this.props.isActive} onChange={this.clicked.bind(this)}/>
-        <a style={this.props.isActive ? {} : {}} onClick={this.clicked.bind(this)}>
+        <input type="checkbox" checked={this.props.isActive} onChange={this.clicked.bind(this)} onTouchStart={this.clicked.bind(this)} />
+        <a style={this.props.isActive ? {} : {}} onClick={this.clicked.bind(this)} onTouchStart={this.clicked.bind(this)}>
           {this.props.cat.title}
         </a>
       </div>
