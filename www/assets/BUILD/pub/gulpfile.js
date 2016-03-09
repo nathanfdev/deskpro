@@ -83,10 +83,13 @@ gulp.task('priv:start-prod', () => {
 // # Bundler
 // ######################################################################################################################
 
-function refreshWidgetLoader() {
+function refreshWidgetLoader(loaderFilename) {
+  const loaderFilePath = '/' + loaderFilename + '.js';
+  const minLoaderFilePath = '/' + loaderFilename + '.min.js';
+
   console.log('Writing widget_loader');
   var loaderCode = babel.transformFileSync(
-    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/widget_loader.js',
+    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + loaderFilePath,
     { 'presets': ['es2015', 'react', 'stage-0'] }
   ).code;
 
@@ -108,39 +111,9 @@ function refreshWidgetLoader() {
     fs.mkdirSync(buildDir);
   }
 
-  fs.writeFileSync(buildDir + '/widget_loader.js', loaderCode);
-  fs.writeFileSync(path.join(__dirname, 'build') + '/widget_loader.min.js', loaderCodemin);
-  console.log('.. done writing widget_loader');
-}
-
-function refreshHitRecorder() {
-  console.log('Writing hit_recorder');
-  var loaderCode = babel.transformFileSync(
-    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/hit_recorder.js',
-    { 'presets': ['es2015', 'react', 'stage-0'] }
-  ).code;
-
-  try {
-    var loaderCodemin = uglify.minify(loaderCode, {
-      'fromString': true
-    }).code;
-  } catch (e) {
-    console.log('Trying to minify:\n');
-    console.log(loaderCode);
-    console.log('\n\n');
-    console.error(e);
-    return;
-  }
-
-  var buildDir = path.join(__dirname, 'build');
-
-  if (!fs.existsSync(buildDir)) {
-    fs.mkdirSync(buildDir);
-  }
-
-  fs.writeFileSync(buildDir + '/hit_recorder.js', loaderCode);
-  fs.writeFileSync(path.join(__dirname, 'build') + '/hit_recorder.min.js', loaderCodemin);
-  console.log('.. done writing hit_recorder');
+  fs.writeFileSync(buildDir + loaderFilePath, loaderCode);
+  fs.writeFileSync(path.join(__dirname, 'build') + minLoaderFilePath, loaderCodemin);
+  console.log('.. done writing ' + loaderFilename);
 }
 
 function refreshPortalDesignerVariables() {
@@ -162,8 +135,9 @@ gulp.task('bundle', callback => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
-  refreshWidgetLoader();
-  refreshHitRecorder();
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
 });
@@ -182,15 +156,17 @@ gulp.task('bundle:portal', callback => {
 gulp.task('bundle:widget', callback => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
-  refreshWidgetLoader();
-  refreshHitRecorder();
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
   runWebpackBundle(getWebpackConfig('widget', deskpro.isProd), callback);
 });
 
 gulp.task('bundle:dev-server', () => {
   refreshPortalDesignerVariables();
-  refreshWidgetLoader();
-  refreshHitRecorder();
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
@@ -369,6 +345,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
 
   if (mode === 'all' || mode === 'portal') {
     config.entry['widget_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
+    config.entry['embed_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/embed_loader.js'];
     config.entry['DeskPRO_PortalBundle'] = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
 
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];

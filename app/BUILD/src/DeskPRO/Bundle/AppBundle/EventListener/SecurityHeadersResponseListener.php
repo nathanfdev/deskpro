@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,22 +37,24 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::RESPONSE => ['onResponse', 64],
+        ];
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     */
     public function onResponse(FilterResponseEvent $event)
     {
         $response = $event->getResponse();
-
-        $response->headers->add(
-            array(
-                'X-Content-Type-Options' => 'nosniff',
-                'X-FRAME-OPTIONS'        => 'DENY',
-            )
-        );
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', 64),
-        );
+        $response->headers->add([
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 }
