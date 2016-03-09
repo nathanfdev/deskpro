@@ -314,7 +314,7 @@ export class PortalSimpleSelectBox extends React.Component {
 
     const className = classes.join(' ');
 
-    if (!this.state.expanded) {
+    if (!this.state.expanded && (multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
         <div className={className}
              onClick={this.onClickHeader}
