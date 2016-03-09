@@ -58,7 +58,7 @@ export class TicketForm extends PageWidget {
     this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
-      alwaysFields: ['department', 'person', 'user_email', 'subject', 'message', 'submit'],
+      alwaysFields: ['department', 'subject', 'message', 'submit'],
       onInit: () => {
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {

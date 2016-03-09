@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
@@ -143,7 +144,7 @@ class TicketWithLayoutsType extends AbstractType
             ->setDefaults([
                 'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
                 'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-                'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
+                'data_class'          => Ticket::class,
                 'method'              => 'POST',
                 'allow_extra_fields'  => false,
                 'full_version'        => false,
@@ -162,8 +163,8 @@ class TicketWithLayoutsType extends AbstractType
                 ],
             ])
             ->setAllowedTypes([
-                'person'   => 'Application\\DeskPRO\\Entity\\Person',
-                'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+                'person'   => Person::class,
+                'settings' => SettingsBag::class,
             ])
         ;
     }
@@ -348,7 +349,7 @@ class TicketWithLayoutsType extends AbstractType
             foreach ($custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
                     $form->add($form_field_name, 'deskpro_combined_type', [
-                        'forms'          => $custom_field_groups[ $field_type ],
+                        'forms'          => $custom_field_groups[$field_type],
                         'error_bubbling' => false,
                     ]);
                 }
