@@ -115,7 +115,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
      */
     public function getOrder()
     {
-        return 60;
+        return 70;
     }
 
     /**
