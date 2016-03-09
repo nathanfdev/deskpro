@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -178,7 +178,7 @@ class AvatarResolver
                     'filename'     => $blob->getFilenameSafe(),
                     's'            => $size,
                 ),
-                UrlGeneratorInterface::ABSOLUTE_PATH
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         } elseif ($this->use_gravatar && $person->primary_email) {
             $url = $person->primary_email->getGravatarUrl(true).'&s='.$size;
@@ -205,11 +205,11 @@ class AvatarResolver
     {
         $url = $this->router->generate(
             'serve_default_picture',
-            array(
+            [
                 's'        => $size,
                 'size-fit' => 1,
-            ),
-            UrlGeneratorInterface::ABSOLUTE_PATH
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
 
         return $url;
@@ -229,12 +229,12 @@ class AvatarResolver
         if ($blob && $blob->isImage()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
-                array(
+                [
                     'blob_auth_id' => $blob->getAuthId(),
                     'filename'     => $blob->getFilenameSafe(),
                     's'            => $size,
-                ),
-                UrlGeneratorInterface::ABSOLUTE_PATH
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
@@ -250,11 +250,11 @@ class AvatarResolver
     {
         $url = $this->router->generate(
             'serve_org_picture_default',
-            array(
+            [
                 's'        => $size,
                 'size-fit' => 1,
-            ),
-            UrlGeneratorInterface::ABSOLUTE_PATH
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
 
         return $url;
