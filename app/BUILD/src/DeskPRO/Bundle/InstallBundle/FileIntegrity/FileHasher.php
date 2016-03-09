@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,10 +37,10 @@ class FileHasher
      */
     public function hash($path)
     {
-        $path = file_get_contents($path);
-        $path = str_replace(["\r", "\r\n"], "\n", $path);
-        $path = preg_replace('/\s+/', ' ', $path);
+        $file = file_get_contents($path);
+        $file = str_replace(["\r", "\r\n"], "\n", $file);
+        $file = preg_replace('/\s+/', ' ', $file);
 
-        return sha1($path);
+        return hash('crc32b', $file);
     }
 }
