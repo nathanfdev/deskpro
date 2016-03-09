@@ -46,7 +46,7 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
      */
     public function getOrder()
     {
-        return 50;
+        return 60;
     }
 
     /**

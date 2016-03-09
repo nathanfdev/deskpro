@@ -46,7 +46,7 @@ class TicketFieldsFixture extends AbstractCustomDefFixture
      */
     public function getOrder()
     {
-        return 50;
+        return 60;
     }
 
     /**
