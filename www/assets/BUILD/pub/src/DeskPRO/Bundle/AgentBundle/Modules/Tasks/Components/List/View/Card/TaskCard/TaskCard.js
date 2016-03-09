@@ -30,46 +30,50 @@ export class TaskCard extends BaseTaskCard {
   renderDetails() {
     const { task, onChange } = this.props;
     return (
-      <CardLine>
-        <CardLineLeft>
+      <div style={{position: 'relative',paddingRight: 70, marginBottom: 2, whiteSpace: 'nowrap'}}>
+        <div>
           <DateDue value={task.get('date_due')}
                    onChange={onChange.bind(null, 'date_due')} />
+          <span className="dpw--card-disc"/>
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
+          <span className="dpw--card-disc"/>
           {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
-        </CardLineLeft>
-        <CardLineRight>
+        </div>
+        <div style={{position: 'absolute', right: 0, top: 0}}>
           <Comments count={this.state.comments} />
           {task.get('subtasks_total') > 0 &&
             <SubTasks current={task.get('subtasks_done')}
                       total={task.get('subtasks_total')} />
           }
-        </CardLineRight>
-      </CardLine>
+        </div>
+      </div>
     );
   }
 
+  // todo: new card lines, move styles to css
   render() {
     const { task, moving, selected } = this.props;
     const { onToggleSelected, onChange } = this.props;
+    console.info(task.toJS());
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
         <MarkDoneButton isDone={task.get('is_done')} onToggle={onChange.bind(null, 'is_done', !task.get('is_done'))} />
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
-        <CardLine>
-          <CardLineLeft>
+        <div style={{position: 'relative',paddingRight: 30, marginBottom: 6}}>
+          <div style={{}}>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
                    onSubmit={onChange.bind(null, 'title')} />
-          </CardLineLeft>
-          <CardLineRight>
+          </div>
+          <div style={{position: 'absolute', right: 0, top: 0}}>
             {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
               : <AssignButton value={task} onChange={onChange.bind(null, 'assignee')} />
             }
-          </CardLineRight>
-        </CardLine>
+          </div>
+        </div>
 
         {!this.isMinimized() && this.renderDetails()}
       </Card>
