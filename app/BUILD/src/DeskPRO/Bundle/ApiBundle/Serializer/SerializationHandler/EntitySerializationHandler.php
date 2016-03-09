@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadStore;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -41,21 +40,6 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class EntitySerializationHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var SideloadStore
-     */
-    protected $store;
-
-    /**
-     * EntitySerializationHandler constructor.
-     *
-     * @param SideloadStore $store
-     */
-    public function __construct(SideloadStore $store)
-    {
-        $this->store = $store;
-    }
-
     /**
      * @return array
      */
@@ -72,10 +56,10 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param JsonSerializationVisitor                                                   $visitor
-     * @param EntityInterface|DomainObject                                               $entity
-     * @param array                                                                      $type
-     * @param \DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext $context
+     * @param JsonSerializationVisitor     $visitor
+     * @param EntityInterface|DomainObject $entity
+     * @param array                        $type
+     * @param SideloadSerializationContext $context
      *
      *@return mixed
      */
@@ -85,7 +69,7 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
         $type,
         SideloadSerializationContext $context
     ) {
-        $this->store->addSideload($entity);
+        $context->getSideloadStore()->addSideload($entity);
 
         return $entity->getId();
     }

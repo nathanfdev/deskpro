@@ -47,9 +47,15 @@ class SideloadStore
      */
     protected $classmap;
 
+    /**
+     * @var
+     */
     protected $loaded;
 
-    protected $unloaded_mark;
+    /**
+     * @var
+     */
+    protected $not_loaded;
 
     /**
      * @param $entity
@@ -67,24 +73,37 @@ class SideloadStore
         $this->classmap[$snake]   = $fqcn;
     }
 
+    /**
+     * @param array $interests
+     */
     public function setInterests(array $interests = [])
     {
         foreach ($interests as $interest) {
             $fqcn = $this->getFqcn($interest);
             if ($fqcn) {
-                $this->unloaded_mark[$fqcn] = true;
+                $this->not_loaded[$fqcn] = true;
             }
         }
     }
 
+    /**
+     * @param $snake
+     *
+     * @return mixed
+     */
     public function getFqcn($snake)
     {
         return $this->classmap[$snake];
     }
 
+    /**
+     * @param $fqcn
+     *
+     * @return array
+     */
     public function getSideloads($fqcn)
     {
-        $this->unloaded_mark[$fqcn] = false;
+        $this->not_loaded[$fqcn] = false;
         if (!isset($this->loaded[$fqcn])) {
             $this->loaded[$fqcn] = [];
         }
@@ -96,11 +115,20 @@ class SideloadStore
         return $ids_to_load;
     }
 
+    /**
+     * @return mixed
+     */
     public function hasSideloads()
     {
-        return array_reduce($this->unloaded_mark, [$this, 'reduce'], false);
+        return array_reduce($this->not_loaded, [$this, 'reduce'], false);
     }
 
+    /**
+     * @param $carry
+     * @param $item
+     *
+     * @return bool
+     */
     protected function reduce($carry, $item)
     {
         return $carry || $item;

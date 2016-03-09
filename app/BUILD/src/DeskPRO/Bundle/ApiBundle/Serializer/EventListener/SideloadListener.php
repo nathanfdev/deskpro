@@ -37,14 +37,14 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\GenericSerializationVisitor;
 
 /**
- * Class SideloadingListener.
+ * Class SideloadListener.
  */
-class SideloadingListener implements EventSubscriberInterface
+class SideloadListener implements EventSubscriberInterface
 {
     protected $em;
 
     /**
-     * SideloadingListener constructor.
+     * SideloadListener constructor.
      *
      * @param EntityManager $em
      */

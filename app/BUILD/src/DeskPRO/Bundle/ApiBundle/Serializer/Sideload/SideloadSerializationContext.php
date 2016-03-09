@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Serializer\Sideload;
 
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class SideloadSerializationContext.
@@ -43,21 +42,21 @@ class SideloadSerializationContext extends SerializationContext
     protected $sideload_store;
 
     /**
-     * @var Request
+     * @var array
      */
-    protected $request;
+    protected $includes;
 
     /**
      * SideloadSerializationContext constructor.
      *
      * @param SideloadStore $sideload_store
-     * @param Request       $request
+     * @param array         $includes
      */
-    public function __construct(SideloadStore $sideload_store, Request $request)
+    public function __construct(SideloadStore $sideload_store, array $includes)
     {
         parent::__construct();
         $this->sideload_store = $sideload_store;
-        $this->request        = $request;
+        $this->includes       = $includes;
     }
 
     /**
@@ -67,10 +66,10 @@ class SideloadSerializationContext extends SerializationContext
      */
     public static function create(ContainerInterface $container)
     {
-        $request        = $container->get('request_stack')->getMasterRequest();
-        $sideload_store = $container->get('api_serializer.sideload_store');
+        $raw_includes   = $container->get('request_stack')->getMasterRequest()->query->get('include');
+        $sideload_store = new SideloadStore();
 
-        return new self($sideload_store, $request);
+        return new self($sideload_store, self::cleanIncludes($raw_includes));
     }
 
     /**
@@ -81,10 +80,21 @@ class SideloadSerializationContext extends SerializationContext
         return $this->sideload_store;
     }
 
+    /**
+     * @return array
+     */
     public function getIncludes()
     {
-        $requested_includes_string = $this->request->query->get('include');
+        return $this->includes;
+    }
 
+    /**
+     * @param string $requested_includes_string
+     *
+     * @return array
+     */
+    protected static function cleanIncludes($requested_includes_string)
+    {
         if (null === $requested_includes_string) {
             return [];
         }
