@@ -66,13 +66,15 @@ export class CardProject extends CardWidget {
     const { projects, value } = this.state;
     const project = value ? projects.get(value) : null;
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
+    const title = project ? project.get('title') : 'N/A';
 
     return (
-      <div style={{display: 'inline-block'}}>
-        <span className="dpw--card-disc"/>
-        <span className="dpwd--card-line-item" ref="button" {...prop}>
-          <i className="fa fa-book"/> {project ? project.get('title') : 'N/A'}
-        </span>
+      <div style={{display: 'inline-block', width: '30%'}}>
+        <div className="dpwd--card-line-item" ref="button" {...prop}
+             style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
+          <i className="fa fa-book" style={{position: 'absolute', left: 2, top: 2}} />
+          <span title={title}>{title}</span>
+        </div>
 
         <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}

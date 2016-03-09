@@ -8,12 +8,13 @@ export class TicketLink extends React.Component {
 
   render() {
     return (
-      <span>
-        <span className="dpw--card-disc"/>
-        <span className="dpwd--card-line-item">
-          <i className="fa fa-link"/> <a href="#">{this.props.ticket}</a>
-        </span>
-      </span>
+      <div style={{display: 'inline-block', width: '30%'}}>
+        <div className="dpwd--card-line-item"
+             style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
+          <i className="fa fa-link" style={{position: 'absolute', left: 2, top: 2}} />
+          <span title={this.props.ticket}>{this.props.ticket}</span>
+        </div>
+      </div>
     );
   }
 }
