@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,6 +55,20 @@ class PortalHttpCache extends EventDispatchingHttpCache
      */
     const GUEST_WITH_SESSION_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
 
+    /**
+     * @var string
+     */
+    private $basePath;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(HttpKernelInterface $kernel, $cacheDir, $basePath = '/')
+    {
+        $this->basePath = $basePath;
+        parent::__construct($kernel, $cacheDir);
+    }
+
     protected function getDefaultSubscribers()
     {
         $user_context_subscriber = new UserContextSubscriber(
@@ -62,7 +76,7 @@ class PortalHttpCache extends EventDispatchingHttpCache
                 'anonymous_hash'          => self::ANON_NO_SESSION_HASH,
                 'user_hash_accept_header' => self::USER_CONTEXT_HASH_ACCEPT_HEADER,
                 'user_hash_header'        => self::USER_CONTEXT_HASH_HEADER,
-                'user_hash_uri'           => '/_portal_user_hash',
+                'user_hash_uri'           => $this->basePath.'/_portal_user_hash',
                 'user_hash_method'        => 'GET',
                 'session_name_prefix'     => 'dpsid',
             )
@@ -75,6 +89,10 @@ class PortalHttpCache extends EventDispatchingHttpCache
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
+
+        if ($request->attributes->has('internalRequest')) {
+            return parent::handle($request, $type, $catch);
+        }
 
         $cache_disabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
 
