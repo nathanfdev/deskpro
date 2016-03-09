@@ -60,7 +60,7 @@ export const listFiltersSelector = createSelector(
     }
 
     // Labels options
- /*   if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('label')) {
+    if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('label')) {
       filterSelector.push({
         label: 'Labels',
         type: 'labels',
@@ -68,7 +68,7 @@ export const listFiltersSelector = createSelector(
         modeParam: 'labels_mode',
         labels: labels
       });
-    }*/
+    }
     return filterSelector;
   }
 );

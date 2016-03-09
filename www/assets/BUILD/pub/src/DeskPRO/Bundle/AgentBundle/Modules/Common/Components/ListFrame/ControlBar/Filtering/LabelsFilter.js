@@ -5,35 +5,34 @@ import { LabelsForm } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class LabelsFilter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+    setParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     matchMode: PropTypes.bool,
     activeItem: PropTypes.object,
-    unsetParams: PropTypes.func.isRequired,
+    unsetParam: PropTypes.func.isRequired,
     filter: PropTypes.object.isRequired
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, unsetParams, activeItem, setActiveItem, matchMode } = this.props;
+    const { setParam, state, filter, unsetParam, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
-    const selected = stateValue(param) || [];
-    const mode = stateValue(modeParam);
+    const selected = state.params[param] || [];
+    const mode = state.params[modeParam];
     const isActive = Boolean(selected.length);
 
     const selectLabel = (selectedLabel, event) => {
       event.preventDefault();
       if (selected.indexOf(selectedLabel) === -1) {
         selected.push(selectedLabel);
-        dispatch(setParamsAction({ [param]: selected, delayReload: true }));
+        setParam({ param: [param], value: selected });
       }
     };
     const deselectLabel = (deselectedLabel, event) => {
       event.preventDefault();
       if (selected.indexOf(deselectedLabel) !== -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
-        dispatch(setParamsAction({ [param]: selected, delayReload: true }));
+        setParam({ param: [param], value: selected });
       }
     };
 
@@ -45,11 +44,11 @@ export class LabelsFilter extends Component {
                   isActive={isActive}
                   setActiveItem={setActiveItem}
                   selected={selected}
-                  resetFilter={unsetParams.bind(this, param)}>
+                  resetFilter={unsetParam.bind(this, param)}>
         <Menu>
           <LabelsForm matchMode={matchMode}
                       params={{'get': () => mode}}
-                      changeMode={newMode => dispatch(setParamsAction({[modeParam]: newMode, delayReload: true}))}
+                      changeMode={newMode => setParam({param: [modeParam], value: newMode})}
                       allLabels={labels}
                       selectedLabels={selected}
                       selectLabel={selectLabel}
