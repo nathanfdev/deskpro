@@ -5,6 +5,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.model_factory:
+    class: DeskPRO\Bundle\ApiBundle\Model\ModelFactory
+    arguments:
+      - "@service_container"
+
   api_serializer.api_person_factory:
     class: DeskPRO\Bundle\ApiBundle\Model\Factory\ApiPersonFactory
     arguments:
@@ -15,6 +20,7 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\SideloadListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@api_serializer.model_factory"
     tags:
       - { name: "jms_serializer.event_subscriber" }
 

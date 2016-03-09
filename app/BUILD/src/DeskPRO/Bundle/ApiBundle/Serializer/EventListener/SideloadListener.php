@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Serializer\EventListener;
 
+use DeskPRO\Bundle\ApiBundle\Model\ModelFactory;
 use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
@@ -41,16 +42,26 @@ use JMS\Serializer\GenericSerializationVisitor;
  */
 class SideloadListener implements EventSubscriberInterface
 {
+    /**
+     * @var EntityManager
+     */
     protected $em;
+
+    /**
+     * @var ModelFactory
+     */
+    protected $model_factory;
 
     /**
      * SideloadListener constructor.
      *
      * @param EntityManager $em
+     * @param ModelFactory  $model_factory
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, ModelFactory $model_factory)
     {
-        $this->em = $em;
+        $this->em            = $em;
+        $this->model_factory = $model_factory;
     }
 
     /**
@@ -94,7 +105,8 @@ class SideloadListener implements EventSubscriberInterface
                 if ($fqcn) {
                     $ids_to_load = $sideloads->getSideloads($fqcn);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        $linked[$include][] = $event->getVisitor()->getNavigator()->accept($entity, null, $event->getContext());
+                        $model              = $this->model_factory->create($entity);
+                        $linked[$include][] = $event->getContext()->accept($model);
                     }
                 }
             }

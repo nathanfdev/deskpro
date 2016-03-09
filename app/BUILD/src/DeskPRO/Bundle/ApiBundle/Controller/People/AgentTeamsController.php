@@ -166,12 +166,12 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     public function getAgentsAction($id)
     {
         /** @var AgentTeamsDataService $service */
-        $service            = $this->get('data.agent_teams');
-        $api_person_factory = $this->get('api_serializer.api_person_factory');
+        $service       = $this->get('data.agent_teams');
+        $model_factory = $this->get('api_serializer.model_factory');
 
         return View::create(
             new ApiWrapper(
-                $api_person_factory->createArray(
+                $model_factory->createArray(
                     $service->getAgentsFromTeam((int) $id)
                 )
             ),
