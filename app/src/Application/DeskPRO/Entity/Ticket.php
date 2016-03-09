@@ -1248,7 +1248,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
         }
         if ($amount !== null) {
-            $amount = floatval($amount);
+            $amount = floatval($amount) ?: null;
         }
 
         if ($time === null && $amount === null) {

@@ -57,7 +57,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		// we need to rename custom radio fields or else they are all
 		// part of the same 'group' within the page
-		wrapper.find('input[type="radio"]').each(function () {
+		this.getEl('field_holders').find('input[type="radio"]').each(function () {
 			$(this).attr('name', baseId + '_' + $(this).attr('name'));
 		});
 
