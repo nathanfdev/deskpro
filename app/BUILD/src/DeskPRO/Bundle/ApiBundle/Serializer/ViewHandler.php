@@ -28,8 +28,27 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Serializer;
 
-use JMS\Serializer\SerializationContext;
+use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
+use FOS\RestBundle\View\View;
 
-class SideloadSerializationContext extends SerializationContext
+class ViewHandler extends \FOS\RestBundle\View\ViewHandler
 {
+    protected function getSerializationContext(View $view)
+    {
+        $context = SideloadSerializationContext::create($this->container);
+
+        if ($context->attributes->get('groups')->isEmpty() && $this->exclusionStrategyGroups) {
+            $context->setGroups($this->exclusionStrategyGroups);
+        }
+
+        if ($context->attributes->get('version')->isEmpty() && $this->exclusionStrategyVersion) {
+            $context->setVersion($this->exclusionStrategyVersion);
+        }
+
+        if (null === $context->shouldSerializeNull() && null !== $this->serializeNullStrategy) {
+            $context->setSerializeNull($this->serializeNullStrategy);
+        }
+
+        return $context;
+    }
 }

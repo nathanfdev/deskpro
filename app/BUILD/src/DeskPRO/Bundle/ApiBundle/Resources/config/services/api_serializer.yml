@@ -14,13 +14,14 @@ services:
       - "@data.agent"
 
   api_serializer.sideload_store:
-    class: DeskPRO\Bundle\ApiBundle\Serializer\SideloadStore
+    class: DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadStore
 
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\SideloadingListener
     arguments:
-      - "@api_serializer.sideload_store"
-      - "@jms_serializer.serializer"
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.event_subscriber" }
+
+parameters:
+  fos_rest.view_handler.default.class: "DeskPRO\Bundle\ApiBundle\Serializer\ViewHandler"

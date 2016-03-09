@@ -29,43 +29,28 @@
 namespace DeskPRO\Bundle\ApiBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\ApiBundle\Serializer\SideloadStore;
+use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\GenericSerializationVisitor;
-use JMS\Serializer\Serializer;
 
 /**
  * Class SideloadingListener.
  */
 class SideloadingListener implements EventSubscriberInterface
 {
-    /**
-     * @var SideloadStore
-     */
-    protected $store;
-
-    /**
-     * @var Serializer
-     */
-    protected $serializer;
-
     protected $em;
 
     /**
      * SideloadingListener constructor.
      *
-     * @param SideloadStore $store
-     * @param Serializer    $serializer
      * @param EntityManager $em
      */
-    public function __construct(SideloadStore $store, Serializer $serializer, EntityManager $em)
+    public function __construct(EntityManager $em)
     {
-        $this->store      = $store;
-        $this->serializer = $serializer;
-        $this->em         = $em;
+        $this->em = $em;
     }
 
     /**
@@ -90,15 +75,21 @@ class SideloadingListener implements EventSubscriberInterface
     {
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
+        /** @var SideloadSerializationContext $context */
+        $context   = $event->getContext();
+        $sideloads = $context->getSideloadStore();
+        /** @var ApiWrapper $object */
+        $object = $event->getObject();
 
-        $includes = ['language'];
-        $linked   = [];
+        $includes = $object->getIncludes() ?: $context->getIncludes();
+
+        $linked = [];
         foreach ($includes as $include) {
             if (!isset($linked[$include])) {
                 $linked[$include] = [];
             }
-            $fqcn        = $this->store->getFqcn($include);
-            $ids_to_load = $this->store->getSideloads($fqcn);
+            $fqcn        = $sideloads->getFqcn($include);
+            $ids_to_load = $sideloads->getSideloads($fqcn);
             foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
                 $linked[$include][] = $event->getVisitor()->getNavigator()->accept($entity, null, $event->getContext());
             }

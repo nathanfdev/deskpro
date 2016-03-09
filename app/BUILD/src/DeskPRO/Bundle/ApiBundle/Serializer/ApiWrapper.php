@@ -31,8 +31,18 @@ namespace DeskPRO\Bundle\ApiBundle\Serializer;
 use JMS\Serializer\Annotation as JMS;
 use Pagerfanta\Pagerfanta;
 
+/**
+ * Class ApiWrapper.
+ */
 class ApiWrapper
 {
+    /**
+     * @JMS\Exclude()
+     *
+     * @var array
+     */
+    protected $includes = [];
+
     /**
      * @var array|Pagerfanta
      */
@@ -54,12 +64,22 @@ class ApiWrapper
      */
     protected $linked = [];
 
-    public function __construct($data)
+    /**
+     * ApiWrapper constructor.
+     *
+     * @param            $data
+     * @param array|null $includes
+     */
+    public function __construct($data, array $includes = [])
     {
         $this->checkPagination($data);
-        $this->data = $data;
+        $this->data     = $data;
+        $this->includes = $includes;
     }
 
+    /**
+     * @param $data
+     */
     protected function checkPagination($data)
     {
         if ($data instanceof Pagerfanta) {
@@ -78,5 +98,13 @@ class ApiWrapper
 
             $this->meta['pagination'] = $pagination;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludes()
+    {
+        return $this->includes;
     }
 }
