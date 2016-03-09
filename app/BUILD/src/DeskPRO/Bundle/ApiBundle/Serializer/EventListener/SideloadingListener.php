@@ -84,14 +84,19 @@ class SideloadingListener implements EventSubscriberInterface
         $includes = $object->getIncludes() ?: $context->getIncludes();
 
         $linked = [];
-        foreach ($includes as $include) {
-            if (!isset($linked[$include])) {
-                $linked[$include] = [];
-            }
-            $fqcn        = $sideloads->getFqcn($include);
-            $ids_to_load = $sideloads->getSideloads($fqcn);
-            foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                $linked[$include][] = $event->getVisitor()->getNavigator()->accept($entity, null, $event->getContext());
+        $sideloads->setInterests($includes);
+        while ($includes && $sideloads->hasSideloads()) {
+            foreach ($includes as $include) {
+                if (!isset($linked[$include])) {
+                    $linked[$include] = [];
+                }
+                $fqcn = $sideloads->getFqcn($include);
+                if ($fqcn) {
+                    $ids_to_load = $sideloads->getSideloads($fqcn);
+                    foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
+                        $linked[$include][] = $event->getVisitor()->getNavigator()->accept($entity, null, $event->getContext());
+                    }
+                }
             }
         }
 

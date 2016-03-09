@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,6 +43,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -148,6 +149,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $twitter_users;
 
     /**
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     *
      * @var Person[]|ArrayCollection
      */
     protected $employees;
