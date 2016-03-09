@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,6 +93,10 @@ class InstallFixturesStep extends AbstractStep
             $this->getSession()->enableFlag('reset_db_details');
 
             return;
+        } elseif ($is_dev) {
+            // display fixtures order in dev mode
+            $this->writeln('<info>'.$proc->getCommandLine().'</info>');
+            $this->writeln($proc->getOutput());
         }
 
         $this->writeln('Done!');
