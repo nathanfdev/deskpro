@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,7 +58,8 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
                 'primitive' => true,
                 'inline'    => false,
             ];
-            $base_name = end(explode('\\', $nestedType['name']));
+            $parts     = explode('\\', $nestedType['name']);
+            $base_name = end($parts);
             if ($item->type === EntityInterface::SERIALIZER_TYPE) {
                 return $return + [
                             'normalized' => sprintf('integer id (%s)', $base_name),
