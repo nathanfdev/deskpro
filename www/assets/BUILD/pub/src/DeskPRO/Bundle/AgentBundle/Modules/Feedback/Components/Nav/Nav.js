@@ -12,6 +12,7 @@ import { applyParams } from '../../Actions/FeedbackListActions';
 export class Nav extends Component {
 
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     isLoaded: PropTypes.bool.isRequired,
     intl: intlShape.isRequired,
     statuses: PropTypes.object.isRequired,

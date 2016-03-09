@@ -125,7 +125,6 @@ export const applyParams = createAction(
         }
       });
     }
-    console.log('OverWrite', overwrite);
     const params = { ...current, ...overwrite };
     const { delayReload } = params;
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {

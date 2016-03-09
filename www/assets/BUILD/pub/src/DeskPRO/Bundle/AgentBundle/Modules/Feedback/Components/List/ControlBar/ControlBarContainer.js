@@ -15,7 +15,7 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 @connect(state => ({
   orderBy: currentListOrderBySelector(state),
   orderDir: currentListOrderDirSelector(state),
-  filterParams: currentListParamsSelector(state),
+  currentParams: currentListParamsSelector(state),
   filters: listFiltersSelector(state),
   viewMode: currentViewModeSelector(state),
   visibleFields: visibleFieldsSelector(state)
@@ -33,6 +33,7 @@ export class ControlBarContainer extends Component {
   render() {
     const config = {
       onMenuUnmount: applyParams,
+      currentParams: this.props.currentParams,
       sorting: {
         options: {
           date_created: { label: 'Date', icon: 'calendar' },
@@ -46,8 +47,7 @@ export class ControlBarContainer extends Component {
       },
       filtering: {
         filters: this.props.filters,
-        setParamsAction: applyParams,
-        state: this.props.filterParams
+        setParamsAction: applyParams
       },
       view: {
         options: {

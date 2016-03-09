@@ -60,6 +60,22 @@ export class ControlBar extends Component {
     })
   };
 
+  componentWillMount() {
+    this.setState({
+      changed: false,
+      params: this.props.currentParams.toJS()
+    });
+  }
+
+  setParam = (params)=> {
+    const newParams = this.state.params;
+    newParams[params.param] = params.value;
+    this.setState({
+      params: newParams
+    });
+    console.log('New state', this.state);
+  };
+
   render() {
     const { sorting, filtering, view, onMenuUnmount } = this.props;
 
@@ -67,7 +83,9 @@ export class ControlBar extends Component {
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
         {sorting && <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>}
 
-        {filtering && <FilteringMenuContainer {...filtering} onMenuUnmount={onMenuUnmount}/>}
+        {filtering &&
+        <FilteringMenuContainer {...filtering} state={this.state} setParam={this.setParam.bind(this)}
+                                               onMenuUnmount={onMenuUnmount}/>}
 
         {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
       </ul>

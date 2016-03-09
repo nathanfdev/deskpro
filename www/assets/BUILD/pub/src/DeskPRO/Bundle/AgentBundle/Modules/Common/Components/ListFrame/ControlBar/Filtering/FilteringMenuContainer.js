@@ -40,6 +40,7 @@ export class FilteringMenuContainer extends Component {
           });
         }
         value = this.stateValue(params);
+        console.log('Value', value);
       } else if (filter.hasOwnProperty('fromParam')) {
         value = this.stateValue(filter.fromParam);
         if (!value) {
@@ -63,7 +64,7 @@ export class FilteringMenuContainer extends Component {
     if (param instanceof Array) {
       const result = [];
       param.map(item => {
-        let value = this.props.state.get(item);
+        let value = this.props.state.params[item];
         if (Immutable.Iterable.isIterable(value)) {
           value = value.toJS();
           if (value.isArray) {
@@ -83,7 +84,7 @@ export class FilteringMenuContainer extends Component {
       });
       return [...new Set(result)];
     }
-    let value = this.props.state.get(param);
+    let value = this.props.state.params[param];
     if (Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
@@ -94,7 +95,7 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
+    const { dispatch, state, setParamsAction, setParam, onMenuUnmount, filters = [] } = this.props;
 
     return (
       <li ref="menuItem">
@@ -115,6 +116,7 @@ export class FilteringMenuContainer extends Component {
                            state={state}
                            stateValue={this.stateValue.bind(this)}
                            onMenuUnmount={onMenuUnmount}
+                           setParam={setParam}
                            setParamsAction={setParamsAction}/>
           </ClickOut>
         </Detached>

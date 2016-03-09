@@ -46,7 +46,7 @@ export class MultipleChoiceFilter extends Component {
       }
     });
     const filterValue = stateValue([...new Set(params)]) || [];
-    const isActive = Boolean(filterValue.length);
+    let filterValues = this.props.state.params[param];
 
     // onClick depending on if filter selects multiple values or a single value
     let onClick;
@@ -54,21 +54,23 @@ export class MultipleChoiceFilter extends Component {
       onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
     } else {
       onClick = (value, newParam = null) => () => {
-        let filterValues = newParam ? this.props.state.get(newParam) : this.props.state.get(param);
-        if (filterValues) {
-          filterValues = filterValues.toJS();
-        } else {
-          filterValues = [];
-        }
+        let filterValues = newParam ? this.props.state.params[newParam] : filterValues;
+        filterValues = filterValues ? filterValues : [];
+        console.log('Value', value);
         if (filterValues.indexOf(value) === -1) {
           filterValues.push(value);
         } else {
           filterValues.splice(filterValues.indexOf(value), 1);
         }
-        dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
+        console.log('Filter values', filterValues);
+        this.props.setParam({ param: [newParam ? newParam : param], value: filterValues });
+        //dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
       };
     }
+    const isActive = filterValues? Boolean(filterValues.length) : false;
 
+    console.log('Param', param);
+    console.log('State in multiple choice', this.props.state);
     return (
       <FilterItem activeItem={activeItem}
                   selected={this.getSelected(options, filterValue)}
@@ -82,13 +84,13 @@ export class MultipleChoiceFilter extends Component {
               {options.map((option, index) =>
                   <CheckboxOption key={index}
                                   value={option.value}
-                                  values={filterValue}
+                                  values={this.props.state.params[param]}
                                   label={option.label}
                                   onClick={onClick(option.value)}>
                     {
                       option.nested && option.nested.length > 0
                       && <NestedMultipleChoice nested={option.nested}
-                                               filterValue={filterValue}
+                                               filterValue={this.props.state.params}
                                                onClick={onClick}/>
                     }
                   </CheckboxOption>
@@ -116,7 +118,7 @@ export class NestedMultipleChoice extends Component {
         {nested.map((option, index) =>
             <CheckboxOption key={index}
                             value={option.value}
-                            values={filterValue}
+                            values={filterValue[option.param]}
                             label={option.label}
                             onClick={onClick(option.value, option.param)}/>
         )}
