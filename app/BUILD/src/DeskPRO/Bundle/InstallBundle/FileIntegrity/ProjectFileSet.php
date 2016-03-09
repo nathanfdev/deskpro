@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,6 +111,7 @@ class ProjectFileSet
             ->in($this->env->getDpRoot().DIRECTORY_SEPARATOR.'bin');
 
         $sets[] = $this->readIterator($finder, $this->env->getDpRoot(), '%DP_DIR%');
+        unset($finder);
 
         #------------------------------
         # Current build files
@@ -121,6 +122,7 @@ class ProjectFileSet
             ->in($this->env->getAppDir());
 
         $sets[] = $this->readIterator($finder, $this->env->getAppDir(), '%DP_APP_DIR%');
+        unset($finder);
 
         #------------------------------
         # Current build kernel cache files
@@ -131,6 +133,7 @@ class ProjectFileSet
             ->in($this->env->getAppBaseKernelCacheDir());
 
         $sets[] = $this->readIterator($finder, $this->env->getAppBaseKernelCacheDir(), '%DP_APP_KERNEL_CACHE%');
+        unset($finder);
 
         #------------------------------
         # Asset files
@@ -141,8 +144,65 @@ class ProjectFileSet
             ->in($this->env->getAppWwwAssetDir());
 
         $sets[] = $this->readIterator($finder, $this->env->getAppWwwAssetDir(), '%DP_APP_WWW_ASSET%');
+        unset($finder);
 
         return ListUtils::appendListOfLists($sets);
+    }
+
+    /**
+     * Checks if a path should be ignored.
+     *
+     * We DONT use the filters on Finder because they are converted into regex's behind the scenes,
+     * and that tends to be slow and memory intensive. Easier to just do a simple string match here.
+     *
+     * @param string $filePath
+     *
+     * @return bool
+     */
+    private function isIgnoredFile($filePath)
+    {
+        static $ignoreAnywhere = [
+            '/tests/',
+            '/Tests/',
+            '/test/',
+            '/__tests__/',
+            'mock',
+            'Mock',
+        ];
+
+        static $ignorePaths = [
+            '%DP_APP_DIR%/vendor/behat/',
+            '%DP_APP_DIR%/vendor/behatch/',
+            '%DP_APP_DIR%/vendor/phpmd/',
+            '%DP_APP_DIR%/vendor/satooshi/php-coveralls/',
+            '%DP_APP_DIR%/vendor/zircote/swagger-php/',
+            '%DP_APP_DIR%/vendor/phpspec/',
+            '%DP_APP_DIR%/vendor/phpdocumentor/',
+            '%DP_APP_DIR%/vendor/bossa/phpspec2-expect/',
+            '%DP_APP_DIR%/vendor/ocramius/proxy-manager/',
+            '%DP_APP_DIR%/vendor/phpunit/phpcov/',
+            '%DP_APP_DIR%/vendor/vipsoft/code-coverage-extension/',
+            '%DP_APP_DIR%/vendor/squizlabs/php_codesniffer/',
+            '%DP_APP_DIR%/vendor/sensiolabs/behat-page-object-extension/',
+            '%DP_APP_DIR%/vendor/nelmio/api-doc-bundle/',
+            '%DP_APP_DIR%/vendor/fabpot/php-cs-fixer/',
+            '%DP_APP_DIR%/vendor/mockery/',
+            '%DP_APP_KERNEL_CACHE%/dev/',
+            '%DP_APP_KERNEL_CACHE%/test/',
+        ];
+
+        foreach ($ignoreAnywhere as $p) {
+            if (strpos($filePath, $p) !== false) {
+                return true;
+            }
+        }
+        foreach ($ignorePaths as $p) {
+            if (strpos($filePath, $p) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function readIterator($iter, $base_path, $varname)
@@ -151,8 +211,10 @@ class ProjectFileSet
 
         /** @var \SplFileInfo $f */
         foreach ($iter as $f) {
-            $path  = str_replace($base_path, $varname, $f->getRealPath());
-            $set[] = $path;
+            $path = str_replace($base_path, $varname, $f->getRealPath());
+            if (!$this->isIgnoredFile($path)) {
+                $set[] = $path;
+            }
         }
 
         return $set;
