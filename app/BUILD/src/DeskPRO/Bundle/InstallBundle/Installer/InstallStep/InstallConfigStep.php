@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,7 +67,7 @@ class InstallConfigStep extends AbstractStep
         /** @var \SplFileInfo $f */
         foreach ($dir as $f) {
             $path    = str_replace('\\', '/', $f->getRealPath());
-            $relPath = str_replace($new_config_path, '', $path);
+            $relPath = str_replace(str_replace('\\', '/', $new_config_path), '', $path);
             $relPath = str_replace('/', DIRECTORY_SEPARATOR, $relPath);
 
             $fs->copy(
