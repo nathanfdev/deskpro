@@ -62,6 +62,8 @@ class SideloadStore
      */
     public function addSideload($entity)
     {
+        $this->checkObject($entity);
+
         /* @var EntityInterface|DomainObject $entity */
         $fqcn  = get_class($entity);
         $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
@@ -132,5 +134,29 @@ class SideloadStore
     protected function reduce($carry, $item)
     {
         return $carry || $item;
+    }
+
+    /**
+     * @param $entity
+     */
+    protected function checkObject($entity)
+    {
+        if (!is_object($entity)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'SideloadStore::addSideload expected $entity to be and object, but [ %s ] given',
+                    TypeUtils::getVarType($entity)
+                )
+            );
+        }
+
+        if (!$entity instanceof EntityInterface && !$entity instanceof DomainObject) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'SideloadStore::addSideload expected $entity to be an instance of EntityInterface or DomainObject, but [ %s ] given',
+                    TypeUtils::getBaseTypeName($entity)
+                )
+            );
+        }
     }
 }
