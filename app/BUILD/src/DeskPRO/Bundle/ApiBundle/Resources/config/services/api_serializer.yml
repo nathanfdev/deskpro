@@ -1,6 +1,26 @@
 services:
-  api_person_factory:
+
+  api_serializer.entity_serialization_handler:
+    class: DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\EntitySerializationHandler
+    arguments:
+      - "@api_serializer.sideload_store"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.api_person_factory:
     class: DeskPRO\Bundle\ApiBundle\Model\Factory\ApiPersonFactory
     arguments:
       - "@avatar_resolver"
       - "@data.agent"
+
+  api_serializer.sideload_store:
+    class: DeskPRO\Bundle\ApiBundle\Serializer\SideloadStore
+
+  api_serializer.sideload_listener:
+    class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\SideloadingListener
+    arguments:
+      - "@api_serializer.sideload_store"
+      - "@jms_serializer.serializer"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }

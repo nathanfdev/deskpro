@@ -28,55 +28,58 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Serializer;
 
-use JMS\Serializer\Annotation as JMS;
-use Pagerfanta\Pagerfanta;
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Component\Util\TypeUtils;
 
-class ApiWrapper
+/**
+ * Class SideloadStore.
+ */
+class SideloadStore
 {
     /**
-     * @var array|Pagerfanta
-     */
-    protected $data = [];
-
-    /**
-     * @JMS\Type("array")
-     *
      * @var array
      */
-    protected $meta = [];
+    protected $sideloads;
 
     /**
-     * @JMS\Type("array")
-     * @JMS\Exclude()
-     * It will be filled up just after serialization ends
-     *
      * @var array
      */
-    protected $linked = [];
+    protected $classmap;
 
-    public function __construct($data)
+    protected $loaded;
+
+    /**
+     * @param $entity
+     */
+    public function addSideload($entity)
     {
-        $this->checkPagination($data);
-        $this->data = $data;
+        /* @var EntityInterface|DomainObject $entity */
+        $fqcn  = get_class($entity);
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+        if (!isset($this->sideloads[$fqcn])) {
+            $this->sideloads[$fqcn] = [];
+        }
+
+        $this->sideloads[$fqcn][] = $entity->getId();
+        $this->classmap[$snake]   = $fqcn;
     }
 
-    protected function checkPagination($data)
+    public function getFqcn($snake)
     {
-        if ($data instanceof Pagerfanta) {
-            $total_pages = ceil($data->count() / $data->getMaxPerPage());
-            if ($total_pages < 1) {
-                $total_pages = 1; // we shouldn't ever report less than 1 total pages
-            }
+        return $this->classmap[$snake];
+    }
 
-            $pagination = [
-                'total'        => $data->count(),
-                'count'        => count($data->getCurrentPageResults()),
-                'per_page'     => $data->getMaxPerPage(),
-                'current_page' => $data->getCurrentPage(),
-                'total_pages'  => $total_pages,
-            ];
-
-            $this->meta['pagination'] = $pagination;
+    public function getSideloads($fqcn)
+    {
+        if (!isset($this->loaded[$fqcn])) {
+            $this->loaded[$fqcn] = [];
         }
+
+        $ids_to_load = array_diff($this->sideloads[$fqcn], $this->loaded[$fqcn]);
+
+        $this->loaded[$fqcn] = array_merge($this->loaded[$fqcn], $ids_to_load);
+
+        return $ids_to_load;
     }
 }

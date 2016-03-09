@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,35 @@
 namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\ApiBundle\Serializer\SideloadStore;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Component\Util\TypeUtils;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
+/**
+ * Class EntitySerializationHandler.
+ */
 class EntitySerializationHandler implements SubscribingHandlerInterface
 {
-    protected $sideloads;
+    /**
+     * @var SideloadStore
+     */
+    protected $store;
 
-    protected $classmap;
+    /**
+     * EntitySerializationHandler constructor.
+     *
+     * @param SideloadStore $store
+     */
+    public function __construct(SideloadStore $store)
+    {
+        $this->store = $store;
+    }
 
+    /**
+     * @return array
+     */
     public static function getSubscribingMethods()
     {
         return array(
@@ -53,21 +70,19 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
         );
     }
 
+    /**
+     * @param JsonSerializationVisitor $visitor
+     * @param                          $entity
+     *
+     * @return mixed
+     */
     public function serializeEntity(
         JsonSerializationVisitor $visitor,
         $entity
     ) {
-        $fqcn = get_class($entity);
-        if (!isset($this->sideloads[$fqcn])) {
-            $this->sideloads[$fqcn] = [];
-        }
-        $entity_id = $entity->getId();
-
-        // todo move it to separate object
-        $this->sideloads[$fqcn][]                                     = $entity_id;
-        $this->classmap[TypeUtils::getSnakeCaseBaseTypeName($entity)] = $fqcn;
-
         /* @var EntityInterface|DomainObject $entity */
-        return $entity_id;
+        $this->store->addSideload($entity);
+
+        return $entity->getId();
     }
 }
