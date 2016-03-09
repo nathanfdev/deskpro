@@ -24,7 +24,7 @@ export class ControlBarContainer extends Component {
   static propTypes = {
     orderBy: PropTypes.string.isRequired,
     orderDir: PropTypes.string.isRequired,
-    filterParams: PropTypes.object.isRequired,
+    currentParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
     viewMode: PropTypes.string.isRequired,
     visibleFields: PropTypes.object
@@ -32,7 +32,7 @@ export class ControlBarContainer extends Component {
 
   render() {
     const config = {
-      onMenuUnmount: applyParams,
+      applyParams: applyParams,
       currentParams: this.props.currentParams,
       sorting: {
         options: {
@@ -46,8 +46,7 @@ export class ControlBarContainer extends Component {
         orderDirAction: setOrderDir
       },
       filtering: {
-        filters: this.props.filters,
-        setParamsAction: applyParams
+        filters: this.props.filters
       },
       view: {
         options: {
@@ -89,6 +88,7 @@ export class ControlBarContainer extends Component {
         onViewFieldsMenuUnmount: this.props.visibleFields.get('fromDb') ? updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
       }
     };
+
     return (
       <ControlBar {...config} />
     );

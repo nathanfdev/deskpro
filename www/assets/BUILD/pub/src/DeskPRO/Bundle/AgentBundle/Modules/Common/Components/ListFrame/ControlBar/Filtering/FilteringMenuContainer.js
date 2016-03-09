@@ -1,19 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
-import { connect } from 'react-redux';
 import { Button } from '../Button';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { FilteringMenu } from './FilteringMenu';
 
 
-@connect()
 export class FilteringMenuContainer extends Component {
   static propTypes = {
     onMenuUnmount: PropTypes.func,
-    dispatch: PropTypes.func.isRequired,
     filters: PropTypes.array.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
+    unsetParam: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
     state: PropTypes.object.isRequired
   };
 
@@ -40,7 +38,6 @@ export class FilteringMenuContainer extends Component {
           });
         }
         value = this.stateValue(params);
-        console.log('Value', value);
       } else if (filter.hasOwnProperty('fromParam')) {
         value = this.stateValue(filter.fromParam);
         if (!value) {
@@ -95,7 +92,7 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { dispatch, state, setParamsAction, setParam, onMenuUnmount, filters = [] } = this.props;
+    const { state, unsetParam, setParam, onMenuUnmount, filters = [] } = this.props;
 
     return (
       <li ref="menuItem">
@@ -111,13 +108,11 @@ export class FilteringMenuContainer extends Component {
           <ClickOut onClickOut={this.collapse}
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            <FilteringMenu dispatch={dispatch}
-                           filters={filters}
+            <FilteringMenu filters={filters}
                            state={state}
-                           stateValue={this.stateValue.bind(this)}
+                           unsetParam={unsetParam}
                            onMenuUnmount={onMenuUnmount}
-                           setParam={setParam}
-                           setParamsAction={setParamsAction}/>
+                           setParam={setParam}/>
           </ClickOut>
         </Detached>
       </li>

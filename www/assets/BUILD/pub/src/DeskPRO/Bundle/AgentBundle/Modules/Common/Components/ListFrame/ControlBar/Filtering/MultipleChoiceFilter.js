@@ -6,10 +6,8 @@ import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class MultipleChoiceFilter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
-    unsetParams: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
+    unsetParam: PropTypes.func.isRequired,
     activeItem: PropTypes.object,
     state: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired
@@ -35,8 +33,8 @@ export class MultipleChoiceFilter extends Component {
   }
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, activeItem, unsetParams } = this.props;
-    const { label, icon, param, multiple, quickFilter, options } = filter;
+    const { setParam, filter, activeItem, unsetParam } = this.props;
+    const { label, icon, param, quickFilter, options } = filter;
     const params = [param];
     options.map(option=> {
       if (option.hasOwnProperty('nested')) {
@@ -45,39 +43,27 @@ export class MultipleChoiceFilter extends Component {
         });
       }
     });
-    const filterValue = stateValue([...new Set(params)]) || [];
     let filterValues = this.props.state.params[param];
 
-    // onClick depending on if filter selects multiple values or a single value
-    let onClick;
-    if (multiple === false) {
-      onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
-    } else {
-      onClick = (value, newParam = null) => () => {
-        let filterValues = newParam ? this.props.state.params[newParam] : filterValues;
-        filterValues = filterValues ? filterValues : [];
-        console.log('Value', value);
-        if (filterValues.indexOf(value) === -1) {
-          filterValues.push(value);
-        } else {
-          filterValues.splice(filterValues.indexOf(value), 1);
-        }
-        console.log('Filter values', filterValues);
-        this.props.setParam({ param: [newParam ? newParam : param], value: filterValues });
-        //dispatch(setParamsAction({ [newParam ? newParam : param]: filterValues, delayReload: true }));
-      };
-    }
-    const isActive = filterValues? Boolean(filterValues.length) : false;
+    const onClick = (value, newParam = null) => () => {
+      filterValues = newParam ? this.props.state.params[newParam] : filterValues;
+      filterValues = filterValues ? filterValues : [];
+      if (filterValues.indexOf(value) === -1) {
+        filterValues.push(value);
+      } else {
+        filterValues.splice(filterValues.indexOf(value), 1);
+      }
+      setParam({ param: [newParam ? newParam : param], value: filterValues });
+    };
+    const isActive = filterValues ? Boolean(filterValues.length) : false;
 
-    console.log('Param', param);
-    console.log('State in multiple choice', this.props.state);
     return (
       <FilterItem activeItem={activeItem}
-                  selected={this.getSelected(options, filterValue)}
+                  selected={this.getSelected(options, filterValues)}
                   icon={icon || 'filter'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, params)}>
+                  resetFilter={unsetParam.bind(this, params)}>
         <Menu>
           <ChoiceMenu title={label} quickFilter={quickFilter} submenu>
             <ul>

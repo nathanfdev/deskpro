@@ -3,10 +3,14 @@ import { SortingMenu } from './Sorting/SortingMenu';
 import { FilteringMenuContainer } from './Filtering/FilteringMenuContainer';
 import { ViewMenuContainer } from './View/ViewMenuContainer';
 
+import { connect } from 'react-redux';
+@connect()
 export class ControlBar extends Component {
 
   static propTypes = {
-    onMenuUnmount: PropTypes.func,
+    dispatch: PropTypes.func.isRequired,
+    applyParams: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired,
     sorting: PropTypes.shape({
       options: PropTypes.objectOf(PropTypes.shape({
         label: PropTypes.string.isRequired,
@@ -42,9 +46,7 @@ export class ControlBar extends Component {
             nested: PropTypes.array
           }))
         })
-      ])),
-      setParamsAction: PropTypes.func.isRequired,
-      state: PropTypes.object.isRequired
+      ]))
     }),
     view: PropTypes.shape({
       options: PropTypes.objectOf(PropTypes.shape({
@@ -67,25 +69,51 @@ export class ControlBar extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      params: nextProps.currentParams.toJS()
+    });
+  }
+
   setParam = (params)=> {
     const newParams = this.state.params;
     newParams[params.param] = params.value;
     this.setState({
+      changed: true,
       params: newParams
     });
-    console.log('New state', this.state);
   };
 
+  unsetParam(param) {
+    const newParams = this.state.params;
+    delete newParams[param];
+    this.setState({
+      changed: true,
+      params: newParams
+    });
+  }
+
+  reloadList() {
+    const { dispatch, applyParams } = this.props;
+    if (this.state.changed) {
+      console.log('state changed', this.state.params);
+      dispatch(applyParams(this.state.params));
+    }
+  }
+
   render() {
-    const { sorting, filtering, view, onMenuUnmount } = this.props;
+    const { sorting, filtering, view } = this.props;
+    console.log('state', this.state);
 
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
-        {sorting && <SortingMenu {...sorting} onMenuUnmount={onMenuUnmount}/>}
+        {sorting && <SortingMenu {...sorting} onMenuUnmount={this.reloadList.bind(this)}/>}
 
         {filtering &&
-        <FilteringMenuContainer {...filtering} state={this.state} setParam={this.setParam.bind(this)}
-                                               onMenuUnmount={onMenuUnmount}/>}
+        <FilteringMenuContainer {...filtering} state={this.state}
+                                               setParam={this.setParam.bind(this)}
+                                               unsetParam={this.unsetParam.bind(this)}
+                                               onMenuUnmount={this.reloadList.bind(this)}/>}
 
         {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
       </ul>
