@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\InstallBundle\FileIntegrity;
 
+use Orb\Util\Strings;
+
 class FileHasher
 {
     /**
@@ -71,7 +73,7 @@ class FileHasher
                     $file = file_get_contents($path);
                 }
                 $file = str_replace(["\r", "\r\n"], "\n", $file);
-                $file = preg_replace('/\s+/', ' ', $file);
+                $file = Strings::trimLines($file);
 
                 return hash('crc32b', $file);
             default:
