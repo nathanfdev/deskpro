@@ -39,9 +39,9 @@ export class FilteringMenuContainer extends Component {
         }
         value = this.stateValue(params);
       } else if (filter.hasOwnProperty('fromParam')) {
-        value = this.stateValue(filter.fromParam);
+        value = this.props.state.params[filter.fromParam];
         if (!value) {
-          value = this.stateValue(filter.toParam);
+          value = this.props.state.params[filter.toParam];
         }
       }
       if (value && ((value instanceof Array && value.length) || !(value instanceof Array))) {
@@ -106,7 +106,7 @@ export class FilteringMenuContainer extends Component {
                   positionAt="left bottom"
                   positionTarget={this.refs.button}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label', '.anytime-picker']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <FilteringMenu filters={filters}
                            state={state}

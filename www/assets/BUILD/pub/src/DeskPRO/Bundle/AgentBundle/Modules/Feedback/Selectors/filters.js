@@ -12,12 +12,9 @@ export const listFiltersSelector = createSelector(
       const navItem = currentListParams.get('navItem');
       return !navItem || (!navItem.get('status') && !navItem.get('status_category') && !navItem.get('hidden_status'));
     };
-    const filterSelector = [];
-/*
     const filterSelector = [
       { label: 'Date', type: 'date', fromParam: 'created_from', toParam: 'created_to' }
     ];
-*/
 
     // Type options
     if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('category')) {

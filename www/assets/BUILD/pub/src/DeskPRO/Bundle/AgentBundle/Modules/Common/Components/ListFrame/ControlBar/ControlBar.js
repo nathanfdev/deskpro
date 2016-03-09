@@ -86,7 +86,13 @@ export class ControlBar extends Component {
 
   unsetParam(param) {
     const newParams = this.state.params;
-    delete newParams[param];
+    if (Array.isArray(param)) {
+      param.forEach((item)=> {
+        delete newParams[item];
+      });
+    } else {
+      delete newParams[param];
+    }
     this.setState({
       changed: true,
       params: newParams
@@ -96,14 +102,12 @@ export class ControlBar extends Component {
   reloadList() {
     const { dispatch, applyParams } = this.props;
     if (this.state.changed) {
-      console.log('state changed', this.state.params);
       dispatch(applyParams(this.state.params));
     }
   }
 
   render() {
     const { sorting, filtering, view } = this.props;
-    console.log('state', this.state);
 
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">

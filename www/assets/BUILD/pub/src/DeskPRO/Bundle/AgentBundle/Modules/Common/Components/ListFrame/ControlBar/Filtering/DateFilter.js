@@ -6,10 +6,9 @@ import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compon
 
 export class DateFilter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
-    unsetParams: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
+    state: PropTypes.object.isRequired,
+    unsetParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     activeItem: PropTypes.object,
     filter: PropTypes.object.isRequired
@@ -26,17 +25,17 @@ export class DateFilter extends Component {
   };
 
   render() {
-    const { dispatch, setParamsAction, stateValue, filter, unsetParams, activeItem } = this.props;
+    const { state, filter, setParam, unsetParam, activeItem } = this.props;
     const {fromParam, toParam, icon, label} = filter;
-    const from = stateValue(fromParam);
-    const to = stateValue(toParam);
+    const from = state.params[fromParam];
+    const to = state.params[toParam];
     const isActive = Boolean(from || to);
     return (
       <FilterItem activeItem={activeItem}
                   icon={icon || 'calendar-o'}
                   label={label}
                   isActive={isActive}
-                  resetFilter={unsetParams.bind(this, [fromParam, toParam])}>
+                  resetFilter={unsetParam.bind(this, [fromParam, toParam])}>
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
           <div
@@ -48,11 +47,11 @@ export class DateFilter extends Component {
                   <DateTimePicker label="From"
                                   className="dpw-date-picker-left"
                                   value={from}
-                                  onChange={value => dispatch(setParamsAction({[fromParam]: value, delayReload: true}))}/>
+                                  onChange={value => setParam({param: [fromParam], value: value})}/>
                   <DateTimePicker label="To"
                                   className="dpw-date-picker-right"
                                   value={to}
-                                  onChange={value => dispatch(setParamsAction({[toParam]: value, delayReload: true}))}/>
+                                  onChange={value => setParam({param: [toParam], value: value})}/>
                 </form>
               </div>
             </div>
