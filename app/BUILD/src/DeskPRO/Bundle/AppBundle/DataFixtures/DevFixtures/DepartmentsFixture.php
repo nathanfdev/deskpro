@@ -54,9 +54,8 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
      */
     public function load(ObjectManager $manager)
     {
-        $usergroups = $this->fetchIds(self::TABLE_USERGROUPS);
-        $cnt        = 0;
-        $deps       = [];
+        $cnt  = 0;
+        $deps = [];
 
         $dep1                     = new Department();
         $dep1->is_tickets_enabled = true;
@@ -75,7 +74,7 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
 
         $deps[] = $dep2;
 
-        $this->addReference('department.regulation_and_control', $dep1);
+        $this->addReference('department.regulation_and_control', $dep2);
         $manager->persist($dep2);
 
         $dep2_a                     = new Department();
@@ -83,7 +82,6 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $dep2_a->title              = 'Regulation';
         $dep2_a->parent             = $dep2;
         $dep2_a->display_order      = $cnt++;
-        $all_departments[]          = $dep2_a;
 
         $deps[] = $dep2_a;
 
@@ -114,17 +112,21 @@ class DepartmentsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $manager->flush();
 
         // Perms
-        $perms = [];
+        $permsissions  = [];
+        $usergroup_ids = $this->fetchIds(self::TABLE_USERGROUPS);
+
         foreach ($deps as $d) {
-            $perms[] = [
-                'department_id' => $d->getId(),
-                'usergroup_id'  => $usergroups[0], // everyone
-                'app'           => 'tickets',
-                'name'          => 'full',
-                'value'         => 1,
-            ];
+            foreach ($usergroup_ids as $usergroup_id) {
+                $permsissions[] = [
+                    'department_id' => $d->getId(),
+                    'usergroup_id'  => $usergroup_id,
+                    'app'           => 'tickets',
+                    'name'          => 'full',
+                    'value'         => 1,
+                ];
+            }
         }
 
-        $this->db->batchInsert('department_permissions', $perms, true);
+        $this->db->batchInsert('department_permissions', $permsissions, true);
     }
 }
