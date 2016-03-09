@@ -293,6 +293,7 @@ class TicketWithLayoutsType extends AbstractType
         $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($data, $context);
         $had_previous_layout = count($context->getPreviouslyActiveLayout()->all()) > 0;
         $has_not_submitted   = false;
+        $displayed_fields    = isset($data['displayed_fields']) ? array_flip(explode(',', $data['displayed_fields'])) : [];
 
         $changes = $this->ticket_layout_helper->getLayoutChanges($context, $extracted_data);
 
@@ -328,7 +329,7 @@ class TicketWithLayoutsType extends AbstractType
                 }
 
                 // check if there was submitted data for this field
-                if (!array_key_exists($field->getId(), $data)) {
+                if (!array_key_exists($field->getId(), $data) && !isset($displayed_fields[$field->getId()])) {
                     $has_not_submitted = true;
                 }
             }
@@ -355,6 +356,12 @@ class TicketWithLayoutsType extends AbstractType
                 }
             }
         } else {
+            if (!$form->has('displayed_fields')) {
+                $form->add('displayed_fields', 'hidden', [
+                    'mapped' => false,
+                ]);
+            }
+
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
             if ($had_previous_layout && $has_not_submitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
                 if (!$form->has('rerender_form')) {

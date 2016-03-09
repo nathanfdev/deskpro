@@ -58,7 +58,7 @@ export class TicketForm extends PageWidget {
     this.dynamicForm = new DynamicForm({
       formEl: $formEl,
       tplEl: $tplEl,
-      alwaysFields: ['department', 'subject', 'message', 'submit'],
+      alwaysFields: ['department', 'subject', 'message', 'submit', 'displayed_fields'],
       onInit: () => {
         // only render ticket deflection if a .dpx-with-ticket-deflection is present on the form
         if ($formEl.hasClass('dpx-with-ticket-deflection')) {
@@ -85,6 +85,10 @@ export class TicketForm extends PageWidget {
         });
 
         return _.flatten(newFields);
+      },
+      onFieldsUpdated: event => {
+        const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
+        $df.val(event.inst.currentFields);
       },
       onPostUpdate: () => {
         const portalPage = portalApp.getPortalPage();
