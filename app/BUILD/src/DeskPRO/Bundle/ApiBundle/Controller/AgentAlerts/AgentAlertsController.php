@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -42,8 +43,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class OrganizationsController.
+ * Class AgentAlertsController.
  *
+ * @ApiDocSection("Notifications and alerts")
  * @ApiModes("all")
  * @Annotations\Route("/me/notifications")
  */
@@ -55,6 +57,8 @@ class AgentAlertsController extends CrudController
     public static $listOrder     = 'desc';
 
     /**
+     * Dismiss alerts with given ids array.
+     *
      * @ApiDoc(
      *     section="Notifications and alerts",
      *     resourceDescription="Operations about agent alerts",
@@ -91,13 +95,15 @@ class AgentAlertsController extends CrudController
     }
 
     /**
+     * You can dismiss all users alerts for current authenticated user.
+     *
      * @ApiDoc(
-     *      description="Dismiss all alerts of the current user",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
-     *      }
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about agent alerts",
+     *     description="dismiss all alerts for the current user",
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *     }
      * )
      * @Annotations\Post("/dismiss/all")
      *
