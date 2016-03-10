@@ -26,44 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\HttpKernel\Config;
+namespace DeskPRO\Component\Doctrine\Common\Cache;
 
-use Symfony\Component\Config\FileLocator as BaseFileLocator;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Doctrine\Common\Cache\PhpFileCache as BasePhpFileCache;
 
-class FileLocator extends BaseFileLocator
+class PhpFileCache extends BasePhpFileCache
 {
-    /** @var \Symfony\Component\HttpKernel\KernelInterface */
-    private $kernel;
-
-    /** @var null we don't use this, but it's in the base class, so it might be useful later  */
-    private $path;
-
-    public function __construct(KernelInterface $kernel, $path = null, array $paths = array())
-    {
-        $this->kernel = $kernel;
-        if (null !== $path) {
-            $this->path = $path;
-            $paths[]    = $path;
-        }
-
-        parent::__construct($paths);
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function locate($file, $currentPath = null, $first = true)
+    protected function getFilename($id)
     {
-        if (isset($file[0]) && '@' === $file[0]) {
-            return $this->kernel->locateResource($file, $this->path, $first);
-        }
-
-        $file = str_replace('%DP_ROOT%', DP_ROOT, $file);
-
-        return parent::locate($file, $currentPath, $first);
+        return FileCacheUtil::getFilename($id, $this->getDirectory(), $this->getExtension());
     }
 }

@@ -26,44 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\HttpKernel\Config;
+namespace DeskPRO\Component\Doctrine\Common\Cache;
 
-use Symfony\Component\Config\FileLocator as BaseFileLocator;
-use Symfony\Component\HttpKernel\KernelInterface;
-
-class FileLocator extends BaseFileLocator
+class FileCacheUtil
 {
-    /** @var \Symfony\Component\HttpKernel\KernelInterface */
-    private $kernel;
-
-    /** @var null we don't use this, but it's in the base class, so it might be useful later  */
-    private $path;
-
-    public function __construct(KernelInterface $kernel, $path = null, array $paths = array())
+    private function __construct()
     {
-        $this->kernel = $kernel;
-        if (null !== $path) {
-            $this->path = $path;
-            $paths[]    = $path;
-        }
-
-        parent::__construct($paths);
     }
 
     /**
-     * {@inheritdoc}
+     * Similar to Doctrine\Common\Cache::getFilename except we always return the hash, never the
+     * filename bin2hex.
+     *
+     * This is important because we run the build on Linux, but we have
+     * customers using Windows where long filenames break. So the solution is to just ALWAYS
+     * use a hash filename.
+     *
+     * @param string $id
+     * @param string $directory
+     * @param string $extension
+     *
+     * @return string
      */
-    public function locate($file, $currentPath = null, $first = true)
+    public static function getFilename($id, $directory, $extension)
     {
-        if (isset($file[0]) && '@' === $file[0]) {
-            return $this->kernel->locateResource($file, $this->path, $first);
-        }
+        $hash     = hash('sha256', $id);
+        $filename = '_'.$hash;
 
-        $file = str_replace('%DP_ROOT%', DP_ROOT, $file);
-
-        return parent::locate($file, $currentPath, $first);
+        return $directory
+        .DIRECTORY_SEPARATOR
+        .substr($hash, 0, 2)
+        .DIRECTORY_SEPARATOR
+        .$filename
+        .$extension;
     }
 }

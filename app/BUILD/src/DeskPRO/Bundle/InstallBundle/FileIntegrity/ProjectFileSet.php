@@ -121,6 +121,28 @@ class ProjectFileSet
             ->files()
             ->in($this->env->getAppDir());
 
+        foreach ([
+          $this->env->getAppDir().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR,
+          $this->env->getAppDir().DIRECTORY_SEPARATOR.'vendor-src'.DIRECTORY_SEPARATOR,
+        ] as $d) {
+            if (is_dir($d)) {
+                $finder->exclude($d);
+            }
+        }
+
+        $sets[] = $this->readIterator($finder, $this->env->getAppDir(), '%DP_APP_DIR%');
+        unset($finder);
+
+        #------------------------------
+        # Vendor build files
+        #------------------------------
+
+        $finder = Finder::create()
+            ->files()
+            ->name('*.php')
+            ->in($this->env->getAppDir().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR)
+            ->in($this->env->getAppDir().DIRECTORY_SEPARATOR.'vendor-src'.DIRECTORY_SEPARATOR);
+
         $sets[] = $this->readIterator($finder, $this->env->getAppDir(), '%DP_APP_DIR%');
         unset($finder);
 
@@ -132,16 +154,27 @@ class ProjectFileSet
             ->files()
             ->in($this->env->getAppBaseKernelCacheDir());
 
+        foreach ([
+          $this->env->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'dev'.DIRECTORY_SEPARATOR,
+          $this->env->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'test'.DIRECTORY_SEPARATOR,
+        ] as $d) {
+            if (is_dir($d)) {
+                $finder->exclude($d);
+            }
+        }
+
         $sets[] = $this->readIterator($finder, $this->env->getAppBaseKernelCacheDir(), '%DP_APP_KERNEL_CACHE%');
         unset($finder);
 
         #------------------------------
-        # Asset files
+        # Asset files - built only
         #------------------------------
 
         $finder = Finder::create()
             ->files()
-            ->in($this->env->getAppWwwAssetDir());
+            ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
+            ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR)
+            ->in($this->env->getAppWwwAssetDir().DIRECTORY_SEPARATOR.'web'.DIRECTORY_SEPARATOR.'app-build'.DIRECTORY_SEPARATOR);
 
         $sets[] = $this->readIterator($finder, $this->env->getAppWwwAssetDir(), '%DP_APP_WWW_ASSET%');
         unset($finder);
@@ -168,6 +201,7 @@ class ProjectFileSet
             '/__tests__/',
             'mock',
             'Mock',
+            'test-suite',
         ];
 
         static $ignorePaths = [
