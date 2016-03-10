@@ -243,8 +243,12 @@ class Choice extends HandlerAbstract
         }
 
         $field_opts = array(
-            'choices'     => $choices,
-            'required'    => $required,
+            'choices' => $choices,
+            // no required for radios because it adds required="required" to HTML,
+            // and if they're hidden, Chrome will error-out because it cant focus the element
+            // - Its ONLY radios (checks, selects, etc are ok), and ONLY on certain versions of Chrome
+            // Note: this is properly fixed anyway in new-portal because the field isnt in the <form> at all
+            'required'    => $required && !($this->expanded && !$this->multiple),
             'multiple'    => $this->multiple,
             'expanded'    => $this->expanded,
             'empty_value' => $empty_val,
