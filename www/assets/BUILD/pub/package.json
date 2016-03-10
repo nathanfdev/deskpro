@@ -25,6 +25,7 @@
     "hover.css": "2.0.2",
     "html5-history-api": "4.2.2",
     "html5shiv": "3.7.3",
+    "iframe-resizer": "^3.5.3",
     "immutable": "3.7.6",
     "intl-tel-input": "6.4.4",
     "jquery": "2.1.4",

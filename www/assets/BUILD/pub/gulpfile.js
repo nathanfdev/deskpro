@@ -346,6 +346,7 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   if (mode === 'all' || mode === 'portal') {
     config.entry['widget_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
     config.entry['embed_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/embed_loader.js'];
+    config.entry['iframeResizer_contentWindow'] = ['./node_modules/iframe-resizer/js/iframeResizer.contentWindow.js'];
     config.entry['DeskPRO_PortalBundle'] = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
 
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];
