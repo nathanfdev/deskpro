@@ -64,7 +64,7 @@ class SideloadSerializationContext extends SerializationContext
      *
      * @return SideloadSerializationContext
      */
-    public static function create(ContainerInterface $container)
+    public static function createContext(ContainerInterface $container)
     {
         $raw_includes   = $container->get('request_stack')->getMasterRequest()->query->get('include');
         $sideload_store = new SideloadStore();

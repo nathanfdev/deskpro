@@ -35,7 +35,7 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
 {
     protected function getSerializationContext(View $view)
     {
-        $context = SideloadSerializationContext::create($this->container);
+        $context = SideloadSerializationContext::createContext($this->container);
 
         if ($context->attributes->get('groups')->isEmpty() && $this->exclusionStrategyGroups) {
             $context->setGroups($this->exclusionStrategyGroups);

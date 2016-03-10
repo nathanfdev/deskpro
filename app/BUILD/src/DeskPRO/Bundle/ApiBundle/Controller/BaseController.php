@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory;
+use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -93,6 +95,25 @@ class BaseController extends FOSRestController
         }
 
         return $this->get('data_serializer')->serialize($data, $includes_string);
+    }
+
+    /**
+     * @param      $data
+     * @param null $includes_string
+     *
+     * @return ApiWrapper
+     */
+    protected function wrap($data, $includes_string = null)
+    {
+        /** @var ModelFactory $factory */
+        $factory = $this->get('api_serializer.model_factory');
+        if (is_array($data) || $data instanceof \Traversable) {
+            $result = $factory->createArray($data);
+        } else {
+            $result = $factory->create($data);
+        }
+
+        return new ApiWrapper($result, $includes_string ?: []);
     }
 
     /**

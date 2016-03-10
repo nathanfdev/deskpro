@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
-use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -98,7 +97,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             });
         }
 
-        return View::create($this->dataSerialize($teams));
+        return View::create($this->wrap($teams));
     }
 
     /**
@@ -133,7 +132,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         }
 
         return View::create(
-            $this->dataSerialize($team),
+            $this->wrap($team),
             Response::HTTP_OK
         );
     }
@@ -166,15 +165,10 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     public function getAgentsAction($id)
     {
         /** @var AgentTeamsDataService $service */
-        $service       = $this->get('data.agent_teams');
-        $model_factory = $this->get('api_serializer.model_factory');
+        $service = $this->get('data.agent_teams');
 
         return View::create(
-            new ApiWrapper(
-                $model_factory->createArray(
-                    $service->getAgentsFromTeam((int) $id)
-                )
-            ),
+            $this->wrap($service->getAgentsFromTeam((int) $id)),
             Response::HTTP_OK
         );
     }
@@ -315,7 +309,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             $location = $this->generateUrl('api_agent_teams_get', ['id' => $team->getId()]);
 
             return View::create(
-                $this->dataSerialize($team),
+                $this->wrap($team),
                 $status,
                 [
                     'Location' => $location,

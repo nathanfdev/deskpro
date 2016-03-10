@@ -6,7 +6,7 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.model_factory:
-    class: DeskPRO\Bundle\ApiBundle\Model\ModelFactory
+    class: DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory
     arguments:
       - "@service_container"
 

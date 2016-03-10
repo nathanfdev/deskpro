@@ -26,8 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\ApiBundle\Model\Factory;
 
+use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use DeskPRO\Bundle\ApiBundle\Model\AgentTeam;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -62,8 +64,43 @@ class ModelFactory
                 'method'  => 'create',
             ],
         ],
+        'agent_team' => 'createAgentTeam',
 
     ];
+
+    /**
+     * @param      $entity
+     * @param null $concrete
+     */
+    public function create($entity, $concrete = null)
+    {
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+        if (!isset($this->methodMap[$snake])) {
+            return $entity;
+        }
+
+        if (is_array($this->methodMap[$snake])) {
+            return $this->createPolymorph($this->methodMap[$snake], $entity, $concrete);
+        }
+
+        return $this->{$this->methodMap[$snake]}($entity);
+    }
+
+    /**
+     * @param      $entities
+     * @param null $concrete
+     *
+     * @return array
+     */
+    public function createArray($entities, $concrete = null)
+    {
+        $wrappers = [];
+        foreach ($entities as $entity) {
+            $wrappers[] = $this->create($entity, $concrete);
+        }
+
+        return $wrappers;
+    }
 
     /**
      * @param $polymorphs
@@ -92,6 +129,11 @@ class ModelFactory
         return $concrete_factory->{$concrete['method']}($entity);
     }
 
+    /**
+     * @param $polymorphs
+     *
+     * @return mixed
+     */
     protected function findDefault($polymorphs)
     {
         foreach ($polymorphs as $polymorph) {
@@ -104,30 +146,16 @@ class ModelFactory
     }
 
     /**
-     * @param      $entity
-     * @param null $concrete
+     * @param AgentTeamEntity $entity
+     *
+     * @return $this
      */
-    public function create($entity, $concrete = null)
+    protected function createAgentTeam(AgentTeamEntity $entity)
     {
-        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
-        if (!isset($this->methodMap[$snake])) {
-            return $entity;
-        }
+        $avatar_resolver = $this->container->get('avatar_resolver');
 
-        if (is_array($this->methodMap[$snake])) {
-            return $this->createPolymorph($this->methodMap[$snake], $entity, $concrete);
-        }
+        $agent_team = new AgentTeam($entity);
 
-        return $this->{$this->methodMap[$snake]}($entity);
-    }
-
-    public function createArray($entities, $concrete = null)
-    {
-        $wrappers = [];
-        foreach ($entities as $entity) {
-            $wrappers[] = $this->create($entity, $concrete);
-        }
-
-        return $wrappers;
+        return $agent_team->setAvatar($avatar_resolver->getAvatarModel($entity));
     }
 }
