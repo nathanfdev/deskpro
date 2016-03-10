@@ -55,6 +55,10 @@ cd $SCRIPT_DIR
             echo "clearing $MODE cache in $ENV environment"
             rm -rf ../../var/kernel_cache/BUILD/$ENV/api_permissions/*
             ;;
+        'api_doc')
+            echo "clearing api_docs cache in $ENV environment"
+            rm -rf ../../var/kernel_cache/BUILD/$ENV/api-doc.cache.*
+            ;;
         'all')
             echo "clearing all caches in $ENV environment"
             rm -rf ../../var/cache/*
