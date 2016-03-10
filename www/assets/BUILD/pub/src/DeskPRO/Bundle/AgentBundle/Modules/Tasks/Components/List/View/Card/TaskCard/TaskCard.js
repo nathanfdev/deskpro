@@ -17,8 +17,8 @@ import {
   Comments,
   ShowDetailsButton,
   AssignButton,
-  TicketLinkContainer,
-  CardProjectContainer
+  CardProjectContainer,
+  LinkedItemContainer
 } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard';
 
 export class TaskCard extends BaseTaskCard {
@@ -28,6 +28,7 @@ export class TaskCard extends BaseTaskCard {
   };
 
   renderDetails() {
+
     const { task, onChange } = this.props;
     return (
       <div style={{position: 'relative',paddingRight: 70, marginBottom: 2, whiteSpace: 'nowrap'}}>
@@ -38,7 +39,7 @@ export class TaskCard extends BaseTaskCard {
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
           <span className="dpw--card-disc"/>
-          {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
+          <LinkedItemContainer value={task} />
         </div>
         <div style={{position: 'absolute', right: 0, top: 0}}>
           <Comments count={this.state.comments} />
@@ -62,7 +63,7 @@ export class TaskCard extends BaseTaskCard {
         <MarkDoneButton isDone={task.get('is_done')} onToggle={onChange.bind(null, 'is_done', !task.get('is_done'))} />
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <div style={{position: 'relative',paddingRight: 30, marginBottom: 6}}>
-          <div style={{}}>
+          <div>
             <Title value={task.get('title')}
                    isDone={task.get('is_done')}
                    onSubmit={onChange.bind(null, 'title')} />

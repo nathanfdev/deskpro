@@ -12,7 +12,7 @@ import {
   SubTasks,
   Comments,
   AssignButton,
-  TicketLinkContainer,
+  LinkedItemContainer,
   CardProjectContainer
 } from '../../../TaskCard';
 
@@ -32,7 +32,7 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChange.bind(null, 'date_due')} />
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
-          {this.state.ticketLink && <TicketLinkContainer ticket={this.state.ticketLink} />}
+          <LinkedItemContainer value={task} />
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />
