@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Serializer;
+namespace DeskPRO\Bundle\AppBundle\Serializer;
 
 use JMS\Serializer\Annotation as JMS;
 use Pagerfanta\Pagerfanta;

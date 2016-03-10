@@ -1,7 +1,7 @@
 services:
 
   api_serializer.entity_serialization_handler:
-    class: DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\EntitySerializationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\EntitySerializationHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -17,7 +17,7 @@ services:
       - "@data.agent"
 
   api_serializer.sideload_listener:
-    class: DeskPRO\Bundle\ApiBundle\Serializer\EventListener\SideloadListener
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@api_serializer.model_factory"
@@ -25,4 +25,4 @@ services:
       - { name: "jms_serializer.event_subscriber" }
 
 parameters:
-  fos_rest.view_handler.default.class: "DeskPRO\Bundle\ApiBundle\Serializer\ViewHandler"
+  fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

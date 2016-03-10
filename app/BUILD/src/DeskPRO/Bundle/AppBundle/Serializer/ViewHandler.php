@@ -26,9 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Serializer;
+namespace DeskPRO\Bundle\AppBundle\Serializer;
 
-use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\View\View;
 
 class ViewHandler extends \FOS\RestBundle\View\ViewHandler
