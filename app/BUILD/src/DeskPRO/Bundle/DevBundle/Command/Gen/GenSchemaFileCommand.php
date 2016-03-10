@@ -51,11 +51,16 @@ class GenSchemaFileCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->generateSchemaForManager('default', $output);
+        $this->generateSchemaForManager('default', $output, true);
         $this->generateSchemaForManager('system', $output);
     }
 
-    private function generateSchemaForManager($name, OutputInterface $output)
+    /**
+     * @param string          $name             EntityManager name
+     * @param OutputInterface $output
+     * @param bool            $is_master_schema Master schema is schema containing all non-entity tables
+     */
+    private function generateSchemaForManager($name, OutputInterface $output, $is_master_schema = false)
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
@@ -70,7 +75,7 @@ class GenSchemaFileCommand extends ContainerAwareCommand
         $output->writeln(sprintf('Generated schema of %d artefacts %.3fs', $gen->count(), microtime(true) - $startTime));
 
         $write_path = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$name.'_deskpro_schema.php';
-        $gen->dumpToFile($write_path);
+        $gen->dumpToFile($write_path, $is_master_schema);
         $output->writeln(sprintf('Wrote schema to: <info>%s</info>', $write_path));
     }
 }
