@@ -54,7 +54,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -208,7 +207,7 @@ class TicketWithLayoutsType extends AbstractType
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
-        $context = $this->createTicketFormContext($form, $ticket, new TicketLayout());
+        $context = new TicketWithLayoutsContext($form, $ticket, new TicketLayout());
         $context->setNewLayout($layout);
 
         // if there is only one department we want to make sure to set it now...
@@ -243,7 +242,7 @@ class TicketWithLayoutsType extends AbstractType
 
         // calculate the initial layout of the form (before any form submissions took place)
         $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context = $this->createTicketFormContext($form, $ticket, $layout);
+        $context = new TicketWithLayoutsContext($form, $ticket, $layout);
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($data[FormFields::DEPARTMENT])) {
@@ -981,18 +980,6 @@ class TicketWithLayoutsType extends AbstractType
         $context->getForm()->add('submit', 'submit', [
             'label' => $label,
         ]);
-    }
-
-    /**
-     * @param FormInterface $form
-     * @param Ticket        $ticket
-     * @param TicketLayout  $initial_layout
-     *
-     * @return TicketWithLayoutsContext
-     */
-    private function createTicketFormContext(FormInterface $form, Ticket $ticket, TicketLayout $initial_layout)
-    {
-        return new TicketWithLayoutsContext($form, $ticket, $initial_layout);
     }
 
     /**
