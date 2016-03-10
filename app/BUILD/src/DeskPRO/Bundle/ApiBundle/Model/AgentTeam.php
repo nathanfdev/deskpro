@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,51 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Model;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use DeskPRO\Bundle\AppBundle\Content\Avatar;
 
 /**
- * Class AgentTeamTransformer.
+ * Class AgentTeam.
  */
-class AgentTeamTransformer extends AbstractDataSerializerTransformer
+class AgentTeam
 {
     /**
-     * @var AvatarResolver
+     * @var int
      */
-    private $avatar_resolver;
+    protected $id;
 
     /**
-     * @param AvatarResolver $avatar_resolver
+     * @var string
      */
-    public function __construct(AvatarResolver $avatar_resolver)
+    protected $name;
+
+    /**
+     * @var
+     */
+    protected $avatar;
+
+    /**
+     * AgentTeam constructor.
+     *
+     * @param AgentTeamEntity $agent_team
+     */
+    public function __construct(AgentTeamEntity $agent_team)
     {
-        $this->avatar_resolver = $avatar_resolver;
+        $this->id   = $agent_team->getId();
+        $this->name = $agent_team->getName();
     }
 
     /**
-     * {@inheritdoc}
+     * @param Avatar $avatar
+     *
+     * @return $this
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public function setAvatar(Avatar $avatar)
     {
-        return [
-            'id',
-            'name',
-        ];
-    }
+        $this->avatar = $avatar;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        return [
-            'avatar' => $this->avatar_resolver->getAvatarModel($transformation_request->getDataToBeTransformed()),
-        ];
+        return $this;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,18 @@ namespace DeskPRO\Bundle\ApiBundle\Serializer;
 use JMS\Serializer\Annotation as JMS;
 use Pagerfanta\Pagerfanta;
 
+/**
+ * Class ApiWrapper.
+ */
 class ApiWrapper
 {
+    /**
+     * @JMS\Exclude()
+     *
+     * @var array
+     */
+    protected $includes = [];
+
     /**
      * @var array|Pagerfanta
      */
@@ -47,17 +57,29 @@ class ApiWrapper
 
     /**
      * @JMS\Type("array")
+     * @JMS\Exclude()
+     * It will be filled up just after serialization ends
      *
      * @var array
      */
     protected $linked = [];
 
-    public function __construct($data)
+    /**
+     * ApiWrapper constructor.
+     *
+     * @param            $data
+     * @param array|null $includes
+     */
+    public function __construct($data, array $includes = [])
     {
         $this->checkPagination($data);
-        $this->data = $data;
+        $this->data     = $data;
+        $this->includes = $includes;
     }
 
+    /**
+     * @param $data
+     */
     protected function checkPagination($data)
     {
         if ($data instanceof Pagerfanta) {
@@ -76,5 +98,13 @@ class ApiWrapper
 
             $this->meta['pagination'] = $pagination;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getIncludes()
+    {
+        return $this->includes;
     }
 }

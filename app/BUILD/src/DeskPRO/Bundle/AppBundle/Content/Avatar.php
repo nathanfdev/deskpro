@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Content;
+
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Avatar.
+ *
+ * @JMS\ExclusionPolicy("none")
  */
 class Avatar
 {
@@ -46,16 +49,22 @@ class Avatar
     const GRAVATAR_DEFAULT_BLANK   = 'blank';
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $default_url_pattern;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $url_pattern;
 
     /**
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $base_gravatar_url;

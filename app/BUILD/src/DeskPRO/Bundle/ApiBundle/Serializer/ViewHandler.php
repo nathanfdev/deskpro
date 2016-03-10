@@ -26,29 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
+namespace DeskPRO\Bundle\ApiBundle\Serializer;
 
-use Application\DeskPRO\Entity\AgentTeam;
-use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
+use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
+use FOS\RestBundle\View\View;
 
-/**
- * Class AgentTeamsDataService.
- */
-class AgentTeamsDataService extends AbstractDataService
+class ViewHandler extends \FOS\RestBundle\View\ViewHandler
 {
-    public function getAgentsFromTeam($team_id)
+    protected function getSerializationContext(View $view)
     {
-        $repo = $this->em->getRepository('DeskPRO:AgentTeam');
-        /** @var AgentTeam $team */
-        $team = $repo->find($team_id);
+        $context = SideloadSerializationContext::createContext($this->container);
 
-        if (!$team) {
-            throw new \InvalidArgumentException(sprintf('Team with specified id [ %d ] not found', $team_id));
+        if ($context->attributes->get('groups')->isEmpty() && $this->exclusionStrategyGroups) {
+            $context->setGroups($this->exclusionStrategyGroups);
         }
 
-        return $team->getPersonList();
+        if ($context->attributes->get('version')->isEmpty() && $this->exclusionStrategyVersion) {
+            $context->setVersion($this->exclusionStrategyVersion);
+        }
+
+        if (null === $context->shouldSerializeNull() && null !== $this->serializeNullStrategy) {
+            $context->setSerializeNull($this->serializeNullStrategy);
+        }
+
+        return $context;
     }
 }

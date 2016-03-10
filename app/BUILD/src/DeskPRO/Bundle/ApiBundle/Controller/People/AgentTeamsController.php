@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -45,6 +44,8 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class AgentTeamsController.
@@ -54,11 +55,23 @@ use Symfony\Component\HttpFoundation\Response;
 class AgentTeamsController extends BaseController implements ClassResourceInterface
 {
     /**
+     * Hit this endpoint and you'll fetch list of teams.
+     * Provide ids list to fetch only specified teams, or provide
+     * "my" filter to fetch teams that authenticated user belongs to.
+     *
      * @ApiDoc(
-     *      description="get a list of teams",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Agents",
+     *     resourceDescription="Operations about agent`s teams",
+     *     description="get a list of teams",
+     *     statusCodes={
+     *         200="Returned when request was successful"
+     *     },
+     *     filters={
+     *          {"name"="ids", "dataType"="string", "pattern"="1,2,3 ..."},
+     *          {"name"="my", "dataType"="boolean", "pattern"="1|0"}
+     *     },
+     *     output="array<DeskPRO\Bundle\ApiBundle\Model\AgentTeam>"
+     *
      * )
      * @Annotations\Get("/agent_teams", name="api_agent_teams")
      *
@@ -98,25 +111,29 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             });
         }
 
-        return View::create($this->dataSerialize($teams));
+        return View::create($this->wrap($teams));
     }
 
     /**
+     * Get full view of an agent`s team.
+     *
      * @ApiDoc(
-     *      description="get a team",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the team",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="Application\DeskPRO\Entity\AgentTeam"
+     *     section="Agents",
+     *     resourceDescription="Operations about agent`s teams",
+     *     description="get a team",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the team",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned if team was found",
+     *         404="Returned if team with specified id was not found"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Get("/agent_teams/{id}", name="api_agent_teams_get")
      *
@@ -133,15 +150,17 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         }
 
         return View::create(
-            $this->dataSerialize($team),
+            $this->wrap($team),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Touching this endpoint will return a list of agents belongs to specified team.
+     *
      * @ApiDoc(
      *      section="Agents",
-     *      resourceDescription="Opertaions about agent teams",
+     *      resourceDescription="Operations about agent`s teams",
      *      description="Return agents from team given team",
      *      requirements={
      *          {
@@ -152,10 +171,12 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          }
      *      },
      *      statusCodes={
-     *          200="Success when chat was found",
-     *          404="Returned when chat was not found"
+     *          200="Will return when success",
+     *          404="Returned when chat was not found",
+     *          400="In all other cases except system error",
+     *          500="Will be returned in case server malfunction"
      *      },
-     *      output="DeskPRO\Application\Entity\AgentTeam"
+     *      output="array<DeskPRO\Bundle\ApiBundle\Model\ApiPerson>"
      * )
      * @Annotations\Get("/agent_teams/{id}/agents", name="api_agent_teams_agents")
      *
@@ -168,21 +189,31 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
         /** @var AgentTeamsDataService $service */
         $service = $this->get('data.agent_teams');
 
-        return View::create(
-            $this->dataSerialize($service->getAgentsFromTeam((int) $id)),
-            Response::HTTP_OK
-        );
+        try {
+            return View::create(
+                $this->wrap($service->getAgentsFromTeam((int) $id)),
+                Response::HTTP_OK
+            );
+        } catch (\InvalidArgumentException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } finally {
+            throw new BadRequestHttpException();
+        }
     }
 
     /**
+     * This endpoint gives you ability to create an agent team.
+     *
      * @ApiDoc(
-     *      description="create a new team",
-     *      input={"class"="team", "name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="Application\DeskPRO\Entity\AgentTeam"
+     *     section="Agents",
+     *     resourceDescription="Operations about agent`s team",
+     *     description="create a new team",
+     *     input={"class"="team", "name"=""},
+     *     statusCodes={
+     *         201="Will be returned in case of successful team creating",
+     *         400="You request was malformed"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Post("/agent_teams", name="api_agent_teams_post")
      *
@@ -201,22 +232,27 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     }
 
     /**
+     * This endpoint gives you ability to update an agent team.
+     *
      * @APIDoc(
-     *      description="update a team",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the team",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="team", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
+     *     section="Agents",
+     *     resourceDescription="Operations about agent`s team",
+     *     description="update a team",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the team",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     input={"class"="team", "name"=""},
+     *     statusCodes={
+     *         204="Returned if team was successfully updated",
+     *         400="You request was malformed",
+     *         404="Team with specified id was not found"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Put("/agent_teams/{id}", name="api_agent_teams_put")
      *
@@ -235,20 +271,24 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
     }
 
     /**
+     * This endpoint gives you ability to delete an agent team.
+     *
      * @APIDoc(
-     *      description="delete a team",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the team",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      }
+     *     section="Agents",
+     *     resourceDescription="Operations about agent`s team",
+     *     description="delete a team",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the team",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Will be returned in case team was succesflly deleted",
+     *         404="Not Found"
+     *     }
      * )
      * @Annotations\Delete("/agent_teams/{id}", name="api_agent_teams_delete")
      *
@@ -310,7 +350,7 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             $location = $this->generateUrl('api_agent_teams_get', ['id' => $team->getId()]);
 
             return View::create(
-                $this->dataSerialize($team),
+                $this->wrap($team),
                 $status,
                 [
                     'Location' => $location,

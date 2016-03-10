@@ -76,16 +76,16 @@
         },
         {
             "name": "beberlei/DoctrineExtensions",
-            "version": "v1.0.6",
+            "version": "v1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/DoctrineExtensions.git",
-                "reference": "d7be90e5273f5fea20fc159c50dedc679feb5178"
+                "reference": "43bb11c1634c99f4b0e34be15b779daf0453b59d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/d7be90e5273f5fea20fc159c50dedc679feb5178",
-                "reference": "d7be90e5273f5fea20fc159c50dedc679feb5178",
+                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/43bb11c1634c99f4b0e34be15b779daf0453b59d",
+                "reference": "43bb11c1634c99f4b0e34be15b779daf0453b59d",
                 "shasum": ""
             },
             "require": {
@@ -134,7 +134,7 @@
                 "doctrine",
                 "orm"
             ],
-            "time": "2015-11-12 13:25:24"
+            "time": "2016-03-07 11:36:05"
         },
         {
             "name": "behat/behat",
@@ -2851,16 +2851,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.0.3",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "b1e1c0d55f8083c71eda2c28c12a228d708294ea"
+                "reference": "bb9024c526b22f3fe6ae55a561fd70653d470aa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/b1e1c0d55f8083c71eda2c28c12a228d708294ea",
-                "reference": "b1e1c0d55f8083c71eda2c28c12a228d708294ea",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/bb9024c526b22f3fe6ae55a561fd70653d470aa8",
+                "reference": "bb9024c526b22f3fe6ae55a561fd70653d470aa8",
                 "shasum": ""
             },
             "require": {
@@ -2898,7 +2898,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2015-10-15 22:28:00"
+            "time": "2016-03-08 01:15:46"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -4308,12 +4308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "a869401365f0c330a87db2666870856781e4dc5d"
+                "reference": "90c383e3c7ed679ee70040dc13413be1d0bf619b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/a869401365f0c330a87db2666870856781e4dc5d",
-                "reference": "a869401365f0c330a87db2666870856781e4dc5d",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/90c383e3c7ed679ee70040dc13413be1d0bf619b",
+                "reference": "90c383e3c7ed679ee70040dc13413be1d0bf619b",
                 "shasum": ""
             },
             "require": {
@@ -4354,7 +4354,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2016-02-15 19:57:54"
+            "time": "2016-03-07 09:59:17"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -5595,16 +5595,16 @@
         },
         {
             "name": "react/event-loop",
-            "version": "v0.4.1",
+            "version": "v0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/event-loop.git",
-                "reference": "18c5297087ca01de85518e2b55078f444144aa1b"
+                "reference": "164799f73175e1c80bba92a220ea35df6ca371dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/18c5297087ca01de85518e2b55078f444144aa1b",
-                "reference": "18c5297087ca01de85518e2b55078f444144aa1b",
+                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/164799f73175e1c80bba92a220ea35df6ca371dd",
+                "reference": "164799f73175e1c80bba92a220ea35df6ca371dd",
                 "shasum": ""
             },
             "require": {
@@ -5618,12 +5618,12 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4-dev"
+                    "dev-master": "0.5-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "React\\EventLoop\\": ""
+                    "React\\EventLoop\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -5632,9 +5632,10 @@
             ],
             "description": "Event loop abstraction layer that libraries can use for evented I/O.",
             "keywords": [
+                "asynchronous",
                 "event-loop"
             ],
-            "time": "2014-02-26 17:36:58"
+            "time": "2016-03-08 02:09:32"
         },
         {
             "name": "react/promise",
@@ -7904,12 +7905,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "b0bed5823933c7f26d338ad8938b8ad3a7c140e5"
+                "reference": "53f556beed129d4369d8c0ede0d2a4481cb76825"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/b0bed5823933c7f26d338ad8938b8ad3a7c140e5",
-                "reference": "b0bed5823933c7f26d338ad8938b8ad3a7c140e5",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/53f556beed129d4369d8c0ede0d2a4481cb76825",
+                "reference": "53f556beed129d4369d8c0ede0d2a4481cb76825",
                 "shasum": ""
             },
             "require": {
@@ -7935,7 +7936,7 @@
             ],
             "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2016-03-07 02:49:57"
+            "time": "2016-03-08 08:56:21"
         },
         {
             "name": "zendframework/zend-queue",
