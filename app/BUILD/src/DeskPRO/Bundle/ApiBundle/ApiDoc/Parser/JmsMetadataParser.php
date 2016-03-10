@@ -60,7 +60,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
             ];
             $parts     = explode('\\', $nestedType['name']);
             $base_name = end($parts);
-            if ($item->type === EntityInterface::SERIALIZER_TYPE) {
+            if ($item->type['name'] === EntityInterface::SERIALIZER_TYPE) {
                 return $return + [
                             'normalized' => sprintf('integer id (%s)', $base_name),
                             'actualType' => DataTypes::COLLECTION,

@@ -196,8 +196,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
             );
         } catch (\InvalidArgumentException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } finally {
-            throw new BadRequestHttpException();
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException($e->getMessage());
         }
     }
 
