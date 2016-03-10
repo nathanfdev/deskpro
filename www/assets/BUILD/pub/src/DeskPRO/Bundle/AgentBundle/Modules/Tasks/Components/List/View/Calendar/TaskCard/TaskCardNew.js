@@ -13,7 +13,7 @@ import {
 import {
   TitleForm,
   DateDue,
-  TicketLinkContainer,
+  LinkedItemContainer,
   CardProjectContainer,
   AssignButton,
   AssigneeAvatar
@@ -59,6 +59,11 @@ export class TaskCardNew extends React.Component {
         teams: [],
         departments: []
       }),
+      links: Immutable.fromJS({
+        linked_tickets: [],
+        linked_chats: [],
+        linked_articles: []
+      }),
       project: null
     });
     this.defaultDate = this.state.due;
@@ -99,7 +104,7 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { title, due, project, assignee, submit } = this.state;
+    const { title, due, project, assignee, links, submit } = this.state;
 
     return (
       <Card statusBars={false}
@@ -127,7 +132,7 @@ export class TaskCardNew extends React.Component {
                                   onChange={this.onChange.bind(this, 'project')}
                                   onSetEditing={this.onSetEditing}
                                   openBySingleClick />
-            <TicketLinkContainer />
+            <LinkedItemContainer value={links} />
           </CardLineLeft>
         </CardLine>
       </Card>

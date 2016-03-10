@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { ProjectsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/Form/Fields/ProjectsList';
 import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { CardWidget } from './CardWidget';
 
@@ -69,7 +68,7 @@ export class CardProject extends CardWidget {
     const title = project ? project.get('title') : 'N/A';
 
     return (
-      <div style={{display: 'inline-block', width: '30%'}}>
+      <div style={{display: 'inline-block', maxWidth: '30%'}}>
         <div className="dpwd--card-line-item" ref="button" {...prop}
              style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
           <i className="fa fa-book" style={{position: 'absolute', left: 2, top: 2}} />
@@ -83,9 +82,9 @@ export class CardProject extends CardWidget {
                   zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose}
-                    additionalNodes={[this.refs.button, 'popup', '.fa-check']}>
+                    additionalNodes={[this.refs.button, '.fa-check']}>
 
-            <div className="dpw-navigation-dropdown-panel" style={{width: 240}}>
+            <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
