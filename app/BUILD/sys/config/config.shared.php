@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -245,12 +245,19 @@ $container->loadFromExtension(
                         ),
                     ),
                 ),
+                'system' => array(
+                    'connection' => 'system',
+                    'mappings'   => array(
+                        'SystemBundle' => null,
+                    ),
+                ),
             ),
         ),
         'dbal' => array(
             'default_connection' => 'default',
             'connections'        => array(
                 'default'      => ['host' => 'see DbalConnectionPass'],
+                'system'       => ['host' => 'see DbalConnectionPass'],
                 'read'         => ['host' => 'see DbalConnectionPass'],
                 'read_reports' => ['host' => 'see DbalConnectionPass'],
                 'read_search'  => ['host' => 'see DbalConnectionPass'],

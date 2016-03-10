@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,14 +44,15 @@ class InstallTablesStep extends AbstractStep
         # Read schema
         #------------------------------
 
-        $cache_path = $this->getContext()->getDpEnv()->getAppBaseKernelCacheDir()
-            .DIRECTORY_SEPARATOR
-            .'deskpro_schema.php';
+        $db_cache_dir          = $this->getContext()->getDpEnv()->getAppBaseKernelCacheDir();
+        $default_db_cache_path = $db_cache_dir.DIRECTORY_SEPARATOR.'default_deskpro_schema.php';
+        $system_db_cache_path  = $db_cache_dir.DIRECTORY_SEPARATOR.'system_deskpro_schema.php';
 
         $is_dev = $this->getSession()->getSource() === InstallSession::SOURCE_DEV;
 
-        if (!$is_dev && file_exists($cache_path)) {
-            $schema = SchemaArray::createFromFile($cache_path);
+        if (!$is_dev && file_exists($default_db_cache_path) && file_exists($system_db_cache_path)) {
+            $default_db_schema = SchemaArray::createFromFile($default_db_cache_path);
+            $system_db_schema  = SchemaArray::createFromFile($system_db_cache_path);
         } else {
             if (!$is_dev) {
                 $this->writeln('<error>No schema file exists</error>');
@@ -67,9 +68,9 @@ class InstallTablesStep extends AbstractStep
             $builder = new ProcessBuilder([
                 $this->getSession()->getPaths()->php_path,
                 $this->getContext()->getDpEnv()->getDpRoot().'/bin/console',
-                'dpdev:gen:schema-file',
+                'dpdev:gen:schema-files',
                 '--barg',
-                'is-building'
+                'is-building',
             ]);
 
             $proc = $builder->getProcess();
@@ -77,24 +78,25 @@ class InstallTablesStep extends AbstractStep
             $this->writeln('');
             $proc->run();
 
-            if (!$proc->isSuccessful() || !file_exists($cache_path)) {
-                $this->writeln('<error>Command failed. Try running it manually.</error>');
+            if (!$proc->isSuccessful() || !file_exists($default_db_cache_path) || !file_exists($system_db_cache_path)) {
+                $files = "$default_db_cache_path and $system_db_cache_path";
+                $this->writeln("<error>Command failed to create $files. Try running it manually.</error>");
                 $this->markAsFailed();
 
                 return;
             }
 
-            $schema = SchemaArray::createFromFile($cache_path);
+            $default_db_schema = SchemaArray::createFromFile($default_db_cache_path);
+            $system_db_schema  = SchemaArray::createFromFile($system_db_cache_path);
         }
 
-        $schemaInstaller = new SchemaInstaller($schema);
-
         #------------------------------
-        # DB connection
+        # DB connections
         #------------------------------
 
         try {
-            $pdo = $this->getSession()->getDbInfo()->getPdo();
+            $default_pdo = $this->getSession()->getDbInfo()->getPdo();
+            $system_pdo  = $this->getSession()->getSystemDbInfo()->getPdo();
         } catch (\Exception $e) {
             $this->writeln('');
             $this->writeln('<error>There was an error while installing the database:</error>');
@@ -105,8 +107,21 @@ class InstallTablesStep extends AbstractStep
         }
 
         #------------------------------
-        # Install it
+        # Install schemas
         #------------------------------
+        $this->installSchema($default_pdo, $default_db_schema);
+        $this->installSchema($system_pdo, $system_db_schema);
+
+        $this->getSession()->enableFlag('install_tables_ok');
+    }
+
+    /**
+     * @param \PDO        $pdo
+     * @param SchemaArray $schema
+     */
+    private function installSchema(\PDO $pdo, SchemaArray $schema)
+    {
+        $schemaInstaller = new SchemaInstaller($schema);
 
         $progress = $this->createProgressBar(count($schema));
         $progress->setFormat('%current%/%max% [%bar%] %percent:3s%%');
@@ -145,8 +160,7 @@ class InstallTablesStep extends AbstractStep
 
         $this->writeln('');
         $this->writeln('Done');
-
-        $this->getSession()->enableFlag('install_tables_ok');
+        $this->writeln('');
     }
 
     public function isComplete()

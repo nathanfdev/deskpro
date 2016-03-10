@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,7 +43,7 @@ class GenSchemaFileCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:gen:schema-file');
+        $this->setName('dpdev:gen:schema-files');
     }
 
     /**
@@ -51,10 +51,16 @@ class GenSchemaFileCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->generateSchemaForManager('default', $output);
+        $this->generateSchemaForManager('system', $output);
+    }
+
+    private function generateSchemaForManager($name, OutputInterface $output)
+    {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $em = $this->getContainer()->get('doctrine')->getManager();
+        $em = $this->getContainer()->get('doctrine')->getManager($name);
 
         $output->writeln('Generating map... This might take a while.');
         $startTime = microtime(true);
@@ -63,8 +69,8 @@ class GenSchemaFileCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Generated schema of %d artefacts %.3fs', $gen->count(), microtime(true) - $startTime));
 
-        $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'deskpro_schema.php';
-        $gen->dumpToFile($writePath);
-        $output->writeln(sprintf('Wrote schema to: <info>%s</info>', $writePath));
+        $write_path = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$name.'_deskpro_schema.php';
+        $gen->dumpToFile($write_path);
+        $output->writeln(sprintf('Wrote schema to: <info>%s</info>', $write_path));
     }
 }
