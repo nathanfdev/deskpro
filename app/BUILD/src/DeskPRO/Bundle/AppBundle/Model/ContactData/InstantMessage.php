@@ -29,11 +29,30 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\JMS\ContactData;
+namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
+
+use Application\DeskPRO\Entity\ContactDataAbstract;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class Phone.
+ * Class InstantMessage.
+ *
+ * @JMS\ExclusionPolicy("none")
  */
-class Phone
+class InstantMessage extends AbstractUserNameContactData
 {
+    /**
+     * @var string
+     */
+    protected $service;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(ContactDataAbstract $contact_data)
+    {
+        parent::__construct($contact_data);
+
+        $this->service = $contact_data->getField2();
+    }
 }

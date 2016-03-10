@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\JMS\ContactData;
+namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
 
 /**
- * Class Twitter.
+ * Class SerializerTypes.
  */
-class Twitter
+final class SerializerTypes
 {
+    const TYPE_ENTITY       = 'entity';
+    const TYPE_CONTACT_DATA = 'contact_data';
 }

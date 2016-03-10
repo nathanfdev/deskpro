@@ -38,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 /**
  * Class OrganizationTransformer.
  */
-class OrganizationTransformer extends AbstractDataSerializerTransformer
+class OrganizationTransformerToRemove extends AbstractDataSerializerTransformer
 {
     private $chatDataService;
 

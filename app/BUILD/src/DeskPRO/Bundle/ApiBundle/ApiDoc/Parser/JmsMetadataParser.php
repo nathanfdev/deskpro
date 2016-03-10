@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Parser;
 
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\SerializerTypes;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Nelmio\ApiDocBundle\DataTypes;
 
@@ -60,7 +60,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
             ];
             $parts     = explode('\\', $nestedType['name']);
             $base_name = end($parts);
-            if ($item->type['name'] === EntityInterface::SERIALIZER_TYPE) {
+            if ($item->type['name'] === SerializerTypes::TYPE_ENTITY) {
                 return $return + [
                             'normalized' => sprintf('integer id (%s)', $base_name),
                             'actualType' => DataTypes::COLLECTION,
@@ -86,7 +86,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         if (isset($item->type['name']) && in_array($item->type['name'], array('array', 'ArrayCollection'))) {
             if (
                 isset($item->type['params'][0]['name'])
-                && $item->type['params'][0]['name'] === EntityInterface::SERIALIZER_TYPE
+                && $item->type['params'][0]['name'] === SerializerTypes::TYPE_ENTITY
                 // OMG!
                 && isset($item->type['params'][0]['params'][0]['name'])
             ) {
@@ -98,7 +98,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
             return false;
         } elseif (
             isset($item->type['name'])
-            && $item->type['name'] === EntityInterface::SERIALIZER_TYPE
+            && $item->type['name'] === SerializerTypes::TYPE_ENTITY
             && isset($item->type['params'][0]['name'])
         ) {
             return [

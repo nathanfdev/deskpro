@@ -49,6 +49,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner
 {
@@ -56,6 +58,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The unique ID.
      *
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -72,6 +77,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var string
      *
      * @Assert\NotBlank()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $name = null;
 
@@ -79,6 +87,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The summary field as filled in by agents.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $summary = '';
 
@@ -88,6 +99,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var int
      *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $importance = 0;
 
@@ -120,6 +134,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<contact_data>")
      */
     protected $contact_data;
 
@@ -135,6 +152,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The date the org was inserted into the system.
      *
      * @var \DateTime
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_created;
 
@@ -149,14 +169,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $twitter_users;
 
     /**
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
-     *
      * @var Person[]|ArrayCollection
      */
     protected $employees;
 
     /**
      * @var Organization|null
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      */
     protected $parent;
 

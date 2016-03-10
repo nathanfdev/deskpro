@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\JMS\ContactData;
+namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
 
 /**
  * Class Facebook.
  */
-class Facebook
+class Facebook extends AbstractUrlContactData
 {
 }

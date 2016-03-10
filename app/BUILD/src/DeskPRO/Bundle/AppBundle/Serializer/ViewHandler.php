@@ -39,6 +39,9 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
      */
     protected $annotation;
 
+    /**
+     * {@inheritdoc}
+     */
     public function handle(View $view, Request $request = null)
     {
         // I know, I know...
@@ -52,6 +55,11 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
         return parent::handle($view, $request);
     }
 
+    /**
+     * @param View $view
+     *
+     * @return SideloadSerializationContext
+     */
     protected function getSerializationContext(View $view)
     {
         $context = SideloadSerializationContext::createContext($this->container);

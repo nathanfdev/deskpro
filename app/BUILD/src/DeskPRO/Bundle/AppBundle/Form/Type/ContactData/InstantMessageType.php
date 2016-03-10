@@ -45,7 +45,7 @@ class InstantMessageType extends AbstractContactDataItemType
      */
     public static function getContactType()
     {
-        return 'im';
+        return 'instant_message';
     }
 
     /**

@@ -1,7 +1,12 @@
 services:
 
-  api_serializer.entity_serialization_handler:
+  api_serializer.handler.entity:
     class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\EntitySerializationHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.contact_data:
+    class: DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\ContactDataHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

@@ -29,29 +29,42 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
+namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
+
+use Application\DeskPRO\Entity\ContactDataAbstract;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * A piece of data that has a meaningful identity in the system.
+ * Class AbstractContactData.
  *
- * Doctrine entities implement this interface, but other models could implement the EntityInterface as well.
+ * @JMS\ExclusionPolicy("none")
  */
-interface EntityInterface
+abstract class AbstractContactData
 {
     /**
-     * A unique identifier for this entity. Usually an integer, but can also be an array for a composite ID.
-     *
-     * Empty or bolean values are all considered to be equal, and can safely be interpreted as "null". For instance all
-     * of these values would be considered to be a "null" id:
-     *  - boolean (true or false)
-     *  - empty string
-     *  - empty array
-     *  - null
-     *  - an array of the above values.
-     *
-     * It is important to note that the integer zero is NOT considered null, and is a valid ID.
-     *
-     * @return mixed
+     * @var int
      */
-    public function getId();
+    protected $id;
+
+    /**
+     * @var string
+     */
+    protected $contact_type;
+
+    /**
+     * @var string
+     */
+    protected $comment;
+
+    /**
+     * Constructor.
+     *
+     * @param ContactDataAbstract $contact_data
+     */
+    public function __construct(ContactDataAbstract $contact_data)
+    {
+        $this->id           = $contact_data->getId();
+        $this->contact_type = $contact_data->getContactType();
+        $this->comment      = $contact_data->getComment();
+    }
 }

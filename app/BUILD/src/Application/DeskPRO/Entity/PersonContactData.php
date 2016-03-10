@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * A persons contact data.
@@ -45,9 +44,6 @@ class PersonContactData extends ContactDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\Person
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $person;
 

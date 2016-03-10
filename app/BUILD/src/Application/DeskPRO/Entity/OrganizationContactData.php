@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Contact data for an organization.
@@ -44,9 +43,6 @@ class OrganizationContactData extends ContactDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\Organization
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      */
     protected $organization;
 
