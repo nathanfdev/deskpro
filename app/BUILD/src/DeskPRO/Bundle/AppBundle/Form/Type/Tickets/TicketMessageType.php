@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -113,7 +114,7 @@ class TicketMessageType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'          => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'data_class'          => TicketMessage::class,
                 'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
                 'attr'                => ['data-rte' => '1'],
                 'error_bubbling'      => false,
@@ -134,8 +135,8 @@ class TicketMessageType extends AbstractType
                 'person',
             ])
             ->setAllowedTypes([
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-                'ticket' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'person' => Person::class,
+                'ticket' => Ticket::class,
             ])
             ->setAllowedValues([
                 'format' => ['', 'html', 'text'],
