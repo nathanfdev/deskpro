@@ -69,7 +69,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *     filters={
      *          {"name"="ids", "dataType"="string", "pattern"="1,2,3 ..."},
      *          {"name"="my", "dataType"="boolean", "pattern"="1|0"}
-     *     }
+     *     },
+     *     output="array<DeskPRO\Bundle\ApiBundle\Model\AgentTeam>"
      *
      * )
      * @Annotations\Get("/agent_teams", name="api_agent_teams")
@@ -131,7 +132,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *     statusCodes={
      *         200="Returned if team was found",
      *         404="Returned if team with specified id was not found"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Get("/agent_teams/{id}", name="api_agent_teams_get")
      *
@@ -173,7 +175,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          404="Returned when chat was not found",
      *          400="In all other cases except system error",
      *          500="Will be returned in case server malfunction"
-     *      }
+     *      },
+     *      output="array<DeskPRO\Bundle\ApiBundle\Model\ApiPerson>"
      * )
      * @Annotations\Get("/agent_teams/{id}/agents", name="api_agent_teams_agents")
      *
@@ -209,7 +212,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *     statusCodes={
      *         201="Will be returned in case of successful team creating",
      *         400="You request was malformed"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Post("/agent_teams", name="api_agent_teams_post")
      *
@@ -247,7 +251,8 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *         204="Returned if team was successfully updated",
      *         400="You request was malformed",
      *         404="Team with specified id was not found"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\AgentTeam"
      * )
      * @Annotations\Put("/agent_teams/{id}", name="api_agent_teams_put")
      *

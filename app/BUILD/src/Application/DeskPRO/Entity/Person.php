@@ -48,6 +48,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -114,6 +115,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime                           $date_password_set
  * @property \DateTime                           $date_picture_check
  * @property string                              $browser
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
     EquatableInterface, Chatable, LabelsOwner
