@@ -55,6 +55,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudController extends BaseController
 {
     public static $entity;
+    public static $output_entity;
     public static $type;
 
     /**
