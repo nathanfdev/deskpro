@@ -386,6 +386,7 @@ button, .button, input[type="submit"] {
   font-size: 13px;
   line-height: 1em;
   text-align: center;
+  @include margin-right(10px);
 
   @media screen and (max-width: 760px) {
     display: block;
@@ -515,10 +516,6 @@ button, .button, input[type="submit"] {
 
   &.button-resolved {
     @include generate-background-and-border($button-color-secondary);
-  }
-
-  &[type="reset"] {
-    @include margin-left(10px);
   }
 }
 
