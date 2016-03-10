@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\AgentTeams;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -40,11 +39,15 @@ use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
  */
 class AgentTeamsDataService extends AbstractDataService
 {
-    public function getAgentsFromTeam($teamId)
+    public function getAgentsFromTeam($team_id)
     {
         $repo = $this->em->getRepository('DeskPRO:AgentTeam');
         /** @var AgentTeam $team */
-        $team = $repo->find($teamId);
+        $team = $repo->find($team_id);
+
+        if (!$team) {
+            throw new \InvalidArgumentException(sprintf('Team with specified id [ %d ] not found', $team_id));
+        }
 
         return $team->getPersonList();
     }

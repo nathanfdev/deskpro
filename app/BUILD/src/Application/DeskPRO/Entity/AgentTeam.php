@@ -93,6 +93,14 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function __construct()
     {
         $this->members         = new ArrayCollection();

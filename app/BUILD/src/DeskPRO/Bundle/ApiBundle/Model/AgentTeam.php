@@ -59,7 +59,7 @@ class AgentTeam
     public function __construct(AgentTeamEntity $agent_team)
     {
         $this->id   = $agent_team->getId();
-        $this->name = $agent_team->name;
+        $this->name = $agent_team->getName();
     }
 
     /**
