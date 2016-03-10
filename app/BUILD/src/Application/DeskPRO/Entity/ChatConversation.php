@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,14 +40,16 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 
 /**
  * A conversation between one or more people.
  *
+ * @JMS\ExclusionPolicy("all")
+ *
  * @property string $person_name
  * @property string $person_email
- *
  * @PortalLinkRoute("portal_chats_view", route_param_map={"chat":"id"})
  */
 class ChatConversation extends DomainObject
@@ -62,11 +64,20 @@ class ChatConversation extends DomainObject
     const ENDED_USER         = 'user';
 
     /**
+     * The unique id of chat conversation.
+     *
+     * @JMS\Expose()
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Department which chat was assigned.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     * @JMS\Expose()
+     *
      * @var \Application\DeskPRO\Entity\Department
      */
     protected $department = null;
@@ -77,17 +88,30 @@ class ChatConversation extends DomainObject
     protected $labels;
 
     /**
+     * Subject of the chat conversation.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $subject = '';
 
     /**
+     * Status of the chat conversation.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status = 'open';
 
     /**
      * If this is a user conversation, this is the agent assigned.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -102,6 +126,9 @@ class ChatConversation extends DomainObject
 
     /**
      * If this is a user conversation, this is the user who started the chat.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -122,12 +149,18 @@ class ChatConversation extends DomainObject
     /**
      * User chat: The users name, if they arent a person.
      *
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
      * @var string
      */
     protected $person_name = '';
 
     /**
-     * User chat: The users email, if they arent a person.
+     * User chat: The users email, if they aren`t a person.
+     *
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -179,6 +212,11 @@ class ChatConversation extends DomainObject
     protected $is_window = false;
 
     /**
+     * Date when chat was started.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
+     *
      * @var \DateTime
      */
     protected $date_created;
@@ -196,6 +234,11 @@ class ChatConversation extends DomainObject
     protected $date_assigned;
 
     /**
+     * Date when agent typed last time.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
+     *
      * @var \DateTime
      */
     protected $date_agent_typing;
@@ -206,6 +249,11 @@ class ChatConversation extends DomainObject
     protected $date_first_agent_message;
 
     /**
+     * Date when chat was ended.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
+     *
      * @var \DateTime
      */
     protected $date_ended;
@@ -215,17 +263,30 @@ class ChatConversation extends DomainObject
      */
     protected $total_to_ended = 0;
 
-    /**
+    /** Who ended the chat
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $ended_by = '';
 
     /**
+     * True if transcript should be send.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $should_send_transcript = false;
 
     /**
+     * Date when transcript was sent.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
+     *
      * @var \DateTime
      */
     protected $date_transcript_sent = null;
@@ -732,6 +793,15 @@ class ChatConversation extends DomainObject
         return $this->department;
     }
 
+    /**
+     * Department identity which chat was assigned.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("department_id")
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
     public function getDepartmentId()
     {
         if ($this->department) {
@@ -751,6 +821,15 @@ class ChatConversation extends DomainObject
         $this->_created_messages = array();
     }
 
+    /**
+     * Subject line for sending purposes.
+     *
+     * @JMS\Type("string")
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("subject_line")
+     *
+     * @return string
+     */
     public function getSubjectLine()
     {
         if ($this->subject) {

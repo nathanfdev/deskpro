@@ -244,7 +244,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Department>>")
      * @JMS\SerializedName("departments")
      *
      * @return array
