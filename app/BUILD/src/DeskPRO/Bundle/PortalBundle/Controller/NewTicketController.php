@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,7 +84,9 @@ class NewTicketController extends AbstractController
             'settings'              => $this->getBrandContainer()->getSettings(),
             'action'                => $this->generateUrl('portal_new_ticket'),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
-            'allow_extra_fields'    => true,
+            // next to allow extra fields if its saved form because name/email etc will be on origin form,
+            // but not this one now that the user is logged-in
+            'allow_extra_fields' => true,
         ]);
         $form->handleRequest($request);
 

@@ -218,37 +218,29 @@ var slate = require('gulp-slate');
 
 gulp.task('slate', function() {
 
-  return Promise.all(
-    [
-      new Promise(function(resolve, reject) {
-        var options = {
-          scss: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
-          style: 'androidstudio',
-          logo: 'static/Common/deskpro-logo_2x.png',
-          template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html',
-        };
-        gulp.src(
-          [
-            '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
-          ]
-          )
-          .pipe(slate(options))
-          .on('erorr', reject)
-          .pipe(gulp.dest('build/apidocs'))
-          .on('end', resolve)
-        ;
-      }),
-
-      new Promise(function(resolve) {
+  return new Promise(function(resolve, reject) {
+    var options = {
+      scss: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
+      style: 'androidstudio',
+      logo: 'static/Common/deskpro-logo_2x.png',
+      template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html'
+    };
+    gulp.src(
+      [
+        '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
+      ]
+      )
+      .pipe(slate(options))
+      .on('erorr', reject)
+      .pipe(gulp.dest('build/apidocs'))
+      .on('end', function() {
         gulp.src(['build/apidocs/index.html.twig'])
           .pipe(gulp.dest(
             '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/'
           ))
-          .on('end', resolve)
-        ;
-      })
-    ]
-  );
+          .on('end', resolve);
+      });
+  });
 });
 
 // ######################################################################################################################
@@ -378,7 +370,9 @@ function getWebpackConfig(mode, isDevServer, isProd) {
   if (mode === 'all' || mode === 'portal') {
     config.entry['widget_loader'] = ['./src/DeskPRO/Bundle/WidgetBundle/widget_loader.js'];
     config.entry['DeskPRO_PortalBundle'] = ['./src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle'];
+
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'];
+    config.entry['DeskPRO_PortalBundle_rtl_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
 
     config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];

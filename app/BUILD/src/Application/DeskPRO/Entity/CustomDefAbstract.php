@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -317,6 +317,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->children;
     }
 
+    /**
+     * @return bool
+     */
     public function hasChildren()
     {
         return count($this->children) > 0;
@@ -328,6 +331,53 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("choices")
+     *
+     * @return array
+     */
+    public function getChoices()
+    {
+        $map      = [];
+        $children = $this->getChildren();
+        foreach ($children as $c) {
+            $pid = (int) $c->getOption('parent_id', 0);
+            if (!isset($map[$pid])) {
+                $map[$pid] = [];
+            }
+
+            $map[$pid][$c->getId()] = $c;
+        }
+
+        $iter = function ($parent_id, $depth = 0) use ($map, &$iter) {
+            if (empty($map[$parent_id])) {
+                return [];
+            }
+
+            $level_choices = [];
+            /** @var CustomDefAbstract $c */
+            foreach ($map[$parent_id] as $c) {
+                $subs = $iter($c->getId(), $depth + 1);
+                $row  = [
+                    'id'            => $c->getId(),
+                    'title'         => $c->getTitle(),
+                    'is_selectable' => empty($subs),
+                ];
+
+                if ($subs) {
+                    $row['children'] = $subs;
+                }
+
+                $level_choices[] = $row;
+            }
+
+            return $level_choices;
+        };
+
+        return $iter(0);
     }
 
     /**
@@ -794,6 +844,10 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * we return the real type of field (e.g., checkbox or radio) based on display options.
      *
      * @return string
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     * @JMS\SerializedName("widget_type")
      */
     public function getWidgetType()
     {

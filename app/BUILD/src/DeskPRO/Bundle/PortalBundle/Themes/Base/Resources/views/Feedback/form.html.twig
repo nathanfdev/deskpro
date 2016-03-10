@@ -1,15 +1,17 @@
 {{ form_errors(form) }}
 {{ form_start(form) }}
 <div class="feedback-form">
-    <div class="main-input">
-        <span>{{ phrase('portal.feedback.form_i_have_a') }}:</span>
-        {{ form_errors(form.category) }}
-        {{ form_widget(form.category) }}
-        <a href="#" class="button feedback-selected-start">{{ phrase('portal.feedback.form_start') }}</a>
+    {{ form_errors(form.category) }}
+
+    <div class="main-input dpx-form">
+        <h3>{{ phrase('portal.feedback.form_i_have_a') }}:</h3>
+        <div class="question-type">
+            {{ form_widget(form.category) }}
+        </div>
     </div>
 </div>
 
-<div class="feedback-form-expanded as-no-dpui"{% if form_was_submitted %} data-do-show="true"{% endif %}>
+<div class="feedback-form-expanded as-no-dpui dpx-form"{% if form_was_submitted %} data-do-show="true"{% endif %}>
     {% if is_user() %}
         <div>
             <a class="user-logged-in" href="#">

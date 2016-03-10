@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -133,7 +133,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      */
     public function getOrder()
     {
-        return 80;
+        return 90;
     }
 
     /**
@@ -261,6 +261,7 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $i     = 0;
         $batch = [];
+
         while ($i++ < self::NUM_PUBLISH) {
             $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
             $values      = [
@@ -274,6 +275,23 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             if ($content !== self::TABLE_ARTICLES) {
                 $values['category_id'] = $this->faker->randomElement($this->content[$content]['categories']);
             }
+
+            if ($content === self::TABLE_DOWNLOADS) {
+                $file_info = $this->faker->randomElement([
+                    ['name' => 'file.txt', 'ext' => 'txt', 'type' => 'text/plain',      'content' => 'example file'],
+                    ['name' => 'file.zip', 'ext' => 'zip', 'type' => 'application/zip', 'file' => DP_APP_DIR.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip'],
+                    ['name' => 'file.pdf', 'ext' => 'pdf', 'type' => 'application/pdf', 'file' => DP_APP_DIR.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf'],
+                    ['name' => 'file.jpg', 'ext' => 'jpg', 'type' => 'image/jpeg',      'file' => DP_APP_DIR.'/src/Application/DeskPRO/Resources/assets/avatar-man-face.png'],
+                ]);
+                $blob_info = $this->container->get('blob.storage')->createBlobRecordFromString(
+                    @$file_info['content'] ?: file_get_contents($file_info['file']),
+                    $file_info['name'],
+                    $file_info['type']
+                );
+                $values['filename'] = trim(substr($values['slug'], 0, 10), '-').".{$file_info['ext']}";
+                $values['blob_id']  = $blob_info['id'];
+            }
+
             $batch[] = $values;
         }
         $this->db->batchInsert($content, $batch, true);

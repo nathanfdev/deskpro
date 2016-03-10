@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -52,11 +53,16 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property string $group_by
  * @property string $order_by
  * @property string $display_order
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class LegacyTicketFilter extends DomainObject
 {
     /**
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -82,6 +88,9 @@ class LegacyTicketFilter extends DomainObject
 
     /**
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $title;
 
@@ -97,8 +106,11 @@ class LegacyTicketFilter extends DomainObject
 
     /**
      * @var array
+     *
+     * @JMS\Expose()
+     * @JMS\SerializedName("term")
      */
-    protected $terms = array();
+    protected $terms = [];
 
     /**
      * @var string
@@ -112,8 +124,43 @@ class LegacyTicketFilter extends DomainObject
 
     /**
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $display_order = 1000;
+
+    /**
+     * @var array
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     */
+    protected $filter_views = [];
+
+    /**
+     * @var array
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     */
+    protected $filter_preferences = [];
+
+    /**
+     * @var \DateTime
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     */
+    protected $date_created = null;
+
+    /**
+     * @var \DateTime
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     */
+    protected $date_updated = null;
 
     /**
      * Results from the last search.

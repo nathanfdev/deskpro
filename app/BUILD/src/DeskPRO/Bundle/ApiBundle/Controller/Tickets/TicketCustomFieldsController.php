@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,43 +29,32 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use Application\DeskPRO\Entity\CustomDefTicket;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TicketFilterTransformer.
+ * Class TicketCustomFieldsController.
+ *
+ * @ApiModes("all")
+ * @Route("/ticket_custom_fields")
  */
-class TicketFilterTransformer extends AbstractDataSerializerTransformer
+class TicketCustomFieldsController extends CrudController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
-    {
-        return [
-            'id',
-            'title',
-            'display_order',
-            'filter_set',
-            'filter_views',
-            'filter_preferences',
-            'date_created',
-            'date_updated',
-        ];
-    }
+    public static $exposeOnly = ['list', 'get'];
+    public static $entity     = CustomDefTicket::class;
+    public static $listOrder  = 'asc';
 
     /**
      * {@inheritdoc}
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        /** @var TicketFilter $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        return [
-            'term' => $data->getTerm(),
-        ];
+        $qb->andWhere('e.parent is null');
     }
 }

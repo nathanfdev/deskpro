@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -300,7 +300,7 @@ class AcceptPathsStep extends AbstractStep
         // Output is like:
         // /some/path/mysql  Ver 15.1 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64) using readline 5.1
 
-        if (!preg_match('#^([a-zA-Z0-9\\/\.\-_:]*)mysql\s*#m', $res, $match)) {
+        if (!preg_match('#^([a-zA-Z0-9\\/\.\-_:\\\\]*)mysql(\.exe)?\s*#m', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 
@@ -385,7 +385,7 @@ class AcceptPathsStep extends AbstractStep
         // Output is like:
         // /some/path/mysqldump  Ver 10.16 Distrib 10.1.10-MariaDB, for osx10.11 (x86_64)
 
-        if (!preg_match('#^([a-zA-Z0-9\\/\.\-_:]*)mysql\s*#m', $res, $match)) {
+        if (!preg_match('#^([a-zA-Z0-9\\/\.\-_:\\\\]*)mysqldump(\.exe)?\s*#m', $res, $match)) {
             $this->throwCmdVerifyError($proc);
         }
 
@@ -434,8 +434,9 @@ class AcceptPathsStep extends AbstractStep
     private function throwCmdVerifyError(Process $proc)
     {
         throw new \Exception(sprintf(
-            "The path you entered appears to be invalid. We executed the following command as a test:\n%s\nThe command did not succeed.",
-            $proc->getCommandLine()
+            "The path you entered appears to be invalid. We executed the following command as a test:\n%s\nThe command did not succeed. Output:\n%s\n",
+            $proc->getCommandLine(),
+            trim($proc->getOutput()."\n".$proc->getErrorOutput())
         ));
     }
 

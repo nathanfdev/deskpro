@@ -18,17 +18,21 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "Filter 1"
     And the JSON node "data[0].display_order" should be equal to 10
-    And the JSON node "data[0].filter_set" should be equal to 1
+    And the JSON node "data[0].ticket_filter_set" should be equal to 1
+    And the JSON node "data[0].filter_views" should exist
+    And the JSON node "data[0].filter_preferences" should exist
+    And the JSON node "data[0].date_created" should exist
+    And the JSON node "data[0].date_updated" should exist
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "Filter 2"
     And the JSON node "data[1].display_order" should be equal to 20
-    And the JSON node "data[1].filter_set" should be equal to 1
+    And the JSON node "data[1].ticket_filter_set" should be equal to 1
 
     And the JSON node "data[2].id" should be equal to 3
     And the JSON node "data[2].title" should be equal to "Filter 3"
     And the JSON node "data[2].display_order" should be equal to 30
-    And the JSON node "data[2].filter_set" should be equal to 2
+    And the JSON node "data[2].ticket_filter_set" should be equal to 2
 
   Scenario: I get ticket filter
     When I send a GET request to "/api/v2/new/ticket_filters/2"
@@ -37,7 +41,7 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.title" should be equal to "Filter 2"
     And the JSON node "data.display_order" should be equal to 20
-    And the JSON node "data.filter_set" should be equal to 1
+    And the JSON node "data.ticket_filter_set" should be equal to 1
     And the JSON node "data.term.op" should be equal to "is"
     And the JSON node "data.term.options.status[0]" should be equal to "resolved"
 
@@ -69,7 +73,7 @@ Feature: /new/ticket_filters endpoint
 {
   "title": "Filter 4",
   "display_order": 10,
-  "filter_set": 1,
+  "ticket_filter_set": 1,
   "term": {
     "type": "ticket_status",
     "op": "is",
@@ -84,7 +88,7 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data.id" should be equal to 4
     And the JSON node "data.title" should be equal to "Filter 4"
     And the JSON node "data.display_order" should be equal to 10
-    And the JSON node "data.filter_set" should be equal to 1
+    And the JSON node "data.ticket_filter_set" should be equal to 1
     And the JSON node "data.term.op" should be equal to "is"
     And the JSON node "data.term.options.status[0]" should be equal to "resolved"
 

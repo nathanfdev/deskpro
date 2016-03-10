@@ -26,7 +26,7 @@ export class ClickOut extends React.Component {
   };
 
   componentDidMount() {
-    $(this.getContext()).on('click', this.onClick);
+    $(this.getContext()).on('click touchend', this.onClick);
 
     const events = $._data(this.getContext(), 'events');
     if (events) {
@@ -38,11 +38,14 @@ export class ClickOut extends React.Component {
   }
 
   componentWillUnmount() {
-    $(this.getContext()).off('click', this.onClick);
+    $(this.getContext()).off('click touchend', this.onClick);
   }
 
   onClick = event => {
-    event.stopImmediatePropagation();
+    // dont use stopImmediatePropagation here because there may be multiple
+    // event listeners on the same context, and if we immediately stop propagation,
+    // it stops all listeners, not just the bubble
+    event.stopPropagation();
 
     const { additionalNodes = [], ignoreNodes, onClickOut, onClick } = this.props;
     // skip if clicking on one of the ignored nodes

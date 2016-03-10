@@ -19,6 +19,9 @@ Feature: /new/ticket_filter_sets endpoint
     And the JSON node "data[0].title" should be equal to "Filter set 1"
     And the JSON node "data[0].display_order" should be equal to 10
     And the JSON node "data[0].is_default" should be equal to 1
+    And the JSON node "data[0].filters" should exist
+    And the JSON node "data[0].private_agent" should exist
+    And the JSON node "data[0].shared_agents" should exist
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "Filter set 2"

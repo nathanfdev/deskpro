@@ -22,7 +22,7 @@ Welcome to the DeskPRO API!
 
 # Authentication
 
-There are exacly three way to become autheticated user:
+There are exactly three ways to become authenticated user:
 
  * Session
  * Key
