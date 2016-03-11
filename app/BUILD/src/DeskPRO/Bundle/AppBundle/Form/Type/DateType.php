@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -61,16 +64,25 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($options['widget'] === 'single_text') {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onParseDateTime']);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $current_date = new \DateTime();
         $current_year = (int) $current_date->format('Y');
-        $resolver->setDefaults(
-            [
-                'years'       => range(($current_year - 100), ($current_year + 100)),
-                'placeholder' => '',
-            ]
-        );
+
+        $resolver->setDefaults([
+            'years'       => range(($current_year - 100), ($current_year + 100)),
+            'placeholder' => '',
+        ]);
     }
 
     /**
@@ -91,6 +103,23 @@ class DateType extends AbstractType
                 }
             }
         }
+    }
+
+    /**
+     * Transform datetime string to date string.
+     *
+     * @param FormEvent $event
+     */
+    public function onParseDateTime(FormEvent $event)
+    {
+        try {
+            $data = new \DateTime($event->getData());
+            $data = $data->format('Y-m-d');
+        } catch (\Exception $e) {
+            $data = $event->getData();
+        }
+
+        $event->setData($data);
     }
 
     /**

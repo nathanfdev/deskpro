@@ -153,6 +153,7 @@ SQL
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('9', '8', '', '0', '0', 'Choice 1', '', '?', '1', '1', '13', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('10', '8', '', '0', '0', 'Choice 2', '', '?', '1', '1', '14', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('11', '8', '', '0', '0', 'Choice 3', '', '?', '1', '1', '15', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('12', '', '0', '0', 'Delivery Date', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Date', '?', '1', '1', '38', '0');
             "
             );
         }
@@ -187,18 +188,21 @@ SQL
             ->add(new LayoutField('ticket_field', 6)) // Text
             ->add(new LayoutField('ticket_field', 7)) // Textarea
             ->add(new LayoutField('ticket_field', 8)) // Checkbox group
+            ->add(new LayoutField('ticket_field', 12)) // Date
 
             ->add(new LayoutField('user_field', 1)) // Select box
             ->add(new LayoutField('user_field', 5)) // Datetime
             ->add(new LayoutField('user_field', 6)) // Text
             ->add(new LayoutField('user_field', 7)) // Textarea
             ->add(new LayoutField('user_field', 8)) // Checkbox group
+            ->add(new LayoutField('user_field', 12)) // Date
 
             ->add(new LayoutField('org_field', 1)) // Select box
             ->add(new LayoutField('org_field', 5)) // Datetime
             ->add(new LayoutField('org_field', 6)) // Text
             ->add(new LayoutField('org_field', 7)) // Textarea
             ->add(new LayoutField('org_field', 8)) // Checkbox group
+            ->add(new LayoutField('org_field', 12)) // Date
         ;
 
         $ticket_layout2               = new TicketLayout($dep2);
