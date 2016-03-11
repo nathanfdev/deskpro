@@ -30,15 +30,34 @@ namespace DeskPRO\Bundle\AppBundle\Serializer;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 
 class ViewHandler extends \FOS\RestBundle\View\ViewHandler
 {
+    /**
+     * @var \FOS\RestBundle\Controller\Annotations\View
+     */
+    protected $annotation;
+
+    public function handle(View $view, Request $request = null)
+    {
+        // I know, I know...
+        if (null === $request) {
+            $request = $this->container->has('request_stack')
+                ? $this->container->get('request_stack')->getCurrentRequest()
+                : $this->container->get('request');
+        }
+        $this->annotation = $request->attributes->get('_view');
+
+        return parent::handle($view, $request);
+    }
+
     protected function getSerializationContext(View $view)
     {
         $context = SideloadSerializationContext::createContext($this->container);
 
-        if ($context->attributes->get('groups')->isEmpty() && $this->exclusionStrategyGroups) {
-            $context->setGroups($this->exclusionStrategyGroups);
+        if ($this->annotation && $groups = $this->annotation->getSerializerGroups()) {
+            $context->setGroups(array_merge($groups, ['wrapper']));
         }
 
         if ($context->attributes->get('version')->isEmpty() && $this->exclusionStrategyVersion) {

@@ -26,10 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model\Factory;
+namespace DeskPRO\Bundle\AppBundle\Model\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
-use DeskPRO\Bundle\ApiBundle\Model\AgentTeam;
+use DeskPRO\Bundle\AppBundle\Model\AgentTeam;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
