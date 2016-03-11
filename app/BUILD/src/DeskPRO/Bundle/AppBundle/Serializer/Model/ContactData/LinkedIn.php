@@ -29,42 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
-
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use JMS\Serializer\Annotation as JMS;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData;
 
 /**
- * Class Phone.
- *
- * @JMS\ExclusionPolicy("none")
+ * Class LinkedIn.
  */
-class Phone extends AbstractContactData
+class LinkedIn extends AbstractUrlContactData
 {
-    /**
-     * @var string
-     */
-    protected $code;
-
-    /**
-     * @var string
-     */
-    protected $number;
-
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(ContactDataAbstract $contact_data)
-    {
-        parent::__construct($contact_data);
-
-        $this->code   = $contact_data->getField1();
-        $this->number = $contact_data->getField2();
-        $this->type   = $contact_data->getField3();
-    }
 }

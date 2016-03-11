@@ -29,30 +29,42 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AbstractUrlContactData.
+ * Class AbstractContactData.
  *
  * @JMS\ExclusionPolicy("none")
  */
-abstract class AbstractUrlContactData extends AbstractContactData
+abstract class AbstractContactData
 {
+    /**
+     * @var int
+     */
+    protected $id;
+
     /**
      * @var string
      */
-    protected $url;
+    protected $contact_type;
 
     /**
-     * {@inheritdoc}
+     * @var string
+     */
+    protected $comment;
+
+    /**
+     * Constructor.
+     *
+     * @param ContactDataAbstract $contact_data
      */
     public function __construct(ContactDataAbstract $contact_data)
     {
-        parent::__construct($contact_data);
-
-        $this->url = $contact_data->getField1();
+        $this->id           = $contact_data->getId();
+        $this->contact_type = $contact_data->getContactType();
+        $this->comment      = $contact_data->getComment();
     }
 }

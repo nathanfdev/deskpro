@@ -43,14 +43,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * An organization is a grouping we put similar people into (eg companies).
- *
- * @JMS\ExclusionPolicy("all")
  */
 class Organization extends DomainObject implements HighlightableModelInterface, AvatarOwner, Entity\Labels\LabelsOwner
 {
@@ -58,9 +55,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The unique ID.
      *
      * @var int
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -77,9 +71,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var string
      *
      * @Assert\NotBlank()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      */
     protected $name = null;
 
@@ -87,9 +78,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The summary field as filled in by agents.
      *
      * @var string
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      */
     protected $summary = '';
 
@@ -99,9 +87,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var int
      *
      * @Assert\NotNull()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $importance = 0;
 
@@ -114,9 +99,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * Usergroups the user belongs to.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Usergroup>>")
      */
     protected $usergroups;
 
@@ -132,16 +114,11 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @Assert\Valid()
      * @UniqueCollection()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelOrganization>>")
      */
     protected $labels;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @JMS\Expose()
      */
     protected $contact_data;
 
@@ -150,9 +127,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @Assert\Valid()
      * @UniqueCollection()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\OrganizationEmailDomain>>")
      */
     protected $email_domains;
 
@@ -160,9 +134,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * The date the org was inserted into the system.
      *
      * @var \DateTime
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      */
     protected $date_created;
 
@@ -183,9 +154,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var Organization|null
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      */
     protected $parent;
 
@@ -299,6 +267,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->_onPropertyChanged('importance', $old, $this->importance);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImportance()
+    {
+        return $this->importance;
     }
 
     /**
@@ -545,6 +521,22 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @return Organization|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Set organization picture.
      *
      * @param Blob|null $blob
@@ -708,6 +700,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getEmailDomains()
+    {
+        return $this->email_domains;
+    }
+
+    /**
      * Set date created.
      *
      * @param \DateTime $date_created
@@ -719,6 +719,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->setModelField('date_created', $date_created);
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function __toString()

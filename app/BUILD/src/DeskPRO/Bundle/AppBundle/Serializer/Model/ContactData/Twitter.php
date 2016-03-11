@@ -29,42 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
-
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use JMS\Serializer\Annotation as JMS;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData;
 
 /**
- * Class AbstractContactData.
- *
- * @JMS\ExclusionPolicy("none")
+ * Class Twitter.
  */
-abstract class AbstractContactData
+class Twitter extends AbstractUserNameContactData
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $contact_type;
-
-    /**
-     * @var string
-     */
-    protected $comment;
-
-    /**
-     * Constructor.
-     *
-     * @param ContactDataAbstract $contact_data
-     */
-    public function __construct(ContactDataAbstract $contact_data)
-    {
-        $this->id           = $contact_data->getId();
-        $this->contact_type = $contact_data->getContactType();
-        $this->comment      = $contact_data->getComment();
-    }
 }

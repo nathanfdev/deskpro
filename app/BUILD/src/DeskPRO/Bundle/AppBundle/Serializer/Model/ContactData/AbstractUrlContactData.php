@@ -29,42 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Model\ContactData;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class Address.
+ * Class AbstractUrlContactData.
  *
  * @JMS\ExclusionPolicy("none")
  */
-class Address extends AbstractContactData
+abstract class AbstractUrlContactData extends AbstractContactData
 {
     /**
      * @var string
      */
-    protected $address;
-
-    /**
-     * @var string
-     */
-    protected $city;
-
-    /**
-     * @var string
-     */
-    protected $state;
-
-    /**
-     * @var string
-     */
-    protected $zip;
-
-    /**
-     * @var string
-     */
-    protected $country;
+    protected $url;
 
     /**
      * {@inheritdoc}
@@ -73,10 +53,6 @@ class Address extends AbstractContactData
     {
         parent::__construct($contact_data);
 
-        $this->address = $contact_data->getField1();
-        $this->city    = $contact_data->getField2();
-        $this->state   = $contact_data->getField3();
-        $this->zip     = $contact_data->getField4();
-        $this->country = $contact_data->getField5();
+        $this->url = $contact_data->getField1();
     }
 }

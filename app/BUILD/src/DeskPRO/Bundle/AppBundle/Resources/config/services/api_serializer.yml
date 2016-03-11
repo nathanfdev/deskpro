@@ -15,6 +15,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.organization:
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\OrganizationHandler
+    arguments:
+      - "@data.chat"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.model_factory:
     class: DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory
     arguments:

@@ -31,20 +31,33 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use Application\DeskPRO\Entity\OrganizationContactData;
-use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\Organization;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use Orb\Util\Strings;
 
 /**
- * Class ContactDataSerializationHandler.
+ * Class OrganizationHandler.
  */
-class ContactDataSerializationHandler implements SubscribingHandlerInterface
+class OrganizationHandler implements SubscribingHandlerInterface
 {
+    /**
+     * @var ChatDataService
+     */
+    private $chat_data_service;
+
+    /**
+     * Constructor.
+     *
+     * @param ChatDataService $chat_data_service
+     */
+    public function __construct(ChatDataService $chat_data_service)
+    {
+        $this->chat_data_service = $chat_data_service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -54,13 +67,7 @@ class ContactDataSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => PersonContactData::class,
-                'method'    => 'serializeEntity',
-            ],
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => OrganizationContactData::class,
+                'type'      => Organization::class,
                 'method'    => 'serializeEntity',
             ],
         ];
@@ -68,7 +75,7 @@ class ContactDataSerializationHandler implements SubscribingHandlerInterface
 
     /**
      * @param JsonSerializationVisitor     $visitor
-     * @param ContactDataAbstract          $entity
+     * @param Organization                 $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
@@ -76,14 +83,11 @@ class ContactDataSerializationHandler implements SubscribingHandlerInterface
      */
     public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $contact_type = $entity->getContactType();
-        $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
+        $model = new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
+            $entity,
+            $this->chat_data_service->getChatsCountForOrganization($entity)
+        );
 
-        if (!class_exists($class_name)) {
-            throw new \InvalidArgumentException("`$contact_type` is not a valid type");
-        }
-
-        $model      = new $class_name($entity);
         $serialized = $context->accept($model);
 
         return $serialized;
