@@ -127,7 +127,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         } else {
             $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
 
-            if (!$this->settings->get('internal.disable_email_editing.new')) {
+            if ($this->settings->get('internal.disable_email_editing.new')) {
                 throw $this->createNotFoundException();
             }
         }
