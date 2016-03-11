@@ -37,11 +37,6 @@ services:
     arguments:
       - "@avatar_resolver"
 
-  data_serializer.transformer.agent_team:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentTeamTransformer
-    arguments:
-      - "@avatar_resolver"
-
   data_serializer.transformer.department:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DepartmentTransformer
     arguments:
