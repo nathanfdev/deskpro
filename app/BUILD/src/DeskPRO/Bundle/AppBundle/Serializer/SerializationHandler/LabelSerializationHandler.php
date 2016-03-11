@@ -31,17 +31,16 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
-use Application\DeskPRO\Entity\ContactDataAbstract;
+use Application\DeskPRO\Entity\Labels\Label;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use Orb\Util\Strings;
 
 /**
- * Class ContactDataHandler.
+ * Class LabelSerializationHandler.
  */
-class ContactDataHandler implements SubscribingHandlerInterface
+class LabelSerializationHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -52,7 +51,7 @@ class ContactDataHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_CONTACT_DATA,
+                'type'      => SerializerTypes::TYPE_LABEL,
                 'method'    => 'serializeEntity',
             ],
         ];
@@ -60,7 +59,7 @@ class ContactDataHandler implements SubscribingHandlerInterface
 
     /**
      * @param JsonSerializationVisitor     $visitor
-     * @param ContactDataAbstract          $entity
+     * @param Label                        $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
@@ -68,16 +67,6 @@ class ContactDataHandler implements SubscribingHandlerInterface
      */
     public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $contact_type = $entity->getContactType();
-        $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
-
-        if (!class_exists($class_name)) {
-            throw new \InvalidArgumentException("`$contact_type` is not a valid type");
-        }
-
-        $model      = new $class_name($entity);
-        $serialized = $context->accept($model);
-
-        return $serialized;
+        return $entity->getLabel();
     }
 }

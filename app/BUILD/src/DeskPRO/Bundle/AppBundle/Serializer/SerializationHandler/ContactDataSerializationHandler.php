@@ -31,17 +31,17 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
-use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use Application\DeskPRO\Entity\ContactDataAbstract;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
+use Orb\Util\Strings;
 
 /**
- * Class EntitySerializationHandler.
+ * Class ContactDataSerializationHandler.
  */
-class EntitySerializationHandler implements SubscribingHandlerInterface
+class ContactDataSerializationHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -52,7 +52,7 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_ENTITY,
+                'type'      => SerializerTypes::TYPE_CONTACT_DATA,
                 'method'    => 'serializeEntity',
             ],
         ];
@@ -60,7 +60,7 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
 
     /**
      * @param JsonSerializationVisitor     $visitor
-     * @param EntityInterface|DomainObject $entity
+     * @param ContactDataAbstract          $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
@@ -68,8 +68,16 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
      */
     public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $context->getSideloadStore()->addSideload($entity);
+        $contact_type = $entity->getContactType();
+        $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
 
-        return $entity->getId();
+        if (!class_exists($class_name)) {
+            throw new \InvalidArgumentException("`$contact_type` is not a valid type");
+        }
+
+        $model      = new $class_name($entity);
+        $serialized = $context->accept($model);
+
+        return $serialized;
     }
 }

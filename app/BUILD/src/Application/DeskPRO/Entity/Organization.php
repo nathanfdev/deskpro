@@ -129,6 +129,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @Assert\Valid()
      * @UniqueCollection()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelOrganization>>")
      */
     protected $labels;
 
@@ -136,7 +139,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @JMS\Expose()
-     * @JMS\Type("array<contact_data>")
+     * @JMS\Type("array<contact_data<Application\DeskPRO\Entity\OrganizationContactData>>")
      */
     protected $contact_data;
 
@@ -176,6 +179,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     /**
      * @var Organization|null
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      */
     protected $parent;
