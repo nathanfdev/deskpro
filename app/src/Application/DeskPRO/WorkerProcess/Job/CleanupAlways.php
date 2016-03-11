@@ -102,6 +102,7 @@ class CleanupAlways extends AbstractJob
         #------------------------------
 
         if (App::getSetting('trigger.optimise_perms')) {
+            $db = App::getDb();
             App::getDb()->executeUpdate("REPLACE INTO `settings` (`name`, `value`) VALUES ('trigger.optimise_perms', '0')");
 
             $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
