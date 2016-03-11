@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -100,6 +100,7 @@ class TicketTypeTest extends PortalTestCase
             'user_email',
             'attachments',
             'more_attachments',
+            'displayed_fields',
             'submit',
         ]);
 
@@ -127,6 +128,7 @@ class TicketTypeTest extends PortalTestCase
             'attachments',
             'more_attachments',
             'ticket_field_1',
+            'displayed_fields',
             'submit',
         ]);
         $this->assertRerenderFormDoesNotExist($form);
@@ -160,6 +162,7 @@ class TicketTypeTest extends PortalTestCase
             'user_email',
             'attachments',
             'more_attachments',
+            'displayed_fields',
             'submit',
         ]);
 
@@ -185,6 +188,7 @@ class TicketTypeTest extends PortalTestCase
             'user_email',
             'attachments',
             'more_attachments',
+            'displayed_fields',
             'ticket_field_1',
             'rerender_form',
             'submit',
@@ -221,6 +225,7 @@ class TicketTypeTest extends PortalTestCase
             'user_email',
             'attachments',
             'more_attachments',
+            'displayed_fields',
             'submit',
         ]);
 
