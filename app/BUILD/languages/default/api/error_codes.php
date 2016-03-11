@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,6 +62,7 @@ return array(
     'api.error_codes.bad_choice'                  => 'One or more of the given values is invalid.',
     'api.error_codes.unique_entity'               => 'This value already exists in the system.',
     'api.error_codes.invalid_email'               => 'This value "{{ value }}" is not a valid email address.',
+    'api.error_codes.invalid_url'                 => 'This value is not a valid URL.',
     'api.error_codes.resource_not_found'          => 'The value was not found.',
     'api.error_codes.invalid_phone_number_format' => 'Invalid phone number format.',
     'api.error_codes.banned_email'                => 'Email "{{ email }}" is banned.',

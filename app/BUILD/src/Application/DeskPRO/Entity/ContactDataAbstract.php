@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\ContactData\ContactData;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contact data is stuff like address, instant messaging, phone etc.
@@ -44,6 +45,21 @@ use Application\DeskPRO\ContactData\ContactData;
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
+    const TYPE_PHONE           = 'phone';
+    const TYPE_WEBSITE         = 'website';
+    const TYPE_INSTANT_MESSAGE = 'instant_message';
+    const TYPE_TWITTER         = 'twitter';
+    const TYPE_LINKED_IN       = 'linked_in';
+    const TYPE_FACEBOOK        = 'facebook';
+    const TYPE_ADDRESS         = 'address';
+
+    const IM_AIM   = 'aim';
+    const IM_MSN   = 'msn';
+    const IM_ICQ   = 'icq';
+    const IM_SKYPE = 'skype';
+    const IM_GTALK = 'gtalk';
+    const IM_OTHER = 'other';
+
     /**
      * The unique ID.
      *
@@ -55,6 +71,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The handler class.
      *
      * @var string
+     *
+     * @Assert\Choice(choices = {"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"})
      */
     protected $contact_type;
 
@@ -62,11 +80,15 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The label/comment/name for this contact entry (Work, Home, etc).
      *
      * @var string
+     *
+     * @Assert\NotNull()
      */
     protected $comment = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $field_1 = '';
 
@@ -477,5 +499,20 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $data = array_merge($data, $this->getHandler()->getApiVars($this));
 
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getInstantMessageTypes()
+    {
+        return [
+            self::IM_AIM,
+            self::IM_MSN,
+            self::IM_ICQ,
+            self::IM_SKYPE,
+            self::IM_GTALK,
+            self::IM_OTHER,
+        ];
     }
 }

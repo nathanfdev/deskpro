@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
@@ -87,6 +88,11 @@ class ValidatorErrorCodeFactory
                         : ApiErrors::TOO_MANY_ELEMENTS;
                 case UniqueEntity::class:
                     return ApiErrors::UNIQUE_ENTITY;
+                case AppAssert\ContactData::class:
+                    switch ($violation->getCode()) {
+                        case Assert\Url::INVALID_URL_ERROR:
+                            return ApiErrors::INVALID_URL;
+                    }
             }
         }
 

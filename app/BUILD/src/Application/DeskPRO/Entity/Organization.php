@@ -119,6 +119,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $contact_data;
 

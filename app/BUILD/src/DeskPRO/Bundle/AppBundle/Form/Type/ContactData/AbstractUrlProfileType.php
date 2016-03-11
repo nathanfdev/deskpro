@@ -31,44 +31,45 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class PhoneType.
+ * Class AbstractUrlProfileType.
  */
-class PhoneType extends AbstractContactDataItemType
+abstract class AbstractUrlProfileType extends AbstractContactDataItemType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getContactType()
-    {
-        return ContactDataAbstract::TYPE_PHONE;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('type', ChoiceType::class, [
-                'property_path' => 'field_3',
-                'choices'       => [
-                    'phone'  => 'Phone',
-                    'mobile' => 'Mobile',
-                    'fax'    => 'Fax',
-                ],
-            ])
-            ->add('code', TextType::class, [
-                'property_path' => 'field_1',
-            ])
-            ->add('number', TextType::class, [
-                'property_path' => 'field_2',
-            ])
-        ;
+        $builder->add('url', TextType::class, [
+            'property_path' => 'field_1',
+        ]);
+
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onParseProfilePath']);
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+
+        $resolver->setDefaults([
+            'contact_type'  => static::getContactType(),
+            'error_mapping' => [
+                'field_2' => 'url',
+            ],
+        ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    abstract public function onParseProfilePath(FormEvent $event);
 }

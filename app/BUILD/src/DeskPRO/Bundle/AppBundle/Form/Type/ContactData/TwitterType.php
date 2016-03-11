@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
+use Application\DeskPRO\Entity\ContactDataAbstract;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -44,7 +45,7 @@ class TwitterType extends AbstractContactDataItemType
      */
     public static function getContactType()
     {
-        return 'twitter';
+        return ContactDataAbstract::TYPE_TWITTER;
     }
 
     /**

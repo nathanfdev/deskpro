@@ -29,46 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class PhoneType.
+ * Class ContactData.
+ *
+ * @Annotation
+ * @Target({"CLASS", "ANNOTATION"})
  */
-class PhoneType extends AbstractContactDataItemType
+class ContactData extends Constraint
 {
     /**
      * {@inheritdoc}
      */
-    public static function getContactType()
+    public function getTargets()
     {
-        return ContactDataAbstract::TYPE_PHONE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('type', ChoiceType::class, [
-                'property_path' => 'field_3',
-                'choices'       => [
-                    'phone'  => 'Phone',
-                    'mobile' => 'Mobile',
-                    'fax'    => 'Fax',
-                ],
-            ])
-            ->add('code', TextType::class, [
-                'property_path' => 'field_1',
-            ])
-            ->add('number', TextType::class, [
-                'property_path' => 'field_2',
-            ])
-        ;
+        return self::CLASS_CONSTRAINT;
     }
 }

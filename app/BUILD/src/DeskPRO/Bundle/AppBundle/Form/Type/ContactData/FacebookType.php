@@ -31,29 +31,35 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Application\DeskPRO\Entity\ContactDataAbstract;
+use Symfony\Component\Form\FormEvent;
 
 /**
  * Class FacebookType.
  */
-class FacebookType extends AbstractContactDataItemType
+class FacebookType extends AbstractUrlProfileType
 {
     /**
      * {@inheritdoc}
      */
     public static function getContactType()
     {
-        return 'facebook';
+        return ContactDataAbstract::TYPE_FACEBOOK;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function onParseProfilePath(FormEvent $event)
     {
-        $builder->add('url', TextType::class, [
-            'property_path' => 'field_1',
-        ]);
+        $data = $event->getData();
+
+        if (preg_match('#/profile\.php?id=([0-9]+)#', $data->getField1(), $m)) {
+            $data->setField2($m[1]);
+        } elseif (preg_match('#facebook\.com/([a-zA-Z0-9\.\-_]+)#', $data->getField1(), $m)) {
+            $data->setField2($m[1]);
+        } elseif (preg_match('#facebook\.com/people/([a-zA-Z0-9\.\-_]+)#', $data->getField1(), $m)) {
+            $data->setField2($m[1]);
+        }
     }
 }

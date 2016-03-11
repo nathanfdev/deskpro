@@ -92,6 +92,9 @@ class ContactDataType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
+            ->setDefaults([
+                'error_bubbling' => false,
+            ])
             ->setRequired(['owner'])
             ->setAllowedTypes([
                 'owner' => [Person::class, Organization::class],
@@ -100,6 +103,8 @@ class ContactDataType extends AbstractType
     }
 
     /**
+     * Slice contact data collection by contact type groups.
+     *
      * @param FormEvent $event
      */
     public function onSetData(FormEvent $event)
@@ -131,6 +136,8 @@ class ContactDataType extends AbstractType
     }
 
     /**
+     * Merge groups to a single collection.
+     *
      * @param FormEvent $event
      */
     public function onMergeData(FormEvent $event)

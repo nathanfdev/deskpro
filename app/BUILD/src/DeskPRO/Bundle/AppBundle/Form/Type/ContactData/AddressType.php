@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
+use Application\DeskPRO\Entity\ContactDataAbstract;
 use Orb\Data\Countries;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -47,7 +48,7 @@ class AddressType extends AbstractContactDataItemType
      */
     public static function getContactType()
     {
-        return 'address';
+        return ContactDataAbstract::TYPE_ADDRESS;
     }
 
     /**

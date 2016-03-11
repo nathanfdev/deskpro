@@ -31,29 +31,30 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Application\DeskPRO\Entity\ContactDataAbstract;
+use Orb\Util\Strings;
+use Symfony\Component\Form\FormEvent;
 
 /**
  * Class LinkedInType.
  */
-class LinkedInType extends AbstractContactDataItemType
+class LinkedInType extends AbstractUrlProfileType
 {
     /**
      * {@inheritdoc}
      */
     public static function getContactType()
     {
-        return 'linked_in';
+        return ContactDataAbstract::TYPE_LINKED_IN;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function onParseProfilePath(FormEvent $event)
     {
-        $builder->add('url', TextType::class, [
-            'property_path' => 'field_1',
-        ]);
+        $data = $event->getData();
+
+        $data->setField2(Strings::extractRegexMatch('#/in/(.*?)$#', $data->getField1(), 1));
     }
 }
