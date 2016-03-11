@@ -114,6 +114,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * Usergroups the user belongs to.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Usergroup>>")
      */
     protected $usergroups;
 
@@ -131,7 +134,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @UniqueCollection()
      *
      * @JMS\Expose()
-     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelOrganization>>")
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelOrganization>>")
      */
     protected $labels;
 
@@ -139,7 +142,6 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @JMS\Expose()
-     * @JMS\Type("array<contact_data<Application\DeskPRO\Entity\OrganizationContactData>>")
      */
     protected $contact_data;
 
@@ -148,6 +150,9 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @Assert\Valid()
      * @UniqueCollection()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\OrganizationEmailDomain>>")
      */
     protected $email_domains;
 

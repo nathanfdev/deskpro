@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
+use Application\DeskPRO\Entity\OrganizationContactData;
+use Application\DeskPRO\Entity\PersonContactData;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
@@ -52,7 +54,13 @@ class ContactDataSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_CONTACT_DATA,
+                'type'      => PersonContactData::class,
+                'method'    => 'serializeEntity',
+            ],
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => OrganizationContactData::class,
                 'method'    => 'serializeEntity',
             ],
         ];

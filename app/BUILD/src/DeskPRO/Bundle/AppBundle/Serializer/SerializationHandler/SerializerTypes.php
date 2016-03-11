@@ -36,7 +36,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
  */
 final class SerializerTypes
 {
-    const TYPE_ENTITY       = 'entity';
-    const TYPE_CONTACT_DATA = 'contact_data';
-    const TYPE_LABEL        = 'label';
+    const TYPE_ENTITY    = 'entity';
+    const TYPE_TO_STRING = 'to_string';
 }

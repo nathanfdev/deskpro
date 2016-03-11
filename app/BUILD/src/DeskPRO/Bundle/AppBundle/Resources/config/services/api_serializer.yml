@@ -10,8 +10,8 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.label:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\LabelSerializationHandler
+  api_serializer.handler.to_string:
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\ToStringSerializationHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

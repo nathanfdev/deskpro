@@ -38,9 +38,9 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class LabelSerializationHandler.
+ * Class ToStringSerializationHandler.
  */
-class LabelSerializationHandler implements SubscribingHandlerInterface
+class ToStringSerializationHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -51,7 +51,7 @@ class LabelSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_LABEL,
+                'type'      => SerializerTypes::TYPE_TO_STRING,
                 'method'    => 'serializeEntity',
             ],
         ];
@@ -67,6 +67,6 @@ class LabelSerializationHandler implements SubscribingHandlerInterface
      */
     public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        return $entity->getLabel();
+        return (string) $entity;
     }
 }

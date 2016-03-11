@@ -56,15 +56,15 @@ class OrganizationTransformerToRemove extends AbstractDataSerializerTransformer
     public function getAutomaticProperties(DataTransformerRequest $request)
     {
         return [
-            'id',
-            'name',
-            'summary',
-            'parent',
-            'importance',
-            'date_created',
-            'email_domains',
-            'usergroups',
-            'contact_data',
+//            'id',
+//            'name',
+//            'summary',
+//            'parent',
+//            'importance',
+//            'date_created',
+//            'email_domains',
+//            'usergroups',
+//            'contact_data',
         ];
     }
 
@@ -81,8 +81,8 @@ class OrganizationTransformerToRemove extends AbstractDataSerializerTransformer
             'employees_count' => $organization->getEmployeesCount(),
             'tickets_count'   => $organization->getTicketsCount(),
             'chats_count'     => $chatsCount,
-            'labels'          => new LabelsCollection($organization->getLabels()),
-            'fields'          => new CustomDataCollection($organization->getCustomData()),
+//            'labels'          => new LabelsCollection($organization->getLabels()),
+            'fields' => new CustomDataCollection($organization->getCustomData()),
         ];
     }
 }

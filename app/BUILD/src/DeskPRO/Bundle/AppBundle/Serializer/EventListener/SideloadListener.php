@@ -26,6 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory;
@@ -65,7 +68,7 @@ class SideloadListener implements EventSubscriberInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
