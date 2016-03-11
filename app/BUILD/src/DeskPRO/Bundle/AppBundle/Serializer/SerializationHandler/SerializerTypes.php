@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
 /**
  * Class SerializerTypes.

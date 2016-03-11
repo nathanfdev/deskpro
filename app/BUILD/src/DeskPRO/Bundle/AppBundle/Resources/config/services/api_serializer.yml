@@ -6,7 +6,7 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.contact_data:
-    class: DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\ContactDataHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\ContactDataHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

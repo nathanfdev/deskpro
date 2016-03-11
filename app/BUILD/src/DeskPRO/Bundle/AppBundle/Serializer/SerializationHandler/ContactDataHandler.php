@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
-use DeskPRO\Bundle\ApiBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
