@@ -31,8 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-use Application\DeskPRO\Entity\CustomDataOrganization;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -61,7 +60,9 @@ class Organization
     protected $importance;
 
     /**
-     * @var CustomDataOrganization[]
+     * @var CustomDataAbstract[]
+     *
+     * @JMS\Type("custom_data<array>")
      */
     protected $fields;
 
@@ -130,7 +131,7 @@ class Organization
         $this->name            = $organization->getName();
         $this->summary         = $organization->getSummary();
         $this->importance      = $organization->getImportance();
-        $this->fields          = new CustomDataCollection($organization->getCustomData());
+        $this->fields          = $organization->getCustomData();
         $this->usergroups      = $organization->getUsergroups();
         $this->labels          = $organization->getLabels();
         $this->contact_data    = $organization->getContactData();

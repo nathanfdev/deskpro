@@ -15,6 +15,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\CustomDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.organization:
     class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\OrganizationHandler
     arguments:
