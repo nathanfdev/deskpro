@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -94,12 +94,6 @@ class DataInitializer
         if ($this->is_import) {
             return;
         }
-
-        // By default everyone can see the default categories
-        $this->container->getDb()->insert('article_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('news_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('download_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
-        $this->container->getDb()->insert('feedback_category2usergroup', array('category_id' => 1, 'usergroup_id' => 1));
 
         // Initial agent has access to all deps
         $this->container->getDb()->insert('department_permissions', array('department_id' => 1, 'person_id' => 1, 'app' => 'tickets', 'name' => 'full', 'value' => 1));
