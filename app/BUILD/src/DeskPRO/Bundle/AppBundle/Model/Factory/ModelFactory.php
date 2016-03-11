@@ -74,6 +74,10 @@ class ModelFactory
      */
     public function create($entity, $concrete = null)
     {
+        if (!is_object($entity)) {
+            return $entity;
+        }
+
         $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
         if (!isset($this->methodMap[$snake])) {
             return $entity;

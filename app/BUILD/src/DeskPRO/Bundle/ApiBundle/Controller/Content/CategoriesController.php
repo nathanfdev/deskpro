@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,8 +36,10 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Model\Content\CategoriesList;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,40 +52,27 @@ class CategoriesController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get categories for articles, news and downloads",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Content",
+     *     resourceDescription="Operations about content",
+     *     description="Get categories for articles, news and downloads",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Content\CategoriesList",
      * )
-     * @Get("/content_categories", name="api_content_categories")
+     * @FOS\View(serializerGroups={"list"})
+     * @Annotations\Get("/content_categories", name="api_content_categories")
      */
     public function getCategoriesGroupedByContentTypeAction()
     {
-        /*
-         * DataTransformers arn't applicable if wrap objects in arrays, so using this function to select needed data
-         *
-         * @todo DataTransformers need fixing?
-         *
-         * @param \Application\DeskPRO\Entity\CategoryAbstract|array $categories
-         * @return array
-         */
-        $reduce = function (array $categories) {
-            $reduced = [];
-            foreach ($categories as $category) {
-                $reduced[] = ['id' => $category->getId(), 'title' => $category->getTitle()];
-            }
-
-            return $reduced;
-        };
-
-        $categories = [
-            'articles'  => $reduce($this->getRepository(ArticleCategory::class)->findAll()),
-            'news'      => $reduce($this->getRepository(NewsCategory::class)->findAll()),
-            'downloads' => $reduce($this->getRepository(DownloadCategory::class)->findAll()),
-        ];
+        $list = new CategoriesList(
+            $this->getRepository(ArticleCategory::class)->findAll(),
+            $this->getRepository(NewsCategory::class)->findAll(),
+            $this->getRepository(DownloadCategory::class)->findAll()
+        );
 
         return View::create(
-            $this->dataSerialize($categories),
+            $this->wrap($list),
             Response::HTTP_OK
         );
     }

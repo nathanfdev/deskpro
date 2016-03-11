@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,27 +37,44 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_kb_browse", route_param_map={"slug":"slug"})
  * @PortalLinkRoute("portal_kb_article_category_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @JMS\ExclusionPolicy("all")
  */
 class ArticleCategory extends CategoryAbstract
 {
     /**
+     * @JMS\Expose()
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\ArticleCategory>")
      */
     protected $parent;
 
     /**
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleCategory>>")
      */
     protected $children;
 
     /**
-     * ArrayCollection.
+     * Articles belongs this category.
+     *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
+     *
+     * @var ArrayCollection
      */
     protected $articles;
 
     /**
+     * Usergroups that has access to this category.
+     *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
@@ -67,6 +84,9 @@ class ArticleCategory extends CategoryAbstract
      * are considered agent KB articles and wont be displayed in
      * the user interface.
      *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent = false;
@@ -75,6 +95,9 @@ class ArticleCategory extends CategoryAbstract
      * If this is true, then all the articles and categories under this category
      * is treated as a book (aka manual).
      *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_book = false;
@@ -82,6 +105,9 @@ class ArticleCategory extends CategoryAbstract
     /**
      * The template suffix to use when rendering the category, and articles within
      * the category.
+     *
+     * @JMS\Groups("articles_categories")
+     * @JMS\Type("string")
      *
      * Eg UserBundle:Articles:article.html.twig
      * With suffix 'download' becomes
@@ -93,7 +119,7 @@ class ArticleCategory extends CategoryAbstract
 
     public function __construct()
     {
-        $this->articles = new ArrayCollection();
+        $this->articles   = new ArrayCollection();
         $this->usergroups = new ArrayCollection();
     }
 
@@ -236,7 +262,7 @@ class ArticleCategory extends CategoryAbstract
             array(
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-                0           => array(
+                0 => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
             ), 'dpApi' => true,
@@ -252,8 +278,8 @@ class ArticleCategory extends CategoryAbstract
             array(
                 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
                 'cascade'   => array('persist', 'merge'), 'joinTable' => array(
-                'name'      => 'article_category2usergroup', 'schema' => null, 'joinColumns' => array(
-                    0       => array(
+                'name' => 'article_category2usergroup', 'schema' => null, 'joinColumns' => array(
+                    0 => array(
                         'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
