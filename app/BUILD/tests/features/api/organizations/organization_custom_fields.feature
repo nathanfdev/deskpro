@@ -13,7 +13,7 @@ Feature: /organization_custom_fields endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-    And the JSON node "data" should have 5 elements
+    And the JSON node "data" should have 6 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "Desired Sizes"
     And the JSON node "data[0].description" should be equal to "A custom  field"
@@ -52,6 +52,13 @@ Feature: /organization_custom_fields endpoint
     And the JSON node "data[4].choices[0].id" should be equal to 9
     And the JSON node "data[4].choices[1].id" should be equal to 10
     And the JSON node "data[4].choices[2].id" should be equal to 11
+
+    And the JSON node "data[5].id" should be equal to 12
+    And the JSON node "data[5].widget_type" should be equal to "date"
+    And the JSON node "data[5].title" should be equal to "Delivery Date"
+    And the JSON node "data[5].description" should be equal to "A custom  field"
+    And the JSON node "data[5].parent" should be equal to 0
+    And the JSON node "data[5].choices" should have 0 elements
 
   Scenario: I get child field
     When I send a GET request to "/api/v2/organization_custom_fields/2"

@@ -351,6 +351,20 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.fields.fields.fields_5.errors[0].code" should be equal to "invalid_data_type"
     And the JSON node "errors.fields.fields.fields.fields_5.errors[0].message" should contain "This data type is not is data type that was expected."
 
+  Scenario: I sent not valid date string
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "12": "not_vaild_datetime"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_12.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.fields.fields.fields_12.errors[0].message" should contain "This data type is not is data type that was expected."
+
   Scenario: I sent not valid custom data text
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """

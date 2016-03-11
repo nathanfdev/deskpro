@@ -68,19 +68,22 @@ Feature: /ticket_forms endpoint
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
     "7": "textarea text",
-    "8": ["10", "11"]
+    "8": ["10", "11"],
+    "12": "2016-02-09 17:28:00"
   },
   "user_fields": {
     "1": "2",
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
-    "7": "textarea text"
+    "7": "textarea text",
+    "12": "2016-02-09"
   },
   "organization_fields": {
     "1": "2",
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
-    "7": "textarea text"
+    "7": "textarea text",
+    "12": "2016-02-09T00:00+0000"
   },
   "message": {
     "message": "my text message",
