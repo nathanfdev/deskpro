@@ -45,7 +45,7 @@ Feature: /people endpoint
     And the JSON node "data.organization" should be equal to 1
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
     And the JSON node "data.primary_email" should be equal to "sample.person@deskpro.com"
-    And the JSON node "data.fields" should have 3 elements
+    And the JSON node "data.fields" should have 4 elements
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
