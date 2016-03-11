@@ -6,12 +6,12 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.model_factory:
-    class: DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory
+    class: DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory
     arguments:
       - "@service_container"
 
   api_serializer.api_person_factory:
-    class: DeskPRO\Bundle\ApiBundle\Model\Factory\ApiPersonFactory
+    class: DeskPRO\Bundle\AppBundle\Model\Factory\ApiPersonFactory
     arguments:
       - "@avatar_resolver"
       - "@data.agent"

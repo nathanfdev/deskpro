@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
+use DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;

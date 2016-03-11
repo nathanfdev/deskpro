@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
-use DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory;
+use DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
@@ -48,7 +48,7 @@ class SideloadListener implements EventSubscriberInterface
     protected $em;
 
     /**
-     * @var \DeskPRO\Bundle\ApiBundle\Model\Factory\ModelFactory
+     * @var ModelFactory
      */
     protected $model_factory;
 

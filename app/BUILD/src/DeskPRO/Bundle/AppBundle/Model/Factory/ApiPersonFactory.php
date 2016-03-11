@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model\Factory;
+namespace DeskPRO\Bundle\AppBundle\Model\Factory;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\Model\ApiPerson;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
+use DeskPRO\Bundle\AppBundle\Model\ApiPerson;
 
 /**
  * Class ApiPersonFactory.

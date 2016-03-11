@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
