@@ -99,6 +99,8 @@ class SideloadListener implements EventSubscriberInterface
 
         $linked = [];
         $sideloads->setInterests($includes);
+
+        $context->setExclusionEnabled(false);
         while ($includes && $sideloads->hasSideloads()) {
             foreach ($includes as $include) {
                 if (!isset($linked[$include])) {
@@ -109,11 +111,13 @@ class SideloadListener implements EventSubscriberInterface
                     $ids_to_load = $sideloads->getSideloads($fqcn);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
                         $model              = $this->model_factory->create($entity);
-                        $linked[$include][] = $event->getContext()->accept($model);
+                        $linked[$include][] = $context->accept($model);
                     }
                 }
             }
         }
+        // perhaps it's not necessary at all, but who knows where context will be used?
+        $context->setExclusionEnabled(true);
 
         $visitor->addData('linked', $linked);
     }
