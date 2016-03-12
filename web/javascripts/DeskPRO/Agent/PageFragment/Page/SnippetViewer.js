@@ -814,7 +814,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				}
 			});
 
-			snippet.shortcut_code = editSnippetEl.find('.shortcut_code').val();
+			snippet.shortcut_code = !snippet.is_draft ? editSnippetEl.find('.shortcut_code').val() : null;
 
 			editSnippetEl.find('.overlay-footer').addClass('loading');
 			self.snippetDriver.saveSnippet(snippet, function(snippet) {
@@ -962,7 +962,11 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
-		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft);
+		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft).off().on('change', function(){
+			$(this).prop('checked')
+				? editSnippetEl.find('.snippet-shortcode-block').hide()
+				: editSnippetEl.find('.snippet-shortcode-block').show();
+		}).trigger('change');
 
     // resort categories
     var $sorted = this.getEl('editsnippet_category_select').children().sort(function(a, b){

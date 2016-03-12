@@ -107,7 +107,7 @@
 			<div style="width: 100%">
 				<textarea id="%baseId%_snippet_input" name="snippet_input" placeholder="{{ phrase('agent.general.snippet_text_placeholder') }}" style="width: 100%; box-sizing: border-box; -moz-box-sizing: border-box; height: 190px"></textarea>
 			</div>
-			<div style="float:left; font-size: 11px;">
+			<div style="float:left; font-size: 11px;" class="snippet-shortcode-block">
 				{% block edit_snippet_bottomleft %}
 					<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.snippets.shortcut_code_info') }}"></span>
 					{{ phrase('agent.snippets.shortcut_code') }}: <span class="snippet-code-wrap">%<input type="text" name="shortcut_code" class="shortcut_code" value="" placeholder="Enter a shortcut" />%</span>
