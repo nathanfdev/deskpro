@@ -87,11 +87,11 @@ define [
         for id, group of @form.usergroup_perms
           if !group.full then @all_perms.user_full = false
 
-        for id, group of @form.agent_perms.groups
+        for group in @form.agent_perms.groups
           @all_perms.agent_assign = false if !group.perms.assign.locked && !group.perms.assign.state
           @all_perms.agent_full = false if !group.perms.full.locked && !group.perms.full.state
 
-        for id, agent of @form.agent_perms.agents
+        for agent in @form.agent_perms.agents
           @all_perms.agent_assign = false if !agent.perms.assign.locked && !agent.perms.assign.state
           @all_perms.agent_full = false if !agent.perms.full.locked && !agent.perms.full.state
       )
