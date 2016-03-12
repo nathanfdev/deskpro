@@ -2838,8 +2838,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (xhr && xhr.status && xhr.status == '503') {
+			return window.location.reload();
+		}
+
 		if (DPC_IS_CLOUD) {
-			if (xhr && xhr.status && (xhr.status == '503' || xhr.status == '500')) {
+			if (xhr && xhr.status && xhr.status == '500') {
 				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
 				if (DpErrorLog) {
 					DpErrorLog.logError('AJAX Error ' + xhr.status + ' on ' + ajaxOptions.url);

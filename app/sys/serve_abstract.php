@@ -91,6 +91,11 @@ abstract class serve_abstract
                     require DP_ROOT.'/src/Orb/Util/Strings.php';
 
                     return;
+
+                case 'DeskPRO\Kernel\HelpdeskOfflineMessage':
+                    require DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
+
+                    return;
             }
 
             if (strpos($class, 'Orb\\') === 0) {
