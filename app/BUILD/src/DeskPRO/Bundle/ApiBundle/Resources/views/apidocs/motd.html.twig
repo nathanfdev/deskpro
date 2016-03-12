@@ -8,4 +8,49 @@
     li.section {
         background-color: #eaf2f6;
     }
+
+    .pane.content div ul.tabs-inner {
+        list-style-type: none;
+        margin-left: 0;
+    }
+
+    .tabs-inner li {
+        display: inline;
+        float: left;
+        margin: 10px;
+        cursor: pointer;
+        font-size: 1.1em;
+        color: #0f6ab4;
+    }
+
+    .tabs-inner li.selected {
+        font-weight: bold;
+        font-size: 1.15em;
+        color: #0a2892;
+    }
+
+    .pane-inner:not(.selected) {
+        display: none;
+    }
 </style>
+
+<script>
+    $(document).ready(function(){
+        var $tabs = $('.tabs-inner li');
+
+        $tabs.click(function() {
+            var contentGroup = $(this).parents('.content-inner');
+
+            $('.pane-inner.selected', contentGroup).removeClass('selected');
+            $('.pane-inner.' + $(this).data('pane'), contentGroup).addClass('selected');
+
+            $('li', $(this).parent()).removeClass('selected');
+            $(this).addClass('selected');
+        });
+        var $contents = $('.content-inner');
+        $.each($contents, function(index, contentInner) {
+            $(contentInner).find('.tabs-inner li').eq(0).click();
+        });
+    });
+
+</script>
