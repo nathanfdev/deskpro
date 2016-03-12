@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,17 +39,18 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Comments on feedback.
- *
- * @JMS\ExclusionPolicy("all")
  */
 class FeedbackComment extends CommentAbstract
 {
     const OBJ_PROP = 'feedback';
 
     /**
-     * @JMS\Expose()
+     * Feedback this comment belongs to.
+     *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
-     * @JMS\Groups({"feedback"})
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var Feedback
      */
     protected $feedback;
 
