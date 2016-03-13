@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model\Content;
+namespace DeskPRO\Bundle\AppBundle\Model\Content;
 
 use JMS\Serializer\Annotation as JMS;
 
