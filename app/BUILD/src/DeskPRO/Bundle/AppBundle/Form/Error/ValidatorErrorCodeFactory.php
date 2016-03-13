@@ -86,13 +86,12 @@ class ValidatorErrorCodeFactory
                     return $violation->getCode() === Assert\Count::TOO_FEW_ERROR
                         ? ApiErrors::TOO_FEW_ELEMENTS
                         : ApiErrors::TOO_MANY_ELEMENTS;
+                case Assert\Url::class:
+                    return ApiErrors::INVALID_URL;
+                case AppAssert\ProfileUrl::class:
+                    return ApiErrors::PROFILE_URL;
                 case UniqueEntity::class:
                     return ApiErrors::UNIQUE_ENTITY;
-                case AppAssert\ContactData::class:
-                    switch ($violation->getCode()) {
-                        case Assert\Url::INVALID_URL_ERROR:
-                            return ApiErrors::INVALID_URL;
-                    }
             }
         }
 

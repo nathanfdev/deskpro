@@ -35,6 +35,9 @@ use Application\DeskPRO\Entity\ContactDataAbstract;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class PhoneType.
@@ -69,6 +72,37 @@ class PhoneType extends AbstractContactDataItemType
             ->add('number', TextType::class, [
                 'property_path' => 'field_2',
             ])
+        ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetSearchableValue']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+
+        $resolver->setDefaults([
+            'error_mapping' => [
+                'field_9' => 'number',
+            ],
+        ]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetSearchableValue(FormEvent $event)
+    {
+        /** @var ContactDataAbstract $data */
+        $data   = $event->getData();
+        $number = $data->getField1().' '.$data->getField2();
+
+        $data
+            ->setField9($number)
+            ->setField10(preg_replace('#[^0-9a-zA-Z]#', '', $number))
         ;
     }
 }

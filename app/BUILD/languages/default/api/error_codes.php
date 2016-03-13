@@ -63,6 +63,7 @@ return array(
     'api.error_codes.unique_entity'               => 'This value already exists in the system.',
     'api.error_codes.invalid_email'               => 'This value "{{ value }}" is not a valid email address.',
     'api.error_codes.invalid_url'                 => 'This value is not a valid URL.',
+    'api.error_codes.profile_url'                 => 'This value is not a valid profile URL.',
     'api.error_codes.resource_not_found'          => 'The value was not found.',
     'api.error_codes.invalid_phone_number_format' => 'Invalid phone number format.',
     'api.error_codes.banned_email'                => 'Email "{{ email }}" is banned.',

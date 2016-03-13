@@ -52,31 +52,31 @@ class ContactDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('phone', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_PHONE, ContactDataCollectionType::class, [
                 'entry_type' => PhoneType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('website', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_WEBSITE, ContactDataCollectionType::class, [
                 'entry_type' => WebsiteType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('instant_message', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_INSTANT_MESSAGE, ContactDataCollectionType::class, [
                 'entry_type' => InstantMessageType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('twitter', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_TWITTER, ContactDataCollectionType::class, [
                 'entry_type' => TwitterType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('linked_in', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_LINKED_IN, ContactDataCollectionType::class, [
                 'entry_type' => LinkedInType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('facebook', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_FACEBOOK, ContactDataCollectionType::class, [
                 'entry_type' => FacebookType::class,
                 'owner'      => $options['owner'],
             ])
-            ->add('address', ContactDataCollectionType::class, [
+            ->add(ContactDataAbstract::TYPE_ADDRESS, ContactDataCollectionType::class, [
                 'entry_type' => AddressType::class,
                 'owner'      => $options['owner'],
             ])
@@ -84,6 +84,10 @@ class ContactDataType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetData']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeData']);
+
+        /** @var FormBuilderInterface $parent_builder */
+        $parent_builder = $options['parent_builder'];
+        $parent_builder->addEventListener(FormEvents::POST_SUBMIT, new ContactDataViolationMapper($builder->getName()), -1);
     }
 
     /**
@@ -95,9 +99,10 @@ class ContactDataType extends AbstractType
             ->setDefaults([
                 'error_bubbling' => false,
             ])
-            ->setRequired(['owner'])
+            ->setRequired(['owner', 'parent_builder'])
             ->setAllowedTypes([
-                'owner' => [Person::class, Organization::class],
+                'owner'          => [Person::class, Organization::class],
+                'parent_builder' => FormBuilderInterface::class,
             ])
         ;
     }
@@ -118,8 +123,8 @@ class ContactDataType extends AbstractType
         }
 
         $data_groups = [];
-        foreach ($data as $data_item) {
-            $data_groups[$data_item->getContactType()][] = $data_item;
+        foreach ($data as $item) {
+            $data_groups[$item->getContactType()][] = $item;
         }
 
         foreach ($form->all() as $form_group) {

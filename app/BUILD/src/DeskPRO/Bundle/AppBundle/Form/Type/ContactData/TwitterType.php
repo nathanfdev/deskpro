@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -53,8 +54,13 @@ class TwitterType extends AbstractContactDataItemType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username', TextType::class, [
-            'property_path' => 'field_1',
-        ]);
+        $builder
+            ->add('username', TextType::class, [
+                'property_path' => 'field_1',
+            ])
+            ->add('display_feed', ApiBooleanType::class, [
+                'property_path' => 'field_2',
+            ])
+        ;
     }
 }

@@ -183,7 +183,10 @@ Feature: /ticket_forms endpoint
 {
   "fields": {
     "6": {
-      "value": "edited inline text"
+      "value": "edited inline text",
+      "detail": {
+        "some": "extra info"
+      }
     }
   }
 }

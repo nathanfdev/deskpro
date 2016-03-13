@@ -34,7 +34,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\ContactData\ContactData;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Contact data is stuff like address, instant messaging, phone etc.
@@ -43,7 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
  */
-abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject implements GroupSequenceProviderInterface
 {
     const TYPE_PHONE           = 'phone';
     const TYPE_WEBSITE         = 'website';
@@ -72,7 +74,10 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      *
      * @var string
      *
-     * @Assert\Choice(choices = {"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"})
+     * @Assert\Choice(
+     *     choices={"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"},
+     *     groups={"common"}
+     * )
      */
     protected $contact_type;
 
@@ -81,24 +86,30 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      *
      * @var string
      *
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups={"common"})
      */
     protected $comment = '';
 
     /**
      * @var string
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"})
+     * @Assert\Url(groups={"website", "facebook", "linked_in"})
      */
     protected $field_1 = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"address", "phone"})
+     * @AppAssert\ProfileUrl(groups={"facebook", "linked_in"})
      */
     protected $field_2 = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"phone"})
      */
     protected $field_3 = '';
 
@@ -109,6 +120,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"address"})
      */
     protected $field_5 = '';
 
@@ -129,6 +142,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     /**
      * @var string
+     *
+     * @AppAssert\PhoneNumber(groups={"phone"})
      */
     protected $field_9 = '';
 
@@ -446,7 +461,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      */
     public function getSearchString($prevent = false)
     {
-        $pieces = array();
+        $pieces = [];
         for ($i = 1; $i <= 10; ++$i) {
             $field = 'field_'.$i;
             if ($this->$field) {
@@ -493,7 +508,10 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $this->getHandler()->deleteType($this);
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         $data = array_merge($data, $this->getHandler()->getApiVars($this));
@@ -514,5 +532,18 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
             self::IM_GTALK,
             self::IM_OTHER,
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['common'];
+        if ($this->contact_type) {
+            $groups[] = $this->contact_type;
+        }
+
+        return $groups;
     }
 }

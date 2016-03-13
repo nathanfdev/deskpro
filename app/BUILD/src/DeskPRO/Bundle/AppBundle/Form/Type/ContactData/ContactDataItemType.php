@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -70,9 +69,6 @@ class ContactDataItemType extends AbstractType
             ->setDefaults([
                 'data_class'     => ContactDataAbstract::class,
                 'error_bubbling' => false,
-                'constraints'    => [
-                    new AppAssert\ContactData(),
-                ],
             ])
             ->setAllowedTypes([
                 'contact_type' => 'string',

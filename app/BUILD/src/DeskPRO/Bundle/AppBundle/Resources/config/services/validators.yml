@@ -7,13 +7,6 @@ services:
     tags:
       - { name: validator.constraint_validator, alias: 'primary_key_exists_validator' }
 
-  validator.phone_number:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PhoneNumberValidator
-    arguments:
-      - "@doctrine.dbal.default_connection"
-    tags:
-      - { name: validator.constraint_validator, alias: 'phone_number_validator' }
-
   validator.free_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmailValidator
     arguments:

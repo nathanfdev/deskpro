@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
+use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
@@ -95,7 +96,8 @@ class OrganizationType extends AbstractType
                 'error_bubbling' => false,
             ])
             ->add('contact_data', ContactDataType::class, [
-                'owner' => $builder->getData(),
+                'owner'          => $builder->getData(),
+                'parent_builder' => $builder,
             ])
         ;
     }
@@ -114,7 +116,7 @@ class OrganizationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'      => 'Application\DeskPRO\Entity\Organization',
+            'data_class'      => Organization::class,
             'agent_interface' => false,
         ]);
     }

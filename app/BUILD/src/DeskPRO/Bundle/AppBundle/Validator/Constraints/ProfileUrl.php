@@ -31,21 +31,22 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotBlankValidator;
 
 /**
- * Class ContactData.
+ * Class ProfileUrl.
  *
  * @Annotation
- * @Target({"CLASS", "ANNOTATION"})
+ * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class ContactData extends Constraint
+class ProfileUrl extends NotBlank
 {
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    public function validatedBy()
     {
-        return self::CLASS_CONSTRAINT;
+        return NotBlankValidator::class;
     }
 }

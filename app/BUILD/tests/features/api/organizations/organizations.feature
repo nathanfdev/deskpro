@@ -55,33 +55,6 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.email_domains.errors[0].code" should be equal to "not_unique_collection"
     And the JSON node "errors.fields.email_domains.errors[0].message" should be equal to "One or more of the given values is not unique."
 
-  Scenario: I check contact data validation
-    When I send a POST request to "/api/v2/organizations" with body:
-    """
-{
-  "name": "New Organization",
-  "contact_data": {
-    "website": [{"url": "/sitecom"}, {"url": "ftp://site.com"}],
-    "facebook": [{"url": "/facebook.com"}, {"url": "http://facebook.com"}],
-    "instant_message": [{"username": "", "service": "unknown_service"}]
-  }
-}
-    """
-    Then the response should be in JSON
-    And the response status code should be 400
-    And the JSON node "errors.fields.contact_data.fields.website.fields.website_0.fields.url.errors[0].code" should be equal to "invalid_url"
-    And the JSON node "errors.fields.contact_data.fields.website.fields.website_0.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-    And the JSON node "errors.fields.contact_data.fields.website.fields.website_1.fields.url.errors[0].code" should be equal to "invalid_url"
-    And the JSON node "errors.fields.contact_data.fields.website.fields.website_1.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_0.fields.url.errors[0].code" should be equal to "invalid_url"
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_0.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_1.fields.url.errors[0].code" should be equal to "invalid_url"
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_1.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-
-    And the JSON node "errors.fields.contact_data.fields.instant_message.fields.instant_message_0.fields.service.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.contact_data.fields.instant_message.fields.instant_message_0.fields.service.errors[0].message" should be equal to "One or more of the given values is invalid."
-
   Scenario: I create a new organization
     When I send a POST request to "/api/v2/organizations" with body:
     """
@@ -121,8 +94,8 @@ Feature: /organizations endpoint
     "phone": [
       {
         "type": "mobile",
-        "code": "123",
-        "number": "1234567"
+        "code": "+1",
+        "number": "234-534-5345"
       }
     ],
     "address": [
@@ -166,8 +139,8 @@ Feature: /organizations endpoint
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].contact_type" should be equal to "phone"
-    And the JSON node "data[0].code" should be equal to "123"
-    And the JSON node "data[0].number" should be equal to "1234567"
+    And the JSON node "data[0].code" should be equal to "+1"
+    And the JSON node "data[0].number" should be equal to "234-534-5345"
     And the JSON node "data[0].type" should be equal to "mobile"
     And the JSON node "data[0].comment" should be equal to 0
 

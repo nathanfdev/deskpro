@@ -53,6 +53,7 @@ abstract class AbstractUrlProfileType extends AbstractContactDataItemType
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onParseProfilePath']);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -61,7 +62,6 @@ abstract class AbstractUrlProfileType extends AbstractContactDataItemType
         parent::setDefaultOptions($resolver);
 
         $resolver->setDefaults([
-            'contact_type'  => static::getContactType(),
             'error_mapping' => [
                 'field_2' => 'url',
             ],

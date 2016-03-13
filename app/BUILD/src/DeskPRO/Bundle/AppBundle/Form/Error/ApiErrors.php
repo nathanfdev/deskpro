@@ -72,6 +72,7 @@ class ApiErrors
     const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
     const INVALID_URL                 = 'invalid_url';
+    const PROFILE_URL                 = 'profile_url';
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
     const RESOURCE_NOT_FOUND          = 'resource_not_found';

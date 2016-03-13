@@ -36,9 +36,12 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A persons contact data.
+ *
+ * @Assert\GroupSequenceProvider
  */
 class PersonContactData extends ContactDataAbstract
 {
