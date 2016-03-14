@@ -23,8 +23,8 @@ export class DownloadsTab extends Component {
       <SectionsPane>
         <Section>
           <SectionGroupedHeader label="Downloads"
-                                count={downloads.get('count')}
                                 ref="downloads"
+                                count={downloads.get('count')}
                                 callback={toggleGroupingVisibility.bind(this)}/>
           <NestedList content="downloads"
                       items={downloads.get('nested').toJS()}/>
