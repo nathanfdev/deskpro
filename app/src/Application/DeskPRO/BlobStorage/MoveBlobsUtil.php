@@ -177,7 +177,7 @@ class MoveBlobsUtil implements Loggable
                 $blob->storage_loc_pref = null;
                 $this->em->persist($blob);
                 $this->em->flush();
-                break;
+                continue;
             }
 
             $t = microtime(true);
