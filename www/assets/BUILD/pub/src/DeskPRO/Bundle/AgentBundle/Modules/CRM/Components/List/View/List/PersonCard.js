@@ -40,7 +40,7 @@ export class PersonCard extends Component {
 
   renderUserGroups() {
     const { usergroups, person } = this.props;
-    const personGroups = person.get('usergroups');
+    const personGroups = person.get('usergroups').toJS();
     if (personGroups.size > 0) {
       return (
         personGroups.map((groupId, index) =>
