@@ -16,12 +16,17 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\CustomDataHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\CustomDataSerializationHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.date_time:
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\DateTimeSerializationHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.organization:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\OrganizationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\OrganizationSerializationHandler
     arguments:
       - "@data.chat"
     tags:

@@ -39,9 +39,9 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class CustomDataHandler.
+ * Class CustomDataSerializationHandler.
  */
-class CustomDataHandler implements SubscribingHandlerInterface
+class CustomDataSerializationHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -126,7 +126,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
                     break;
             }
 
-            $data[$cd->getField()->getId()] = $row;
+            $data[$cd->getField()->getId()] = $context->accept($row);
         }
 
         return $data;
