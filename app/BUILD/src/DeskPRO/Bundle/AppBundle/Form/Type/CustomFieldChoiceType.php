@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,14 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -66,6 +69,8 @@ class CustomFieldChoiceType extends AbstractType
     {
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
+        } else {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice']);
         }
 
         $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
@@ -107,8 +112,21 @@ class CustomFieldChoiceType extends AbstractType
                 'custom_field',
             ])
             ->setAllowedTypes([
-                'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract',
+                'custom_field' => CustomDefAbstract::class,
             ])
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onTransformSingleChoice(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (is_array($data)) {
+            $data = array_shift($data);
+        }
+
+        $event->setData($data);
     }
 }
