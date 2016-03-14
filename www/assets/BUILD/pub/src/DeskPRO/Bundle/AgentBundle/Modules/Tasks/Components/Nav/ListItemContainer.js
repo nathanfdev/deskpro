@@ -31,7 +31,7 @@ export class ListItemContainer extends React.Component {
 
   loadList = () => {
     const { listOptions, dispatch } = this.props;
-
+console.log('List options', listOptions);
     dispatch(setListParamsNav(listOptions));
     dispatch(loadList());
   };

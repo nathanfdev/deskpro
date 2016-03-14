@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { currentSortSelector, currentOrderSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
+import { currentOrderBySelector, currentOrderDirSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { applySort, applyOrder } from '../../../../Actions/listActions';
 
 @connect(state => ({
-  currentSort: currentSortSelector(state),
-  currentOrder: currentOrderSelector(state),
+  currentSort: currentOrderBySelector(state),
+  currentOrder: currentOrderDirSelector(state),
   visibleFields: tableVisibleFieldsSelector(state)
 }))
 export class HeaderContainer extends React.Component {
