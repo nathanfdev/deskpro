@@ -29,8 +29,14 @@ export const tableVisibleFieldsSelector = createSelector(
     params => params.get('table')
 );
 
-export const currentListOrderBySelector = hashStateSelectorFactory(['list', 'order_by'], 'date_created');
-export const currentListOrderDirSelector = hashStateSelectorFactory(['list', 'order_dir'], 'desc');
+export const currentListOrderBySelector = createSelector(
+  currentListParamsSelector,
+    params => params.get('order_by')
+);
+export const currentListOrderDirSelector = createSelector(
+  currentListParamsSelector,
+    params => params.get('order_dir')
+);
 
 export const isCommentsSelector = createSelector(
   currentListParamsSelector,

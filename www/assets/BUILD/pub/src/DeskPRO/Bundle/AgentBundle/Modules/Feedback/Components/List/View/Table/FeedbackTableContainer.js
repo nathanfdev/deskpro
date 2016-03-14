@@ -4,7 +4,7 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { idsSelector, currentListSortSelector, currentListOrderSelector } from '../../../../Selectors/list';
+import { idsSelector, currentListOrderBySelector, currentListOrderDirSelector } from '../../../../Selectors/list';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
@@ -16,8 +16,8 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
   feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state),
   feedbackCategories: collectionSelectorFactory('FeedbackCategory', 'feedback')(state),
   people: collectionSelectorFactory('Person', 'feedback')(state),
-  currentSort: currentListSortSelector(state),
-  currentOrder: currentListOrderSelector(state)
+  orderBy: currentListOrderBySelector(state),
+  orderDir: currentListOrderDirSelector(state)
 }))
 @injectIntl
 export class FeedbackTableContainer extends Component {
@@ -32,13 +32,13 @@ export class FeedbackTableContainer extends Component {
     feedbackCategories: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
     viewFields: PropTypes.object,
-    currentSort: PropTypes.string.isRequired,
-    currentOrder: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    orderDir: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
-  sortTable(param, order) {
-    this.props.dispatch(applyParams({ sort: param, order }));
+  sortTable(orderBy, orderDir) {
+    this.props.dispatch(applyParams({ order_by: orderBy, order_dir: orderDir }));
   }
 
   isVisible(field) {
@@ -104,7 +104,7 @@ export class FeedbackTableContainer extends Component {
   }
 
   render() {
-    const { ids, currentSort, currentOrder } = this.props;
+    const { ids, orderBy, orderDir } = this.props;
 
     return (
       <Table>
@@ -113,14 +113,14 @@ export class FeedbackTableContainer extends Component {
           <Th sort="id"
               title="ID"
               visible={this.isVisible('id')}
-              currentOrder={currentOrder}
-              currentSort={currentSort}
+              currentOrder={orderDir}
+              currentSort={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="title"
               title="Title"
               visible={this.isVisible('title')}
-              currentOrder={currentOrder}
-              currentSort={currentSort}
+              currentOrder={orderDir}
+              currentSort={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="content"
               title="Content"
@@ -132,8 +132,8 @@ export class FeedbackTableContainer extends Component {
           <Th sort="person"
               title="Author"
               visible={this.isVisible('person')}
-              currentOrder={currentOrder}
-              currentSort={currentSort}
+              currentOrder={orderDir}
+              currentSort={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="type" title="Type"
               visible={this.isVisible('type')}/>
@@ -141,15 +141,15 @@ export class FeedbackTableContainer extends Component {
               visible={this.isVisible('category')}/>
           <Th sort="num_ratings"
               title="Votes"
-              currentOrder={currentOrder}
-              currentSort={currentSort}
+              currentOrder={orderDir}
+              currentSort={orderBy}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
               visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
-              currentOrder={currentOrder}
-              currentSort={currentSort}
+              currentOrder={orderDir}
+              currentSort={orderBy}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('date_created')}/>
         </tr>
@@ -160,5 +160,4 @@ export class FeedbackTableContainer extends Component {
       </Table>
     );
   }
-
 }
