@@ -29,19 +29,35 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
-use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Organization;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class ToStringSerializationHandler.
+ * Class OrganizationHandler.
  */
-class ToStringSerializationHandler implements SubscribingHandlerInterface
+class OrganizationHandler implements SubscribingHandlerInterface
 {
+    /**
+     * @var ChatDataService
+     */
+    private $chat_data_service;
+
+    /**
+     * Constructor.
+     *
+     * @param ChatDataService $chat_data_service
+     */
+    public function __construct(ChatDataService $chat_data_service)
+    {
+        $this->chat_data_service = $chat_data_service;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -51,22 +67,29 @@ class ToStringSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_TO_STRING,
-                'method'    => 'serializeEntity',
+                'type'      => Organization::class,
+                'method'    => 'serialize',
             ],
         ];
     }
 
     /**
      * @param JsonSerializationVisitor     $visitor
-     * @param Label                        $entity
+     * @param Organization                 $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
      * @return mixed
      */
-    public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        return (string) $entity;
+        $model = new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
+            $entity,
+            $this->chat_data_service->getChatsCountForOrganization($entity)
+        );
+
+        $serialized = $context->accept($model);
+
+        return $serialized;
     }
 }

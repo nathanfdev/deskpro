@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
@@ -39,9 +39,9 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class EntitySerializationHandler.
+ * Class EntityHandler.
  */
-class EntitySerializationHandler implements SubscribingHandlerInterface
+class EntityHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
                 'type'      => SerializerTypes::TYPE_ENTITY,
-                'method'    => 'serializeEntity',
+                'method'    => 'serialize',
             ],
         ];
     }
@@ -66,7 +66,7 @@ class EntitySerializationHandler implements SubscribingHandlerInterface
      *
      * @return mixed
      */
-    public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
         $context->getSideloadStore()->addSideload($entity);
 

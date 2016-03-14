@@ -34,7 +34,6 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
-use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -271,7 +270,7 @@ class ApiPerson
     /**
      * Usergroups the user belongs to.
      *
-     * @JMS\Type("ArrayCollection<entity<Application\DeskPRO\Entity\Usergroup>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
      * @var ArrayCollection
      */
@@ -286,11 +285,15 @@ class ApiPerson
 
     /**
      * @var string
+     *
+     * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
      */
     protected $primary_email;
 
     /**
      * @var array
+     *
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\PersonEmail>>")
      */
     protected $emails;
 
@@ -328,8 +331,15 @@ class ApiPerson
 
     /**
      * @var CustomDataCollection
+     *
+     * @JMS\Type("custom_data<array>")
      */
     protected $fields;
+
+    /**
+     * @var \Application\DeskPRO\Entity\PersonContactData[]
+     */
+    protected $contact_data;
 
     /**
      * @param Person $person
@@ -369,17 +379,13 @@ class ApiPerson
         $this->browser                   = $person->browser;
         $this->usergroups                = $person->getUsergroups();
         $this->labels                    = $person->getLabelsArray();
-        $this->primary_email             = $person->getPrimaryEmailAddress();
+        $this->primary_email             = $person->getPrimaryEmail();
         $this->tickets_count             = $person->getTicketsCount();
         $this->chats_count               = $person->getChatsCount();
         $this->phone_numbers             = $person->getPhoneNumbersArray();
-        $this->fields                    = new CustomDataCollection($person->custom_data);
-
-        $this->emails = ListUtils::filterMap($person->getEmails(), function ($email) {
-                /* @var \Application\DeskPRO\Entity\PersonEmail $email */
-                return $email->getEmail();
-            }
-        );
+        $this->fields                    = $person->custom_data;
+        $this->contact_data              = $person->getContactData();
+        $this->emails                    = $person->getEmails();
     }
 
     /**

@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
@@ -39,9 +39,9 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class CustomDataSerializationHandler.
+ * Class CustomDataHandler.
  */
-class CustomDataSerializationHandler implements SubscribingHandlerInterface
+class CustomDataHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class CustomDataSerializationHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
                 'type'      => SerializerTypes::TYPE_CUSTOM_DATA,
-                'method'    => 'serializeCollection',
+                'method'    => 'serialize',
             ],
         ];
     }
@@ -66,7 +66,7 @@ class CustomDataSerializationHandler implements SubscribingHandlerInterface
      *
      * @return mixed
      */
-    public function serializeCollection(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
     {
         $collection = new CustomDataCollection($collection);
         $data       = [];

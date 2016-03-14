@@ -36,6 +36,14 @@ Feature: /people endpoint
   "agent_groups": [7, 8],
   "fields": {
     "6": "some text"
+  },
+  "contact_data": {
+    "website": [
+      {"url": "http://site.com"}
+    ],
+    "facebook": [
+      {"url": "http://facebook.com/profile"}
+    ]
   }
 }
     """
@@ -54,6 +62,10 @@ Feature: /people endpoint
     And the JSON node "data.usergroups[1]" should be equal to 2
     And the JSON node "data.usergroups[2]" should be equal to 7
     And the JSON node "data.usergroups[3]" should be equal to 8
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "website"
+    And the JSON node "data.contact_data[0].id" should be equal to 1
+    And the JSON node "data.contact_data[1].contact_type" should be equal to "facebook"
+    And the JSON node "data.contact_data[1].id" should be equal to 2
 
   Scenario: I try to create a person providing empty data
     When I send a POST request to "/api/v2/people"

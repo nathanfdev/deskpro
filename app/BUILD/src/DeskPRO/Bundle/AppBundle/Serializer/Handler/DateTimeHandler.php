@@ -29,35 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class OrganizationSerializationHandler.
+ * Class DateTimeHandler.
  */
-class OrganizationSerializationHandler implements SubscribingHandlerInterface
+class DateTimeHandler implements SubscribingHandlerInterface
 {
-    /**
-     * @var ChatDataService
-     */
-    private $chat_data_service;
-
-    /**
-     * Constructor.
-     *
-     * @param ChatDataService $chat_data_service
-     */
-    public function __construct(ChatDataService $chat_data_service)
-    {
-        $this->chat_data_service = $chat_data_service;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -67,29 +49,20 @@ class OrganizationSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => Organization::class,
-                'method'    => 'serializeEntity',
+                'type'      => \DateTime::class,
+                'method'    => 'serialize',
             ],
         ];
     }
 
     /**
-     * @param JsonSerializationVisitor     $visitor
-     * @param Organization                 $entity
-     * @param array                        $type
-     * @param SideloadSerializationContext $context
+     * @param JsonSerializationVisitor $visitor
+     * @param \DateTime                $object
      *
      * @return mixed
      */
-    public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $object)
     {
-        $model = new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
-            $entity,
-            $this->chat_data_service->getChatsCountForOrganization($entity)
-        );
-
-        $serialized = $context->accept($model);
-
-        return $serialized;
+        return $object->format(\DateTime::ISO8601);
     }
 }

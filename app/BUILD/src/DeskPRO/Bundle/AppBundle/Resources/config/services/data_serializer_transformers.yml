@@ -21,12 +21,6 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_layout_factory"
 
-  data_serializer.transformer.person:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonTransformer
-    arguments:
-      - "@avatar_resolver"
-      - "@data.agent"
-
   data_serializer.transformer.person_profile:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonProfileTransformer
     arguments:

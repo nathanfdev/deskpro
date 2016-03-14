@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\DeskPRO\Entity\OrganizationContactData;
@@ -41,29 +41,31 @@ use JMS\Serializer\JsonSerializationVisitor;
 use Orb\Util\Strings;
 
 /**
- * Class ContactDataSerializationHandler.
+ * Class ContactDataHandler.
  */
-class ContactDataSerializationHandler implements SubscribingHandlerInterface
+class ContactDataHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getSubscribingMethods()
     {
-        return [
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => PersonContactData::class,
-                'method'    => 'serializeEntity',
-            ],
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => OrganizationContactData::class,
-                'method'    => 'serializeEntity',
-            ],
+        $methods = [];
+        $classes = [
+            PersonContactData::class,
+            OrganizationContactData::class,
         ];
+
+        foreach ($classes as $class) {
+            $methods[] = [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => $class,
+                'method'    => 'serialize',
+            ];
+        }
+
+        return $methods;
     }
 
     /**
@@ -74,7 +76,7 @@ class ContactDataSerializationHandler implements SubscribingHandlerInterface
      *
      * @return mixed
      */
-    public function serializeEntity(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
         $contact_type = $entity->getContactType();
         $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));

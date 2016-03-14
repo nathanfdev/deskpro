@@ -1,32 +1,44 @@
 services:
 
   api_serializer.handler.entity:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\EntitySerializationHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.contact_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\ContactDataSerializationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\EntityHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.to_string:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\ToStringSerializationHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\CustomDataSerializationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\ToStringHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.date_time:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\DateTimeSerializationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\DateTimeHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.collection:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\CollectionHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.custom_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\CustomDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.contact_data:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\ContactDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.person:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\PersonHandler
+    arguments:
+      - "@api_serializer.api_person_factory"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.organization:
-    class: DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler\OrganizationSerializationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\OrganizationHandler
     arguments:
       - "@data.chat"
     tags:

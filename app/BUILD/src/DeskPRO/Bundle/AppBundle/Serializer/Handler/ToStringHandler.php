@@ -29,16 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
+use Application\DeskPRO\Entity\Labels\Label;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class DateTimeSerializationHandler.
+ * Class ToStringHandler.
  */
-class DateTimeSerializationHandler implements SubscribingHandlerInterface
+class ToStringHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -49,7 +50,7 @@ class DateTimeSerializationHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => \DateTime::class,
+                'type'      => SerializerTypes::TYPE_TO_STRING,
                 'method'    => 'serialize',
             ],
         ];
@@ -57,12 +58,12 @@ class DateTimeSerializationHandler implements SubscribingHandlerInterface
 
     /**
      * @param JsonSerializationVisitor $visitor
-     * @param \DateTime                $object
+     * @param Label                    $entity
      *
      * @return mixed
      */
-    public function serialize(JsonSerializationVisitor $visitor, $object)
+    public function serialize(JsonSerializationVisitor $visitor, $entity)
     {
-        return $object->format(\DateTime::ISO8601);
+        return (string) $entity;
     }
 }
