@@ -93,7 +93,7 @@ export class MultipleChoiceFilter extends Component {
 export class NestedMultipleChoice extends Component {
   static propTypes = {
     nested: PropTypes.array.isRequired,
-    filterValue: PropTypes.array.isRequired,
+    filterValue: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired
   };
 

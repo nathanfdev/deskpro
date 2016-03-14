@@ -80,13 +80,11 @@ export const applyParams = createAction(
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
     const params = { ...current, ...overwrite };
-    const { delayReload } = params;
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
       delete params.page;
     }
-    delete params.delayReload;
     dispatch(setParams(params));
-    if (params.content && !delayReload) {
+    if (params.content) {
       dispatch(load(params));
     }
   }
@@ -94,10 +92,10 @@ export const applyParams = createAction(
 
 export const setOrderBy = createAction(
   'PUBLISH_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy, delayReload: true }))
+    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
 
 export const setOrderDir = createAction(
   'PUBLISH_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir, delayReload: true }))
+    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
