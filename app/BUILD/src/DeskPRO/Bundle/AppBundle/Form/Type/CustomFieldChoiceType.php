@@ -124,7 +124,7 @@ class CustomFieldChoiceType extends AbstractType
     {
         $data = $event->getData();
         if (is_array($data)) {
-            $data = array_shift($data);
+            $data = (string) array_shift($data);
         }
 
         $event->setData($data);

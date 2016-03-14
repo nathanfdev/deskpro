@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,20 +46,13 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     private $choice_list;
 
     /**
-     * @var bool
-     */
-    private $multiple;
-
-    /**
      * Constructor.
      *
      * @param LegacyChoiceListAdapter $choice_list
-     * @param bool                    $multiple
      */
-    public function __construct(LegacyChoiceListAdapter $choice_list, $multiple = false)
+    public function __construct(LegacyChoiceListAdapter $choice_list)
     {
         $this->choice_list = $choice_list;
-        $this->multiple    = $multiple;
     }
 
     /**
@@ -84,21 +77,6 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param $value
-     *
-     * @return \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode
-     */
-    protected function findChoiceForValue($value)
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
-        foreach ($this->choice_list->getChoices() as $choice) {
-            if ($value == $choice->getData()->getId()) {
-                return $choice;
-            }
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function reverseTransform($value)
@@ -118,5 +96,20 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
         }
 
         return $items;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode
+     */
+    protected function findChoiceForValue($value)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $choice */
+        foreach ($this->choice_list->getChoices() as $choice) {
+            if ($value == $choice->getData()->getId()) {
+                return $choice;
+            }
+        }
     }
 }
