@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App\AgentAppPermissions;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -325,26 +326,32 @@ class DeskproContainer extends Container
             if ($read_configs) {
                 $read = null;
 
-                // Single config
+                // Single config, cast to array
                 if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
-                    $read = $read_configs;
-
-                // Multiple config, choose one at random
-                } else {
-                    $read = $read_configs[array_rand($read_configs)];
+                    $read_configs = array($read_configs);
                 }
 
-                if ($read && !empty($read['host']) && !empty($read['dbname'])) {
-                    $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
-                        'driver'   => 'pdo_mysql',
-                        'host'     => $read['host'],
-                        'user'     => $read['user'],
-                        'password' => $read['password'],
-                        'dbname'   => $read['dbname'],
-                    ));
-                    $this->db_read_conns[$type] = $db;
+                shuffle($read_configs);
 
-                    return $db;
+                // try each read until we have one that works, or they all fail
+                while ($read = array_pop($read_configs)) {
+                    if ($read && !empty($read['host']) && !empty($read['dbname'])) {
+                        try {
+                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
+                                'driver'   => 'pdo_mysql',
+                                'host'     => $read['host'],
+                                'user'     => $read['user'],
+                                'password' => $read['password'],
+                                'dbname'   => $read['dbname'],
+                            ));
+                            $this->db_read_conns[$type] = $db;
+
+                            return $db;
+                        } catch (\Exception $e) {
+                            // Error connecting, log but ignore and try another
+                            KernelErrorHandler::logException($e);
+                        }
+                    }
                 }
             }
         } while (array_pop($parts));

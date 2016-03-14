@@ -82,12 +82,24 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         $dp_global_key  = null;
         $recreate_retry = false;
 
+        $is_retry = isset($params['dp_is_retry']) && $params['dp_is_retry'];
+        unset($params['dp_is_retry']);
+
         if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
             $key           = $m[1];
             $dp_global_key = $key;
             unset($params['host']);
 
-            $conf = App::getConfig($key);
+            if ($is_retry) {
+                // retry connection, try using a backup key
+                $conf = App::getConfig($key.'_backup');
+                if (!$conf) {
+                    $conf = App::getConfig($key);
+                }
+            } else {
+                $conf = App::getConfig($key);
+            }
+
             if (!$conf && defined('DP_BUILDING')) {
                 $conf = array('bogus'); // Dont need dbinfo
             }
@@ -95,6 +107,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
             if (!$conf) {
                 throw new \Exception("Invalid database key $key");
             }
+
             $params = array_merge($params, $conf);
             if (empty($params['driver'])) {
                 $params['driver'] = 'pdo_mysql';
@@ -144,6 +157,18 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
                 } else {
                     throw $err;
                 }
+            }
+        }
+
+        // If connect fails, silently retry
+        if (!$is_retry) {
+            try {
+                $conn->connect();
+            } catch (\Exception $err) {
+                sleep(1);
+                $params['is_retry'] = true;
+
+                return $this->createConnection($params, $config, $eventManager, $mappingTypes);
             }
         }
 
