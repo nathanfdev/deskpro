@@ -70,7 +70,7 @@ class CustomFieldChoiceType extends AbstractType
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
         } else {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice']);
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
         }
 
         $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
