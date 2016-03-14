@@ -5,7 +5,7 @@ import { LabelsForm } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class LabelsFilter extends Component {
   static propTypes = {
-    state: PropTypes.object.isRequired,
+    currentParams: PropTypes.object.isRequired,
     setParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     matchMode: PropTypes.bool,
@@ -15,10 +15,10 @@ export class LabelsFilter extends Component {
   };
 
   render() {
-    const { setParam, state, filter, unsetParam, activeItem, setActiveItem, matchMode } = this.props;
+    const { setParam, currentParams, filter, unsetParam, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
-    const selected = state.params[param] || [];
-    const mode = state.params[modeParam];
+    const selected = currentParams[param] || [];
+    const mode = currentParams[modeParam];
     const isActive = Boolean(selected.length);
 
     const selectLabel = (selectedLabel, event) => {

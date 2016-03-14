@@ -11,43 +11,37 @@ export class ControlBar extends Component {
     dispatch: PropTypes.func.isRequired,
     applyParams: PropTypes.func.isRequired,
     currentParams: PropTypes.object.isRequired,
-    sorting: PropTypes.shape({
-      options: PropTypes.objectOf(PropTypes.shape({
+    sorting: PropTypes.objectOf(
+      PropTypes.shape({
         label: PropTypes.string.isRequired,
         icon: PropTypes.string.isRequired
-      })),
-      orderBy: PropTypes.string.isRequired,
-      orderDir: PropTypes.string.isRequired,
-      orderByAction: PropTypes.func.isRequired,
-      orderDirAction: PropTypes.func.isRequired
-    }),
-    filtering: PropTypes.shape({
-      filters: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.shape({
-          type: PropTypes.oneOf(['date']).isRequired,
+      })
+    ),
+    filters: PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.shape({
+        type: PropTypes.oneOf(['date']).isRequired,
+        label: PropTypes.string.isRequired,
+        fromParam: PropTypes.string.isRequired,
+        toParam: PropTypes.string.isRequired
+      }),
+      PropTypes.shape({
+        type: PropTypes.oneOf(['labels']).isRequired,
+        label: PropTypes.string.isRequired,
+        param: PropTypes.string.isRequired,
+        modeParam: PropTypes.string.isRequired,
+        labels: PropTypes.object.isRequired
+      }),
+      PropTypes.shape({
+        type: PropTypes.oneOf(['select']).isRequired,
+        label: PropTypes.string.isRequired,
+        param: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(PropTypes.shape({
           label: PropTypes.string.isRequired,
-          fromParam: PropTypes.string.isRequired,
-          toParam: PropTypes.string.isRequired
-        }),
-        PropTypes.shape({
-          type: PropTypes.oneOf(['labels']).isRequired,
-          label: PropTypes.string.isRequired,
-          param: PropTypes.string.isRequired,
-          modeParam: PropTypes.string.isRequired,
-          labels: PropTypes.object.isRequired
-        }),
-        PropTypes.shape({
-          type: PropTypes.oneOf(['select']).isRequired,
-          label: PropTypes.string.isRequired,
-          param: PropTypes.string.isRequired,
-          options: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.string.isRequired,
-            value: PropTypes.any.isRequired,
-            nested: PropTypes.array
-          }))
-        })
-      ]))
-    }),
+          value: PropTypes.any.isRequired,
+          nested: PropTypes.array
+        }))
+      })
+    ])),
     view: PropTypes.shape({
       options: PropTypes.objectOf(PropTypes.shape({
         label: PropTypes.string.isRequired,
@@ -88,10 +82,10 @@ export class ControlBar extends Component {
     const newParams = this.state.params;
     if (Array.isArray(param)) {
       param.forEach((item)=> {
-        delete newParams[item];
+        newParams[item] = undefined;
       });
     } else {
-      delete newParams[param];
+      newParams[param] = undefined;
     }
     this.setState({
       changed: true,
@@ -104,24 +98,31 @@ export class ControlBar extends Component {
     if (this.state.changed) {
       dispatch(applyParams(this.state.params));
     }
+    this.setState({
+      changed: false
+    });
   }
 
   render() {
-    const { sorting, filtering, view } = this.props;
+    const { sorting, filters, view } = this.props;
 
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
-        {sorting && <SortingMenu {...sorting} onMenuUnmount={this.reloadList.bind(this)}/>}
+        {sorting &&
+        <SortingMenu options={sorting}
+                     currentParams={this.state.params}
+                     setParam={this.setParam.bind(this)}
+                     onMenuUnmount={this.reloadList.bind(this)}/>}
 
-        {filtering &&
-        <FilteringMenuContainer {...filtering} state={this.state}
-                                               setParam={this.setParam.bind(this)}
-                                               unsetParam={this.unsetParam.bind(this)}
-                                               onMenuUnmount={this.reloadList.bind(this)}/>}
+        {filters &&
+        <FilteringMenuContainer filters={filters}
+                                currentParams={this.state.params}
+                                setParam={this.setParam.bind(this)}
+                                unsetParam={this.unsetParam.bind(this)}
+                                onMenuUnmount={this.reloadList.bind(this)}/>}
 
         {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
       </ul>
     );
   }
 }
-

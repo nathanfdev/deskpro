@@ -12,7 +12,7 @@ export class FilteringMenuContainer extends Component {
     filters: PropTypes.array.isRequired,
     unsetParam: PropTypes.func.isRequired,
     setParam: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired
+    currentParams: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -21,7 +21,7 @@ export class FilteringMenuContainer extends Component {
   }
 
   getButtonLabel() {
-    const { filters = [] } = this.props;
+    const { currentParams, filters = [] } = this.props;
     let label = '(none)';
     let count = 0;
     let value;
@@ -39,9 +39,9 @@ export class FilteringMenuContainer extends Component {
         }
         value = this.stateValue(params);
       } else if (filter.hasOwnProperty('fromParam')) {
-        value = this.props.state.params[filter.fromParam];
+        value = currentParams[filter.fromParam];
         if (!value) {
-          value = this.props.state.params[filter.toParam];
+          value = currentParams[filter.toParam];
         }
       }
       if (value && ((value instanceof Array && value.length) || !(value instanceof Array))) {
@@ -58,10 +58,11 @@ export class FilteringMenuContainer extends Component {
   }
 
   stateValue(param) {
+    const { currentParams } = this.props;
     if (param instanceof Array) {
       const result = [];
       param.map(item => {
-        let value = this.props.state.params[item];
+        let value = currentParams[item];
         if (Immutable.Iterable.isIterable(value)) {
           value = value.toJS();
           if (value.isArray) {
@@ -81,7 +82,7 @@ export class FilteringMenuContainer extends Component {
       });
       return [...new Set(result)];
     }
-    let value = this.props.state.params[param];
+    let value = currentParams[param];
     if (Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
@@ -92,7 +93,7 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { state, unsetParam, setParam, onMenuUnmount, filters = [] } = this.props;
+    const { currentParams, unsetParam, setParam, onMenuUnmount, filters = [] } = this.props;
 
     return (
       <li ref="menuItem">
@@ -109,7 +110,7 @@ export class FilteringMenuContainer extends Component {
                     ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label', '.anytime-picker']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
             <FilteringMenu filters={filters}
-                           state={state}
+                           currentParams={currentParams}
                            unsetParam={unsetParam}
                            onMenuUnmount={onMenuUnmount}
                            setParam={setParam}/>

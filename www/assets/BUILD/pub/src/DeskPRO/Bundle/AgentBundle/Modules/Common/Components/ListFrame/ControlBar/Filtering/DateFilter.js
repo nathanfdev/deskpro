@@ -7,7 +7,7 @@ import { DateTimePicker } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Compon
 export class DateFilter extends Component {
   static propTypes = {
     setParam: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
+    currentParams: PropTypes.object.isRequired,
     unsetParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     activeItem: PropTypes.object,
@@ -25,10 +25,10 @@ export class DateFilter extends Component {
   };
 
   render() {
-    const { state, filter, setParam, unsetParam, activeItem } = this.props;
+    const { currentParams, filter, setParam, unsetParam, activeItem } = this.props;
     const {fromParam, toParam, icon, label} = filter;
-    const from = state.params[fromParam];
-    const to = state.params[toParam];
+    const from = currentParams[fromParam];
+    const to = currentParams[toParam];
     const isActive = Boolean(from || to);
     return (
       <FilterItem activeItem={activeItem}

@@ -12,7 +12,7 @@ export class FilteringMenu extends Component {
     filters: PropTypes.array.isRequired,
     setParam: PropTypes.func.isRequired,
     unsetParam: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired
+    currentParams: PropTypes.object.isRequired
   };
 
   componentWillUnmount() {
@@ -22,38 +22,32 @@ export class FilteringMenu extends Component {
   // Generic <Filter /> component --------------------------------------------------------------------------------------
 
   renderFilter(filter, index) {
-    const { unsetParam } = this.props;
     switch (filter.type) {
       case 'date':
         return (
           <DateFilter {...this.props} filter={filter}
-                                      key={index}
-                                      unsetParam={unsetParam}/>
+                                      key={index}/>
         );
       case 'datePeriod':
         return (
           <DatePeriodFilter {...this.props} filter={filter}
-                                            key={index}
-                                            unsetParam={unsetParam}/>
+                                            key={index}/>
         );
       case 'labels':
         return (
           <LabelsFilter {...this.props} filter={filter}
                                         key={index}
-                                        matchMode
-                                        unsetParam={unsetParam}/>
+                                        matchMode/>
         );
       case 'select':
         return (
           <MultipleChoiceFilter {...this.props} filter={filter}
-                                                key={index}
-                                                unsetParam={unsetParam}/>
+                                                key={index}/>
         );
       case 'singleSelect':
         return (
           <SingleChoiceFilter {...this.props} filter={filter}
-                                              key={index}
-                                              unsetParam={unsetParam}/>
+                                              key={index}/>
         );
       default:
         throw new Error(`Unknown filter type - ${filter.type}`);

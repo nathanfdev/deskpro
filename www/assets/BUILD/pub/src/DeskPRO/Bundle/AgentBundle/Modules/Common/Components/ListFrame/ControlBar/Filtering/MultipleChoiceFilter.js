@@ -9,7 +9,7 @@ export class MultipleChoiceFilter extends Component {
     setParam: PropTypes.func.isRequired,
     unsetParam: PropTypes.func.isRequired,
     activeItem: PropTypes.object,
-    state: PropTypes.object.isRequired,
+    currentParams: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired
   };
 
@@ -33,7 +33,7 @@ export class MultipleChoiceFilter extends Component {
   }
 
   render() {
-    const { setParam, filter, activeItem, unsetParam } = this.props;
+    const { setParam, filter, activeItem, unsetParam, currentParams } = this.props;
     const { label, icon, param, quickFilter, options } = filter;
     const params = [param];
     options.map(option=> {
@@ -43,10 +43,10 @@ export class MultipleChoiceFilter extends Component {
         });
       }
     });
-    let filterValues = this.props.state.params[param];
+    let filterValues = currentParams[param];
 
     const onClick = (value, newParam = null) => () => {
-      filterValues = newParam ? this.props.state.params[newParam] : filterValues;
+      filterValues = newParam ? currentParams[newParam] : filterValues;
       filterValues = filterValues ? filterValues : [];
       if (filterValues.indexOf(value) === -1) {
         filterValues.push(value);
@@ -70,13 +70,13 @@ export class MultipleChoiceFilter extends Component {
               {options.map((option, index) =>
                   <CheckboxOption key={index}
                                   value={option.value}
-                                  values={this.props.state.params[param]}
+                                  values={currentParams[param]}
                                   label={option.label}
                                   onClick={onClick(option.value)}>
                     {
                       option.nested && option.nested.length > 0
                       && <NestedMultipleChoice nested={option.nested}
-                                               filterValue={this.props.state.params}
+                                               filterValue={currentParams}
                                                onClick={onClick}/>
                     }
                   </CheckboxOption>

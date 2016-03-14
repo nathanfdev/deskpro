@@ -114,7 +114,7 @@ export const updateDisplayFieldsToPersonSetting = createAction(
 
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
-  (params = {}) => (dispatch) => {
+  (params = {}) => (dispatch, getState) => {
     if (params.hasOwnProperty('navItem')) {
       const typesOfStatus = ['status', 'status_category', 'hidden_status'];
       typesOfStatus.forEach((type)=> {
@@ -124,8 +124,10 @@ export const applyParams = createAction(
         }
       });
     }
-    dispatch(setParams(params));
-    return dispatch(loadList(params));
+    const current = currentListParamsSelector(getState()).toJS();
+    const newParams = { ...current, ...params };
+    dispatch(setParams(newParams));
+    dispatch(loadList(newParams));
   }
 );
 
