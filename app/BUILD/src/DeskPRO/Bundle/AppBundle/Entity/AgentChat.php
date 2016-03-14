@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -118,7 +117,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      *
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant>>")
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant>>")
      * @JMS\MaxDepth(1)
      * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
      */
@@ -245,7 +244,7 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Department>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
      * @JMS\SerializedName("departments")
      *
      * @return array

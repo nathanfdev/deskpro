@@ -69,7 +69,7 @@ class Organization
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Usergroup>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      */
     protected $usergroups;
 

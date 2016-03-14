@@ -91,7 +91,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\OrderBy({"display_order" = "ASC"})
      *
      * @JMS\Expose()
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
      */
     protected $filters;
 
@@ -131,7 +131,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * )
      *
      * @JMS\Expose()
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
      */
     protected $shared_agents;
 
