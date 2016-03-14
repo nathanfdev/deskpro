@@ -64,7 +64,10 @@ Feature: /ticket_forms endpoint
   "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "fields": {
-    "1": "2",
+    "1": {
+      "value": ["2"],
+      "detail": {"2": {"id": 2, "title": "Small"}}
+    },
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
     "7": "textarea text",
