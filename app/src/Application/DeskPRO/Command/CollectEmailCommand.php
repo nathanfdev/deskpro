@@ -137,6 +137,8 @@ class CollectEmailCommand extends ContainerAwareCommand
             $runner->setLogger($logger);
             $runner->setPhpTimeLimit(900);
             $runner->executeAccount($account, $time, $only_collect);
+
+            App::getDb()->update('email_accounts', array('is_read_active' => 0), array('id' => $account->getId()));
         }
 
         return 0;
