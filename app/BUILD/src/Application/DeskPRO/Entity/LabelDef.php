@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * These are pre-defined labels that are allowed to be used.
@@ -44,6 +45,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $label_type
  * @property string $label
  * @property int $total
+ * @JMS\ExclusionPolicy("all")
  */
 class LabelDef extends DomainObject
 {
@@ -59,21 +61,41 @@ class LabelDef extends DomainObject
     const TYPE_ARTICLES  = 'articles';
 
     /**
+     * Label type.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $label_type;
 
     /**
+     * Label itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $label;
 
     /**
+     * RGB color representation.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string css color
      */
     protected $color = '';
 
     /**
+     * Label times used total counter.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $total = 0;
