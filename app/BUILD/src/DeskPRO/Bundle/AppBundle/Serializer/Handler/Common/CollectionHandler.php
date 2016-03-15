@@ -29,17 +29,18 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
-use Application\DeskPRO\Entity\Labels\Label;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class ToStringHandler.
+ * Class CollectionHandler.
  */
-class ToStringHandler implements SubscribingHandlerInterface
+class CollectionHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -50,20 +51,29 @@ class ToStringHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_TO_STRING,
+                'type'      => SerializerTypes::TYPE_COLLECTION,
                 'method'    => 'serialize',
             ],
         ];
     }
 
     /**
-     * @param JsonSerializationVisitor $visitor
-     * @param Label                    $entity
+     * @param JsonSerializationVisitor     $visitor
+     * @param array|\Traversable           $collection
+     * @param array                        $type
+     * @param SideloadSerializationContext $context
      *
      * @return mixed
      */
-    public function serialize(JsonSerializationVisitor $visitor, $entity)
+    public function serialize(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
     {
-        return (string) $entity;
+        $entity_type = isset($type['params'][0]) ? $type['params'][0] : null;
+        $result      = [];
+
+        foreach ($collection as $entity) {
+            $result[] = $context->accept($entity, $entity_type);
+        }
+
+        return $result;
     }
 }

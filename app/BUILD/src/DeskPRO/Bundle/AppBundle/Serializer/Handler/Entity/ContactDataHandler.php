@@ -29,50 +29,65 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
+use Application\DeskPRO\Entity\ContactDataAbstract;
+use Application\DeskPRO\Entity\OrganizationContactData;
+use Application\DeskPRO\Entity\PersonContactData;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
+use Orb\Util\Strings;
 
 /**
- * Class CollectionHandler.
+ * Class ContactDataHandler.
  */
-class CollectionHandler implements SubscribingHandlerInterface
+class ContactDataHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getSubscribingMethods()
     {
-        return [
-            [
+        $methods = [];
+        $classes = [
+            PersonContactData::class,
+            OrganizationContactData::class,
+        ];
+
+        foreach ($classes as $class) {
+            $methods[] = [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_COLLECTION,
+                'type'      => $class,
                 'method'    => 'serialize',
-            ],
-        ];
+            ];
+        }
+
+        return $methods;
     }
 
     /**
      * @param JsonSerializationVisitor     $visitor
-     * @param array|\Traversable           $collection
+     * @param ContactDataAbstract          $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
      * @return mixed
      */
-    public function serialize(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $entity_type = isset($type['params'][0]) ? $type['params'][0] : null;
-        $result      = [];
+        $contact_type = $entity->getContactType();
+        $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
 
-        foreach ($collection as $entity) {
-            $result[] = $context->accept($entity, $entity_type);
+        if (!class_exists($class_name)) {
+            throw new \InvalidArgumentException("`$contact_type` is not a valid type");
         }
 
-        return $result;
+        $model      = new $class_name($entity);
+        $serialized = $context->accept($model);
+
+        return $serialized;
     }
 }

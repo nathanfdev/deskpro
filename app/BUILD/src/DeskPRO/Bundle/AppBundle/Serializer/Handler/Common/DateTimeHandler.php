@@ -29,19 +29,16 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
-use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class EntityHandler.
+ * Class DateTimeHandler.
  */
-class EntityHandler implements SubscribingHandlerInterface
+class DateTimeHandler implements SubscribingHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -52,24 +49,20 @@ class EntityHandler implements SubscribingHandlerInterface
             [
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
-                'type'      => SerializerTypes::TYPE_ENTITY,
+                'type'      => \DateTime::class,
                 'method'    => 'serialize',
             ],
         ];
     }
 
     /**
-     * @param JsonSerializationVisitor     $visitor
-     * @param EntityInterface|DomainObject $entity
-     * @param array                        $type
-     * @param SideloadSerializationContext $context
+     * @param JsonSerializationVisitor $visitor
+     * @param \DateTime                $object
      *
      * @return mixed
      */
-    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    public function serialize(JsonSerializationVisitor $visitor, $object)
     {
-        $context->getSideloadStore()->addSideload($entity);
-
-        return $entity->getId();
+        return $object->format(\DateTime::ISO8601);
     }
 }

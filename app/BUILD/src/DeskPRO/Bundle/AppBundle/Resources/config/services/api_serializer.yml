@@ -1,44 +1,44 @@
 services:
 
   api_serializer.handler.entity:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\EntityHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\EntityHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.to_string:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\ToStringHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\ToStringHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.date_time:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\DateTimeHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DateTimeHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.collection:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\CollectionHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\CollectionHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\CustomDataHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.contact_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\ContactDataHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContactDataHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.person:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\PersonHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\PersonHandler
     arguments:
       - "@api_serializer.api_person_factory"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.organization:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\OrganizationHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OrganizationHandler
     arguments:
       - "@data.chat"
     tags:
