@@ -201,6 +201,13 @@ Feature: /organizations endpoint
   "email_domains": ["domain1.com", "domain3.com"],
   "fields": {
     "6": "some text"
+  },
+  "contact_data": {
+    "twitter": [
+      {
+        "username": "changed_twitter_username"
+      }
+    ]
   }
 }
     """
@@ -226,6 +233,12 @@ Feature: /organizations endpoint
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
     And the JSON node "data.fields.12.value" should exist
+
+    And the JSON node "data.contact_data" should have 8 elements
+    And the JSON node "data.contact_data[4].id" should be equal to 5
+    And the JSON node "data.contact_data[4].contact_type" should be equal to "twitter"
+    And the JSON node "data.contact_data[4].username" should be equal to "changed_twitter_username"
+    And the JSON node "data.contact_data[4].comment" should be equal to "some text"
 
   Scenario: I try to create an organization with existing email domain
     When I send a POST request to "/api/v2/organizations" with body:

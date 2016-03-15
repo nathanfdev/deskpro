@@ -338,6 +338,8 @@ class ApiPerson
 
     /**
      * @var \Application\DeskPRO\Entity\PersonContactData[]
+     *
+     * @JMS\Type("collection")
      */
     protected $contact_data;
 

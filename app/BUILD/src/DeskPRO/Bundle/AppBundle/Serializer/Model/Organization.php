@@ -82,6 +82,8 @@ class Organization
 
     /**
      * @var \Application\DeskPRO\Entity\OrganizationContactData[]
+     *
+     * @JMS\Type("collection")
      */
     protected $contact_data;
 

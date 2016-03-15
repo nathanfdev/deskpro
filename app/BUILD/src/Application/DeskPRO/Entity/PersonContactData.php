@@ -33,6 +33,7 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TwitterListener;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -47,6 +48,8 @@ class PersonContactData extends ContactDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\Person
+     *
+     * @Assert\NotNull()
      */
     protected $person;
 
@@ -54,6 +57,14 @@ class PersonContactData extends ContactDataAbstract
      * @return Person
      */
     public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRef()
     {
         return $this->person;
     }
@@ -75,14 +86,14 @@ class PersonContactData extends ContactDataAbstract
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
 
-        $events = array(
+        $events = [
             Events::prePersist,
             Events::postPersist,
             Events::preUpdate,
             Events::postUpdate,
             Events::preRemove,
             Events::postRemove,
-        );
+        ];
         foreach ($events as $event) {
             $metadata->addEntityListener(
                 $event,
@@ -91,13 +102,10 @@ class PersonContactData extends ContactDataAbstract
             );
         }
 
-        $metadata->setPrimaryTable(array('name' => 'people_contact_data'));
+        $metadata->setPrimaryTable(['name' => 'people_contact_data']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->addLifecycleCallback('_preSave', 'prePersist');
-        $metadata->addLifecycleCallback('_preSave', 'preUpdate');
-        $metadata->addLifecycleCallback('_preDelete', 'preRemove');
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -105,10 +113,10 @@ class PersonContactData extends ContactDataAbstract
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'contact_type',
                 'type'       => 'string',
                 'length'     => 80,
@@ -116,135 +124,139 @@ class PersonContactData extends ContactDataAbstract
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'contact_type',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'comment',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'comment',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_1',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_1',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_2',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_2',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_3',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_3',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_4',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_4',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_5',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_5',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_6',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_6',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_7',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_7',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_8',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_8',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_9',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_9',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'field_10',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'field_10',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => 'contact_data',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
+
+        $metadata->addEntityListener(Events::postPersist, TwitterListener::class, Events::postPersist);
+        $metadata->addEntityListener(Events::preUpdate, TwitterListener::class, Events::preUpdate);
+        $metadata->addEntityListener(Events::preRemove, TwitterListener::class, Events::preRemove);
     }
 }

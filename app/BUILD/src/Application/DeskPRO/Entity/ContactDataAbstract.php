@@ -173,6 +173,11 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     }
 
     /**
+     * @return object
+     */
+    abstract public function getRef();
+
+    /**
      * @return string
      */
     public function getContactType()
@@ -489,23 +494,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $string = \Orb\Util\Strings::utf8_strtolower($string);
 
         return strpos($this->getSearchString(), $string) !== false;
-    }
-
-    public function addSaveCallback(\Closure $callback)
-    {
-        $this->_save_callbacks[] = $callback;
-    }
-
-    public function _preSave()
-    {
-        foreach ($this->_save_callbacks as $callback) {
-            $callback($this);
-        }
-    }
-
-    public function _preDelete()
-    {
-        $this->getHandler()->deleteType($this);
     }
 
     /**

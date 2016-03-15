@@ -83,7 +83,7 @@ class ContactDataType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetData']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
 
         /** @var FormBuilderInterface $parent_builder */
         $parent_builder = $options['parent_builder'];
@@ -98,6 +98,7 @@ class ContactDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'error_bubbling' => false,
+                'mapped'         => false,
             ])
             ->setRequired(['owner', 'parent_builder'])
             ->setAllowedTypes([
@@ -114,30 +115,37 @@ class ContactDataType extends AbstractType
      */
     public function onSetData(FormEvent $event)
     {
-        $form = $event->getForm();
+        $form  = $event->getForm();
+        $owner = $form->getConfig()->getOption('owner');
 
         /** @var ContactDataAbstract[] $data */
-        $data = $event->getData();
+        $data = $owner->getContactData();
         if (!$data) {
             $data = new ArrayCollection();
         }
 
-        $data_groups = [];
+        $grouped_data = [];
+        $data_groups  = [];
+
         foreach ($data as $item) {
             $data_groups[$item->getContactType()][] = $item;
         }
 
         foreach ($form->all() as $form_group) {
             $entry_type = $form_group->getConfig()->getOption('entry_type');
-            if ($entry_type instanceof ContactDataTypeGroupInterface) {
-                $contact_type = $entry_type::getContactType();
-
-                $data_group = isset($data_groups[$contact_type]) ? $data_groups[$contact_type] : [];
-                $data_group = new ArrayCollection($data_group);
-
-                $form_group->setData($data_group);
+            if (!$entry_type) {
+                continue;
             }
+
+            $contact_type = $entry_type::getContactType();
+
+            $data_group = isset($data_groups[$contact_type]) ? $data_groups[$contact_type] : [];
+            $data_group = new ArrayCollection($data_group);
+
+            $grouped_data[$form_group->getName()] = $data_group;
         }
+
+        $event->setData($grouped_data);
     }
 
     /**
@@ -147,15 +155,34 @@ class ContactDataType extends AbstractType
      */
     public function onMergeData(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = [];
+        $form  = $event->getForm();
+        $owner = $form->getConfig()->getOption('owner');
+
+        /** @var ArrayCollection $data */
+        $data = $owner->getContactData();
 
         foreach ($form->all() as $form_group) {
-            foreach ($form_group->getData() as $data_item) {
-                $data[] = $data_item;
+            $entry_type = $form_group->getConfig()->getOption('entry_type');
+            if (!$entry_type) {
+                continue;
+            }
+
+            /** @var ArrayCollection $group_data */
+            $group_data   = $form_group->getData();
+            $contact_type = $entry_type::getContactType();
+
+            /** @var ContactDataAbstract $data_item */
+            foreach ($group_data as $data_item) {
+                if (!$data->contains($data_item)) {
+                    $data->add($data_item);
+                }
+            }
+
+            foreach ($data as $data_item) {
+                if ($data_item->getContactType() === $contact_type && !$group_data->contains($data_item)) {
+                    $data->removeElement($data_item);
+                }
             }
         }
-
-        $event->setData($data);
     }
 }
