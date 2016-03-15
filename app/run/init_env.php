@@ -53,8 +53,17 @@ define('DP_START_TIME', microtime(true));
 #------------------------------
 
 require __DIR__ . '/lib/DpRun/DpEnv.php';
+
+$config = [];
+
+if (defined('DP_USE_BUILD_NAME')) {
+    $config['env'] = ['use_build_name' => DP_USE_BUILD_NAME];
+}
+
 if (php_sapi_name() === 'cli') {
-    $config = ['env' => []];
+    if (empty($config['env'])) {
+        $config['env'] = [];
+    }
 
     $opts = getopt('e', ['env:', 'no-debug']);
     if (array_key_exists('--no-debug', $opts)) {
@@ -65,11 +74,9 @@ if (php_sapi_name() === 'cli') {
     if ($env) {
         $config['env']['environment'] = $env;
     }
-
-    $DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../', $config);
-} else {
-    $DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../');
 }
+
+$DP_ENV = new \DpRun\DpEnv(__DIR__.'/../../', $config ?: null);
 
 /**
  * The root path to DeskPRO.
