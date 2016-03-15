@@ -133,7 +133,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         /** @var $conn \Doctrine\DBAL\Connection */
         $conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
-        if ($recreate_retry) {
+        if ($recreate_retry && !defined('DP_BUILDING')) {
             try {
                 $conn->connect();
             } catch (\Exception $err) {
@@ -161,11 +161,11 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         }
 
         // If connect fails, silently retry
-        if (!$is_retry) {
+        if (!$is_retry && !defined('DP_BUILDING')) {
             try {
                 $conn->connect();
             } catch (\Exception $err) {
-                sleep(1);
+                usleep(500000); // half a second
                 $params['is_retry'] = true;
 
                 return $this->createConnection($params, $config, $eventManager, $mappingTypes);
