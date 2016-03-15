@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
@@ -45,8 +44,8 @@ use FOS\RestBundle\Controller\Annotations\Route;
  */
 class OrganizationContactDataController extends CrudSubController
 {
+    public static $exposeOnly     = ['get', 'list'];
     public static $entity         = OrganizationContactData::class;
     public static $parentProperty = 'organization';
-    public static $type           = ContactDataType::class;
     public static $listOrder      = 'asc';
 }
