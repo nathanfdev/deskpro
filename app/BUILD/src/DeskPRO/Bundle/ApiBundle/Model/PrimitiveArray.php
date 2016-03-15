@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Model;
 
-class PrimitiveArray
+class PrimitiveArray implements \Iterator
 {
     protected $data;
 
@@ -43,5 +43,30 @@ class PrimitiveArray
     public function getData()
     {
         return $this->data;
+    }
+
+    public function current()
+    {
+        return current($this->data);
+    }
+
+    public function next()
+    {
+        return next($this->data);
+    }
+
+    public function key()
+    {
+        return key($this->data);
+    }
+
+    public function valid()
+    {
+        return (bool) current($this->data);
+    }
+
+    public function rewind()
+    {
+        return reset($this->data);
     }
 }

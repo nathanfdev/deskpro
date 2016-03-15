@@ -107,8 +107,8 @@ class ModelFactory
     public function createArray($entities, $concrete = null)
     {
         $wrappers = [];
-        foreach ($entities as $entity) {
-            $wrappers[] = $this->create($entity, $concrete);
+        foreach ($entities as $key => $entity) {
+            $wrappers[$key] = $this->create($entity, $concrete);
         }
 
         return $wrappers;

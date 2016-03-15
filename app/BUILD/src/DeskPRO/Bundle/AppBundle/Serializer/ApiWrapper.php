@@ -84,7 +84,9 @@ class ApiWrapper
     }
 
     /**
-     * @param $data
+     * @param mixed $data
+     *
+     * @return bool
      */
     protected function checkPagination($data)
     {
