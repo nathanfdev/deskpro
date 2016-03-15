@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -460,8 +460,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
         $output->writeln('Done');
         $output->writeln('You will now want to regen the build-time and build-manifest:');
-        $output->writeln("\tphp cmd.php dpdev --touch-build-time");
-        $output->writeln("\tphp cmd.php dpdev --regen-build-manifest");
+        $output->writeln("\tbin/console dpdev --touch-build-time");
+        $output->writeln("\tbin/console dpdev --regen-build-manifest");
 
         return 0;
     }

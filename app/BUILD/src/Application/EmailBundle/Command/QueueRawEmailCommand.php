@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -130,7 +130,7 @@ class QueueRawEmailCommand extends ContainerAwareCommand
             $output->writeln("<info>Inserted email source: $id</info>\n");
             $output->writeln("The email was inserted with the 'aborted' state and will not be sent automatically.");
             $output->writeln('You may with to manually send this email using the following command:');
-            $output->writeln("\tphp cmd.php dp:email:sendsource $id\n");
+            $output->writeln("\tbin/console dp:email:sendsource $id\n");
         }
 
         if ($use_blob_id) {

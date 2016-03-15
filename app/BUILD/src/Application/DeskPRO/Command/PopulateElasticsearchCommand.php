@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -195,7 +195,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     private function runCommand($arguments, OutputInterface $output)
     {
         $php_path = dp_get_php_path(false);
-        $file     = escapeshellarg(realpath(DP_ROOT.'/../cmd.php'));
+        $file     = escapeshellarg(realpath(DP_APP_DIR.'/bin/console'));
 
         if (defined('DPC_IS_CLOUD')) {
             $file .= ' --dpc-site-id '.DPC_SITE_ID;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,7 +82,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         App::getDb()->exec('TRUNCATE TABLE cache');
         @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
 
-        $output->setVerbosity(4);
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
         $logger          = new Logger('upgrade');
         $console_handler = new ConsoleHandler($output);
@@ -175,12 +175,12 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         # The main executor loop
         #------------------------------
 
-        chdir(DP_ROOT.'/../');
+        chdir(DP_APP_DIR);
 
         while ($next_id = $manager->getNextBuildId()) {
             $logger->info("Build #$next_id");
 
-            $cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
+            $cmd = dp_get_php_command('bin/console', "dp:upgrade --dobuildrun=$next_id");
             $logger->debug("Command: $cmd");
             $ret = null;
             passthru($cmd, $ret);
