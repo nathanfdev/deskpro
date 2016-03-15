@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -42,12 +43,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_INSERTED   = 'inserted';
-    const STATUS_RETRY      = 'retry';
-    const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETE   = 'complete';
-    const STATUS_ERROR      = 'error';
-    const STATUS_REJECTED   = 'rejected';
+    const STATUS_INSERTED      = 'inserted';
+    const STATUS_RETRY         = 'retry';
+    const STATUS_PROCESSING    = 'processing';
+    const STATUS_COMPLETE      = 'complete';
+    const STATUS_ERROR         = 'error';
+    const STATUS_REJECTED      = 'rejected';
+    const STATUS_REJECTED_SOFT = 'rejected_soft';
 
     const OBJ_TYPE_TICKET         = 'ticket';
     const OBJ_TYPE_TICKET_MESSAGE = 'ticketmessage';
@@ -80,6 +82,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_DATE_LIMIT        = 'date_limit';
     const ERR_INVALID_ADDRESS   = 'invalid_address';
     const ERR_RATE_LIMIT        = 'rate_limit';
+    const ERR_USER_VALIDATING   = 'user_validating';
 
     /**
      * @var int
@@ -327,6 +330,17 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     public function getObjectInfo()
     {
         return $this->object_info ? $this->object_info : array();
+    }
+
+    /**
+     * @param string $k
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getObjectInfoKey($k, $default = null)
+    {
+        return isset($this->object_id[$k]) ? $this->object_id[$k] : $default;
     }
 
     /**

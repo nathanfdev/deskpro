@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -763,7 +764,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Is this a user? (Can log in).
+     * Is this a user? A 'user' is simply a person who we know can log in. For example, they
+     * have a password or are attached to a usersource.
+     *
+     * If the person is NOT a user, they are simply a contact record in the database.
      *
      * @return bool
      */
@@ -773,46 +777,17 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * You can trust this method to answer the question "Do we consider
-     * this person valid?".
+     * True if the Person has every confirmed themselves. A user is confirmed by
+     * clicking a link in their email at least once.
      *
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function isUserValid()
-    {
-        return $this->isEmailValidated();
-    }
-
-    /**
-     * True if the Person is considered confirmed (not a bot). This means the user has
-     * either signed in from a usersource, or clicked a link in an email, etc. They are
-     * confirmed as trusted.
-     *
-     * It is possible to be is_confirmed and at the same time not yet is_user (no pw).
+     * Each app in DeskPRO has different requirements for user confirmations. Some apps
+     * might require the user to validate, some might not.
      *
      * @return bool
      */
     public function isConfirmed()
     {
         return $this->is_confirmed;
-    }
-
-    /**
-     * Tells you if the user is "email validated", but they might still need
-     * agent validation depending on the system settings.See isUserValid() for a more
-     * encompassing method.
-     *
-     * @return bool
-     */
-    public function isEmailValidated()
-    {
-        if (!$primary = $this->getPrimaryEmail()) {
-            return false;
-        }
-
-        return (bool) $primary->isValidated();
     }
 
     /**
