@@ -6,8 +6,9 @@
 		{%- elseif status == 'fail' -%}{{ phrase('agent.general.failed') }}{%- endif -%}
 	{%- endmacro -%}
 	{% if log.action_type == 'free' %}
-		{% if log.details.message_html %}
-			{{ log.details.message_html }}
+		{% set _html = log.details.getMessageHtml(false) %}
+		{% if _html %}
+			{{ _html }}
 		{% else %}
 			{{ log.details.message }}
 		{% endif %}
