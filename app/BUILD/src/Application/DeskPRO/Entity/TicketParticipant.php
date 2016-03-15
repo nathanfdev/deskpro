@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -83,10 +82,15 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
     public function setPerson(Person $person)
     {
-        if ($this->person == $person) {
-            return;
+        if ($this->person === $person) {
+            return $this;
         }
 
         $this->_onPropertyChanged('person', $this->person, $person);
@@ -95,6 +99,8 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         if (!$this->person_email && $this->person->getPrimaryEmail()) {
             $this->setPersonEmail($this->person->getPrimaryEmail());
         }
+
+        return $this;
     }
 
     /**
@@ -106,6 +112,18 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket($ticket)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
      * @return Ticket
      */
     public function getTicket()
@@ -113,18 +131,48 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
         return $this->ticket;
     }
 
+    /**
+     * @param $id
+     */
     public function setPersonId($id)
     {
+        /** @var Person $person */
         $person = App::findEntity('DeskPRO:Person', $id);
         $this->setPerson($person);
     }
 
+    /**
+     * @param $id
+     */
     public function setPersonEmailId($id)
     {
         $person_email         = App::findEntity('DeskPRO:PersonEmail', $id);
         $this['person_email'] = $person_email;
     }
 
+    /**
+     * @return PersonEmail
+     */
+    public function getPersonEmail()
+    {
+        return $this->person_email;
+    }
+
+    /**
+     * @param PersonEmail $person_email
+     *
+     * @return $this
+     */
+    public function setPersonEmail(PersonEmail $person_email)
+    {
+        $this->setModelField('person_email', $person_email);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getEmailAddress()
     {
         return $this->person_email['email'];

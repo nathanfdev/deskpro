@@ -178,6 +178,7 @@ SQL
             ->add(new LayoutField(FormFields::CAPTCHA))
             ->add(new LayoutField(FormFields::PRODUCT))
             ->add(new LayoutField(FormFields::CC))
+            ->add(new LayoutField(FormFields::FOLLOWERS))
             ->add(new LayoutField(FormFields::PRIORITY))
             ->add(new LayoutField(FormFields::CATEGORY))
             ->add(new LayoutField(FormFields::WORKFLOW))

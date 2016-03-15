@@ -61,7 +61,8 @@ Feature: /ticket_forms endpoint
   "priority": 3,
   "category": 3,
   "workflow": 1,
-  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
+  "followers": ["agent@deskpro.dev"],
+  "cc": ["user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "fields": {
     "1": {

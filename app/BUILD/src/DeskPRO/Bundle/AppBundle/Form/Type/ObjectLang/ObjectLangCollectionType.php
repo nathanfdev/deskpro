@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -48,35 +47,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class ObjectLangCollectionType extends AbstractType
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onLoadData']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeData']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'object_lang_collection';
     }
 
     /**

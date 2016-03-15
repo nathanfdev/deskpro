@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang\ObjectLangCollectionType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -55,12 +56,12 @@ class TextSnippetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'object_lang_collection', [
+            ->add('title', ObjectLangCollectionType::class, [
                 'mapped'    => false,
                 'prop_name' => 'title',
                 'owner'     => $builder->getData(),
             ])
-            ->add('snippet', 'object_lang_collection', [
+            ->add('snippet', ObjectLangCollectionType::class, [
                 'mapped'    => false,
                 'prop_name' => 'snippet',
                 'owner'     => $builder->getData(),

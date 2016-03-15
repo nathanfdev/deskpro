@@ -464,6 +464,8 @@ class TicketWithLayoutsType extends AbstractType
                 return $this->createCaptcha($context, $ignore_validation);
             case FormFields::CC:
                 return $this->createCc($context);
+            case FormFields::FOLLOWERS:
+                return $this->createFollowers($context);
             case FormFields::ATTACHMENTS:
                 return $this->createAttach($context);
             case FormFields::USER_EMAIL:
@@ -951,12 +953,30 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCc(TicketWithLayoutsContext $context)
     {
-        return new FormField('deskpro_cc', [
-            'label'     => $this->phrase('portal.forms.label_cc'),
-            'ticket'    => $context->getTicket(),
-            'mapped'    => false,
-            'required'  => false,
-            'view_type' => $context->forApi() ? 'array' : 'inline',
+        return new FormField('ticket_participants', [
+            'label'         => $this->phrase('portal.forms.label_cc'),
+            'owner'         => $context->getTicket(),
+            'person_type'   => 'user',
+            'property_path' => 'participants',
+            'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
+        ]);
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return FormField
+     */
+    private function createFollowers(TicketWithLayoutsContext $context)
+    {
+        return new FormField('ticket_participants', [
+            'label'         => $this->phrase('portal.forms.label_followers'),
+            'owner'         => $context->getTicket(),
+            'person_type'   => 'agent',
+            'property_path' => 'participants',
+            'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
         ]);
     }
 

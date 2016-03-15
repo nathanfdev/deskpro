@@ -56,12 +56,6 @@ services:
     tags:
       - { name: form.type, alias: entity_hierarchy }
 
-  form.cc:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CcType
-    arguments: ["@person_factory"]
-    tags:
-      - { name: form.type, alias: deskpro_cc }
-
   form.workflow:
     class: DeskPRO\Bundle\AppBundle\Form\Type\WorkflowType
     tags:
@@ -313,8 +307,9 @@ services:
     tags:
       - { name: form.type, alias: ticket_description }
 
-  form.object_lang_collection:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang\ObjectLangCollectionType
-    arguments: ["@doctrine.orm.entity_manager"]
+  form.ticket_participants:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipantsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: object_lang_collection }
+      - { name: form.type, alias: ticket_participants }
