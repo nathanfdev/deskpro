@@ -10,11 +10,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.date_time:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DateTimeHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.collection:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\CollectionHandler
     tags:
