@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,30 +46,30 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackTypeController extends BaseController
 {
     /**
-     * @ApiDoc(
-     *      description="get a filtered list of feedback types",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/feedback_types", name="api_feedback_types")
+     * Fetch all feedback types.
      *
-     * @throws \LogicException
+     * **Note that current model called as Category, so don't be fulled with this - it's type**
+     *
+     * @ApiDoc(
+     *     section="Feedback",
+     *     tags={"unstable"="#ff6666", "feedback"="#4422bb"},
+     *     resourceDescription="Operations about feedback",
+     *     description="get a filtered list of feedback types",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="array<Application\DeskPRO\Entity\FeedbackCategory>"
+     * )
+     * @Annotations\Get("/feedback_types", name="api_feedback_types")
      *
      * @return View
      */
-    public function cgetAction()
+    public function listAction()
     {
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $qb
-            ->select('type.id', 'type.title')
-            ->from('DeskPRO:FeedbackCategory', 'type')
-            ->orderBy('type.title', 'asc');
-
-        $types = $qb->getQuery()->getArrayResult();
+        $types = $this->getRepository('Application\\DeskPRO\\Entity\\FeedbackCategory')->findAll();
 
         return View::create(
-            $this->dataSerialize($types),
+            $this->wrap($types),
             Response::HTTP_OK
         );
     }

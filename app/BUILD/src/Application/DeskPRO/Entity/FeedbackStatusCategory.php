@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,12 +33,14 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Length;
@@ -48,24 +50,40 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * Feedback status types for accepted/declined statuses.
  *
+ * @JMS\ExclusionPolicy("all")
  * @PortalLinkCustom()
  */
-class FeedbackStatusCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, HasValidationMetadataInterface
+class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
 
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Category status type.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status_type;
 
     /**
+     * Category title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;

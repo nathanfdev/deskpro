@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,8 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Base class used for storing custom field data.
  *
@@ -47,6 +49,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     /**
      * The unique ID.
      *
+     * @JMS\Groups({"list", "details"})
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
@@ -60,6 +65,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * User string data.
+     *
+     * @JMS\Groups({"list", "details"})
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -127,6 +135,25 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
             default:
                 return $this->value ? $this->value : $this->input;
         }
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Groups("details")
+     * @JMS\SerializedName("field_id")
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
+    public function fetchFieldId()
+    {
+        if ($this->field) {
+            return $this->field->getId();
+        } elseif ($this->root_field) {
+            return $this->root_field->getId();
+        }
+
+        return 0;
     }
 
     /**

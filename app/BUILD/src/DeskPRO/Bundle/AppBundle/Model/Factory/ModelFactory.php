@@ -29,7 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Model\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Model\AgentTeam;
+use DeskPRO\Bundle\AppBundle\Model\ApiPerson;
+use DeskPRO\Bundle\AppBundle\Model\Feedback\FeedbackStatus;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -54,17 +57,22 @@ class ModelFactory
     }
 
     /**
+     * @todo we should move either move it into config either get rid of this
+     *
      * @var array
      */
     protected $methodMap = [
         'person' => [
-            'ApiPerson' => [
+            ApiPerson::class => [
                 'default' => true,
                 'factory' => 'api_serializer.api_person_factory',
                 'method'  => 'create',
             ],
         ],
         'agent_team' => 'createAgentTeam',
+        'feedback'   => [
+                FeedbackStatus::class => ['default' => true, 'method' => 'createFeedbackStatus'],
+            ],
 
     ];
 
@@ -115,7 +123,7 @@ class ModelFactory
         if (null === $concrete) {
             $concrete = $this->findDefault($polymorphs);
         } else {
-            $concrete = isset($polymorphs[$concrete]) ? $polymorphs : $this->findDefault($polymorphs);
+            $concrete = isset($polymorphs[$concrete]) ? $polymorphs[$concrete] : $this->findDefault($polymorphs);
         }
         if (isset($concrete['factory'])) {
             if (!$this->container->has($concrete['factory'])) {
@@ -161,5 +169,10 @@ class ModelFactory
         $agent_team = new AgentTeam($entity);
 
         return $agent_team->setAvatar($avatar_resolver->getAvatarModel($entity));
+    }
+
+    protected function createFeedbackStatus(Feedback $feedback)
+    {
+        return new FeedbackStatus($feedback);
     }
 }

@@ -98,19 +98,20 @@ class BaseController extends FOSRestController
     }
 
     /**
-     * @param      $data
-     * @param null $includes_string
+     * @param mixed  $data
+     * @param string $concrete_model
+     * @param string $includes_string
      *
      * @return ApiWrapper
      */
-    protected function wrap($data, $includes_string = null)
+    protected function wrap($data, $concrete_model = null, $includes_string = null)
     {
         /** @var ModelFactory $factory */
         $factory = $this->get('api_serializer.model_factory');
         if (is_array($data) || $data instanceof \Traversable) {
-            $result = $factory->createArray($data);
+            $result = $factory->createArray($data, $concrete_model);
         } else {
-            $result = $factory->create($data);
+            $result = $factory->create($data, $concrete_model);
         }
 
         return new ApiWrapper($result, $includes_string ?: []);

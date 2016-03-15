@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,40 +46,34 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackLabelController extends BaseController
 {
     /**
+     * Fetch all feedback with labels only.
+     *
      * @ApiDoc(
-     *      description="get list of feedback labels",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Feedback",
+     *     tags={"unstable"="#ff6666", "feedback"="#4422bb"},
+     *     resourceDescription="Operations about feedback",
+     *     description="get list of feedback labels",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output={
+     *          "class"="array<Application\DeskPRO\Entity\Feedback>",
+     *          "groups"= {"labels"}
+     *     }
      * )
-     * @Get("/feedback_labels_list", name="api_feedback_labels_list")
+     * @Annotations\Get("/feedback_labels_list", name="api_feedback_labels_list")
+     * @Annotations\View(serializerGroups={"labels"})
      *
      * @throws \LogicException
      *
      * @return View
      */
-    public function cgetAction()
+    public function listAction()
     {
-        /* @ToDo move below functionality into LabelDef repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $qb
-            ->select('f.id', 'l.label')
-            ->from('DeskPRO:Feedback', 'f')
-            ->innerJoin('f.labels', 'l');
-
-        $labels = $qb->getQuery()->getResult();
-
-        $mapped = [];
-        foreach ($labels as $label) {
-            $mapped[$label['id']][] = $label['label'];
-        }
-        $labels = [];
-        foreach ($mapped as $key => $value) {
-            $labels[] = ['id' => $key, 'labels' => $value];
-        }
+        $feedback = $this->getRepository('Application\DeskPRO\Entity\Feedback')->findAll();
 
         return View::create(
-            $this->dataSerialize($labels),
+            $this->wrap($feedback),
             Response::HTTP_OK
         );
     }

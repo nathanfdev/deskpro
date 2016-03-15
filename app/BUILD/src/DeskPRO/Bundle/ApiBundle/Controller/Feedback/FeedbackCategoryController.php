@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,9 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -47,13 +46,20 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackCategoryController extends BaseController
 {
     /**
+     * Fetch feedback categories list.
+     *
      * @ApiDoc(
-     *      description="get list of feedback categories",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Feedback",
+     *     resourceDescription="Operations about feedback",
+     *     description="get list of feedback categories",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="Application\DeskPRO\Entity\CustomDataFeedback"
      * )
-     * @Get("/feedback_categories", name="api_feedback_categories")
+     *
+     * @Annotations\Get("/feedback_categories", name="api_feedback_categories")
+     * @Annotations\View("list")
      *
      * @return View
      *
@@ -75,7 +81,7 @@ class FeedbackCategoryController extends BaseController
         $categories = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->dataSerialize($categories),
+            $this->wrap($categories),
             Response::HTTP_OK
         );
     }

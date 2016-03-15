@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,80 +64,26 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="get list of feedback comments",
      *      statusCodes={
      *          200="Returned if everything is ok",
      *          400="Returned if your filters was invalid"
      *      },
      *      filters={
-     *          {
-     *              "name"="page",
-     *              "type"="integer",
-     *              "default"=1,
-     *              "description"="current page",
-     *          },
-     *          {
-     *              "name"="count",
-     *              "type"="integer",
-     *              "default"=5,
-     *              "description"="per page comments quantity",
-     *          },
-     *          {
-     *              "name"="awaiting_validation",
-     *              "type"="boolean",
-     *              "description"="set it if you want to fetch new comments",
-     *          },
-     *          {
-     *              "name"="ids",
-     *              "dataType"="string",
-     *              "description"="a comma separated list of comment`s ids",
-     *          },
-     *          {
-     *              "name"="category",
-     *              "dataType"="string",
-     *              "description"="category to search, exact name"
-     *          },
-     *          {
-     *              "name"="statusCategory",
-     *              "dataType"="integer",
-     *              "description"="integer represents status category",
-     *          },
-     *          {
-     *              "name"="label",
-     *              "dataType"="string",
-     *              "description"="a comma separated list of exact label names",
-     *          },
-     *          {
-     *              "name"="no_labels",
-     *              "dataType"="boolean",
-     *              "description"="boolean value",
-     *          },
-     *          {
-     *              "name"="custom_category",
-     *              "dataType"="string[]",
-     *              "description"="an array of exact custom categories names",
-     *          },
-     *          {
-     *              "name"="status",
-     *              "dataType"="integer",
-     *              "description"="an integer value represents current status",
-     *          },
-     *          {
-     *              "name"="hidden_status",
-     *              "dataType"="string",
-     *              "description"="an integer value represents current hidden_status",
-     *          },
-     *          {
-     *              "name"="created_from",
-     *              "dataType"="datetime",
-     *              "description"="a datetime string to search comments since",
-     *          },
-     *          {
-     *              "name"="created_to",
-     *              "dataType"="datetime",
-     *              "description"="a datetime string to search comments until",
-     *          },
+     *          {"name"="page", "type"="integer", "default"=1, "description"="current page"},
+     *          {"name"="count", "type"="integer", "default"=5, "description"="per page comments quantity"},
+     *          {"name"="awaiting_validation", "type"="boolean", "description"="set it if you want to fetch new comments"},
+     *          {"name"="ids", "dataType"="string", "description"="a comma separated list of comment`s ids"},
+     *          {"name"="category", "dataType"="string", "description"="category to search, exact name"},
+     *          {"name"="statusCategory", "dataType"="integer", "description"="integer represents status category"},
+     *          {"name"="label", "dataType"="string", "description"="a comma separated list of exact label names"},
+     *          {"name"="no_labels", "dataType"="boolean", "description"="boolean value"},
+     *          {"name"="custom_category", "dataType"="string[]", "description"="an array of exact custom categories names"},
+     *          {"name"="status", "dataType"="integer", "description"="an integer value represents current status"},
+     *          {"name"="hidden_status", "dataType"="string", "description"="an integer value represents current hidden_status"},
+     *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
+     *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
      *      },
      *      output={
      *        "class"="<Application\DeskPRO\Entity\FeedbackComment>"
@@ -178,17 +124,13 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="get counter of comments for feedback",
      *      statusCodes={
      *          200="Success"
      *      },
      *      filters={
-     *          {
-     *              "name"="ids",
-     *              "dataType"="string",
-     *              "description"="a comma separated list of feedback ids",
-     *          }
+     *          {"name"="ids", "dataType"="string", "description"="a comma separated list of feedback ids"}
      *     }
      * )
      * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
@@ -229,7 +171,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="get a comment",
      *      requirements={
      *          {
@@ -267,7 +209,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="update a comment",
      *      requirements={
      *          {
@@ -325,7 +267,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="delete feedback comment",
      *      requirements={
      *          {
@@ -380,7 +322,7 @@ class FeedbackCommentController extends BaseController
      *
      * @APIDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="approve comments",
      *      requirements={
      *          {
@@ -429,7 +371,7 @@ class FeedbackCommentController extends BaseController
      *
      * @ApiDoc(
      *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"},
+     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="get count of feedback comment awaiting validation",
      *      parameters={
      *          {

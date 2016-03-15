@@ -66,7 +66,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     const HIDDEN_STATUS_DRAFT = 'draft';
 
     /**
+     * The unqique ID.
+     *
      * @JMS\Expose()
+     * @JMS\Groups({"labels"})
      * @JMS\Type("integer")
      *
      * @var int
@@ -169,6 +172,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $num_ratings = 0;
 
     /**
+     * Status title.
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *

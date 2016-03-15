@@ -67,7 +67,7 @@ class CommentsController extends BaseController
      *     section="Content",
      *     resourceDescription="Operations about content",
      *     description="Get articles, news, downloads comments counts",
-     *     tags={"comments"},
+     *     tags={"comments"="#22aa22"},
      *     statusCodes={
      *         200="Returned if request was successful",
      *         400="Returned if your filters was malformed",
@@ -138,7 +138,7 @@ class CommentsController extends BaseController
      *     section="Content",
      *     resourceDescription="Operations about content",
      *     description="Get articles comments list",
-     *     tags={"comments"},
+     *     tags={"comments"="#22aa22"},
      *     statusCodes={
      *         200="Returned if request was successful",
      *         400="Returned if your filters was malformed",
@@ -178,7 +178,7 @@ class CommentsController extends BaseController
      *     section="Content",
      *     resourceDescription="Operations about content",
      *     description="Get news comments list",
-     *     tags={"comments"},
+     *     tags={"comments"="#22aa22"},
      *     statusCodes={
      *         200="Returned if request was successful",
      *         400="Returned if your filters was malformed",
@@ -218,7 +218,7 @@ class CommentsController extends BaseController
      *     section="Content",
      *     resourceDescription="Operations about content",
      *     description="Get downloads comments list",
-     *     tags={"comments"},
+     *     tags={"comments"="#22aa22"},
      *     statusCodes={
      *         200="Returned if request was successful",
      *         400="Returned if your filters was malformed",
