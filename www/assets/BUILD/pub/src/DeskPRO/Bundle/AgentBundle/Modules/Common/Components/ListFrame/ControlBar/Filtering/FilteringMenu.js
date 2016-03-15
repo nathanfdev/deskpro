@@ -8,60 +8,46 @@ import { SingleChoiceFilter } from './SingleChoiceFilter';
 
 export class FilteringMenu extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
     onMenuUnmount: PropTypes.func,
     filters: PropTypes.array.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired
+    setParam: PropTypes.func.isRequired,
+    unsetParam: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired
   };
 
   componentWillUnmount() {
-    const {dispatch, onMenuUnmount} = this.props;
-    if (onMenuUnmount) {
-      dispatch(onMenuUnmount());
-    }
+    this.props.onMenuUnmount();
   }
 
   // Generic <Filter /> component --------------------------------------------------------------------------------------
-  unsetParams(params) {
-    const unset = {};
-    (params instanceof Array ? params : [params]).forEach(param => unset[param] = undefined);
-    this.props.dispatch(this.props.setParamsAction(unset));
-  }
 
   renderFilter(filter, index) {
     switch (filter.type) {
       case 'date':
         return (
           <DateFilter {...this.props} filter={filter}
-                                      key={index}
-                                      unsetParams={this.unsetParams}/>
+                                      key={index}/>
         );
       case 'datePeriod':
         return (
           <DatePeriodFilter {...this.props} filter={filter}
-                                            key={index}
-                                            unsetParams={this.unsetParams}/>
+                                            key={index}/>
         );
       case 'labels':
         return (
           <LabelsFilter {...this.props} filter={filter}
                                         key={index}
-                                        matchMode
-                                        unsetParams={this.unsetParams}/>
+                                        matchMode/>
         );
       case 'select':
         return (
           <MultipleChoiceFilter {...this.props} filter={filter}
-                                                key={index}
-                                                unsetParams={this.unsetParams}/>
+                                                key={index}/>
         );
       case 'singleSelect':
         return (
           <SingleChoiceFilter {...this.props} filter={filter}
-                                              key={index}
-                                              unsetParams={this.unsetParams}/>
+                                              key={index}/>
         );
       default:
         throw new Error(`Unknown filter type - ${filter.type}`);

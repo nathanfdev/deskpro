@@ -47,8 +47,8 @@ export const loadList = createAction(
     const params = {
       ...navParams,
       ...filtersParams,
-      orderBy: currentOrderBySelector(state),
-      orderDir: currentOrderDirSelector(state)
+      order_by: currentOrderBySelector(state),
+      order_dir: currentOrderDirSelector(state)
     };
 
     return api
@@ -84,9 +84,6 @@ export const applyOrderDir = createAction(
 export const applyFilters = createAction(
   'TASKS_LIST_APPLY_FILTERS',
   (value) => dispatch => {
-    const { delayReload } = value;
-    // todo?
-    delete value.delayReload;
     dispatch(setListParamsFilters(value));
     dispatch(loadList());
   }

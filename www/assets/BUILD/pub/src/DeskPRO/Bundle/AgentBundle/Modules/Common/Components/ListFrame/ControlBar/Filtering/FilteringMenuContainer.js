@@ -1,20 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
-import { connect } from 'react-redux';
 import { Button } from '../Button';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { FilteringMenu } from './FilteringMenu';
 
 
-@connect()
 export class FilteringMenuContainer extends Component {
   static propTypes = {
     onMenuUnmount: PropTypes.func,
-    dispatch: PropTypes.func.isRequired,
     filters: PropTypes.array.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired
+    unsetParam: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -23,7 +21,7 @@ export class FilteringMenuContainer extends Component {
   }
 
   getButtonLabel() {
-    const { filters = [] } = this.props;
+    const { currentParams, filters = [] } = this.props;
     let label = '(none)';
     let count = 0;
     let value;
@@ -41,9 +39,9 @@ export class FilteringMenuContainer extends Component {
         }
         value = this.stateValue(params);
       } else if (filter.hasOwnProperty('fromParam')) {
-        value = this.stateValue(filter.fromParam);
+        value = currentParams[filter.fromParam];
         if (!value) {
-          value = this.stateValue(filter.toParam);
+          value = currentParams[filter.toParam];
         }
       }
       if (value && ((value instanceof Array && value.length) || !(value instanceof Array))) {
@@ -60,10 +58,11 @@ export class FilteringMenuContainer extends Component {
   }
 
   stateValue(param) {
+    const { currentParams } = this.props;
     if (param instanceof Array) {
       const result = [];
       param.map(item => {
-        let value = this.props.state.get(item);
+        let value = currentParams[item];
         if (Immutable.Iterable.isIterable(value)) {
           value = value.toJS();
           if (value.isArray) {
@@ -83,7 +82,7 @@ export class FilteringMenuContainer extends Component {
       });
       return [...new Set(result)];
     }
-    let value = this.props.state.get(param);
+    let value = currentParams[param];
     if (Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
@@ -94,7 +93,7 @@ export class FilteringMenuContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { dispatch, state, setParamsAction, onMenuUnmount, filters = [] } = this.props;
+    const { currentParams, unsetParam, setParam, onMenuUnmount, filters = [] } = this.props;
 
     return (
       <li ref="menuItem">
@@ -108,14 +107,13 @@ export class FilteringMenuContainer extends Component {
                   positionAt="left bottom"
                   positionTarget={this.refs.button}>
           <ClickOut onClickOut={this.collapse}
-                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label']}
+                    ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel', '.dpw-label-list', '.dpw-item-label', '.anytime-picker']}
                     additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-            <FilteringMenu dispatch={dispatch}
-                           filters={filters}
-                           state={state}
-                           stateValue={this.stateValue.bind(this)}
+            <FilteringMenu filters={filters}
+                           currentParams={currentParams}
+                           unsetParam={unsetParam}
                            onMenuUnmount={onMenuUnmount}
-                           setParamsAction={setParamsAction}/>
+                           setParam={setParam}/>
           </ClickOut>
         </Detached>
       </li>

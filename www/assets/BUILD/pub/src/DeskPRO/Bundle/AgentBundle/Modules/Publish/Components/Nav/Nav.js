@@ -46,7 +46,7 @@ export class Nav extends Component {
                        toggleGroupingVisibility={this.toggle}
                        closeGroupingVisibility={this.close}/>
             </Tab>
-            <Tab icon="fa-download">
+            <Tab icon="fa-download" title="Downloads">
               <DownloadsTab downloads={downloads}
                             toggleGroupingVisibility={this.toggle}
                             closeGroupingVisibility={this.close}/>

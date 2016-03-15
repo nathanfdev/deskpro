@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Data\Criteria\Criteria;
@@ -179,8 +180,8 @@ class TasksSelectCriteria extends Criteria
                     ;
 
                     break;
-                case 'orderBy':
-                    $order = isset($this->filters['orderDir']) ? $this->filters['orderDir'] : 'asc';
+                case 'order_by':
+                    $order = isset($this->filters['order_dir']) ? $this->filters['order_dir'] : 'asc';
 
                     switch ($value) {
                         case 'id':
@@ -293,8 +294,8 @@ class TasksSelectCriteria extends Criteria
                 'not_assigned_department',
                 'creator',
                 'project',
-                'orderBy',
-                'orderDir',
+                'order_by',
+                'order_dir',
                 'label',
                 'label_mode',
                 'created_from',
@@ -330,7 +331,7 @@ class TasksSelectCriteria extends Criteria
 
             ->setAllowedValues('label_mode', ['any', 'all'])
             ->setAllowedValues('done', ['done', 'undone'])
-            ->setAllowedValues('orderBy', [
+            ->setAllowedValues('order_by', [
                 'id',
                 'title',
                 'list',
@@ -340,7 +341,7 @@ class TasksSelectCriteria extends Criteria
                 'date_created',
                 'assignee',
             ])
-            ->setAllowedValues('orderDir', [
+            ->setAllowedValues('order_dir', [
                 'asc',
                 'desc',
             ])

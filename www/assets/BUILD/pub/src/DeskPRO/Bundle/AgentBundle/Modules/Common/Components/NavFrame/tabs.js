@@ -52,9 +52,9 @@ export class TabsPane extends React.Component {
   renderTabHeader({title, icon, index}) {
     const className = index === this.state.active ? 'active' : '';
     const onClick = this.activate(index).bind(this);
-    const content = title
-      ? title
-      : (<span className="icon"><i className={'fa ' + icon}></i></span>);
+    const content = icon
+      ? (<span className="icon"><i className={'fa ' + icon}></i></span>)
+      : title;
 
     return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }

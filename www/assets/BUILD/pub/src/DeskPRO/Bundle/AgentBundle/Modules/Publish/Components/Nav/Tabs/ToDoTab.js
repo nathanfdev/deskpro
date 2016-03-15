@@ -59,7 +59,7 @@ export class ToDoTab extends Component {
           <ul>
             <ListItemContainer label="DraftArticles"
                                group="aticles"
-                               listOptions={{content: 'articles', navItem: {hidden_status: 'draft'}, sort: 'date_created', order: 'desc'}}>
+                               listOptions={{content: 'articles', navItem: {hidden_status: 'draft'}}}>
               <ListItem label="Draft Articles"
                         count={todo.get('articles').get('draft')}/>
             </ListItemContainer>
@@ -99,7 +99,7 @@ export class CommentsToValidateSection extends Component {
             <ListItemContainer key={index}
                                label="ToValidate"
                                group={item.content}
-                               listOptions={{content: item.content, navItem: {status: 'validating'}, sort: 'date_created', order: 'desc'}}>
+                               listOptions={{content: item.content, navItem: {status: 'validating'}}}>
               <ListItem label={item.label}
                         count={item.count.toValidate}/>
             </ListItemContainer>)}
@@ -126,7 +126,7 @@ export class CommentsToReviewSection extends Component {
             <ListItemContainer key={index}
                                label="ToReview"
                                group={item.content}
-                               listOptions={{content: item.content, navItem: {is_reviewed: 0}, sort: 'date_created', order: 'desc'}}>
+                               listOptions={{content: item.content, navItem: {is_reviewed: 0}}}>
               <ListItem label={item.label}
                         count={item.count.toReview}/>
             </ListItemContainer>)}

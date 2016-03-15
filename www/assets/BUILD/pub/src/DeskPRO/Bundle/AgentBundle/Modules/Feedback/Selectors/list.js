@@ -33,7 +33,6 @@ export const currentListOrderBySelector = createSelector(
   currentListParamsSelector,
     params => params.get('order_by')
 );
-
 export const currentListOrderDirSelector = createSelector(
   currentListParamsSelector,
     params => params.get('order_dir')
