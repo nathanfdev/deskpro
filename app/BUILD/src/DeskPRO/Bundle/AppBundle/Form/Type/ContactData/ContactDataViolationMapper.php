@@ -65,7 +65,7 @@ class ContactDataViolationMapper
         $parent_form = $event->getForm();
 
         $form = $parent_form->get($this->form_name);
-        $data = $form->getData();
+        $data = $parent_form->getData()->getContactData();
 
         // set children errors
         foreach ($form->getErrors() as $error) {

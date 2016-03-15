@@ -408,6 +408,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $contact_data;
 
