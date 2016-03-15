@@ -49,6 +49,7 @@ if ($proc_kernel === null) {
 
         $cmd  = DP_PHP_PATH.' ./build-kernels.php --knum '.$k;
         $proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
+        $proc->setTimeout(10 * 60);
         $proc->run(function ($type, $buffer) {
             if ($type === 'err') {
                 echo 'ERR: '.$buffer;
