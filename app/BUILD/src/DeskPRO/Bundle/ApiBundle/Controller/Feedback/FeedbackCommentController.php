@@ -89,7 +89,7 @@ class FeedbackCommentController extends BaseController
      *        "class"="<Application\DeskPRO\Entity\FeedbackComment>"
      *      }
      * )
-     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
+     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
      * @Get("/feedback_comments_list", name="api_feedback_comments_list")
      *
      * @param Request $request
@@ -98,7 +98,7 @@ class FeedbackCommentController extends BaseController
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsDataService $dataService */
         $dataService = $this->get('data.feedback_comments');
@@ -114,7 +114,7 @@ class FeedbackCommentController extends BaseController
         $comments = $dataService->selectComments($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($comments),
+            $this->wrap($comments),
             Response::HTTP_OK
         );
     }

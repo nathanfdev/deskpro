@@ -190,13 +190,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * @JMS\VirtualProperty()
      * @JMS\SerializedName("custom_data")
-     * @JMS\Type("array")
      *
      * @return string
      */
     public function getCustomData()
     {
-        return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : '';
+        return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : null;
     }
 
     /**

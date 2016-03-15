@@ -93,7 +93,7 @@ class FeedbackController extends BaseController
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         $dataService = $this->get('data.feedback');
         $params      = $this->removeAdditionalParameters($request);

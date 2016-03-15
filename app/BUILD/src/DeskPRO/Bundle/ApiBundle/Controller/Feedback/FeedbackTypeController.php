@@ -66,7 +66,7 @@ class FeedbackTypeController extends BaseController
      */
     public function listAction()
     {
-        $types = $this->getRepository('Application\\DeskPRO\\Entity\\FeedbackCategory')->findAll();
+        $types = $this->getRepository('Application\\DeskPRO\\Entity\\FeedbackCategory')->findBy([], ['title' => 'ASC']);
 
         return View::create(
             $this->wrap($types),

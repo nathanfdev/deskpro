@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -108,7 +109,9 @@ class BaseController extends FOSRestController
     {
         /** @var ModelFactory $factory */
         $factory = $this->get('api_serializer.model_factory');
-        if (is_array($data) || $data instanceof \Traversable) {
+        if ($data instanceof Pagerfanta) {
+            $result = $data;
+        } elseif (is_array($data) || ($data instanceof \Traversable)) {
             $result = $factory->createArray($data, $concrete_model);
         } else {
             $result = $factory->create($data, $concrete_model);

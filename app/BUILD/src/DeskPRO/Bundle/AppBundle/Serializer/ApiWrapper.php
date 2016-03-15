@@ -76,8 +76,10 @@ class ApiWrapper
      */
     public function __construct($data, array $includes = [])
     {
-        $this->checkPagination($data);
-        $this->data     = $data;
+        if (!$this->checkPagination($data)) {
+            $this->data = $data;
+        }
+
         $this->includes = $includes;
     }
 
@@ -107,7 +109,11 @@ class ApiWrapper
 
             $this->data               = $results;
             $this->meta['pagination'] = $pagination;
+
+            return true;
         }
+
+        return false;
     }
 
     /**
