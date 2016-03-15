@@ -17,7 +17,7 @@ Feature: /glossary/word endpoint
     And the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
-    And the JSON node "data[0].word" should be equal to "Word 2"
+    And the JSON node "data[0].word" should be equal to "Word 1"
 
   Scenario: I create a word
     When I send a POST request to "/api/v2/glossary/words" with body:
@@ -49,8 +49,7 @@ Feature: /glossary/word endpoint
   "definition": 1
 }
     """
-    Then the response should be in JSON
-    And print last response
+    Then print last response
     And the response status code should be 204
     And the response should be empty
 
