@@ -83,7 +83,13 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         $recreate_retry = false;
 
         $is_retry = isset($params['dp_is_retry']) && $params['dp_is_retry'];
-        unset($params['dp_is_retry']);
+        $do_retry = isset($params['dp_do_retry']) ? $params['dp_do_retry'] : true;
+
+        unset($params['dp_is_retry'], $params['dp_do_retry']);
+
+        if (defined('DP_BUILDING')) {
+            $do_retry = false;
+        }
 
         if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
             $key           = $m[1];
@@ -133,7 +139,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         /** @var $conn \Doctrine\DBAL\Connection */
         $conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
-        if ($recreate_retry && !defined('DP_BUILDING')) {
+        if ($recreate_retry && $do_retry) {
             try {
                 $conn->connect();
             } catch (\Exception $err) {
@@ -161,7 +167,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         }
 
         // If connect fails, silently retry
-        if (!$is_retry && !defined('DP_BUILDING')) {
+        if (!$is_retry && $do_retry) {
             try {
                 $conn->connect();
             } catch (\Exception $err) {
