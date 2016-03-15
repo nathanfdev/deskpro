@@ -166,7 +166,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
                 $conn->connect();
             } catch (\Exception $err) {
                 usleep(500000); // half a second
-                $params['is_retry'] = true;
+                $params['dp_is_retry'] = true;
 
                 return $this->createConnection($params, $config, $eventManager, $mappingTypes);
             }
