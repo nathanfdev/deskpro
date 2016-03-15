@@ -51,7 +51,7 @@ export class ChatCard extends Component {
             <CardDisc/>
             <CardUser user={agent}/>
             <CardDisc/>
-            <CardLineItem>{department.get('title')}</CardLineItem>
+            <CardLineItem>{department && department.get('title')}</CardLineItem>
             <CardDisc/>
             <span className="text"></span> <i className="fa fa-comment"></i>
           </CardLineLeft>
