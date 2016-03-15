@@ -26,4 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1458048785);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1458048785 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->execMutateSql('CREATE INDEX sys_name_idx ON blobs (sys_name)');
+    }
+}

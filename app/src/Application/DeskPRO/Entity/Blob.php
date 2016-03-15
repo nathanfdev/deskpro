@@ -529,6 +529,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'indexes' => array(
                 'authcode_idx'     => array('columns' => array('authcode')),
                 'storage_loc_idx'  => array('columns' => array('storage_loc', 'storage_loc_pref')),
+                'sys_name_idx'     => array('columns' => array('sys_name')),
                 'date_created_idx' => array('columns' => array('date_created', 'is_temp')),
             ),
         ));
