@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -187,10 +187,10 @@ class TicketTransformer extends AbstractDataSerializerTransformer
             $props['person_email'] = null;
         }
 
-        $props['fields']       = new CustomDataCollection($ticket->getCustomData());
-        $props['labels']       = new LabelsCollection($ticket->getLabels());
-        $props['participants'] = $this->selectIds($ticket->getUserParticipants());
-        $props['followers']    = $this->selectIds($ticket->getAgentParticipants());
+        $props['fields']    = new CustomDataCollection($ticket->getCustomData());
+        $props['labels']    = new LabelsCollection($ticket->getLabels());
+        $props['cc']        = $this->selectIds($ticket->getUserParticipants());
+        $props['followers'] = $this->selectIds($ticket->getAgentParticipants());
 
         // add participant and followers when person is side loaded
         $context   = $transformation_request->getSerializerContext();
