@@ -115,7 +115,7 @@ class PortalValidation
     public function sendTicketByEmailVerificationEmail(Person $person, AbstractReader $reader, $authcode)
     {
         $ticket          = new Ticket();
-        $ticket->subject = $reader->getSubject();
+        $ticket->subject = $reader->getSubject()->getSubjectUtf8();
         $ticket->person  = $person;
 
         $email_to = new EmailTo($person);

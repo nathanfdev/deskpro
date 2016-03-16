@@ -552,6 +552,14 @@ class Runner
                 $source_logger->logError("Status: REJECTED {$source->error_code}");
                 break;
 
+            case 'rejected_soft':
+                $return_result       = true;
+                $source->status      = 'rejected_soft';
+                $source->error_code  = $result->error_code ?: 'server_error';
+                $source->source_info = $result->source_info ?: array();
+                $source_logger->logError("Status: REJECTED SOFT {$source->error_code}");
+                break;
+
             case 'error':
                 $return_result       = false;
                 $source->status      = 'error';

@@ -114,7 +114,7 @@ class SavedFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $this->validateThisPerson($person_email->person, $person_email);
+        $this->validateThisPerson($person_email->person, $person_email->getEmail());
 
         $source['status']     = 'inserted';
         $source['error_code'] = null;

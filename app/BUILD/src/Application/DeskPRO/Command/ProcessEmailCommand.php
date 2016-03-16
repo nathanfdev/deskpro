@@ -72,6 +72,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         $success_string = $input->getOption('success-string');
         $error_string   = $input->getOption('error-string');
         $insert_only    = $input->getOption('insert-only');
@@ -252,8 +254,6 @@ class ProcessEmailCommand extends ContainerAwareCommand
         #----------------------------------------
 
         if (!$insert_only) {
-            $output->setVerbosity(3);
-
             $logger = new Logger();
             $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
             $logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());

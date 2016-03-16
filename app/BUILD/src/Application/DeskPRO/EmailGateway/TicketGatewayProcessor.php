@@ -309,37 +309,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         #-------------------------
-        # Handle validation
-        #-------------------------
-
-        if (!$ticket && !$person->isConfirmed() && App::$container->getSetting('core_tickets.email_require_validation')) {
-            $this->logMessage('User is not confirmed, message is rejected');
-
-            $email_address = $person->findEmailAddress($this->reader->getFromAddress()->getEmail()) ?: $person->getPrimaryEmail();
-
-            /** @var EmailSource $source */
-            if (($source = $this->options['email_source']) && $email_address) {
-                $tmpdata = TmpData::create('newticket_email_validate', [
-                    'email_source_id' => $source->getId(),
-                    'person_email_id' => $email_address->getId(),
-                ]);
-
-                App::$container->get('portal_validation')->sendTicketByEmailVerificationEmail($person, $this->reader, $tmpdata->getCode());
-
-                $this->logMessage('--> User was sent validation link');
-
-                $this->error      = EmailSource::ERR_USER_VALIDATING;
-                $this->error_type = EmailSource::STATUS_REJECTED_SOFT;
-            } else {
-                $this->logMessage('--> This is perm and use was not notified. There was no SOURCE email with this request, meaning no email link can be sent to the user to retry.');
-                $this->error      = EmailSource::ERR_USER_VALIDATING;
-                $this->error_type = EmailSource::STATUS_REJECTED;
-            }
-
-            return;
-        }
-
-        #-------------------------
         # Handle reply to resolved tickets
         #-------------------------
 
@@ -616,6 +585,40 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 ));
                 $message->setTo($this->reader->getFromAddress()->getEmail());
                 $this->container->getMailer()->send($message);
+            }
+
+            return;
+        }
+
+        #-------------------------
+        # Handle validation
+        #-------------------------
+
+        if ($person && !$person->isConfirmed() && App::$container->getSetting('core_tickets.email_require_validation')) {
+            $this->logMessage('User is not confirmed, message is rejected');
+
+            $email_address = $person->findEmailAddress($this->reader->getFromAddress()->getEmail()) ?: $person->getPrimaryEmail();
+
+            /** @var EmailSource $source */
+            if (($source = $this->options['email_source']) && $email_address) {
+                $tmpdata = TmpData::create('newticket_email_validate', [
+                    'email_source_id' => $source->getId(),
+                    'person_email_id' => $email_address->getId(),
+                ]);
+
+                App::$container->getEm()->persist($tmpdata);
+                App::$container->getEm()->flush($tmpdata);
+
+                App::$container->get('portal_validation')->sendTicketByEmailVerificationEmail($person, $this->reader, $tmpdata->getCode());
+
+                $this->logMessage('--> User was sent validation link');
+
+                $this->error      = EmailSource::ERR_USER_VALIDATING;
+                $this->error_type = EmailSource::STATUS_REJECTED_SOFT;
+            } else {
+                $this->logMessage('--> This is perm and use was not notified. There was no SOURCE email with this request, meaning no email link can be sent to the user to retry.');
+                $this->error      = EmailSource::ERR_USER_VALIDATING;
+                $this->error_type = EmailSource::STATUS_REJECTED;
             }
 
             return;

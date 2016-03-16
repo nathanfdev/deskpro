@@ -87,3 +87,15 @@ services:
   hitrecord.cleaner:
     class: DeskPRO\Bundle\AppBundle\HitTrack\Cleaner\HitDbCleaner
     arguments: ["@doctrine.dbal.default_connection"]
+
+  ######################################################################################################################
+  # Hit Record
+  ######################################################################################################################
+
+  portal_email_sender:
+    class: DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender
+    arguments: ["@service_container"]
+
+  portal_validation:
+    class: DeskPRO\Bundle\PortalBundle\Helper\PortalValidation
+    arguments: ["@portal_email_sender", "@brand_stack", "@router", "@data.person"]
