@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,48 +29,24 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * API access to languages.
  *
+ * @ApiDocSection("Languages")
  * @ApiModes("all")
+ * @Annotations\Route("/languages")
  */
-class LanguagesController extends BaseController
+class LanguagesController extends CrudController
 {
-    /**
-     * Retrieve the list of custom fields available for tickets.
-     *
-     * @Get("/languages", name="api_languages")
-     */
-    public function cgetAction()
-    {
-        return View::create(
-            $this->dataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findAll()),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Get("/languages/{id}", name="api_single_language")
-     */
-    public function getLanguageAction($id)
-    {
-        return View::create(
-            $this->dataSerialize($this->getEm()->getRepository('DeskPRO:Language')->findOneBy(['id' => $id])),
-            Response::HTTP_OK
-        );
-    }
-
-    // A bit of comfort.
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
-    }
+    public static $entity        = Language::class;
+    public static $output_entity = Language::class;
+    public static $listOrder     = 'asc';
+    public static $exposeOnly    = ['list', 'get'];
 }
