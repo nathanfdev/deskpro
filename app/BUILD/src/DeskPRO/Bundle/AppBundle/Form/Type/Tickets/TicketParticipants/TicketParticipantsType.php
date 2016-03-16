@@ -29,18 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -50,34 +49,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class TicketParticipantsType extends AbstractType
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new TicketParticipantTransformer($this->em, $options['owner']));
-        $builder->addViewTransformer(new ArrayOfStringsTransformer());
-
-        if ($options['view_type'] === 'inline') {
-            $builder->addViewTransformer(new ArrayToStringTransformer());
-        }
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onMergeData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
     }
 
     /**
@@ -87,13 +64,23 @@ class TicketParticipantsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'view_type'      => 'inline',
-                'compound'       => false,
-                'error_bubbling' => false,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'mapped'        => false,
+                'entry_type'    => 'ticket_participant',
+                'entry_options' => function (Options $options) {
+                    return [
+                        'person_type' => $options['person_type'],
+                        'owner'       => $options['owner'],
+                    ];
+                },
+
+                // we have same property path for "followers" and "cc"
+                // so we should place participant errors on the parent entity form to map them correctly
+                'error_bubbling' => true,
             ])
             ->setRequired(['person_type', 'owner'])
             ->setAllowedValues([
-                'view_type'   => ['inline', 'array'],
                 'person_type' => ['user', 'agent'],
             ])
             ->setAllowedTypes([
@@ -105,42 +92,45 @@ class TicketParticipantsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getParent()
     {
-        return 'ticket_participants';
+        return CollectionType::class;
     }
 
     /**
+     * Filter participants by required person type.
+     *
      * @param FormEvent $event
      */
     public function onPreSetData(FormEvent $event)
     {
-        $form     = $event->getForm();
-        $config   = $form->getConfig();
-        $is_agent = $config->getOption('person_type') === 'agent';
+        $is_agent = $this->isAgent($event);
 
-        $all_participants  = $event->getData() ?: new ArrayCollection();
+        $all_participants  = $this->getAllParticipants($event);
         $type_participants = $all_participants->filter(function (TicketParticipant $participant) use ($is_agent) {
             return $participant->getPerson()->isAgent() === $is_agent;
         });
 
-        $event->setData($type_participants);
+        $event->setData($type_participants->toArray());
     }
 
     /**
+     * Merge changes to full participant collection.
+     *
      * @param FormEvent $event
      */
     public function onMergeData(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        $is_agent = $this->isAgent($event);
 
-        $owner         = $config->getOption('owner');
-        $property_path = $config->getOption('property_path') ?: $form->getName();
-        $is_agent      = $config->getOption('person_type') === 'agent';
+        // set proper data ordering
+        $data = $event->getData();
+        ksort($data);
 
-        $all_participants  = PropertyAccess::createPropertyAccessor()->getValue($owner, $property_path);
-        $type_participants = new ArrayCollection($event->getData());
+        /** @var ArrayCollection $all_participants */
+        $all_participants = $this->getAllParticipants($event);
+        /** @var ArrayCollection $type_participants */
+        $type_participants = new ArrayCollection($data);
 
         /** @var TicketParticipant $participant */
         foreach ($type_participants as $participant) {
@@ -153,7 +143,36 @@ class TicketParticipantsType extends AbstractType
                 $all_participants->removeElement($participant);
             }
         }
+    }
 
-        $event->setData($all_participants);
+    /**
+     * @param FormEvent $event
+     *
+     * @return ArrayCollection
+     */
+    protected function getAllParticipants(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        $property_path = $config->getOption('property_path') ?: $form->getName();
+        $owner         = $config->getOption('owner');
+
+        $participants = PropertyAccess::createPropertyAccessor()->getValue($owner, $property_path);
+
+        return $participants ?: new ArrayCollection();
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return bool
+     */
+    protected function isAgent(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        return $config->getOption('person_type') === 'agent';
     }
 }

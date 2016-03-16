@@ -477,10 +477,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $waiting_times = array();
+    protected $waiting_times = [];
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $participants;
 
@@ -586,13 +588,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $api_data = array();
+    protected $api_data = [];
 
     /**
      * @var string|null
      */
     protected $api_data_hash = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->_original_id = null;
@@ -872,14 +877,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setAgentParticipants($agents)
     {
-        $current_agent_ids = array();
+        $current_agent_ids = [];
         foreach ($this->participants as $p) {
             if ($p->person->is_agent) {
                 $current_agent_ids[] = $p->person->id;
             }
         }
 
-        $got_agent_ids = array();
+        $got_agent_ids = [];
         foreach ($agents as $p) {
             $got_agent_ids[] = $p->id;
         }

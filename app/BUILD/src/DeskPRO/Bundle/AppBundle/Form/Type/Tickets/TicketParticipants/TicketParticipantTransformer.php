@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -71,17 +71,7 @@ class TicketParticipantTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        /** @var TicketParticipant[] $value */
-        if (!is_array($value) && !$value instanceof \Traversable) {
-            return [];
-        }
-
-        $result = [];
-        foreach ($value as $participant) {
-            $result[] = $participant->getPersonEmail()->getEmail();
-        }
-
-        return $result;
+        return $value ? $value->getPersonEmail()->getEmail() : null;
     }
 
     /**
@@ -96,36 +86,31 @@ class TicketParticipantTransformer implements DataTransformerInterface
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
         $person_repo  = $this->em->getRepository(Person::class);
         $participants = $this->ticket->getParticipants();
-        $result       = [];
 
-        foreach ($value as $email) {
-            $filtered = $participants->filter(function (TicketParticipant $participant) use ($email) {
-                return $participant->getPersonEmail()->getEmail() === $email;
-            });
+        $filtered = $participants->filter(function (TicketParticipant $participant) use ($value) {
+            return $participant->getPersonEmail()->getEmail() === $value;
+        });
 
-            if (count($filtered) > 0) {
-                $entity = $filtered->first();
-            } else {
-                $person = $person_repo->findOneByEmail($email);
-                if (!$person) {
-                    throw new TransformationFailedException('Person with email `'.$email.'` not found');
-                }
-
-                $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($email) {
-                    return $person_email->getEmail() === $email;
-                })->first();
-
-                $entity = new TicketParticipant();
-                $entity
-                    ->setPerson($person)
-                    ->setPersonEmail($person_email)
-                    ->setTicket($this->ticket)
-                ;
+        if (count($filtered) > 0) {
+            $entity = $filtered->first();
+        } else {
+            $person = $person_repo->findOneByEmail($value);
+            if (!$person) {
+                throw new TransformationFailedException('Person with email `'.$value.'` not found');
             }
 
-            $result[] = $entity;
+            $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($value) {
+                return $person_email->getEmail() === $value;
+            })->first();
+
+            $entity = new TicketParticipant();
+            $entity
+                ->setPerson($person)
+                ->setPersonEmail($person_email)
+                ->setTicket($this->ticket)
+            ;
         }
 
-        return $result;
+        return $entity;
     }
 }

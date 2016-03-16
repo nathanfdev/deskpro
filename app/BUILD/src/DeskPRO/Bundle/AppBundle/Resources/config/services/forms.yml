@@ -307,9 +307,9 @@ services:
     tags:
       - { name: form.type, alias: ticket_description }
 
-  form.ticket_participants:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipantsType
+  form.ticket_participant:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: ticket_participants }
+      - { name: form.type, alias: ticket_participant }
