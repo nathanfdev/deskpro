@@ -31,54 +31,37 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Model\Factory\ApiPersonFactory;
-use JMS\Serializer\GraphNavigator;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class PersonHandler.
- *
- * @todo merge ApiPersonFactory with PersonSerializationHandler
+ * Class AbstractEntityHandler.
  */
-class PersonHandler extends AbstractEntityHandler
+abstract class AbstractEntityHandler implements SubscribingHandlerInterface
 {
     /**
-     * @var ApiPersonFactory
-     */
-    private $person_factory;
-
-    /**
-     * Constructor.
+     * @param JsonSerializationVisitor     $visitor
+     * @param object                       $entity
+     * @param array                        $type
+     * @param SideloadSerializationContext $context
      *
-     * @param ApiPersonFactory $person_factory
+     * @return mixed
      */
-    public function __construct(ApiPersonFactory $person_factory)
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $this->person_factory = $person_factory;
+        $model      = $this->createModel($entity);
+        $serialized = $context->accept($model);
+
+        return $serialized;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribingMethods()
-    {
-        return [
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => Person::class,
-                'method'    => 'serialize',
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
+     * Returns api wrapper for the entity.
      *
-     * @param Person $entity
+     * @param object $entity
+     *
+     * @return mixed
      */
-    protected function createModel($entity)
-    {
-        return $this->person_factory->create($entity);
-    }
+    abstract protected function createModel($entity);
 }

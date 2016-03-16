@@ -33,15 +33,12 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\JsonSerializationVisitor;
 
 /**
  * Class OrganizationHandler.
  */
-class OrganizationHandler implements SubscribingHandlerInterface
+class OrganizationHandler extends AbstractEntityHandler
 {
     /**
      * @var ChatDataService
@@ -74,22 +71,15 @@ class OrganizationHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param JsonSerializationVisitor     $visitor
-     * @param Organization                 $entity
-     * @param array                        $type
-     * @param SideloadSerializationContext $context
+     * {@inheritdoc}
      *
-     * @return mixed
+     * @param Organization $entity
      */
-    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    protected function createModel($entity)
     {
-        $model = new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
+        return new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
             $entity,
             $this->chat_data_service->getChatsCountForOrganization($entity)
         );
-
-        $serialized = $context->accept($model);
-
-        return $serialized;
     }
 }
