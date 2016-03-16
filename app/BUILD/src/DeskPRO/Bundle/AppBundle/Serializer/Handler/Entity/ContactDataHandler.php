@@ -34,16 +34,13 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\PersonContactData;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\GraphNavigator;
-use JMS\Serializer\Handler\SubscribingHandlerInterface;
-use JMS\Serializer\JsonSerializationVisitor;
 use Orb\Util\Strings;
 
 /**
  * Class ContactDataHandler.
  */
-class ContactDataHandler implements SubscribingHandlerInterface
+class ContactDataHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
@@ -69,14 +66,11 @@ class ContactDataHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param JsonSerializationVisitor     $visitor
-     * @param ContactDataAbstract          $entity
-     * @param array                        $type
-     * @param SideloadSerializationContext $context
+     * {@inheritdoc}
      *
-     * @return mixed
+     * @param ContactDataAbstract $entity
      */
-    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    protected function createModel($entity)
     {
         $contact_type = $entity->getContactType();
         $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
@@ -85,9 +79,6 @@ class ContactDataHandler implements SubscribingHandlerInterface
             throw new \InvalidArgumentException("`$contact_type` is not a valid type");
         }
 
-        $model      = new $class_name($entity);
-        $serialized = $context->accept($model);
-
-        return $serialized;
+        return new $class_name($entity);
     }
 }
