@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Parser;
 
-use DeskPRO\Bundle\ApiBundle\Serializer\SerializationHandler\SerializerTypes;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Nelmio\ApiDocBundle\DataTypes;
 
