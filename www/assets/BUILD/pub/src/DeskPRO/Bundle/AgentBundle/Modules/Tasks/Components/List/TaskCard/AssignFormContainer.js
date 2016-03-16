@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
@@ -16,7 +16,7 @@ import { AssignForm } from './AssignForm';
 export class AssignFormContainer extends React.Component {
 
   render() {
-    return(
+    return (
       <AssignForm {...this.props} />
     );
   }

@@ -49,8 +49,8 @@ export class MassActionBarContainer extends Component {
       }
       return (
         <MassActionDropdown key={index} id={index}
-                         item={item}
-                         currentParams={currentParams}/>
+                            item={item}
+                            currentParams={currentParams}/>
       );
     };
 

@@ -7,17 +7,17 @@ export class BaseList extends React.Component {
     values: PropTypes.object.isRequired
   };
 
-  renderLabel(value) {
-    return value;
-  }
-
   getKeyword() {
     return '';
   }
 
+  renderLabel(value) {
+    return value;
+  }
+
   render() {
     return (
-      <CheckboxList {...this.props} renderLabel={this.renderLabel} getKeyword={this.getKeyword} />
+      <CheckboxList {...this.props} renderLabel={this.renderLabel} getKeyword={this.getKeyword}/>
     );
   }
 }

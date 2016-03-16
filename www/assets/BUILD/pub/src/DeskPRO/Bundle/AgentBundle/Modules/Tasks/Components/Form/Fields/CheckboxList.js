@@ -35,7 +35,7 @@ export class CheckboxList extends React.Component {
     } else {
       onChange(index > -1 ? [] : [value]);
     }
-  };
+  }
 
   renderItem(option, index) {
     const { selected = [], showOnlySelected = false, filter = '', renderLabel, getKeyword } = this.props;
