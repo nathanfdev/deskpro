@@ -184,7 +184,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->dataSerialize($result), Response::HTTP_OK);
+        return View::create($this->wrap($result), Response::HTTP_OK);
     }
 
     /**

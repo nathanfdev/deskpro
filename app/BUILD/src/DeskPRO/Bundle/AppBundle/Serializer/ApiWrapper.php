@@ -105,7 +105,7 @@ class ApiWrapper
             ];
 
             $results = $data->getCurrentPageResults();
-            if($results instanceof \ArrayIterator) {
+            if ($results instanceof \ArrayIterator) {
                 $results = $results->getArrayCopy();
             }
 
