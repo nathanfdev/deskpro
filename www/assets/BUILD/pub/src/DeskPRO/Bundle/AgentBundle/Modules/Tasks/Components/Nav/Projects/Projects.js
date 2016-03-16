@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
+import { ProjectForm } from './ProjectForm/ProjectForm';
 import { ListItemContainer } from '../ListItemContainer';
 import Immutable from 'immutable';
 
@@ -69,18 +69,18 @@ export class Projects extends React.Component {
 
         <ul>
           {projects.map((project, index) =>
-            <ListItemContainer key={index}
-                               urlHash={`project-${project.get('id')}-${project.get('title')}`}
-                               listOptions={{project: [project.get('id')]}}>
+              <ListItemContainer key={index}
+                                 urlHash={`project-${project.get('id')}-${project.get('title')}`}
+                                 listOptions={{project: [project.get('id')]}}>
 
-              <ListItem count={countMap[project.get('id')] || 0}
-                        onEdit={this.onEdit.bind(this, project)}>
+                <ListItem count={countMap[project.get('id')] || 0}
+                          onEdit={this.onEdit.bind(this, project)}>
 
-                <div part="label">
-                  <i className="fa fa-book" /> {project.get('title')}
-                </div>
-              </ListItem>
-            </ListItemContainer>
+                  <div part="label">
+                    <i className="fa fa-book"/> {project.get('title')}
+                  </div>
+                </ListItem>
+              </ListItemContainer>
           )}
         </ul>
 
@@ -89,8 +89,8 @@ export class Projects extends React.Component {
                   positionAt="right+5 top-6">
 
           <ClickOut onClickOut={this.onEdit.bind(this, null)}>
-            <ProjectFormContainer project={project}
-                                  tasksCount={project && project.get('id') && countMap[project.get('id')] || 0} />
+            <ProjectForm project={project}
+                         tasksCount={project && project.get('id') && countMap[project.get('id')] || 0}/>
           </ClickOut>
         </Detached>
       </Section>

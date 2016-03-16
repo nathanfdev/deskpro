@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { AssignFormContainer } from './AssignFormContainer';
+import { AssignForm } from './AssignForm';
 import { AssigneeAvatar } from './AssigneeAvatar';
 import { CardWidget } from './CardWidget';
 import Immutable from 'immutable';
@@ -68,13 +68,13 @@ export class AssignButton extends CardWidget {
         </div>
 
         <Positioned isOpen={this.state.isOpen}
-                  positionTarget={this}
-                  positionAt="right+5 top-10"
-                  collision="fit"
-                  zIndex={1002}>
+                    positionTarget={this}
+                    positionAt="right+5 top-10"
+                    collision="fit"
+                    zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.assign-form', '.fa-check']}>
-            <AssignFormContainer task={this.state.value} onSubmit={this.onChange} />
+            <AssignForm task={this.state.value} onSubmit={this.onChange}/>
           </ClickOut>
         </Positioned>
       </div>

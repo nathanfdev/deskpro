@@ -1,33 +1,40 @@
 import React, { Component, PropTypes } from 'react';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { paramsSelector } from '../../../../Application/Selectors/massActions';
 import { CollectionField } from '../../../../Common/Components/Popup';
 import { AgentsList } from './AgentsList';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  agents: agentsSelector(state),
-  currentParams: paramsSelector(state)
+  me: meSelector(state),
+  agents: agentsSelector(state)
 }))
 
 export class AgentsListContainer extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    selfAssign: PropTypes.func,
+    me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
-    currentParams: PropTypes.object
+    multiple: PropTypes.bool,
+    showOnlySelected: PropTypes.bool,
+    filter: PropTypes.string,
+    selected: PropTypes.array
   };
 
   render() {
-    const { currentParams, agents, onChange } = this.props;
-    const assign = currentParams.get('assign');
+    const { selected, agents, onChange, filter, multiple, showOnlySelected, selfAssign } = this.props;
 
     return (
       <CollectionField>
         <div part="title">
-          Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
+          Agent <a href="#" onClick={selfAssign}>Assign to me</a>
         </div>
         <AgentsList values={agents}
-                    selected={assign && assign.get('agent')}
+                    selected={selected}
+                    filter={filter}
+                    multiple={multiple}
+                    showOnlySelected={showOnlySelected}
                     onChange={onChange}/>
       </CollectionField>
     );

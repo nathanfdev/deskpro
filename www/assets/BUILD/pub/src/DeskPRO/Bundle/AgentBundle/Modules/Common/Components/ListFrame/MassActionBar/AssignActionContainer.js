@@ -35,6 +35,9 @@ export class AssignActionContainer extends Component {
   }
 
   render() {
+    const { currentParams } = this.props;
+    const assign = currentParams.get('assign');
+
     return (
       <div className="dpw-navigation-dropdown-panel">
         <Popup additionalClassNames="assign-form">
@@ -42,9 +45,12 @@ export class AssignActionContainer extends Component {
             <div className="dpw--popup-content">
               <div className="dpw--popup-item-collection">
                 <FieldGroup>
-                  <AgentsListContainer onChange={this.onChange.bind(this, 'agent')}/>
-                  <TeamsListContainer onChange={this.onChange.bind(this, 'team')}/>
-                  <DepartmentsListContainer onChange={this.onChange.bind(this, 'department')}/>
+                  <AgentsListContainer selected={assign && assign.get('agent')}
+                                       onChange={this.onChange.bind(this, 'agent')}/>
+                  <TeamsListContainer selected={assign && assign.get('team')}
+                                      onChange={this.onChange.bind(this, 'team')}/>
+                  <DepartmentsListContainer selected={assign && assign.get('department')}
+                                            onChange={this.onChange.bind(this, 'department')}/>
                 </FieldGroup>
               </div>
             </div>

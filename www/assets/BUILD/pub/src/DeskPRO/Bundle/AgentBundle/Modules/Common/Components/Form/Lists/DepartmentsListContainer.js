@@ -1,30 +1,33 @@
 import React, { Component, PropTypes } from 'react';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { paramsSelector } from '../../../../Application/Selectors/massActions';
 import { CollectionField } from '../../../../Common/Components/Popup';
 import { DepartmentsList } from './DepartmentsList';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  departments: allSelectorFactory('AgentTeam')(state),
-  currentParams: paramsSelector(state)
+  departments: allSelectorFactory('Department')(state)
 }))
 
 export class DepartmentsListContainer extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     departments: PropTypes.object.isRequired,
-    currentParams: PropTypes.object
+    multiple: PropTypes.bool,
+    showOnlySelected: PropTypes.bool,
+    filter: PropTypes.string,
+    selected: PropTypes.array
   };
 
   render() {
-    const { currentParams, departments, onChange } = this.props;
-    const assign = currentParams.get('assign');
+    const { selected, departments, onChange, filter, multiple, showOnlySelected } = this.props;
 
     return (
       <CollectionField title="Department">
         <DepartmentsList values={departments}
-                         selected={assign && assign.get('department')}
+                         selected={selected}
+                         multiple={multiple}
+                         showOnlySelected={showOnlySelected}
+                         filter={filter}
                          onChange={onChange}/>
       </CollectionField>
     );
