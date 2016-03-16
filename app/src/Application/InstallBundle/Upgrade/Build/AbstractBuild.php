@@ -229,10 +229,19 @@ abstract class AbstractBuild
      *
      * @param string $table The table to alter
      * @param string $alter The alter query, without the 'ALTER TABLE' part.
+     * @param bool   $smart Only do slow if the table has more than 20,000 records
      */
-    public function execSlowAlterTable($table, $alter)
+    public function execSlowAlterTable($table, $alter, $smart = true)
     {
-        if (dp_get_config('online_schema_upgrade')) {
+        $do_smart = true;
+        if ($smart) {
+            $count = $this->container->getDb()->fetchColumn("SELECT COUNT(*) FROM `$table` LIMIT 20000");
+            if ($count < 20000) {
+                $do_smart = false;
+            }
+        }
+
+        if ($do_smart && dp_get_config('online_schema_upgrade')) {
             $logger = $this->logger;
             $logger->info('Using online_schema_update');
 
@@ -276,6 +285,7 @@ abstract class AbstractBuild
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
 
             $logger->info('BEGIN: LIVE');
+            $logger->debug('Command: '.str_replace($params['{db_pass}'], '***', $cmd_exec));
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
             $proc->run(function ($type, $data) use ($logger) {
