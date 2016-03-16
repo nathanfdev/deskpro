@@ -114,7 +114,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
      *
      * @JMS\Expose()
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterView>>")
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterView>>")
      */
     protected $filter_views;
 
@@ -124,7 +124,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
      *
      * @JMS\Expose()
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference>>")
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference>>")
      */
     protected $filter_preferences;
 

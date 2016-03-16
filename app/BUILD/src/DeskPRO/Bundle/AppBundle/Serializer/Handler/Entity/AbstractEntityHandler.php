@@ -26,51 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\SerializationHandler;
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
- * Class EntitySerializationHandler.
+ * Class AbstractEntityHandler.
  */
-class EntitySerializationHandler implements SubscribingHandlerInterface
+abstract class AbstractEntityHandler implements SubscribingHandlerInterface
 {
     /**
-     * @return array
-     */
-    public static function getSubscribingMethods()
-    {
-        return array(
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => EntityInterface::SERIALIZER_TYPE,
-                'method'    => 'serializeEntity',
-            ],
-        );
-    }
-
-    /**
      * @param JsonSerializationVisitor     $visitor
-     * @param EntityInterface|DomainObject $entity
+     * @param object                       $entity
      * @param array                        $type
      * @param SideloadSerializationContext $context
      *
-     *@return mixed
+     * @return mixed
      */
-    public function serializeEntity(
-        JsonSerializationVisitor $visitor,
-        $entity,
-        $type,
-        SideloadSerializationContext $context
-    ) {
-        $context->getSideloadStore()->addSideload($entity);
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    {
+        $model      = $this->createModel($entity);
+        $serialized = $context->accept($model);
 
-        return $entity->getId();
+        return $serialized;
     }
+
+    /**
+     * Returns api wrapper for the entity.
+     *
+     * @param object $entity
+     *
+     * @return mixed
+     */
+    abstract protected function createModel($entity);
 }

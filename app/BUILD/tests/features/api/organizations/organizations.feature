@@ -64,7 +64,50 @@ Feature: /organizations endpoint
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
   "labels": ["label 1", "label 1", "label 2"],
   "email_domains": ["domain1.com", "domain2.com"],
-  "user_groups": [1, 2, 1]
+  "user_groups": [1, 2, 1],
+  "contact_data": {
+    "website": [
+      {"url": "http://site.com"}
+    ],
+    "facebook": [
+      {"url": "http://facebook.com/profile"}
+    ],
+    "twitter": [
+      {
+        "username": "twitter_username",
+        "comment": "some text"
+      }
+    ],
+    "linked_in": [
+      {"url": "http://linkedin.com/in/profile"}
+    ],
+    "instant_message": [
+      {
+        "username": "aim_user",
+        "service": "aim"
+      },
+      {
+        "username": "skype_user",
+        "service": "skype"
+      }
+    ],
+    "phone": [
+      {
+        "type": "mobile",
+        "code": "+1",
+        "number": "234-534-5345"
+      }
+    ],
+    "address": [
+      {
+        "address": "address",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "country": "UK"
+      }
+    ]
+  }
 }
     """
     Then the response status code should be 201
@@ -82,6 +125,67 @@ Feature: /organizations endpoint
     And the JSON node "data.usergroups" should have 2 elements
     And the JSON node "data.usergroups[0]" should be equal to 1
     And the JSON node "data.usergroups[1]" should be equal to 2
+    And the JSON node "data.contact_data" should have 8 elements
+    And the JSON node "data.contact_data[0].id" should be equal to 1
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
+    And the JSON node "data.contact_data[1].id" should be equal to 2
+    And the JSON node "data.contact_data[1].contact_type" should be equal to "website"
+    And the JSON node "data.contact_data[2].id" should be equal to 3
+
+    When I send a GET request to "/api/v2/organizations/3/contact_data"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should have 8 elements
+
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].contact_type" should be equal to "phone"
+    And the JSON node "data[0].code" should be equal to "+1"
+    And the JSON node "data[0].number" should be equal to "234-534-5345"
+    And the JSON node "data[0].type" should be equal to "mobile"
+    And the JSON node "data[0].comment" should be equal to 0
+
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].contact_type" should be equal to "website"
+    And the JSON node "data[1].url" should contain "site.com"
+    And the JSON node "data[1].comment" should be equal to 0
+
+    And the JSON node "data[2].id" should be equal to 3
+    And the JSON node "data[2].contact_type" should be equal to "instant_message"
+    And the JSON node "data[2].username" should be equal to "aim_user"
+    And the JSON node "data[2].service" should be equal to "aim"
+    And the JSON node "data[2].comment" should be equal to 0
+
+    And the JSON node "data[3].id" should be equal to 4
+    And the JSON node "data[3].contact_type" should be equal to "instant_message"
+    And the JSON node "data[3].username" should be equal to "skype_user"
+    And the JSON node "data[3].service" should be equal to "skype"
+    And the JSON node "data[3].comment" should be equal to 0
+
+    And the JSON node "data[4].id" should be equal to 5
+    And the JSON node "data[4].contact_type" should be equal to "twitter"
+    And the JSON node "data[4].username" should be equal to "twitter_username"
+    And the JSON node "data[4].comment" should be equal to "some text"
+
+    And the JSON node "data[5].id" should be equal to 6
+    And the JSON node "data[5].contact_type" should be equal to "linked_in"
+    And the JSON node "data[5].url" should contain "linkedin.com"
+    And the JSON node "data[5].url" should contain "profile"
+    And the JSON node "data[5].comment" should be equal to 0
+
+    And the JSON node "data[6].id" should be equal to 7
+    And the JSON node "data[6].contact_type" should be equal to "facebook"
+    And the JSON node "data[6].url" should contain "facebook.com"
+    And the JSON node "data[6].url" should contain "profile"
+    And the JSON node "data[6].comment" should be equal to 0
+
+    And the JSON node "data[7].id" should be equal to 8
+    And the JSON node "data[7].contact_type" should be equal to "address"
+    And the JSON node "data[7].address" should be equal to "address"
+    And the JSON node "data[7].city" should be equal to "city"
+    And the JSON node "data[7].state" should be equal to "state"
+    And the JSON node "data[7].zip" should be equal to "zip"
+    And the JSON node "data[7].country" should be equal to "UK"
+    And the JSON node "data[7].comment" should be equal to 0
 
   Scenario: I update an organization
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
@@ -97,6 +201,13 @@ Feature: /organizations endpoint
   "email_domains": ["domain1.com", "domain3.com"],
   "fields": {
     "6": "some text"
+  },
+  "contact_data": {
+    "twitter": [
+      {
+        "username": "changed_twitter_username"
+      }
+    ]
   }
 }
     """
@@ -117,10 +228,17 @@ Feature: /organizations endpoint
     And the JSON node "data.email_domains" should have 2 elements
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain3.com"
-    And the JSON node "data.fields" should have 3 elements
+    And the JSON node "data.fields" should have 4 elements
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
+    And the JSON node "data.fields.12.value" should exist
+
+    And the JSON node "data.contact_data" should have 8 elements
+    And the JSON node "data.contact_data[4].id" should be equal to 5
+    And the JSON node "data.contact_data[4].contact_type" should be equal to "twitter"
+    And the JSON node "data.contact_data[4].username" should be equal to "changed_twitter_username"
+    And the JSON node "data.contact_data[4].comment" should be equal to "some text"
 
   Scenario: I try to create an organization with existing email domain
     When I send a POST request to "/api/v2/organizations" with body:
