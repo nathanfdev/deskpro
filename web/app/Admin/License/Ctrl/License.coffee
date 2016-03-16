@@ -28,6 +28,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         'lic_info': '/dp_license'
       }).then( (res) =>
         @license          = res.data.lic_info.license
+        @license.countAgents = res.data.lic_info.limits.count_agents
         @ma_token         = res.data.lic_info.ma_token
         @ma_login_url     = res.data.lic_info.ma_login_url
         @lic_set_callback = res.data.lic_info.lic_set_callback
