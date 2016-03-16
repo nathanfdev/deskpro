@@ -293,7 +293,7 @@ class ApiPerson
     /**
      * @var array
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\PersonEmail>>")
+     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
      */
     protected $emails;
 
