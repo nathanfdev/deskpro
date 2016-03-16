@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -37,6 +38,7 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use DeskPRO\Component\Util\MathUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
@@ -421,7 +423,7 @@ class Runner
 
         // Attempt to detect if we should break due to memory
         $mem   = memory_get_usage();
-        $avail = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
+        $avail = MathUtils::parseByteSize(@ini_get('memory_limit'));
         if ($mem && $mem > 0 && $avail && $avail > 0) {
             $remain = $avail - $mem;
             $min    = max(10485760, $source->blob->filesize * 4);
