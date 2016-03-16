@@ -252,7 +252,7 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
 
                 // Need to clear CSS blobs too, since the URLs will change
-                \Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+                \Application\DeskPRO\Style\RefreshStylesheets::refresh(App::$container);
 
                 break;
         }
