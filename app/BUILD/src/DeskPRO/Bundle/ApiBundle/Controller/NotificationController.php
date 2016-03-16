@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
 use FOS\RestBundle\Controller\Annotations;
@@ -52,6 +52,25 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class NotificationController extends BaseController
 {
     /**
+     * Fetch list of alerts was rised after last check.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     requirements={
+     *          {
+     *              "name"="last",
+     *              "requirement"="\d+",
+     *              "description"="last alert timestamp",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\ActionAlert"
+     * )
+     *
      * @param string  $last
      * @param Request $request
      *
@@ -69,42 +88,63 @@ class NotificationController extends BaseController
         $alerts = $service->getLastActionAlerts($last, $this->getUser());
 
         return View::create(
-            $this->dataSerialize($alerts),
+            $this->wrap($alerts),
             Response::HTTP_OK
         );
     }
 
     /**
+     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Model\NotificationConfiguration"
+     * )
+     *
      * @return View
      * @Annotations\Get("/notify/setup/action-alerts", name="action_alerts_setup")
      */
     public function setupActionAlertsAction()
     {
-        $service  = $this->get('deskpro.notification.service');
-        $response = [
-            'clients' => $service->getClientsSetup(),
-        ];
+        $service = $this->get('deskpro.notification.service');
 
         return View::create(
-            $this->createRepresentation($response),
+            $this->wrap($service->getClientsSetup()),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Used for internal purposes to update online status.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @param Request $request
      *
-     * @return View
+     * @todo this should be PUT or something else possibly
+     *
      * @ApiDisableLimits()
      * @Annotations\Get("/notify/heartbeat", name="online_heartbeat")
+     *
+     * @return View
      */
     public function heartbeatAction(Request $request)
     {
         $this->doHeartbeat($request);
 
         return View::create(
-            $this->createRepresentation([]),
-            Response::HTTP_OK
+            null,
+            Response::HTTP_ACCEPTED
         );
     }
 
@@ -126,11 +166,21 @@ class NotificationController extends BaseController
     }
 
     /**
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
+     * This endpoint provide you an ability to authenticate pusher app.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Annotations\Post("/pusher/auth", name="pusher_auth")
+     *
+     * @param Request $request
      *
      * @return View
-     * @Annotations\Post("/pusher/auth", name="pusher_auth")
      */
     public function pusherAuthAction(Request $request)
     {
