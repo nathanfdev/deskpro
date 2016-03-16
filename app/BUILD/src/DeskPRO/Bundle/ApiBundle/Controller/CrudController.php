@@ -44,6 +44,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
  * Class CrudController.
@@ -432,7 +433,7 @@ abstract class CrudController extends BaseController
         $action = TypeUtils::cleanAction($actionMethodName);
 
         if (!in_array($action, static::$exposeOnly)) {
-            throw $this->createAccessDeniedException('Action is restricted');
+            throw new MethodNotAllowedHttpException(static::$exposeOnly, sprintf('Action [ %s ] is not allowed', strtoupper($action)));
         }
     }
 }
