@@ -59,7 +59,7 @@
 
 body {
   margin: 0;
-  padding: 20px;
+  padding: 0;
   background: $world-background;
   color: $text-color;
   font-size: $font-default;
@@ -68,8 +68,12 @@ body {
   text-align: $text-left;
 }
 
+.dp-page-body {
+  padding: 20px;
+}
+
 @media screen and (max-width: 760px) {
-  body {
+  .dp-page-body {
     padding: 0;
     padding-top: 50px;
   }
@@ -4832,6 +4836,22 @@ ul.kb-checkbox-extra {
   }
 }
 
+.dp-page-banner {
+  background: #2B373C;
+  padding: 8px;
+  color: #eee;
+  text-align: center;
+  font-size: 0.9em;
+  a {
+    text-decoration: none;
+    color: #5D90EA;
+
+    &:hover {
+      color: #96B8F5;
+    }
+  }
+}
+
 .flashes {
 
   margin-top: 5px;
@@ -5350,12 +5370,15 @@ h1.fancy-header {
     }
   }
 
-  a {
+  .quick-jump > a, .quick-jump > a {
     border-bottom: 3px solid transparent;
   }
 
-  .quick-jump a.active, .quick-jump a:hover {
+  .quick-jump > a:hover {
     color: $text-color-darker;
+  }
+
+  .quick-jump > a.active {
     border-bottom: 3px solid $button-color-secondary;
   }
 
