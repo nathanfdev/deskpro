@@ -29,23 +29,16 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class SystemBundle.
+ * Class IncomingEmailSuccessEvent.
+ *
+ * @ORM\Entity
  */
-class SystemBundle extends Bundle
+class IncomingEmailSuccessEvent extends Event
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
-    }
 }

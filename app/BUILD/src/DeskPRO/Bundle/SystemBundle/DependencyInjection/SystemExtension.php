@@ -29,23 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\DependencyInjection;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 
 /**
- * Class SystemBundle.
+ * Class SystemExtension.
  */
-class SystemBundle extends Bundle
+class SystemExtension extends Extension
 {
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        $loader = new YamlDirectoryLoader($container);
+        $loader->loadDir(__DIR__.'/../Resources/config/services');
     }
 }

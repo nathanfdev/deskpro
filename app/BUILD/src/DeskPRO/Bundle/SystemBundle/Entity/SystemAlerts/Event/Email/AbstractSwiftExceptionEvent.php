@@ -29,23 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
 
 /**
- * Class SystemBundle.
+ * Class AbstractSwiftExceptionEvent.
  */
-class SystemBundle extends Bundle
+class AbstractSwiftExceptionEvent extends ExceptionEvent
 {
     /**
-     * {@inheritdoc}
+     * AbstractSwiftExceptionEvent constructor.
+     *
+     * @param \Swift_SwiftException $exception
+     * @param \DateTime|null        $date_created
      */
-    public function build(ContainerBuilder $container)
+    public function __construct(\Swift_SwiftException $exception, \DateTime $date_created = null)
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        parent::__construct($exception, $date_created);
     }
 }

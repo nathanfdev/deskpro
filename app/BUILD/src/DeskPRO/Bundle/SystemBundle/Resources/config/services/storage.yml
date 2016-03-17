@@ -1,0 +1,6 @@
+services:
+
+  dp_sys.key_value_storage:
+    class: DeskPRO\Bundle\SystemBundle\Storage\KeyValueStorage
+    arguments:
+      - "@doctrine.orm.system_entity_manager"

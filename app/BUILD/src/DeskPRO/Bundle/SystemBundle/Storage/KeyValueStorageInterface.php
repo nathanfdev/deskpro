@@ -29,23 +29,26 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
-
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+namespace DeskPRO\Bundle\SystemBundle\Storage;
 
 /**
- * Class SystemBundle.
+ * Interface KeyValueStorageInterface.
  */
-class SystemBundle extends Bundle
+interface KeyValueStorageInterface
 {
     /**
-     * {@inheritdoc}
+     * @param string $key
+     * @param mixed  $value
      */
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
-    }
+    public function save($key, $value);
+
+    /**
+     * @param string $key
+     */
+    public function get($key);
+
+    /**
+     * @param string $key
+     */
+    public function remove($key);
 }

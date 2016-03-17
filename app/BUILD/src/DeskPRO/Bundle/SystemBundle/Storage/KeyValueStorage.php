@@ -29,23 +29,58 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\Storage;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\SystemBundle\Entity\Storage\KeyValueEntry;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Class SystemBundle.
+ * Class KeyValueStorage.
  */
-class SystemBundle extends Bundle
+class KeyValueStorage implements KeyValueStorageInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * EventLogger constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function save($key, $value)
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        $entry = $this->em->find(KeyValueEntry::class, $key) ?: new KeyValueEntry($key);
+        $entry->setValue($value);
+        $this->em->persist($entry);
+        $this->em->flush($entry);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($key)
+    {
+        return ($entry = $this->em->find(KeyValueEntry::class, $key)) ? $entry->getValue() : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remove($key)
+    {
+        if ($entry = $this->em->find(KeyValueEntry::class, $key)) {
+            $this->em->remove($entry);
+            $this->em->flush($entry);
+        }
     }
 }

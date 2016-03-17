@@ -29,23 +29,32 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class SystemBundle.
+ * Class TriggersCollectorCompilerPass.
+ *
+ * Add trigger services to the TriggeringProcess service
  */
-class SystemBundle extends Bundle
+class TriggersCollectorCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        if (!$container->has('dp_sys.alerts.triggering_process')) {
+            return;
+        }
+
+        $definition = $container->findDefinition('dp_sys.alerts.triggering_process');
+        $triggers   = $container->findTaggedServiceIds('dp_sys.alerts.trigger');
+        foreach ($triggers as $id => $tags) {
+            $definition->addMethodCall('addTrigger', [new Reference($id)]);
+        }
     }
 }

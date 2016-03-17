@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
@@ -40,10 +40,17 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Event.
  *
  * @ORM\Entity
- * @ORM\Table(name="system_alerts_event")
+ * @ORM\Table(name="system_alerts_events")
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
+ * @ORM\DiscriminatorMap({
+ *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent",
+ *     "email_incoming_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent",
+ *     "email_incoming_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent"
+ * })
  */
-class Event implements EntityInterface, NotifyPropertyChanged
+abstract class Event implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -53,50 +60,52 @@ class Event implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", name="group_name", nullable=false)
      */
-    protected $type;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", nullable=false)
-     */
-    protected $group;
+    private $group = '';
 
     /**
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
      */
-    protected $date_created;
+    private $date_created;
 
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=false)
      */
-    protected $data = [];
+    private $data = [];
 
     /**
      * @var string
      * @ORM\Column(type="text")
      */
-    protected $description;
+    private $description = '';
 
     /**
      * @var string
      * @ORM\Column(type="text")
      */
-    protected $log;
+    private $log = '';
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    private $processed = false;
 
     /**
      * Event constructor.
+     *
+     * @param \DateTime|null $date_created
      */
-    public function __construct()
+    public function __construct(\DateTime $date_created = null)
     {
-        $this->date_created = new \DateTime();
+        $this->date_created = $date_created ?: new \DateTime();
     }
 
     /**
@@ -105,22 +114,6 @@ class Event implements EntityInterface, NotifyPropertyChanged
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
     }
 
     /**
@@ -193,5 +186,21 @@ class Event implements EntityInterface, NotifyPropertyChanged
     public function setLog($log)
     {
         $this->log = $log;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param bool $processed
+     */
+    public function setProcessed($processed)
+    {
+        $this->processed = $processed;
     }
 }

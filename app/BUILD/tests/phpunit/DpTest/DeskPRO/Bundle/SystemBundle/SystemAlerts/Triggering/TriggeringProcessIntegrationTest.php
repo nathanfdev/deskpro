@@ -29,23 +29,32 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 
 /**
- * Class SystemBundle.
+ * Class TriggeringProcessIntegrationTest.
  */
-class SystemBundle extends Bundle
+class TriggeringProcessIntegrationTest extends BaseIntegrationTest
 {
     /**
-     * {@inheritdoc}
+     * @test
      */
-    public function build(ContainerBuilder $container)
+    public function it_should_be_a_container_service()
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        $this->assertInstanceOf(TriggeringProcess::class, $this->triggering_process);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_collect_tagged_trigger_services()
+    {
+        $this->assertNotEmpty($triggers = $this->triggering_process->getTriggers());
+        foreach ($triggers as $trigger) {
+            $this->assertInstanceOf(Trigger::class, $trigger);
+        }
     }
 }

@@ -29,23 +29,28 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class SystemBundle.
+ * Class ExceptionEvent.
+ *
+ * @ORM\Entity
  */
-class SystemBundle extends Bundle
+class ExceptionEvent extends Event
 {
     /**
-     * {@inheritdoc}
+     * ExceptionEvent constructor.
+     *
+     * @param \Exception     $exception
+     * @param \DateTime|null $date_created
      */
-    public function build(ContainerBuilder $container)
+    public function __construct(\Exception $exception, \DateTime $date_created = null)
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        parent::__construct($date_created);
+        $this->setGroup(get_class($exception));
+        $this->setDescription($exception->getMessage());
+        $this->setLog($exception->getTraceAsString());
     }
 }

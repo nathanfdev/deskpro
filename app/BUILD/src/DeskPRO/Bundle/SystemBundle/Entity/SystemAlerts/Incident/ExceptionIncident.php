@@ -29,23 +29,22 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class SystemBundle.
+ * Class ExceptionIncident.
+ *
+ * @ORM\Entity
  */
-class SystemBundle extends Bundle
+class ExceptionIncident extends Incident
 {
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function getInstructions()
     {
-        parent::build($container);
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        return 'Google to solve this. Good luck!';
     }
 }
