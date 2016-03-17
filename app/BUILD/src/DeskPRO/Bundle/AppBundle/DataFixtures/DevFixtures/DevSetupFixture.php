@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
@@ -85,7 +86,7 @@ class DevSetupFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             ['name' => 'core.setup_initial', 'value' => 1],
             ['name' => 'admin_has_loaded', 'value' => 1],
             ['name' => 'core.default_timezone', 'value' => 'UTC'],
-            ['name' => 'core.deskpro_name', 'value' => 'Helpesk'],
+            ['name' => 'core.deskpro_name', 'value' => 'Helpdesk'],
             ['name' => 'core.deskpro_url', 'value' => $url],
             ['name' => 'core.license', 'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
         ];
