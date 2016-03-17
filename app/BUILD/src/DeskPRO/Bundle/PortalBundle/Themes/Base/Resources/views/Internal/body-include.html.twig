@@ -31,6 +31,7 @@
         window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') }}';
         window.DESKPRO_MULTI_LANG = {{ is_multi_lang() ? 'true' : 'false' }};
         window.DESKPRO_LANG = '{{ lang_code() }}';
+        window.DESKPRO_LOCALE = '{{ lang_locale() }}';
         window.DESKPRO_ENABLED_LANGS = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
         window.DP_ASSET_URL = '{{ asset('') }}';
         window.DP_BASE_URL = '/{{ path('portal_home')|trim('/') }}';

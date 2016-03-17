@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -6558,7 +6558,7 @@ $collection->create(
         'path'         => '/langs/{id}/install',
         'controller'   => 'LegacyApiBundle:Languages:installLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '[a-z]+'),
+        'requirements' => array('id' => '[a-z_]+'),
     )
 );
 
@@ -6568,7 +6568,7 @@ $collection->create(
         'path'         => '/langs/{id}/uninstall',
         'controller'   => 'LegacyApiBundle:Languages:uninstallLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6578,7 +6578,7 @@ $collection->create(
         'path'         => '/langs/{id}',
         'controller'   => 'LegacyApiBundle:Languages:getLang',
         'methods'      => array('GET'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6588,7 +6588,7 @@ $collection->create(
         'path'         => '/langs/{id}',
         'controller'   => 'LegacyApiBundle:Languages:saveLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6598,7 +6598,7 @@ $collection->create(
         'path'         => '/langs/{id}/phrases',
         'controller'   => 'LegacyApiBundle:Languages:savePhraseSet',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
