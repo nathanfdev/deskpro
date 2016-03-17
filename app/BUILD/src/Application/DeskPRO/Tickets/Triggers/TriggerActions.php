@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DpSys\LowError\SystemErrorHandler;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Types\JsonObjectSerializable;
 
 /**
@@ -50,6 +51,8 @@ use Orb\Types\JsonObjectSerializable;
  * While any `ActionInterface` can be used with the trigger system, we can only actually
  * *save* the term to the db if it also implements the standard ActionDefinitionInterface which defines
  * a standard interface for getting a term name and options (so we can recreate a term object again).
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class TriggerActions implements \Serializable, ActionInterface, DeskproContainerAwareInterface, JsonObjectSerializable, \Countable, \IteratorAggregate
 {
@@ -150,20 +153,48 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     {
         $data = array();
 
-        $data['version'] = 1;
-        $data['actions'] = array();
+        $data['version'] = $this->getVersion();
+        $data['actions'] = $this->getActionsArray();
+
+        return $data;
+    }
+
+    /**
+     * Actions version.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("version")
+     * @JMS\Type("integer")
+     */
+    public function getVersion()
+    {
+        return 1;
+    }
+
+    /**
+     * Actions array representation.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("actions")
+     * @JMS\Type("array")
+     *
+     * @return array
+     */
+    public function getActionsArray()
+    {
+        $actions_data = [];
         foreach ($this->actions->getAll() as $actions) {
             if (!($actions instanceof ActionDefinitionInterface)) {
                 continue;
             }
 
             if (strpos(get_class($actions), 'Application\\DeskPRO\\Tickets\\Actions\\') === 0) {
-                $data['actions'][] = array(
+                $actions_data[] = array(
                     'type'    => $actions->getActionType(),
                     'options' => $actions->getActionOptions()->all(),
                 );
             } else {
-                $data['actions'][] = array(
+                $actions_data[] = array(
                     'type'       => $actions->getActionType(),
                     'type_class' => get_class($actions),
                     'options'    => $actions->getActionOptions()->all(),
@@ -171,7 +202,7 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
             }
         }
 
-        return $data;
+        return $actions_data;
     }
 
     /**

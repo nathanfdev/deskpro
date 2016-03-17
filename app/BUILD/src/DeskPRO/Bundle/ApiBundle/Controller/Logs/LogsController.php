@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,96 +27,67 @@
  */
 
 /**
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Logs;
 
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\EntityRepository\Setting as SettingRepo;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class LogsController.
+ * Class LogsCrudController.
  *
  * @ApiModes("all")
  */
 class LogsController extends BaseController
 {
     /**
+     * Gather logging options.
+     *
      * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
+     *     section="Logs",
+     *     resourceDescription="Operations about logs",
+     *     description="get logging options",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel"
      * )
-     *
-     * @param Request $request
-     * @Annotations\Get("/api_logs", name="api_logs_list")
-     *
-     * @return View
-     */
-    public function cgetAction(Request $request)
-    {
-        $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(
-            '\DeskPRO\Bundle\AppBundle\Entity\ApiLog'
-        );
-        $qb = $repository->createQueryBuilder('a')->select('a')->orderBy('a.id', 'DESC');
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage(100);
-        $pager->setCurrentPage($request->query->getInt('page', 1));
-
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="get api log",
-     *      statusCodes={
-     *          200="Success",
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
-     * )
-     *
-     * @param int $id
-     * @Annotations\Get("/api_logs/{id}", name="api_logs_view", requirements={"page": "\d+"})
-     *
-     * @return View
-     */
-    public function getAction($id)
-    {
-        $entity = $this->get('doctrine.orm.default_entity_manager')->find('DeskPRO\Bundle\AppBundle\Entity\ApiLog', (int) $id);
-        if (!$entity) {
-            throw new NotFoundHttpException(sprintf('ApiLog with id [ %d ] was not found', (int) $id));
-        }
-
-        return View::create(
-            $this->dataSerialize($entity),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      }
-     * )
-     *
      * @Annotations\Get("/api_logs_options", name="api_logs_options")
      *
      * @return View
@@ -125,23 +96,41 @@ class LogsController extends BaseController
     {
         $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled');
 
+        $options = new OptionsModel(
+            $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled'),
+            $this->container->get('api_log.helper')->getModes()
+        );
+
         return View::create(
-            $this->createRepresentation(
-                [
-                    'enabled' => (bool) $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled'),
-                    'modes'   => $this->container->get('api_log.helper')->getModes(),
-                ]
-            ),
+            $this->wrap($options),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Update logging options.
+     *
      * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      }
+     *     section="Logs",
+     *     resourceDescription="Operations about logs",
+     *     description="update loggin options",
+     *     requirements={
+     *         {
+     *             "name"="enabled",
+     *             "requirement"="1|0",
+     *             "dataType"="boolean",
+     *             "description"="provide 1 if you want to enable logging"
+     *         },
+     *         {
+     *             "name"="modes",
+     *             "requirement"="[\w]",
+     *             "dataType"="array",
+     *             "description"="strings array, values are session, key, token"
+     *         },
+     *     },
+     *     statusCodes={
+     *         204="Returned if everything is OK",
+     *     }
      * )
      *
      * @Annotations\Put("/api_logs_options", name="api_logs_options_update")
@@ -178,26 +167,48 @@ class LogsController extends BaseController
         $em->flush();
 
         return View::create(
-            $this->createRepresentation(
-                [
-                    'enabled' => (bool) $this->get('settings_resolver')->getGlobalSettings(true)->getBool('api_log.enabled'),
-                    'modes'   => $this->container->get('api_log.helper')->getModes(),
-                ]
-            ),
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_NO_CONTENT,
             ['Location' => $this->generateUrl('api_logs_options')]
         );
     }
 
     /**
+     * This endpoint gives you an ability to replay log entry.
+     *
+     * **Subrequest** mode means that log will be replayed with framework only
+     *
+     * **Isolated** mode means that log will be replayed with curl, make sure you have it
+     *
      * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      }
+     *     section="Logs",
+     *     resourceDescription="Operations about logs",
+     *     description="update logging options",
+     *     requirements={
+     *         {
+     *             "name"="mode",
+     *             "requirement"="isolated|subrequest",
+     *             "dataType"="string",
+     *             "description"="how to replay",
+     *             "default"="subrequest",
+     *         },
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *             "description"="id of entry to replay"
+     *         },
+     *     },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *         400="Returned if mode not equals 'isolated' or 'subrequest'",
+     *         404="We can't find entry with provided id",
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
      * )
      *
      * @Annotations\Post("/api_logs/{id}/replay", name="api_logs_replay", requirements={"id": "\d+"})
+     * @Annotations\View(serializerGroups={"list", "details"})
      *
      * @param Request $request
      * @param int     $id
@@ -224,7 +235,7 @@ class LogsController extends BaseController
         }
 
         return View::create(
-            $this->dataSerialize($log, 'data'),
+            $this->wrap($log),
             Response::HTTP_OK
         );
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,13 +55,48 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CommentsController extends BaseController
 {
     /**
+     * Fetch count of comments for articles, news or downloads with ability to group them by type, period or status.
+     *
+     * **You can provide 'article', 'download' and 'news' group_by option and filter only for same type.</p>**
+     * ~~~
+     * /api/v2/article_comments/count?group_by=news
+     * ~~~
+     * **will give you 400 error**
+     *
      * @ApiDoc(
-     *      description="Get articles, news, downloads comments counts",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Content",
+     *     resourceDescription="Operations about content",
+     *     description="Get articles, news, downloads comments counts",
+     *     tags={"comments"="#22aa22"},
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *         404="No route found returned if you provided wrong type",
+     *     },
+     *     requirements=
+     *     {
+     *         {
+     *             "name"="type",
+     *             "requirement"="article|news|download",
+     *             "description"="comments type",
+     *             "dataType"="string",
+     *             "default"="article"
+     *         }
+     *     },
+     *     filters={
+     *          {"name"="status", "dataType"="string", "pattern"="visible|deleted|agent|validating", "description"="filter by status"},
+     *          {"name"="is_reviewed", "dataType"="integer", "pattern"="1|0", "description"="filter by reviewed status"},
+     *          {"name"="period_created", "dataType"="string", "pattern"="today|yesterday|this_week|this_month|last_month|this_year|ever", "description"="filter by period"},
+     *          {"name"="article", "dataType"="integer", "pattern"="\d+", "description"="select comments for article with given id"},
+     *          {"name"="download", "dataType"="integer", "pattern"="\d+", "description"="select comments for download with given id"},
+     *          {"name"="news", "dataType"="integer", "pattern"="\d+", "description"="select comments for news with given id"},
+     *          {"name"="group_by", "dataType"="string", "pattern"="article|news|download|status|period_created", "description"="how to groups comments"},
+     *          {"name"="order_by", "dataType"="string", "pattern"="date_created|person", "description"="how to order comments"},
+     *          {"name"="order_dir", "dataType"="string", "pattern"="asc|desc", "description"="order direction"},
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get(
+     * @Annotations\Get(
      *     "/{type}_comments/counts",
      *     name="api_content_comments_counts",
      *     requirements={
@@ -91,32 +126,138 @@ class CommentsController extends BaseController
         $count = $dataService->countComments($this->getClass($type), $criteria);
 
         return View::create(
-            $this->dataSerialize($count),
+            $this->wrap($count),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @ApiDoc(
-     *      description="Get articles, news, downloads comments list",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get(
-     *     "/{type}_comments",
-     *     name="api_content_comments",
-     *     requirements={
-     *         "type"="article|news|download"
-     *     }
-     * )
+     * Fetch comments list for articles with ability to group them by period or status.
      *
-     * @param string  $type
+     * @ApiDoc(
+     *     section="Content",
+     *     resourceDescription="Operations about content",
+     *     description="Get articles comments list",
+     *     tags={"comments"="#22aa22"},
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     filters={
+     *          {"name"="page", "dataType"="integer", "pattern"="\d+", "description"="which page to display"},
+     *          {"name"="count", "dataType"="integer", "pattern"="\d+", "description"="per page comments count"},
+     *          {"name"="status", "dataType"="string", "pattern"="visible|deleted|agent|validating", "description"="filter by status"},
+     *          {"name"="is_reviewed", "dataType"="integer", "pattern"="1|0", "description"="filter by reviewed status"},
+     *          {"name"="period_created", "dataType"="string", "pattern"="today|yesterday|this_week|this_month|last_month|this_year|ever", "description"="filter by period"},
+     *          {"name"="article", "dataType"="integer", "pattern"="\d+", "description"="select comments for article with given id"},
+     *          {"name"="order_by", "dataType"="string", "pattern"="date_created|person", "description"="how to order comments"},
+     *          {"name"="order_dir", "dataType"="string", "pattern"="asc|desc", "description"="order direction"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\ArticleComment>"
+     * )
+     * @Annotations\Get("/article_comments", name="api_content_comments_articles")
+     * @Annotations\View(serializerGroups={"list"})
+     *
      * @param Request $request
      *
      * @return View
      */
-    public function listCommentsAction($type, Request $request)
+    public function listArticlesCommentsAction(Request $request)
+    {
+        return $this->listComments('article', $request);
+    }
+
+    /**
+     * Fetch comments list for news with ability to group them by period or status.
+     *
+     * @ApiDoc(
+     *     section="Content",
+     *     resourceDescription="Operations about content",
+     *     description="Get news comments list",
+     *     tags={"comments"="#22aa22"},
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     filters={
+     *          {"name"="page", "dataType"="integer", "pattern"="\d+", "description"="which page to display"},
+     *          {"name"="count", "dataType"="integer", "pattern"="\d+", "description"="per page comments count"},
+     *          {"name"="status", "dataType"="string", "pattern"="visible|deleted|agent|validating", "description"="filter by status"},
+     *          {"name"="is_reviewed", "dataType"="integer", "pattern"="1|0", "description"="filter by reviewed status"},
+     *          {"name"="period_created", "dataType"="string", "pattern"="today|yesterday|this_week|this_month|last_month|this_year|ever", "description"="filter by period"},
+     *          {"name"="news", "dataType"="integer", "pattern"="\d+", "description"="select comments for article with given id"},
+     *          {"name"="order_by", "dataType"="string", "pattern"="date_created|person", "description"="how to order comments"},
+     *          {"name"="order_dir", "dataType"="string", "pattern"="asc|desc", "description"="order direction"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\NewsComment>"
+     * )
+     * @Annotations\Get("/news_comments", name="api_content_comments_news")
+     * @Annotations\View(serializerGroups={"list"})
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function listNewsCommentsAction(Request $request)
+    {
+        return $this->listComments('news', $request);
+    }
+
+    /**
+     * Fetch comments list for downloads with ability to group them by period or status.
+     *
+     * @ApiDoc(
+     *     section="Content",
+     *     resourceDescription="Operations about content",
+     *     description="Get downloads comments list",
+     *     tags={"comments"="#22aa22"},
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     filters={
+     *          {"name"="page", "dataType"="integer", "pattern"="\d+", "description"="which page to display"},
+     *          {"name"="count", "dataType"="integer", "pattern"="\d+", "description"="per page comments count"},
+     *          {"name"="status", "dataType"="string", "pattern"="visible|deleted|agent|validating", "description"="filter by status"},
+     *          {"name"="is_reviewed", "dataType"="integer", "pattern"="1|0", "description"="filter by reviewed status"},
+     *          {"name"="period_created", "dataType"="string", "pattern"="today|yesterday|this_week|this_month|last_month|this_year|ever", "description"="filter by period"},
+     *          {"name"="download", "dataType"="integer", "pattern"="\d+", "description"="select comments for article with given id"},
+     *          {"name"="order_by", "dataType"="string", "pattern"="date_created|person", "description"="how to order comments"},
+     *          {"name"="order_dir", "dataType"="string", "pattern"="asc|desc", "description"="order direction"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="Returned if your filters was malformed",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\DownloadComment>"
+     * )
+     * @Annotations\Get("/download_comments", name="api_content_comments_downloads")
+     * @Annotations\View(serializerGroups={"list"})
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function listDownloadsCommentsAction(Request $request)
+    {
+        return $this->listComments('download', $request);
+    }
+
+    /**
+     * @param         $type
+     * @param Request $request
+     *
+     * @return View
+     */
+    private function listComments($type, Request $request)
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
         $dataService = $this->get('data.comments');
@@ -135,7 +276,7 @@ class CommentsController extends BaseController
         $pager = $dataService->selectComments($this->getClass($type), $criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->wrap($pager),
             Response::HTTP_OK
         );
     }
@@ -190,9 +331,9 @@ class CommentsController extends BaseController
     private function getClass($type)
     {
         $typeToClass = [
-            'article'  => ArticleComment::class,
-            'news'     => NewsComment::class,
-            'download' => DownloadComment::class,
+           'article'  => ArticleComment::class,
+           'news'     => NewsComment::class,
+           'download' => DownloadComment::class,
         ];
 
         return $typeToClass[$type];

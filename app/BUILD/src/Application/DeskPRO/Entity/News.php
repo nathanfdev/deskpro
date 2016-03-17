@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -46,6 +47,7 @@ use Orb\Util\Strings;
  * @PortalLinkRoute("portal_news_post_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_news_post_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_news_post_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @JMS\ExclusionPolicy("all")
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
@@ -53,22 +55,26 @@ class News extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
-     *
-     * SWG\Property(name="category", type="NewsCategory")
      */
     protected $category;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * Revisions of this news.
      *
-     * SWG\Property(name="revisions", type="array", SWG\Items("NewsRevision"))
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\NewsRevision>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * String array of labels associated with this news.
      *
-     * SWG\Property(name="labels", type="array", SWG\Items("string")).
+     * @JMS\Expose()
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\NewsLabel>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
 

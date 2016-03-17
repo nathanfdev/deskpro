@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -48,11 +47,16 @@ use Symfony\Component\HttpFoundation\Response;
 class SettingsController extends BaseController
 {
     /**
+     * Get current user personal settings.
+     *
      * @ApiDoc(
-     *      description="Get current user personal settings",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Helpdesk",
+     *     tags={"unstable"="#ff6666"},
+     *     resourceDescription="Operations about helpdesk discovering",
+     *     description="Get current user personal settings",
+     *     statusCodes={
+     *         200="Success"
+     *     }
      * )
      * @Get("/helpdesk/agent-client/settings")
      */

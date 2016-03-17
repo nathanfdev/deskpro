@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,46 +29,25 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Sla;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * API access to languages.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Slas")
+ * @Annotations\Route("/slas")
  */
-class SlasController extends BaseController
+class SlasController extends CrudController
 {
-    /**
-     * Retrieve the list of custom fields available for tickets.
-     *
-     * @Get("/slas", name="api_slas")
-     */
-    public function cgetAllAction()
-    {
-        $service = $this->get('data.slas');
-
-        return View::create(
-            $this->dataSerialize($service->loadAll()),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Get("/slas/{sla_id}", name="api_slas_single")
-     */
-    public function getSingleAction($sla_id)
-    {
-        $service = $this->get('data.slas');
-
-        return View::create(
-            $this->dataSerialize($service->loadSingle($sla_id)),
-            Response::HTTP_OK
-        );
-    }
+    public static $entity        = Sla::class;
+    public static $output_entity = Sla::class;
+    public static $listOrder     = 'desc';
+    public static $exposeOnly    = ['list', 'get'];
+    public static $listPaginate  = false;
 }

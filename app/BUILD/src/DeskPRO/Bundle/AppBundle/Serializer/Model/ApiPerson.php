@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
@@ -293,7 +293,7 @@ class ApiPerson
     /**
      * @var array
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\PersonEmail>>")
+     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
      */
     protected $emails;
 

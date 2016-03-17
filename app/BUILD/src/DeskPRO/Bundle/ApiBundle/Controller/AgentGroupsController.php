@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use FOS\RestBundle\Controller\Annotations as Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,17 +60,19 @@ class AgentGroupsController extends BaseController
      *
      * @Annotations\Get("/agent_groups", name="api_agent_groups")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $service = $this->get('data.user_groups');
 
         return View::create(
-            new ApiWrapper($service->loadAgentGroupsEnabled()),
+            $this->wrap($service->loadAgentGroupsEnabled()),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Get the agent group with specified id.
+     *
      * @ApiDoc(
      *     section = "Agents",
      *     resourceDescription="Operations about agent groups",
@@ -80,12 +81,13 @@ class AgentGroupsController extends BaseController
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of agent",
+     *              "description"="the id of agent group",
      *              "dataType"="integer"
      *          }
      *      },
      *      statusCodes={
      *          200="Returned if request was successful",
+     *          404="Returned if we can't find agent group with specified id"
      *      },
      *      output="array<Application\DeskPRO\Entity>"
      * )
@@ -100,7 +102,7 @@ class AgentGroupsController extends BaseController
         }
 
         return View::create(
-            new ApiWrapper($agent_group),
+            $this->wrap($agent_group),
             Response::HTTP_OK
         );
     }

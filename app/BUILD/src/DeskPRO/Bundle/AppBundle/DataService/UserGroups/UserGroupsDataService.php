@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,41 +29,55 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\UserGroups;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepo;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 
+/**
+ * Class UserGroupsDataService.
+ */
 class UserGroupsDataService extends AbstractDataService
 {
+    /**
+     * @param array $args
+     * @param null  $agents_only
+     * @param null  $enabled
+     *
+     * @return array
+     */
     protected function criteriaArray(array $args = [], $agents_only = null, $enabled = null)
     {
-        if ($agents_only === true) {
-            $args['is_agent_group'] = true;
-        } elseif ($agents_only === false) {
-            $args['is_agent_group'] = false;
+        if (!is_null($agents_only)) {
+            $args['is_agent_group'] = (bool) $agents_only;
         }
-        if ($enabled === true) {
-            $args['is_enabled'] = true;
-        } elseif ($enabled === false) {
-            $args['is_enabled'] = false;
+
+        if (!is_null($enabled)) {
+            $args['is_enabled'] = (bool) $enabled;
         }
 
         return $args;
     }
 
     /**
-     * @param mixed $person right now only ID is useful
+     * @param bool $agents_only
+     * @param bool $enabled
      *
-     * @return Person|null
+     * @return Usergroup[]
      */
     public function loadAll($agents_only = null, $enabled = null)
     {
         return $this->getRepo()->findBy($this->criteriaArray([], $agents_only, $enabled));
     }
 
+    /**
+     * @param int  $id
+     * @param bool $agents_only
+     * @param bool $enabled
+     *
+     * @return null|Usergroup
+     */
     public function loadOne($id, $agents_only = null, $enabled = null)
     {
         return $this->getRepo()->findOneBy(
@@ -71,59 +85,88 @@ class UserGroupsDataService extends AbstractDataService
         );
     }
 
+    /**
+     * @return Usergroup[]
+     */
     public function loadAgentGroups()
     {
         return $this->loadAll(true);
     }
 
+    /**
+     * @return Usergroup[]
+     */
     public function loadUserGroups()
     {
         return $this->loadAll(false);
     }
 
+    /**
+     * @return Usergroup[]
+     */
     public function loadAllEnabled()
     {
         return $this->loadAll(null, true);
     }
 
+    /**
+     * @return Usergroup[]
+     */
     public function loadAgentGroupsEnabled()
     {
         return $this->loadAll(true, true);
     }
 
+    /**
+     * @return Usergroup[]
+     */
     public function loadUserGroupsEnabled()
     {
         return $this->loadAll(false, true);
     }
 
     /**
-     * @param $email
+     * @param int $id
      *
-     * @return Person|null
+     * @return null|Usergroup
      */
     public function loadSingle($id)
     {
-        // using caution and not caching most PersonDataService methods
         return $this->loadOne($id);
     }
 
+    /**
+     * @param $id
+     *
+     * @return null|Usergroup
+     */
     public function loadSingleEnabled($id)
     {
         return $this->loadOne($id, null, true);
     }
 
+    /**
+     * @param $id
+     *
+     * @return null|Usergroup
+     */
     public function loadSingleAgentGroupEnabled($id)
     {
         return $this->loadOne($id, true, true);
     }
 
+    /**
+     * @param $id
+     *
+     * @return null|Usergroup
+     */
     public function loadSingleUserGroupEnabled($id)
     {
         return $this->loadOne($id, false, true);
     }
 
     /**
-     * @return PersonRepo
+     * @return UsergroupRepo
      */
     public function getRepo()
     {

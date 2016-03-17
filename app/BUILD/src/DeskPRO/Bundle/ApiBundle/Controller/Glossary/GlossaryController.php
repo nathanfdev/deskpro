@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,23 +29,26 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * Class GlossaryController.
  *
+ * @ApiDocSection("Glossary")
  * @ApiModes("all")
- * @Route("/glossary")
+ * @Annotations\Route("/glossary")
  */
 class GlossaryController extends CrudController
 {
-    public static $entity = GlossaryWordDefinition::class;
-    public static $type   = GlossaryWordDefinitionType::class;
+    public static $entity        = GlossaryWordDefinition::class;
+    public static $output_entity = GlossaryWordDefinition::class;
+    public static $type          = GlossaryWordDefinitionType::class;
+    public static $listOrder     = 'asc';
 }

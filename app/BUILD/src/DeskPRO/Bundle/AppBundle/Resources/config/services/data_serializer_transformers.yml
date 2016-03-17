@@ -40,14 +40,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollectionTransformer
     arguments: ~
 
-  data_serializer.transformer.article_revision:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ArticlesRevisionTransformer
-    arguments: ~
-
-  data_serializer.transformer.download_revision:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DownloadsRevisionTransformer
-    arguments: ~
-
   data_serializer.transformer.theme_set_asset:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ThemeSetAssetTransformer
     arguments:

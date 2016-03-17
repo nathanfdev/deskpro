@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,23 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
- * Class NewsCommentTransformer.
+ * @Annotation
+ * @Target("CLASS")
+ * Class ApiDocSection
  */
-class NewsCommentTransformer extends ArticleCommentTransformer
+class ApiDocSection
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    protected $section;
+
+    public function __construct($params)
     {
-        return ['id', 'person', 'content', 'status', 'is_reviewed', 'date_created', 'news'];
+        $this->section = $params['value'];
+    }
+
+    public function getSection()
+    {
+        return $this->section;
     }
 }

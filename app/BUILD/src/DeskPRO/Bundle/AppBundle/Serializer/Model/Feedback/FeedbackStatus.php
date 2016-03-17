@@ -26,51 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
-use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
-use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use Application\DeskPRO\Entity\Feedback;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AgentTeam.
+ * Class FeedbackStatus.
  */
-class AgentTeam
+class FeedbackStatus
 {
     /**
+     * The unique id of feedback.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Human readable status title.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
-    protected $name;
+    protected $title;
 
     /**
-     * @var
-     */
-    protected $avatar;
-
-    /**
-     * AgentTeam constructor.
+     * Status system name.
      *
-     * @param AgentTeamEntity $agent_team
+     * @JMS\Type("string")
+     *
+     * @var string
      */
-    public function __construct(AgentTeamEntity $agent_team)
-    {
-        $this->id   = $agent_team->getId();
-        $this->name = $agent_team->getName();
-    }
+    protected $status;
 
     /**
-     * @param Avatar $avatar
+     * Hidden status system name.
      *
-     * @return $this
+     * @JMS\Type("string")
+     *
+     * @var string
      */
-    public function setAvatar(Avatar $avatar)
-    {
-        $this->avatar = $avatar;
+    protected $hidden_status;
 
-        return $this;
+    /**
+     * FeedbackStatus constructor.
+     *
+     * @param Feedback $feedback
+     */
+    public function __construct(Feedback $feedback)
+    {
+        $this->id            = $feedback->getId();
+        $this->title         = $feedback->getStatusCategory() ? $feedback->getStatusCategory()->getTitle() : null;
+        $this->status        = $feedback->getStatus();
+        $this->hidden_status = $feedback->getHiddenStatus();
     }
 }

@@ -47,6 +47,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $includes;
 
     /**
+     * @var bool
+     */
+    protected $exclusion_enabled = true;
+
+    /**
      * SideloadSerializationContext constructor.
      *
      * @param SideloadStore $sideload_store
@@ -70,6 +75,30 @@ class SideloadSerializationContext extends SerializationContext
         $sideload_store = new SideloadStore();
 
         return new self($sideload_store, self::cleanIncludes($raw_includes));
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setExclusionEnabled($enabled = true)
+    {
+        $this->exclusion_enabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExclusionStrategy()
+    {
+        if ($this->exclusion_enabled) {
+            return parent::getExclusionStrategy();
+        }
+
+        return;
     }
 
     /**

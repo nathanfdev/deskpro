@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,14 +58,17 @@ class ArticlePendingCreateController extends BaseController
      * Get count of articles that need to be created.
      *
      * @ApiDoc(
-     *      description="total count of articles should be created",
-     *      statusCodes={
-     *          200="Returned if request was succeeded",
-     *          400="Returned if provided filters was wrong",
-     *      },
-     *     filters={
-     *
-     *     }
+     *     section="Content",
+     *     resourceDescription="Operations about pending articles",
+     *     description="total count of articles should be created",
+     *     statusCodes={
+     *         200="Returned if request was succeeded",
+     *         400="Returned if provided filters was wrong",
+     *     },
+     *    filters={
+     *        {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
+     *    },
+     *    output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
      *
@@ -87,19 +90,24 @@ class ArticlePendingCreateController extends BaseController
         $count = Count::fromValue($total);
 
         return View::create(
-            $this->dataSerialize($count),
+            $this->wrap($count),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="Get ArticlePendingCreate entities list",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Assigned person not found"
-     *      }
+     *     section="Content",
+     *     resourceDescription="Operations about pending articles",
+     *     description="Get ArticlePendingCreate entities list",
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *         400="Returned if you filter set was wrong way formed",
+     *         404="Specified person not found"
+     *     },
+     *    filters={
+     *        {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
+     *    },
      * )
      * @Get("/article_pending_creates", name="api_article_pending_creates")
      *

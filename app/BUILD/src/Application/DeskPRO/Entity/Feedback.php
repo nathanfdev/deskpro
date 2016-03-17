@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,11 +34,13 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
@@ -46,6 +48,7 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
  * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @JMS\ExclusionPolicy("all")
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
@@ -67,52 +70,68 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $is_reviewed = false;
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
-     *                                                         SWG\Property(name="status_category",type="FeedbackStatusCategory")
+     * Category the feedback belongs to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackStatusCategory>")
+     *
+     * @var FeedbackStatusCategory
      */
     protected $status_category = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
-     *             SWG\Property(name="hidden_status",type="string")
      */
     protected $hidden_status = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackCategory
-     *                                                   SWG\Property(name="category",type="array", items="$ref:FeedbackCategory")
+     * Category the feedback belongs to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackCategory>")
+     *
+     * @var FeedbackCategory
      */
     protected $category;
 
     /**
+     * Revisions of this feedback.
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="revisions",type="array", items="$ref:FeedbackRevision")
      */
     protected $revisions;
 
     /**
+     * String array of labels associated with this news.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups({"labels"})
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\FeedbackLabel>>")
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="labels",type="array", items="$ref:LabelFeedback")
      */
     protected $labels;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="custom_data",type="array", items="$ref:CustomDataFeedback")
      */
     protected $custom_data;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * Popularity (see recalculatePopularity).
      *
      * @var string
-     *             SWG\Property(name="popularity",type="string")
      */
     protected $popularity = 0;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="custom_data",type="array", items="$ref:FeedbackAttachment")
      */
     protected $attachments;
 
@@ -166,6 +185,17 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         return;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("custom_data")
+     *
+     * @return string
+     */
+    public function getCustomData()
+    {
+        return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : null;
     }
 
     /**
@@ -343,6 +373,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return self::STATUS_HIDDEN !== $this->status;
     }
 
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     public function getStatusCode()
     {
         if ($this->status == self::STATUS_ACTIVE or $this->status == self::STATUS_CLOSED) {
@@ -451,20 +489,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return array
-     */
-    public function getStringLabels()
-    {
-        return array_map(function (LabelFeedback $label) { return $label->getLabel(); }, $this->getLabels()->toArray());
-    }
-
-    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelFeedback');
+            $this->_label_manager = new LabelManager($this, 'DeskPRO:LabelFeedback');
         }
 
         return $this->_label_manager;
@@ -602,6 +632,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
     }
 
     ############################################################################

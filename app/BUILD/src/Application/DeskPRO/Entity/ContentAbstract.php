@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,52 +37,89 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use DateTime;
 use DpSys\LowError\SystemErrorHandler;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
  * Basic properties on content.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     const CONTENT_TYPE = null;
 
     const STATUS_PUBLISHED = 'published';
-    const STATUS_ARCHIVED  = 'archived';
-    const STATUS_HIDDEN    = 'hidden';
+
+    const STATUS_ARCHIVED = 'archived';
+
+    const STATUS_HIDDEN = 'hidden';
 
     const HIDDEN_STATUS_UNPUBLISHED = 'unpublished';
-    const HIDDEN_STATUS_DELETED     = 'deleted';
-    const HIDDEN_STATUS_SPAM        = 'spam';
-    const HIDDEN_STATUS_DRAFT       = 'draft';
+
+    const HIDDEN_STATUS_DELETED = 'deleted';
+
+    const HIDDEN_STATUS_SPAM = 'spam';
+
+    const HIDDEN_STATUS_DRAFT = 'draft';
 
     /**
+     * The unqique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups({"labels"})
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * Person created this content first time.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person = null;
 
     /**
+     * Language content was written.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
+     *
      * @var Language
      */
     protected $language = null;
 
     /**
+     * Content slug.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $slug;
 
     /**
+     * Content title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
 
     /**
      * The main content for the item. This should be HTML!
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -91,12 +128,18 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * View counts.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $view_count = 0;
 
     /**
      * Total rating: This is a tally and must be updated when a rating is added.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -110,6 +153,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Number of user-visible comments: This is a count that must be updated when a comment is added.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $num_comments = 0;
@@ -117,11 +163,19 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Total rating.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $num_ratings = 0;
 
     /**
+     * Status title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status;
@@ -132,6 +186,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $hidden_status = null;
 
     /**
+     * DateTime when content was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var DateTime
      */
     protected $date_created;
@@ -147,6 +206,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $date_last_comment;
 
     /**
+     * DateTime when content was updated last time.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_updated;
@@ -431,7 +495,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines     = array();
+        $lines     = [];
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -449,7 +513,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getSearchSummary($length = 100)
     {
         $content = $this->getContentPlain();
-        $content = str_replace(array("\r\n", "\n"), ' ', $content);
+        $content = str_replace(["\r\n", "\n"], ' ', $content);
 
         if (Strings::utf8_strlen($content) > $length) {
             $content = Strings::utf8_substr($content, 0, $length).'...';
@@ -516,7 +580,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             return $this->_authors;
         }
 
-        $this->_authors = array();
+        $this->_authors = [];
 
         if ($this->person) {
             $this->_authors[$this->person['id']] = $this->person;
@@ -544,9 +608,21 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->_authors;
     }
 
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\SerializedName("last_author_id")
+     */
+    public function getLastAuthor()
+    {
+        $authors = $this->getAuthors();
+
+        return end($authors);
+    }
+
     public function getByLine($sep = ', ')
     {
-        $names = array();
+        $names = [];
         foreach ($this->getAuthors() as $a) {
             $names[] = $a->getDisplayName();
         }
@@ -554,6 +630,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return implode($sep, $names);
     }
 
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("vote_stats")
+     */
     public function getVoteStats()
     {
         $x = $this->num_ratings - abs($this->total_rating);
@@ -570,7 +651,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $down = ($x / 2) + abs($this->total_rating);
         }
 
-        return array('up' => $up, 'down' => $down);
+        return['up' => $up, 'down' => $down];
     }
 
     public function getUpVotes()

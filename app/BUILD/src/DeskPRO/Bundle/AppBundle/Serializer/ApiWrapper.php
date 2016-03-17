@@ -44,12 +44,15 @@ class ApiWrapper
     protected $includes = [];
 
     /**
+     * @JMS\Groups("wrapper")
+     *
      * @var array|Pagerfanta
      */
     protected $data = [];
 
     /**
      * @JMS\Type("array")
+     * @JMS\Groups("wrapper")
      *
      * @var array
      */
@@ -58,6 +61,7 @@ class ApiWrapper
     /**
      * @JMS\Type("array")
      * @JMS\Exclude()
+     *
      * It will be filled up just after serialization ends
      *
      * @var array
@@ -72,13 +76,17 @@ class ApiWrapper
      */
     public function __construct($data, array $includes = [])
     {
-        $this->checkPagination($data);
-        $this->data     = $data;
+        if (!$this->checkPagination($data)) {
+            $this->data = $data;
+        }
+
         $this->includes = $includes;
     }
 
     /**
-     * @param $data
+     * @param mixed $data
+     *
+     * @return bool
      */
     protected function checkPagination($data)
     {
@@ -96,8 +104,18 @@ class ApiWrapper
                 'total_pages'  => $total_pages,
             ];
 
+            $results = $data->getCurrentPageResults();
+            if ($results instanceof \ArrayIterator) {
+                $results = $results->getArrayCopy();
+            }
+
+            $this->data               = $results;
             $this->meta['pagination'] = $pagination;
+
+            return true;
         }
+
+        return false;
     }
 
     /**

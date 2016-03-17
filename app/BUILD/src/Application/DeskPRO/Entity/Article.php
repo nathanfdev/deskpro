@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_kb_view", route_param_map={"slug":"slug"})
@@ -49,6 +50,7 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
  * @PortalLinkRoute("portal_kb_article_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @JMS\ExclusionPolicy("all")
  */
 class Article extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
@@ -63,6 +65,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $categories;
 
     /**
+     * Revisions of this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleRevision>>")
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
@@ -88,6 +95,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $custom_data;
 
     /**
+     * String array of labels associated with this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\ArticleLabel>>")
+     *
      * \Doctrine\Common\Collections\ArrayCollection.
      */
     protected $labels;

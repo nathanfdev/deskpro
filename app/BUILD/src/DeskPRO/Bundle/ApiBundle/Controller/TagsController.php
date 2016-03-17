@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,11 +43,23 @@ use Symfony\Component\HttpFoundation\Response;
 class TagsController extends BaseController
 {
     /**
+     * Fetch api tags collection with permissions.
+     *
      * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      }
+     *     section="Tags",
+     *     resourceDescription="Operations about tags",
+     *     description="get api tags collection",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of key",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     }
      * )
      * @Annotations\Get("/api_tags/{id}", name="api_tags_list_for_key")
      *
@@ -56,29 +67,52 @@ class TagsController extends BaseController
      *
      * @return Response
      */
-    public function cgetAction($id)
+    public function listAction($id)
     {
         $tags_collector = $this->get('api_authorization.tags_collector');
         $tags_collector->collectTags(true);
 
         return View::create(
-            $this->dataSerialize($tags_collector->getTagsHierarchyForApi($id)),
+            $this->wrap($tags_collector->getTagsHierarchyForApi($id)),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="get api logs collection",
-     *      statusCodes={
-     *          200="Success",
-     *      }
+     *     section="Tags",
+     *     resourceDescription="Operations about tags",
+     *     description="update tags for key",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="The id of key",
+     *             "dataType"="integer"
+     *         },
+     *         {
+     *             "name"="action",
+     *             "requirement"="string",
+     *             "description"="Tag name",
+     *             "dataType"="string"
+     *         },
+     *         {
+     *             "name"="value",
+     *             "requirement"="1|0",
+     *             "description"="Allow|deny",
+     *             "dataType"="boolean"
+     *         },
+     *     },
+     *     statusCodes={
+     *         204="Returned if everything is OK",
+     *     }
      * )
      * @Annotations\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int     $id
-     * @ ApiTags("superuser")
+     *
+     * @return View
      */
     public function putAction(Request $request, $id)
     {
@@ -86,5 +120,7 @@ class TagsController extends BaseController
         $action    = $request->request->get('action');
         $collector = $this->get('api_authorization.tags_collector');
         $collector->updateTags($id, $action, $value);
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Custom data.
@@ -43,16 +43,25 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
+     * @JMS\Groups("details")
+     * @JMS\Type("entity<DeskPRO\Application\Entity\CustomDefFeedback>")
+     *
      * @var \Application\DeskPRO\Entity\Feedback
      */
     protected $feedback;
 
     /**
+     * @JMS\Groups("details")
+     * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
+     *
      * @var CustomDefFeedback
      */
     protected $field = null;
 
     /**
+     * @JMS\Groups("details")
+     * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
+     *
      * @var CustomDefFeedback
      */
     protected $root_field = null;

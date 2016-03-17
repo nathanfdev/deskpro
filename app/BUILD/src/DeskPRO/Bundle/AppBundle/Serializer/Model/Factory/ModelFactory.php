@@ -26,10 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model\Factory;
+/**
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
-use DeskPRO\Bundle\AppBundle\Model\AgentTeam;
+use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -54,17 +81,22 @@ class ModelFactory
     }
 
     /**
+     * @todo we should move either move it into config either get rid of this
+     *
      * @var array
      */
     protected $methodMap = [
         'person' => [
-            'ApiPerson' => [
+            ApiPerson::class => [
                 'default' => true,
                 'factory' => 'api_serializer.api_person_factory',
                 'method'  => 'create',
             ],
         ],
         'agent_team' => 'createAgentTeam',
+        'feedback'   => [
+                FeedbackStatus::class => ['default' => true, 'method' => 'createFeedbackStatus'],
+            ],
 
     ];
 
@@ -74,6 +106,10 @@ class ModelFactory
      */
     public function create($entity, $concrete = null)
     {
+        if (!is_object($entity)) {
+            return $entity;
+        }
+
         $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
         if (!isset($this->methodMap[$snake])) {
             return $entity;
@@ -95,8 +131,8 @@ class ModelFactory
     public function createArray($entities, $concrete = null)
     {
         $wrappers = [];
-        foreach ($entities as $entity) {
-            $wrappers[] = $this->create($entity, $concrete);
+        foreach ($entities as $key => $entity) {
+            $wrappers[$key] = $this->create($entity, $concrete);
         }
 
         return $wrappers;
@@ -111,7 +147,7 @@ class ModelFactory
         if (null === $concrete) {
             $concrete = $this->findDefault($polymorphs);
         } else {
-            $concrete = isset($polymorphs[$concrete]) ? $polymorphs : $this->findDefault($polymorphs);
+            $concrete = isset($polymorphs[$concrete]) ? $polymorphs[$concrete] : $this->findDefault($polymorphs);
         }
         if (isset($concrete['factory'])) {
             if (!$this->container->has($concrete['factory'])) {
@@ -157,5 +193,10 @@ class ModelFactory
         $agent_team = new AgentTeam($entity);
 
         return $agent_team->setAvatar($avatar_resolver->getAvatarModel($entity));
+    }
+
+    protected function createFeedbackStatus(Feedback $feedback)
+    {
+        return new FeedbackStatus($feedback);
     }
 }

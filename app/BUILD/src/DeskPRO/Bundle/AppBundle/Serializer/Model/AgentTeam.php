@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use DeskPRO\Bundle\AppBundle\Content\Avatar;
 
 /**
- * Class NewsRevisionTransformer.
+ * Class AgentTeam.
  */
-class NewsRevisionTransformer extends AbstractDataSerializerTransformer
+class AgentTeam
 {
     /**
-     * {@inheritdoc}
+     * @var int
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    protected $id;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var
+     */
+    protected $avatar;
+
+    /**
+     * AgentTeam constructor.
+     *
+     * @param AgentTeamEntity $agent_team
+     */
+    public function __construct(AgentTeamEntity $agent_team)
     {
-        return [
-            'id',
-            'news_id',
-            'person',
-            'date_created',
-        ];
+        $this->id   = $agent_team->getId();
+        $this->name = $agent_team->getName();
     }
 
     /**
-     * {@inheritdoc}
+     * @param Avatar $avatar
+     *
+     * @return $this
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    public function setAvatar(Avatar $avatar)
     {
-        return [];
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

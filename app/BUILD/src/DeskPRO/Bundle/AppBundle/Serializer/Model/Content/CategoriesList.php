@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,32 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ArticleCommentTransformer.
+ * Class CategoriesList.
  */
-class ArticleCommentTransformer extends AbstractDataSerializerTransformer
+class CategoriesList
 {
     /**
-     * {@inheritdoc}
+     * @JMS\Type("array<Application\DeskPRO\Entity\ArticleCategory>")
+     * @JMS\Groups("list")
+     *
+     * @var array
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
-    {
-        return ['id', 'person', 'content', 'status', 'is_reviewed', 'date_created', 'article'];
-    }
+    protected $articles;
 
     /**
-     * {@inheritdoc}
+     * @JMS\Type("array<Application\DeskPRO\Entity\NewsCategory>")
+     * @JMS\Groups("list")
+     *
+     * @var array
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    protected $news;
+
+    /**
+     * @JMS\Type("array<Application\DeskPRO\Entity\DownloadCategory>")
+     * @JMS\Groups("list")
+     * @JMS\SerializedName("downloads")
+     *
+     * @var array
+     */
+    protected $downloads;
+
+    /**
+     * CategoriesList constructor.
+     *
+     * @param $articles
+     * @param $news
+     * @param $downloads
+     */
+    public function __construct($articles, $news, $downloads)
     {
-        return [];
+        $this->articles  = $articles;
+        $this->news      = $news;
+        $this->downloads = $downloads;
     }
 }
