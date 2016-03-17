@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use JMS\Serializer\GraphNavigator;
 
 /**
  * Class OrganizationHandler.
@@ -58,16 +57,9 @@ class OrganizationHandler extends AbstractEntityHandler
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getClassNames()
     {
-        return [
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => Organization::class,
-                'method'    => 'serialize',
-            ],
-        ];
+        return Organization::class;
     }
 
     /**

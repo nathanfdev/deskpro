@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -130,15 +131,20 @@ class PersonAssignType extends AbstractType
         if (!empty($data['email'])) {
             $person = $person_repository->findOneByEmail($data['email']);
             if (!$person) {
-                $person = new Person();
-                $person->addEmailAddressString($data['email']);
+                $allow_create = $form->getConfig()->getOption('allow_create');
+                if ($allow_create) {
+                    $person = new Person();
+                    $person->addEmailAddressString($data['email']);
+                } else {
+                    $form->addError(new FormError(ApiErrors::NO_PERSON, null, ['value' => $data['email']]));
+                }
             }
 
             $form->setData($person);
         } elseif (!empty($data['id'])) {
             $person = $person_repository->find((int) $data['id']);
             if (!$person) {
-                $form->addError(new FormError('person_not_found', null, ['value' => $data['id']]));
+                $form->addError(new FormError(ApiErrors::NO_PERSON, null, ['value' => $data['id']]));
             }
 
             $form->setData($person);
@@ -167,12 +173,15 @@ class PersonAssignType extends AbstractType
                 'person'             => null,
                 'label_name'         => '',
                 'label_email'        => '',
-                'data_class'         => 'Application\\DeskPRO\\Entity\\Person',
+                'data_class'         => Person::class,
                 'available_fields'   => ['name', 'email'],
                 'allow_extra_fields' => false,
+                'allow_create'       => false,
+                'error_bubbling'     => false,
             ])
             ->setAllowedTypes([
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
+                'person'       => ['null', Person::class],
+                'allow_create' => 'boolean',
             ])
         ;
     }

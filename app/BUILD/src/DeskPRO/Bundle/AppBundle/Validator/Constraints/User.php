@@ -41,8 +41,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class User extends Constraint
 {
-    const CODE_NOT_USER  = 'not_user';
-    const CODE_NOT_AGENT = 'not_agent';
+    const CODE_NOT_USER  = 'person_not_user';
+    const CODE_NOT_AGENT = 'person_not_agent';
 
     /**
      * Could be agent or user.

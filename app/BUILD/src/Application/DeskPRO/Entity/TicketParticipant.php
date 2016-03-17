@@ -71,7 +71,6 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\PersonEmail
      *
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $person_email = null;
 

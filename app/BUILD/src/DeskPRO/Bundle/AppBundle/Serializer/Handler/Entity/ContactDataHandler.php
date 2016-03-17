@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\PersonContactData;
-use JMS\Serializer\GraphNavigator;
 use Orb\Util\Strings;
 
 /**
@@ -45,24 +44,12 @@ class ContactDataHandler extends AbstractEntityHandler
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getClassNames()
     {
-        $methods = [];
-        $classes = [
+        return [
             PersonContactData::class,
             OrganizationContactData::class,
         ];
-
-        foreach ($classes as $class) {
-            $methods[] = [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => $class,
-                'method'    => 'serialize',
-            ];
-        }
-
-        return $methods;
     }
 
     /**

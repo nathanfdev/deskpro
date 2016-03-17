@@ -579,7 +579,7 @@ class TicketWithLayoutsType extends AbstractType
                 'label_name'       => $this->phrase('portal.forms.label_name'),
                 'label_email'      => $this->phrase('portal.forms.label_email'),
                 'available_fields' => ['id', 'email', 'name'],
-                'error_bubbling'   => false,
+                'allow_create'     => true,
             ]);
         } else {
             return new FormField('deskpro_combined_type', [

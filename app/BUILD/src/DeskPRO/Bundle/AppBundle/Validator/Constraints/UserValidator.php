@@ -54,12 +54,12 @@ class UserValidator extends ConstraintValidator
         }
 
         if ($constraint->type === 'agent') {
-            if (!$value->is_agent) {
-                $this->context->addViolation(User::CODE_NOT_AGENT);
+            if (!$value->isAgent()) {
+                $this->context->addViolation(User::CODE_NOT_AGENT, ['value' => $value->getEmailAddress()]);
             }
         } elseif ($constraint->type === 'user') {
-            if (!$value->is_user || $value->is_agent) {
-                $this->context->addViolation(User::CODE_NOT_USER);
+            if (!$value->isUser() || $value->isAgent()) {
+                $this->context->addViolation(User::CODE_NOT_USER, ['value' => $value->getEmailAddress()]);
             }
         }
     }

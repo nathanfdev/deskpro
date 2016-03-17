@@ -29,27 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 /**
- * Class TicketParticipantType.
+ * Interface EntityHandlerInterface.
  */
-class TicketParticipantType extends ApiType
+interface EntityHandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string|string[]
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('person', 'entity', ['class' => 'DeskPRO:Person'])
-            ->add('ticket', 'entity', ['class' => 'DeskPRO:Ticket'])
-            ->add('person_email', 'entity', ['class' => 'DeskPRO:PersonEmail'])
-            ->add('access_code', 'entity', ['class' => 'DeskPRO:TicketAccessCode'])
-            ->add('default_on', 'api_boolean')
-        ;
-    }
+    public static function getClassNames();
 }
