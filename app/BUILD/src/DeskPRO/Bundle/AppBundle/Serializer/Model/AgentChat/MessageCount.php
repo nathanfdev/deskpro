@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model\AgentChat;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentChat;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use JMS\Serializer\Annotation as JMS;

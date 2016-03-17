@@ -31,8 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\EventDispatcher\Events;

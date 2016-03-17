@@ -50,29 +50,32 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
-namespace DeskPRO\Bundle\AppBundle\Model\Notification;
-
-use JMS\Serializer\Annotation as JMS;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Logs;
 
 /**
- * Class NotificationConfiguration.
+ * Class OptionsModel.
  */
-class NotificationConfiguration
+class OptionsModel
 {
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Model\Notification\NotificationClient>")
-     *
-     * @var array
+     * @var bool
      */
-    protected $clients;
+    protected $enabled;
 
     /**
-     * NotificationConfiguration constructor.
-     *
-     * @param array $clients
+     * @var array
      */
-    public function __construct(array $clients)
+    protected $modes = [];
+
+    /**
+     * OptionsModel constructor.
+     *
+     * @param bool  $enabled
+     * @param array $modes
+     */
+    public function __construct($enabled, array $modes)
     {
-        $this->clients = $clients;
+        $this->enabled = (bool) $enabled;
+        $this->modes   = $modes;
     }
 }

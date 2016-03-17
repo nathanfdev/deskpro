@@ -26,38 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model\Content;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class VoteStats.
+ * Class CategoriesList.
  */
-class VoteStats
+class CategoriesList
 {
     /**
-     * @JMS\Type("integer")
+     * @JMS\Type("array<Application\DeskPRO\Entity\ArticleCategory>")
+     * @JMS\Groups("list")
      *
      * @var array
      */
-    protected $up;
+    protected $articles;
 
     /**
-     * @JMS\Type("integer")
+     * @JMS\Type("array<Application\DeskPRO\Entity\NewsCategory>")
+     * @JMS\Groups("list")
      *
      * @var array
      */
-    protected $down;
+    protected $news;
 
     /**
-     * VoteStats constructor.
+     * @JMS\Type("array<Application\DeskPRO\Entity\DownloadCategory>")
+     * @JMS\Groups("list")
+     * @JMS\SerializedName("downloads")
      *
-     * @param int $up
-     * @param int $down
+     * @var array
      */
-    public function __construct($up, $down)
+    protected $downloads;
+
+    /**
+     * CategoriesList constructor.
+     *
+     * @param $articles
+     * @param $news
+     * @param $downloads
+     */
+    public function __construct($articles, $news, $downloads)
     {
-        $this->up   = $up;
-        $this->down = $down;
+        $this->articles  = $articles;
+        $this->news      = $news;
+        $this->downloads = $downloads;
     }
 }

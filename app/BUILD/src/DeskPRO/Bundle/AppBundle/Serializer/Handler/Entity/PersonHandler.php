@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Model\Factory\ApiPersonFactory;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ApiPersonFactory;
 use JMS\Serializer\GraphNavigator;
 
 /**

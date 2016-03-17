@@ -50,7 +50,7 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
-namespace DeskPRO\Bundle\AppBundle\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
 
 use JMS\Serializer\Annotation as JMS;
 

@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Model\Feedback\FeedbackStatus;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +58,7 @@ class FeedbackStatusController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Model\Feedback\FeedbackStatus"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus"
      * )
      * @Annotations\Get("/feedback_statuses", name="api_feedback_statuses")
      *

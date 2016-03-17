@@ -26,51 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Model\Content;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use DeskPRO\Bundle\AppBundle\Content\Avatar;
 
 /**
- * Class CategoriesList.
+ * Class AgentTeam.
  */
-class CategoriesList
+class AgentTeam
 {
     /**
-     * @JMS\Type("array<Application\DeskPRO\Entity\ArticleCategory>")
-     * @JMS\Groups("list")
-     *
-     * @var array
+     * @var int
      */
-    protected $articles;
+    protected $id;
 
     /**
-     * @JMS\Type("array<Application\DeskPRO\Entity\NewsCategory>")
-     * @JMS\Groups("list")
-     *
-     * @var array
+     * @var string
      */
-    protected $news;
+    protected $name;
 
     /**
-     * @JMS\Type("array<Application\DeskPRO\Entity\DownloadCategory>")
-     * @JMS\Groups("list")
-     * @JMS\SerializedName("downloads")
-     *
-     * @var array
+     * @var
      */
-    protected $downloads;
+    protected $avatar;
 
     /**
-     * CategoriesList constructor.
+     * AgentTeam constructor.
      *
-     * @param $articles
-     * @param $news
-     * @param $downloads
+     * @param AgentTeamEntity $agent_team
      */
-    public function __construct($articles, $news, $downloads)
+    public function __construct(AgentTeamEntity $agent_team)
     {
-        $this->articles  = $articles;
-        $this->news      = $news;
-        $this->downloads = $downloads;
+        $this->id   = $agent_team->getId();
+        $this->name = $agent_team->getName();
+    }
+
+    /**
+     * @param Avatar $avatar
+     *
+     * @return $this
+     */
+    public function setAvatar(Avatar $avatar)
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

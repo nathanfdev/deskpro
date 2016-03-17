@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Model\Content\CategoriesList;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\View\View;
@@ -58,7 +58,7 @@ class CategoriesController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Model\Content\CategoriesList",
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList",
      * )
      * @FOS\View(serializerGroups={"list"})
      * @Annotations\Get("/content_categories", name="api_content_categories")

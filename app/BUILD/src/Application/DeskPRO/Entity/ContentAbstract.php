@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DateTime;
-use DeskPRO\Bundle\AppBundle\Model\Content\VoteStats;
 use DpSys\LowError\SystemErrorHandler;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
@@ -633,7 +632,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Model\Content\VoteStats")
+     * @JMS\Type("array")
      * @JMS\SerializedName("vote_stats")
      */
     public function getVoteStats()
@@ -652,7 +651,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $down = ($x / 2) + abs($this->total_rating);
         }
 
-        return new VoteStats($up, $down);
+        return['up' => $up, 'down' => $down];
     }
 
     public function getUpVotes()
