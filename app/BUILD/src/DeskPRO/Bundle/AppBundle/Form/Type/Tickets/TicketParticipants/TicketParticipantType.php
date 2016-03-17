@@ -63,7 +63,11 @@ class TicketParticipantType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new TicketParticipantTransformer($this->em, $options['owner']), true);
+        $builder->addViewTransformer(new TicketParticipantTransformer(
+            $this->em,
+            $options['owner'],
+            $options['person_type']
+        ), true);
     }
 
     /**

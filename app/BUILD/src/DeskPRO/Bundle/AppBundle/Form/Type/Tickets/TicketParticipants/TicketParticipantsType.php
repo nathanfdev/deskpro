@@ -66,7 +66,6 @@ class TicketParticipantsType extends AbstractType
             ->setDefaults([
                 'allow_add'     => true,
                 'allow_delete'  => true,
-                'mapped'        => false,
                 'entry_type'    => 'ticket_participant',
                 'entry_options' => function (Options $options) {
                     return [
@@ -78,6 +77,7 @@ class TicketParticipantsType extends AbstractType
                 // we have same property path for "followers" and "cc"
                 // so we should place participant errors on the parent entity form to map them correctly
                 'error_bubbling' => true,
+                'mapped'         => false,
             ])
             ->setRequired(['person_type', 'owner'])
             ->setAllowedValues([

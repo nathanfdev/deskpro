@@ -37,7 +37,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * Class TicketParticipantTransformer.
@@ -55,15 +54,22 @@ class TicketParticipantTransformer implements DataTransformerInterface
     private $ticket;
 
     /**
+     * @var string
+     */
+    private $person_type;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
      * @param Ticket        $ticket
+     * @param string        $person_type
      */
-    public function __construct(EntityManager $em, Ticket $ticket)
+    public function __construct(EntityManager $em, Ticket $ticket, $person_type)
     {
-        $this->em     = $em;
-        $this->ticket = $ticket;
+        $this->em          = $em;
+        $this->ticket      = $ticket;
+        $this->person_type = $person_type;
     }
 
     /**
@@ -71,7 +77,7 @@ class TicketParticipantTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        return $value ? $value->getPersonEmail()->getEmail() : null;
+        return $value && $value->getPersonEmail() ? $value->getPersonEmail()->getEmail() : null;
     }
 
     /**
@@ -94,20 +100,26 @@ class TicketParticipantTransformer implements DataTransformerInterface
         if (count($filtered) > 0) {
             $entity = $filtered->first();
         } else {
+            $entity = new TicketParticipant();
             $person = $person_repo->findOneByEmail($value);
-            if (!$person) {
-                throw new TransformationFailedException('Person with email `'.$value.'` not found');
+
+            if ($person) {
+                $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($value) {
+                    return $person_email->getEmail() === $value;
+                })->first();
+            } else {
+                // Create a fake user so we can validate props properly
+                $person_email = new PersonEmail();
+                $person_email->setEmail($value);
+
+                $person = new Person();
+                $person->addEmail($person_email);
             }
 
-            $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($value) {
-                return $person_email->getEmail() === $value;
-            })->first();
-
-            $entity = new TicketParticipant();
             $entity
+                ->setTicket($this->ticket)
                 ->setPerson($person)
                 ->setPersonEmail($person_email)
-                ->setTicket($this->ticket)
             ;
         }
 
