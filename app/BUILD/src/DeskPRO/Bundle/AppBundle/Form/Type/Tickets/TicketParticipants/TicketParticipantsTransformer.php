@@ -37,11 +37,12 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
- * Class TicketParticipantTransformer.
+ * Class TicketParticipantsTransformer.
  */
-class TicketParticipantTransformer implements DataTransformerInterface
+class TicketParticipantsTransformer implements DataTransformerInterface
 {
     /**
      * @var EntityManager
@@ -54,22 +55,15 @@ class TicketParticipantTransformer implements DataTransformerInterface
     private $ticket;
 
     /**
-     * @var string
-     */
-    private $person_type;
-
-    /**
      * Constructor.
      *
      * @param EntityManager $em
      * @param Ticket        $ticket
-     * @param string        $person_type
      */
-    public function __construct(EntityManager $em, Ticket $ticket, $person_type)
+    public function __construct(EntityManager $em, Ticket $ticket)
     {
-        $this->em          = $em;
-        $this->ticket      = $ticket;
-        $this->person_type = $person_type;
+        $this->em     = $em;
+        $this->ticket = $ticket;
     }
 
     /**
@@ -77,7 +71,17 @@ class TicketParticipantTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        return $value && $value->getPersonEmail() ? $value->getPersonEmail()->getEmail() : null;
+        /** @var TicketParticipant[] $value */
+        if (!is_array($value) && !$value instanceof \Traversable) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($value as $participant) {
+            $result[] = $participant->getPersonEmail()->getEmail();
+        }
+
+        return $result;
     }
 
     /**
@@ -92,37 +96,48 @@ class TicketParticipantTransformer implements DataTransformerInterface
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
         $person_repo  = $this->em->getRepository(Person::class);
         $participants = $this->ticket->getParticipants();
+        $result       = [];
 
-        $filtered = $participants->filter(function (TicketParticipant $participant) use ($value) {
-            return $participant->getPersonEmail()->getEmail() === $value;
-        });
-
-        if (count($filtered) > 0) {
-            $entity = $filtered->first();
-        } else {
-            $entity = new TicketParticipant();
-            $person = $person_repo->findOneByEmail($value);
-
-            if ($person) {
-                $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($value) {
-                    return $person_email->getEmail() === $value;
-                })->first();
-            } else {
-                // Create a fake user so we can validate props properly
-                $person_email = new PersonEmail();
-                $person_email->setEmail($value);
-
-                $person = new Person();
-                $person->addEmail($person_email);
-            }
-
-            $entity
-                ->setTicket($this->ticket)
-                ->setPerson($person)
-                ->setPersonEmail($person_email)
-            ;
+        /** @var TicketParticipant[] $value */
+        if (!is_array($value) && !$value instanceof \Traversable) {
+            return [];
         }
 
-        return $entity;
+        foreach ($value as $email) {
+            $filtered = $participants->filter(function (TicketParticipant $participant) use ($email) {
+                return $participant->getPersonEmail()->getEmail() === $email;
+            });
+
+            if (count($filtered) > 0) {
+                $entity = $filtered->first();
+            } else {
+                if (!is_scalar($email)) {
+                    throw new TransformationFailedException('Expected scalar');
+                }
+
+                $entity = new TicketParticipant();
+                $person = $person_repo->findOneByEmail($email);
+
+                if ($person) {
+                    $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($email) {
+                        return $person_email->getEmail() === $email;
+                    })->first();
+
+                    $entity->setPerson($person);
+                } else {
+                    $person_email = new PersonEmail();
+                    $person_email->setEmail($email);
+                }
+
+                $entity
+                    ->setTicket($this->ticket)
+                    ->setPersonEmail($person_email)
+                ;
+            }
+
+            $result[] = $entity;
+        }
+
+        return $result;
     }
 }

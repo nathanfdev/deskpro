@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,11 +55,11 @@ class UserValidator extends ConstraintValidator
 
         if ($constraint->type === 'agent') {
             if (!$value->is_agent) {
-                $this->context->addViolation('not_agent');
+                $this->context->addViolation(User::CODE_NOT_AGENT);
             }
         } elseif ($constraint->type === 'user') {
             if (!$value->is_user || $value->is_agent) {
-                $this->context->addViolation('not_user');
+                $this->context->addViolation(User::CODE_NOT_USER);
             }
         }
     }

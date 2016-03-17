@@ -58,6 +58,8 @@ return array(
     'api.error_codes.required' => 'This value should not be blank.',
     # Forms
     'api.error_codes.person_not_found'            => 'Person with identifier "{{ value }}" not found.',
+    'api.error_codes.person_not_agent'            => 'Person with identifier "{{ value }}" is not agent.',
+    'api.error_codes.person_not_user'             => 'Person with identifier "{{ value }}" is not user.',
     'api.error_codes.wrong_length'                => 'The value must be at least {{ limit }} characters in length.',
     'api.error_codes.bad_choice'                  => 'One or more of the given values is invalid.',
     'api.error_codes.unique_entity'               => 'This value already exists in the system.',

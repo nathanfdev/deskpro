@@ -47,8 +47,6 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsViolationMapper;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
@@ -140,7 +138,6 @@ class TicketWithLayoutsType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, new TicketParticipantsViolationMapper(), -1);
     }
 
     /**
@@ -956,12 +953,13 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCc(TicketWithLayoutsContext $context)
     {
-        return new FormField(TicketParticipantsType::class, [
+        return new FormField('ticket_participants', [
             'label'         => $this->phrase('portal.forms.label_cc'),
             'owner'         => $context->getTicket(),
-            'person_type'   => 'user',
+            'is_agent'      => false,
             'property_path' => 'participants',
             'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
         ]);
     }
 
@@ -972,12 +970,13 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createFollowers(TicketWithLayoutsContext $context)
     {
-        return new FormField(TicketParticipantsType::class, [
+        return new FormField('ticket_participants', [
             'label'         => $this->phrase('portal.forms.label_followers'),
             'owner'         => $context->getTicket(),
-            'person_type'   => 'agent',
+            'is_agent'      => true,
             'property_path' => 'participants',
             'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
         ]);
     }
 
