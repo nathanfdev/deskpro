@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -46,40 +45,65 @@ use Symfony\Component\HttpFoundation\Response;
 class UserGroupsController extends BaseController
 {
     /**
+     * Fetch usergroups list.
+     *
      * @ApiDoc(
-     *      description="Get collection of User Groups",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Usergroups",
+     *     resourceDescription="Operations about usergroups",
+     *     description="Get collection of User Groups",
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Usergroup>"
      * )
-     * @Get("/user_groups", name="api_user_groups")
+     * @Get("/user_groups", name="api_user_groups_list")
+     *
+     * @return View
      */
-    public function cgetAction()
+    public function listAction()
     {
         /** @var \DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService $service */
         $service = $this->get('data.user_groups');
 
         return View::create(
-            $this->dataSerialize($service->loadUserGroupsEnabled()),
+            $this->wrap($service->loadUserGroupsEnabled()),
             Response::HTTP_OK
         );
     }
 
     /**
+     * * Get the user group with specified id.
+     *
      * @ApiDoc(
-     *      description="Get a User Group",
+     *     section="Usergroups",
+     *     resourceDescription="Operations about usergroups",
+     *     description="Get collection of user groups",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of user group",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *      statusCodes={
-     *          200="Success"
-     *      }
+     *          200="Returned if request was successful",
+     *          404="Returned if we can't find user group with specified id"
+     *      },
+     *     output="Application\DeskPRO\Entity\Usergroup"
      * )
-     * @Get("/user_groups/{id}", name="api_single_user_group", requirements={"id" = "\d+"})
+     * @Get("/user_groups/{id}", name="api_user_group", requirements={"id" = "\d+"})
+     *
+     * @param int $id
+     *
+     * @return View
      */
     public function getUserGroupAction($id)
     {
         $service = $this->get('data.user_groups');
 
         return View::create(
-            $this->dataSerialize($service->loadSingleUserGroupEnabled($id)),
+            $this->wrap($service->loadSingleUserGroupEnabled($id)),
             Response::HTTP_OK
         );
     }

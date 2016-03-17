@@ -81,7 +81,7 @@ class AgentGroupsController extends BaseController
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of agent",
+     *              "description"="the id of agent group",
      *              "dataType"="integer"
      *          }
      *      },
