@@ -18,6 +18,7 @@ Feature: /feedback/ endpoint
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.total" should be equal to 18
 
+  @basic
   Scenario: I GET list of feedback with hidden_status set to validating and side-loaded author info
     When I send a GET request to "/api/v2/feedback?include=person&awaiting_validation=1"
     Then the response should be in JSON

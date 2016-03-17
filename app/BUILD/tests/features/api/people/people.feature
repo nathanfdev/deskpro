@@ -1,4 +1,4 @@
-@chat-nav @tasks-nav
+@basic @chat-nav @tasks-nav
 Feature: /people endpoint
   To retrieve DeskPRO people
   As a developer
@@ -23,7 +23,6 @@ Feature: /people endpoint
     And the JSON node "data.id" should be equal to "1"
     And the JSON node "data.name" should be equal to "Link Admin"
 
-  @basic
   Scenario: I create a person
     When I send a POST request to "/api/v2/people" with body:
     """

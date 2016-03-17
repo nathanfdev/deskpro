@@ -1,4 +1,4 @@
-@tickets
+@basic @tickets
 Feature: /tickets endpoint
   To CRUD DeskPRO tickets
   As a developer
@@ -14,7 +14,6 @@ Feature: /tickets endpoint
     And the response status code should be 200
     And the JSON node "data.subject" should be equal to "Test"
 
-  @basic
   Scenario: I retrieve list of tickets
     When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc"
     And the response status code should be 200
@@ -29,7 +28,6 @@ Feature: /tickets endpoint
     And the response status code should be 201
     And the JSON node "data.subject" should be equal to "(No Subject)"
 
-  @basic
   Scenario: I create a ticket
     When I send a POST request to "/api/v2/tickets" with body:
     """
@@ -43,7 +41,6 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.is_hold" should be equal to 1
 
-  @basic
   Scenario: I modify and retrieve a ticket
     When I send a PUT request to "/api/v2/tickets/1" with body:
     """
@@ -55,7 +52,6 @@ Feature: /tickets endpoint
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Modified subject"
 
-  @basic
   Scenario: I delete a ticket
     When I send a DELETE request to "/api/v2/tickets/5"
     Then the response should be in JSON

@@ -23,6 +23,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button" should exist
     And the JSON node "data.settings.brand.chat" should exist
 
+  @basic
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
     """

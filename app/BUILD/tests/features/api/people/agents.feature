@@ -8,6 +8,7 @@ Feature: /agents endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @basic
   Scenario: I get list of all agents
     When I send a GET request to "/api/v2/agents"
     Then the response should be in JSON

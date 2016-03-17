@@ -53,6 +53,7 @@ Feature: /glossary/word endpoint
     And the response status code should be 204
     And the response should be empty
 
+  @basic
   Scenario: I modify and retrieve a word
     When I send a PUT request to "/api/v2/glossary/words/1" with body:
     """

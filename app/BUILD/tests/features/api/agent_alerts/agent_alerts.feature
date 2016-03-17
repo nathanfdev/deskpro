@@ -53,6 +53,7 @@ Feature: /me/notifications endpoint
     And the JSON node "data[3].data.notification.title" should contain "Test Message #0306"
     And the JSON node "data[3].data.notification.summary" should be equal to "New ticket by User (user@foobar.com)"
 
+  @basic
   Scenario: I try to get notifications with sideloads
     When I send a GET request to "/api/v2/me/notifications?include=person,ticket"
     Then the response status code should be 200

@@ -55,6 +55,7 @@ Feature: API batch requests
     And the JSON node "responses.an_identifier.meta" should exist
     And the JSON node "responses.an_identifier.headers" should exist
 
+  @basic
   Scenario: I use batch to make a POST request (with data) and a GET request
     When I send a POST request to "/api/v2/batch" with body:
     """
