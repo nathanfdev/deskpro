@@ -9,17 +9,21 @@ import { PaginationContainer } from './PaginationContainer';
 export class List extends Component {
   static propTypes = {
     viewMode: PropTypes.string.isRequired,
+    selected: PropTypes.object.isRequired,
     isLoaded: PropTypes.bool.isRequired
   };
 
   render() {
+    const { isLoaded, selected, viewMode } = this.props;
+
     return (
       <ListFrameContainer>
         <ListFrameMenu>
-          <ControlBarContainer />
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <div key="2">Mass Actions</div>}
         </ListFrameMenu>
-        <ListFrameContents isLoaded={this.props.isLoaded}>
-          {this.props.viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}
+        <ListFrameContents isLoaded={isLoaded}>
+          {viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}
           <PaginationContainer />
         </ListFrameContents>
       </ListFrameContainer>
