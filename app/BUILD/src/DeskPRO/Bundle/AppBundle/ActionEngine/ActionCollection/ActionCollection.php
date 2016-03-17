@@ -36,16 +36,19 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AssignAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetLanguageAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetHiddenStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\AssignAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetDueDateAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetProjectAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetStatusAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetProductAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetWorkflowAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -116,8 +119,17 @@ class ActionCollection
                 case AbstractAction::SET_CATEGORY_ACTION:
                     $this->addAction(new SetCategoryAction(['input' => $options]));
                     break;
+                case AbstractAction::SET_LANGUAGE_ACTION:
+                    $this->addAction(new SetLanguageAction(['id' => $options]));
+                    break;
+                case AbstractAction::SET_PRODUCT_ACTION:
+                    $this->addAction(new SetProductAction(['id' => $options]));
+                    break;
                 case AbstractAction::SET_PROJECT_ACTION:
                     $this->addAction(new SetProjectAction(['id' => $options]));
+                    break;
+                case AbstractAction::SET_WORKFLOW_ACTION:
+                    $this->addAction(new SetWorkflowAction(['id' => $options]));
                     break;
                 case AbstractAction::ADD_LABELS_ACTION:
                     $this->addAction(new AddLabelsAction(['labels' => $options]));

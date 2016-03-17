@@ -30,16 +30,21 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class AssignAction extends AbstractAction implements ActionWithOptionsInterface
+class ApplySetStatusAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /**
+     * @param Ticket[] $tickets
+     */
+    public function apply(array $tickets)
     {
-        $resolver->setRequired('assign');
+        foreach ($tickets as $ticket) {
+            $ticket->setStatus($this->options['status']);
+        }
     }
 }

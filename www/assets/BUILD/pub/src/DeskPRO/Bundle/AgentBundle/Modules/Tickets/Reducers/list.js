@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
-import { async, setValue, setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
-import { setElements, toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode } from '../Actions/listActions';
+import { setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
+import { toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode } from '../Actions/listActions';
 
 export const ticketsListInitialState = {
   async: {

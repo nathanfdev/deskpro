@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,10 +42,13 @@ abstract class AbstractAction implements ActionInterface
     const SET_CATEGORY_ACTION        = 'set_category';
     const SET_DUE_DATE_ACTION        = 'set_due_date';
     const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
+    const SET_LANGUAGE_ACTION        = 'set_language';
     const SET_PROJECT_ACTION         = 'set_project';
+    const SET_PRODUCT_ACTION         = 'set_product';
     const SET_STATUS_ACTION          = 'set_status';
     const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
     const SET_TYPE_ACTION            = 'set_type';
+    const SET_WORKFLOW_ACTION        = 'set_workflow';
     const ADD_LABELS_ACTION          = 'add_labels';
     const REMOVE_LABELS_ACTION       = 'remove_labels';
 

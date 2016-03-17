@@ -16,10 +16,6 @@ export class CheckboxList extends React.Component {
     onChange: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   onClick(value) {
     const { multiple, selected = [], onChange } = this.props;
     const index = selected.indexOf(value);
