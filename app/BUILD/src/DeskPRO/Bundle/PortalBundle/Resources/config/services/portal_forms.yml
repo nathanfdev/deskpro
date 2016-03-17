@@ -25,12 +25,12 @@ services:
   form.form_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
     tags:
-      - { name: form.type_extension, alias: form }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
   form.checkbox_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproCheckboxExtension
     tags:
-      - { name: form.type_extension, alias: checkbox }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\CheckboxType' }
 
   form_extension.twig:
     class: DeskPRO\Bundle\PortalBundle\Form\Twig\FormTwigExtension
@@ -59,7 +59,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
     arguments: ["@request_stack", "@language_manager", %kernel.environment%]
     tags:
-      - { name: form.type_extension, alias: form }
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
 
   form.ticket_reply:
