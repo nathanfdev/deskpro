@@ -34,12 +34,18 @@ Feature: /tickets endpoint
 {
   "subject": "Sample Ticket",
   "department": 1,
-  "is_hold": true
+  "is_hold": true,
+  "followers": ["agent@deskpro.dev"],
+  "cc": ["user@deskpro.dev"]
 }
     """
     Then the response status code should be 201
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.is_hold" should be equal to 1
+    And the JSON node "data.cc" should have 1 element
+    And the JSON node "data.cc[0]" should be equal to 3
+    And the JSON node "data.followers" should have 1 element
+    And the JSON node "data.followers[0]" should be equal to 2
 
   Scenario: I modify and retrieve a ticket
     When I send a PUT request to "/api/v2/tickets/1" with body:
