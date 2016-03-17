@@ -94,6 +94,8 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'list',
             'urgency',
             'linked_tickets',
+            'linked_chats',
+            'linked_articles',
             'date_done',
             'display_order',
         ];
@@ -143,7 +145,6 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'teams'          => $grouped['teams'],
             'agents'         => $grouped['agents'],
             'labels'         => $labels,
-            'linked_tickets' => $this->getLinkedTickets($data),
             'comment_count'  => new CallbackDeferredProperty(
                 [$this, 'getCommentCount'],
                 [$id]
@@ -254,26 +255,5 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 ];
             }
         }
-    }
-
-    /**
-     * Retrieve the IDs of linked tickets.
-     *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\Task $data The task
-     *
-     * @return array
-     */
-    private function getLinkedTickets($data)
-    {
-        $tickets       = [];
-        $linkedTickets = $data->getLinkedTickets();
-        if ($linkedTickets) {
-            /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket */
-            foreach ($linkedTickets as $linkedTicket) {
-                $tickets[] = $linkedTicket->getTicket()->getId();
-            }
-        }
-
-        return array_unique($tickets);
     }
 }

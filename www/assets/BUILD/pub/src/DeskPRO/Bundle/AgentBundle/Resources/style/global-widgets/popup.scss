@@ -317,6 +317,7 @@
   white-space: nowrap;// Cut off too long text
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 

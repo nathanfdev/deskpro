@@ -12,5 +12,5 @@ export default createReducer(initialState, {
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [massActions.cancelMassActions]: state => state.set('params', Immutable.fromJS({})),
   [massActions.setMassActionsParams]: mergeFullPayload('params'),
-  [massActions.resetParam]: (state, payload) => state.deleteIn(['params', payload]),
+  [massActions.resetParam]: (state, payload) => state.deleteIn(['params', payload])
 })

@@ -21,14 +21,27 @@ export class DateDue extends CardWidget {
     const isOverdue = value && moment(value).isBefore();
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
 
-    return (
-      <div ref="trigger" className="dpwd--card-line-item" {...prop}>
-        <span className={classNames({'overdue': isOverdue})}>
-          <i className="fa fa-calendar-o"/>
-          <i />
+    let title = 'N/A';
+    if (value) {
+      const dueMoment = moment(value);
+      if (dueMoment.isSame(moment(), 'day')) {
+        title = 'Today, ';
+      } else if (dueMoment.isSame(moment().subtract(1, 'days'))) {
+        title = 'Yesterday, ';
+      } else {
+        title = dueMoment.format('MMM Do YYYY, ');
+      }
+      title += dueMoment.format('hh:mm a');
+    }
 
-          Due: <DateString value={value} />
-        </span>
+
+    return (
+      <div className="dpwd--card-line-item" style={{display: 'inline-block', maxWidth: '30%'}}>
+        <div className={classNames({'overdue': isOverdue})} {...prop} ref="trigger"
+             style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
+          <i className="fa fa-calendar-o" style={{position: 'absolute', left: 2, top: 2}} />
+          <span title={title}>Due: {title}</span>
+        </div>
         <Positioned isOpen={this.state.isOpen}
                   positionTarget={this}
                   positionAt="left bottom"

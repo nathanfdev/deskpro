@@ -21,7 +21,8 @@ export class ListGroup extends BaseListGroup {
         <CardGroupDivider title={title} />
 
         {elements.valueSeq().map((task, key) =>
-          <TaskCardEditContainer task={task}
+          <TaskCardEditContainer key={key}
+                                 task={task}
                                  updateData={updateData}
                                  onUpdate={this.onUpdate.bind(this, key)}>
             <TaskDragCard />

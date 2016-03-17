@@ -6,6 +6,7 @@ import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 import { setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
 import { ActionMenu } from './ActionMenu';
 import { MultipleActionChoiceContainer } from './MultipleActionChoiceContainer';
+import { AssignActionContainer } from './AssignActionContainer';
 import { SetDateAction } from './SetDateAction';
 
 export class MassActionDropdown extends Component {
@@ -43,6 +44,12 @@ export class MassActionDropdown extends Component {
                                        setParams={setMassActionsParams}
                                        currentParams={currentParams}
                                        resetSingleAction={resetParam}/>
+      );
+    } else if (item.type === 'assign_action') {
+      return (
+        <AssignActionContainer setParams={setMassActionsParams}
+                               currentParams={currentParams}
+                               resetSingleAction={resetParam}/>
       );
     } else if (item.type === 'menu') {
       return (

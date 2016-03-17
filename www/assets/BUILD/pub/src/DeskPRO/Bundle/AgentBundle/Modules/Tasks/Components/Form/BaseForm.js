@@ -46,21 +46,10 @@ export class BaseForm extends React.Component {
     });
   };
 
-  onChangeAgents = selected => {
+  onChange(prop, value) {
     this.setState({
-      agents: selected
+      [prop]: value
     });
-  };
+  }
 
-  onChangeAgentTeams = selected => {
-    this.setState({
-      agentTeams: selected
-    });
-  };
-
-  onChangeDepartments = selected => {
-    this.setState({
-      departments: selected
-    });
-  };
 }

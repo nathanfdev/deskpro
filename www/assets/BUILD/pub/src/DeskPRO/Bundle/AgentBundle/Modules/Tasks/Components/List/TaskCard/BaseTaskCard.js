@@ -15,7 +15,6 @@ export class BaseTaskCard extends React.Component {
 
     this.state = {
       expanded: false,
-      ticketLink: 'Some Ticket',
       comments: 1
     };
   }
