@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
@@ -41,6 +42,8 @@ use Orb\Util\Strings;
 
 class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
+    private $num_categories      = 5;
+    private $num_workflows       = 5;
     private $num_problems        = 100;
     private $num_labels          = 100;
     private $ticket_max_messages = 10;
@@ -118,6 +121,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->manager = $manager;
         $this->initIds();
         $this->loadProblems();
+        $this->loadCategories();
+        $this->loadWorkflows();
         $this->loadLabels();
         $this->loadTickets();
         $this->loadTicketsForJoe();
@@ -163,6 +168,38 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
         $this->db->batchInsert(self::TABLE_PROBLEMS, $batch);
         $this->problem_ids = $this->fetchIds(self::TABLE_PROBLEMS);
+    }
+
+    private function loadCategories()
+    {
+        $batch = [];
+
+        for ($i = 1; $i <= $this->num_categories; ++$i) {
+            $batch[] =
+                [
+                    'title'         => 'Ticket Category '.$i,
+                    'display_order' => 1,
+                ];
+        }
+
+        $this->db->batchInsert(self::TABLE_TICKET_CATEGORIES, $batch);
+        $this->problem_ids = $this->fetchIds(self::TABLE_TICKET_CATEGORIES);
+    }
+
+    private function loadWorkflows()
+    {
+        $batch = [];
+
+        for ($i = 1; $i <= $this->num_workflows; ++$i) {
+            $batch[] =
+                [
+                    'title'         => 'Workflow '.$i,
+                    'display_order' => 1,
+                ];
+        }
+
+        $this->db->batchInsert(self::TABLE_TICKET_WORKFLOWS, $batch);
+        $this->problem_ids = $this->fetchIds(self::TABLE_TICKET_WORKFLOWS);
     }
 
     private function loadLabels()

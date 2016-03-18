@@ -39,18 +39,18 @@ export class Button extends Component {
 
     return (
       <span className="dpwd-navigation-dropdown-top-row-action-button">
-          <a href="" className={classes} onClick={onClick}>
-            <span
-              className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
+        <a href="" className={classes} onClick={onClick}>
+          <span
+            className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
               {this.renderContent()}
+          </span>
+          <span className="top-row-action-button-link-extra">
+            <span className="dpwd-navigation-dropdown-top-row-button-icon">
+              <i className="fa fa-caret-down"></i>
             </span>
-            <span className="top-row-action-button-link-extra">
-              <span className="dpwd-navigation-dropdown-top-row-button-icon">
-                <i className="fa fa-caret-down"></i>
-              </span>
-            </span>
-          </a>
-        </span>
+          </span>
+        </a>
+      </span>
     );
   }
 }

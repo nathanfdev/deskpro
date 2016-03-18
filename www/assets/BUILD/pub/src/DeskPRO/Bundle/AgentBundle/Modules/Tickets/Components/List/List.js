@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { ListFrameContainer, ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ControlBarContainer } from './ControlBarContainer';
+import { MassActionContainer } from './MassActionContainer';
 import { ListTableViewContainer } from './View/Table/ListTableViewContainer';
 import { ListCardViewContainer } from './View/Card/ListCardViewContainer';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
@@ -20,7 +21,7 @@ export class List extends Component {
       <ListFrameContainer>
         <ListFrameMenu>
           {!selected.size && <ControlBarContainer key="1"/>}
-          {selected.size && <div key="2">Mass Actions</div>}
+          {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           {viewMode === 'table' ? <ListTableViewContainer /> : <ListCardViewContainer />}

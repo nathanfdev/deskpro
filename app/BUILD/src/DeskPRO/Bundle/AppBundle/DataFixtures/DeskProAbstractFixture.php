@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -78,6 +79,8 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_TASK_COMMENTS_NEW          = 'task_comments_new';
     const TABLE_TASK_SUBTASK               = 'task_subtask';
     const TABLE_TICKETS                    = 'tickets';
+    const TABLE_TICKET_CATEGORIES          = 'ticket_categories';
+    const TABLE_TICKET_WORKFLOWS           = 'ticket_workflows';
     const TABLE_USERGROUPS                 = 'usergroups';
 
     /**
