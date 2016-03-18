@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Popup, FieldGroup } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Popup';
+import { Popup, FieldGroup, DropdownList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Popup';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
   from '../../../Common/Components/Form/Lists';
@@ -10,7 +10,9 @@ import { paramsSelector } from '../../../Application/Selectors/massActions';
 import { connect } from 'react-redux';
 @connect(state => ({
   currentParams: paramsSelector(state),
-  languages: collectionSelectorFactory('Language', 'all')(state)
+  languages: collectionSelectorFactory('Language', 'all')(state),
+  categories: collectionSelectorFactory('TicketCategory', 'tickets')(state),
+  workflows: collectionSelectorFactory('TicketWorkflow', 'tickets')(state)
 }))
 export class MassActionContainer extends Component {
   static propTypes = {
@@ -18,6 +20,9 @@ export class MassActionContainer extends Component {
     navItem: PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
     currentParams: PropTypes.object.isRequired,
+    languages: PropTypes.object.isRequired,
+    categories: PropTypes.object.isRequired,
+    workflows: PropTypes.object.isRequired,
     actions: PropTypes.array.isRequired
   };
 
@@ -44,14 +49,8 @@ export class MassActionContainer extends Component {
   };
   collapse = () => this.setState({ expanded: false });
 
-  renderLanguages() {
-    const { languages } = this.props;
-    console.log('Lang', languages.toJS());
-    return languages.map((lang, index)=><option key={index} value={lang.get('id')}>{lang.get('locale')}</option>);
-  }
-
   render() {
-    const { currentParams } = this.props;
+    const { currentParams, categories, languages, workflows } = this.props;
     const assign = currentParams.get('assign');
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
@@ -103,27 +102,9 @@ export class MassActionContainer extends Component {
                             <div className="dpw--popup-form-container">
                             </div>
                           </div>
-                          <div className="dpw--popup-content-left even">
-                            <h2 className="dpw--popup-item-section-title">Workflow</h2>
-
-                            <div className="dpw--popup-form-container">
-                            </div>
-                          </div>
-                          <div className="dpw--popup-content-left even">
-                            <h2 className="dpw--popup-item-section-title">Language</h2>
-
-                            <div className="dpw--popup-form-container">
-                              <select>
-                                {this.renderLanguages()}
-                              </select>
-                            </div>
-                          </div>
-                          <div className="dpw--popup-content-left even">
-                            <h2 className="dpw--popup-item-section-title">Category</h2>
-
-                            <div className="dpw--popup-form-container">
-                            </div>
-                          </div>
+                          <DropdownList title="Workflow" items={workflows} option="title"/>
+                          <DropdownList title="Language" items={languages} option="locale"/>
+                          <DropdownList title="Category" items={categories} option="title"/>
                         </FieldGroup>
                         <FieldGroup>
                           <div className="dpmw--popup-content-full">
