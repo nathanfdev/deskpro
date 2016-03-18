@@ -20,7 +20,7 @@ export class TouchFocusWidget extends PageWidget {
 
     this.$element.on('click touchend', (ev) => {
       ev.stopPropagation();
-      if ($(ev.target).is('a')) {
+      if ($(this).is('a')) {
         ev.preventDefault();
       }
       openIfClosed();
