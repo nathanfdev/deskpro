@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\PersonContactData;
@@ -46,6 +47,6 @@ class PersonContactDataController extends CrudSubController
 {
     public static $exposeOnly     = ['get', 'list'];
     public static $entity         = PersonContactData::class;
-    public static $parentProperty = 'organization';
+    public static $parentProperty = 'person';
     public static $listOrder      = 'asc';
 }
