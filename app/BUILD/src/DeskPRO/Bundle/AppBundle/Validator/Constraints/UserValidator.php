@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity\Person;
@@ -48,6 +49,10 @@ class UserValidator extends ConstraintValidator
     {
         if (!$constraint instanceof User) {
             throw new UnexpectedTypeException($constraint, User::class);
+        }
+
+        if (!$value) {
+            return;
         }
         if (!$value instanceof Person) {
             throw new UnexpectedTypeException($value, Person::class);
