@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -55,40 +56,65 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique ID.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var Project
+     * Project entity.
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Project>")
+     *
+     * @var Project
      */
     protected $project;
 
     /**
-     * @var Person
+     * A person attached to a project.
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var Team
+     * An agent team attached to project.
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
+     * @var Team
      */
     protected $team;
 
     /**
-     * @var Department
+     * A department attached to project.
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
+     * @var Department
      */
     protected $department;
 

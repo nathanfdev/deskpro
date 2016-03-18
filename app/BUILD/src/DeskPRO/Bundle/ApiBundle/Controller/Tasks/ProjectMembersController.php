@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -58,7 +56,11 @@ use Symfony\Component\HttpFoundation\Response;
 class ProjectMembersController extends BaseController implements ClassResourceInterface
 {
     /**
+     * Get a member with provided id.
+     *
      * @ApiDoc(
+     *      section="Tasks",
+     *      resourceDescription="Operations about tasks",
      *      description="get a member",
      *      requirements={
      *          {
@@ -69,8 +71,8 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
+     *          200="Returned in case of success",
+     *          404="Returned if member was not found"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
      * )
@@ -95,12 +97,24 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     }
 
     /**
+     * Create a project member. Note that only person, team or department would be attached as member.
+     *
+     * Team takes precedence on person
+     * Department takes precedence on team
+     *
      * @ApiDoc(
+     *      section="Tasks",
+     *      resourceDescription="Operations about tasks",
      *      description="create a new member",
-     *      input={"class"="member", "name"=""},
+     *      requirements={
+     *          {"name"="person", "requirement"="\d+", "description"="the id of the person", "dataType"="integer"},
+     *          {"name"="department", "requirement"="\d+", "description"="the id of the department", "dataType"="integer"},
+     *          {"name"="team", "requirement"="\d+", "description"="the id of the team", "dataType"="integer"},
+     *          {"name"="project", "requirement"="\d+", "description"="the id of the project", "dataType"="integer"}
+     *      },
      *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
+     *          201="Returned if project member was successfully added",
+     *          400="Your request was malformed"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember"
      * )
@@ -108,7 +122,6 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      *
      * @param Request $request
      *
-     * @throws WrappedApiErrorException
      * @throws InvalidFormException
      *
      * @return View
@@ -121,21 +134,26 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     }
 
     /**
+     * Change member entry. You can change it between person, department or team.
+     *
+     * Team takes precedence on person
+     * Department takes precedence on team
+     *
      * @APIDoc(
+     *      section="Tasks",
+     *      resourceDescription="Operations about tasks",
      *      description="update a member",
      *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the member",
-     *              "dataType"="integer"
-     *          }
+     *          {"name"="id", "requirement"="\d+", "description"="the id of the member", "dataType"="integer"},
+     *          {"name"="person", "requirement"="\d+", "description"="the id of the person", "dataType"="integer"},
+     *          {"name"="department", "requirement"="\d+", "description"="the id of the department", "dataType"="integer"},
+     *          {"name"="team", "requirement"="\d+", "description"="the id of the team", "dataType"="integer"},
+     *          {"name"="project", "requirement"="\d+", "description"="the id of the project", "dataType"="integer"}
      *      },
-     *      input={"class"="member", "name"=""},
      *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
+     *          204="Returned if member was successfully updated",
+     *          400="Request was malformed",
+     *          404="Member with specified id was not found"
      *      }
      * )
      *
@@ -144,7 +162,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      * @param Request $request
      * @param $id
      *
-     * @throws WrappedApiErrorException
+     * @throws InvalidFormException
      *
      * @return View
      */
@@ -156,19 +174,18 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
     }
 
     /**
+     * Delete the member with given id.
+     *
      * @APIDoc(
-     *      description="delete a member",
+     *      section="Tasks",
+     *      resourceDescription="Operations about tasks",
+     *      description="delete the member",
      *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the member",
-     *              "dataType"="integer"
-     *          }
+     *          {"name"="id", "requirement"="\d+", "description"="the id of the member", "dataType"="integer"}
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
+     *          200="We had deleted member you asked",
+     *          404="We can't find member with given ID"
      *      }
      * )
      * @Delete("/project_members/{id}", name="api_projectmembers_delete")
@@ -184,41 +201,29 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
         $this->getDoctrine()->getManager()->flush();
 
         return View::create(
-            array(),
+            null,
             Response::HTTP_OK
         );
     }
 
     /**
+     * Fetch tasks list for project member.
+     *
      * @APIDoc(
+     *      section="Tasks",
+     *      resourceDescription="Operations about tasks",
      *      description="get tasks for a member",
      *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the member",
-     *              "dataType"="integer"
-     *          }
+     *          {"name"="id", "requirement"="\d+", "description"="the id of the member", "dataType"="integer"}
      *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
+     *      filters={
+     *          {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
+     *          {"name"="count", "requirement"="\d+", "description"="results per page", "dataType"="integer"}
      *      },
      *      statusCodes={
-     *          200="Success"
-     *      }
+     *          200="Everything is ok"
+     *      },
+     *      output="array<Application\DeskPRO\Entity\Task>"
      * )
      * @Get("/project_members/{id}/tasks", name="api_project_members_tasks_get")
      *
@@ -239,7 +244,7 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->wrap($pager),
             Response::HTTP_OK
         );
     }
@@ -267,13 +272,15 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
      * @param Request       $request
      * @param ProjectMember $member
      *
-     * @throws WrappedApiErrorException
+     * @throws InvalidFormException
      *
      * @return View
      */
     protected function handleFormSubmission(Request $request, ProjectMember $member)
     {
-        $status = $member->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $update = (bool) $member->getId();
+
+        $status = $update ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         /** @var Form $form */
         $form = $this->get('form.factory')->createNamedBuilder(null, 'projectmember', $member)->getForm();
@@ -289,13 +296,13 @@ class ProjectMembersController extends BaseController implements ClassResourceIn
 
             $location = $this->generateUrl('api_project_members_get', array('id' => $member->getId()));
 
-            return View::create(
-                $this->dataSerialize($member),
+            if ($update) {
+                return View::create(null, $status);
+            } else {
+                return View::create($this->wrap($member),
                 $status,
-                array(
-                    'Location' => $location,
-                )
-            );
+                ['Location' => $location]);
+            }
         }
 
         throw new InvalidFormException($form);
