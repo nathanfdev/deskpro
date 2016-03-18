@@ -82,12 +82,30 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         $dp_global_key  = null;
         $recreate_retry = false;
 
+        $is_retry = isset($params['dp_is_retry']) && $params['dp_is_retry'];
+        $do_retry = isset($params['dp_do_retry']) ? $params['dp_do_retry'] : true;
+
+        unset($params['dp_is_retry'], $params['dp_do_retry']);
+
+        if (defined('DP_BUILDING')) {
+            $do_retry = false;
+        }
+
         if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
             $key           = $m[1];
             $dp_global_key = $key;
             unset($params['host']);
 
-            $conf = App::getConfig($key);
+            if ($is_retry) {
+                // retry connection, try using a backup key
+                $conf = App::getConfig($key.'_backup');
+                if (!$conf) {
+                    $conf = App::getConfig($key);
+                }
+            } else {
+                $conf = App::getConfig($key);
+            }
+
             if (!$conf && defined('DP_BUILDING')) {
                 $conf = array('bogus'); // Dont need dbinfo
             }
@@ -95,6 +113,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
             if (!$conf) {
                 throw new \Exception("Invalid database key $key");
             }
+
             $params = array_merge($params, $conf);
             if (empty($params['driver'])) {
                 $params['driver'] = 'pdo_mysql';
@@ -120,7 +139,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
         /** @var $conn \Doctrine\DBAL\Connection */
         $conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
-        if ($recreate_retry) {
+        if ($recreate_retry && $do_retry) {
             try {
                 $conn->connect();
             } catch (\Exception $err) {
@@ -144,6 +163,18 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
                 } else {
                     throw $err;
                 }
+            }
+        }
+
+        // If connect fails, silently retry
+        if (!$is_retry && $do_retry) {
+            try {
+                $conn->connect();
+            } catch (\Exception $err) {
+                usleep(500000); // half a second
+                $params['dp_is_retry'] = true;
+
+                return $this->createConnection($params, $config, $eventManager, $mappingTypes);
             }
         }
 

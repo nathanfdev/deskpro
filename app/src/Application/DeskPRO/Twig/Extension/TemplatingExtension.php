@@ -1851,54 +1851,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function js_error_tracking($loc, array $options = array())
     {
-        if ($this->getContainer()->isDebug()) {
-            if (!defined('DP_USE_JS_LOGGER')) {
-                return '';
-            }
-        }
-
-        if (defined('DPC_IS_CLOUD')) {
-            return '';
-        }
-
-        $sid = '';
-        if ($this->getContainer()->isDebug()) {
-            $sid .= 'DEV-';
-        }
-        if (defined('DP_BUILD_TIME')) {
-            $sid .= '#'.DP_BUILD_TIME.'-';
-        } else {
-            $sid .= '#0-';
-        }
-        if (defined('DP_REQUEST_ID')) {
-            $sid .= DP_REQUEST_ID;
-        } else {
-            $sid .= 'unknown';
-        }
-
-        $version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
-
-        /** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
-        $helper = $this->getContainer()->get('templating.helper.assets');
-
-        $src = $helper->getUrl('vendor/trackjs/tracker.js');
-
-        $html = <<<HTML
-<script type="text/javascript">
-window.onerror = function () {};
-window.onerror = null;
-window._trackJs = {
-    sessionId: '$sid',
-    token: '4eebe4aa1bc2404e89fc4250152d18a0',
-    version: '$version',
-    console: { enabled: true, display: true, error: true },
-    network: { error: false }
-};
-</script>
-<script type="text/javascript" src="$src" data-token="4eebe4aa1bc2404e89fc4250152d18a0"></script>
-HTML;
-
-        return $html;
+        return '';
     }
 
     public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = array())

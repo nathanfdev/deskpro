@@ -47,6 +47,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\DeskPRO\People\PermissionUtil;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -729,9 +730,9 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -744,7 +745,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -783,6 +784,8 @@ class AgentsController extends AbstractController implements ProtectedController
         if (!$id && !$skip_email) {
             $this->sendWelcomeEmail($agent);
         }
+
+        PermissionUtil::optimizePermissions($agent);
 
         #-------------------------
         # Return

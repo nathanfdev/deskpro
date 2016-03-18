@@ -552,6 +552,7 @@ class Department extends DomainObject implements HasPhraseName
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => null,
                  'inversedBy'   => 'children',
+                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'parent_id',
@@ -578,6 +579,7 @@ class Department extends DomainObject implements HasPhraseName
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'mappedBy'     => null,
             'inversedBy'   => null,
+            'fetch'        => ClassMetadataInfo::FETCH_EAGER,
             'joinColumns'  => array(
                 0 => array(
                     'name'                 => 'avatar_blob_id',

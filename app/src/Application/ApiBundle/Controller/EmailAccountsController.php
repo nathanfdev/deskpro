@@ -126,6 +126,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             }
         } else {
             $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+
+            if ($this->settings->get('internal.disable_email_editing.new')) {
+                throw $this->createNotFoundException();
+            }
         }
 
         $edit_account = new EditEmailAccount($account);
@@ -149,7 +153,12 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         $form->submit($data);
-        $edit_account->apply();
+
+        if ($this->settings->get('internal.disable_email_editing.incoming_details')) {
+            $edit_account->apply(false);
+        } else {
+            $edit_account->apply();
+        }
 
         $this->em->persist($account);
         $this->em->flush();

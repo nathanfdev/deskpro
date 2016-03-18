@@ -26,4 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1458124129);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1456917973 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Add is_active to permission classes');
+        $this->execMutateSql('ALTER TABLE department_permissions ADD is_active TINYINT(1) DEFAULT \'1\' NOT NULL');
+        $this->execMutateSql('CREATE INDEX is_active_idx ON department_permissions (is_active)');
+        $this->execMutateSql('ALTER TABLE permissions ADD is_active TINYINT(1) DEFAULT \'1\' NOT NULL');
+        $this->execMutateSql('CREATE INDEX is_active_idx ON permissions (is_active)');
+        $this->execMutateSql('UPDATE permissions SET is_active = 1');
+        $this->execMutateSql('UPDATE department_permissions SET is_active = 1');
+        $this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('trigger.optimise_perms', '1')");
+    }
+}

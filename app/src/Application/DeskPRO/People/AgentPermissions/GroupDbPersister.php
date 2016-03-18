@@ -86,7 +86,7 @@ class GroupDbPersister
         $ins = array();
         if ($new_perms) {
             foreach ($new_perms as $p) {
-                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
+                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
             }
         }
 
@@ -163,7 +163,7 @@ class GroupDbPersister
         $ins = array();
         if ($new_perms) {
             foreach ($new_perms as $p) {
-                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
+                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
             }
         }
 

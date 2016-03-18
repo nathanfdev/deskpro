@@ -95,6 +95,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\LicenseInfoCommand',
             'Application\\DeskPRO\\Command\\LoginTokenCommand',
             'Application\\DeskPRO\\Command\\MoveBlobsCommand',
+            'Application\\DeskPRO\\Command\\OptimisePermsCommand',
             'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
             'Application\\DeskPRO\\Command\\RecountRatingsCommand',

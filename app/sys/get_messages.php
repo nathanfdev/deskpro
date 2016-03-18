@@ -159,6 +159,13 @@ class get_messages extends serve_abstract
                 $dos[] = 'get-online-visitors';
             }
 
+            // We don't do custom filters data based on request, but instead based on the poll count
+            // We do it every 125 polls, which is roughly 10 minutes
+            $dos = array_filter($dos, function ($v) { return $v !== 'get-custom-filters-data'; });
+            if ($count && $count % 125 === 0) {
+                $dos[] = 'get-custom-filters-data';
+            }
+
             $dos = array_unique($dos);
 
             foreach ($dos as $do) {

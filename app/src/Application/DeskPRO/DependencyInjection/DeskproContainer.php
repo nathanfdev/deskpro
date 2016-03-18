@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App\AgentAppPermissions;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -308,14 +309,9 @@ class DeskproContainer extends Container
             $config_key = 'db_read_'.implode('_', $parts);
             $config_key = rtrim($config_key, '_');
 
-            $type_key = implode('.', $parts);
-            if (!$type_key) {
-                $type_key = 'default';
-            }
-
-            if (isset($this->db_read_conns[$type_key])) {
+            if (isset($this->db_read_conns[$config_key])) {
                 // Assign to the speciifc type so next time we can return earlier
-                $this->db_read_conns[$type] = $this->db_read_conns[$type_key];
+                $this->db_read_conns[$type] = $this->db_read_conns[$config_key];
 
                 return $this->db_read_conns[$type];
             }
@@ -325,32 +321,51 @@ class DeskproContainer extends Container
             if ($read_configs) {
                 $read = null;
 
-                // Single config
+                // Single config, cast to array
                 if (isset($read_configs['host']) || isset($read_configs['dbname'])) {
-                    $read = $read_configs;
-
-                // Multiple config, choose one at random
-                } else {
-                    $read = $read_configs[array_rand($read_configs)];
+                    $read_configs = array($read_configs);
                 }
 
-                if ($read && !empty($read['host']) && !empty($read['dbname'])) {
-                    $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
-                        'driver'   => 'pdo_mysql',
-                        'host'     => $read['host'],
-                        'user'     => $read['user'],
-                        'password' => $read['password'],
-                        'dbname'   => $read['dbname'],
-                    ));
-                    $this->db_read_conns[$type] = $db;
+                shuffle($read_configs);
 
-                    return $db;
+                $has_multiple = count($read_configs) > 1;
+
+                // try each read until we have one that works, or they all fail
+                while ($read = array_pop($read_configs)) {
+                    if ($read && !empty($read['host']) && !empty($read['dbname'])) {
+                        try {
+                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
+                                'driver'   => 'pdo_mysql',
+                                'host'     => $read['host'],
+                                'user'     => $read['user'],
+                                'password' => $read['password'],
+                                'dbname'   => $read['dbname'],
+
+                                // We only want to do the normal retry attempt if there's only one
+                                // reader, because otherwise if there are multiple,
+                                // it'll be faster/more successful to just try the next
+                                'dp_do_retry' => !$has_multiple,
+                            ));
+
+                            $db->connect();
+
+                            $this->db_read_conns[$type]       = $db;
+                            $this->db_read_conns[$config_key] = $db;
+
+                            return $db;
+                        } catch (\Exception $e) {
+                            // Error connecting, log but ignore and try another
+                            $ex = new \RuntimeException("Failed to connect to read database: {$read['user']}@{$read['host']}/{$read['dbname']}", 0, $e);
+                            KernelErrorHandler::logException($ex);
+                        }
+                    }
                 }
             }
         } while (array_pop($parts));
 
         // No read config, return default connection
-        $this->db_read_conns[$type] = $this->getDb();
+        $this->db_read_conns[$type]       = $this->getDb();
+        $this->db_read_conns[$config_key] = $this->getDb();
 
         return $this->db_read_conns[$type];
     }

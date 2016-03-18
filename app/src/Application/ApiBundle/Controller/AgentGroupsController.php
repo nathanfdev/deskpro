@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\PermissionUtil;
 use Orb\Util\Arrays;
 
 /**
@@ -367,9 +368,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                     continue;
                 }
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
             foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
@@ -377,7 +378,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                     continue;
                 }
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -392,6 +393,19 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         #------------------------------
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
+
+        $ag_perms_cache     = $this->db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
+        $ag_dep_perms_cache = array(
+            'full'   => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
+            'assign' => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
+        );
+
+        foreach ($new_members as $pid) {
+            $a = $this->container->getAgentData()->get($pid);
+            if ($a) {
+                PermissionUtil::optimizePermissions($a, $ag_perms_cache, $ag_dep_perms_cache);
+            }
+        }
 
         #------------------------------
         # Return

@@ -1489,17 +1489,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.meta.agentMap ? this.meta.agentMap : false,
 			false,
 			function(agentId) {
-				agentId = parseInt(agentId);
-        // todo perm check for new ticket?
-				//if (
-				//	!self.meta.agents_with_perm[agentId]
-				//	&& parseInt(self.getEl('value_form').find('.agent_id').val()) != agentId
-				//	&& !self.getEl('followers_list').find('.agent-' + agentId)[0]
-				//) {
-				//	DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
-				//	return false;
-				//}
-
 				return true;
 			}
 		);

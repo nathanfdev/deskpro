@@ -356,6 +356,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'app'           => $dep->is_tickets_enabled ? 'tickets' : 'chat',
                 'name'          => 'full',
                 'value'         => 1,
+                'is_active'     => 1,
             );
         }
         $db->batchInsert('department_permissions', $batch);
@@ -671,6 +672,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'app'           => 'tickets',
             'name'          => 'full',
             'value'         => 1,
+            'is_active'     => 1,
         );
 
         App::getDb()->batchInsert('department_permissions', $dep_perms);
@@ -988,6 +990,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'app'           => 'chat',
             'name'          => 'full',
             'value'         => 1,
+            'is_active'     => 1,
         );
 
         App::getDb()->batchInsert('department_permissions', $dep_perms);

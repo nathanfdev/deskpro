@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1458124129);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1456929296 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Add blobs_auth_moved table');
+        $this->execMutateSql('CREATE TABLE blobs_auth_moved (id INT AUTO_INCREMENT NOT NULL, old_authcode VARCHAR(50) NOT NULL, new_authcode VARCHAR(50) NOT NULL, filename VARCHAR(120) NOT NULL, INDEX authcode_idx (old_authcode), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+    }
+}

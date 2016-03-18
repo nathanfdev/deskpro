@@ -26,4 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1458124129);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1458124129 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Adding index to tickets_flagged.ticket_id');
+
+        $idx = $this->getSchemaHelper()->findIndex('tickets_flagged', 'ticket_id');
+        if (!$idx) {
+            $this->execSlowAlterTable('tickets_flagged', 'ADD INDEX ticket_id_idx (ticket_id)');
+        } else {
+            $this->out('(Skipped, already has index)');
+        }
+    }
+}

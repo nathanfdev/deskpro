@@ -54,6 +54,16 @@ class PreloadedHierarchy
     protected $parent_to_children = array();
 
     /**
+     * @var array
+     */
+    protected $all_values;
+
+    /**
+     * @var array
+     */
+    protected $all_ids;
+
+    /**
      * @var int
      */
     protected $count = 0;
@@ -308,7 +318,11 @@ class PreloadedHierarchy
      */
     public function getAllIds()
     {
-        return array_keys($this->objects);
+        if ($this->all_ids === null) {
+            $this->all_ids = array_keys($this->objects);
+        }
+
+        return $this->all_ids;
     }
 
     /**
@@ -316,7 +330,11 @@ class PreloadedHierarchy
      */
     public function getAll()
     {
-        return array_values($this->objects);
+        if ($this->all_values === null) {
+            $this->all_values = array_values($this->objects);
+        }
+
+        return $this->all_values;
     }
 
     /**

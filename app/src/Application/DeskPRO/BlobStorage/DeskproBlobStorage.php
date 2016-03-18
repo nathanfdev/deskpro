@@ -915,6 +915,12 @@ class DeskproBlobStorage implements Loggable
             $authcode = $blob_entity->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
         }
 
+        $blobauth_moved = array(
+            'old_authcode' => $blob_entity->authcode,
+            'new_authcode' => $authcode,
+            'filename'     => $blob_entity->filename,
+        );
+
         $blob->setMeta('authcode', $authcode);
         $blob->setMeta('batch', $batch);
 
@@ -934,6 +940,8 @@ class DeskproBlobStorage implements Loggable
 
         $this->em->persist($blob_entity);
         $this->em->flush();
+
+        $this->db->insert('blobs_auth_moved', $blobauth_moved);
 
         // Delete the old one
         $this->deleteBlob($old_blob, $old_adapter_id);

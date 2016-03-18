@@ -139,7 +139,7 @@
             <li tooltip="{{ phrase('adm.general.tasks') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="tasks">
                 <a href="#/tasks"><i class="app-icon app-icon-tasks"></i></a>
             </li>
-			{% if not app.isCloud() %}
+			{% if not app.isCloud() and not app.getSetting('disable_server_section') %}
 				<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
 					<a href="#/server"><i class="app-icon app-icon-server"></i></a>
 				</li>

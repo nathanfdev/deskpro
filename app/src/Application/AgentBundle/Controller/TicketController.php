@@ -360,12 +360,6 @@ class TicketController extends AbstractController
 
         $logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
 
-        $agents_with_perm = array();
-        foreach ($this->container->getAgentData()->getAgents() as $agent) {
-            $agent->loadHelper('AgentPermissions');
-            $agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
-        }
-
         $open_problems = array();
         $incidents     = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
@@ -382,11 +376,10 @@ class TicketController extends AbstractController
         }
 
         $vars = array(
-            'agents'           => $agents,
-            'agents_with_perm' => $agents_with_perm,
-            'agent_teams'      => $agent_teams,
-            'agent_map'        => $agent_map,
-            'tasks'            => $tasks,
+            'agents'      => $agents,
+            'agent_teams' => $agent_teams,
+            'agent_map'   => $agent_map,
+            'tasks'       => $tasks,
 
             'ticket_perms'               => $this->_getTicketPerms($ticket),
             'ticket'                     => $ticket,

@@ -110,6 +110,12 @@ class EmailCollectionCommand extends Command
             'logger'          => $logger,
         );
 
+        if ($stop_time) {
+            //TODO - accounts staying marked as active when they shouldnt
+            $db = get_db_if_closed();
+            $db->update('email_accounts', array('is_read_active' => 0), array('is_read_active' => 1));
+        }
+
         $runner = new TaskRunner($options);
         $output->writeln('Running ...');
         $runner->start();
