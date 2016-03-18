@@ -8,6 +8,7 @@ import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 const setListParams = createAction('TICKETS_LIST_SET_LIST_PARAMS');
 const setPagination = createAction('TICKETS_LIST_SET_PAGINATION');
 const setElements = createAction('TICKETS_LIST_SET_ELEMENTS');
+
 const loadList = createAction(
   'TICKETS_LIST_LOAD_LIST',
   (params) => dispatch => {
@@ -23,7 +24,7 @@ const loadList = createAction(
 );
 
 // Public --------------------------------------------------------------------------------------------------------------
-
+export const loadIndicator = createAction('TICKET_LIST_LOAD_INDICATOR');
 export const unload = createAction('TICKETS_LIST_UNLOAD');
 export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',

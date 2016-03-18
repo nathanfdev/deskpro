@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
+import { SingleChoiceFilter } from '../../ListFrame/ControlBar/Filtering/SingleChoiceFilter';
 
 export class ActionMenu extends Component {
   static propTypes = {
@@ -55,6 +56,14 @@ export class ActionMenu extends Component {
                                currentParams={currentParams}
                                stateValue={this.stateValue}
                                unsetParams={resetSingleAction}/>
+      );
+    } else if (option.type === 'set_action') {
+      return (
+        <SingleChoiceFilter key={key}
+                            filter={option}
+                            state={currentParams}
+                            setParamsAction={setParams}
+                            unsetParams={resetSingleAction}/>
       );
     }
   };

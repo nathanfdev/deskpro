@@ -1,4 +1,3 @@
 export { Popup } from './Popup';
 export { FieldGroup } from './FieldGroup';
 export { CollectionField } from './CollectionField';
-export { DropdownList } from './DropdownList';

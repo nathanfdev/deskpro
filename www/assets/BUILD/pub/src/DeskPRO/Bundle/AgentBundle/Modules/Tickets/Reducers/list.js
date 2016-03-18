@@ -1,6 +1,6 @@
 import { createReducer } from 'Ampliflux';
-import { setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
-import { toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode } from '../Actions/listActions';
+import { setValue, setFullPayload, togglePayloadInCollection } from 'Ampliflux/reducers/handlers';
+import { toggleTableFieldVisibility, toggleCardFieldVisibility, setViewMode, loadIndicator } from '../Actions/listActions';
 
 export const ticketsListInitialState = {
   async: {
@@ -30,5 +30,7 @@ export default createReducer(ticketsListInitialState, {
   // Public (control bar) ----------------------------------------------------------------------------------------------
   [toggleTableFieldVisibility]: togglePayloadInCollection('tableVisibleFields'),
   [toggleCardFieldVisibility]: togglePayloadInCollection('cardVisibleFields'),
-  [setViewMode]: setFullPayload('viewMode')
-});
+  [setViewMode]: setFullPayload('viewMode'),
+  [loadIndicator]: setValue('async.done', false)
+})
+;

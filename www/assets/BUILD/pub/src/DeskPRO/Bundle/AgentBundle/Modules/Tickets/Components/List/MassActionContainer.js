@@ -1,27 +1,21 @@
 import React, {Component, PropTypes} from 'react';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Popup, FieldGroup, DropdownList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Popup';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
-  from '../../../Common/Components/Form/Lists';
-import { paramsSelector } from '../../../Application/Selectors/massActions';
+import { MassActionBarContainer }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
+import { initialLoad } from '../../Actions/navActions';
+import { loadIndicator } from '../../Actions/listActions';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { massActionsSelector } from '../../Selectors/massActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  currentParams: paramsSelector(state),
-  languages: collectionSelectorFactory('Language', 'all')(state),
-  categories: collectionSelectorFactory('TicketCategory', 'tickets')(state),
-  workflows: collectionSelectorFactory('TicketWorkflow', 'tickets')(state),
-  products: collectionSelectorFactory('TicketProduct', 'tickets')(state)
+  selected: selectedSelector(state),
+  actions: massActionsSelector(state)
 }))
+
 export class MassActionContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    currentParams: PropTypes.object.isRequired,
-    languages: PropTypes.object.isRequired,
-    categories: PropTypes.object.isRequired,
-    workflows: PropTypes.object.isRequired,
+    selected: PropTypes.object.isRequired,
     actions: PropTypes.array.isRequired
   };
 
@@ -31,16 +25,6 @@ export class MassActionContainer extends Component {
     });
   }
 
-  onChange(param, value) {
-    const { dispatch, currentParams } = this.props;
-    const nextParams = currentParams.get('assign') ? currentParams.get('assign').toJS() : {};
-
-    if (currentParams.get('assign') && currentParams.get('assign').get(param) && value.length < 1) {
-      delete nextParams[param];
-    } else {
-      nextParams[param] = value;
-    }
-  }
 
   toggleExpanded = (event) => {
     event.preventDefault();
@@ -49,80 +33,19 @@ export class MassActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { currentParams, categories, languages, products, workflows } = this.props;
-    const assign = currentParams.get('assign');
-    return (
-      <ul className="dpwd-navigation-dropdown-top-row-main-list">
-        <li>
-        <span className="dpwd-navigation-dropdown-top-row-action-button" ref="button">
-          <a href="" className="top-row-action-button-link" onClick={this.toggleExpanded}>
-            <span
-              className="dpwd-navigation-dropdown-top-row-button-text dpwd-navigation-dropdown-top-row-button-text-grey">
-              Mass actions
-            </span>
-            <span className="top-row-action-button-link-extra">
-              <span className="dpwd-navigation-dropdown-top-row-button-icon">
-                <i className="fa fa-caret-down"></i>
-              </span>
-            </span>
-          </a>
-        </span>
-          <Detached isOpen={this.state.expanded}
-                    positionAt="left bottom"
-                    positionTarget={this.refs.button}>
-            <ClickOut onClickOut={this.collapse}
-                      ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
-                      additionalNodes={['.dpw-navigation-dropdown-item-clear']}>
-              <div className="dpw-navigation-dropdown-panel">
-                <Popup>
-                  <form>
-                    <div className="dpw--popup-content">
-                      <div className="dpw--popup-item-collection">
-                        <FieldGroup>
-                          <h2 className="dpw--popup-item-section-title">Change Status</h2>
-                        </FieldGroup>
-                        <FieldGroup>
-                          <AgentsListContainer selected={assign && assign.get('agent')}
-                                               onChange={this.onChange.bind(this, 'agent')}/>
-                          <TeamsListContainer selected={assign && assign.get('team')}
-                                              onChange={this.onChange.bind(this, 'team')}/>
-                          <DepartmentsListContainer selected={assign && assign.get('department')}
-                                                    onChange={this.onChange.bind(this, 'department')}/>
-                        </FieldGroup>
-                        <FieldGroup>
-                          <div className="dpmw--popup-content-full">
-                            <h2 className="dpw--popup-item-section-title">Followers</h2>
-                          </div>
-                        </FieldGroup>
-                        <FieldGroup>
-                          <DropdownList title="Product" items={products} option="title"/>
-                          <DropdownList title="Workflow" items={workflows} option="title"/>
-                          <DropdownList title="Language" items={languages} option="locale"/>
-                          <DropdownList title="Category" items={categories} option="title"/>
-                        </FieldGroup>
-                        <FieldGroup>
-                          <div className="dpmw--popup-content-full">
-                            <h2 className="dpw--popup-item-section-title">Mass reply</h2>
+    const { actions, isComments } = this.props;
 
-                            <div className="dpw--popup-form-container">
-                              <div className="dpw--popup-form-textarea">
-                                <textarea>Text</textarea>
-                              </div>
-                            </div>
-                          </div>
-                        </FieldGroup>
-                        <FieldGroup>
-                          <div part="title">Other properties</div>
-                        </FieldGroup>
-                      </div>
-                    </div>
-                  </form>
-                </Popup>
-              </div>
-            </ClickOut>
-          </Detached>
-        </li>
-      </ul>
+    const config = {
+      actions: actions,
+      jobType: 'publish_mass',
+      content: isComments ? 'feedback_comments' : 'feedback',
+      loadIndicatorAction: loadIndicator,
+      reloadNavAction: initialLoad
+    };
+
+
+    return (
+      <MassActionBarContainer {...config} />
     );
   }
 }
