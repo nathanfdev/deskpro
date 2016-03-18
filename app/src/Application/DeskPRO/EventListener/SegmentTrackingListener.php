@@ -59,6 +59,10 @@ class SegmentTrackingListener implements EventSubscriberInterface
     {
         global $DP_CONFIG;
 
+        if (empty($DP_CONFIG['segment_config'])) {
+            return;
+        }
+
         if (!defined('DP_INTERFACE')) {
             return;
         }
