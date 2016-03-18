@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,28 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 /**
- * Class TicketParticipantType.
+ * Interface EntityHandlerInterface.
  */
-class TicketParticipantType extends ApiType
+interface EntityHandlerInterface
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * @return string|string[]
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('person', 'entity', ['class' => 'DeskPRO:Person'])
-            ->add('ticket', 'entity', ['class' => 'DeskPRO:Ticket'])
-            ->add('person_email', 'entity', ['class' => 'DeskPRO:PersonEmail'])
-            ->add('access_code', 'entity', ['class' => 'DeskPRO:TicketAccessCode'])
-            ->add('default_on', 'api_boolean')
-        ;
-    }
+    public static function getClassNames();
 }

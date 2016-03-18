@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -478,10 +477,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $waiting_times = array();
+    protected $waiting_times = [];
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $participants;
 
@@ -587,13 +588,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $api_data = array();
+    protected $api_data = [];
 
     /**
      * @var string|null
      */
     protected $api_data_hash = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->_original_id = null;
@@ -824,8 +828,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getUserParticipants()
     {
-        $ret = array();
-
+        $ret = [];
         foreach ($this['participants'] as $p) {
             if (!$p['person']['is_agent']) {
                 $ret[] = $p->person;
@@ -840,7 +843,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getAgentParticipants()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->participants as $p) {
             if ($p->person['is_agent']) {
                 $ret[] = $p->person;
@@ -848,6 +851,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         return $ret;
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
     }
 
     /**
@@ -866,14 +877,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setAgentParticipants($agents)
     {
-        $current_agent_ids = array();
+        $current_agent_ids = [];
         foreach ($this->participants as $p) {
             if ($p->person->is_agent) {
                 $current_agent_ids[] = $p->person->id;
             }
         }
 
-        $got_agent_ids = array();
+        $got_agent_ids = [];
         foreach ($agents as $p) {
             $got_agent_ids[] = $p->id;
         }

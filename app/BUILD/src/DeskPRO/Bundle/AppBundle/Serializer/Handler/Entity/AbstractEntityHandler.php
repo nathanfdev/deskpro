@@ -32,14 +32,35 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
  * Class AbstractEntityHandler.
  */
-abstract class AbstractEntityHandler implements SubscribingHandlerInterface
+abstract class AbstractEntityHandler implements SubscribingHandlerInterface, EntityHandlerInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribingMethods()
+    {
+        $methods = [];
+        $classes = (array) static::getClassNames();
+
+        foreach ($classes as $class) {
+            $methods[] = [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => $class,
+                'method'    => 'serialize',
+            ];
+        }
+
+        return $methods;
+    }
+
     /**
      * @param JsonSerializationVisitor     $visitor
      * @param object                       $entity

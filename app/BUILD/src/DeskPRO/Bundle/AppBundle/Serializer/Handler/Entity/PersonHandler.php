@@ -33,7 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ApiPersonFactory;
-use JMS\Serializer\GraphNavigator;
 
 /**
  * Class PersonHandler.
@@ -60,16 +59,9 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribingMethods()
+    public static function getClassNames()
     {
-        return [
-            [
-                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => Person::class,
-                'method'    => 'serialize',
-            ],
-        ];
+        return Person::class;
     }
 
     /**

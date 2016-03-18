@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TextSnippetCategory;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang\ObjectLangCollectionType;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketParticipant;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -42,25 +42,24 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class TextSnippetCategoryType.
+ * Class TicketParticipantType.
  */
-class TextSnippetCategoryType extends AbstractType
+class TicketParticipantType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title', ObjectLangCollectionType::class, [
-                'mapped'    => false,
-                'prop_name' => 'title',
-                'owner'     => $builder->getData(),
-            ])
-            ->add('is_global', ApiBooleanType::class)
-        ;
+        $builder->add('person', PersonAssignType::class, [
+            'constraints' => [
+                new AppAssert\User([
+                    'type' => $options['is_agent'] ? 'agent' : 'user',
+                ]),
+            ],
+        ]);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTypeAndPerson']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTicket']);
     }
 
     /**
@@ -70,20 +69,15 @@ class TextSnippetCategoryType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'    => TextSnippetCategory::class,
+                'data_class'    => TicketParticipant::class,
                 'error_mapping' => [
-                    'props_translations' => 'title',
+                    'person_email' => 'person',
                 ],
             ])
-            ->setRequired(['type', 'person'])
+            ->setRequired(['is_agent', 'owner'])
             ->setAllowedTypes([
-                'person' => Person::class,
-            ])
-            ->setAllowedValues([
-                'type' => [
-                    TextSnippetCategory::TYPE_TICKET,
-                    TextSnippetCategory::TYPE_CHAT,
-                ],
+                'is_agent' => 'boolean',
+                'owner'    => Ticket::class,
             ])
         ;
     }
@@ -91,19 +85,13 @@ class TextSnippetCategoryType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetTypeAndPerson(FormEvent $event)
+    public function onSetTicket(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $event->getForm()->getConfig();
+        $form = $event->getForm();
+        $data = $event->getData();
 
-        $person = $config->getOption('person');
-        $type   = $config->getOption('type');
-
-        /** @var TextSnippetCategory $data */
-        $data = $form->getData();
-        $data
-            ->setTypename($type)
-            ->setPerson($person)
-        ;
+        /** @var Ticket $owner */
+        $owner = $form->getConfig()->getOption('owner');
+        $owner->addParticipant($data);
     }
 }

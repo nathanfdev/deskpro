@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,31 +29,24 @@
 /**
  * DeskPRO.
  */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use FOS\RestBundle\Controller\Annotations\Route;
 
 /**
- * Class TicketParticipantTransformer.
+ * Class TicketFollowersController.
+ *
+ * @ApiModes("all")
+ * @Route("/tickets/{parentId}/followers")
  */
-class TicketParticipantTransformer extends AbstractDataSerializerTransformer
+class TicketFollowersController extends AbstractTicketParticipantsController
 {
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    protected function isAgent()
     {
-        return [
-            'id', 'ticket', 'person', 'access_code', 'person_email', 'default_on',
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $request)
-    {
-        return [];
+        return true;
     }
 }

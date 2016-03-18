@@ -62,7 +62,9 @@ class ApiErrors
     const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS                = 'bad_credentials';
-    const NO_PERSON                      = 'no_person';
+    const NO_PERSON                      = 'person_not_found';
+    const NOT_AGENT                      = 'person_not_agent';
+    const NOT_USER                       = 'person_not_user';
 
     /** Validator/Constraint specific error codes */
     const NOT_NULL                    = 'required';

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,39 +29,30 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\TicketParticipant;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipantType;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Route;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TicketFollowersController.
- *
- * Followers are agent participants
- *
- * @ApiModes("all")
- * @Route("/tickets/{parentId}/followers")
+ * Class TicketParticipant.
  */
-class TicketFollowersController extends CrudSubController
+class TicketParticipantHandler extends AbstractEntityHandler
 {
-    public static $entity         = TicketParticipant::class;
-    public static $type           = TicketParticipantType::class;
-    public static $parentProperty = 'ticket';
-
     /**
      * {@inheritdoc}
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    public static function getClassNames()
     {
-        parent::applyListFilters($qb, $alias, $request);
-        $qb
-            ->join("$alias.person", 'person')
-            ->andWhere('person.is_agent = 1');
+        return TicketParticipant::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param TicketParticipant $entity
+     */
+    protected function createModel($entity)
+    {
+        return $entity->getPerson();
     }
 }

@@ -2054,6 +2054,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->emails;
     }
 
+    /**
+     * @param PersonEmail $email
+     *
+     * @return $this
+     */
     public function addEmail(PersonEmail $email)
     {
         if (!$this->primary_email) {
@@ -2063,6 +2068,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->emails->add($email);
         $email->setPerson($this);
         $this->_onPropertyChanged('emails', null, $this->emails);
+
+        return $this;
     }
 
     /**

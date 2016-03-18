@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -73,10 +73,19 @@ class TicketType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'ticket',
             ])
-            ->add('followers', 'entity', [
-                'class'         => 'DeskPRO:Person',
-                'multiple'      => true,
-                'property_path' => 'agent_participants',
+            ->add('cc', 'ticket_participants', [
+                'owner'         => $builder->getData(),
+                'is_agent'      => false,
+                'property_path' => 'participants',
+                'required'      => false,
+                'view_type'     => 'array',
+            ])
+            ->add('followers', 'ticket_participants', [
+                'owner'         => $builder->getData(),
+                'is_agent'      => true,
+                'property_path' => 'participants',
+                'required'      => false,
+                'view_type'     => 'array',
             ])
         ;
     }
