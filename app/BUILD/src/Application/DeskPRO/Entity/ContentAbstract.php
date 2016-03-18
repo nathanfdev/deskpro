@@ -32,6 +32,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -616,8 +617,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getLastAuthor()
     {
         $authors = $this->getAuthors();
+        $author  = end($authors);
 
-        return end($authors);
+        return $author ?: null;
     }
 
     public function getByLine($sep = ', ')
