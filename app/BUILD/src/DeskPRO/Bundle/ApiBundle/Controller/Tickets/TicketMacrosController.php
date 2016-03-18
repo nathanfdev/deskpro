@@ -32,7 +32,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -65,9 +67,7 @@ class TicketMacrosController extends CrudController
      */
     public function applyMacroAction($id, $ticket_id, Request $request)
     {
-        $ticket_manager = $this->getContainer()->getTicketManager();
-
-        $ticket  = $ticket_manager->getTicket($ticket_id);
+        $ticket  = $this->getTicketManager()->getTicket($ticket_id);
         $macro   = $this->findEntity($id, $request);
         $actions = $macro->getActionsCollection();
 
@@ -78,10 +78,8 @@ class TicketMacrosController extends CrudController
             throw $this->createAccessDeniedException();
         }
 
-        $actions->apply($ticket->getTicketLogger(), $ticket, $this->getUser());
-
-        $context = $ticket_manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $ticket_manager->saveTicket($ticket, $context);
+        $this->applyActions($actions->getUpdateActionsCollection(), $ticket, 'update');
+        $this->applyActions($actions->getReplyActionsCollection(), $ticket, 'reply');
 
         return new View([], Response::HTTP_NO_CONTENT);
     }
@@ -109,5 +107,28 @@ class TicketMacrosController extends CrudController
         }
 
         return $entity;
+    }
+
+    /**
+     * @param ActionsCollection $actions
+     * @param Ticket            $ticket
+     * @param string            $event_type
+     *
+     * @throws \Exception
+     */
+    protected function applyActions(ActionsCollection $actions, Ticket $ticket, $event_type)
+    {
+        $actions->apply($ticket->getTicketLogger(), $ticket, $this->getUser());
+
+        $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), $event_type, 'api');
+        $this->getTicketManager()->saveTicket($ticket, $context);
+    }
+
+    /**
+     * @return \Application\DeskPRO\Tickets\TicketManager
+     */
+    protected function getTicketManager()
+    {
+        return $this->getContainer()->getTicketManager();
     }
 }

@@ -807,11 +807,13 @@ SQL
             INSERT INTO `ticket_macros`
                 (`id`, `person_id`, `title`, `is_enabled`, `is_global`, `actions`)
             VALUES
-                ('1', '1', 'Ticket macro 1', '1', '1', 'a:2:{i:0;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:2:"-1";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
-                ('2', '1', 'Ticket macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label1";i:1;s:6:"label2";i:2;s:6:"label3";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}}'),
-                ('3', '1', 'Ticket macro 3', '1', '0', 'a:3:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label4";i:1;s:6:"label5";i:2;s:6:"label6";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}i:2;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
-                ('4', '2', 'Ticket macro 4', '1', '0', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:13:"awaiting_user";}}}'),
-                ('5', '2', 'Ticket macro 5', '1', '1', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:14:"awaiting_agent";}}}')
+                ('1', '1', 'Update ticket macro 1', '1', '1', 'a:2:{i:0;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:2:"-1";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
+                ('2', '1', 'Update ticket macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label1";i:1;s:6:"label2";i:2;s:6:"label3";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}}'),
+                ('3', '1', 'Update ticket macro 3', '1', '0', 'a:3:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label4";i:1;s:6:"label5";i:2;s:6:"label6";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}i:2;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
+                ('4', '2', 'Update ticket macro 4', '1', '0', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:13:"awaiting_user";}}}'),
+                ('5', '2', 'Update ticket macro 5', '1', '1', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:14:"awaiting_agent";}}}'),
+                ('6', '1', 'Update and reply ticket macro 1', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:5:"reply";s:7:"options";a:2:{s:10:"reply_text";s:14:"My reply text.";s:9:"reply_pos";s:6:"append";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"2";}}}');
+
 
             ;
 SQL

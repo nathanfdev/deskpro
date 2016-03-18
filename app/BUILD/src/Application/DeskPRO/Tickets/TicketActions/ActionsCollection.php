@@ -80,6 +80,36 @@ class ActionsCollection
     }
 
     /**
+     * @return ActionsCollection
+     */
+    public function getUpdateActionsCollection()
+    {
+        $collection = new self();
+        foreach ($this->actions as $action) {
+            if (!$action instanceof ReplyAction) {
+                $collection->add($action);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @return ActionsCollection
+     */
+    public function getReplyActionsCollection()
+    {
+        $collection = new self();
+        foreach ($this->actions as $action) {
+            if ($action instanceof ReplyAction) {
+                $collection->add($action);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
      * @param mixed $action_or_modifier
      * @param array $metadata
      */

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,17 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Twig\Environment as Twig_Environment;
+use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
 
+/**
+ * Class SnippetFormatter.
+ */
 class SnippetFormatter implements PersonContextInterface
 {
     /**
-     * @var \Application\DeskPRO\Twig\Environment
+     * @var \Twig_Environment
      */
     protected $twig;
 
@@ -53,16 +57,29 @@ class SnippetFormatter implements PersonContextInterface
      */
     protected $extra_vars;
 
-    public function __construct(Twig_Environment $twig)
+    /**
+     * Constructor.
+     *
+     * @param \Twig_Environment $twig
+     */
+    public function __construct(\Twig_Environment $twig)
     {
         $this->twig = $twig;
     }
 
+    /**
+     * @param Person $person
+     */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
     public function getVars(Ticket $ticket)
     {
         $data           = $this->extra_vars;
@@ -87,30 +104,54 @@ class SnippetFormatter implements PersonContextInterface
         return $data;
     }
 
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
     public function addVar($name, $value)
     {
         $this->extra_vars[$name] = $value;
     }
 
+    /**
+     * @param $snippet
+     * @param Ticket $ticket
+     *
+     * @return null|string
+     */
     public function formatSnippet($snippet, Ticket $ticket)
     {
         $data = $this->getVars($ticket);
 
         try {
-            return $this->twig->renderStringTemplate($snippet->snippet, $data);
+            return $this->getTemplateRenderer()->renderStringTemplate($snippet->snippet, $data);
         } catch (\Exception $e) {
             return $snippet->snippet;
         }
     }
 
+    /**
+     * @param string $text
+     * @param Ticket $ticket
+     *
+     * @return null|string
+     */
     public function formatText($text, Ticket $ticket)
     {
         $data = $this->getVars($ticket);
 
         try {
-            return $this->twig->renderStringTemplate($text, $data);
+            return $this->getTemplateRenderer()->renderStringTemplate($text, $data);
         } catch (\Exception $e) {
             return $text;
         }
+    }
+
+    /**
+     * @return TwigTemplateRenderer
+     */
+    protected function getTemplateRenderer()
+    {
+        return new TwigTemplateRenderer($this->twig);
     }
 }

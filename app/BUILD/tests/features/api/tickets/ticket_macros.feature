@@ -12,11 +12,11 @@ Feature: /ticket_macros endpoint
   Scenario: I retrieve a list of macros
     When I send a GET request to "/api/v2/ticket_macros"
     And the response status code should be 200
-    And the JSON node "data" should have 4 elements
+    And the JSON node "data" should have 5 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].person" should be equal to 1
-    And the JSON node "data[0].title" should be equal to "Ticket macro 1"
+    And the JSON node "data[0].title" should be equal to "Update ticket macro 1"
     And the JSON node "data[0].is_enabled" should be equal to 1
     And the JSON node "data[0].is_global" should be equal to 1
     And the JSON node "data[0].actions" should have 2 elements
@@ -27,7 +27,7 @@ Feature: /ticket_macros endpoint
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].person" should be equal to 1
-    And the JSON node "data[1].title" should be equal to "Ticket macro 2"
+    And the JSON node "data[1].title" should be equal to "Update ticket macro 2"
     And the JSON node "data[1].is_enabled" should be equal to 1
     And the JSON node "data[1].is_global" should be equal to 0
     And the JSON node "data[1].actions" should have 2 elements
@@ -41,7 +41,7 @@ Feature: /ticket_macros endpoint
 
     And the JSON node "data[2].id" should be equal to 3
     And the JSON node "data[2].person" should be equal to 1
-    And the JSON node "data[2].title" should be equal to "Ticket macro 3"
+    And the JSON node "data[2].title" should be equal to "Update ticket macro 3"
     And the JSON node "data[2].is_enabled" should be equal to 1
     And the JSON node "data[2].is_global" should be equal to 0
     And the JSON node "data[2].actions" should have 3 elements
@@ -57,17 +57,28 @@ Feature: /ticket_macros endpoint
 
     And the JSON node "data[3].id" should be equal to 5
     And the JSON node "data[3].person" should be equal to 2
-    And the JSON node "data[3].title" should be equal to "Ticket macro 5"
+    And the JSON node "data[3].title" should be equal to "Update ticket macro 5"
     And the JSON node "data[3].is_enabled" should be equal to 1
     And the JSON node "data[3].is_global" should be equal to 1
     And the JSON node "data[3].actions[0].type" should be equal to "status"
     And the JSON node "data[3].actions[0].options.status" should be equal to "awaiting_agent"
 
+    And the JSON node "data[4].id" should be equal to 6
+    And the JSON node "data[4].person" should be equal to 1
+    And the JSON node "data[4].title" should be equal to "Update and reply ticket macro 1"
+    And the JSON node "data[4].is_enabled" should be equal to 1
+    And the JSON node "data[4].is_global" should be equal to 0
+    And the JSON node "data[4].actions[0].type" should be equal to "reply"
+    And the JSON node "data[4].actions[0].options.reply_text" should be equal to "My reply text."
+    And the JSON node "data[4].actions[0].options.reply_pos" should be equal to "append"
+    And the JSON node "data[4].actions[1].type" should be equal to "department"
+    And the JSON node "data[4].actions[1].options.department" should be equal to 2
+
   Scenario: I get a macro
     When I send a GET request to "/api/v2/ticket_macros/1"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 1
-    And the JSON node "data.title" should be equal to "Ticket macro 1"
+    And the JSON node "data.title" should be equal to "Update ticket macro 1"
 
   Scenario: I try to get not existing macro
     When I send a GET request to "/api/v2/ticket_macros/404"
@@ -94,6 +105,21 @@ Feature: /ticket_macros endpoint
     And the JSON node "data.labels[1]" should be equal to "label2"
     And the JSON node "data.labels[2]" should be equal to "label3"
 
-  Scenario: I check macro validation
-    When I send a POST request to "/api/v2/ticket_macros/1/apply/1"
-    Then the response status code should be 400
+  Scenario: I apply a macro with reply action
+    When I send a POST request to "/api/v2/ticket_macros/6/apply/1"
+    Then the response status code should be 204
+
+    When I send a POST request to "/api/v2/ticket_macros/6/apply/1"
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/1"
+    Then the response status code should be 200
+    And the JSON node "data.department" should be equal to 2
+
+    When I send a GET request to "/api/v2/tickets/1/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].message" should be equal to "My reply text."
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].message" should be equal to "My reply text."
