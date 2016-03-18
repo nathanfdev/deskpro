@@ -102,16 +102,11 @@ class SegmentTrackingListener implements EventSubscriberInterface
         $track_ident = '';
 
         if ($person) {
-            if ($person->is_agent) {
-                $user_type = $person->can_admin ? 'admin' : 'agent';
-            } else {
-                $user_type = 'user';
-            }
-
             $data = json_encode(array(
                 'name'     => $person->getDisplayName(false),
                 'email'    => $person->getEmailAddress(),
-                'userType' => $user_type,
+                'isAgent'  => $person->is_agent,
+                'canAdmin' => $person->can_admin,
             ));
             $track_ident .= "analytics.identify('{$person->getAccountTrackingId()}', $data);";
         }
