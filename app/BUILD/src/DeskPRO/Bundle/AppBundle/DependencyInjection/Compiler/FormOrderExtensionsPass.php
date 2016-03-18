@@ -116,6 +116,11 @@ class FormOrderExtensionsPass implements CompilerPassInterface
 
         $tag = $extDef->getTag('form.type_extension');
 
+        // symfony go low so other (e.g. FOS) go after
+        if (empty($tag[0]['order']) && strpos($extDef->getClass(), 'Symfony\Component\Form\Extension\\') === 0) {
+            return -1000;
+        }
+
         if (empty($tag[0]['order'])) {
             return 0;
         }
