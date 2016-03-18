@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,11 +71,18 @@ class GenerateSchema
     protected $em;
 
     /**
-     * @param \Doctrine\ORM\EntityManager $em
+     * @var bool
      */
-    public function __construct(EntityManager $em)
+    protected $is_master_schema;
+
+    /**
+     * @param EntityManager $em
+     * @param bool          $is_master_schema
+     */
+    public function __construct(EntityManager $em, $is_master_schema = false)
     {
-        $this->em = $em;
+        $this->em               = $em;
+        $this->is_master_schema = $is_master_schema;
     }
 
     /**
@@ -145,7 +152,8 @@ class GenerateSchema
         # Non-entity tables
         #------------------------------
 
-        $all_sql[] = <<<SQL
+        if ($this->is_master_schema) {
+            $all_sql[] = <<<SQL
 CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
@@ -154,6 +162,7 @@ CREATE TABLE `content_search` (
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM
 SQL;
+        }
 
         #------------------------------
         # Organise it

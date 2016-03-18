@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\MockHelpers;
 
 use Doctrine\ORM\AbstractQuery as Query;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Prophecy\Argument;
@@ -46,13 +45,23 @@ use Prophecy\Argument;
 trait DbalMocksHelper
 {
     /**
-     * @todo rename to mockQueryBuilder
+     * @todo remove
      *
      * @param string $class
      *
      * @return \Prophecy\Prophecy\ObjectProphecy
      */
-    protected function mockQueryBuildingEntityManager($class = EntityManagerInterface::class)
+    protected function mockQueryBuildingEntityManager($class = EntityManager::class)
+    {
+        return $this->mockEntityManager($class);
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return \Prophecy\Prophecy\ObjectProphecy
+     */
+    protected function mockEntityManager($class = EntityManager::class)
     {
         $em = $this->prophesize($class);
         $em->getRepository(Argument::any())->willReturn($this->mockRepository());
@@ -73,11 +82,14 @@ trait DbalMocksHelper
         $query->getArrayResult()->willReturn([]);
         $query->getSingleScalarResult()->willReturn(42);
         $query->getResult()->willReturn([]);
+        $query->execute()->willReturn([]);
 
         // describe QueryBuilder double
         $qb->getQuery()->willReturn($query);
         $qb->getRootAliases()->willReturn(['alias']);
         $qb->select(Argument::any())->willReturn($qb);
+        $qb->update(Argument::any(), Argument::any())->willReturn($qb);
+        $qb->set(Argument::any(), Argument::any())->willReturn($qb);
         $qb->addSelect(Argument::any())->willReturn($qb);
         $qb->from(Argument::any(), Argument::any())->willReturn($qb);
         $qb->join(Argument::any(), Argument::any())->willReturn($qb);
@@ -85,6 +97,7 @@ trait DbalMocksHelper
         $qb->where(Argument::any())->willReturn($qb);
         $qb->andWhere(Argument::any())->willReturn($qb);
         $qb->groupBy(Argument::any())->willReturn($qb);
+        $qb->setParameters(Argument::any())->willReturn($qb);
         $qb->orderBy(Argument::type('string'), Argument::type('string'))->willReturn($qb);
         $qb->expr()->willReturn(new \Doctrine\ORM\Query\Expr());
 

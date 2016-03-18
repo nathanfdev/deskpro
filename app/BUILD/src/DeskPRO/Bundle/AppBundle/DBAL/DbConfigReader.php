@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ use DpRun\LowUtil;
 class DbConfigReader
 {
     const DEFAULT_ID = 'default';
+    const SYSTEM_ID  = 'system';
     const READ_ID    = 'read';
     const REPORTS_ID = 'read_reports';
     const SEARCH_ID  = 'read_search';
@@ -65,6 +66,9 @@ class DbConfigReader
         switch ($id) {
             case self::DEFAULT_ID:
                 $conf_array_raw = $this->appEnv->getConfig('database');
+                break;
+            case self::SYSTEM_ID:
+                $conf_array_raw = $this->appEnv->getConfig('database.system') ?: $this->appEnv->getConfig('database');
                 break;
             case self::READ_ID:
                 $conf_array_raw = $this->appEnv->getConfig('database_advanced.read')

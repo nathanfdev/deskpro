@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -54,6 +54,8 @@ class SkipWizardStep extends AbstractStep
             $this->getSession()->setPaths($paths);
         }
 
+        // Try default database, create if doesn't exist
+
         if (!$this->getSession()->getDbInfo()) {
             $env              = $this->getContext()->getDpEnv();
             $dbinfo           = new DbInfo();
@@ -67,11 +69,35 @@ class SkipWizardStep extends AbstractStep
         }
 
         try {
-            $pdo = $this->getSession()->getDbInfo()->getPdo();
+            $this->getSession()->getDbInfo()->getPdo();
         } catch (\Exception $e) {
             try {
                 $pdo = $this->getSession()->getDbInfo()->getPdo(true);
                 $pdo->exec('CREATE DATABASE `'.$dbinfo->dbname.'`');
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Try system database, create if doesn't exist
+
+        if (!$this->getSession()->getSystemDbInfo()) {
+            $env                  = $this->getContext()->getDpEnv();
+            $sys_dbinfo           = new DbInfo();
+            $sys_dbinfo->host     = $env->getConfig('database.system.host') ?: $env->getConfig('database.host');
+            $sys_dbinfo->user     = $env->getConfig('database.system.user') ?: $env->getConfig('database.user');
+            $sys_dbinfo->password = $env->getConfig('database.system.password') ?: $env->getConfig('database.password');
+            $sys_dbinfo->dbname   = $env->getConfig('database.system.dbname') ?: $env->getConfig('database.dbname');
+            $this->getSession()->setSystemDbInfo($sys_dbinfo);
+        } else {
+            $sys_dbinfo = $this->getSession()->getSystemDbInfo();
+        }
+
+        try {
+            $this->getSession()->getSystemDbInfo()->getPdo();
+        } catch (\Exception $e) {
+            try {
+                $pdo = $this->getSession()->getSystemDbInfo()->getPdo(true);
+                $pdo->exec('CREATE DATABASE `'.$sys_dbinfo->dbname.'`');
             } catch (\Exception $e) {
             }
         }
