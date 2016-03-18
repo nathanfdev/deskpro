@@ -485,6 +485,16 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $_person_logger = null;
 
     /**
+     * @var string
+     */
+    protected $_orig_email_address;
+
+    /**
+     * @var string
+     */
+    protected $_changed_from_primary_email;
+
+    /**
      * @var PersonEmailValidating
      */
     public $email_validating;
@@ -1876,6 +1886,43 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @return string
+     */
+    public function getAccountOriginalEmailAddress()
+    {
+        if (!$this->id) {
+            return $this->getEmailAddress() ?: '';
+        }
+
+        if ($this->_orig_email_address === null) {
+            $db                        = App::$container->getDb();
+            $this->_orig_email_address = $db->fetchColumn('
+              SELECT value_str
+              FROM people_prefs
+              WHERE person_id = ? AND name = ?
+            ', array($this->id, 'sys.account_original_email_address'));
+            if (!$this->_orig_email_address) {
+                $this->_orig_email_address = $this->getEmailAddress() ?: '';
+            }
+        }
+
+        return $this->_orig_email_address;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAccountTrackingId()
+    {
+        $email = $this->getAccountOriginalEmailAddress();
+        if ($email) {
+            return sha1($email);
+        }
+
+        return;
+    }
+
+    /**
      * Alias for getPrimaryEmailAddress.
      *
      * @return string
@@ -1943,6 +1990,22 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @param PersonEmail $email
+     */
+    public function setPrimaryEmail($email)
+    {
+        if (
+            !$this->_changed_from_primary_email
+            && $this->primary_email
+            && $this->primary_email->email !== $email->email
+        ) {
+            $this->_changed_from_primary_email = $this->primary_email->email;
+        }
+
+        $this->setModelField('primary_email', $email);
+    }
+
+    /**
      * Sets the primary email address on the account.
      *
      * @param $email_address
@@ -1960,7 +2023,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         $this->addEmailAddress($email);
 
-        $this->setModelField('primary_email', $email);
+        $this->setPrimaryEmail($email);
 
         return $email;
     }
@@ -1993,7 +2056,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function addEmailAddress(PersonEmail $email)
     {
         if (!$this->primary_email && $this->emails->count() < 1) {
-            $this->setModelField('primary_email', $email);
+            $this->setPrimaryEmail($email);
         }
 
         foreach ($this->emails as $old) {
@@ -2072,10 +2135,10 @@ class Person extends DomainObject implements HighlightableModelInterface
             }
 
             if ($next_valid_email) {
-                $this->setModelField('primary_email', $next_valid_email);
+                $this->setPrimaryEmail($next_valid_email);
                 $em->persist($this);
             } elseif ($next_email) {
-                $this->setModelField('primary_email', $next_email);
+                $this->setPrimaryEmail($next_email);
                 $em->persist($this);
             }
         }
@@ -2593,6 +2656,29 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         if (isset($GLOBALS['DP_IS_IMPORTING'])) {
             return;
+        }
+
+        if (
+            $this->_changed_from_primary_email
+            && !$this->_person_logger->isNewPerson()
+            && $this->id
+        ) {
+            try {
+                $db   = App::$container->getDb();
+                $orig = $db->fetchColumn('
+                  SELECT value_str
+                  FROM people_prefs
+                  WHERE person_id = ? AND name = ?
+                ', array($this->id, 'sys.account_original_email_address'));
+                if (!$orig) {
+                    $db->insertIgnore('people_prefs', array(
+                        'person_id' => $this->id,
+                        'name'      => 'sys.account_original_email_address',
+                        'value_str' => $this->_changed_from_primary_email,
+                    ));
+                }
+            } catch (\Exception $e) {
+            }
         }
 
         if ($this->_person_logger) {
