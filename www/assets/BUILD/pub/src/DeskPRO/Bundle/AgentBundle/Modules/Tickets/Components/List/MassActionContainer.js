@@ -12,13 +12,12 @@ import { connect } from 'react-redux';
   currentParams: paramsSelector(state),
   languages: collectionSelectorFactory('Language', 'all')(state),
   categories: collectionSelectorFactory('TicketCategory', 'tickets')(state),
-  workflows: collectionSelectorFactory('TicketWorkflow', 'tickets')(state)
+  workflows: collectionSelectorFactory('TicketWorkflow', 'tickets')(state),
+  products: collectionSelectorFactory('TicketProduct', 'tickets')(state)
 }))
 export class MassActionContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    navItem: PropTypes.object.isRequired,
-    selected: PropTypes.object.isRequired,
     currentParams: PropTypes.object.isRequired,
     languages: PropTypes.object.isRequired,
     categories: PropTypes.object.isRequired,
@@ -50,7 +49,7 @@ export class MassActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { currentParams, categories, languages, workflows } = this.props;
+    const { currentParams, categories, languages, products, workflows } = this.props;
     const assign = currentParams.get('assign');
     return (
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
@@ -96,12 +95,7 @@ export class MassActionContainer extends Component {
                           </div>
                         </FieldGroup>
                         <FieldGroup>
-                          <div className="dpw--popup-content-left even">
-                            <h2 className="dpw--popup-item-section-title">Product</h2>
-
-                            <div className="dpw--popup-form-container">
-                            </div>
-                          </div>
+                          <DropdownList title="Product" items={products} option="title"/>
                           <DropdownList title="Workflow" items={workflows} option="title"/>
                           <DropdownList title="Language" items={languages} option="locale"/>
                           <DropdownList title="Category" items={categories} option="title"/>

@@ -69,6 +69,7 @@ export const initialLoad = createAction(
           + '&get[labels]=DP_API/ticket_labels'
           + '&get[categories]=DP_API/ticket_categories'
           + '&get[workflows]=DP_API/ticket_workflows'
+          + '&get[products]=DP_API/ticket_products'
           + '&get[starsCount]=DP_API/ticket_stars_counts'
           + '&get[filters]=DP_API/ticket_filters'
         ;
@@ -78,8 +79,10 @@ export const initialLoad = createAction(
           payload.starsCount = payload.starsCount.nested;
           dispatch(setCollection('TicketCategory', recordStoresId, payload.categories));
           dispatch(setCollection('TicketWorkflow', recordStoresId, payload.workflows));
+          dispatch(setCollection('TicketProduct', recordStoresId, payload.products));
           delete payload.categories;
           delete payload.workflows;
+          delete payload.products;
           resolve(payload);
         });
       }

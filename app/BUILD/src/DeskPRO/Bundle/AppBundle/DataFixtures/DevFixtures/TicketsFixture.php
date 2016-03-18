@@ -44,6 +44,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 {
     private $num_categories      = 5;
     private $num_workflows       = 5;
+    private $num_products        = 5;
     private $num_problems        = 100;
     private $num_labels          = 100;
     private $ticket_max_messages = 10;
@@ -69,6 +70,26 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
      * @var int[]
      */
     private $agent_team_ids;
+
+    /**
+     * @var int[]
+     */
+    private $category_ids;
+
+    /**
+     * @var int[]
+     */
+    private $product_ids;
+
+    /**
+     * @var int[]
+     */
+    private $language_ids;
+
+    /**
+     * @var int[]
+     */
+    private $workflow_ids;
 
     /**
      * @var int[]
@@ -123,6 +144,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->loadProblems();
         $this->loadCategories();
         $this->loadWorkflows();
+        $this->loadProducts();
         $this->loadLabels();
         $this->loadTickets();
         $this->loadTicketsForJoe();
@@ -133,6 +155,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function initIds()
     {
+        $this->language_ids   = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->agent_team_ids = $this->fetchIds(self::TABLE_AGENT_TEAMS);
         $this->agent_ids      = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
         $this->people_ids     = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
@@ -183,7 +206,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         }
 
         $this->db->batchInsert(self::TABLE_TICKET_CATEGORIES, $batch);
-        $this->problem_ids = $this->fetchIds(self::TABLE_TICKET_CATEGORIES);
+        $this->category_ids = $this->fetchIds(self::TABLE_TICKET_CATEGORIES);
     }
 
     private function loadWorkflows()
@@ -199,7 +222,24 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         }
 
         $this->db->batchInsert(self::TABLE_TICKET_WORKFLOWS, $batch);
-        $this->problem_ids = $this->fetchIds(self::TABLE_TICKET_WORKFLOWS);
+        $this->workflow_ids = $this->fetchIds(self::TABLE_TICKET_WORKFLOWS);
+    }
+
+    private function loadProducts()
+    {
+        $batch = [];
+
+        for ($i = 1; $i <= $this->num_products; ++$i) {
+            $batch[] =
+                [
+                    'title'         => 'Product '.$i,
+                    'display_order' => 1,
+                    'depth'         => 1,
+                ];
+        }
+
+        $this->db->batchInsert(self::TABLE_PRODUCTS, $batch);
+        $this->product_ids = $this->fetchIds(self::TABLE_PRODUCTS);
     }
 
     private function loadLabels()
@@ -252,9 +292,12 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
             $batch[] = [
                 'department_id' => $this->faker->randomElement($this->department_ids),
-                'agent_id'      => $this->faker->boolean(90) ? $this->faker->randomElement(
-                    $this->agent_ids
-                ) : null,
+                'language_id'   => $this->faker->randomElement($this->language_ids),
+                'category_id'   => $this->faker->randomElement($this->category_ids),
+                'workflow_id'   => $this->faker->randomElement($this->workflow_ids),
+                'product_id'    => $this->faker->randomElement($this->product_ids),
+                'agent_id'      => $this->faker->boolean(90) ?
+                    $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'     => $this->faker->randomElement($this->people_ids),
                 'agent_team_id' => $this->agent_team_ids && $this->faker->boolean(40)
                     ? $this->faker->randomElement($this->agent_team_ids) : null,
@@ -296,6 +339,10 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
                 'department_id' => $this->faker->randomElement($this->department_ids),
+                'language_id'   => $this->faker->randomElement($this->language_ids),
+                'category_id'   => $this->faker->randomElement($this->category_ids),
+                'workflow_id'   => $this->faker->randomElement($this->workflow_ids),
+                'product_id'    => $this->faker->randomElement($this->product_ids),
                 'agent_id'      => $this->faker->boolean(90)
                     ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'     => $this->joe_id,
@@ -340,6 +387,10 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $subj    = $this->faker->realText($this->faker->numberBetween(40, 60));
             $batch[] = [
                 'department_id' => $this->faker->randomElement($this->department_ids),
+                'language_id'   => $this->faker->randomElement($this->language_ids),
+                'category_id'   => $this->faker->randomElement($this->category_ids),
+                'workflow_id'   => $this->faker->randomElement($this->workflow_ids),
+                'product_id'    => $this->faker->randomElement($this->product_ids),
                 'agent_id'      => $this->faker->boolean(90)
                     ? $this->faker->randomElement($this->agent_ids) : null,
                 'person_id'     => $this->joe_manager_id,
