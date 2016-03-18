@@ -38,8 +38,6 @@ Feature: /tickets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_user"
-    And the JSON node "errors.fields.person.errors[0].message" should contain "is not user."
     And the JSON node "errors.fields.agent.errors[0].code" should be equal to "person_not_agent"
     And the JSON node "errors.fields.agent.errors[0].message" should contain "is not agent."
 
