@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -40,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  * @ApiModes("all")
  * @Route("/tickets/{parentId}/cc")
  */
-class TicketСсController extends AbstractTicketParticipantsController
+class TicketCcController extends AbstractTicketParticipantsController
 {
     /**
      * {@inheritdoc}

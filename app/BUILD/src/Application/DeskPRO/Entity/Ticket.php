@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -41,6 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -235,6 +237,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Application\DeskPRO\Entity\Person
      *
      * @Assert\Valid()
+     * @AppAssert\User(type="user")
      */
     protected $person = null;
 
@@ -245,6 +248,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Person
+     *
+     * @AppAssert\User(type="agent")
      */
     protected $agent = null;
 
@@ -2275,10 +2280,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function setAgent(Person $agent = null)
     {
         if ($agent) {
-            if (!$agent->isAgent()) {
-                throw new \InvalidArgumentException(sprintf('%s is not an agent', $agent->getId()));
-            }
-
             // Do we need to update the first assign date?
             if (is_null($this->date_first_agent_assign)) {
                 $this['date_first_agent_assign'] = new \DateTime();
@@ -3941,6 +3942,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * We can't set invalid data to the db so check properties before flush.
+     */
+    public function _onValidateProps()
+    {
+        if ($this->agent && !$this->agent->isAgent()) {
+            throw new \InvalidArgumentException(sprintf('%s is not an agent', $this->agent->getId()));
+        }
+    }
+
+    /**
      * @param Problem|null $problem
      */
     public function associateProblem(Problem $problem = null)
@@ -3988,6 +3999,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
         $metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
+        $metadata->addLifecycleCallback('_onValidateProps', 'prePersist');
+        $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
         $metadata->setPrimaryTable(
