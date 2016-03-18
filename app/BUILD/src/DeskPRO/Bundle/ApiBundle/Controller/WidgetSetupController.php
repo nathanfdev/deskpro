@@ -80,14 +80,15 @@ class WidgetSetupController extends BaseController
             $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
         );
 
-        $setup = new WidgetSetup($widget_settings->getCompanySettings(), $widget_settings->isEnabledOnPortal());
-        $setup->setUrl(
+        $setup = new WidgetSetup(
+            $widget_settings->getCompanySettings(),
+            $widget_settings->isEnabledOnPortal(),
             [
                 'widget_loader' => $asset_package->getUrl('widget_loader.js', 'app_assets'),
                 'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
                 'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            ]
-        )->setSettings(
+
+            ],
             [
                 'global' => [
                     'chat' => [

@@ -71,7 +71,7 @@ class WidgetSetup
     /**
      * Company settings.
      *
-     * @JMS\Type("array<string, array<string, string>>")
+     * @JMS\Type("array")
      *
      * @var array
      */
@@ -80,7 +80,7 @@ class WidgetSetup
     /**
      * Widget settings itself.
      *
-     * @JMS\Type("array<string, array<string, string>>")
+     * @JMS\Type("array")
      *
      * @var array
      */
@@ -96,38 +96,18 @@ class WidgetSetup
     protected $enabled_on_portal;
 
     /**
-     * WidgetSetup constructor.
+     * Constructor.
      *
      * @param array $company
      * @param bool  $enabled_on_portal
+     * @param array $url
+     * @param array $settings
      */
-    public function __construct($company, $enabled_on_portal)
+    public function __construct($company, $enabled_on_portal, $url, $settings)
     {
         $this->company           = $company;
         $this->enabled_on_portal = $enabled_on_portal;
-    }
-
-    /**
-     * @param array $url
-     *
-     * @return $this
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * @param mixed $settings
-     *
-     * @return $this
-     */
-    public function setSettings($settings)
-    {
-        $this->settings = $settings;
-
-        return $this;
+        $this->url               = $url;
+        $this->settings          = $settings;
     }
 }
