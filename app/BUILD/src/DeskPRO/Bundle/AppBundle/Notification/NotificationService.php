@@ -92,7 +92,7 @@ class NotificationService
     }
 
     /**
-     * @return array
+     * @return NotificationConfiguration
      */
     public function getClientsSetup()
     {

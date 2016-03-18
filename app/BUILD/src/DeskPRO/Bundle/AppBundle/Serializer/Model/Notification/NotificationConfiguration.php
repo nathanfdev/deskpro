@@ -75,4 +75,12 @@ class NotificationConfiguration
     {
         $this->clients = $clients;
     }
+
+    /**
+     * @return array
+     */
+    public function getClients()
+    {
+        return $this->clients;
+    }
 }
