@@ -59,6 +59,7 @@ Feature: Widget Setup
     }
     """
     Then the response status code should be 204
+    And the response should be empty
 
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON

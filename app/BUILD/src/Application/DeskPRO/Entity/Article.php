@@ -111,6 +111,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     protected $_search_highlights;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         parent::__construct();

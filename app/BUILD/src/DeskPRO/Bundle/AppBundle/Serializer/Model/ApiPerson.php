@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
@@ -221,7 +220,7 @@ class ApiPerson
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      *
-     * @var Organization
+     * @var \Application\DeskPRO\Entity\Organization
      */
     protected $organization;
 

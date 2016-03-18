@@ -131,7 +131,7 @@ class WidgetSetupController extends BaseController
     {
         $this->handleForm($request);
 
-        return new View(null, Response::HTTP_CREATED);
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -175,7 +175,7 @@ class WidgetSetupController extends BaseController
         $setting_repo = $this->getSettingsRepository();
         $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, true);
 
-        return new View();
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -199,7 +199,7 @@ class WidgetSetupController extends BaseController
         $setting_repo = $this->getSettingsRepository();
         $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, false);
 
-        return new View();
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
