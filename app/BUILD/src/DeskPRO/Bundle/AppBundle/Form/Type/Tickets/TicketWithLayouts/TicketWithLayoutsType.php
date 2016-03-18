@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -121,7 +122,6 @@ class TicketWithLayoutsType extends AbstractType
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->hierarchy_generator      = $hierarchy_generator;
-        $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->ticket_layout_helper     = $ticket_layout_helper;

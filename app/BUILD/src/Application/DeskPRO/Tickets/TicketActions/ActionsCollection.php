@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
+use Psr\Log\LoggerInterface;
 
 /**
  * A collection of ticket actions.
@@ -42,14 +47,14 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
 class ActionsCollection
 {
     /**
-     * @var Application\DeskPRO\Tickets\TicketActions\ActionInterface[]
+     * @var ActionInterface[]
      */
-    protected $actions = array();
+    protected $actions = [];
 
     /**
-     * @var Application\DeskPRO\Tickets\TicketActions\CollectionModifierInterface[]
+     * @var CollectionModifierInterface[]
      */
-    protected $applied_modifiers = array();
+    protected $applied_modifiers = [];
 
     /**
      * Its possible a modifier of a single type to be added multiple times. This is
@@ -57,7 +62,7 @@ class ActionsCollection
      *
      * @var array
      */
-    protected $applied_modifier_types = array();
+    protected $applied_modifier_types = [];
 
     /**
      * @var bool
@@ -74,7 +79,11 @@ class ActionsCollection
         return $this->was_stopped;
     }
 
-    public function add($action_or_modifier, array $metadata = array())
+    /**
+     * @param mixed $action_or_modifier
+     * @param array $metadata
+     */
+    public function add($action_or_modifier, array $metadata = [])
     {
         if ($action_or_modifier instanceof ActionInterface) {
             $this->addAction($action_or_modifier, $metadata);
@@ -94,9 +103,11 @@ class ActionsCollection
     /**
      * Add a new action.
      *
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $action
+     * @param ActionInterface $action
+     * @param array           $metadata
+     * @param bool            $prepend
      */
-    public function addAction(ActionInterface $action, array $metadata = array(), $prepend = false)
+    public function addAction(ActionInterface $action, array $metadata = [], $prepend = false)
     {
         $name = $action->getActionName();
 
@@ -109,7 +120,6 @@ class ActionsCollection
         }
 
         $action->setMetaData($metadata);
-
         $this->actions[$name] = $action;
 
         if (!$prepend && $action->doPrepend()) {
@@ -204,7 +214,7 @@ class ActionsCollection
      *
      * @throws \InvalidArgumentException When action doesnt exist
      *
-     * @return Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
      */
     public function removeActionType($name)
     {
@@ -245,10 +255,8 @@ class ActionsCollection
     /**
      * Checks to see if the $person_context person can perform all of the actions in the collection.
      *
-     * @param \Application\DeskPRO\Tickets\TicketChangeTracker $ticket_tracker
-     * @param \Application\DeskPRO\Entity\Ticket               $ticket
-     * @param \Application\DeskPRO\Entity\Person               $person_context
-     * @param null                                             $logger
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * @param \Application\DeskPRO\Entity\Person $person_context
      *
      * @return bool
      */
@@ -281,9 +289,12 @@ class ActionsCollection
      * Apply actions in this collection to $ticket, using $person_context as
      * the context on actions that require it.
      *
-     * @param \Application\DeskPRO\Tickets\TicketChangeTracker
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
-     * @param \Application\DeskPRO\Entity\Person $person_context
+     * @param \Application\DeskPRO\Tickets\TicketChangeTracker $ticket_tracker
+     * @param \Application\DeskPRO\Entity\Ticket               $ticket
+     * @param \Application\DeskPRO\Entity\Person               $person_context
+     * @param LoggerInterface                                  $logger
+     *
+     * @throws \Exception
      */
     public function apply(TicketChangeTracker $ticket_tracker = null, Ticket $ticket, Person $person_context = null, $logger = null)
     {
@@ -317,11 +328,11 @@ class ActionsCollection
                     $ticket_tracker->setApplyingSla(null, null);
                 }
             } catch (\Exception $e) {
-                $einfo = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
+                $einfo = SystemErrorHandler::getExceptionInfo($e);
+                SystemErrorHandler::logErrorInfo($einfo);
 
                 if ($logger) {
-                    $name = \Orb\Util\Util::getBaseClassname($action);
+                    $name = Util::getBaseClassname($action);
                     $logger->log(sprintf("[$name] EXCEPTION (%s): %s %s", $einfo['session_name'], $einfo['exception_type'], $einfo['summary']), \Orb\Log\Logger::DEBUG);
                 }
 
@@ -329,15 +340,8 @@ class ActionsCollection
             }
 
             if ($logger) {
-                $name = \Orb\Util\Util::getBaseClassname($action);
+                $name = Util::getBaseClassname($action);
                 $logger->log(sprintf("[$name] Took %.4f seconds", microtime(true) - $time), \Orb\Log\Logger::DEBUG);
-            }
-
-            if ($action instanceof BreakableAction) {
-                if ($action->shouldBreakAction()) {
-                    $this->was_stopped = true;
-                    break;
-                }
             }
         }
     }
@@ -361,10 +365,12 @@ class ActionsCollection
      *
      * @param \Application\DeskPRO\Entity\Ticket $ticket
      * @param \Application\DeskPRO\Entity\Person $person_context
+     *
+     * @return array
      */
     public function getApplyActions(Ticket $ticket, Person $person_context)
     {
-        $actions = array();
+        $actions = [];
 
         foreach ($this->actions as $action) {
             if ($action instanceof PersonContextInterface) {
@@ -386,9 +392,9 @@ class ActionsCollection
             $order['default'] = 0;
         }
 
-        uasort($this->actions, function ($a, $b) use ($order) {
-            $a_name = \Orb\Util\Util::getBaseClassname($a);
-            $b_name = \Orb\Util\Util::getBaseClassname($b);
+        uasort($this->actions, function (ActionInterface $a, ActionInterface $b) use ($order) {
+            $a_name = Util::getBaseClassname($a);
+            $b_name = Util::getBaseClassname($b);
 
             $a_default = $a->doPrepend() ? $order['prepend'] : $order['default'];
             $b_default = $b->doPrepend() ? $order['prepend'] : $order['default'];
@@ -404,9 +410,14 @@ class ActionsCollection
         });
     }
 
+    /**
+     * @param bool $as_html
+     *
+     * @return array
+     */
     public function getDescriptions($as_html)
     {
-        $desc = array();
+        $desc = [];
         foreach ($this->actions as $action) {
             $desc[] = $action->getDescription($as_html);
         }
@@ -415,13 +426,13 @@ class ActionsCollection
             $desc[] = $mod->getDescription($as_html);
         }
 
-        $desc = \Orb\Util\Arrays::removeFalsey($desc);
+        $desc = Arrays::removeFalsey($desc);
 
         if ($as_html) {
             foreach ($desc as &$d) {
                 $d = str_replace(
-                    array('<error>', '</error>'),
-                    array('<span class="term-error">', '</span>'),
+                    ['<error>', '</error>'],
+                    ['<span class="term-error">', '</span>'],
                     $d
                 );
             }

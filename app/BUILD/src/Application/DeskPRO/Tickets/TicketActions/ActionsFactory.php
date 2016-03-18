@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -42,11 +43,20 @@ use Orb\Util\Util;
  */
 class ActionsFactory
 {
-    /** @var array */
-    protected $global_options = array();
-    /** @var array|null */
+    /**
+     * @var array
+     */
+    protected $global_options = [];
+
+    /**
+     * @var array|null
+     */
     protected $plugin_actions = null;
 
+    /**
+     * @param $name
+     * @param $value
+     */
     public function addGlobalOption($name, $value)
     {
         $this->global_options[$name] = $value;

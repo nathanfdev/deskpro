@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Person;
@@ -57,9 +58,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * True to stop processing actions after this one.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -76,9 +75,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -86,25 +83,21 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if ($ticket->is_hold == $this->is_hold) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'hold', 'is_hold' => $this->is_hold),
-        );
+        return [
+            ['action' => 'hold', 'is_hold' => $this->is_hold],
+        ];
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -112,7 +105,7 @@ class HoldAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {

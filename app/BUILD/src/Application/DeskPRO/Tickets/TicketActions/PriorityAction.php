@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -46,9 +47,7 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -72,19 +71,17 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if ($ticket['priority_id'] == $this->priority_id) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'priority', 'priority_id' => $this->priority_id),
-        );
+        return [
+            ['action' => 'priority', 'priority_id' => $this->priority_id],
+        ];
     }
 
     /**
@@ -98,9 +95,7 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -108,7 +103,7 @@ class PriorityAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {

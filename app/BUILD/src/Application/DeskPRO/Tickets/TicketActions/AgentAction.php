@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -55,11 +56,17 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         $this->tracker  = $tracker;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkPermission(Ticket $ticket, Person $person)
     {
         if ($ticket->getAgentId() == $this->agent_id) {
@@ -78,9 +85,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -114,9 +119,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
@@ -125,19 +128,19 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
         if ($agent_id == -1) {
             // Invalid context
             if (!$this->person_context or !$this->person_context['is_agent']) {
-                return array();
+                return [];
             }
 
             $agent_id = $this->person_context['id'];
         }
 
         if ($ticket['agent_id'] == $agent_id) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'agent', 'agent_id' => $agent_id),
-        );
+        return [
+            ['action' => 'agent', 'agent_id' => $agent_id],
+        ];
     }
 
     /**
@@ -151,9 +154,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -161,7 +162,7 @@ class AgentAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
