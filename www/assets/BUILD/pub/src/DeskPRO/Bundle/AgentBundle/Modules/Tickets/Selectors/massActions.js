@@ -7,9 +7,10 @@ export const massActionsSelector = createSelector(
     collectionSelectorFactory('Language', 'all'),
     collectionSelectorFactory('TicketCategory', 'tickets'),
     collectionSelectorFactory('TicketProduct', 'tickets'),
-    collectionSelectorFactory('TicketWorkflow', 'tickets')
+    collectionSelectorFactory('TicketWorkflow', 'tickets'),
+    collectionSelectorFactory('Person', 'agents')
   ],
-  (languages, categories, products, workflows) => {
+  (languages, categories, products, workflows, agents) => {
     const massActions = [];
     // Status options
     massActions.push({
@@ -34,13 +35,38 @@ export const massActionsSelector = createSelector(
     });
 
     // Set options
-    const otherOptions = [
-      { label: 'Product', options: products, param: 'set_product', type: 'set_action' },
-      { label: 'Category', options: categories, param: 'set_category', type: 'set_action' },
-      { label: 'Workflow', options: workflows, param: 'set_workflow', type: 'set_action' },
-      { label: 'Language', options: languages, param: 'set_language', type: 'set_action' }
+    const productOptions = products.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const categoryOptions = categories.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const workflowOptions = workflows.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const languagesOptions = languages.toArray().map(type => ({ value: type.get('id'), label: type.get('locale') }));
+
+    const setOptions = [
+      { label: 'Product', options: productOptions, param: 'set_product', type: 'set_action' },
+      { label: 'Category', options: categoryOptions, param: 'set_category', type: 'set_action' },
+      { label: 'Workflow', options: workflowOptions, param: 'set_workflow', type: 'set_action' },
+      { label: 'Language', options: languagesOptions, param: 'set_language', type: 'set_action' }
     ];
-    massActions.push({ label: 'Set', type: 'menu', param: 'other', options: otherOptions });
+    massActions.push({ label: 'Set', type: 'menu', param: 'other', options: setOptions });
+
+    // Followers options
+    const followerOptions = agents.toArray().map(type => ({ value: type.get('id'), label: type.get('name') }));
+
+    massActions.push({ label: 'Followers', type: 'select_action', param: 'followers', options: followerOptions });
+
+    // Reply options
+    massActions.push({ label: 'Reply', type: 'set_action', param: 'reply', options: [] });
+
+    // Other options
+    const otherOptions = [
+      { label: 'Delete', param: 'delete' },
+      { label: 'Spam', param: 'mark_as_spam' }
+    ];
+    massActions.push({
+      icon: 'fa-asterisk',
+      type: 'select_action',
+      param: 'other',
+      options: otherOptions
+    });
 
     return massActions;
   }
