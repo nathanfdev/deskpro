@@ -210,6 +210,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Department
+     *
+     * @AppAssert\Ticket\LeafDepartment()
      */
     protected $department = null;
 

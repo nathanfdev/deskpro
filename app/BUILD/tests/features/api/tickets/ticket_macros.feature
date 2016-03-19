@@ -12,7 +12,7 @@ Feature: /ticket_macros endpoint
   Scenario: I retrieve a list of macros
     When I send a GET request to "/api/v2/ticket_macros"
     And the response status code should be 200
-    And the JSON node "data" should have 5 elements
+    And the JSON node "data" should have 6 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].person" should be equal to 1
@@ -74,6 +74,16 @@ Feature: /ticket_macros endpoint
     And the JSON node "data[4].actions[1].type" should be equal to "department"
     And the JSON node "data[4].actions[1].options.department" should be equal to 2
 
+    And the JSON node "data[5].id" should be equal to 7
+    And the JSON node "data[5].person" should be equal to 1
+    And the JSON node "data[5].title" should be equal to "Fail validation macro 1"
+    And the JSON node "data[5].actions[0].type" should be equal to "reply"
+    And the JSON node "data[5].actions[0].options.reply_text" should be equal to 0
+    And the JSON node "data[5].actions[1].type" should be equal to "department"
+    And the JSON node "data[5].actions[1].options.department" should be equal to 1
+    And the JSON node "data[5].actions[2].type" should be equal to "add_cc"
+    And the JSON node "data[5].actions[2].options.add_emails" should be equal to "user@deskpro.dev"
+
   Scenario: I get a macro
     When I send a GET request to "/api/v2/ticket_macros/1"
     Then the response status code should be 200
@@ -87,6 +97,10 @@ Feature: /ticket_macros endpoint
   Scenario: I try to get a macro from another user
     When I send a GET request to "/api/v2/ticket_macros/4"
     Then the response status code should be 404
+
+  Scenario: I try to apply failed macro
+    When I send a POST request to "/api/v2/ticket_macros/7/apply/1"
+    Then the response status code should be 400
 
   Scenario: I apply a macro
     When I send a GET request to "/api/v2/tickets/1"

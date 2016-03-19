@@ -37,6 +37,8 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Route;
@@ -78,10 +80,22 @@ class TicketMacrosController extends CrudController
             throw $this->createAccessDeniedException();
         }
 
-        $this->applyActions($actions->getUpdateActionsCollection(), $ticket, 'update');
-        $this->applyActions($actions->getReplyActionsCollection(), $ticket, 'reply');
+        $em = $this->getManager();
 
-        return new View([], Response::HTTP_NO_CONTENT);
+        try {
+            $em->beginTransaction();
+
+            $this->applyActions($actions->getUpdateActionsCollection(), $ticket, 'update');
+            $this->applyActions($actions->getReplyActionsCollection(), $ticket, 'reply');
+
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+
+            return new View(null, Response::HTTP_BAD_REQUEST);
+        }
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -114,11 +128,20 @@ class TicketMacrosController extends CrudController
      * @param Ticket            $ticket
      * @param string            $event_type
      *
-     * @throws \Exception
+     * @throws ValidatorErrorsException
      */
     protected function applyActions(ActionsCollection $actions, Ticket $ticket, $event_type)
     {
         $actions->apply($ticket->getTicketLogger(), $ticket, $this->getUser());
+
+        $validator = $this->get('validator');
+        $errors    = $validator->validate($ticket, [
+            new AppAssert\Ticket\TicketLayout(),
+        ]);
+
+        if ($errors->count() > 0) {
+            throw new ValidatorErrorsException($errors);
+        }
 
         $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), $event_type, 'api');
         $this->getTicketManager()->saveTicket($ticket, $context);

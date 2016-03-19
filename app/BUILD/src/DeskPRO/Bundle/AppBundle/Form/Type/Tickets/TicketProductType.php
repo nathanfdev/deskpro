@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,31 +29,24 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class PriorityType.
+ * Class TicketProductType.
  */
-class PriorityType extends AbstractType
+class TicketProductType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_priority';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getParent()
     {
-        return 'entity';
+        return 'entity_hierarchy';
     }
 
     /**
@@ -62,16 +55,11 @@ class PriorityType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'class'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
-            'property'      => 'title',
-            'empty_data'    => null,
-            'required'      => true,
-            'query_builder' => function (EntityRepository $repo) {
-                return $repo
-                    ->createQueryBuilder('p')
-                    ->select('p')
-                    ->addOrderBy('p.priority')
-                ;
+            'choice_list' => function (Options $options) {
+                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
+                $hierarchy_generator = $options['hierarchy_generator'];
+
+                return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
             },
         ]);
     }

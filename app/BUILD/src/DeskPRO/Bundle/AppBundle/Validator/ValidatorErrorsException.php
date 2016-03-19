@@ -26,26 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+namespace DeskPRO\Bundle\AppBundle\Validator;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
-use Symfony\Component\Validator\Constraint;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * Class LeafDepartment.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class ValidatorErrorsException.
  */
-class LeafDepartment extends Constraint
+class ValidatorErrorsException extends BadRequestHttpException
 {
-    public $message = ApiErrors::NOT_ASSIGNABLE_TICKET_DEPARTMENT;
+    /**
+     * @var ConstraintViolationListInterface
+     */
+    private $errors;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param ConstraintViolationListInterface $errors
+     * @param string                           $message
+     * @param int                              $code
      */
-    public function validatedBy()
+    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
     {
-        return 'leaf_department_validator';
+        parent::__construct($message, null, $code);
+
+        $this->errors = $errors;
     }
 }

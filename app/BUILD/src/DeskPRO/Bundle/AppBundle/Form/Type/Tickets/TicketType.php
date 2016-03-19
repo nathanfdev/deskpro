@@ -29,13 +29,27 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketPriority;
+use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints;
 
 /**
  * Class TicketType.
@@ -48,39 +62,54 @@ class TicketType extends ApiType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', 'text')
-            ->add('department', 'entity', [
-                'class'       => 'DeskPRO:Department',
-                'constraints' => [
-                    new LeafDepartment(),
-                ],
+            ->add('subject', TextType::class)
+            ->add('department', EntityType::class, [
+                'class' => Department::class,
             ])
-            ->add('parent_ticket', 'entity', ['class' => 'DeskPRO:Ticket'])
-            ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
-            ->add('category', 'entity', ['class' => 'DeskPRO:TicketCategory'])
-            ->add('priority', 'entity', ['class' => 'DeskPRO:TicketPriority'])
-            ->add('workflow', 'entity', ['class' => 'DeskPRO:TicketWorkflow'])
-            ->add('person', 'entity', ['class' => 'DeskPRO:Person'])
-            ->add('agent', 'entity', ['class' => 'DeskPRO:Person'])
-            ->add('agent_team', 'entity', ['class' => 'DeskPRO:AgentTeam'])
-            ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
-            ->add('status', 'text')
-            ->add('hidden_status', 'text')
-            ->add('is_hold', 'api_boolean')
-            ->add('urgency', 'number')
-            ->add('labels', 'api_labels_collection', [
+            ->add('parent_ticket', EntityType::class, [
+                'class' => Ticket::class,
+            ])
+            ->add('language', EntityType::class, [
+                'class' => Language::class,
+            ])
+            ->add('category', EntityType::class, [
+                'class' => TicketCategory::class,
+            ])
+            ->add('priority', EntityType::class, [
+                'class' => TicketPriority::class,
+            ])
+            ->add('workflow', EntityType::class, [
+                'class' => TicketWorkflow::class,
+            ])
+            ->add('person', EntityType::class, [
+                'class' => Person::class,
+            ])
+            ->add('agent', EntityType::class, [
+                'class' => Person::class,
+            ])
+            ->add('agent_team', EntityType::class, [
+                'class' => AgentTeam::class,
+            ])
+            ->add('organization', EntityType::class, [
+                'class' => Organization::class,
+            ])
+            ->add('status', TextType::class)
+            ->add('hidden_status', TextType::class)
+            ->add('is_hold', ApiBooleanType::class)
+            ->add('urgency', NumberType::class)
+            ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTicket::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'ticket',
             ])
-            ->add('cc', 'ticket_participants', [
+            ->add('cc', TicketParticipantsType::class, [
                 'owner'         => $builder->getData(),
                 'is_agent'      => false,
                 'property_path' => 'participants',
                 'required'      => false,
                 'view_type'     => 'array',
             ])
-            ->add('followers', 'ticket_participants', [
+            ->add('followers', TicketParticipantsType::class, [
                 'owner'         => $builder->getData(),
                 'is_agent'      => true,
                 'property_path' => 'participants',

@@ -26,26 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
-use Symfony\Component\Validator\Constraint;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+
+use Application\DeskPRO\Entity\TicketPriority;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class LeafDepartment.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class TicketPriorityType.
  */
-class LeafDepartment extends Constraint
+class TicketPriorityType extends AbstractType
 {
-    public $message = ApiErrors::NOT_ASSIGNABLE_TICKET_DEPARTMENT;
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return EntityType::class;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return 'leaf_department_validator';
+        $resolver->setDefaults([
+            'class'         => TicketPriority::class,
+            'property'      => 'title',
+            'empty_data'    => null,
+            'required'      => true,
+            'query_builder' => function (EntityRepository $repo) {
+                return $repo
+                    ->createQueryBuilder('p')
+                    ->select('p')
+                    ->addOrderBy('p.priority')
+                ;
+            },
+        ]);
     }
 }

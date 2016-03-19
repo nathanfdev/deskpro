@@ -25,6 +25,15 @@ services:
   ticket_layout_differ:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
 
+  ticket_with_layouts_helper:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketLayoutHelper
+    arguments:
+      - "@ticket_layout_differ"
+
+  ticket_field_settings:
+    class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
+
   form.html_textarea:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
     arguments: ["@deskpro.core.input_cleaner"]
@@ -55,26 +64,6 @@ services:
     arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type, alias: entity_hierarchy }
-
-  form.workflow:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\WorkflowType
-    tags:
-      - { name: form.type, alias: deskpro_workflow }
-
-  form.product:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ProductType
-    tags:
-      - { name: form.type, alias: deskpro_product }
-
-  form.priority:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\PriorityType
-    tags:
-      - { name: form.type, alias: deskpro_priority }
-
-  form.category:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CategoryType
-    tags:
-      - { name: form.type, alias: deskpro_category }
 
   form.person_email:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType
@@ -277,12 +266,6 @@ services:
     tags:
       - { name: form.type, alias: ticket_message_attachment_collection }
 
-  form.ticket_with_layouts_helper:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketLayoutHelper
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_layout_differ"
-
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:
@@ -292,7 +275,8 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@language_manager"
       - "@tickets.custom_per_field_manager"
-      - "@form.ticket_with_layouts_helper"
+      - "@ticket_with_layouts_helper"
+      - "@ticket_field_settings"
     tags:
       - { name: form.type, alias: ticket_with_layouts }
 
