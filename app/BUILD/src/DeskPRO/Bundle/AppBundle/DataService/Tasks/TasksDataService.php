@@ -59,8 +59,11 @@ class TasksDataService extends AbstractTasksDataService
             ->leftJoin('t.project', 'p')
             ->leftJoin('t.labels', 'l')
             ->leftJoin('t.linked_tickets', 'lt')
+            ->leftJoin('lt.ticket', 'ltt')
             ->leftJoin('t.linked_chats', 'lc')
+            ->leftJoin('lc.chat', 'lcc')
             ->leftJoin('t.linked_articles', 'la')
+            ->leftJoin('la.article', 'laa')
             ->andWhere('t.for_del <> 1')
             ->addGroupBy('t.id')
         ;

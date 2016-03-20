@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -93,9 +94,6 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
-            'linked_tickets',
-            'linked_chats',
-            'linked_articles',
             'date_done',
             'display_order',
         ];
@@ -156,6 +154,18 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'subtasks_done' => new CallbackDeferredProperty(
                 [$this, 'getSubtasksDone'],
                 [$id]
+            ),
+            'linked_tickets' => new CallbackDeferredProperty(
+                [$this, 'getLinkedTickets'],
+                [$data]
+            ),
+            'linked_chats' => new CallbackDeferredProperty(
+                [$this, 'getLinkedChats'],
+                [$data]
+            ),
+            'linked_articles' => new CallbackDeferredProperty(
+                [$this, 'getLinkedArticles'],
+                [$data]
             ),
         ];
     }
@@ -255,5 +265,47 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 ];
             }
         }
+    }
+
+    public function getLinkedTickets(Task $task)
+    {
+        $ret = [];
+        foreach ($task->getLinkedTickets() as $linkedTicket) {
+            $ticket = $linkedTicket->getTicket();
+            $ret[] = [
+                'id' => $ticket->getId(),
+                'subject' => $ticket->getSubject(),
+            ];
+        }
+
+        return $ret;
+    }
+
+    public function getLinkedChats(Task $task)
+    {
+        $ret = [];
+        foreach ($task->getLinkedChats() as $linkedChat) {
+            $chat = $linkedChat->getChat();
+            $ret[] = [
+                'id' => $chat->getId(),
+                'subject' => $chat->getSubjectLine(),
+            ];
+        }
+
+        return $ret;
+    }
+
+    public function getLinkedArticles(Task $task)
+    {
+        $ret = [];
+        foreach ($task->getLinkedArticles() as $linkedArticle) {
+            $article = $linkedArticle->getArticle();
+            $ret[] = [
+                'id' => $article->getId(),
+                'title' => $article->getTitle(),
+            ];
+        }
+
+        return $ret;
     }
 }

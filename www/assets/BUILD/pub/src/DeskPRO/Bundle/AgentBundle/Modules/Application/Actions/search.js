@@ -1,8 +1,6 @@
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { createAction } from 'Ampliflux';
 
-export const quickSearchResetAction = createAction('APP_SEARCH_RESET');
-
 export const quickSearchAction = createAction(
   'APP_SEARCH',
   (data) => {
