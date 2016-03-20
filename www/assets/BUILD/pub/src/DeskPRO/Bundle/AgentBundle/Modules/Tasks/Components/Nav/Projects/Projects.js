@@ -86,7 +86,8 @@ export class Projects extends React.Component {
 
         <Detached isOpen={this.state.project}
                   positionTarget={this}
-                  positionAt="right+5 top-6">
+                  positionAt="right+5 top-6"
+                  collision="fit">
 
           <ClickOut onClickOut={this.onEdit.bind(this, null)}>
             <ProjectFormContainer project={project}

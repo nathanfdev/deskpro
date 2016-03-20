@@ -2,21 +2,25 @@ import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { CardWidget } from './CardWidget';
+import { CardWidget, SearchResults } from './index';
+import { quickSearchAction, quickSearchResetAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/search';
+import { QuickSearchResultsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/QuickSearchResultsContainer';
+import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class LinkedItem extends CardWidget {
 
   static propTypes = {
-    value: PropTypes.number,
+    value: PropTypes.object,
 
     openBySingleClick: PropTypes.bool,
     onSetEditing: PropTypes.func,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
 
-    // todo: probably we want to have searching wrappers here instead of parts of state
     tickets: PropTypes.object,
     chats: PropTypes.object,
-    articles: PropTypes.object
+    articles: PropTypes.object,
+
+    dispatch: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -52,6 +56,36 @@ export class LinkedItem extends CardWidget {
       || !Immutable.is(this.state.value, state.value);
   }
 
+  onOpen = () => {
+    if (this.state.isOpen) return;
+    this.setState({isOpen: true});
+    this.props.onSetEditing && this.props.onSetEditing(true);
+    this.props.dispatch(quickSearchResetAction);
+  };
+
+  doSearch = (val) => {
+    if (this._isSearching) return;
+    if (this._recentSearch === val) return;
+    this._recentSearch = val;
+    const type = ['ticket', 'article', 'chat_conversation'];
+    this.props.dispatch(quickSearchAction({type: type, query: val}));
+  };
+
+  onChange = (event) => {
+    const val = event.target.value;
+    this._search = val;
+    this.doSearch(val);
+  };
+
+  onStartSearch = () => {
+    this._isSearching = true;
+  };
+
+  onStopSearch = () => {
+    this._isSearching = false;
+    this.doSearch(this._search);
+  };
+
   render() {
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
     const v = this.state.value;
@@ -65,7 +99,6 @@ export class LinkedItem extends CardWidget {
     } else if (count > 1) {
       title = count + ' linked items';
     }
-
 
     return (
       <div style={{display: 'inline-block', maxWidth: '30%'}}>
@@ -82,12 +115,25 @@ export class LinkedItem extends CardWidget {
                     zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose}
+                    onClick={this.test}
                     additionalNodes={[this.refs.button, 'popup']}>
             <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
-                    Don't have a design yet!
+
+                    <input type="text" onChange={this.onChange} />
+
+                    <div style={{height: 50, overflowY: 'scroll', position: 'relative'}}>
+                      <LoadIndicator selector={state => state.Application.search.get('searching')}
+                                     onStartLoading={this.onStartSearch}
+                                     onStopLoading={this.onStopSearch}>
+                        <QuickSearchResultsContainer>
+                          <SearchResults />
+                        </QuickSearchResultsContainer>
+                      </LoadIndicator>
+                    </div>
+
                   </div>
                 </div>
               </div>

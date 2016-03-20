@@ -2,16 +2,13 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import Immutable from 'immutable';
-import { setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const createProject = createAction(
   'TASKS_NAV_POST_PROJECT',
   data => (dispatch, getState) => api.sendPost('DP_API/projects', data).success((response) => {
     const project = Immutable.fromJS(response.data);
-    let projects = collectionSelectorFactory('Project', 'all')(getState());
-    projects = projects.set(project.get('id'), project);
-    dispatch(releaseCollection('Project', 'all'));
-    dispatch(setCollection('Project', 'all', projects));
+    dispatch(addToCollection('Project', 'all', Immutable.List([project])));
   })
 );
 

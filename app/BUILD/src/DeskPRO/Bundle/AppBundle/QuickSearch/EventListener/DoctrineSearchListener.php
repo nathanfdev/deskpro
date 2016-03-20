@@ -98,7 +98,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb
             ->select('t.id')
             ->from('DeskPRO:Ticket', 't')
-            ->setMaxResults(100)
+            ->setMaxResults($request->getLimit())
             ->orderBy('t.id', 'desc')
             ->where('t.id >= :after_id')
             ->setParameter('after_id', $this->getMinTicketId())
