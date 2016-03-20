@@ -33,14 +33,14 @@ export class QuickSearchResultsContainer extends React.Component {
     const empty = Immutable.fromJS([]);
 
     const results = {
-      tickets: (this.state.results.get('ticket') || empty).valueSeq(),
-      articles: (this.state.results.get('article') || empty).valueSeq(),
-      chats: (this.state.results.get('chat_conversation') || empty).valueSeq(),
-      downloads: (this.state.results.get('download') || empty).valueSeq(),
-      feedbacks: (this.state.results.get('feedback') || empty).valueSeq(),
-      news: (this.state.results.get('news') || empty).valueSeq(),
-      person: (this.state.results.get('person') || empty).valueSeq(),
-      organization: (this.state.results.get('organization') || empty).valueSeq()
+      tickets: this.state.results.get('ticket') || empty,
+      articles: this.state.results.get('article') || empty,
+      chats: this.state.results.get('chat_conversation') || empty,
+      downloads: this.state.results.get('download') || empty,
+      feedbacks: this.state.results.get('feedback') || empty,
+      news: this.state.results.get('news') || empty,
+      person: this.state.results.get('person') || empty,
+      organization: this.state.results.get('organization') || empty
     };
 
 

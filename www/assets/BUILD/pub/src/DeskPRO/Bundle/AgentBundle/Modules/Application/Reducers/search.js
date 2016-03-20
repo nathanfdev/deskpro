@@ -26,8 +26,7 @@ export default createReducer(initialState, {
 
       const results = payload.data.grouped_results || [];
 
-      for (let i = 0; i < results.length; i++) {
-        const group = results[i];
+      for (let group of results) {
         state = state.setIn(['results', group.type], Immutable.fromJS(group.results));
       }
 

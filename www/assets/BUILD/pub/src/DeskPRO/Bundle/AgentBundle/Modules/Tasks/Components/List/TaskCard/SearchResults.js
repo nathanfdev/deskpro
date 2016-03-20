@@ -20,38 +20,39 @@ export class SearchResults extends React.Component {
     return (
       <div>
         {tickets.size && [
-          <h4>Tickets</h4>,
-          <ul>
-            {tickets.valueSeq().map((ticket) =>
-              <li key={ticket.get('id')} onClick={this.onClick.bind(this, 'ticket', ticket.get('id'))}>
+          <h4 key="title">Tickets</h4>,
+          <ul key="elements">
+            {tickets.map((ticket) => {
+              return (<li key={ticket.get('id')} onClick={this.onClick.bind(this, 'ticket', ticket.get('id'))}>
                 {ticket.get('subject')}
-              </li>
+              </li>);
+              }
             )}
           </ul>
-        ]}
+        ] || null}
 
         {articles.size && [
-          <h4>Articles</h4>,
-          <ul>
-            {articles.valueSeq>articles.valueSeq().map((article) =>
+          <h4 key="title">Articles</h4>,
+          <ul key="elements">
+            {articles.map((article) =>
               <li key={article.get('id')} onClick={this.onClick.bind(this, 'article', article.get('id'))}>
                 Article
               </li>
             )}
           </ul>
-        ]}
+        ] || null}
 
 
         {chats.size && [
-          <h4>Chats</h4>,
-          <ul>
-            {chats.valueSeq().map((chat) =>
+          <h4 key="title">Chats</h4>,
+          <ul key="elements">
+            {chats.map((chat) =>
               <li key={chat.get('id')} onClick={this.onClick.bind(this, 'chat', chat.get('id'))}>
                 Chat
               </li>
             )}
           </ul>
-        ]}
+        ] || null}
       </div>
     );
   }
