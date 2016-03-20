@@ -1,5 +1,7 @@
 services:
 
+  # common
+
   api_serializer.handler.entity:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\EntityHandler
     tags:
@@ -15,10 +17,17 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.custom_data:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
+  api_serializer.handler.closure:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DeferredHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
+
+
+  # entities
+  api_serializer.handler.custom_data:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.contact_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContactDataHandler
@@ -46,6 +55,8 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+
+  # models
   api_serializer.model_factory:
     class: DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory
     arguments:
@@ -57,11 +68,17 @@ services:
       - "@avatar_resolver"
       - "@data.agent"
 
+  # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@api_serializer.model_factory"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.deferred_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\DeferredPropertiesListener
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
