@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,59 +37,94 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
+ * @JMS\ExclusionPolicy("all")
  */
 class TaskComment implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique ID.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Expose()
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var Person
+     * Person created comment.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Expose()
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
      * @Assert\Valid()
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var \DateTime
+     * DateTime when comment was created.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Expose()
+     *
      * @ORM\Column(type="datetime")
      * @Assert\NotNull()
+     *
+     * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * @var string
+     * Comment content.
+     *
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     *
+     * @var string
      */
     protected $comment;
 
     /**
-     * @var Task
+     * Task with which this comment is associated.
+     *
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     * @JMS\Expose()
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
      * @Assert\Valid()
+     *
+     * @var Task
      */
     protected $task;
 
     /**
-     * @var TaskAttachment[]|ArrayCollection
+     * @JMS\Exclude()
+     *
      * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
+     *
+     * @var TaskAttachment[]|ArrayCollection
      */
     protected $attachments;
 
