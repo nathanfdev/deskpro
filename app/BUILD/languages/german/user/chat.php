@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ return array(
     'user.chat.log_chat-id'                     => 'Chat ID',
     'user.chat.log_created-date'                => 'Erstellt {{date}}',
     'user.chat.log_fields_agent'                => 'Agent',
-    'user.chat.log_fields_department'           => 'Bereich',
+    'user.chat.log_fields_department'           => 'Abteilung',
     'user.chat.log_message_author-you'          => 'Sie',
     'user.chat.log_nav-view-chats'              => 'Betrachten Sie ihr letztes Chat Log|Betrachten Sie ihre {{count}} Chat Logs',
     'user.chat.log_no_department'               => 'Kein Bereich',

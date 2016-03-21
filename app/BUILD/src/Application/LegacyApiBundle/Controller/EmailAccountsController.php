@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -131,6 +131,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             }
         } else {
             $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+
+            if ($this->settings->get('internal.disable_email_editing.new')) {
+                throw $this->createNotFoundException();
+            }
         }
 
         $edit_account = new EditEmailAccount($account);
@@ -154,7 +158,12 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         $form->submit($data);
-        $edit_account->apply();
+
+        if ($this->settings->get('internal.disable_email_editing.incoming_details')) {
+            $edit_account->apply(false);
+        } else {
+            $edit_account->apply();
+        }
 
         $this->em->persist($account);
         $this->em->flush();

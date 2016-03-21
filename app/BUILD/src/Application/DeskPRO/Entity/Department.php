@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -624,6 +625,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => null,
                  'inversedBy'   => 'children',
+                 'fetch'        => ClassMetadataInfo::FETCH_EAGER,
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'parent_id',
@@ -658,6 +660,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'mappedBy'     => null,
             'inversedBy'   => null,
+            'fetch'        => ClassMetadataInfo::FETCH_EAGER,
             'joinColumns'  => array(
                 0 => array(
                     'name'                 => 'avatar_blob_id',

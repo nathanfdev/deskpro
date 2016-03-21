@@ -26,6 +26,10 @@ var DP = {
 	rteTextarea: function(field, options) {
 
 		options = options || {};
+		options.extended_valid_elements =
+			'iframe[align<bottom?left?middle?right?top|class|frameborder|height|id'
+			+'|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style'
+			+'|title|width|webkitallowfullscreen|mozallowfullscreen|allowfullscreen]';
 
 		if (!field) {
 			return;

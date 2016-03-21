@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,9 +66,10 @@ class DepartmentPermission extends AbstractEntityRepository
             $this->cache_by_agent = array();
             $this->cache_by_group = array();
 
-            $q = $this->_em->getConnection()->query('
+            $q = App::getContainer()->getDbRead()->query('
                 SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
                 FROM department_permissions dp
+                WHERE is_active = 1
             ');
 
             while ($rec = $q->fetch()) {

@@ -66,7 +66,7 @@
         {{ macro.perm_row('ticket', 'modify_billing_own', {toggleName: 'ticket.modify_own'}) }}
     {% endif %}
     {{ macro.perm_row('ticket', 'modify_messages_own') }}
-    {{ macro.perm_row('ticket', 'delete_own') }}
+    {{ macro.perm_row('ticket', 'delete_own', {destructive: true}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'reply_to_followed',                  {first: true}) }}
@@ -94,7 +94,7 @@
         {{ macro.perm_row('ticket', 'modify_billing_followed', {toggleName: 'ticket.modify_followed'}) }}
     {% endif %}
     {{ macro.perm_row('ticket', 'modify_messages_followed') }}
-    {{ macro.perm_row('ticket', 'delete_followed') }}
+    {{ macro.perm_row('ticket', 'delete_followed', {destructive: true}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'view_unassigned',                       {first: true}) }}
@@ -123,7 +123,7 @@
         {{ macro.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
     {% endif %}
     {{ macro.perm_row('ticket', 'modify_messages_unassigned') }}
-    {{ macro.perm_row('ticket', 'delete_unassigned') }}
+    {{ macro.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'view_others',                      {first: true}) }}
@@ -152,7 +152,7 @@
         {{ macro.perm_row('ticket', 'modify_billing_others', {toggleName: 'ticket.modify_others'}) }}
     {% endif %}
     {{ macro.perm_row('ticket', 'modify_messages_others') }}
-    {{ macro.perm_row('ticket', 'delete_others') }}
+    {{ macro.perm_row('ticket', 'delete_others', {destructive: true}) }}
     </tbody>
 </table>
 {# /TICKET PERMISSIONS #}
@@ -168,7 +168,7 @@
     {{ macro.perm_row('people', 'reset_password') }}
     {{ macro.perm_row('people', 'create_labels') }}
     {{ macro.perm_row('people', 'notes') }}
-    {{ macro.perm_row('people', 'delete') }}
+    {{ macro.perm_row('people', 'delete', {destructive: true}) }}
     {{ macro.perm_row('people', 'disable') }}
     {{ macro.perm_row('people', 'login_as') }}
     {{ macro.perm_row('people', 'merge') }}
@@ -178,7 +178,7 @@
     {{ macro.perm_row('org', 'edit') }}
     {{ macro.perm_row('org', 'notes') }}
     {{ macro.perm_row('org', 'create_labels') }}
-    {{ macro.perm_row('org', 'delete') }}
+    {{ macro.perm_row('org', 'delete', {destructive: true}) }}
     </tbody>
 </table>
 {# /PEOPLE PERMISSIONS #}
@@ -192,7 +192,7 @@
             {{ macro.perm_row('chat', 'view_unassigned') }}
             {{ macro.perm_row('chat', 'view_others') }}
             {{ macro.perm_row('chat', 'create_labels') }}
-            {{ macro.perm_row('chat', 'delete') }}
+            {{ macro.perm_row('chat', 'delete', {destructive: true}) }}
             </tbody>
         </table>
     {% endif %}
@@ -202,7 +202,7 @@
 <table class="table table-hover" dp-tab-body="main.perms.publish">
     <tbody>
     {{ macro.perm_row('publish', 'create') }}
-    {{ macro.perm_row('publish', 'delete') }}
+    {{ macro.perm_row('publish', 'delete', {destructive: true}) }}
     {{ macro.perm_row('publish', 'edit') }}
     {{ macro.perm_row('publish', 'can_insert_html') }}
     {{ macro.perm_row('publish', 'validate') }}

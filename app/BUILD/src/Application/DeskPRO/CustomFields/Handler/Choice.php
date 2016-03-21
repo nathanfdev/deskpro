@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -245,8 +246,12 @@ class Choice extends HandlerAbstract
         }
 
         $field_opts = array(
-            'choices'     => $choices,
-            'required'    => $required,
+            'choices' => $choices,
+            // no required for radios because it adds required="required" to HTML,
+            // and if they're hidden, Chrome will error-out because it cant focus the element
+            // - Its ONLY radios (checks, selects, etc are ok), and ONLY on certain versions of Chrome
+            // Note: this is properly fixed anyway in new-portal because the field isnt in the <form> at all
+            'required'    => $required && !($this->expanded && !$this->multiple),
             'multiple'    => $this->multiple,
             'expanded'    => $this->expanded,
             'empty_value' => $empty_val,
@@ -370,9 +375,28 @@ class Choice extends HandlerAbstract
         return array();
     }
 
+    public function renderFormHtml($formView, array $template_vars = array())
+    {
+        // In the agent interface, we render single instances of forms many times
+        // and that screws up the IDs used in the markup
+
+        // we need this hack to generate unique IDs for expanded choice fields
+        // see also Application/DeskPRO/Resources/views/Form/form_div_layout.html.twig - choice_widget_expanded
+
+        $html = parent::renderFormHtml($formView, $template_vars);
+
+        if ($this->expanded) {
+            $rand_id = uniqid('dp_').'_';
+            $html    = preg_replace('#<label([^>]+)for="DP_BASE_ID_#', '<label$1for="'.$rand_id, $html);
+            $html    = preg_replace('#<input([^>]+)id="DP_BASE_ID_#', '<input$1id="'.$rand_id, $html);
+        }
+
+        return $html;
+    }
+
     public function getSearchCapabilities()
     {
-        return array('is', 'not');
+        return array('is', 'not', 'isset', 'not_isset');
     }
 
     public function getFilterCapabilities()

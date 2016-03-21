@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace deskpro_salesforce\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -70,6 +71,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
+        libxml_disable_entity_loader(false);
+
         $user     = $context->getIn()->getString('api_user');
         $password = $context->getIn()->getString('api_password');
         $token    = $context->getIn()->getString('api_security_token');
@@ -115,6 +118,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 $sforce->createConnection(DP_ROOT.'/vendor-src/salesforce/partner.wsdl.xml');
             } catch (\Exception $e) {
                 $log[] = 'Failed to create partner client';
+                $log[] = $e->getMessage();
 
                 return;
             }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -251,6 +251,9 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
                 $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
+
+                // Need to clear CSS blobs too, since the URLs will change
+                \Application\DeskPRO\Style\RefreshStylesheets::refresh(App::$container);
 
                 break;
         }

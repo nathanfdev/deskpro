@@ -25,7 +25,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		}
 
 		if (!this.options.triggerElement) {
-			this.options.triggerElement = $('.display-options-trigger', this.getWrapperElement());
+			this.options.triggerElement = $('.display-options-trigger', this.page.wrapper);
 		}
 
 		$(this.options.triggerElement).on('click', (function(ev) {
@@ -35,8 +35,8 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		}).bind(this));
 
 		// Automatically set up the quick sort menu button
-		var menuBtn = $('button.order-by-trigger', this.getWrapperElement());
-		var menuEl  = $('ul.order-by-menu', this.getWrapperElement());
+		var menuBtn = $('.order-by-menu-trigger button', this.page.wrapper);
+		var menuEl  = $('ul.order-by-menu', this.page.wrapper);
 		if (menuBtn.length && menuEl.length) {
 			this.orderByMenu = new DeskPRO.UI.Menu({
 				triggerElement: menuBtn,

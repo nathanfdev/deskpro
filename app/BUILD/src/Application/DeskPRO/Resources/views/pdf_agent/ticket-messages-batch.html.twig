@@ -10,7 +10,7 @@
     </table>
     <hr />
     <span class="ticket_content "{% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>
-        {{ message.message_html|raw }}
+        {{ message.getMessageHtml(false)|raw }}
     </span>
 </div>
 {% endfor %}

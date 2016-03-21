@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,6 +78,7 @@ return array(
     'agent.twitter.protected'                     => 'Protégé',
     'agent.twitter.replies'                       => 'Réponses',
     'agent.twitter.retweet'                       => 'Retweeter',
+    'agent.twitter.retweet_as_is'                 => 'Retweeter tel quel',
     'agent.twitter.retweet_of'                    => 'Retweet de',
     'agent.twitter.retweet_with_edit'             => 'Retweeter avec édition',
     'agent.twitter.retweeted'                     => 'Retweeté',

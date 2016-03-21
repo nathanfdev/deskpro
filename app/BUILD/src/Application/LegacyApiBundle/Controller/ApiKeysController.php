@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiKey;
@@ -43,7 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/api_keys",
  * 	description="Operations about API Keys",
  * 	basePath="/api/api_keys"
@@ -70,7 +71,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/api_keys",
      * 	SWG\Operation(
      * 		method="GET",
@@ -97,7 +98,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/api_keys/{id}",
      * 	SWG\Operation(
      * 		method="GET",

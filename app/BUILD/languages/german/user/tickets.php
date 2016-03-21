@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -109,9 +109,9 @@ return array(
     'user.tickets.resolve_my_ticket_btn'               => 'Mein Ticket auflösen',
     'user.tickets.resolve_my_ticket_send_feedback_btn' => 'Mein Ticket auflösen und Feedback senden',
     'user.tickets.resolve_ticket'                      => 'Ticket auflösen:{{subject}}',
-    'user.tickets.resolve_ticket_explain'              => 'Sind Sie sicher dass Sie Ihr Ticket auflösen wollen? Sobald Ihr Ticket aufgelöst wurde werden unsere Agenten nicht mehr reagieren.',
+    'user.tickets.resolve_ticket_explain'              => 'Sind Sie sicher dass Sie Ihr Ticket auf gelöst setzen wollen? Sobald Ihr Ticket gelöst wurde, werden unsere Agenten nicht mehr reagieren.',
     'user.tickets.status_open'                         => 'Offen',
-    'user.tickets.status_resolved'                     => 'Aufgelöst',
+    'user.tickets.status_resolved'                     => 'Gelöst',
     'user.tickets.subject'                             => 'Betreff',
     'user.tickets.submit'                              => 'Absenden',
     'user.tickets.thank_you'                           => 'Danke',
@@ -120,7 +120,7 @@ return array(
     'user.tickets.this_did_not_answer_my_question'     => 'Das hat meine Frage nicht beantwortet',
     'user.tickets.ticket_ref'                          => 'Ticket Ref',
     'user.tickets.ticket_starter'                      => 'Ticket Starter',
-    'user.tickets.ticket_was_closed'                   => 'Ihr Ticket wurde erfolgreich aufgelöst',
+    'user.tickets.ticket_was_closed'                   => 'Ihr Ticket wurde erfolgreich gelöst',
     'user.tickets.tickets'                             => 'Tickets',
     'user.tickets.title'                               => 'Kontaktieren Sie uns',
     'user.tickets.title_links_safe'                    => 'Keine Sorge, Sie können auf einen Titel klicken und Sie bleiben auf dieser Seite.',

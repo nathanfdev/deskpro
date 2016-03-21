@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Operations about activity.
  *
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/activity",
  * 	description="Operations about activity",
  * 	basePath="/api"
@@ -54,15 +54,15 @@ class ActivityController extends AbstractController
      *
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/activity/{since}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get activity since given time",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="since",
      *				description="Since what time",
      *				paramType="path",
@@ -111,15 +111,15 @@ class ActivityController extends AbstractController
     /**
      * @throws \Exception
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/activity/dismiss",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Dismiss activities by their IDs",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
      *				name="dismiss_ids",
      *				description="Escalation ID",
      *				paramType="path",

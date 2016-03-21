@@ -5,5 +5,5 @@
 {% endif %}
 
 {% for message in messages %}
-	{{ message.message_html|raw }}
+	{{ message.getMessageHtml(false)|raw }}
 {% endfor %}

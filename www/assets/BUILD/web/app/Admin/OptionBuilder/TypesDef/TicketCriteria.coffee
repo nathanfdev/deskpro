@@ -1080,7 +1080,7 @@ define [
     getCheckOrgId: (options = {}) ->
       options.propName = 'id'
       options.operators = ['is', 'not', 'isset', 'not_isset']
-      options.url = '/organizations/quick_search'
+      options.url = '/organizations'
       options.map = (data) ->
         id: data.organization?.id
         name: data.organization?.name
@@ -1089,7 +1089,12 @@ define [
         formatResult: format
         formatSelection: format
         ajax:
-          data: (term, page) -> { query: term, limit: 10 }
+          data: (term, page) -> { name: term, limit: 10 }
+          results: (data, page) ->
+            results = []
+            for k, v of data.data?.organizations
+              results.push {id: v.id, name: v.name}
+            return {results: results}
       @getRemoteInput options
 
     getCheckOrgLabel: (options = {}) ->

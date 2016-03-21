@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
@@ -290,6 +291,7 @@ abstract class AbstractBuild
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
 
             $logger->info('BEGIN: LIVE');
+            $logger->debug('Command: '.str_replace($params['{db_pass}'], '***', $cmd_exec));
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
             $proc->run(function ($type, $data) use ($logger) {

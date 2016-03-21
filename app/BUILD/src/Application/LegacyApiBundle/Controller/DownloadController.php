@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/downloads",
  * 	description="Operations about Downloads",
  * 	basePath="/api"
@@ -53,7 +53,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DownloadController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/downloads",
      * 	SWG\Operation(
      * 		method="GET",
@@ -209,7 +209,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/downloads",
      * 	SWG\Operation(
      * 		method="POST",
@@ -347,7 +347,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/downloads/{download_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -375,7 +375,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/downloads/{download_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -515,7 +515,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -545,7 +545,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -573,7 +573,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/comments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -648,7 +648,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -686,7 +686,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -764,7 +764,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -807,7 +807,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -834,7 +834,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -880,7 +880,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -917,7 +917,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/{download_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -954,7 +954,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/validating-comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -978,7 +978,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -994,7 +994,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1094,7 +1094,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1120,7 +1120,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1196,7 +1196,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1226,7 +1226,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}/downloads",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1307,7 +1307,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1333,7 +1333,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1391,7 +1391,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1432,7 +1432,7 @@ class DownloadController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/download/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="DELETE",

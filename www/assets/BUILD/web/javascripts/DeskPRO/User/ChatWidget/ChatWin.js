@@ -473,14 +473,27 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			data: formData,
 			dataType: 'json',
 			success: function(data) {
-				if (!data) {
+				var any = false, fieldRow;
+
+				if (data) {
+					for (var i in data) {
+						if (data.hasOwnProperty(i)) {
+							try {
+								fieldRow = $('#fields_container > div.chat_' + i + ' > div:first');
+								if (fieldRow[0]) {
+									fieldRow.append('<span class="error" style="color: red;">' + data[i] + '</span>');
+									any = true;
+								}
+							} catch (e) {
+							}
+						}
+					}
+				}
+
+				if (!any) {
 					this.sendMessage('', formData, { starting: true });
 					this.startFindingAgent();
 					return $('#dp_chat_start').hide();
-				}
-
-				for (var i in data) {
-					$('#fields_container > div.chat_' + i + ' > div:first').append('<span class="error" style="color: red;">' + data[i] + '</span>');
 				}
 			}
 		});

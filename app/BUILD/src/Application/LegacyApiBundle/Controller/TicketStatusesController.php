@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 /**
  * All you wanted to know about ticket statuses but frightened to ask!
  *
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/ticket_statuses",
  * 	description="Operations about Ticket status",
  * 	basePath="/api"
@@ -64,7 +64,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/stats",
      * 	SWG\Operation(
      * 		method="GET",
@@ -105,7 +105,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/archived",
      * 	SWG\Operation(
      * 		method="GET",
@@ -135,7 +135,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/archived/settings",
      * 	SWG\Operation(
      * 		method="POST",
@@ -150,7 +150,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *				required=true,
      *				type="boolean"
      *			),
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When tickets have to be archived?",
      *				paramType="query",
@@ -180,7 +180,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/archived/reset-search-tables",
      * 	SWG\Operation(
      * 		method="GET",
@@ -203,7 +203,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/deleted",
      * 	SWG\Operation(
      * 		method="GET",
@@ -230,7 +230,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *
      * @return response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/deleted/purge",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -256,14 +256,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/deleted/settings",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Save deleted tickets autopurge settings",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When tickets have to be pruged automatically?",
      *				paramType="query",
@@ -286,7 +286,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     ####################################################################################################################
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/spam",
      * 	SWG\Operation(
      * 		method="GET",
@@ -313,7 +313,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *
      * @return response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket_statuses/spam/purge",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -339,14 +339,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     /**
      * @return response
      *
-     * SWG\Api(
+     * @SWG\Api(
      *  path="/ticket_statuses/spam/settings",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Save spam autopurge settings",
      * 		notes="",
      *		type="array",
-     *      SWG\Parameter(
+     *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When spam tickets have to be pruged automatically?",
      *				paramType="query",

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/organization",
  * 	description="Operations about Organization",
  * 	basePath="/api"
@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class OrganizationController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization",
      * 	SWG\Operation(
      * 		method="GET",
@@ -202,7 +202,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization",
      * 	SWG\Operation(
      * 		method="POST",
@@ -358,7 +358,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -386,7 +386,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -479,7 +479,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -508,7 +508,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/picture",
      * 	SWG\Operation(
      * 		method="GET",
@@ -550,7 +550,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/picture",
      * 	SWG\Operation(
      * 		method="POST",
@@ -620,7 +620,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/picture",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -650,7 +650,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/activity-stream",
      * 	SWG\Operation(
      * 		method="GET",
@@ -699,7 +699,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/members",
      * 	SWG\Operation(
      * 		method="GET",
@@ -785,7 +785,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/tickets",
      * 	SWG\Operation(
      * 		method="GET",
@@ -871,7 +871,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/chats",
      * 	SWG\Operation(
      * 		method="GET",
@@ -953,7 +953,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/notes",
      * 	SWG\Operation(
      * 		method="GET",
@@ -981,7 +981,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/notes",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1030,7 +1030,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/notes/{note_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1068,7 +1068,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/billing-charges",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1120,7 +1120,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1162,7 +1162,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1211,7 +1211,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains/{domain}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1252,7 +1252,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains/{domain}/move-users",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1291,7 +1291,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains/{domain}/move-taken-users",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1330,7 +1330,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/email-domains/{domain}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1369,7 +1369,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/contact-details",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1395,7 +1395,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/contact-details",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1483,7 +1483,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/contact-details/{contact_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1522,7 +1522,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/contact-details/{contact_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1564,7 +1564,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/groups",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1590,7 +1590,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/groups",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1653,7 +1653,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/groups/{usergroup_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1692,7 +1692,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/groups/{usergroup_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1737,7 +1737,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1763,7 +1763,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1808,7 +1808,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1845,7 +1845,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/{organization_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1882,7 +1882,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/fields",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1899,7 +1899,7 @@ class OrganizationController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/organization/fields",
      * 	SWG\Operation(
      * 		method="GET",

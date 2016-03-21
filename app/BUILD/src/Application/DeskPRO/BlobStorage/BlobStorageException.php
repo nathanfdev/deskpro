@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\BlobStorage;
+
+use Exception;
+use Orb\Util\Util;
 
 class BlobStorageException extends \Exception
 {
@@ -47,4 +51,20 @@ class BlobStorageException extends \Exception
     const FAILED_RESOURCE_WRITE  = 1100;
     const FAILED_RESOURCE_DELETE = 1200;
     /**#@-*/
+
+    /**
+     * BlobStorageException constructor.
+     *
+     * @param string    $message
+     * @param int       $code
+     * @param Exception $previous
+     */
+    public function __construct($message, $code, Exception $previous = null)
+    {
+        if ($previous) {
+            $message .= ' -- '.$previous->getMessage().' ['.implode('.', Util::getClassnameParts($previous)).':'.$previous->getCode().']';
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
 }

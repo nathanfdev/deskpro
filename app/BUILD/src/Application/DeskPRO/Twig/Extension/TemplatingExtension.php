@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Templating
  */
+
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
@@ -1786,54 +1787,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function js_error_tracking($loc, array $options = array())
     {
-        if ($this->getContainer()->isDebug()) {
-            if (!defined('DP_USE_JS_LOGGER')) {
-                return '';
-            }
-        }
-
-        if (defined('DPC_IS_CLOUD')) {
-            return '';
-        }
-
-        $sid = '';
-        if ($this->getContainer()->isDebug()) {
-            $sid .= 'DEV-';
-        }
-        if (defined('DP_BUILD_TIME')) {
-            $sid .= '#'.DP_BUILD_TIME.'-';
-        } else {
-            $sid .= '#0-';
-        }
-        if (defined('DP_REQUEST_ID')) {
-            $sid .= DP_REQUEST_ID;
-        } else {
-            $sid .= 'unknown';
-        }
-
-        $version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
-
-        /** @var \Symfony\Component\Asset\Packages $helper */
-        $helper = $this->getContainer()->get('assets.packages');
-
-        $src = $helper->getUrl('vendor/trackjs/tracker.js');
-
-        $html = <<<HTML
-<script type="text/javascript">
-window.onerror = function () {};
-window.onerror = null;
-window._trackJs = {
-    sessionId: '$sid',
-    token: '4eebe4aa1bc2404e89fc4250152d18a0',
-    version: '$version',
-    console: { enabled: true, display: true, error: true },
-    network: { error: false }
-};
-</script>
-<script type="text/javascript" src="$src" data-token="4eebe4aa1bc2404e89fc4250152d18a0"></script>
-HTML;
-
-        return $html;
+        return '';
     }
 
     public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = array())

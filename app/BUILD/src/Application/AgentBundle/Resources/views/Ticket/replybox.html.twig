@@ -297,19 +297,31 @@
 					{% else %}
 						{% set assign_opt = 'core_tickets.reply_assign_unassigned' %}
 					{% endif %}
+					{% set keep_assign = not app.getSetting(assign_opt) %}
 					<div class="inner-cell" style="padding-left: 11px;">
-						<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
+						<input type="checkbox" name="options[do_assign_agent]" id="{{replyBaseId}}_agent_sel_check" {% if not keep_assign %}checked="checked"{% endif %} />
 						<label for="{{replyBaseId}}_agent_sel_check">{{ phrase('agent.general.agent') }}:&nbsp;</label>
-					</div><div class="inner-cell" style="position: relative;">
+					</div>
+					<div class="inner-cell" style="position: relative;">
 						<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
 						<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
-							<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me">{{ phrase('agent.general.me') }}</option>
-							{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
-							{% for agent in agents if agent.id != app.user.id %}
-								<option {% if (not app.getSetting(assign_opt) and agent.id == ticket.agent.id) or (app.getSetting(assign_opt) == 'assign' and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
-									{{ agent.display_name }}
+							{% if ticket_perms.modify_assign_self %}
+								<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me" selected>
+									{{ phrase('agent.general.me') }}
 								</option>
+							{% endif %}
+							{% for agent in agents %}
+								{% if agent.id != app.user.id and ticket_perms.modify_assign_agent %}
+									<option {% if (keep_assign and not ticket_perms.modify_assign_self and ticket.agent == agent) or (not keep_assign and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(15) }}" data-name-short="{{ agent.getDisplayContactShort(3) }}" value="{{ agent.id }}">
+										{{ agent.display_name }}
+									</option>
+								{% endif %}
 							{% endfor %}
+							{% if ticket_perms.modify_assign_agent %}
+								<option value="0" data-icon="{{ asset('images/agent/icons/bullet_red.png') }}" data-name-short="Un.">
+									{{ phrase('agent.general.unassigned') }}
+								</option>
+							{% endif %}
 						</select>
 					</div>
 				</div>

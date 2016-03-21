@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Model;
+
+use Orb\Util\Strings;
 
 class TextField extends CustomFieldAbstract
 {
@@ -96,10 +99,7 @@ class TextField extends CustomFieldAbstract
             $field->setOption('max_length', $this->max_length);
             $field->setOption('regex', null);
         } elseif ($this->regex) {
-            // No delims
-            if ($this->regex[0] != substr($this->regex, -1, 1)) {
-                $this->regex = '/'.$this->regex.'/';
-            }
+            $this->regex = Strings::getInputRegexPattern($this->regex);
 
             $this->validation_type = 'regex';
             $field->setOption('required', null);
@@ -123,10 +123,7 @@ class TextField extends CustomFieldAbstract
         } elseif ($this->agent_regex) {
             $this->agent_validation_type = 'regex';
 
-            // No delims
-            if ($this->agent_regex[0] != substr($this->agent_regex, -1, 1)) {
-                $this->agent_regex = '/'.$this->agent_regex.'/';
-            }
+            $this->regex = Strings::getInputRegexPattern($this->regex);
 
             $field->setOption('agent_required', null);
             $field->setOption('agent_regex', $this->agent_regex);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -380,6 +380,8 @@ class OrganizationSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field_def = $field;
+
                         $search_type = $field->getHandler()->getSearchType();
 
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
@@ -460,6 +462,12 @@ class OrganizationSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
                                 break;
 
@@ -492,7 +500,7 @@ class OrganizationSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_organizations',
-                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         } else {
@@ -509,7 +517,7 @@ class OrganizationSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_organizations',
-                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
                                         } else {
@@ -519,6 +527,20 @@ class OrganizationSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_organizations',
+                                            "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

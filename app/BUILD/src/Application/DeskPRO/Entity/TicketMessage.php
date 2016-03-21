@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -376,9 +377,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $message;
     }
 
-    public function getMessageHtml()
+    public function getMessageHtml($resizeInlines = true)
     {
-        return $this->procInlineAttach($this->message);
+        return $this->procInlineAttach($this->message, $resizeInlines);
     }
 
     /**
@@ -386,11 +387,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return string
      */
-    public function procInlineAttach($message)
+    public function procInlineAttach($message, $resizeInlines = true)
     {
         // An email might have inline attachments and we tokenize them with these
         // codes so we can now turn them into inline images or attachment links
-        $fn = function ($m, $before = '') {
+        $fn = function ($m, $before = '') use ($resizeInlines) {
             $download_url = App::getSetting('core.deskpro_url');
             $download_url .= ltrim(
                 App::getRouter()->getGenerator()->generatePath(
@@ -434,10 +435,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
                 $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
             } elseif ($m[1] == 'image') {
                 $url = App::getSetting('core.deskpro_url');
+                $_p  = array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code);
+                if ($resizeInlines) {
+                    $_p['s'] = 350;
+                }
                 $url .= ltrim(
                     App::getRouter()->getGenerator()->generatePath(
                         'serve_blob',
-                        array('blob_auth_id' => $m[2], 'filename' => $m[3], 's' => 350, 'sc' => $sc_code),
+                        $_p,
                         false
                     ),
                     '/'

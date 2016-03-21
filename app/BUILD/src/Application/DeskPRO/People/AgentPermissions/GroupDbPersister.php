@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\People\AgentPermissions;
 
 use Application\DeskPRO\Entity\Person;
@@ -86,7 +87,7 @@ class GroupDbPersister
         $ins = array();
         if ($new_perms) {
             foreach ($new_perms as $p) {
-                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
+                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
             }
         }
 
@@ -163,7 +164,7 @@ class GroupDbPersister
         $ins = array();
         if ($new_perms) {
             foreach ($new_perms as $p) {
-                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
+                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1, 'is_active' => 1);
             }
         }
 

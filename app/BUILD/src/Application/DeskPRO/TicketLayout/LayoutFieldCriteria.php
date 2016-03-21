@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -96,7 +97,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
      */
     public function setMode($mode)
     {
-        $mode       = strtoupper($mode);
+        $mode       = strtolower($mode);
         $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
     }
 
@@ -177,7 +178,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         if ($this->mode == self::CRIT_ANY) {
             $js .= 'if (checkFn[i](ticket)) return true;';
         } else {
-            $js .= 'if (!checkFn[i](ticket)) return true;';
+            $js .= 'if (!checkFn[i](ticket)) return false;';
         }
         $js .= " }\n";
 
@@ -231,7 +232,7 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $this->setMode($data['mode']);
 
         foreach ($data['terms'] as $t) {
-            $classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
+            $classname = 'Application\\DeskPRO\\TicketLayout\\Terms\\'.$t['type'];
             $obj       = new $classname($t['op'], $t['options']);
             $this->addTerm($obj);
         }

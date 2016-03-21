@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,6 +111,12 @@ class EmailCollectionCommand extends Command
             'processor'       => $processor,
             'logger'          => $logger,
         );
+
+        if ($stop_time) {
+            //TODO - accounts staying marked as active when they shouldnt
+            $db = get_db_if_closed();
+            $db->update('email_accounts', array('is_read_active' => 0), array('is_read_active' => 1));
+        }
 
         $runner = new TaskRunner($options);
         $output->writeln('Running ...');

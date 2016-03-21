@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/glossary",
  * 	description="Operations about Glossary Words",
  * 	basePath="/api"
@@ -46,7 +46,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 class GlossaryController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary",
      * 	SWG\Operation(
      * 		method="GET",
@@ -78,7 +78,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/lookup",
      * 	SWG\Operation(
      * 		method="GET",
@@ -110,7 +110,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary",
      * 	SWG\Operation(
      * 		method="POST",
@@ -160,7 +160,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/{word_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -188,7 +188,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/{word_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -221,7 +221,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -249,7 +249,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -286,7 +286,7 @@ class GlossaryController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/glossary/definitions/{definition_id}",
      * 	SWG\Operation(
      * 		method="DELETE",

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -532,6 +532,7 @@ HTML;
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->setFlash('is_from_login', 'yes');
+        $this->session->set('auth_by', $this->auth_manager->getAuthBy());
         $this->session->save();
 
         App::setCurrentPerson($person);
@@ -1162,15 +1163,20 @@ HTML;
             ));
         }
 
-        $errors = array();
+        /** @var PasswordPolicyValidator $password_validator */
+        $password_validator = $this->container->getSystemService('password_policy_validator');
+        $errors             = array();
         if ($this->in->getBool('process')) {
             $pass  = $this->in->getString('password');
             $pass2 = $this->in->getString('password2');
 
             if ($pass != $pass2) {
-                $errors['password.mismatch'] = 1;
-            } elseif (\Orb\Util\Strings::utf8_strlen($pass) < 5) {
-                $errors['password.short'] = 1;
+                $errors['mismatch'] = 1;
+            } else {
+                $error = null;
+                if (!$password_validator->checkPassword($pass, $person, $error)) {
+                    $errors[$error] = 1;
+                }
             }
 
             if (!$errors) {
@@ -1211,6 +1217,7 @@ HTML;
             'code'         => $code_data->getCode(),
             'route_prefix' => $this->route_prefix,
             'errors'       => $errors,
+            'policy'       => $password_validator->getPolicy($person),
         ));
     }
 

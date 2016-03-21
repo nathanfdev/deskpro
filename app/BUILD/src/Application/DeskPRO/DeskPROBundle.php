@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\DependencyInjection\AppSecretPass;
@@ -92,6 +93,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\LicenseInfoCommand',
             'Application\\DeskPRO\\Command\\LoginTokenCommand',
             'Application\\DeskPRO\\Command\\MoveBlobsCommand',
+            'Application\\DeskPRO\\Command\\OptimisePermsCommand',
             'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
             'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
@@ -100,6 +102,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\SyncDataCommand',
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
+            'Application\\DeskPRO\\Command\\TestFilterCommand',
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',

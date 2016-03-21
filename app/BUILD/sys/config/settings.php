@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -406,7 +406,7 @@ return array(
     /*
      * Number of allowed requests to the API per interval. 0 to disable.
      */
-    'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0,
+    'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 80 : 0,
 
     'core.twitter_agent_consumer_key'    => '',
     'core.twitter_agent_consumer_secret' => '',

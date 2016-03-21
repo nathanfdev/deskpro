@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -179,7 +179,7 @@ class LegacyTermsTransformer
                 return array(
                     'type'    => 'organization',
                     'op'      => $term->getTermOperator(),
-                    'options' => array('organization' => implode(',', (array) @$options['org_ids'] ?: array())),
+                    'options' => array('organization' => implode(',', (array) @$options['id'] ?: array())),
                 );
 
             case 'FilterOrgLabels':
@@ -565,7 +565,7 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterOrgId($op, array(
-                    'org_ids' => $ids,
+                    'id' => $ids,
                 ));
 
             case 'product':

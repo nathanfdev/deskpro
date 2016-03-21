@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -2138,6 +2139,12 @@ class TicketSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
 
                                 break;
@@ -2154,14 +2161,30 @@ class TicketSearch extends SearcherAbstract
                                     if (!is_array($choice)) {
                                         $choice = array($choice);
                                     }
+
+                                    /* @var  $children */
+                                    $children_titles = array_map(function ($v) {
+                                        return trim(strtolower($v));
+                                    }, $field_def->getAllChildTitles());
+
                                     foreach ($choice as $c) {
+                                        if (!is_scalar($c)) {
+                                            continue;
+                                        }
+                                        // if its an invalid id, try to find it based off a title match
+                                        if (!ctype_digit($c) || !array_key_exists($c, $children_titles)) {
+                                            $c = array_search(trim(strtolower($c)), $children_titles);
+                                        }
                                         $choices_in[] = (int) $c;
                                     }
                                     $choices_in = implode(',', $choices_in);
                                 }
 
-                                if (!$choices_in) {
+                                if (!$choice && !$choices_in) {
                                     $choice = 'DP_NO_SELECTION';
+                                } elseif (!$choices_in) {
+                                    $choice     = array(0);
+                                    $choices_in = '0';
                                 }
 
                                 $field = 'custom_data_ticket_'.$join_id.'.field_id';
@@ -2198,6 +2221,20 @@ class TicketSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_ticket',
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_ticket',
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

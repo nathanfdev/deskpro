@@ -853,6 +853,12 @@ $collection->create(
     )
 );
 
+$collection->create('api_people_quick_search_email', array(
+    'path'       => '/people/quick_search_email',
+    'controller' => 'LegacyApiBundle:Person:quickSearchEmail',
+    'methods'    => array('GET'),
+));
+
 $collection->create(
     'api_people_post',
     array(
@@ -991,6 +997,41 @@ $collection->create(
         'methods'      => array('DELETE'),
     )
 );
+
+$collection->create('api_people_person_phone_numbers_get', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'LegacyApiBundle:Person:getPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_phone_numbers_update', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'LegacyApiBundle:Person:postPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_phone_numbers', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:getPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_phone_numbers_post', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:postPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_phone_numbers_delete', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:deletePersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
 
 $collection->create(
     'api_people_person_vcard',
@@ -1219,6 +1260,12 @@ $collection->create(
         'methods'    => array('GET'),
     )
 );
+
+$collection->create('api_people_authlogin', array(
+    'path'       => '/people/auth-login',
+    'controller' => 'LegacyApiBundle:Person:authLogin',
+    'methods'    => array('POST'),
+));
 
 $collection->create(
     'api_agents_list',
@@ -6026,6 +6073,32 @@ $collection->create(
         'path'       => '/custom_fields',
         'controller' => 'LegacyApiBundle:CustomFields:list',
         'methods'    => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_common_custom_fields_get',
+    array(
+        'path'         => '/custom_fields/{objectType}/{objectId}',
+        'controller'   => 'LegacyApiBundle:CustomFields:getCommonFields',
+        'requirements' => array(
+            'objectType' => implode(
+                '|',
+                array_keys(\Application\LegacyApiBundle\Controller\CustomFieldsController::$allowed_common)
+            ),
+            'id' => '\\d+',
+        ),
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_common_custom_fields_set',
+    array(
+        'path'         => '/custom_fields/{objectType}/{objectId}',
+        'controller'   => 'LegacyApiBundle:CustomFields:setCommonField',
+        'requirements' => array('objectType' => '\\w+', 'objectId' => '\\d+'),
+        'methods'      => array('POST'),
     )
 );
 

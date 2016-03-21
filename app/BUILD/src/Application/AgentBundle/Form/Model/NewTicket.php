@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -218,10 +218,10 @@ class NewTicket
             $this->category_id   = $ticket->getCategoryId();
             $this->status        = $ticket->status;
 
-            $field_manager = App::getSystemService('ticket_fields_manager');
-            $custom_fields = $field_manager->createFormArrayForObject($ticket);
-            $person        = $person ?: $ticket->person;
-            $org           = $org ?: $person->organization;
+            $field_manager       = App::getSystemService('ticket_fields_manager');
+            $this->ticket_fields = $field_manager->createFormArrayForObject($ticket);
+            $person              = $person ?: $ticket->person;
+            $org                 = $org ?: $person->organization;
         }
 
         if ($person) {
@@ -507,7 +507,8 @@ class NewTicket
 
         $manager                   = App::$container->getPersonFieldManager();
         $post_custom_person_fields = array();
-        foreach ($this->custom_person_fields as $k => $v) {
+        $custom_person_fields      = $person->isNewPerson() ? $this->post_custom_person_fields : $this->custom_person_fields;
+        foreach ($custom_person_fields as $k => $v) {
             $id = Strings::extractRegexMatch('#(\d+)$#', $k);
             if (!$this->layout || $this->layout->hasActiveField('user_field_'.$id, $ticket)) {
                 $post_custom_person_fields[$k] = @$post_custom_person_fields[$k] ?: $v;
@@ -519,7 +520,7 @@ class NewTicket
             $manager->saveFormToObject($post_custom_person_fields, $ticket->person);
         }
 
-        if ($ticket->person->organization) {
+        if ($person->organization) {
             $manager                = App::$container->getOrgFieldManager();
             $post_custom_org_fields = array();
             foreach ($this->custom_org_fields as $k => $v) {

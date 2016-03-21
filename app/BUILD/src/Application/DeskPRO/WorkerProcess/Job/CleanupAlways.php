@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\People\PermissionUtil;
 
 class CleanupAlways extends AbstractJob
 {
@@ -93,6 +95,25 @@ class CleanupAlways extends AbstractJob
                 if ($num) {
                     $this->logStatus("Cleaned up $num old client messages");
                 }
+            }
+        }
+
+        #------------------------------
+        # Optimise perms
+        #------------------------------
+
+        if (App::getSetting('trigger.optimise_perms')) {
+            $db = App::getDb();
+            App::getDb()->executeUpdate("REPLACE INTO `settings` (`name`, `value`) VALUES ('trigger.optimise_perms', '0')");
+
+            $ag_perms_cache     = $db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
+            $ag_dep_perms_cache = array(
+                'full'   => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
+                'assign' => $db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
+            );
+
+            foreach (App::$container->getAgentData()->getAgents() as $a) {
+                PermissionUtil::optimizePermissions($a, $ag_perms_cache, $ag_dep_perms_cache);
             }
         }
 

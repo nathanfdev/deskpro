@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -50,7 +51,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/tickets",
  * 	description="Operations about Tickets",
  * 	basePath="/api"
@@ -72,7 +73,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets",
      * 	SWG\Operation(
      * 		method="POST",
@@ -479,7 +480,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -691,7 +692,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -889,7 +890,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -946,7 +947,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/undelete",
      * 	SWG\Operation(
      * 		method="POST",
@@ -983,7 +984,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/logs",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1020,7 +1021,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/messages",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1046,7 +1047,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/messages/{message_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1082,7 +1083,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/messages/{message_id}/details",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1133,7 +1134,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/messages",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1369,7 +1370,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/claim",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1399,7 +1400,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/split",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1459,7 +1460,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/merge/{merge_ticket_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1504,7 +1505,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/link/{link_ticket_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1551,7 +1552,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/spam",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1598,7 +1599,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/unspam",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1635,7 +1636,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/lock",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1669,7 +1670,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/unlock",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1701,7 +1702,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/tasks",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1729,7 +1730,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/tasks",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1776,7 +1777,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1817,7 +1818,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1897,7 +1898,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1939,7 +1940,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/ticket/{ticket_id}/billing-charges/{charge_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1981,7 +1982,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/slas",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2009,7 +2010,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/slas",
      * 	SWG\Operation(
      * 		method="POST",
@@ -2058,7 +2059,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/slas/{sla_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2100,7 +2101,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/slas/{sla_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -2146,7 +2147,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/participants",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2172,7 +2173,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/participants",
      * 	SWG\Operation(
      * 		method="POST",
@@ -2269,7 +2270,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/participants/{participant_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2317,7 +2318,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/participants/{participant_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -2376,7 +2377,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2402,7 +2403,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -2447,7 +2448,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2484,7 +2485,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/{ticket_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -2521,7 +2522,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/fields",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2538,7 +2539,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/departments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2560,7 +2561,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/products",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2576,7 +2577,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2592,7 +2593,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/priorities",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2612,7 +2613,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/workflows",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2632,7 +2633,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/slas",
      * 	SWG\Operation(
      * 		method="GET",
@@ -2648,7 +2649,7 @@ class TicketController extends AbstractController implements ProtectedController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/tickets/slas/{sla_id}",
      * 	SWG\Operation(
      * 		method="GET",

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Operations about agent groups
  * Simple CRUD controller.
  *
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/agent_groups",
  * 	description="Operations about agent groups",
  * 	basePath="/api"
@@ -72,9 +72,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
     /**
      * @return Response
      *
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/agent_groups",
-     * 	SWG\Operation(
+     * 	@SWG\Operation(
      * 		method="GET",
      * 		summary="Get agent groups list",
      * 		notes="",
@@ -124,7 +124,26 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get group by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getGroupAction($id)
     {
@@ -164,7 +183,106 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Exception
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing agent group by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[title]",
+     *				description="Group title",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[perms]",
+     *				description="Group permissions",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[person_ids]",
+     *				description="Agents who belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[tickets]",
+     *				description="Department tickets belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[chat]",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create new agent group",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="group[title]",
+     *				description="Group title",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[perms]",
+     *				description="Group permissions",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[person_ids]",
+     *				description="Agents who belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[tickets]",
+     *				description="Department tickets belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[chat]",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function saveGroupAction($id)
     {
@@ -256,7 +374,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                 if ($p['full']) {
                     $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
             foreach ($this->in->getArrayValue('dep_perms.chat') as $did => $p) {
@@ -264,7 +382,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
                     continue;
                 }
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'usergroup_id' => $group->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -279,6 +397,19 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         #------------------------------
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
+
+        $ag_perms_cache     = $this->db->fetchAllGrouped('SELECT usergroup_id, name FROM permissions', array(), 'usergroup_id', null, 'name');
+        $ag_dep_perms_cache = array(
+            'full'   => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'full'", array(), 'usergroup_id', null, 'department_id'),
+            'assign' => $this->db->fetchAllGrouped("SELECT usergroup_id, department_id FROM department_permissions WHERE name = 'assign'", array(), 'usergroup_id', null, 'department_id'),
+        );
+
+        foreach ($new_members as $pid) {
+            $a = $this->container->getAgentData()->get($pid);
+            if ($a) {
+                PermissionUtil::optimizePermissions($a, $ag_perms_cache, $ag_dep_perms_cache);
+            }
+        }
 
         #------------------------------
         # Return
@@ -304,7 +435,26 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
-     * @return Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete agent group by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function deleteGroupAction($id)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * SWG\Resource(
+ * @SWG\Resource(
  * 	resourcePath="/feedback",
  * 	description="Operations about Feedbacks",
  * 	basePath="/api"
@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class FeedbackController extends AbstractController
 {
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback",
      * 	SWG\Operation(
      * 		method="GET",
@@ -179,7 +179,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedbacks",
      * 	SWG\Operation(
      * 		method="POST",
@@ -305,7 +305,7 @@ class FeedbackController extends AbstractController
 
     //Gets information about specific feedback
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -333,7 +333,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedbacks/{feedback_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -465,7 +465,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -495,7 +495,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/votes",
      * 	SWG\Operation(
      * 		method="GET",
@@ -523,7 +523,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -551,7 +551,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/comments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -626,7 +626,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -664,7 +664,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -734,7 +734,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -777,7 +777,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/merge/{other_feedback_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -829,7 +829,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -856,7 +856,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -929,7 +929,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments/{attachment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -969,7 +969,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/attachments/{attachment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1013,7 +1013,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1040,7 +1040,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1086,7 +1086,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1123,7 +1123,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/{feedback_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1160,7 +1160,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/validating-comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1184,7 +1184,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1200,7 +1200,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/status-categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1216,7 +1216,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * SWG\Api(
+     * @SWG\Api(
      * 	path="/feedback/user-categories",
      * 	SWG\Operation(
      * 		method="GET",

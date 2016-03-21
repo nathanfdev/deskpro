@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,16 +30,42 @@ return array(
     'agent.people.act_reg'                                  => 'Hat ein Konto erstellt',
     'agent.people.act_replied_ticket'                       => 'Anwortete auf ein Ticket:',
     'agent.people.act_submitted_ticket'                     => 'Hat ein Ticket abgeschickt:',
+    'agent.people.add_address'                              => 'Eine Adresse hinzufügen',
+    'agent.people.add_an_email_address'                     => 'Eine E-Mail Adresse hinzufügen',
+    'agent.people.add_another'                              => 'weitere hinzufügen',
+    'agent.people.add_facebook_profile'                     => 'Ein Facebook Profil hinzufügen',
+    'agent.people.add_im'                                   => 'Ein Instant Messaging Konto hinzufügen',
+    'agent.people.add_linkedin_profile'                     => 'Ein LinkedIn Profil hinzufügen',
+    'agent.people.add_phone'                                => 'Ein Telefonnummer hinzufügen',
+    'agent.people.add_twitter_profile'                      => 'Ein Twitter Profile hinzufügen',
+    'agent.people.add_website'                              => 'Ein URL von einer Interseite hinzufügen',
+    'agent.people.address_city'                             => 'Stadt',
     'agent.people.address_postal'                           => 'PLZ',
+    'agent.people.address_state'                            => 'Bundesland',
+    'agent.people.and_came_from'                            => 'und kommt aus',
+    'agent.people.anonymous_user'                           => 'Anonymer Benutzer {{id}}',
     'agent.people.confirm_remove_email'                     => 'Bist du sicher das du die E-Mail  Adresse entfernen möchtest?',
     'agent.people.contact_info'                             => 'Kontaktinformationen',
     'agent.people.contact_info_for_x'                       => 'Kontaktinformationen für {{name}}',
     'agent.people.count_members'                            => '{{count}} Mitglied|{{count}} Mitglieder',
     'agent.people.create_person'                            => 'Erstelle Person',
+    'agent.people.creation_by'                              => 'Erstellt von',
     'agent.people.delete_user'                              => 'Benutzer löschen',
+    'agent.people.delete_user_and_ban_email'                => 'Benutzer löschen & E-Mail blockieren',
     'agent.people.disable_account'                          => 'Account deaktivieren',
+    'agent.people.double_click_set_name'                    => 'Doppel-Klick um Namen anzupassen',
     'agent.people.download_vcard'                           => 'VCard herunterladen',
+    'agent.people.drop_your_vcard_here'                     => 'Verschieben Sie Ihre vCard hierher',
+    'agent.people.email_awaiting_validation'                => 'E-Mail wartet auf Validierung',
+    'agent.people.enable_account'                           => 'Konto aktivieren',
+    'agent.people.enter_name_here'                          => 'Namen hier eintragen',
+    'agent.people.find_person'                              => 'Person finden',
     'agent.people.im'                                       => 'IM',
+    'agent.people.im_account_placeholder'                   => 'Benutzerkonto Name',
+    'agent.people.is_agent'                                 => 'ist Agent',
+    'agent.people.list_title'                               => '1 Person|{{count}} Personen',
+    'agent.people.login_as_user'                            => 'Als Benutzer anmelden',
+    'agent.people.manager'                                  => 'Manager',
     'agent.people.on_page'                                  => 'Auf Seite',
     'agent.people.online_now'                               => 'Jetzt online',
     'agent.people.other_user_content_being_deleted'         => 'The anderen mit dem Benutzer assozierten Inhalte werden ebenso gelöscht:',

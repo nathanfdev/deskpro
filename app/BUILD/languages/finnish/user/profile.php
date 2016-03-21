@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,11 +83,7 @@ return array(
     'user.profile.register_or_login_below'             => '<a href="{{url}}">Rekisteröidy</a> tai kirjaudu.',
     'user.profile.register_password_expired'           => 'Salasanasi on vanhentunut, ole hyvä ja syötä uusi salasana',
     'user.profile.register_password_invalid'           => 'Syötä kelvollinen salasana.',
-    'user.profile.register_password_min_lc'            => 'Vähintään {{count}} pientä kirjainta|Vähintään{{count}} pientä kirjainta',
     'user.profile.register_password_min_length'        => 'Vähintään {{count}} merkkiä|Vähintään{{count}} merkkiä',
-    'user.profile.register_password_min_num'           => 'Vähintään {{count}} numeroa|Vähintään {{count}} numeroa',
-    'user.profile.register_password_min_sym'           => 'Vähintään {{count}} symboliaI Vähintään {{count}} symbolia',
-    'user.profile.register_password_min_uc'            => 'Vähintään {{count}} isoa kirjainta|Vähintään{{count}} isoa kirjainta',
     'user.profile.register_password_mismatch'          => 'Salasanat eivät täsmää',
     'user.profile.register_password_unused'            => 'Et voi käyttää aikaisempaa salasanaasi',
     'user.profile.remove_email_address'                => 'Poista sähköpostiosoite',
