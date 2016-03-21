@@ -26,41 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Doctrine\Common\Collections\Collection;
 
 /**
- * Class ValidatorErrorsException.
+ * Class AbstractSingleValueValidator.
  */
-class ValidatorErrorsException extends BadRequestHttpException
+abstract class AbstractSingleValueValidator extends AbstractCustomDefConstraintValidator
 {
     /**
-     * @var ConstraintViolationListInterface
+     * {@inheritdoc}
      */
-    private $errors;
+    protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
+    {
+        $custom_data = $value->first();
+
+        return $custom_data ? $this->getCustomDataValue($custom_data) : '';
+    }
 
     /**
-     * Constructor.
+     * @param CustomDataAbstract $custom_data
      *
-     * @param ConstraintViolationListInterface $errors
-     * @param string                           $message
-     * @param int                              $code
+     * @return mixed
      */
-    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
-    {
-        parent::__construct($message, null, $code);
-
-        $this->errors = $errors;
-    }
-
-    /**
-     * @return ConstraintViolationListInterface|ConstraintViolationInterface[]
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
+    abstract protected function getCustomDataValue(CustomDataAbstract $custom_data);
 }

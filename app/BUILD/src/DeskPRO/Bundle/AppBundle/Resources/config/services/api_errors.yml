@@ -1,5 +1,11 @@
 services:
 
+  api_error.validator_errors_generator:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ValidatorErrorsGenerator
+    arguments:
+      - "@api_error.code_factory"
+      - "@api_error.message_factory"
+
   api_error.form_errors_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator
     arguments:

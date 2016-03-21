@@ -26,41 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Doctrine\Common\Collections\Collection;
 
 /**
- * Class ValidatorErrorsException.
+ * Class ChoiceValidator.
  */
-class ValidatorErrorsException extends BadRequestHttpException
+class ChoiceValidator extends AbstractCustomDefConstraintValidator
 {
     /**
-     * @var ConstraintViolationListInterface
+     * {@inheritdoc}
      */
-    private $errors;
-
-    /**
-     * Constructor.
-     *
-     * @param ConstraintViolationListInterface $errors
-     * @param string                           $message
-     * @param int                              $code
-     */
-    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
+    protected function getValidators(AbstractCustomDefConstraint $constraint)
     {
-        parent::__construct($message, null, $code);
-
-        $this->errors = $errors;
+        return [];
     }
 
     /**
-     * @return ConstraintViolationListInterface|ConstraintViolationInterface[]
+     * {@inheritdoc}
      */
-    public function getErrors()
+    protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
     {
-        return $this->errors;
+        return [];
     }
 }

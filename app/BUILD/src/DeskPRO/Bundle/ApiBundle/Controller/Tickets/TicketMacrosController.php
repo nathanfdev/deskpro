@@ -65,6 +65,8 @@ class TicketMacrosController extends CrudController
      * @param int     $ticket_id
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function applyMacroAction($id, $ticket_id, Request $request)
@@ -92,7 +94,7 @@ class TicketMacrosController extends CrudController
         } catch (\Exception $e) {
             $em->rollback();
 
-            return new View(null, Response::HTTP_BAD_REQUEST);
+            throw $e;
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);
@@ -136,7 +138,9 @@ class TicketMacrosController extends CrudController
 
         $validator = $this->get('validator');
         $errors    = $validator->validate($ticket, [
-            new AppAssert\Ticket\TicketLayout(),
+            new AppAssert\Ticket\TicketLayout([
+                'context' => 'agent',
+            ]),
         ]);
 
         if ($errors->count() > 0) {

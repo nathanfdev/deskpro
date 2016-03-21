@@ -26,41 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ValidatorErrorsException.
+ * Class ToggleValidator.
  */
-class ValidatorErrorsException extends BadRequestHttpException
+class ToggleValidator extends AbstractSingleValueValidator
 {
     /**
-     * @var ConstraintViolationListInterface
+     * {@inheritdoc}
      */
-    private $errors;
-
-    /**
-     * Constructor.
-     *
-     * @param ConstraintViolationListInterface $errors
-     * @param string                           $message
-     * @param int                              $code
-     */
-    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
+    protected function getValidators(AbstractCustomDefConstraint $constraint)
     {
-        parent::__construct($message, null, $code);
-
-        $this->errors = $errors;
+        // Required validator
+        if ($constraint->getCustomDefOption('required')) {
+            $validators[] = new Assert\NotBlank();
+        }
     }
 
     /**
-     * @return ConstraintViolationListInterface|ConstraintViolationInterface[]
+     * {@inheritdoc}
      */
-    public function getErrors()
+    protected function getCustomDataValue(CustomDataAbstract $custom_data)
     {
-        return $this->errors;
+        return $custom_data->getValue();
     }
 }

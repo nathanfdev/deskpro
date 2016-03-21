@@ -26,41 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class ValidatorErrorsException.
+ * Class AbstractCustomDefConstraint.
  */
-class ValidatorErrorsException extends BadRequestHttpException
+abstract class AbstractCustomDefConstraint extends Constraint
 {
     /**
-     * @var ConstraintViolationListInterface
-     */
-    private $errors;
-
-    /**
-     * Constructor.
+     * Could be "agent" or "user".
      *
-     * @param ConstraintViolationListInterface $errors
-     * @param string                           $message
-     * @param int                              $code
+     * @var string
      */
-    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
-    {
-        parent::__construct($message, null, $code);
-
-        $this->errors = $errors;
-    }
+    public $context = 'agent';
 
     /**
-     * @return ConstraintViolationListInterface|ConstraintViolationInterface[]
+     * @var CustomDefAbstract
      */
-    public function getErrors()
+    public $custom_def;
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getCustomDefOption($name)
     {
-        return $this->errors;
+        if (!$this->custom_def) {
+            throw new \InvalidArgumentException('Custom def is not defined');
+        }
+
+        $prefix = $this->context === 'agent' ? 'agent_' : '';
+
+        return $this->custom_def->getOption($prefix.$name);
     }
 }
