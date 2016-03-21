@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,10 +28,10 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Mode;
 
-use Symfony\Component\Validator\Constraints\Url;
-
 /**
  * Generates a portal mode using URL paths. The request listener uses this to determine the portal mode.
+ *
+ * @see DeskPRO\Bundle\PortalBundle\Mode\PortalMode
  */
 class PortalModeFactory
 {
@@ -39,6 +39,7 @@ class PortalModeFactory
     const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
     const REGEX_ADMIN_PREVIEW = '#^/admin\-preview(/{1}.*|$)$#';
     const REGEX_FOCUS_WIN     = '#^/focus\-win(/{1}.*|$)$#';
+    const REGEX_FRAME_EMBED   = '#^/frame\-embed(/{1}.*|$)$#';
 
     public function createMode($path)
     {
@@ -64,6 +65,10 @@ class PortalModeFactory
             $mode->setFocusWindow();
             $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
             $mode->setModePath('/focus-win');
+        } elseif (preg_match(self::REGEX_FRAME_EMBED, $path, $matches)) {
+            $mode->setFrameEmbed();
+            $mode->setInternalPath(strlen($matches[1]) > 0 ? $matches[1] : '/');
+            $mode->setModePath('/frame-embed');
         } else {
             $mode->setInternalPath($path);
         }
