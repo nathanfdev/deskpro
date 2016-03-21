@@ -40,7 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * Simple ticket macros CRUD.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_macros",
  * 	description="Operations about Ticket macros",
  * 	basePath="/api"
@@ -65,7 +65,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     /**
      * @return JsonResponse;
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers",
      * 	SWG\Operation(
      * 		method="GET",
@@ -141,28 +141,28 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_macros",
      * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new macros",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="title",
      *				description="Macros name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="is_global",
      *				description="Mark/unmark macros as global",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="person_id",
      *				description="Set macros owner",
      *				paramType="query",

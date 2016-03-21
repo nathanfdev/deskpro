@@ -49,7 +49,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/people",
  * 	description="Operations about People/Persons",
  * 	basePath="/api"
@@ -68,7 +68,7 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people",
      * 	SWG\Operation(
      * 		method="GET",
@@ -153,7 +153,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				required=false,
      *				type="boolean"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label[]",
      *				description="Requires person to be have the specified label.",
      *				paramType="query",
@@ -315,7 +315,7 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people",
      * 	SWG\Operation(
      * 		method="POST",
@@ -328,14 +328,14 @@ class PersonController extends AbstractController implements ProtectedController
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="first_name",
      *				description="First name of the Person.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="last_name",
      *				description="Last name of the Person.",
      *				paramType="query",
@@ -590,7 +590,7 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -618,7 +618,7 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -638,21 +638,21 @@ class PersonController extends AbstractController implements ProtectedController
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="first_name",
      *				description="First name of the Person.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="last_name",
      *				description="Last name of the Person.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="disable_autoresponses",
      *				description="If true, disables sending this person automatic notifications when actions are applied to their tickets.",
      *				paramType="query",
@@ -834,13 +834,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a Person by Person ID.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be deleted.",
      *				paramType="path",
@@ -894,20 +894,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/picture",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a link to a person's picture.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="size",
      *				description="The maximum size (in pixels) that the picture should be. Defaults to 80.",
      *				paramType="query",
@@ -915,7 +915,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -936,27 +936,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/picture",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a person's picture.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="file",
      *				description="An uploaded image. Required if no blob_id is provided.",
      *				paramType="form",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="blob_id",
      *				description="ID of a blob record that holds the picture already. Required if no file is provided.",
      *				paramType="query",
@@ -964,7 +964,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1006,13 +1006,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/picture",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a person's picture.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person whose picture needs to be deleted.",
      *				paramType="path",
@@ -1020,7 +1020,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1036,13 +1036,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/emails",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets email records for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1062,9 +1062,9 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/emails",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds an email for a person.",
      *		SWG\Parameters (
@@ -1075,14 +1075,14 @@ class PersonController extends AbstractController implements ProtectedController
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="email",
      *				description="Email address to add to this person. May not be associated with another person.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment",
      *				description="A comment or label for the email.",
      *				paramType="query",
@@ -1097,7 +1097,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="boolean"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1148,20 +1148,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/emails/{email_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets information about an email ID for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="email_id",
      *				description="Email ID that needs to be searched.",
      *				paramType="path",
@@ -1169,7 +1169,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1193,34 +1193,34 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/emails/{email_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates an email record for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="email_id",
      *				description="Email ID that needs to be updated.",
      *				paramType="path",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment",
      *				description="A comment or label for the email.",
      *				paramType="query",
      *				required=false,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="set_primary",
      *				description="If non-0, this email is set as the person's primary email address.",
      *				paramType="query",
@@ -1228,7 +1228,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="boolean"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1268,20 +1268,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/emails/{email_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes an email record for a person",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="email_id",
      *				description="Email ID that needs to be deleted.",
      *				paramType="path",
@@ -1289,7 +1289,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1337,9 +1337,9 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/vcard",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the vCard for a person.",
      *		SWG\Parameters (
@@ -1351,7 +1351,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1440,20 +1440,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/activity-stream",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets activity stream for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -1461,7 +1461,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1489,13 +1489,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/tickets",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets tickets by a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1509,14 +1509,14 @@ class PersonController extends AbstractController implements ProtectedController
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -1524,7 +1524,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1575,27 +1575,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/chats",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets chats by a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="cache_id",
      *				description="If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="page",
      *				description="The page number of the results to fetch.",
      *				paramType="query",
@@ -1603,7 +1603,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1650,27 +1650,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/reset-password",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Resets a person's password.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="password",
      *				description="New password to set for this person.",
      *				paramType="path",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="send_email",
      *				description="If specified, controls whether the person will be emailed. Defaults to true.",
      *				paramType="path",
@@ -1678,7 +1678,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="boolean"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1714,14 +1714,14 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/clear-session",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Clears a person's session.",
      * 		notes="Clears all sessions for the person, forcing them to log in again. (Only available in DeskPRO #293 and later.)",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1729,7 +1729,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1742,13 +1742,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/notes",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets notes for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1756,7 +1756,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1769,20 +1769,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/notes",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a note for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="note",
      *				description="Text of the note to create.",
      *				paramType="query",
@@ -1790,7 +1790,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1819,13 +1819,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/billing-charges",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets billing charges for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1833,7 +1833,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1864,13 +1864,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/contact-details",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets contact details for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -1878,7 +1878,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1890,34 +1890,34 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/contact-details",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Creates a contact detail for a person",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="type",
      *				description="Type of contact detail to add.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="data",
      *				description="Contact detail-specific data.",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="comment",
      *				description="Comment or label for the contact detail.",
      *				paramType="query",
@@ -1925,7 +1925,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -1982,20 +1982,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/contact-details/{contact_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if contact ID exists for person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="contact_id",
      *				description="Contact ID that needs to be searched.",
      *				paramType="path",
@@ -2003,7 +2003,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2021,20 +2021,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/contact-details/{contact_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a contact for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="contact_id",
      *				description="Contact ID that needs to be deleted.",
      *				paramType="path",
@@ -2042,7 +2042,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2063,13 +2063,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the groups for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -2077,7 +2077,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2089,20 +2089,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a person to a group.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be added.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="id",
      *				description=" ID of the group to add this person to.",
      *				paramType="query",
@@ -2110,7 +2110,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2152,20 +2152,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/groups/{group_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a person is a member of a group.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group that needs to be checked.",
      *				paramType="path",
@@ -2173,7 +2173,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2191,20 +2191,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/groups/{group_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a person from a group.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="group_id",
      *				description="ID of the group that needs to be removed.",
      *				paramType="path",
@@ -2212,7 +2212,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2236,13 +2236,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets the labels for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -2250,7 +2250,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2262,20 +2262,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/labels",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a label for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to add",
      *				paramType="query",
@@ -2283,7 +2283,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2307,20 +2307,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Determines if a person has a label.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label to check",
      *				paramType="path",
@@ -2328,7 +2328,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="stirng"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2344,20 +2344,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/labels/{label}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Removes a label from a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="Label that needs to be removed.",
      *				paramType="path",
@@ -2365,7 +2365,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="stirng"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2381,9 +2381,9 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/fields",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available custom person fields"
      * 	)
@@ -2398,9 +2398,9 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/groups",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets available usergroups"
      * 	)
@@ -2419,13 +2419,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/login-token",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets a login token that can be used in a web request to log a user in. Note that the login token is only valid for 5 minutes.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person to get a login token for",
      *				paramType="path",
@@ -2433,7 +2433,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2536,27 +2536,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      *  path="/people/auth-login",
-     *  @SWG\Operation(
+     *  SWG\Operation(
      *     method="POST",
      *     summary="Given some user credentials, test to see if they are correct and return the person record if so.",
-     *     @SWG\Parameters(
-     *         @SWG\Parameter(
+     *     SWG\Parameters(
+     *         SWG\Parameter(
      *           name="email",
      *           description="The email address of the user to authenticate. Alternatively, specify the username instead.",
      *           paramType="query",
      *           required=false,
      *           type="string"
      *         ),
-     *        @SWG\Parameter(
+     *        SWG\Parameter(
      *           name="username",
      *           description="The username of the user to authenticate. Alternatively, specify the email instead.",
      *           paramType="query",
      *           required=false,
      *           type="string"
      *         ),
-     *         @SWG\Parameter(
+     *         SWG\Parameter(
      *           name="password",
      *           description="The user password",
      *           paramType="query",
@@ -2564,7 +2564,7 @@ class PersonController extends AbstractController implements ProtectedController
      *           type="string"
      *         )
      *     ),
-     *     @SWG\ResponseMessage(code=401, message="The credentials are invalid")
+     *     SWG\ResponseMessage(code=401, message="The credentials are invalid")
      *  )
      * )
      *
@@ -2600,13 +2600,13 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/phone_numbers",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets phone numbers for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
@@ -2614,7 +2614,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="integer"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2626,27 +2626,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/phone_numbers",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Adds a phone number for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="phone_number",
      *				description="Phone number to add to this person. In E.164 string format, ie. +19021111111",
      *				paramType="query",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="A label for the phone number.",
      *				paramType="query",
@@ -2654,7 +2654,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2679,20 +2679,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/phone_numbers/{number_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Gets information about an email ID for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="number_id",
      *				description="Phone number ID that needs to be searched.",
      *				paramType="path",
@@ -2700,7 +2700,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2720,27 +2720,27 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/phone_numbers/{number_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Updates a phone number for a person.",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="number_id",
      *				description="Phone number ID that needs to be updated.",
      *				paramType="path",
      *				required=true,
      *				type="string"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="label",
      *				description="A label for the phone number.",
      *				paramType="query",
@@ -2748,7 +2748,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */
@@ -2774,20 +2774,20 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/people/{person_id}/phone_numbers/{number_id}",
-     * 	@SWG\Operation(
+     * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Deletes a phone number record for a person",
-     *		@SWG\Parameters (
-     *			@SWG\Parameter(
+     *		SWG\Parameters (
+     *			SWG\Parameter(
      *				name="person_id",
      *				description="ID of the person that needs to be searched.",
      *				paramType="path",
      *				required=true,
      *				type="integer"
      *			),
-     *			@SWG\Parameter(
+     *			SWG\Parameter(
      *				name="number_id",
      *				description="Phone number ID that needs to be deleted.",
      *				paramType="path",
@@ -2795,7 +2795,7 @@ class PersonController extends AbstractController implements ProtectedController
      *				type="string"
      *			)
      *		),
-     *		@SWG\ResponseMessage(code=404, message="Person not found")
+     *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
      * )
      */

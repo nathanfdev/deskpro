@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Operations about Ticket escalations.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_escalations",
  * 	description="Operations about Ticket escalations",
  * 	basePath="/api"
@@ -71,7 +71,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     /**
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations",
      * 	SWG\Operation(
      * 		method="GET",
@@ -100,15 +100,15 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations/{id}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get escalation by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Escalation ID",
      *				paramType="path",
@@ -147,57 +147,57 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations/{id}",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update existing escalation by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Escalation ID",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="title",
      *				description="Escalation name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger",
      *				description="Event trigger name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger_time",
      *				description="When to run event_trigger",
      *				paramType="query",
      *				required=false,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="terms",
      *				description="Criteria for trigger run",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="terms_any",
      *				description="Filter",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="actions",
      *				description="Array of actions to perform",
      *				paramType="query",
@@ -208,50 +208,50 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations",
      * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create new escalation",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="title",
      *				description="Escalation name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger",
      *				description="Event trigger name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger_time",
      *				description="When to run event_trigger",
      *				paramType="query",
      *				required=false,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="terms",
      *				description="Criteria for trigger run",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="terms_any",
      *				description="Filter",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="actions",
      *				description="Array of actions to perform",
      *				paramType="query",
@@ -325,15 +325,15 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations/{id}",
      * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete escalation by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Escalation ID",
      *				paramType="path",
@@ -392,15 +392,15 @@ class TicketEscalationsController extends AbstractController implements Protecte
     /**
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_escalations/run_order",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Update escalation run order",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="run_order",
      *				description="Escalation ID",
      *				paramType="query",

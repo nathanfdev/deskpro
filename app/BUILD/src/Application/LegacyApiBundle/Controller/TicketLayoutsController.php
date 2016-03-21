@@ -45,7 +45,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * Simple ticket layouts CRUD.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_layout",
  * 	description="Operations about Ticket layouts",
  * 	basePath="/api"
@@ -76,15 +76,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/{dep_id}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get ticket layout for given department",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="dep_id",
      *				description="Ticket department ID",
      *				paramType="path",
@@ -95,7 +95,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/default",
      * 	SWG\Operation(
      * 		method="GET",
@@ -152,7 +152,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
     /**
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/stats",
      * 	SWG\Operation(
      * 		method="GET",
@@ -303,15 +303,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get field use statistic",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="field_id",
      *				description="Field ID",
      *				paramType="path",
@@ -387,15 +387,15 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *
      * @return JsonResponse
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_layouts/fields/{field_id}",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Save field status",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="field_id",
      *				description="Field ID",
      *				paramType="path",

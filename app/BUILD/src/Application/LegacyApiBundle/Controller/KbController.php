@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/kb",
  * 	description="Operations about Knowledgebase",
  * 	basePath="/api"
@@ -53,7 +53,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class KbController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb",
      * 	SWG\Operation(
      * 		method="GET",
@@ -209,7 +209,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb",
      * 	SWG\Operation(
      * 		method="POST",
@@ -441,7 +441,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -469,7 +469,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -734,7 +734,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -765,7 +765,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/votes",
      * 	SWG\Operation(
      * 		method="GET",
@@ -793,7 +793,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -821,7 +821,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -895,7 +895,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -933,7 +933,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1003,7 +1003,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1045,7 +1045,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/attachments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1072,7 +1072,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/attachments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1144,7 +1144,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments/{attachment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1185,7 +1185,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/comments/{attachment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1228,7 +1228,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1255,7 +1255,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1300,7 +1300,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1338,7 +1338,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/{article_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1375,7 +1375,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/validating-comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1399,7 +1399,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1415,7 +1415,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1515,7 +1515,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1541,7 +1541,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1624,7 +1624,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1656,7 +1656,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}/articles",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1737,7 +1737,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1763,7 +1763,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1821,7 +1821,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1862,7 +1862,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1904,7 +1904,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/fields",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1921,7 +1921,7 @@ class KbController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/kb/products",
      * 	SWG\Operation(
      * 		method="GET",

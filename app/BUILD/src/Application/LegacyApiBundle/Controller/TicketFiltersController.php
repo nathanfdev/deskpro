@@ -43,7 +43,7 @@ use Orb\Util\CheckedOptionsException;
  * Operations about ticket filters
  * Class TicketFiltersController.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_filters",
  * 	description="Operations about Ticket urgencies",
  * 	basePath="/api"
@@ -68,7 +68,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_filters",
      * 	SWG\Operation(
      * 		method="GET",
@@ -113,15 +113,15 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_filters/{id}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get ticket filter by Id",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="ID of given filter",
      *				paramType="path",
@@ -159,50 +159,50 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      * @param $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
-     * @SWG\Api(
+     * SWG\Api(
      *                                                    path="/ticket_filters/{id}",
-     * @SWG\Operation(
+     * SWG\Operation(
      *                                                    method="POST",
      *                                                    summary="Save ticket filter details",
      *                                                    notes="",
      *                                                    type="array",
-     * @SWG\Parameters (
-     * @SWG\Parameter(
+     * SWG\Parameters (
+     * SWG\Parameter(
      *                                                    name="id",
      *                                                    description="ticket id",
      *                                                    paramType="path",
      *                                                    required=true,
      *                                                    type="integer",
      *                                                    ),
-     * @SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.title",
      *                                                    description="Title for this filter",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="string",
      *                                                    ),
-     * @SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.is_global",
      *                                                    description="ticket global flag",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="boolean",
      *                                                    ),
-     * @SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.person_id",
      *                                                    description="Added person identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     * @SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.agent_team_id",
      *                                                    description="Agent team identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     * @SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.terms",
      *                                                    description="",
      *                                                    paramType="query",
@@ -275,15 +275,15 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_filters/{id}",
      * 	SWG\Operation(
      * 		method="DELETE",
      * 		summary="Delete ticket filter by ID",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="ticket filter id",
      *				paramType="path",
@@ -317,15 +317,15 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_filters/display_order",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Rearrange order in which filters are following",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="display_order",
      *				description="",
      *				paramType="path",

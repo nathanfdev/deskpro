@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/api_keys",
  * 	description="Operations about API Keys",
  * 	basePath="/api/api_keys"
@@ -71,7 +71,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     ####################################################################################################################
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/api_keys",
      * 	SWG\Operation(
      * 		method="GET",
@@ -98,7 +98,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     ####################################################################################################################
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/api_keys/{id}",
      * 	SWG\Operation(
      * 		method="GET",

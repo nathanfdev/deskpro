@@ -44,7 +44,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Operations about Ticket triggers.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/ticket_triggers",
  * 	description="Operations about Ticket triggers",
  * 	basePath="/api"
@@ -72,14 +72,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      * @return \Symfony\Component\HttpFoundation\Response
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{type}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get triggers list grouped by their enable status",
      * 		notes="This is triggers provided by default system",
      *		type="array",
-     *      @SWG\Parameters (
+     *      SWG\Parameters (
      *			SWG\Parameter(
      *				name="type",
      *				description="Event type",
@@ -132,14 +132,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *
      * @todo Porbably I`m not right, but creating trigger for entity, if given has no ones - not crystally clear for user, huh?
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{special_type}/{id}",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get trigger for given special type or just trigger by ID",
      * 		notes="For entity with no trigger it will be created",
      *		type="array",
-     *      @SWG\Parameters (
+     *      SWG\Parameters (
      *			SWG\Parameter(
      *				name="special_type",
      *				description="Filter by type",
@@ -148,7 +148,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *				type="string",
      *              enum="['departments', 'departments_changed', 'email_accounts']"
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="id",
      *				description="ID of given special_type",
      *				paramType="path",
@@ -247,22 +247,22 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{special_type}/{id}",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Save trigger for given special type",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Trigger id",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="special_type",
      *				description="You can specify group for trigger",
      *				paramType="path",
@@ -270,14 +270,14 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *				type="string",
      *              enum="['departments', 'departments_change', 'email_accounts']",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="title",
      *				description="Trigger name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger",
      *				description="Event type",
      *				paramType="query",
@@ -285,28 +285,28 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *				type="string",
      *              enum="['newreply', 'newticket', 'update']",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="by_agent_mode",
      *				description="",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="by_user_mode",
      *				description="",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="criteria_sets",
      *				description="Wenter criteria for this trigger",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="actions",
      *				description="Which actions this trigger should perform",
      *				paramType="query",
@@ -317,28 +317,28 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers",
      * 	SWG\Operation(
      * 		method="PUT",
      * 		summary="Create trigger",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Trigger id",
      *				paramType="path",
      *				required=true,
      *				type="integer",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="title",
      *				description="Trigger name",
      *				paramType="query",
      *				required=false,
      *				type="string",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="event_trigger",
      *				description="Event type",
      *				paramType="query",
@@ -346,28 +346,28 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *				type="string",
      *              enum="['newreply', 'newticket', 'update']",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="by_agent_mode",
      *				description="",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="by_user_mode",
      *				description="",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="criteria_sets",
      *				description="Wenter criteria for this trigger",
      *				paramType="query",
      *				required=false,
      *				type="string[]",
      *			),
-     *          @SWG\Parameter(
+     *          SWG\Parameter(
      *				name="actions",
      *				description="Which actions this trigger should perform",
      *				paramType="query",
@@ -650,15 +650,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{id}/enable",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Enable trigger by id",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Trigger id",
      *				paramType="path",
@@ -669,15 +669,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{id}/disable",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Disable trigger by id",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="id",
      *				description="Trigger id",
      *				paramType="path",
@@ -716,15 +716,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *
      *
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{special_type}/enable",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Enable trigger group by its name",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="special_type",
      *				description="Group name",
      *				paramType="path",
@@ -736,15 +736,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *  )
      * )
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/{special_type}/disable",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Disable trigger group by its name",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="special_type",
      *				description="Group name",
      *				paramType="path",
@@ -796,15 +796,15 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/run_order",
      * 	SWG\Operation(
      * 		method="POST",
      * 		summary="Rearrange trigger run order and save it",
      * 		notes="",
      *		type="array",
-     *      @SWG\Parameters (
-     *          @SWG\Parameter(
+     *      SWG\Parameters (
+     *          SWG\Parameter(
      *				name="run_orders",
      *				description="",
      *				paramType="path",
@@ -830,7 +830,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/ticket_triggers/get-custom-actions",
      * 	SWG\Operation(
      * 		method="GET",

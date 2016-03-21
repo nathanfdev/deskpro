@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Perform searches or get results from filters.
  *
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/tickets",
  * 	description="Operations about Tickets",
  * 	basePath="/api"
@@ -53,7 +53,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketSearchController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets",
      * 	SWG\Operation(
      * 		method="GET",
@@ -497,7 +497,7 @@ class TicketSearchController extends AbstractController
     /**
      * Get a map of filters.
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/filters",
      * 	SWG\Operation(
      * 		method="GET",
@@ -529,7 +529,7 @@ class TicketSearchController extends AbstractController
      *
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      *  path="/tickets/filters/{filter_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -578,7 +578,7 @@ class TicketSearchController extends AbstractController
     /**
      * Get array of filters and counts.
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/filters/count",
      * 	SWG\Operation(
      * 		method="GET",
@@ -609,7 +609,7 @@ class TicketSearchController extends AbstractController
     /**
      * @return Response
      *
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/tickets/quick-stats",
      * 	SWG\Operation(
      * 		method="GET",

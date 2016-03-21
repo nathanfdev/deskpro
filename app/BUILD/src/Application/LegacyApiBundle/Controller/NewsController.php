@@ -42,7 +42,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/news",
  * 	description="Operations about News Items",
  * 	basePath="/api"
@@ -53,7 +53,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class NewsController extends AbstractController
 {
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news",
      * 	SWG\Operation(
      * 		method="GET",
@@ -158,7 +158,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news",
      * 	SWG\Operation(
      * 		method="POST",
@@ -238,7 +238,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -266,7 +266,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -374,7 +374,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -405,7 +405,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -433,7 +433,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments",
      * 	SWG\Operation(
      * 		method="POST",
@@ -514,7 +514,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -553,7 +553,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -623,7 +623,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments/{comment_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -666,7 +666,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -693,7 +693,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -740,7 +740,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -779,7 +779,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/{news_id}/comments/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -817,7 +817,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/validating-comments",
      * 	SWG\Operation(
      * 		method="GET",
@@ -841,7 +841,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories",
      * 	SWG\Operation(
      * 		method="GET",
@@ -858,7 +858,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories",
      * 	SWG\Operation(
      * 		method="POST",
@@ -928,7 +928,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{catgory_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -956,7 +956,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{catgory_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1033,7 +1033,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{category_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -1064,7 +1064,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{catgory_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1124,7 +1124,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1150,7 +1150,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{category_id}/groups",
      * 	SWG\Operation(
      * 		method="POST",
@@ -1208,7 +1208,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -1249,7 +1249,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/news/categories/{category_id}/groups/{group_id}",
      * 	SWG\Operation(
      * 		method="DELETE",

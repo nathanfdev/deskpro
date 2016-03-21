@@ -39,7 +39,7 @@ use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * @SWG\Resource(
+ * SWG\Resource(
  * 	resourcePath="/chats",
  * 	description="Operations about Chats",
  * 	basePath="/api"
@@ -52,7 +52,7 @@ class ChatController extends AbstractController
     // todo: better search - ordering, more criteria
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats",
      * 	SWG\Operation(
      * 		method="GET",
@@ -189,7 +189,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -217,7 +217,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}",
      * 	SWG\Operation(
      * 		method="POST",
@@ -274,7 +274,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/leave",
      * 	SWG\Operation(
      * 		method="POST",
@@ -326,7 +326,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/end",
      * 	SWG\Operation(
      * 		method="POST",
@@ -356,7 +356,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/messages",
      * 	SWG\Operation(
      * 		method="GET",
@@ -382,7 +382,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/messages",
      * 	SWG\Operation(
      * 		method="POST",
@@ -427,7 +427,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants",
      * 	SWG\Operation(
      * 		method="GET",
@@ -453,7 +453,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants",
      * 	SWG\Operation(
      * 		method="POST",
@@ -500,7 +500,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants/{person_id}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -538,7 +538,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/participants/{person_id}",
      * 	SWG\Operation(
      * 		method="DELETE",
@@ -580,7 +580,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels",
      * 	SWG\Operation(
      * 		method="GET",
@@ -606,7 +606,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels",
      * 	SWG\Operation(
      * 		method="POST",
@@ -651,7 +651,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="GET",
@@ -688,7 +688,7 @@ class ChatController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
+     * SWG\Api(
      * 	path="/chats/{chat_id}/labels/{label}",
      * 	SWG\Operation(
      * 		method="DELETE",
