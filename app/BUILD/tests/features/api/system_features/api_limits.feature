@@ -9,7 +9,7 @@ Feature: API limits
   @reinstall
   Scenario: I'm getting standard API endpoint
     When I send a GET request to "/api/v2/notify/heartbeat"
-    Then the response should be in JSON
+    Then the response should be empty
     And the response status code should be 202
 
   Scenario: I'm getting API endpoint

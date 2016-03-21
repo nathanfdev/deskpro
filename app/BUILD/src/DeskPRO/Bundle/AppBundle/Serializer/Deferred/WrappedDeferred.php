@@ -26,19 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Deferred;
 
 /**
- * Class SerializerTypes.
+ * Class WrappedDeferred.
  */
-final class SerializerTypes
+class WrappedDeferred
 {
-    const TYPE_ENTITY      = 'entity';
-    const TYPE_TO_STRING   = 'to_string';
-    const TYPE_CUSTOM_DATA = 'custom_data';
-    const TYPE_COLLECTION  = 'collection';
-    const TYPE_DEFERRED    = 'deferred';
+    /**
+     * @var CallbackDeferredProperty
+     */
+    protected $deferred;
+
+    /**
+     * @var
+     */
+    protected $type;
+
+    /**
+     * WrappedDeferred constructor.
+     *
+     * @param CallbackDeferredProperty $deferred
+     * @param array                    $type
+     */
+    public function __construct(CallbackDeferredProperty $deferred, $type)
+    {
+        $this->deferred = $deferred;
+        $this->type     = $type;
+    }
+
+    /**
+     * @return CallbackDeferredProperty
+     */
+    public function getDeferred()
+    {
+        return $this->deferred;
+    }
+
+    /**
+     * @return array
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }
