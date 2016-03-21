@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,6 +93,7 @@ class AcceptDatabaseStep extends AbstractStep
         }
 
         $this->getSession()->setDbInfo($dbinfo);
+        $this->getSession()->setSystemDbInfo($dbinfo);
         $this->getSession()->disableFlag('reset_db_details');
         $this->getSession()->disableFlag('install_tables_ok');
         $this->getSession()->enableFlag('reset_config');
