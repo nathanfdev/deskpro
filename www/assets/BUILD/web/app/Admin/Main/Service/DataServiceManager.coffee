@@ -7,6 +7,8 @@ define [
   'Admin/CustomFields/Billing/DataService/BillingFields',
   'Admin/CustomFields/DataService/CustomFields',
   'Admin/TicketFilters/DataService/TicketFilters',
+  'Admin/TicketFilters/DataService/TicketFilterSets',
+  'Admin/TicketFilters/DataService/TicketFilterViews',
   'Admin/TicketDeps/DataService/TicketDeps',
   'Admin/ChatDeps/DataService/ChatDeps',
   'Admin/TicketEscalations/DataService/TicketEscalations',
@@ -18,6 +20,8 @@ define [
   'Admin/TicketProblems/DataService/Problems'
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
   'Admin/ApiKeys/DataService/ApiKeys',
+  'Admin/ApiKeys/DataService/ApiLogs',
+  'Admin/ApiKeys/DataService/ApiTags',
   'Admin/Banning/DataService/Bans',
   'Admin/UserGroups/DataService/UserGroups',
   'Admin/UserRules/DataService/UserRules',
@@ -26,7 +30,8 @@ define [
   'Admin/AgentGroups/DataService/AgentGroups',
   'Admin/AgentTeams/DataService/AgentTeams',
   'Admin/Tasks/DataService/Tasks',
-  'Admin/Usersources/DataService/Usersources'
+  'Admin/Usersources/DataService/Usersources',
+  'Admin/Portal/DataService/PortalGeneralSettings'
 ], (
   Strings,
   DataService_TicketFields,
@@ -36,6 +41,8 @@ define [
   DataService_BillingFields,
   DataService_CustomFields,
   DataService_TicketFilters,
+  DataService_TicketFilterSets,
+  DataService_TicketFilterViews,
   DataService_TicketDeps,
   DataService_ChatDeps,
   DataService_TicketEscalations,
@@ -47,6 +54,8 @@ define [
   DataService_Problems
   DataService_TwitterAccounts,
   DataService_ApiKeys,
+  DataService_ApiLogs,
+  DataService_ApiTags,
   DataService_Bans,
   DataService_UserGroups,
   DataService_UserRules,
@@ -55,7 +64,8 @@ define [
   DataService_AgentGroups,
   DataService_AgentTeams,
   DataService_Tasks,
-  DataService_Usersources
+  DataService_Usersources,
+  DataService_PortalGeneralSettings
 ) ->
   ###
   # A simple wrapper around the data services
@@ -64,8 +74,6 @@ define [
     constructor: (@$injector) ->
       @ds_cache = {}
       @registered = {}
-
-
 
     get: (serviceId, args...) ->
       cacheKey = serviceId
@@ -86,8 +94,8 @@ define [
 
 
     factory: (serviceId) ->
-      # If this class has a custom initXXX method, call that
-      # instead uf the default
+# If this class has a custom initXXX method, call that
+# instead uf the default
       initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
       return @[initName]() if @[initName]?
 
