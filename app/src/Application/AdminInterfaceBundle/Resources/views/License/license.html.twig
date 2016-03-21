@@ -122,7 +122,7 @@
 								<div class="col-lg-10">
 									<div class="inner-group form-control-static">
 										<div ng-if="!Ctrl.license.maxAgents || Ctrl.license.maxAgents == 0">
-											Unlimited Agents
+											Unlimited Agents ({{ ng_var('Ctrl.license.countAgents') }} currently in use)
 										</div>
 										<div ng-if="Ctrl.license.maxAgents && Ctrl.license.maxAgents != 0">
 											{{ ng_var('Ctrl.license.countAgents') }} of {{ ng_var('Ctrl.license.maxAgents') }} Agents
