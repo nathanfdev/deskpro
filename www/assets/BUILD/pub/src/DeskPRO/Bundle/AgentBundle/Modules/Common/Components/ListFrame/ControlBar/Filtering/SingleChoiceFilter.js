@@ -3,6 +3,8 @@ import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 import { SingleChoicePanel } from '../../../Form/SingleChoicePanel';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 
+import { connect } from 'react-redux';
+@connect()
 export class SingleChoiceFilter extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -41,8 +43,8 @@ export class SingleChoiceFilter extends Component {
         <Menu>
           <SingleChoicePanel title={label}
                              depth
-                             currentParam={state.get(param)}
-                             setParams={onClick}
+                             currentParams={state.get(param)}
+                             setParams={setParamsAction}
                              quickFilter={quickFilter}
                              item={filter}/>
         </Menu>

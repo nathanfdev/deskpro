@@ -9,7 +9,7 @@ export class CheckboxList extends React.Component {
     renderLabel: PropTypes.func.isRequired,
     getKeyword: PropTypes.func.isRequired,
     multiple: PropTypes.bool,
-    selected: PropTypes.array,
+    selected: PropTypes.object,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
     options: PropTypes.any,
