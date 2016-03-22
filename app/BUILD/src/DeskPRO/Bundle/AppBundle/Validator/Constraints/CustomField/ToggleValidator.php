@@ -40,9 +40,13 @@ class ToggleValidator extends AbstractSingleValueValidator
      */
     protected function getValidators($data, AbstractCustomDefConstraint $constraint)
     {
+        $validators = [];
+
         // Required validator
-        if ($constraint->getCustomDefOption('required', true)) {
-            $validators[] = new Assert\NotBlank();
+        if ($constraint->getCustomDefOption('validation_type', true)) {
+            $validators[] = new Assert\IsTrue();
         }
+
+        return $validators;
     }
 }

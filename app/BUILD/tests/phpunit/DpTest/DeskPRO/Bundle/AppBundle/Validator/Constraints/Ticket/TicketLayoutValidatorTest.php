@@ -285,6 +285,65 @@ class TicketLayoutValidatorTest extends PortalTestCase
         $this->assertCount(0, $errors);
     }
 
+    public function testToggleFields()
+    {
+        $ticket_layout               = new TicketLayout();
+        $ticket_layout->agent_layout = new Layout();
+        $ticket_layout->agent_layout->add(new LayoutField(FormFields::TICKET_FIELD, 1));
+        $ticket_layout->agent_layout->add(new LayoutField(FormFields::TICKET_FIELD, 2));
+
+        $custom_field_1 = new CustomDefTicket();
+        $custom_field_1->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_TOGGLE);
+        $custom_field_1->setOptions([
+            'agent_validation_type' => 1,
+        ]);
+
+        $custom_field_2 = new CustomDefTicket();
+        $custom_field_2->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_TOGGLE);
+
+        $em = $this->getEntityManager();
+        $em->persist($ticket_layout);
+        $em->persist($custom_field_1);
+        $em->persist($custom_field_2);
+
+        $em->flush();
+
+        $ticket = new Ticket();
+
+        // Test required
+        $errors = $this->validate($ticket);
+        $this->assertCount(1, $errors);
+
+        $this->assertEquals('This value should be true.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[1]', $errors[0]->getPropertyPath());
+
+        $custom_data_1 = new CustomDataTicket();
+        $custom_data_1->setField($custom_field_1);
+        $custom_data_1->setRootField($custom_field_1);
+        $custom_data_1->setValue(0);
+
+        $custom_data_2 = new CustomDataTicket();
+        $custom_data_2->setField($custom_field_2);
+        $custom_data_2->setRootField($custom_field_2);
+        $custom_data_2->setValue(0);
+
+        $ticket->addCustomData($custom_data_1);
+        $ticket->addCustomData($custom_data_2);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(1, $errors);
+
+        $this->assertEquals('This value should be true.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[1]', $errors[0]->getPropertyPath());
+
+        // Test valid values
+        $custom_data_1->setValue(1);
+        $custom_data_2->setValue(0);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(0, $errors);
+    }
+
     /**
      * @param Ticket $ticket
      *
