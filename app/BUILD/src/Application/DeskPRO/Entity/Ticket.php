@@ -1477,6 +1477,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addMessage(TicketMessage $message)
     {
+        $changes = $this->getStateChangeRecorder()->getChangesForField('message');
+        if ($changes) {
+            foreach ($changes as $c) {
+                if ($c->getNew() === $message) {
+                    // already added
+                    return;
+                }
+            }
+        }
+
         $this->messages->add($message);
         $message->ticket = $this;
 

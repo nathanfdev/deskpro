@@ -644,16 +644,16 @@ class TicketsController extends AbstractController
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)
     {
-        $em = $this->getEm();
+        $ticket_manager = $this->getTicketManager();
+        $ticket_manager->markAsManaged($ticket);
 
+        $em = $this->getEm();
         $em->beginTransaction();
 
         try {
             $em->persist($ticket);
 
-            $ticket_manager = $this->getTicketManager();
             // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
@@ -672,8 +672,10 @@ class TicketsController extends AbstractController
     {
         $person = $message->person;
 
-        $em = $this->getEm();
+        $ticket_manager = $this->getTicketManager();
+        $ticket_manager->markAsManaged($ticket);
 
+        $em = $this->getEm();
         $em->beginTransaction();
 
         try {
@@ -705,9 +707,6 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
             $em->persist($message);
 
-            $ticket_manager = $this->getTicketManager();
-            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
