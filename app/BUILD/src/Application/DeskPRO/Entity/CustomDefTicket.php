@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -68,6 +69,10 @@ class CustomDefTicket extends CustomDefAbstract
     public function setParent(CustomDefTicket $parent = null)
     {
         $this->setModelField('parent', $parent);
+
+        if ($parent && !$parent->getChildren()->contains($this)) {
+            $parent->addChild($this);
+        }
 
         return $this;
     }

@@ -50,8 +50,8 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
             $validators[] = new Assert\NotBlank();
         }
 
-        // if no value and value is not required then skip other validators
         if (!$data) {
+            // if no value and value is not required then skip other validators
             return $validators;
         }
 

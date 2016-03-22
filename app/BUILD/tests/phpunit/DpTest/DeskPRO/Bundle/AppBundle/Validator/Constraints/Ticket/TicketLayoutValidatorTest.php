@@ -344,6 +344,148 @@ class TicketLayoutValidatorTest extends PortalTestCase
         $this->assertCount(0, $errors);
     }
 
+    public function testChoiceFields()
+    {
+        $ticket_layout               = new TicketLayout();
+        $ticket_layout->agent_layout = new Layout();
+        $ticket_layout->agent_layout->add(new LayoutField(FormFields::TICKET_FIELD, 1));
+        $ticket_layout->agent_layout->add(new LayoutField(FormFields::TICKET_FIELD, 4));
+
+        $custom_field_1 = new CustomDefTicket();
+        $custom_field_1->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_CHOICE);
+        $custom_field_1->setOptions([
+            'agent_required' => 1,
+        ]);
+
+        $choice_1_1 = new CustomDefTicket();
+        $choice_1_1->setParent($custom_field_1);
+
+        $choice_1_2 = new CustomDefTicket();
+        $choice_1_2->setParent($custom_field_1);
+
+        $custom_field_2 = new CustomDefTicket();
+        $custom_field_2->setHandlerClass(CustomDefAbstract::HANDLER_CLASS_CHOICE);
+        $custom_field_2->setOptions([
+            'agent_min_length' => 2,
+            'agent_max_length' => 3,
+            'multiple'         => true,
+        ]);
+
+        $choice_2_1 = new CustomDefTicket();
+        $choice_2_1->setParent($custom_field_2);
+
+        $choice_2_2 = new CustomDefTicket();
+        $choice_2_2->setParent($custom_field_2);
+
+        $choice_2_3 = new CustomDefTicket();
+        $choice_2_3->setParent($custom_field_2);
+
+        $choice_3a = new CustomDefTicket();
+        $choice_3a->setParent($choice_2_3);
+
+        $choice_2_3b = new CustomDefTicket();
+        $choice_2_3b->setParent($choice_2_3);
+
+        $choice_2_3ba = new CustomDefTicket();
+        $choice_2_3ba->setParent($choice_2_3b);
+
+        $choice_2_3bb = new CustomDefTicket();
+        $choice_2_3bb->setParent($choice_2_3b);
+
+        $em = $this->getEntityManager();
+        $em->persist($ticket_layout);
+        $em->persist($custom_field_1);
+        $em->persist($custom_field_2);
+
+        $em->flush();
+
+        $ticket = new Ticket();
+
+        // Test required
+        $errors = $this->validate($ticket);
+        $this->assertCount(1, $errors);
+
+        $this->assertEquals('This value should not be blank.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[1]', $errors[0]->getPropertyPath());
+
+        $custom_data_1 = new CustomDataTicket();
+        $custom_data_1->setField($choice_1_1);
+        $custom_data_1->setRootField($custom_field_1);
+        $custom_data_1->setValue(1);
+
+        $ticket->addCustomData($custom_data_1);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(0, $errors);
+
+        // Test bad choice
+        $custom_data_2 = new CustomDataTicket();
+        $custom_data_2->setField($choice_2_3);
+        $custom_data_2->setRootField($custom_field_2);
+        $custom_data_2->setValue(1);
+
+        $ticket->addCustomData($custom_data_2);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(2, $errors);
+
+        $this->assertEquals('One or more of the given values is invalid.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[4]', $errors[0]->getPropertyPath());
+
+        $this->assertEquals('This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.', $errors[1]->getMessage());
+        $this->assertEquals('custom_data[4]', $errors[1]->getPropertyPath());
+
+        // Test choices count
+        $ticket->removeCustomDataForField($custom_field_2);
+
+        $custom_data_2 = new CustomDataTicket();
+        $custom_data_2->setField($choice_2_1);
+        $custom_data_2->setRootField($custom_field_2);
+        $custom_data_2->setValue(1);
+
+        $ticket->addCustomData($custom_data_2);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(1, $errors);
+
+        $this->assertEquals('This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[4]', $errors[0]->getPropertyPath());
+
+        $custom_data_3 = new CustomDataTicket();
+        $custom_data_3->setField($choice_2_2);
+        $custom_data_3->setRootField($custom_field_2);
+        $custom_data_3->setValue(1);
+
+        $custom_data_4 = new CustomDataTicket();
+        $custom_data_4->setField($choice_2_3ba);
+        $custom_data_4->setRootField($custom_field_2);
+        $custom_data_4->setValue(1);
+
+        $custom_data_5 = new CustomDataTicket();
+        $custom_data_5->setField($choice_2_3bb);
+        $custom_data_5->setRootField($custom_field_2);
+        $custom_data_5->setValue(1);
+
+        $ticket->addCustomData($custom_data_3);
+        $ticket->addCustomData($custom_data_4);
+        $ticket->addCustomData($custom_data_5);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(1, $errors);
+
+        $this->assertEquals('This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.', $errors[0]->getMessage());
+        $this->assertEquals('custom_data[4]', $errors[0]->getPropertyPath());
+
+        // Test valid choices
+        $ticket->removeCustomDataForField($custom_field_2);
+
+        $ticket->addCustomData($custom_data_3);
+        $ticket->addCustomData($custom_data_4);
+
+        $errors = $this->validate($ticket);
+        $this->assertCount(0, $errors);
+    }
+
     /**
      * @param Ticket $ticket
      *
