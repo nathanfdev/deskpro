@@ -74,10 +74,11 @@ class SideloadListener implements EventSubscriberInterface
     {
         return [
             [
-                'event'  => Events::POST_SERIALIZE,
-                'method' => 'sideload',
-                'class'  => ApiWrapper::class,
-                'format' => 'json',
+                'event'    => Events::POST_SERIALIZE,
+                'method'   => 'sideload',
+                'class'    => ApiWrapper::class,
+                'format'   => 'json',
+                'priority' => 32,
             ],
         ];
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Callback;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\PropertyTransformationContext;
 use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\PropertyTransformerInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 
 /**
  * This executes the callbacks when the data serializer asks it to resolve a CallbackDeferredProperty.
@@ -55,7 +56,7 @@ class CallbackPropertyTransformer implements PropertyTransformerInterface
      */
     public function supportsDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        return $deferred_property instanceof CallbackDeferredProperty;
+        return $deferred_property instanceof \DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
     }
 
     /**
@@ -65,7 +66,7 @@ class CallbackPropertyTransformer implements PropertyTransformerInterface
      */
     public function resolveDeferredProperty(DeferredPropertyInterface $deferred_property)
     {
-        /* @var CallbackDeferredProperty $deferred_property */
+        /* @var \DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty $deferred_property */
         return $deferred_property->call();
     }
 }
