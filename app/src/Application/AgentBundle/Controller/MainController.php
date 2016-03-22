@@ -145,11 +145,10 @@ class MainController extends AbstractController
         }
 
         if ($without_chat_perm) {
-            $this->db->update(
-                'sessions',
-                array('is_chat_available' => 0),
-                array('person_id'         => $without_chat_perm),
-                array('person_id'         => Connection::PARAM_INT_ARRAY)
+            $this->db->executeUpdate(
+                'UPDATE sessions SET is_chat_available = ? WHERE person_id IN (?)',
+                array(0, $without_chat_perm),
+                array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY)
             );
         }
 
