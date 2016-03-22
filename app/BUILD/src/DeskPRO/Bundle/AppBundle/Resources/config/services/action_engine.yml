@@ -23,3 +23,8 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@action_engine.action_collection"
+  action_engine.tickets:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketApplicatorService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@action_engine.action_collection"

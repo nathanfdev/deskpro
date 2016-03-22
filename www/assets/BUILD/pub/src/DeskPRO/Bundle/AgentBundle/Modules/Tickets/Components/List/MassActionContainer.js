@@ -33,12 +33,12 @@ export class MassActionContainer extends Component {
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { actions, isComments } = this.props;
+    const { actions } = this.props;
 
     const config = {
       actions: actions,
       jobType: 'publish_mass',
-      content: isComments ? 'feedback_comments' : 'feedback',
+      content: 'tickets',
       loadIndicatorAction: loadIndicator,
       reloadNavAction: initialLoad
     };
