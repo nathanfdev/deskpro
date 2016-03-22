@@ -49,26 +49,16 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetProjectAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetProductAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetWorkflowAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ActionCollection
 {
     /** @var ArrayCollection */
     private $actions;
-    private $transformer;
 
-    public function __construct(ActionTransformer $transformer)
+    public function __construct()
     {
-        $this->actions     = new ArrayCollection();
-        $this->transformer = $transformer;
-    }
-
-    public function addAction(ActionInterface $action)
-    {
-        $this->actions->add($action);
-
-        return $this;
+        $this->actions = new ArrayCollection();
     }
 
     public function getActions()
@@ -77,24 +67,9 @@ class ActionCollection
     }
 
     /**
-     * @param string $namespace
-     * @param mixed  $entities
-     * @param array  $actions
-     */
-    public function apply($namespace, $entities, $actions)
-    {
-        $this->prepare($actions);
-        /** @var ActionInterface $action */
-        foreach ($this->actions as $action) {
-            $applicator = $this->transformer->actionToApplicator($namespace, $action);
-            $applicator->apply($entities);
-        }
-    }
-
-    /**
      * @param array $actions
      */
-    private function prepare(array $actions)
+    public function prepare(array $actions)
     {
         foreach ($actions as $name => $options) {
             switch ($name) {
@@ -145,5 +120,12 @@ class ActionCollection
                     break;
             }
         }
+    }
+
+    private function addAction(ActionInterface $action)
+    {
+        $this->actions->add($action);
+
+        return $this;
     }
 }

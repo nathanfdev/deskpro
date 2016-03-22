@@ -33,18 +33,31 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Doctrine\ORM\EntityManager;
 
 class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
+    protected $em;
+    private $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
+    {
+        parent::__construct($em);
+        $this->tm = $tm;
+    }
+
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
         foreach ($tickets as $ticket) {
+            $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
             $ticket->deleteTicket();
+            $this->tm->saveTicket($ticket, $context);
         }
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,22 +29,33 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 {
+    private $container;
+    /** @var EntityManager */
     protected $em;
-    protected $actions;
+    protected $actionCollection;
     protected $class;
     protected $namespace;
+    protected $transformer;
 
-    public function __construct(EntityManager $em, ActionCollection $actions)
+    public function __construct(Container $container)
     {
-        $this->em      = $em;
-        $this->actions = $actions;
+        $this->container        = $container;
+        $this->em               = $this->container->get('doctrine.orm.default_entity_manager');
+        $this->transformer      = new ActionTransformer();
+        $this->actionCollection = new ActionCollection();
     }
 
     /**
@@ -54,7 +65,25 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     public function apply(array $ids, array $actions)
     {
         $entities = $this->getEntities($this->class, $ids);
-        $this->actions->apply($this->namespace, $entities, $actions);
+        $this->actionCollection->prepare($actions);
+        /** @var ActionInterface $action */
+        foreach ($this->actionCollection->getActions() as $action) {
+            $serialized = $action->serialize();
+            print_r($serialized);
+            $options = array_key_exists('options', $serialized) && $serialized['options'] ? $serialized['options'] : [];
+            print_r($options);
+            $type       = ActionTypeCodes::getActionTypeCode($action);
+            $applicator = $this->container->get(
+                'action_engine.'.$this->namespace.'.'.$type,
+                ContainerInterface::NULL_ON_INVALID_REFERENCE
+            );
+            if (null === $applicator) {
+                $applicator = $this->transformer->actionToApplicator($this->em, $this->namespace, $type);
+            }
+            $applicator
+                ->setOptions($options)
+                ->apply($entities);
+        }
         $this->em->flush();
     }
 
