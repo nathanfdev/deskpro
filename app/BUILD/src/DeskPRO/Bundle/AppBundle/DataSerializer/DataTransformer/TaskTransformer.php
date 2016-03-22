@@ -155,16 +155,8 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 [$this, 'getSubtasksDone'],
                 [$id]
             ),
-            'linked_tickets' => new CallbackDeferredProperty(
-                [$this, 'getLinkedTickets'],
-                [$data]
-            ),
-            'linked_chats' => new CallbackDeferredProperty(
-                [$this, 'getLinkedChats'],
-                [$data]
-            ),
-            'linked_articles' => new CallbackDeferredProperty(
-                [$this, 'getLinkedArticles'],
+            'linked_items' => new CallbackDeferredProperty(
+                [$this, 'getLinkedItems'],
                 [$data]
             ),
         ];
@@ -267,42 +259,34 @@ class TaskTransformer extends AbstractDataSerializerTransformer
         }
     }
 
-    public function getLinkedTickets(Task $task)
+    public function getLinkedItems(Task $task)
     {
         $ret = [];
+
         foreach ($task->getLinkedTickets() as $linkedTicket) {
             $ticket = $linkedTicket->getTicket();
-            $ret[] = [
+            $ret['ticket.' . $ticket->getId()] = [
                 'id' => $ticket->getId(),
-                'subject' => $ticket->getSubject(),
+                'title' => $ticket->getSubject(),
+                'type' => 'ticket',
             ];
         }
 
-        return $ret;
-    }
-
-    public function getLinkedChats(Task $task)
-    {
-        $ret = [];
         foreach ($task->getLinkedChats() as $linkedChat) {
             $chat = $linkedChat->getChat();
-            $ret[] = [
+            $ret['chat.' . $chat->getId()] = [
                 'id' => $chat->getId(),
-                'subject' => $chat->getSubjectLine(),
+                'title' => $chat->getSubjectLine(),
+                'type' => 'chat',
             ];
         }
 
-        return $ret;
-    }
-
-    public function getLinkedArticles(Task $task)
-    {
-        $ret = [];
         foreach ($task->getLinkedArticles() as $linkedArticle) {
             $article = $linkedArticle->getArticle();
-            $ret[] = [
+            $ret['article.' . $article->getId()] = [
                 'id' => $article->getId(),
                 'title' => $article->getTitle(),
+                'type' => 'article',
             ];
         }
 

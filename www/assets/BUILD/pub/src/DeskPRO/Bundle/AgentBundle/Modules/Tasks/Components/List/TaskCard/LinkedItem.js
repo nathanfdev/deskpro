@@ -28,22 +28,14 @@ export class LinkedItem extends CardWidget {
     const empty = Immutable.fromJS({});
     this.state = {
       isOpen: props.isOpen,
-      value: Immutable.fromJS({
-        linked_tickets: props.value.get('linked_tickets') || empty,
-        linked_chats: props.value.get('linked_chats') || empty,
-        linked_articles: props.value.get('linked_articles') || empty
-      })
+      value: props.value.get('linked_items') || empty
     };
   }
 
   componentWillReceiveProps(props) {
     const empty = Immutable.fromJS({});
     this.setState({
-      value: Immutable.fromJS({
-        linked_tickets: props.value.get('linked_tickets') || empty,
-        linked_chats: props.value.get('linked_chats') || empty,
-        linked_articles: props.value.get('linked_articles') || empty
-      })
+      value: props.value.get('linked_items') || empty
     });
 
     if (undefined !== props.isOpen) {
@@ -56,65 +48,72 @@ export class LinkedItem extends CardWidget {
       || !Immutable.is(this.state.value, state.value);
   }
 
-  getOptions = (input) => {
+  getOptions = (input, callback) => {
     const type = ['ticket', 'article', 'chat_conversation'];
-    return new Promise((resolve, reject) => {
-      this.props.dispatch(quickSearchAction({type: type, query: input})).then((res) => {
-        let results = [];
-        if (!res.data || !res.data.grouped_results) resolve({options: results});
+    this.props.dispatch(quickSearchAction({type: type, query: input})).then((res) => {
 
-        for (let group of res.data.grouped_results) {
-          let option = {label: '', options: []};
-          results.push(option);
+      let options = [];
+      if (!res.data || !res.data.grouped_results) {
+        return callback(null, {options: options});
+      }
 
+      for (let group of res.data.grouped_results) {
+        let option = {label: '', options: []};
+        options.push(option);
+
+        if (group.type === 'ticket') {
+          option.label = 'Tickets';
+        } else if (group.type === 'chat') {
+          option.label = 'Chats';
+        } else if (group.type === 'article') {
+          option.label = 'Articles';
+        }
+
+        for (let result of group.results) {
           if (group.type === 'ticket') {
-            option.label = 'Tickets';
-          } else if (group.type === 'chat') {
-            option.label = 'Chats';
-          } else if (group.type === 'article') {
-            option.label = 'Articles';
-          }
-
-          for (let result of group.results) {
-            if (group.type === 'ticket') {
-              option.options.push({
-                label: result.subject,
-                value: result.id
-              });
-            } else  if (group.type === 'chat') {
-              option.options.push({
-                label: result.subject,
-                value: result.id
-              });
-            } else  if (group.type === 'article') {
-              option.options.push({
-                label: result.title,
-                value: result.id
-              });
-            }
+            option.options.push({
+              label: result.subject,
+              value: 'ticket.' + result.id
+            });
+          } else  if (group.type === 'chat') {
+            option.options.push({
+              label: result.subject,
+              value: 'chat.' + result.id
+            });
+          } else  if (group.type === 'article') {
+            option.options.push({
+              label: result.title,
+              value: 'article.' + result.id
+            });
           }
         }
-        resolve({options: results});
-      });
+      }
+
+      callback(null, {options: options});
+    });
+  };
+
+  onSelectItem = (value, selectedOptions) => {
+    const [type, id] = value.value.split('.');
+    const obj = {
+      id: id,
+      title: value.label,
+      type: type
+    };
+    this.setState({
+      value: this.state.value.set(value.value, Immutable.fromJS(obj))
     });
   };
 
   render() {
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
-    const tickets = this.state.value.get('linked_tickets');
-    const chats = this.state.value.get('linked_chats');
-    const articles = this.state.value.get('linked_articles');
-    const count = tickets.size + chats.size + articles.size;
+    const items = this.state.value;
+    const count = items.size;
     let title = 'N/A';
 
     if (1 === count) {
-      if (tickets.size) {
-        title = 'Linked ticket: ' + tickets.first().get('subject');
-      } else if (chats.size) {
-        title = 'Linked chat: ' + chats.first().get('subject');
-      } else if (articles.size) {
-        title = 'Linked article: ' + articles.first().get('title');
-      }
+      const item = items.first();
+      title = `Linked ${item.get('type')}: ${item.get('title')}`;
     } else if (count > 1) {
       title = count + ' linked items';
     }
@@ -141,41 +140,26 @@ export class LinkedItem extends CardWidget {
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
 
-                    <div className="dpw-label-pile">
+                    {items.size && <div className="dpw-label-pile">
                       <ul className="dpw-label-list">
-                        {tickets.size && tickets.map((ticket) =>
-                          <li>
+                        {items.map((item, key) =>
+                          <li key={key}>
                             <span className="dpw-item-label">
                               <i className="fa fa-times"></i>
-                              {ticket.get('subject')}
-                            </span>
-                          </li>
-                        ) || null}
-
-                        {chats.size && chats.map((chat) =>
-                          <li>
-                            <span className="dpw-item-label">
-                              <i className="fa fa-times"></i>
-                              {chat.get('subject')}
-                            </span>
-                          </li>
-                        ) || null}
-
-                        {articles.size && articles.map((article) =>
-                          <li>
-                            <span className="dpw-item-label">
-                              <i className="fa fa-times"></i>
-                              {article.get('title')}
+                              {item.get('title')}
                             </span>
                           </li>
                         ) || null}
                       </ul>
-                    </div>
+                    </div> || null}
 
                     <Select.Async
                       name="form-field-name"
+                      minimumInput={3}
                       loadOptions={this.getOptions}
-                      clearable={false} />
+                      placeholder="Link items..."
+                      clearable={false}
+                      onChange={this.onSelectItem} />
 
                   </div>
                 </div>
