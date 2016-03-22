@@ -142,12 +142,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
         $header_to = implode(', ', $header_to);
 
-        if ($header_cc_raw) {
+        if ($header_cc_raw && is_array($header_cc_raw)) {
             foreach ($header_cc_raw as $email => $x) {
                 $ccs[] = $email;
             }
         }
-        if ($header_bcc_raw) {
+        if ($header_bcc_raw && is_array($header_bcc_raw)) {
             foreach ($header_bcc_raw as $email) {
                 $bccs[] = $email;
             }
