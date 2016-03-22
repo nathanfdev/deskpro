@@ -359,7 +359,9 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $old_title = $this->title;
         $this->setModelField('title', $title);
+
         // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
+        return $this;
     }
 
     public function getTitle()
@@ -439,6 +441,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         } else {
             return $this->status;
         }
+    }
+
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
     }
 
     public function contentModifier($content)
@@ -653,7 +660,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $down = ($x / 2) + abs($this->total_rating);
         }
 
-        return['up' => $up, 'down' => $down];
+        return ['up' => $up, 'down' => $down];
     }
 
     public function getUpVotes()
@@ -714,6 +721,18 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function removeComment($comment)
     {
         $this->setModelField('num_comments', $this->num_comments - 1);
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setNumComments($value)
+    {
+        $this->setModelField('num_comments', $value);
+
+        return $this;
     }
 
     /**
@@ -796,10 +815,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**

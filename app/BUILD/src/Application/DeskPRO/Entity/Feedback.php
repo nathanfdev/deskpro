@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -303,6 +304,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setIsReviewed($yesno)
     {
         $this->setModelField('is_reviewed', $yesno);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviewed()
+    {
+        return $this->is_reviewed;
     }
 
     public function setStatus($status)
@@ -673,7 +682,16 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'columnName' => 'hidden_status',
             )
         );
-        $metadata->mapField(array('fieldName' => 'is_reviewed', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_reviewed'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_reviewed',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_reviewed',
+            )
+        );
         $metadata->mapField(
             array(
                 'fieldName'  => 'popularity',
@@ -798,8 +816,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'nullable'   => true,
                 'columnName' => 'date_published',
             )
-        )
-        ;
+        );
         $metadata->mapField(
             array(
                 'fieldName'  => 'date_updated',

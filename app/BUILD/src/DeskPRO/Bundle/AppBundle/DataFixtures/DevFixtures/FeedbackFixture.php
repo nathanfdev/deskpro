@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -43,7 +45,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_FEEDBACK            = 100;
-    const NUM_FEEDBACK_COMMENTS   = 100;
+    const MIN_FEEDBACK_COMMENTS   = 1;
+    const MAX_FEEDBACK_COMMENTS   = 5;
     const NUM_LABELS              = 30;
     const MIN_LABELS_PER_FEEDBACK = 0;
     const MAX_LABELS_PER_FEEDBACK = 5;
@@ -150,23 +153,25 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadCustomDefFeedback()
     {
-        $cat_field                = new CustomDefFeedback();
-        $cat_field->sys_name      = 'cat';
-        $cat_field->title         = 'Category';
-        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
-        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Choice';
+        $cat_field = new CustomDefFeedback();
+        $cat_field
+            ->setSysName('cat')
+            ->setTitle('Category')
+            ->setDescription('e.g., maybe Windows, Mac, Linux.')
+            ->setHandlerClass('Application\DeskPRO\CustomFields\Handler\Choice');
         $this->manager->persist($cat_field);
         $this->manager->flush();
 
         foreach (['Windows', 'Mac', 'Linux'] as $order => $title) {
-            $opt_f                  = new CustomDefFeedback();
-            $opt_f->parent          = $cat_field;
-            $opt_f->title           = $title;
-            $opt_f->description     = '';
-            $opt_f->is_user_enabled = true;
-            $opt_f->is_enabled      = true;
-            $opt_f->display_order   = $order;
-            $opt_f->setOption('parent_id', 0);
+            $opt_f = new CustomDefFeedback();
+            $opt_f
+                ->setParent($cat_field)
+                ->setTitle($title)
+                ->setDescription('')
+                ->setIsUserEnabled(true)
+                ->setIsEnabled(true)
+                ->setDisplayOreder($order)
+                ->setOption('parent_id', 0);
 
             $this->manager->persist($opt_f);
         }
@@ -178,9 +183,9 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     {
         foreach ($this->statusesCategories as $status => $titles) {
             foreach ($titles as $title) {
-                $cat              = new FeedbackStatusCategory();
-                $cat->status_type = $status;
-                $cat->title       = $title;
+                $cat = new FeedbackStatusCategory();
+                $cat->setStatusType($status)
+                    ->setTitle($title);
                 $this->manager->persist($cat);
             }
         }
@@ -224,9 +229,9 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
             ];
+            $values  = $this->setReviewed($values);
             $values  = $this->setStatus($values);
             $values  = $this->setTitleAndSlug($values);
-            $values  = $this->setReviewed($values);
             $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_FEEDBACK, $batch, true);
@@ -235,6 +240,13 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function setStatus(array $values)
     {
+        if (!$values['is_reviewed']) {
+            $values['status']             = Feedback::STATUS_HIDDEN;
+            $values['hidden_status']      = ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
+            $values['status_category_id'] = null;
+
+            return $values;
+        }
         $values['status'] = $this->faker->randomElement($this->statuses);
         switch ($values['status']) {
             case Feedback::STATUS_ACTIVE:
@@ -256,12 +268,12 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function setReviewed(array $values)
     {
-        $date                  = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
-        $isReviewed            = rand(0, 1);
-        $values['is_reviewed'] = $isReviewed;
+        $date                   = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
+        $isReviewed             = rand(0, 1);
+        $values['is_reviewed']  = $isReviewed;
+        $values['num_comments'] = 0;
         if ($isReviewed) {
             $values['view_count']     = rand(0, 100);
-            $values['num_comments']   = rand(0, 100);
             $values['num_ratings']    = rand(0, 20);
             $values['total_rating']   = rand(0, 20);
             $values['popularity']     = $this->calculatePopularity($values);
@@ -269,7 +281,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             $values['date_updated']   = $date;
         } else {
             $values['view_count']     = 0;
-            $values['num_comments']   = 0;
             $values['num_ratings']    = 0;
             $values['total_rating']   = 0;
             $values['popularity']     = 0;
@@ -331,24 +342,40 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadFeedbackComments()
     {
-        $i     = 0;
         $batch = [];
-        while ($i++ < self::NUM_FEEDBACK_COMMENTS) {
-            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
-            $values      = [
-                'content'     => $this->faker->realText(300),
-                'feedback_id' => $this->faker->randomElement($this->feedback),
-                'person_id'   => $this->faker->randomElement($this->people),
-                'ip_address'  => $this->faker->ipv4,
-                'status'      => $this->faker->randomElement(
-                    [FeedbackComment::STATUS_VISIBLE, FeedbackComment::STATUS_HIDDEN, FeedbackComment::STATUS_DELETED]
-                ),
-                'date_created' => $dateCreated,
-            ];
-            $values  = $this->setCommentReviewed($values);
-            $batch[] = $values;
+        foreach ($this->feedback as $id) {
+            $num_comments = rand(self::MIN_FEEDBACK_COMMENTS, self::MAX_FEEDBACK_COMMENTS);
+            /** @var Feedback $feedback */
+            $feedback = $this->manager->getRepository('DeskPRO:Feedback')->find($id);
+            if (!$feedback->isReviewed()) {
+                continue;
+            }
+            $feedback->setNumComments($num_comments);
+            $this->manager->persist($feedback);
+
+            $i = 0;
+            while ($i++ <= $num_comments) {
+                $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+                $values      = [
+                    'content'     => $this->faker->realText(300),
+                    'feedback_id' => $id,
+                    'person_id'   => $this->faker->randomElement($this->people),
+                    'ip_address'  => $this->faker->ipv4,
+                    'status'      => $this->faker->randomElement(
+                        [
+                            FeedbackComment::STATUS_VISIBLE,
+                            FeedbackComment::STATUS_HIDDEN,
+                            FeedbackComment::STATUS_DELETED,
+                        ]
+                    ),
+                    'date_created' => $dateCreated,
+                ];
+                $values  = $this->setCommentReviewed($values);
+                $batch[] = $values;
+            }
         }
         $this->db->batchInsert(self::TABLE_FEEDBACK_COMMENTS, $batch, true);
+        $this->manager->flush();
     }
 
     private function setCommentReviewed(array $values)

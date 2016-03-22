@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -44,8 +45,8 @@ use Orb\Util\Numbers;
 /**
  * A custom field definition.
  *
- * @property int $display_order
- * @property CustomDefAbstract|null $parent
+ * @property int                      $display_order
+ * @property CustomDefAbstract|null   $parent
  * @property CustomDefAbstract[]|null $children
  *
  * @JMS\ExclusionPolicy("all")
@@ -234,6 +235,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         return 0;
+    }
+
+    public function setDisplayOreder($int)
+    {
+        $this->setModelField('display_order', $int);
+
+        return $this;
     }
 
     /**
@@ -552,7 +560,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Get the value of an option, or a default value if none is set.
      *
-     * @param  $name
+     * @param      $name
      * @param null $default
      *
      * @return mixed

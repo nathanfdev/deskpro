@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -43,8 +45,9 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 {
     const NUM_PUBLISH    = 100;
     const NUM_CATEGORIES = 10;
-    const NUM_COMMENTS   = 30;
     const NUM_APC        = 10;
+    const MIN_COMMENTS   = 1;
+    const MAX_COMMENTS   = 5;
     const MIN_CATEGORIES = 0;
     const MAX_CATEGORIES = 3;
 
@@ -164,22 +167,24 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function loadExampleArticle()
     {
-        $content          = new Article();
-        $content->person  = $this->admin;
-        $content->title   = $this->tr->phrase('user.defaults.article_example_title');
-        $content->content = $this->tr->phrase('user.defaults.article_example_content');
-        $content->status  = ContentAbstract::STATUS_PUBLISHED;
+        $content = new Article();
+        $content
+            ->setPerson($this->admin)
+            ->setTitle($this->tr->phrase('user.defaults.article_example_title'))
+            ->setContent($this->tr->phrase('user.defaults.article_example_content'))
+            ->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $content->addToCategory($this->getReference('article_category_general'));
         $this->manager->persist($content);
     }
 
     private function loadExampleNew()
     {
-        $content          = new News();
-        $content->person  = $this->admin;
-        $content->title   = $this->tr->phrase('user.defaults.news_example_title');
-        $content->content = $this->tr->phrase('user.defaults.news_example_content');
-        $content->status  = ContentAbstract::STATUS_PUBLISHED;
+        $content = new News();
+        $content
+            ->setPerson($this->admin)
+            ->setTitle($this->tr->phrase('user.defaults.news_example_title'))
+            ->setContent($this->tr->phrase('user.defaults.news_example_content'))
+            ->setStatus(ContentAbstract::STATUS_PUBLISHED);
         $content->setCategory($this->getReference('news_category_general'));
         $this->manager->persist($content);
     }
@@ -188,18 +193,17 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $date                    = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
         $values['status']        = $this->faker->randomElement($this->statuses);
+        $values['num_comments']  = 0;
         $values['hidden_status'] = $values['status'] === ContentAbstract::STATUS_HIDDEN
             ? $this->faker->randomElement($this->hiddenStatuses) : null;
         if ($values['hidden_status'] !== ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
             $values['view_count']     = rand(0, 100);
-            $values['num_comments']   = rand(0, 100);
             $values['num_ratings']    = rand(0, 20);
             $values['total_rating']   = rand(0, 20);
             $values['date_published'] = $date;
             $values['date_updated']   = $date;
         } else {
             $values['view_count']     = 0;
-            $values['num_comments']   = 0;
             $values['num_ratings']    = 0;
             $values['total_rating']   = 0;
             $values['date_published'] = null;
@@ -277,12 +281,29 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             }
 
             if ($content === self::TABLE_DOWNLOADS) {
-                $file_info = $this->faker->randomElement([
-                    ['name' => 'file.txt', 'ext' => 'txt', 'type' => 'text/plain',      'content' => 'example file'],
-                    ['name' => 'file.zip', 'ext' => 'zip', 'type' => 'application/zip', 'file' => DP_APP_DIR.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip'],
-                    ['name' => 'file.pdf', 'ext' => 'pdf', 'type' => 'application/pdf', 'file' => DP_APP_DIR.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf'],
-                    ['name' => 'file.jpg', 'ext' => 'jpg', 'type' => 'image/jpeg',      'file' => DP_APP_DIR.'/src/Application/DeskPRO/Resources/assets/avatar-man-face.png'],
-                ]);
+                $file_info = $this->faker->randomElement(
+                    [
+                        ['name' => 'file.txt', 'ext' => 'txt', 'type' => 'text/plain', 'content' => 'example file'],
+                        [
+                            'name' => 'file.zip',
+                            'ext'  => 'zip',
+                            'type' => 'application/zip',
+                            'file' => DP_APP_DIR.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip',
+                        ],
+                        [
+                            'name' => 'file.pdf',
+                            'ext'  => 'pdf',
+                            'type' => 'application/pdf',
+                            'file' => DP_APP_DIR.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+                        ],
+                        [
+                            'name' => 'file.jpg',
+                            'ext'  => 'jpg',
+                            'type' => 'image/jpeg',
+                            'file' => DP_APP_DIR.'/src/Application/DeskPRO/Resources/assets/avatar-man-face.png',
+                        ],
+                    ]
+                );
                 $blob_info = $this->container->get('blob.storage')->createBlobRecordFromString(
                     @$file_info['content'] ?: file_get_contents($file_info['file']),
                     $file_info['name'],
@@ -300,28 +321,57 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function loadComments($content)
     {
-        $i     = 0;
         $batch = [];
-        while ($i++ < self::NUM_COMMENTS) {
-            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
-            $values      = [
-                'content'      => $this->faker->realText(300),
-                'person_id'    => $this->faker->randomElement($this->people),
-                'ip_address'   => $this->faker->ipv4,
-                'status'       => $this->faker->randomElement($this->commentStatuses),
-                'is_reviewed'  => rand(0, 1),
-                'date_created' => $dateCreated,
-            ];
+        foreach ($this->content[$content]['ids'] as $id) {
+            $i            = 0;
+            $num_comments = rand(self::MIN_COMMENTS, self::MAX_COMMENTS);
             if ($content === self::TABLE_ARTICLES) {
-                $values['article_id'] = $this->faker->randomElement($this->content[$content]['ids']);
+                /** @var Article $article */
+                $article = $this->manager->getRepository('DeskPRO:Article')->find($id);
+                if ($article->getHiddenStatus() === ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
+                    continue;
+                }
+                $article->setNumComments($num_comments);
+                $this->manager->persist($article);
             } elseif ($content === self::TABLE_NEWS) {
-                $values['news_id'] = $this->faker->randomElement($this->content[$content]['ids']);
+                /** @var News $new */
+                $new = $this->manager->getRepository('DeskPRO:News')->find($id);
+                if ($new->getHiddenStatus() === ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
+                    continue;
+                }
+                $new->setNumComments($num_comments);
+                $this->manager->persist($new);
             } elseif ($content === self::TABLE_DOWNLOADS) {
-                $values['download_id'] = $this->faker->randomElement($this->content[$content]['ids']);
+                /** @var Download $download */
+                $download = $this->manager->getRepository('DeskPRO:Download')->find($id);
+                if ($download->getHiddenStatus() === ContentAbstract::HIDDEN_STATUS_UNPUBLISHED) {
+                    continue;
+                }
+                $download->setNumComments($num_comments);
+                $this->manager->persist($download);
             }
-            $batch[] = $values;
+            while ($i++ < $num_comments) {
+                $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+                $values      = [
+                    'content'      => $this->faker->realText(300),
+                    'person_id'    => $this->faker->randomElement($this->people),
+                    'ip_address'   => $this->faker->ipv4,
+                    'status'       => $this->faker->randomElement($this->commentStatuses),
+                    'is_reviewed'  => rand(0, 1),
+                    'date_created' => $dateCreated,
+                ];
+                if ($content === self::TABLE_ARTICLES) {
+                    $values['article_id'] = $id;
+                } elseif ($content === self::TABLE_NEWS) {
+                    $values['news_id'] = $id;
+                } elseif ($content === self::TABLE_DOWNLOADS) {
+                    $values['download_id'] = $id;
+                }
+                $batch[] = $values;
+            }
         }
         $this->db->batchInsert($this->content[$content]['comments_table'], $batch, true);
+        $this->manager->flush();
     }
 
     private function linkArticlesWithCategories()
