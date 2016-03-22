@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,18 +30,34 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Doctrine\ORM\EntityManager;
 
-class SetStatusAction extends AbstractAction implements ActionWithOptionsInterface
+class ApplyMarkAsSpamAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    protected $em;
+    private $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
     {
-        $resolver->setRequired('status');
-        $resolver->setAllowedTypes('status', 'int');
-        $resolver->setAllowedValues('status', [0, 1]);
+        parent::__construct($em);
+        $this->tm = $tm;
+    }
+
+    /**
+     * @param Ticket[] $tickets
+     */
+    public function apply(array $tickets)
+    {
+        foreach ($tickets as $ticket) {
+            $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_SPAM);
+            $context = $this->tm->createAgentExecutorContext(null, 'mark_as_spam', 'mass_actions');
+            $this->tm->saveTicket($ticket, $context);
+        }
     }
 }

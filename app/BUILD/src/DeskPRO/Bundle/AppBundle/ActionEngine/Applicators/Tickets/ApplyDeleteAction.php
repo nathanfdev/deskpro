@@ -55,8 +55,8 @@ class ApplyDeleteAction extends AbstractActionApplicator implements ActionApplic
     public function apply(array $tickets)
     {
         foreach ($tickets as $ticket) {
-            $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
             $ticket->deleteTicket();
+            $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
     }

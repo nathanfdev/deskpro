@@ -30,34 +30,10 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 
-class ApplySetStatusAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class MarkAsSpamAction extends AbstractAction
 {
-    protected $em;
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
-
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
-    {
-        foreach ($tickets as $ticket) {
-            $ticket->setStatus($this->options['status']);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
-        }
-    }
 }

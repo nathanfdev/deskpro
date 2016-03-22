@@ -70,11 +70,13 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
         foreach ($this->actionCollection->getActions() as $action) {
             $serialized = $action->serialize();
             print_r($serialized);
-            $options = array_key_exists('options', $serialized) && $serialized['options'] ? $serialized['options'] : [];
+            $options = array_key_exists('options', $serialized) && $serialized['options'] ?
+                $serialized['options'] : [];
             print_r($options);
-            $type       = ActionTypeCodes::getActionTypeCode($action);
+            $type = ActionTypeCodes::getActionTypeCode($action);
+            echo $type;
             $applicator = $this->container->get(
-                'action_engine.'.$this->namespace.'.'.$type,
+                'action_engine.'.strtolower($this->namespace).'.'.$type,
                 ContainerInterface::NULL_ON_INVALID_REFERENCE
             );
             if (null === $applicator) {

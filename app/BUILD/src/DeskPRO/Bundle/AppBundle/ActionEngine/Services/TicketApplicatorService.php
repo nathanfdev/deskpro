@@ -37,5 +37,5 @@ use Application\DeskPRO\Entity\Ticket;
 class TicketApplicatorService extends AbstractApplicatorService
 {
     protected $class     = Ticket::class;
-    protected $namespace = 'tickets';
+    protected $namespace = 'Tickets';
 }

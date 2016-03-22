@@ -39,13 +39,15 @@ abstract class AbstractAction implements ActionInterface
     const APPROVE_ACTION             = 'approve';
     const ASSIGN_ACTION              = 'assign';
     const DELETE_ACTION              = 'delete';
+    const MARK_AS_SPAM_ACTION        = 'mark_as_spam';
     const SET_CATEGORY_ACTION        = 'set_category';
     const SET_DUE_DATE_ACTION        = 'set_due_date';
     const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
     const SET_LANGUAGE_ACTION        = 'set_language';
     const SET_PROJECT_ACTION         = 'set_project';
     const SET_PRODUCT_ACTION         = 'set_product';
-    const SET_STATUS_ACTION          = 'set_status';
+    const SET_INT_STATUS_ACTION      = 'set_int_status';
+    const SET_TICKET_STATUS_ACTION   = 'set_ticket_status';
     const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
     const SET_TYPE_ACTION            = 'set_type';
     const SET_WORKFLOW_ACTION        = 'set_workflow';

@@ -38,7 +38,9 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AddLabelsAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AssignAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\MarkAsSpamAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetIntStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetLanguageAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetHiddenStatusAction;
@@ -46,8 +48,8 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryActi
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetDueDateAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetProjectAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetProductAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetWorkflowAction;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -79,8 +81,11 @@ class ActionCollection
                 case AbstractAction::SET_STATUS_CATEGORY_ACTION:
                     $this->addAction(new SetStatusCategoryAction(['id' => $options]));
                     break;
-                case AbstractAction::SET_STATUS_ACTION:
-                    $this->addAction(new SetStatusAction(['status' => (int) $options]));
+                case AbstractAction::SET_INT_STATUS_ACTION:
+                    $this->addAction(new SetIntStatusAction(['status' => (int) $options]));
+                    break;
+                case AbstractAction::SET_TICKET_STATUS_ACTION:
+                    $this->addAction(new SetStatusAction(['status' => $options]));
                     break;
                 case AbstractAction::SET_DUE_DATE_ACTION:
                     $this->addAction(new SetDueDateAction(['date' => $options]));
@@ -117,6 +122,9 @@ class ActionCollection
                     break;
                 case AbstractAction::DELETE_ACTION:
                     $this->addAction(new DeleteAction());
+                    break;
+                case AbstractAction::MARK_AS_SPAM_ACTION:
+                    $this->addAction(new MarkAsSpamAction());
                     break;
             }
         }

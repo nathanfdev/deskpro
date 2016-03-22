@@ -21,4 +21,14 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
+  action_engine.tickets.set_status:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetStatusAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+  action_engine.tickets.mark_as_spam:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyMarkAsSpamAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
 

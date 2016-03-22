@@ -16,7 +16,7 @@ export const massActionsSelector = createSelector(
     massActions.push({
       label: 'Status',
       type: 'set_action',
-      param: 'set_status',
+      param: 'set_ticket_status',
       quickFilter: true,
       options: [
         { value: 'awaiting_agent', label: 'Awaiting agent' },
