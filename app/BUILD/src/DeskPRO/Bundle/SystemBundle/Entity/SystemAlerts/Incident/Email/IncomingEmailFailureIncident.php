@@ -31,7 +31,7 @@
  */
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractContinuingFailureIncident;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,57 +39,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class IncomingEmailFailureIncident extends Incident
+class IncomingEmailFailureIncident extends AbstractContinuingFailureIncident
 {
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $date_first_failure;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $date_last_failure;
-
     /**
      * {@inheritdoc}
      */
     public function getInstructions()
     {
         return 'Check the email stuff. Good luck!';
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateFirstFailure()
-    {
-        return $this->date_first_failure;
-    }
-
-    /**
-     * @param \DateTime $date_first_failure
-     */
-    public function setDateFirstFailure(\DateTime $date_first_failure)
-    {
-        $this->date_first_failure = $date_first_failure;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastFailure()
-    {
-        return $this->date_last_failure;
-    }
-
-    /**
-     * @param \DateTime $date_last_failure
-     */
-    public function setDateLastFailure(\DateTime $date_last_failure)
-    {
-        $this->date_last_failure = $date_last_failure;
     }
 }

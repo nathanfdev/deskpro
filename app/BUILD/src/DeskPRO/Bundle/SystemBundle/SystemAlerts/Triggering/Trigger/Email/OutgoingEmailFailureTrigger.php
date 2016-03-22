@@ -29,24 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
+namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
-use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\OutgoingEmailFailureIncident;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\AbstractContinuingFailureTrigger;
 
 /**
- * Class IncomingEmailSuccessEvent.
- *
- * @ORM\Entity
+ * Class OutgoingEmailFailureTrigger.
  */
-class IncomingEmailSuccessEvent extends Event implements SuccessEvent
+class OutgoingEmailFailureTrigger extends AbstractContinuingFailureTrigger
 {
     /**
      * {@inheritdoc}
      */
-    public function getFailureType()
+    protected function supports(Event $event)
     {
-        return IncomingEmailFailureEvent::class;
+        return ($event instanceof OutgoingEmailFailureEvent) || ($event instanceof OutgoingEmailSuccessEvent);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isFailure(Event $event)
+    {
+        return $event instanceof OutgoingEmailFailureEvent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isSuccess(Event $event)
+    {
+        return $event instanceof OutgoingEmailSuccessEvent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateIncident()
+    {
+        return new OutgoingEmailFailureIncident();
     }
 }

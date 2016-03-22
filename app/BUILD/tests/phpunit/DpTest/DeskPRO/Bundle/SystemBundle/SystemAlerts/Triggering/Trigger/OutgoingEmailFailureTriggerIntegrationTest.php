@@ -31,21 +31,21 @@
  */
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger;
+use Application\EmailBundle\Mail\RawTransport\RawTransportException;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger;
 use DpTest\Bundle\SystemBundle\SystemAlerts\BaseIntegrationTest;
-use Zend\Mail\Exception\RuntimeException;
 
 require_once realpath(__DIR__.'/../../BaseIntegrationTest.php');
 
 /**
- * Class IncomingEmailFailureTriggerIntegrationTest.
+ * Class OutgoingEmailFailureTriggerIntegrationTest.
  */
-class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
+class OutgoingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
 {
     /**
-     * @var IncomingEmailFailureTrigger
+     * @var OutgoingEmailFailureTrigger
      */
     private $trigger;
 
@@ -55,13 +55,13 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->trigger = $this->get('dp_sys.alerts.incoming_email_failure_trigger');
+        $this->trigger = $this->get('dp_sys.alerts.outgoing_email_failure_trigger');
     }
 
     /**
      * @test
      */
-    public function it_should_count_IncomingEmailFailure_events()
+    public function it_should_count_OutgoingEmailFailure_events()
     {
         $this->event_logger->log($this->dummyFailure());
         $this->event_logger->log($this->dummyFailure());
@@ -75,9 +75,9 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @test
      */
-    public function it_should_flush_state_after_IncomingEmailSuccess_event()
+    public function it_should_flush_state_after_OutgoingEmailSuccess_event()
     {
-        $initial_trigger_state = (new IncomingEmailFailureTrigger($this->em))->getState();
+        $initial_trigger_state = (new OutgoingEmailFailureTrigger($this->em))->getState();
 
         $this->event_logger->log($this->dummyFailure());
         $this->assertNotEquals($initial_trigger_state, $this->trigger->getState());
@@ -124,20 +124,20 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @param string $when
      *
-     * @return IncomingEmailFailureEvent
+     * @return OutgoingEmailFailureEvent
      */
     private function dummyFailure($when = 'now')
     {
-        return new IncomingEmailFailureEvent(new RuntimeException(), new \DateTime($when));
+        return new OutgoingEmailFailureEvent(new RawTransportException(), new \DateTime($when));
     }
 
     /**
      * @param string $when
      *
-     * @return IncomingEmailSuccessEvent
+     * @return OutgoingEmailSuccessEvent
      */
     private function dummySuccess($when = 'now')
     {
-        return new IncomingEmailSuccessEvent(new \DateTime($when));
+        return new OutgoingEmailSuccessEvent(new \DateTime($when));
     }
 }
