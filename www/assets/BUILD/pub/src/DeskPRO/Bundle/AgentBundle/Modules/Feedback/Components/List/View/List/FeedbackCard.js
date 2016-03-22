@@ -137,7 +137,7 @@ export class FeedbackCard extends Component {
           </CardLineLeft>
           { this.renderLabels(labels) }
           <CardLineRight>
-            <CardComments commentsCounter={comments}/>
+            <CardComments commentsCounter={feedback.get('num_comments')}/>
           </CardLineRight>
         </CardLine>
 
