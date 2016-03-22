@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -127,9 +127,6 @@ class FeedbackController extends AbstractController
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-        $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
-        $my_vote        = $content_rating->getRating();
-
         $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
         $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
         $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
@@ -152,8 +149,6 @@ class FeedbackController extends AbstractController
             'category_path' => $category_path,
 
             'custom_fields' => $custom_fields,
-
-            'my_vote' => $my_vote,
 
             'rated_searches'      => $rated_searches,
             'related_content'     => $related_content,

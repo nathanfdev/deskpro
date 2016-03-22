@@ -96,7 +96,6 @@ pageMeta.baseId = '{{ baseId }}';
                     {% endset %}
                     {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}, true) }}
                 </span>
-				<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="{{ phrase('agent.feedback.vote_for_this_feedback') }}" id="{{baseId}}_my_vote">+1</button>
 			</dd>
 
 			<dt>{{ phrase('agent.general.author') }}:</dt>
