@@ -18,8 +18,7 @@ export class FeedbackCard extends Component {
     author: PropTypes.object.isRequired,
     type: PropTypes.object.isRequired,
     feedbackLabels: PropTypes.array,
-    feedbackStatusCategory: PropTypes.object,
-    feedbackComments: PropTypes.object
+    feedbackStatusCategory: PropTypes.object
   };
 
   renderLabels(labels) {
@@ -96,10 +95,9 @@ export class FeedbackCard extends Component {
   }
 
   render() {
-    const { feedback, author, selected, toggleSelected, feedbackLabels, feedbackComments } = this.props;
+    const { feedback, author, selected, toggleSelected, feedbackLabels } = this.props;
     const type = this.props.type || Immutable.fromJS({});
     const labels = feedbackLabels ? feedbackLabels : [];
-    const comments = feedbackComments ? parseInt(feedbackComments.get('counter'), 10) : 0;
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth = containerWidth - feedbackMarkWidth - 20;

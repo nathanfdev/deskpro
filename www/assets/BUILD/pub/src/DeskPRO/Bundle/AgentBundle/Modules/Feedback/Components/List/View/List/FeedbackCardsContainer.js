@@ -12,7 +12,6 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
   selected: selectedSelector(state),
   people: collectionSelectorFactory('Person', 'feedback')(state),
   feedbackTypes: collectionSelectorFactory('FeedbackType', 'feedback')(state),
-  feedbackComments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state)
 }))
 export class FeedbackCardsContainer extends Component {
@@ -23,13 +22,12 @@ export class FeedbackCardsContainer extends Component {
     selected: PropTypes.object.isRequired,
     people: PropTypes.object.isRequired,
     feedbackTypes: PropTypes.object.isRequired,
-    feedbackComments: PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
     toggleSelected: PropTypes.func.isRequired
   };
 
   renderCard(id) {
-    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackComments, feedbackStatusCategories } = this.props;
+    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackStatusCategories } = this.props;
     const element = feedback.get(id);
 
     return (
@@ -40,7 +38,6 @@ export class FeedbackCardsContainer extends Component {
                     toggleSelected={toggleSelected}
                     author={people.get(element.get('person'))}
                     feedbackStatusCategory={feedbackStatusCategories.get(element.get('status_category'))}
-                    feedbackComments={feedbackComments.get(id)}
                     feedbackLabels={element.get('labels')}
                     type={feedbackTypes.get(element.get('category'))}/>
     );
