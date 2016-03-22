@@ -53,7 +53,6 @@ services:
   validator.ticket_layout:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketLayoutValidator
     arguments:
-      - "@doctrine.orm.default_entity_manager"
       - "@custom_field_manager"
       - "@ticket_layout_factory"
       - "@form_hierarchy_generator"

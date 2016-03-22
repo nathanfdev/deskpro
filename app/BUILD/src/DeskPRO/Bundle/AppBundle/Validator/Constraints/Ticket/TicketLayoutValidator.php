@@ -45,7 +45,6 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraint;
@@ -78,11 +77,6 @@ class TicketLayoutValidator extends ConstraintValidator
     private $ticket_field_settings;
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @var array
      */
     private $constraints = [];
@@ -90,20 +84,17 @@ class TicketLayoutValidator extends ConstraintValidator
     /**
      * Constructor.
      *
-     * @param EntityManager       $em
      * @param CustomFieldManager  $field_manager
      * @param TicketLayoutFactory $ticket_layout_factory
      * @param HierarchyGenerator  $hierarchy_generator
      * @param TicketFieldSettings $ticket_field_settings
      */
     public function __construct(
-        EntityManager       $em,
         CustomFieldManager  $field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         HierarchyGenerator  $hierarchy_generator,
         TicketFieldSettings $ticket_field_settings
     ) {
-        $this->em                    = $em;
         $this->field_manager         = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
         $this->hierarchy_generator   = $hierarchy_generator;
@@ -198,14 +189,6 @@ class TicketLayoutValidator extends ConstraintValidator
                     break;
             }
         }
-
-        // check for extra fields
-        // macro can change fields which are not on the layout so we need to prevent changing them
-        $change_set    = $this->em->getUnitOfWork()->getEntityChangeSet($value);
-        $changed_props = array_keys($change_set);
-
-        foreach ($changed_props as $changed_prop) {
-        }
     }
 
     /**
@@ -291,7 +274,7 @@ class TicketLayoutValidator extends ConstraintValidator
         if ($custom_def instanceof CustomDefTicket) {
             return $ticket->getCustomData();
         } elseif ($custom_def instanceof CustomDefPerson && $ticket->getPerson()) {
-            return$ticket->getPerson()->getContactData();
+            return $ticket->getPerson()->getContactData();
         } elseif ($custom_def instanceof CustomDefOrganization && $ticket->getOrganization()) {
             return $ticket->getOrganization()->getContactData();
         }
