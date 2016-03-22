@@ -16,12 +16,10 @@ export class ClickAwayDropdownWidget extends PageWidget {
       }
     });
 
-    $target.click((event) => {
-      event.stopPropagation();
-    });
-
-    $(document).click(() => {
-      $target.hide();
+    $(document).click(event => {
+      if (!$target.is(event.target) && !$target.has(event.target).length) {
+        $target.hide();
+      }
     });
   }
 }
