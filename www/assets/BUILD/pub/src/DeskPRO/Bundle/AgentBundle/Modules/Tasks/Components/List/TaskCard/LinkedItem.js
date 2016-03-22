@@ -4,6 +4,7 @@ import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { CardWidget, SearchResults } from './index';
 import { quickSearchAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/search';
+import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Select from 'react-select-plus';
 
@@ -46,6 +47,19 @@ export class LinkedItem extends CardWidget {
   shouldComponentUpdate(props, state) {
     return this.state.isOpen !== state.isOpen || this.state.value !== state.value
       || !Immutable.is(this.state.value, state.value);
+  }
+
+  deleteLinkedItem(id) {
+    this.setState({
+      value: this.state.value.remove(id)
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (!Immutable.is(this.state.value, prevState.value)) {
+      // todo check controllers when they'll be ready
+      this.props.dispatch(editTask, {linked_items: this.state.value});
+    }
   }
 
   getOptions = (input, callback) => {
@@ -103,6 +117,9 @@ export class LinkedItem extends CardWidget {
     this.setState({
       value: this.state.value.set(value.value, Immutable.fromJS(obj))
     });
+
+    // todo check controllers when they'll be ready
+    this.props.dispatch(editTask, {linked_items: this.state.value});
   };
 
   render() {
@@ -140,16 +157,19 @@ export class LinkedItem extends CardWidget {
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
 
-                    {items.size && <div className="dpw-label-pile">
+                    {items.size &&
+                    <div className="dpw-label-pile">
                       <ul className="dpw-label-list">
                         {items.map((item, key) =>
                           <li key={key}>
                             <span className="dpw-item-label">
-                              <i className="fa fa-times"></i>
+                              <i className="fa fa-times" style={{cursor: 'pointer'}}
+                                 onClick={this.deleteLinkedItem.bind(this, key)}>
+                              </i>
                               {item.get('title')}
                             </span>
                           </li>
-                        ) || null}
+                        )}
                       </ul>
                     </div> || null}
 
