@@ -354,7 +354,7 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             $this->manager->persist($feedback);
 
             $i = 0;
-            while ($i++ <= $num_comments) {
+            while ($i++ < $num_comments) {
                 $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
                 $values      = [
                     'content'     => $this->faker->realText(300),
