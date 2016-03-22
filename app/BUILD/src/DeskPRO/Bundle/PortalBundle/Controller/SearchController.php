@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
@@ -337,7 +339,7 @@ class SearchController extends AbstractController
 
             $sticky_search = new StickyWordSearch($this->getEm());
             $sticky_search->setPersonContext($person);
-            $sticky_results = $sticky_search->getResults($q, 5);
+            $sticky_results = $sticky_search->getResults($q, 5, [$type]);
 
             if ($sticky_results) {
                 $got_sticky = array();
@@ -345,12 +347,20 @@ class SearchController extends AbstractController
                     ++$total;
                     $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
                 }
+                // remove results that might have matched normally
                 $results = array_filter(
                     $results,
                     function ($r) use ($got_sticky) {
                         return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
                     }
                 );
+                // then add the sticky results to the top
+                foreach ($sticky_results as $sitem) {
+                    array_unshift($results, [
+                        'type'   => $this->getTypeKey($sitem['object']),
+                        'object' => $sitem['object'],
+                    ]);
+                }
             }
 
             $searchlog             = SearchLog::create($q, count($results) + count($sticky_results));
@@ -369,6 +379,29 @@ class SearchController extends AbstractController
         $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
         return [$pageinfo, $results];
+    }
+
+    private function getTypeKey($r)
+    {
+        if ($r instanceof Entity\Article) {
+            $type = 'article';
+        } elseif ($r instanceof Entity\News) {
+            $type = 'news';
+        } elseif ($r instanceof Entity\Download) {
+            $type = 'download';
+        } elseif ($r instanceof Entity\Feedback) {
+            $type = 'feedback';
+        } elseif ($r instanceof Entity\Ticket) {
+            $type = 'ticket';
+        } elseif ($r instanceof Entity\Person) {
+            $type = 'person';
+        } elseif ($r instanceof Entity\ChatConversation) {
+            $type = 'chat_conversation';
+        } else {
+            $type = 'unknown';
+        }
+
+        return $type;
     }
 
     /**

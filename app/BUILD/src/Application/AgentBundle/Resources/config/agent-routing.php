@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -2195,11 +2195,6 @@ $collection->create('agent_userchat_changeprop', array(
 $collection->create('agent_userchat_getsectiondata', array(
     'path'       => '/chat/get-section-data.json',
     'controller' => 'AgentBundle:UserChat:getSectionData',
-));
-
-$collection->create('agent_usertrack_winheadertable', array(
-    'path'       => '/user-track/win-header-table.html',
-    'controller' => 'AgentBundle:UserTrack:winHeaderTable',
 ));
 
 $collection->create('agent_mediamanager', array(
