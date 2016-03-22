@@ -60,18 +60,19 @@ abstract class AbstractCustomDefConstraintValidator extends ConstraintValidator
         $context = $this->context;
 
         $data       = $this->getData($value, $constraint);
-        $validators = $this->getValidators($constraint);
+        $validators = $this->getValidators($data, $constraint);
 
         $validator = $context->getValidator()->inContext($context);
         $validator->validate($data, $validators);
     }
 
     /**
+     * @param mixed                       $data
      * @param AbstractCustomDefConstraint $constraint
      *
      * @return array
      */
-    abstract protected function getValidators(AbstractCustomDefConstraint $constraint);
+    abstract protected function getValidators($data, AbstractCustomDefConstraint $constraint);
 
     /**
      * @param Collection                  $value

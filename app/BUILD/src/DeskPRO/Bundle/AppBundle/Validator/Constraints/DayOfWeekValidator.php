@@ -26,28 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\ChoiceValidator;
 
 /**
- * Class ChoiceValidator.
+ * Class DayOfWeekValidator.
  */
-class ChoiceValidator extends AbstractCustomDefConstraintValidator
+class DayOfWeekValidator extends ChoiceValidator
 {
     /**
      * {@inheritdoc}
      */
-    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
+    public function validate($value, Constraint $constraint)
     {
-        return [];
+        if (!$value instanceof \DateTime) {
+            try {
+                $value = $this->getDayOfWeek(new \DateTime($value));
+            } catch (\Exception $e) {
+                $value = -1;
+            }
+        } else {
+            $value = $this->getDayOfWeek($value);
+        }
+
+        parent::validate($value, $constraint);
     }
 
     /**
-     * {@inheritdoc}
+     * @param \DateTime $value
+     *
+     * @return int
      */
-    protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
+    protected function getDayOfWeek(\DateTime $value)
     {
-        return [];
+        return intval($value->format('N')) - 1;
     }
 }

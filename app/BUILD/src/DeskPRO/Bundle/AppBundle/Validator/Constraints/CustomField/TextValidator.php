@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Application\DeskPRO\Entity\CustomDataAbstract;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,12 +39,12 @@ class TextValidator extends AbstractSingleValueValidator
     /**
      * {@inheritdoc}
      */
-    protected function getValidators(AbstractCustomDefConstraint $constraint)
+    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
     {
         $validators = [];
 
         // Required validator
-        if ($constraint->getCustomDefOption('required')) {
+        if ($constraint->getCustomDefOption('required', true)) {
             $validators[] = new Assert\NotBlank();
         }
 
@@ -70,13 +69,5 @@ class TextValidator extends AbstractSingleValueValidator
         }
 
         return $validators;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getCustomDataValue(CustomDataAbstract $custom_data)
-    {
-        return $custom_data->getInput();
     }
 }

@@ -33,11 +33,4 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
  */
 class Date extends AbstractCustomDefConstraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
-    {
-        return DateTimeValidator::class;
-    }
 }

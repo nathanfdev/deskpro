@@ -47,9 +47,10 @@ abstract class AbstractSingleValueValidator extends AbstractCustomDefConstraintV
     }
 
     /**
-     * @param CustomDataAbstract $custom_data
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    abstract protected function getCustomDataValue(CustomDataAbstract $custom_data);
+    protected function getCustomDataValue(CustomDataAbstract $custom_data)
+    {
+        return $custom_data->getData();
+    }
 }

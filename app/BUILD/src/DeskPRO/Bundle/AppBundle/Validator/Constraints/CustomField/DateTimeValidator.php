@@ -28,59 +28,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Application\DeskPRO\Entity\CustomDataAbstract;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class DateTimeValidator.
  */
-class DateTimeValidator extends AbstractSingleValueValidator
+class DateTimeValidator extends AbstractDateTimeValidator
 {
     /**
      * {@inheritdoc}
      */
-    protected function getValidators(AbstractCustomDefConstraint $constraint)
+    protected function getFormatValidator()
     {
-        $validators = [];
-
-        if ($constraint instanceof Date) {
-            $validators[] = new Assert\Date();
-        } elseif ($constraint instanceof DateTime) {
-            $validators[] = new Assert\DateTime();
-        }
-
-        // Required validator
-        if ($constraint->getCustomDefOption('required')) {
-            $validators[] = new Assert\NotBlank();
-        }
-
-        // Range validator
-        $range_type = $constraint->getCustomDefOption('date_valid_type');
-        $min_range  = $constraint->getCustomDefOption('date_valid_range1');
-        $max_range  = $constraint->getCustomDefOption('date_valid_range2');
-
-        $in_days = $range_type === 'range';
-
-        if ($min_range) {
-            $validators[] = new Assert\GreaterThanOrEqual([
-                'value' => $in_days ? '-'.(int) $min_range.' days' : $min_range,
-            ]);
-        }
-
-        if ($max_range) {
-            $validators[] = new Assert\LessThanOrEqual([
-                'value' => $in_days ? '+'.(int) $max_range.' days' : $max_range,
-            ]);
-        }
-
-        return $validators;
+        return new Assert\DateTime();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getCustomDataValue(CustomDataAbstract $custom_data)
+    protected function getFormat()
     {
-        return $custom_data->getInput();
+        return 'Y-m-d H:i:s';
     }
 }

@@ -119,10 +119,6 @@ Feature: /ticket_macros endpoint
     When I send a GET request to "/api/v2/ticket_macros/4"
     Then the response status code should be 404
 
-  Scenario: I try to apply failed macro (failed data and extra fields)
-    When I send a POST request to "/api/v2/ticket_macros/7/apply/1"
-    Then the response status code should be 400
-
   Scenario: I try to apply failed macro (layout custom data validation)
     Given the setting "core_tickets.field_validation_ticket_prod_agent_required" is set to 1
     And the setting "core_tickets.field_validation_ticket_pri_agent_required" is set to 1
@@ -130,7 +126,6 @@ Feature: /ticket_macros endpoint
     And the setting "core_tickets.field_validation_ticket_work_agent_required" is set to 1
     When I send a POST request to "/api/v2/ticket_macros/8/apply/1"
     Then the response status code should be 400
-    And print last JSON response
 
     And the JSON node "errors.fields.product.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.product.errors[0].message" should be equal to "This value should not be blank."

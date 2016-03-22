@@ -26,28 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints\Choice;
 
 /**
- * Class ChoiceValidator.
+ * Class DayOfWeek.
  */
-class ChoiceValidator extends AbstractCustomDefConstraintValidator
+class DayOfWeek extends Choice
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
-    {
-        return [];
-    }
 }

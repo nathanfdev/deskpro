@@ -50,16 +50,17 @@ abstract class AbstractCustomDefConstraint extends Constraint
 
     /**
      * @param string $name
+     * @param bool   $use_prefix
      *
      * @return mixed
      */
-    public function getCustomDefOption($name)
+    public function getCustomDefOption($name, $use_prefix = false)
     {
         if (!$this->custom_def) {
             throw new \InvalidArgumentException('Custom def is not defined');
         }
 
-        $prefix = $this->context === 'agent' ? 'agent_' : '';
+        $prefix = $use_prefix && $this->context === 'agent' ? 'agent_' : '';
 
         return $this->custom_def->getOption($prefix.$name);
     }

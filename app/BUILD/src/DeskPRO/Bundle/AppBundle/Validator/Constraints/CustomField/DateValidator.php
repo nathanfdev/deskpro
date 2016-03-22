@@ -28,26 +28,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ChoiceValidator.
+ * Class DateValidator.
  */
-class ChoiceValidator extends AbstractCustomDefConstraintValidator
+class DateValidator extends AbstractDateTimeValidator
 {
     /**
      * {@inheritdoc}
      */
-    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
+    protected function getFormatValidator()
     {
-        return [];
+        return new Assert\Date();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
+    protected function getFormat()
     {
-        return [];
+        return 'Y-m-d';
     }
 }
