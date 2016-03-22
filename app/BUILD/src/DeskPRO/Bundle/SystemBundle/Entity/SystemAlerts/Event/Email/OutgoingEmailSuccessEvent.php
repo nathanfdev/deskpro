@@ -31,21 +31,22 @@
  */
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class AbstractSwiftExceptionEvent.
+ * Class OutgoingEmailSuccessEvent.
+ *
+ * @ORM\Entity
  */
-class AbstractSwiftExceptionEvent extends ExceptionEvent
+class OutgoingEmailSuccessEvent extends Event implements SuccessEvent
 {
     /**
-     * AbstractSwiftExceptionEvent constructor.
-     *
-     * @param \Swift_SwiftException $exception
-     * @param \DateTime|null        $date_created
+     * {@inheritdoc}
      */
-    public function __construct(\Swift_SwiftException $exception, \DateTime $date_created = null)
+    public function getFailureType()
     {
-        parent::__construct($exception, $date_created);
+        return OutgoingEmailFailureEvent::class;
     }
 }

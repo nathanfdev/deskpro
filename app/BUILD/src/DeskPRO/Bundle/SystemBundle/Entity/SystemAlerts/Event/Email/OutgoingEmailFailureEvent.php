@@ -31,22 +31,25 @@
  */
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use Application\EmailBundle\Mail\RawTransport\RawTransportException;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class IncomingEmailSuccessEvent.
+ * Class OutgoingEmailFailureEvent.
  *
  * @ORM\Entity
  */
-class IncomingEmailSuccessEvent extends Event implements SuccessEvent
+class OutgoingEmailFailureEvent extends ExceptionEvent
 {
     /**
-     * {@inheritdoc}
+     * AbstractZendMailExceptionEvent constructor.
+     *
+     * @param RawTransportException $exception
+     * @param \DateTime|null        $date_created
      */
-    public function getFailureType()
+    public function __construct(RawTransportException $exception, \DateTime $date_created = null)
     {
-        return IncomingEmailFailureEvent::class;
+        parent::__construct($exception, $date_created);
     }
 }

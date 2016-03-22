@@ -31,13 +31,25 @@
  */
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Mail\Exception\RuntimeException;
 
 /**
  * Class IncomingEmailFailureEvent.
  *
  * @ORM\Entity
  */
-class IncomingEmailFailureEvent extends AbstractSwiftExceptionEvent
+class IncomingEmailFailureEvent extends ExceptionEvent
 {
+    /**
+     * AbstractZendMailExceptionEvent constructor.
+     *
+     * @param RuntimeException $exception
+     * @param \DateTime|null   $date_created
+     */
+    public function __construct(RuntimeException $exception, \DateTime $date_created = null)
+    {
+        parent::__construct($exception, $date_created);
+    }
 }

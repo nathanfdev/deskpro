@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,8 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
@@ -44,6 +46,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
 use Orb\Util\Util;
+use Zend\Mail\Exception\RuntimeException;
 
 /**
  * This runs collection and processsing in accounts.
@@ -708,7 +711,7 @@ class Runner
             if (App::getDb()->isTransactionActive()) {
                 $this->logger->log('WARNING: Unclosed transaction!', 'info');
                 $e = new \RuntimeException('WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processed_source_ids));
-                SystemErrorHandler::logException($e);
+                App::getEventLogger()->logAloud($e);
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
                 }
@@ -744,9 +747,10 @@ class Runner
 
                         break;
                     }
-                } catch (\Exception $e) {
+                    App::getEventLogger()->log(new IncomingEmailSuccessEvent());
+                } catch (RuntimeException $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    SystemErrorHandler::logException($e, false);
+                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($e));
                     break;
                 }
             }

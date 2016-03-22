@@ -31,17 +31,18 @@
  */
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractContinuingFailureIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\StatefulIncidentTrigger;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Class IncomingEmailFailureTrigger.
+ * Class AbstractContinuingFailureTrigger.
+ *
+ * Abstract trigger which rises incidents when failure events continue for a certain period.
  */
-class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
+abstract class AbstractContinuingFailureTrigger extends StatefulIncidentTrigger
 {
     /**
      * @var int Trigger will raise an incident only after consistent failures for minutes (the default 0
@@ -53,6 +54,25 @@ class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @param Event $event
+     *
+     * @return bool
+     */
+    abstract protected function isFailure(Event $event);
+
+    /**
+     * @param Event $event
+     *
+     * @return bool
+     */
+    abstract protected function isSuccess(Event $event);
+
+    /**
+     * @return Incident
+     */
+    abstract protected function instantiateIncident();
 
     /**
      * IncomingEmailFailureTrigger constructor.
@@ -71,14 +91,6 @@ class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
     public function setSilenceTime($silence_time)
     {
         $this->silence_time = $silence_time;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function supports(Event $event)
-    {
-        return ($event instanceof IncomingEmailFailureEvent) || ($event instanceof IncomingEmailSuccessEvent);
     }
 
     /**
@@ -116,12 +128,12 @@ class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
      */
     protected function process(Event $event)
     {
-        if ($event instanceof IncomingEmailFailureEvent) {
+        if ($this->isFailure($event)) {
             $this->state['date_first_failure'] or $this->state['date_first_failure'] = $event->getDateCreated();
             $this->state['date_last_failure']                                        = $event->getDateCreated();
             $this->state['failing_event_ids'][]                                      = $event->getId();
         }
-        if ($event instanceof IncomingEmailSuccessEvent) {
+        if ($this->isSuccess($event)) {
             $this->initState();
         }
     }
@@ -131,7 +143,7 @@ class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
      */
     protected function createIncident()
     {
-        return $this->setIncidentInfo(new IncomingEmailFailureIncident());
+        return $this->setIncidentInfo($this->instantiateIncident());
     }
 
     /**
@@ -143,11 +155,11 @@ class IncomingEmailFailureTrigger extends StatefulIncidentTrigger
     }
 
     /**
-     * @param IncomingEmailFailureIncident $incident
+     * @param AbstractContinuingFailureIncident $incident
      *
-     * @return IncomingEmailFailureIncident The passed incident instance with updated information
+     * @return AbstractContinuingFailureIncident The passed incident instance with updated information
      */
-    private function setIncidentInfo(IncomingEmailFailureIncident $incident)
+    private function setIncidentInfo(AbstractContinuingFailureIncident $incident)
     {
         $incident->setDateFirstFailure($this->state['date_first_failure']);
         $incident->setDateLastFailure($this->state['date_last_failure']);

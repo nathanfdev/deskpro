@@ -47,7 +47,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorMap({
  *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent",
  *     "email_incoming_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent",
- *     "email_incoming_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent"
+ *     "email_incoming_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent",
+ *     "email_outgoing_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent",
+ *     "email_outgoing_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent"
  * })
  */
 abstract class Event implements EntityInterface, NotifyPropertyChanged
@@ -202,5 +204,13 @@ abstract class Event implements EntityInterface, NotifyPropertyChanged
     public function setProcessed($processed)
     {
         $this->processed = $processed;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return sprintf('%s<%s>: %s', (new \ReflectionClass($this))->getShortName(), $this->group, $this->description);
     }
 }

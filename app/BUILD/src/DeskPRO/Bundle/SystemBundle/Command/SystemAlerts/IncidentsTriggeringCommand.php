@@ -29,24 +29,35 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
+namespace DeskPRO\Bundle\SystemBundle\Command\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
-use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class IncomingEmailSuccessEvent.
- *
- * @ORM\Entity
+ * Class IncidentsTriggeringCommand.
  */
-class IncomingEmailSuccessEvent extends Event implements SuccessEvent
+class IncidentsTriggeringCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
-    public function getFailureType()
+    protected function configure()
     {
-        return IncomingEmailFailureEvent::class;
+        $this->setName('dp:sys:trigger-incidents');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        /** @var TriggeringProcess $triggering_process */
+        $triggering_process = $this->getContainer()->get('dp_sys.alerts.triggering_process');
+        $triggering_process->run();
+
+        return 0;
     }
 }

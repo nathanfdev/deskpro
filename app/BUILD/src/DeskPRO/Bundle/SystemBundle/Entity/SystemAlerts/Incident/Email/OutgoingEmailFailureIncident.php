@@ -29,24 +29,23 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractContinuingFailureIncident;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class IncomingEmailSuccessEvent.
+ * Class OutgoingEmailFailureIncident.
  *
  * @ORM\Entity
  */
-class IncomingEmailSuccessEvent extends Event implements SuccessEvent
+class OutgoingEmailFailureIncident extends AbstractContinuingFailureIncident
 {
     /**
      * {@inheritdoc}
      */
-    public function getFailureType()
+    public function getInstructions()
     {
-        return IncomingEmailFailureEvent::class;
+        return 'Check the email stuff. Good luck!';
     }
 }
