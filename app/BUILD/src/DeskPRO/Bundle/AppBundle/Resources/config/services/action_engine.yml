@@ -31,4 +31,9 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
+  action_engine.tickets.assign:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyAssignAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
 
