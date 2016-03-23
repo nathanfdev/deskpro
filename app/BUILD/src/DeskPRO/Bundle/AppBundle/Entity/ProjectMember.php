@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\AgentTeam as Team;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -50,6 +51,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="department_unique", columns={"project_id", "department_id"})
  *  }
  * )
+ * @AppAssert\ProjectMember()
+ * @JMS\ExclusionPolicy("all")
  */
 class ProjectMember implements EntityInterface, NotifyPropertyChanged
 {
@@ -62,6 +65,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -76,6 +80,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @Assert\NotNull()
      * @Assert\Valid()
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Project>")
      *
      * @var Project
@@ -88,6 +93,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var Person
@@ -100,6 +106,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
      *
      * @var Team
@@ -112,6 +119,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
      *
      * @var Department

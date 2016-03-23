@@ -26,52 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Department as DepartmentModel;
 
 /**
- * Class NotificationClient.
+ * Class TaskProjectHandler.
  */
-class NotificationClient
+class DepartmentHandler extends AbstractEntityHandler
 {
     /**
-     * Client type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * @var AvatarResolver
      */
-    protected $type;
+    protected $resolver;
 
     /**
-     * Client options.
+     * DepartmentHandler constructor.
      *
-     * @JMS\Type("array")
-     *
-     * @var array
+     * @param AvatarResolver $resolver
      */
-    protected $options;
-
-    public function __construct($type, array $options)
+    public function __construct(AvatarResolver $resolver)
     {
-        $this->type    = $type;
-        $this->options = $options;
+        $this->resolver = $resolver;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getType()
+    public static function getClassNames()
     {
-        return $this->type;
+        return Department::class;
     }
 
     /**
-     * @return array
+     * @param Department $entity
+     *
+     * @return DepartmentModel
      */
-    public function getOptions()
+    protected function createModel($entity)
     {
-        return $this->options;
+        $avatar = $this->resolver->getAvatarModel($entity);
+
+        return new DepartmentModel($entity, $avatar);
     }
 }

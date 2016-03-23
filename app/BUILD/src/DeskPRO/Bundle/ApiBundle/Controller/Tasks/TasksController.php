@@ -64,26 +64,28 @@ class TasksController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="get a list of tasks",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tasks",
+     *     description="get a list of tasks",
+     *     parameters={
+     *         {
+     *             "name"="page",
+     *             "requirement"="\d+",
+     *             "description"="the page you are requesting",
+     *             "dataType"="integer",
+     *             "required"=false
+     *         },
+     *         {
+     *             "name"="count",
+     *             "requirement"="\d+",
+     *             "description"="results per page",
+     *             "dataType"="integer",
+     *             "required"=false
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned if success",
+     *         400="Returned if your request was malformed",
+     *     }
      * )
      * @Get("", name="api_tasks")
      *
@@ -91,7 +93,7 @@ class TasksController extends CrudController
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         try {
             $params = $request->query->all();

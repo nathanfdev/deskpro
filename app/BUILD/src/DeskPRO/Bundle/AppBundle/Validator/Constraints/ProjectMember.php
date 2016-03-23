@@ -26,52 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class NotificationClient.
+ * Class ProjectMember.
+ *
+ * @Annotation
  */
-class NotificationClient
+class ProjectMember extends Constraint
 {
     /**
-     * Client type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * {@inheritdoc}
      */
-    protected $type;
-
-    /**
-     * Client options.
-     *
-     * @JMS\Type("array")
-     *
-     * @var array
-     */
-    protected $options;
-
-    public function __construct($type, array $options)
+    public function getTargets()
     {
-        $this->type    = $type;
-        $this->options = $options;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        return self::CLASS_CONSTRAINT;
     }
 }

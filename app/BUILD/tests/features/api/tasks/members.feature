@@ -24,7 +24,7 @@ Feature: /project_members endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/project_members/1"
+    # And the header "Location" should be equal to "/api/v2/project_members/1"
     And the JSON node "data" should exist
     And the JSON node "data.person" should be equal to "1"
 
@@ -42,8 +42,7 @@ Feature: /project_members endpoint
   "team": 1
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request
@@ -54,7 +53,7 @@ Feature: /project_members endpoint
     And the JSON node "data.team" should be equal to "1"
     And the JSON node "data.person" should exist
 
-  Scenario: I DELETE a single task
+  Scenario: I DELETE a single member
     When I send a DELETE request to "/api/v2/project_members/1"
     Then the response should be in JSON
     And the response status code should be 200
@@ -63,3 +62,105 @@ Feature: /project_members endpoint
     When I send a GET request to "/api/v2/project_members/1"
     Then the response should be in JSON
     And the response status code should be 404
+
+  Scenario: I create a person member
+    When I send a POST request to "/api/v2/project_members/1/agents" with body:
+    """
+{
+  "id": 1
+}
+    """
+    Then the response status code should be 201
+    And the response should be in JSON
+
+  Scenario: I create an agent team member
+    When I send a POST request to "/api/v2/project_members/1/teams" with body:
+    """
+{
+  "id": 1
+}
+    """
+    Then the response status code should be 201
+    And the response should be in JSON
+
+  Scenario: I create an agent team member that already exists
+    When I send a POST request to "/api/v2/project_members/1/teams" with body:
+    """
+{
+  "id": 1
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+
+  Scenario: I create a department member
+    When I send a POST request to "/api/v2/project_members/1/departments" with body:
+    """
+{
+  "id": 1
+}
+    """
+    Then the response status code should be 201
+    And the response should be in JSON
+
+
+  Scenario: I verify a person member was added and endpoint works well
+    When I send a GET request to "/api/v2/project_members/1/agents"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should exist
+    And the JSON node "data[0].id" should be equal to "1"
+
+  Scenario: I verify an agent team member was added and endpoint works well
+    When I send a GET request to "/api/v2/project_members/1/teams"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should exist
+    And the JSON node "data[0].id" should be equal to "1"
+
+  Scenario: I verify a department was added and endpoint works well
+    When I send a GET request to "/api/v2/project_members/1/departments"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should exist
+    And the JSON node "data[0].id" should be equal to "1"
+
+  Scenario: I delete an agent member from project
+    When I send a DELETE request to "/api/v2/project_members/1/agents/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    When I send a GET request to "/api/v2/project_members/1/agents"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should not exist
+
+  Scenario: I delete an agent team member from project
+    When I send a DELETE request to "/api/v2/project_members/1/teams/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    When I send a GET request to "/api/v2/project_members/1/teams"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should not exist
+
+  Scenario: I delete an agent member from project
+    When I send a DELETE request to "/api/v2/project_members/1/departments/1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    When I send a GET request to "/api/v2/project_members/1/departments"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data[0]" should not exist
+
+  Scenario: I try to create member with malformed request
+    When I send a POST request to "/api/v2/project_members/1/departments" with body:
+    """
+
+    """
+    Then the response status code should be 400

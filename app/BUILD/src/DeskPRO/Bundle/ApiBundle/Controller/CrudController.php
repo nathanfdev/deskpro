@@ -398,10 +398,7 @@ abstract class CrudController extends BaseController
             $options
         );
 
-        $decoded = json_decode(
-            $request->getContent(),
-            true // convert to assoc arrays instead of stdClass instances
-        );
+        $decoded = $this->getRequestContent($request);
 
         // we use POST request for creating and updating entities (including partial updates)
         // so $clearMissing should depends on $model id (switch for POST and PATCH request)
@@ -418,6 +415,21 @@ abstract class CrudController extends BaseController
         }
 
         throw new InvalidFormException($form);
+    }
+
+    /**
+     * It's useful for replacing content.
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    protected function getRequestContent(Request $request)
+    {
+        return json_decode(
+            $request->getContent(),
+            true // convert to assoc arrays instead of stdClass instances
+        );
     }
 
     /**

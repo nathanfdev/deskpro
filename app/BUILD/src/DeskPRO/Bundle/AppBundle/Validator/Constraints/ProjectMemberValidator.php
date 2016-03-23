@@ -26,52 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use JMS\Serializer\Annotation as JMS;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember as ProjectMemberEntity;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class NotificationClient.
+ * Class ProjectMemberValidator.
  */
-class NotificationClient
+class ProjectMemberValidator extends ConstraintValidator
 {
     /**
-     * Client type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * {@inheritdoc}
      */
-    protected $type;
-
-    /**
-     * Client options.
-     *
-     * @JMS\Type("array")
-     *
-     * @var array
-     */
-    protected $options;
-
-    public function __construct($type, array $options)
+    public function validate($object, Constraint $constraint)
     {
-        $this->type    = $type;
-        $this->options = $options;
-    }
+        if (!$object instanceof ProjectMemberEntity) {
+            throw new UnexpectedTypeException($constraint, ProjectMemberEntity::class);
+        }
 
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+        $fields = [
+            'team'       => $object->getTeam() ? 1 : 0,
+            'department' => $object->getDepartment() ? 1 : 0,
+            'person'     => $object->getPerson() ? 1 : 0,
+        ];
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        if (array_sum($fields) > 1) {
+            $this->context->addViolation('Only one of person, team or department should be set');
+        } elseif (array_sum($fields) < 1) {
+            $this->context->addViolation('At least one of person, team or department should be set');
+        }
     }
 }

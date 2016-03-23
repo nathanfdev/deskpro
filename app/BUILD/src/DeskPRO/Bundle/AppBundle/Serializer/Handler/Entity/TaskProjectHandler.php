@@ -26,52 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use JMS\Serializer\Annotation as JMS;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as TaskProjectModel;
 
 /**
- * Class NotificationClient.
+ * Class TaskProjectHandler.
  */
-class NotificationClient
+class TaskProjectHandler extends AbstractEntityHandler
 {
     /**
-     * Client type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * @return mixed
      */
-    protected $type;
-
-    /**
-     * Client options.
-     *
-     * @JMS\Type("array")
-     *
-     * @var array
-     */
-    protected $options;
-
-    public function __construct($type, array $options)
+    public static function getClassNames()
     {
-        $this->type    = $type;
-        $this->options = $options;
+        return TaskProject::class;
     }
 
     /**
-     * @return string
+     * @param TaskProject $entity
+     *
+     * @return TaskProjectModel
      */
-    public function getType()
+    protected function createModel($entity)
     {
-        return $this->type;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        return new TaskProjectModel($entity);
     }
 }
