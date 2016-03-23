@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -131,10 +132,8 @@ class NotificationController extends BaseController
      *
      * @param Request $request
      *
-     * @todo this should be PUT or something else possibly
-     *
      * @ApiDisableLimits()
-     * @Annotations\Get("/notify/heartbeat", name="online_heartbeat")
+     * @Annotations\Put("/notify/heartbeat", name="online_heartbeat")
      *
      * @return View
      */
@@ -143,7 +142,7 @@ class NotificationController extends BaseController
         $this->doHeartbeat($request);
 
         return View::create(
-            null,
+            [],
             Response::HTTP_ACCEPTED
         );
     }
