@@ -46,6 +46,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
+        $options->addValidNames('op');
 
         return $options;
     }
@@ -78,8 +79,11 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
             return;
         }
 
-        $field_id   = $this->getActionOption('field_id');
-        $value      = $this->getActionOption('value');
+        $field_id = $this->getActionOption('field_id');
+        $value    = $this->getActionOption('value');
+        if ('unset' === $this->getActionOption('op')) {
+            $value = null;
+        }
         $form_array = array("field_{$field_id}" => $value);
 
         $fm->saveFormToObject($form_array, $obj, true);

@@ -391,8 +391,8 @@ class FieldManager
     {
         $field = $data->root_field ?: $data->field;
         $value = !$data->root_field || $data->root_field === $data->field
-            ? array('value'        => $data->getData())
-            : array('value'        => null, 'children' => array(
+            ? array('value' => $data->getData())
+            : array('value' => null, 'children' => array(
                 $data->field['id'] => array('value' => $data->getData(), 'children' => null),
             ));
 
@@ -559,7 +559,7 @@ class FieldManager
         $this->_orig_display = $this->getDisplayArrayForObject($object);
 
         foreach ($fields as $field_def) {
-            if ($only_set && !isset($form['field_'.$field_def->getId()])) {
+            if ($only_set && !array_key_exists('field_'.$field_def->getId(), $form)) {
                 continue;
             }
 
