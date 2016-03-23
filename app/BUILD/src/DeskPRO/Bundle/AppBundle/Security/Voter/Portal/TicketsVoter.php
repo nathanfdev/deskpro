@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -47,17 +48,17 @@ class TicketsVoter extends AbstractVoter
     const TICKET_EDIT      = 'TICKET_EDIT';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
         return $subject instanceof Ticket && in_array($attribute, array(
-            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH
+            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH,
         ));
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function voteOnAttribute($attribute, $ticket, TokenInterface $token)
     {
@@ -85,12 +86,12 @@ class TicketsVoter extends AbstractVoter
                 break;
 
             case static::TICKET_VIEW:
-                $decision = $ticket->isInvolved($user);
+                $decision = $ticket->isInvolved($user, 'user');
                 break;
 
             case static::TICKET_EDIT:
                 $decision =
-                    $ticket->isInvolved($user)
+                    $ticket->isInvolved($user, 'user')
                     && $ticket->isOwner($user)
                     && $ticket->hasVisibleStatus()
                 ;

@@ -3838,11 +3838,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         && $person->getOrganization() === $this->getOrganization();
     }
 
-    public function isInvolved(Person $person)
+    /**
+     * @param Person $person
+     * @param string $context Which context to check in: user or agent
+     *
+     * @return bool
+     */
+    public function isInvolved(Person $person, $context = 'user')
     {
-        return $this->isOwner($person)
-        || $this->isParticipant($person)
-        || $this->isOrganizationManager($person);
+        if ($context === 'user') {
+            return $this->isOwner($person)
+            || (!$person->isAgent() && $this->isParticipant($person))
+            || $this->isOrganizationManager($person);
+        } else {
+            return $this->isOwner($person)
+            || $this->isParticipant($person)
+            || $this->getAgent() === $person
+            || $this->isOrganizationManager($person);
+        }
     }
 
     public function hasVisibleStatus()
