@@ -20,7 +20,7 @@ export const massActionsSelector = createSelector(
     const assignOptions = agents.toArray().map(type => ({ value: type.get('id'), label: type.get('name') }));
     massActions.push({
       label: 'Assign',
-      type: 'set_action',
+      type: 'assign_action',
       param: 'assign',
       quickFilter: true,
       options: assignOptions

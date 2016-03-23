@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { OmniSearchResultSection } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import _ from 'lodash';
 import moment from 'moment';
@@ -164,7 +165,7 @@ export class OmniSearch extends React.Component {
 
     return (
       <div className="search-result-collection-empty">
-        <div>No Results found :(</div>
+        <div>{portalPhrases.get('portal.general.no-search-results-general')}</div>
       </div>
     );
   }

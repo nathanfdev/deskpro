@@ -120,6 +120,9 @@ class FeedbackController extends AbstractController
             'person'                => $person,
             'action'                => $this->generateUrl('portal_feedback'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
+            // next to allow extra fields if its saved form because name/email etc will be on origin form,
+            // but not this one now that the user is logged-in
+            'allow_extra_fields' => $request->attributes->has('saved-form'),
         ]);
 
         $form->handleRequest($request);

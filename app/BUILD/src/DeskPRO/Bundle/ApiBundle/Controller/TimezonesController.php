@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,20 +46,26 @@ class TimezonesController extends BaseController
     /**
      * Retrieve the list of PHP timezones.
      *
-     * @Get("/timezones", name="api_timezones")
+     * @ApiDoc(
+     *     resourceDescription="Operations about timezones",
+     *     description="get timezones",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone>"
+     * )
+     *
+     * @Annotations\Get("/timezones", name="api_timezones")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $timezones = [];
         foreach (\DateTimeZone::listIdentifiers() as $num => $timezone) {
-            $timezones[] = [
-                'id'    => $num,
-                'title' => $timezone,
-            ];
+            $timezones[] = new Timezone($num, $timezone);
         }
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($timezones)),
+            $this->wrap(new PrimitiveArray($timezones)),
             Response::HTTP_OK
         );
     }

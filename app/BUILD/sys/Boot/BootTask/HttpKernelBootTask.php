@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,6 +61,7 @@ class HttpKernelBootTask implements BootTaskInterface
         }
 
         $kernel = $this->getKernelClass(
+            $request,
             $interface_id,
             $env
         );
@@ -72,12 +73,13 @@ class HttpKernelBootTask implements BootTaskInterface
     }
 
     /**
-     * @param              $interface_id
+     * @param Request      $request
+     * @param string       $interface_id
      * @param \DpRun\DpEnv $env
      *
      * @return PortalHttpCache|Kernel\ApiKernel|Kernel\DpKernel|Kernel\InstallKernel|Kernel\PortalKernel
      */
-    private function getKernelClass($interface_id, \DpRun\DpEnv $env)
+    private function getKernelClass(Request $request, $interface_id, \DpRun\DpEnv $env)
     {
         switch ($interface_id) {
             case 'apiv2':
@@ -88,7 +90,11 @@ class HttpKernelBootTask implements BootTaskInterface
                 if (!$env->getConfig('settings.disable_portal_http_cache')) {
                     require_once DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle/HttpCache/PortalHttpCache.php';
 
-                    return new PortalHttpCache($kernel, $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache');
+                    return new PortalHttpCache(
+                        $kernel,
+                        $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache',
+                        $request->getBasePath()
+                    );
                 }
 
                 return $kernel;
@@ -133,7 +139,7 @@ class HttpKernelBootTask implements BootTaskInterface
             return 'apiv2';
         }
         if ($this->isUrlSegmentPrefix($path, '/api')) {
-            return 'apiv2';
+            return 'api';
         }
 
         return 'user';

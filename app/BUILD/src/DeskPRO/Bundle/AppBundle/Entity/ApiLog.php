@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\ApiKey;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -46,67 +47,122 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique log id.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list"})
+     *
+     * @var int
      */
     protected $id;
 
     /**
-     * @var int timestamp
+     * Timestamp when request was started.
+     *
      * @ORM\Column(type="integer")
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list"})
+     *
+     * @var int timestamp
      */
     protected $start_time;
 
     /**
-     * @var int timestamp
+     * Timestamp when request was ended.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int timestamp
      */
     protected $end_time;
 
     /**
-     * @var ApiKey
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ApiKey", inversedBy="api_logs")
      * @ORM\JoinColumn(name="api_key_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @var ApiKey
      */
     protected $key;
 
     /**
-     * @var string
+     * Credentials with which request was made.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @var string
      */
     protected $credentials;
 
     /**
-     * @var string
+     * Request api mode.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @var string
      */
     protected $mode;
 
     /**
-     * @var string
+     * Uri that was requested.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull()
+     *
+     * @var string
      */
     protected $requested_uri;
 
     /**
-     * @var string
+     * Request method.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotNull()
+     *
+     * @var string
      */
     protected $method;
 
     /**
-     * @var int
+     * HTTP status.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list"})
+     *
      * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var string
      */
     protected $status;
 
     /**
-     * @var array
+     * Data which was attached to request.
+     *
+     * @JMS\Type("array")
+     * @JMS\Groups({"details"})
+     *
      * @ORM\Column(type="json_array")
+     *
+     * @var array
      */
     protected $request_data;
 
@@ -335,6 +391,20 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function getResponseData()
     {
         return $this->response_data;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Groups({"details"})
+     * @JMS\Type("array")
+     * @JMS\SerializedName("response_data")
+     */
+    public function getDecodedResponseData()
+    {
+        $response_data         = $this->response_data;
+        $response_data['body'] = json_decode($response_data['body'], true);
+
+        return $response_data;
     }
 
     /**

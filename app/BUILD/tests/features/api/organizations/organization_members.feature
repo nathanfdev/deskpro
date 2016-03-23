@@ -1,5 +1,5 @@
 @organization
-Feature: /organization_members endpoint
+Feature: /organizations/{id}/members endpoint
   To CRUD DeskPRO organization members
   As a developer
   I want an API endpoint

@@ -8,3 +8,15 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
 
 $modules-path: "../../../../../../../pub/node_modules";
 $fa-font-path: "#{$modules-path}/font-awesome/fonts";
+
+@if $default-layout-direction == "LTR" {
+  $text-right:  right;
+  $text-left:   left;
+  $float-right: right;
+  $float-left:  left;
+} @else {
+  $text-right:  left;
+  $text-left:   right;
+  $float-right: left;
+  $float-left:  right;
+}

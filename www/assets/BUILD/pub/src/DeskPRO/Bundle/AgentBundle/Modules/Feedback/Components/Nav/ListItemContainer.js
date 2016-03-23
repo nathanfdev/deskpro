@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import * as actions from '../../Actions/FeedbackListActions';
+import { applyParams } from '../../Actions/FeedbackListActions';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 
@@ -25,13 +25,13 @@ export class ListItemContainer extends Component {
   componentDidMount() {
     const {activeItemId, listOptions, dispatch} = this.props;
     if (activeItemId === this.itemId) {
-      dispatch(actions.applyParams(listOptions));
+      dispatch(applyParams(listOptions));
     }
   }
 
   loadList = () => {
     const { listOptions } = this.props;
-    this.props.dispatch(actions.applyParams(listOptions));
+    this.props.dispatch(applyParams(listOptions));
   };
 
   render() {

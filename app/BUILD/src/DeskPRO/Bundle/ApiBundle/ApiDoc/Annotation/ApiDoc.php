@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,9 +35,20 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc as BaseApiDoc;
  */
 class ApiDoc extends BaseApiDoc
 {
+    /**
+     * @var
+     */
     protected $api_modes;
 
+    /**
+     * @var
+     */
     protected $api_tags;
+
+    /**
+     * @var
+     */
+    protected $class_output;
 
     /**
      * @param mixed $modes
@@ -79,6 +90,9 @@ class ApiDoc extends BaseApiDoc
         return $this->api_tags;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $data              = parent::toArray();
@@ -86,5 +100,27 @@ class ApiDoc extends BaseApiDoc
         $data['api_tags']  = $this->api_tags;
 
         return $data;
+    }
+
+    public function getOutput()
+    {
+        $output = parent::getOutput();
+        if (!$output) {
+            $output = $this->class_output;
+        }
+
+        return $output;
+    }
+
+    /**
+     * @param mixed $class_output
+     *
+     * @return $this
+     */
+    public function setClassOutput($class_output)
+    {
+        $this->class_output = $class_output;
+
+        return $this;
     }
 }

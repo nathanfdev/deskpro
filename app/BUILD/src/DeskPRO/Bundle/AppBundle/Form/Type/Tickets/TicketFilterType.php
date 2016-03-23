@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,9 +55,10 @@ class TicketFilterType extends AbstractType
             ->add('display_order', IntegerType::class, [
                 'required' => false,
             ])
-            ->add('filter_set', EntityType::class, [
-                'required' => false,
-                'class'    => TicketFilterSet::class,
+            ->add('ticket_filter_set', EntityType::class, [
+                'property_path' => 'filter_set',
+                'required'      => false,
+                'class'         => TicketFilterSet::class,
             ])
             ->add('term', 'term_engine_term')
         ;

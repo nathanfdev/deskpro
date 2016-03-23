@@ -1,3 +1,12 @@
+$default-layout-direction: "LTR" !default;
+$layout-direction: "LTR" !default;
+
+@if $default-layout-direction == "LTR" {
+  @import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-ltr";
+} @else {
+  @import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-rtl";
+}
+
 @import "setup";
 @import "vars";
 @import "custom_vars";

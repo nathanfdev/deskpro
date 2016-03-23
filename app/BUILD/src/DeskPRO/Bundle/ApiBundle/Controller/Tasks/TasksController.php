@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -94,7 +94,10 @@ class TasksController extends CrudController
     public function cgetAction(Request $request)
     {
         try {
-            $params   = $request->query->all();
+            $params = $request->query->all();
+            if (isset($params['include'])) {
+                unset($params['include']);
+            }
             $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
@@ -105,7 +108,7 @@ class TasksController extends CrudController
 
         $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
-        return View::create($this->dataSerialize($tasks), Response::HTTP_OK);
+        return View::create($this->wrap($tasks), Response::HTTP_OK);
     }
 
     /**

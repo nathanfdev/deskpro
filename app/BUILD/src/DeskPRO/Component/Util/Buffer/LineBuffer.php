@@ -34,7 +34,7 @@ namespace DeskPRO\Component\Util\Buffer;
 class LineBuffer
 {
     /**
-     * @var
+     * @var string
      */
     private $buf = '';
 

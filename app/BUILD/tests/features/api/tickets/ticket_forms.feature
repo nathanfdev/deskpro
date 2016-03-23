@@ -33,7 +33,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.department" should be equal to 1
     And the JSON node "data.product" should be equal to 0
     And the JSON node "data.priority" should be equal to 0
-    And the JSON node "data.participants" should have 0 elements
+    And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
 
     When I send a GET request to "/api/v2/tickets/5/messages"
@@ -61,26 +61,33 @@ Feature: /ticket_forms endpoint
   "priority": 3,
   "category": 3,
   "workflow": 1,
-  "cc": ["agent@deskpro.dev", "user@deskpro.dev"],
+  "followers": ["agent@deskpro.dev"],
+  "cc": ["user@deskpro.dev"],
   "labels": ["ticket label 1", "ticket label 2"],
   "fields": {
-    "1": "2",
+    "1": {
+      "value": ["2"],
+      "detail": {"2": {"id": 2, "title": "Small"}}
+    },
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
     "7": "textarea text",
-    "8": ["10", "11"]
+    "8": ["10", "11"],
+    "12": "2016-02-09 17:28:00"
   },
   "user_fields": {
     "1": "2",
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
-    "7": "textarea text"
+    "7": "textarea text",
+    "12": "2016-02-09"
   },
   "organization_fields": {
     "1": "2",
     "5": "2016-02-09 17:28:00",
     "6": "inline text",
-    "7": "textarea text"
+    "7": "textarea text",
+    "12": "2016-02-09T00:00+0000"
   },
   "message": {
     "message": "my text message",
@@ -104,8 +111,8 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.priority" should be equal to 3
     And the JSON node "data.category" should be equal to 3
     And the JSON node "data.workflow" should be equal to 1
-    And the JSON node "data.participants" should have 1 element
-    And the JSON node "data.participants[0]" should be equal to 3
+    And the JSON node "data.cc" should have 1 element
+    And the JSON node "data.cc[0]" should be equal to 3
     And the JSON node "data.followers" should have 1 element
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.labels" should have 2 elements
@@ -152,6 +159,24 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.6.value" should be equal to "inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
+  Scenario: I modify participants
+    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    """
+{
+  "followers": ["deleted-agent@deskpro.dev", "admin@deskpro.dev"],
+  "cc": []
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/5"
+    Then the response status code should be 200
+
+    And the JSON node "data.cc" should have 0 elements
+    And the JSON node "data.followers" should have 2 element
+    And the JSON node "data.followers[0]" should be equal to 4
+    And the JSON node "data.followers[1]" should be equal to 1
+
   Scenario: I modify custom checkbox group
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
@@ -177,7 +202,10 @@ Feature: /ticket_forms endpoint
 {
   "fields": {
     "6": {
-      "value": "edited inline text"
+      "value": "edited inline text",
+      "detail": {
+        "some": "extra info"
+      }
     }
   }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Doctrine\ORM\EntityManager;
@@ -124,6 +125,10 @@ class PersonType extends ApiType
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])
+            ->add('contact_data', ContactDataType::class, [
+                'owner'          => $builder->getData(),
+                'parent_builder' => $builder,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
@@ -137,7 +142,7 @@ class PersonType extends ApiType
     {
         $resolver
             ->setDefaults([
-                'data_class'      => 'Application\DeskPRO\Entity\Person',
+                'data_class'      => Person::class,
                 'agent_interface' => false,
             ])
         ;

@@ -36,6 +36,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
       - @=constant('DP_WEB_ROOT') ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-style.scss'
+      - @=constant('DP_WEB_ROOT') ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'
       - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
 
   dp.portal.designer.sass_doc_parser:

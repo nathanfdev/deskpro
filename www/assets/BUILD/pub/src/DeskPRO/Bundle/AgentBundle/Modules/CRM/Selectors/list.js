@@ -56,7 +56,7 @@ export const listFiltersSelector = createSelector(
       return options;
     };
     const filterSelector = [
-      { label: 'Created', type: 'singleSelect', param: 'period_created', options: datePeriodsOptions() }
+      { label: 'Created', type: 'select', param: 'period_created', options: datePeriodsOptions() }
     ];
     if (currentContent === 'people') {
       const userGroupsOptions = userGroups.toArray()

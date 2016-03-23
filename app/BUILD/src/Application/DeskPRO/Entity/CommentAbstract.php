@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,60 +70,87 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
      *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * The id of person that wrote this comment.
+     *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
     /**
-     * @var string
+     * IP address with which comment was written.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
+     * @var string
      */
     protected $ip_address = '';
 
     /**
+     * Visitor`s unique id.
+     *
      * @JMS\Exclude()
+     * @JMS\Groups("details")
      *
      * @var string
      */
     protected $visitor_id = '';
 
     /**
+     * Person`s email.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups("details")
      *
      * @var string
      */
     protected $email = null;
 
     /**
+     * Person`s name.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups("details")
      *
      * @var string
      */
     protected $name = null;
 
     /**
+     *  Website where comment was written.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups("details")
      *
      * @var string
      */
     protected $website = null;
 
     /**
+     * Comment`s content itself.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      *
      * @var string
      */
     protected $content;
 
     /**
+     * Comment`s status.
+     *
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      *
      * @var string
      */
@@ -132,17 +159,20 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Has this comment been reviewed by an agent?
      *
-     * @JMS\Expose()
      * @JMS\Type("boolean")
+     * @JMS\Groups({"list", "details"})
      *
      * @var bool
      */
     protected $is_reviewed = false;
 
     /**
+     * When this comment was created.
+     *
+     * @JMS\Type("DateTime")
+     * @JMS\Groups({"list", "details"})
+     *
      * @var \DateTime
-     * @JMS\Expose()
-     * @JMS\Type("DateTime<'Y-m-d\TH:i:sO'>")
      */
     protected $date_created;
 

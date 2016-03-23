@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -40,8 +44,10 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
 
+/**
+ * Class PersonEmailChoiceType.
+ */
 class PersonEmailChoiceType extends AbstractType
 {
     /**
@@ -49,75 +55,89 @@ class PersonEmailChoiceType extends AbstractType
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($options) {
-                $data = $event->getData();
-                $person = $event->getForm()->getConfig()->getOption('person');
-                // if we recieve data that looks like it was for the "deskpro_person_email"
-                // form, we can just revert to the primary email of the now-logged-in user.
-                if (is_array($data) && array_key_exists('email', $data)) {
-                    $event->setData($person->getPrimaryEmail()->getId());
-                }
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+            $data = $event->getData();
+            $person = $event->getForm()->getConfig()->getOption('person');
+            // if we receive data that looks like it was for the "deskpro_person_email"
+            // form, we can just revert to the primary email of the now-logged-in user.
+            if (is_array($data) && array_key_exists('email', $data)) {
+                $event->setData((string) $person->getPrimaryEmail()->getId());
             }
-        );
+        });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(array('person'));
+        $resolver
+            ->setRequired(['person'])
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
+            ->setDefaults([
+                'class'      => PersonEmail::class,
+                'property'   => 'email',
+                'multiple'   => false,
+                'expanded'   => false,
+                'required'   => false,
+                'empty_data' => function (FormInterface $form) {
+                    $person = $form->getConfig()->getOption('person');
+                    // if nothing is selected, use their primary email
+                    return (string) $person->getPrimaryEmail()->getId();
+                },
+                'choices' => function (Options $options) {
+                    /** @var \Application\DeskPRO\Entity\Person $person */
+                    $person = $options['person'];
+                    $emails = $person->getEmails();
 
-        $resolver->setAllowedTypes(
-            array(
-                'person' => 'Application\DeskPRO\Entity\Person',
-            )
-        );
+                    // traverse to make it an array
+                    $ems = [];
+                    foreach ($emails as $e) {
+                        $ems[$e->getId()] = $e;
+                    }
 
-        $resolver->setDefaults(array(
-            'class'      => 'Application\DeskPRO\Entity\PersonEmail',
-            'property'   => 'email',
-            'multiple'   => false,
-            'expanded'   => false,
-            'required'   => false,
-            'empty_data' => function (FormInterface $form) {
-                $person = $form->getConfig()->getOption('person');
-                // if nothing is selected, use their primary email
-                return $person->getPrimaryEmail()->getId();
-            },
-            'choices' => function (Options $options) {
-                /** @var \Application\DeskPRO\Entity\Person $person */
-                $person = $options['person'];
-
-                $emails = $person->getEmails();
-
-                // traverse to make it an array
-                $ems = array();
-                foreach ($emails as $e) {
-                    $ems[$e->getId()] = $e;
-                }
-
-                return $ems;
-            },
-        ));
+                    return $ems;
+                },
+            ])
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['person'] = $options['person'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
-        return 'entity';
+        return EntityType::class;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'deskpro_person_email_choice';

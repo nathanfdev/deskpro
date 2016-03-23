@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
 use Orb\Util\Arrays;
@@ -295,6 +296,14 @@ class App
     public static function getPersonActivityLogger()
     {
         return self::$container->getPersonActivityLogger();
+    }
+
+    /**
+     * @return EventLogger
+     */
+    public static function getEventLogger()
+    {
+        return self::$container->get('dp_sys.alerts.event_logger');
     }
 
     /**

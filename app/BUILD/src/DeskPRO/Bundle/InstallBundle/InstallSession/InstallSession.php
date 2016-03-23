@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,6 +66,11 @@ class InstallSession
      * @var DbInfo
      */
     private $dbinfo;
+
+    /**
+     * @var DbInfo
+     */
+    private $system_dbinfo;
 
     /**
      * @var string
@@ -143,6 +148,22 @@ class InstallSession
     public function setDbInfo(DbInfo $dbinfo = null)
     {
         $this->dbinfo = $dbinfo;
+    }
+
+    /**
+     * @return DbInfo
+     */
+    public function getSystemDbInfo()
+    {
+        return $this->system_dbinfo;
+    }
+
+    /**
+     * @param DbInfo $system_dbinfo
+     */
+    public function setSystemDbInfo(DbInfo $system_dbinfo)
+    {
+        $this->system_dbinfo = $system_dbinfo;
     }
 
     /**

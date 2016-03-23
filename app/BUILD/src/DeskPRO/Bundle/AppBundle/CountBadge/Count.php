@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,37 +31,64 @@
  */
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Represents a count, typically used to show counters/badges in a UI.
  */
 class Count
 {
     /**
+     * Count itself.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int Count value
      */
     private $count = 0;
 
     /**
-     * @var Count[] Nested counts
+     * Nested counts.
+     *
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
+     * @JMS\MaxDepth(0)
+     *
+     * @var Count[]
      */
     private $nested = [];
 
     /**
+     * Entity identity.
+     *
+     * @JMS\Type("integer")
+     *
      * @var string
      */
     private $id;
 
     /**
+     * Count type.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $type;
 
     /**
+     * Count title.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $title;
 
     /**
+     * Grouping option.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $grouped_by;

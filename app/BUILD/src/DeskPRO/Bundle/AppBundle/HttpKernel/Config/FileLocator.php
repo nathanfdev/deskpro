@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,21 +58,8 @@ class FileLocator extends BaseFileLocator
      */
     public function locate($file, $currentPath = null, $first = true)
     {
-        if ('@' === $file[0]) {
-
-            /*
-             * If a bundle is only in SOME kernels, we need to be explicit here about how
-             * to locate the file. If the bundle is included in ALL of our kernels we do not
-             * need to be explicit, because the kernel will find it by itself.
-             */
-
-            if (!$currentPath and strpos($file, '@TwigBundle') === 0) {
-                // this may not be necessarly, but leaving it because it was in the old
-                // Application\DeskPRO FileLocator class, so it's probably used somewhere
-                $currentPath = DP_ROOT.'/sys/Resources';
-            }
-
-            return $this->kernel->locateResource($file, $currentPath, $first);
+        if (isset($file[0]) && '@' === $file[0]) {
+            return $this->kernel->locateResource($file, $this->path, $first);
         }
 
         $file = str_replace('%DP_ROOT%', DP_ROOT, $file);

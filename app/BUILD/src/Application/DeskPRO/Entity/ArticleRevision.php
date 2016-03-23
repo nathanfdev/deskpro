@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,22 +35,35 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Article revisions.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class ArticleRevision extends RevisionAbstract
 {
     /**
+     * Article entity.
+     *
+     * @JMS\SerializedName("article_id")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
+     *
+     * @var Article
      */
     protected $article;
 
     /**
+     * Revision title of article.
+     *
      * @var string
      */
     protected $title = '';
 
     /**
+     * Revision content of article.
+     *
      * @var string
      */
     protected $content = '';

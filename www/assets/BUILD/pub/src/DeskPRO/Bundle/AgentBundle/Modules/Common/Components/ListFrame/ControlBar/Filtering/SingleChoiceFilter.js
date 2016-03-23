@@ -28,7 +28,7 @@ export class SingleChoiceFilter extends Component {
     });
     const filterValue = state.get(param);
     const isActive = Boolean(filterValue);
-    const onClick = (value) => () => dispatch(setParamsAction({ [param]: value, delayReload: true }));
+    const onClick = (value) => () => dispatch(setParamsAction({ [param]: value }));
 
     return (
       <FilterItem activeItem={activeItem}

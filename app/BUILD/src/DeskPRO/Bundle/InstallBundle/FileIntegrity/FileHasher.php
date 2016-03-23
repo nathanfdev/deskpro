@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\InstallBundle\FileIntegrity;
 
+use Orb\Util\Strings;
+
 class FileHasher
 {
     /**
@@ -37,10 +39,54 @@ class FileHasher
      */
     public function hash($path)
     {
-        $path = file_get_contents($path);
-        $path = str_replace(["\r", "\r\n"], "\n", $path);
-        $path = preg_replace('/\s+/', ' ', $path);
+        $ext  = $this->getExt($path) ?: '';
+        $file = null;
 
-        return sha1($path);
+        // ext-less files might be executable files files
+        if ($ext === 'bin') {
+            $file = file_get_contents($path);
+            if (strpos($file, '<?php') !== false) {
+                $ext = 'php';
+            } elseif (strpos($file, '#!/') === 0) {
+                $ext = 'sh';
+            }
+        }
+
+        switch ($ext) {
+            case 'php':
+            case 'sh':
+            case 'bat':
+            case 'md':
+            case 'yml':
+            case 'xml':
+            case 'html':
+            case 'js':
+            case 'css':
+            case 'scss':
+            case 'json':
+            case 'txt':
+                // normalize txt files
+                // to prevent false positives if someone opens
+                // a file and their editor chagnes line endings
+
+                if ($file === null) {
+                    $file = file_get_contents($path);
+                }
+                $file = str_replace(["\r", "\r\n"], "\n", $file);
+                $file = Strings::trimLines($file);
+
+                return hash('crc32b', $file);
+            default:
+                return hash_file('crc32b', $path);
+        }
+    }
+
+    private function getExt($path)
+    {
+        if (($pos = strrpos($path, '.')) !== false) {
+            return substr($path, $pos + 1) ?: null;
+        }
+
+        return;
     }
 }

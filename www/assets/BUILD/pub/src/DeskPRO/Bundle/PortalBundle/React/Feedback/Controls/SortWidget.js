@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { PortalSimpleSelectBox } from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
 import _ from 'lodash';
 
 export class SortWidget extends React.Component {
@@ -9,15 +10,15 @@ export class SortWidget extends React.Component {
     filter: PropTypes.object
   };
 
-  onChangeSort = event => {
-    this.props.setSort(event.target.value);
+  onChangeSort = option => {
+    this.props.setSort(option.id);
   };
 
   render() {
     const { filter } = this.props;
 
-    const arrowDown = String.fromCharCode(8595);
-    const arrowUp = String.fromCharCode(8593);
+    const arrowDown = ' (desc)';
+    const arrowUp = ' (asc)';
 
     const sorts = {
       'date-desc': portalPhrases.get('portal.general.prop_date') + arrowDown,
@@ -32,12 +33,25 @@ export class SortWidget extends React.Component {
       'most-discussed-asc': portalPhrases.get('portal.general.prop_comments') + arrowUp
     };
 
-    const selectedSort = filter.sort + '-' + filter.sort_direction;
+    const selectedSort = {id: filter.sort + '-' + filter.sort_direction, title: "Sort"};
+    if (sorts[selectedSort.id]) {
+      selectedSort.title = sorts[selectedSort.id];
+    }
+
+    const widgetOptions = {
+      widgetClassName: ['small', 'borderless', 'right']
+    };
+    const options = _.map(sorts, (title, id) => {
+      return {
+        id: id,
+        title: title
+      };
+    });
 
     return (
-      <select style={{float: 'right'}} value={selectedSort} onChange={this.onChangeSort}>
-        {_.map(sorts, (title, key) => <option key={key} value={key}>{title}</option>)}
-      </select>
+      <div className="float-right" style={{minWidth: '120px'}}>
+        <PortalSimpleSelectBox widgetOptions={widgetOptions} options={options} value={selectedSort} onChange={this.onChangeSort} />
+      </div>
     );
   }
 }

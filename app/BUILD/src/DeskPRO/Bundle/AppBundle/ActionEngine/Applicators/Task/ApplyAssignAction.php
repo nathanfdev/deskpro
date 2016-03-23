@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,31 +39,90 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 
 class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \Application\DeskPRO\Entity\Person */
-    private $person;
-
-    /** @ToDo apply many-to-many relationship between Person and Task */
     /**
      * @param Task[] $tasks
      */
     public function apply(array $tasks)
     {
-        $this->init();
-        foreach ($tasks as $task) {
-            $assignment = new TaskAssignment();
-            $assignment->setPerson($this->person);
-            $assignment->setTask($task);
-            $this->em->persist($assignment);
-            $task->addAssigned($assignment);
+        $collection = $this->init($tasks);
+
+        foreach ($collection as $type => $values) {
+            switch ($type) {
+                case 'agents':
+                    foreach ($values as $person) {
+                        foreach ($tasks as $task) {
+                            $assignment = new TaskAssignment();
+                            $assignment->setPerson($person);
+                            $assignment->setTask($task);
+                            $this->em->persist($assignment);
+                            $task->addAssigned($assignment);
+                        }
+                    }
+                    break;
+                case 'teams':
+                    foreach ($values as $team) {
+                        foreach ($tasks as $task) {
+                            $assignment = new TaskAssignment();
+                            $assignment->setTeam($team);
+                            $assignment->setTask($task);
+                            $this->em->persist($assignment);
+                            $task->addAssigned($assignment);
+                        }
+                    }
+                    break;
+                case 'departments':
+                    foreach ($values as $department) {
+                        foreach ($tasks as $task) {
+                            $assignment = new TaskAssignment();
+                            $assignment->setDepartment($department);
+                            $assignment->setTask($task);
+                            $this->em->persist($assignment);
+                            $task->addAssigned($assignment);
+                        }
+                    }
+                    break;
+            }
         }
     }
 
     /**
-     * Fetch type (FeedbackCategory) for setting to items.
+     * @param Task[] $tasks
+     *
+     * @return array
      */
-    private function init()
+    private function init($tasks)
     {
-        $id           = $this->options['id'];
-        $this->person = $this->em->getRepository('DeskPRO:Person')->find($id);
+        foreach ($tasks as $task) {
+            foreach ($task->getAssigned() as $assigned) {
+                $this->em->remove($assigned);
+            }
+        }
+        $assign     = $this->options['assign'];
+        $collection = [
+            'agents'      => [],
+            'teams'       => [],
+            'departments' => [],
+        ];
+        foreach ($assign as $type => $values) {
+            switch ($type) {
+                case 'agent':
+                    foreach ($values as $id) {
+                        $collection['agents'][] = $this->em->getRepository('DeskPRO:Person')->find($id);
+                    }
+                    break;
+                case 'team':
+                    foreach ($values as $id) {
+                        $collection['teams'][] = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                    }
+                    break;
+                case 'department':
+                    foreach ($values as $id) {
+                        $collection['departments'][] = $this->em->getRepository('DeskPRO:Department')->find($id);
+                    }
+                    break;
+            }
+        }
+
+        return $collection;
     }
 }

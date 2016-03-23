@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,6 +59,8 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
+        ini_set('memory_limit', -1);
+
         $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
         $set       = new ProjectFileSet($DP_ENV);
 
@@ -66,18 +68,20 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
             $map = json_decode(file_get_contents($writePath), true);
 
             $output->writeln('Cleaning map...');
-            $startTime = microtime(true);
-            $output->writeln(sprintf('Cleaned in %.3fs', microtime(true) - $startTime));
+            $startTime   = microtime(true);
+            $countBefore = count($map);
 
-            MapUtils::filter($map, function ($path) use ($set) {
+            $map = MapUtils::filter($map, function ($path) use ($set) {
                 $realPath = $set->getRealPath($path);
 
                 return file_exists($realPath);
             });
+            $countAfter = count($map);
 
             file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
 
             $output->writeln(sprintf('Re-wrote map to: <info>%s</info>', $writePath));
+            $output->writeln(sprintf('Cleaned in %.3fs (removed %d entries)', microtime(true) - $startTime, $countBefore - $countAfter));
         } else {
             $hasher = new FileHasher();
             $gen    = new IntegrityMapGenerator($set, $hasher);
@@ -85,12 +89,12 @@ class GenIntegrityMapCommand extends ContainerAwareCommand
             $output->writeln('Generating map... This might take a while.');
             $startTime = microtime(true);
             $map       = $gen->generateMap();
-            $output->writeln(sprintf('Generated map of %d files in %.3fs', count($map), microtime(true) - $startTime));
 
             $writePath = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'integrity_file_map.dat';
             file_put_contents($writePath, json_encode($map, \JSON_PRETTY_PRINT));
 
             $output->writeln(sprintf('Wrote map to: <info>%s</info>', $writePath));
+            $output->writeln(sprintf('Generated map of %d files in %.3fs', count($map), microtime(true) - $startTime));
         }
     }
 }

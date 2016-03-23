@@ -1,4 +1,4 @@
-$control-bar-height: 50px;
+$control-bar-height: 47px;
 
 // Top control bar (to be renamed)
 .control-bar {
@@ -6,10 +6,10 @@ $control-bar-height: 50px;
   top: 0;
   left: 0;
   right: 0;
-  border-bottom: 1px solid #dbddde;
+  border-bottom: 1px solid #d1d4d6;
   //padding-left: 21px;
   height: $control-bar-height;
-  background: #fff;
+  background: #f2f2f2;
 
   z-index: 100;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

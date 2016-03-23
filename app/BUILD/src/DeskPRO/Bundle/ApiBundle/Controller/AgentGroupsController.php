@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Annotations;
 use FOS\RestBundle\View\View;
@@ -62,17 +60,19 @@ class AgentGroupsController extends BaseController
      *
      * @Annotations\Get("/agent_groups", name="api_agent_groups")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $service = $this->get('data.user_groups');
 
         return View::create(
-            new ApiWrapper($service->loadAgentGroupsEnabled()),
+            $this->wrap($service->loadAgentGroupsEnabled()),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Get the agent group with specified id.
+     *
      * @ApiDoc(
      *     section = "Agents",
      *     resourceDescription="Operations about agent groups",
@@ -81,12 +81,13 @@ class AgentGroupsController extends BaseController
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
-     *              "description"="the id of agent",
+     *              "description"="the id of agent group",
      *              "dataType"="integer"
      *          }
      *      },
      *      statusCodes={
      *          200="Returned if request was successful",
+     *          404="Returned if we can't find agent group with specified id"
      *      },
      *      output="array<Application\DeskPRO\Entity>"
      * )
@@ -101,7 +102,7 @@ class AgentGroupsController extends BaseController
         }
 
         return View::create(
-            new ApiWrapper($agent_group),
+            $this->wrap($agent_group),
             Response::HTTP_OK
         );
     }

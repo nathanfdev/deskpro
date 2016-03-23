@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -135,6 +135,7 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
             foreach ($finder as $temp) {
                 // turn twig filename/path into Theme:x:y.html.twig syntax
                 $path        = $temp->getRelativePathname();
+                $path        = str_replace('\\', '/', $path);
                 $path_broken = explode('/', $path);
                 $controller  = array_shift($path_broken);
                 if (count($path_broken) == 0) {

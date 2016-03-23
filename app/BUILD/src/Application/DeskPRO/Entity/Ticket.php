@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -246,6 +247,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Person
+     *
+     * @AppAssert\User(type="agent")
      */
     protected $agent = null;
 
@@ -478,10 +481,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $waiting_times = array();
+    protected $waiting_times = [];
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $participants;
 
@@ -587,13 +592,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var array
      */
-    protected $api_data = array();
+    protected $api_data = [];
 
     /**
      * @var string|null
      */
     protected $api_data_hash = null;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->_original_id = null;
@@ -824,8 +832,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getUserParticipants()
     {
-        $ret = array();
-
+        $ret = [];
         foreach ($this['participants'] as $p) {
             if (!$p['person']['is_agent']) {
                 $ret[] = $p->person;
@@ -840,7 +847,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getAgentParticipants()
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->participants as $p) {
             if ($p->person['is_agent']) {
                 $ret[] = $p->person;
@@ -848,6 +855,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         return $ret;
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
     }
 
     /**
@@ -866,14 +881,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setAgentParticipants($agents)
     {
-        $current_agent_ids = array();
+        $current_agent_ids = [];
         foreach ($this->participants as $p) {
             if ($p->person->is_agent) {
                 $current_agent_ids[] = $p->person->id;
             }
         }
 
-        $got_agent_ids = array();
+        $got_agent_ids = [];
         foreach ($agents as $p) {
             $got_agent_ids[] = $p->id;
         }
@@ -2264,10 +2279,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function setAgent(Person $agent = null)
     {
         if ($agent) {
-            if (!$agent->isAgent()) {
-                throw new \InvalidArgumentException(sprintf('%s is not an agent', $agent->getId()));
-            }
-
             // Do we need to update the first assign date?
             if (is_null($this->date_first_agent_assign)) {
                 $this['date_first_agent_assign'] = new \DateTime();
@@ -3930,6 +3941,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * We can't set invalid data to the db so check properties before flush.
+     */
+    public function _onValidateProps()
+    {
+        if ($this->agent && !$this->agent->isAgent()) {
+            throw new \InvalidArgumentException(sprintf('%s is not an agent', $this->agent->getId()));
+        }
+    }
+
+    /**
      * @param Problem|null $problem
      */
     public function associateProblem(Problem $problem = null)
@@ -3977,6 +3998,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Ticket';
         $metadata->addLifecycleCallback('_setOriginalId', 'postLoad');
+        $metadata->addLifecycleCallback('_onValidateProps', 'prePersist');
+        $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
         $metadata->setPrimaryTable(

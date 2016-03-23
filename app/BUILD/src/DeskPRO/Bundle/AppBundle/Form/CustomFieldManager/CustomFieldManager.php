@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -249,23 +249,17 @@ class CustomFieldManager
                         'input'  => 'string',
                         'widget' => 'single_text',
                     ];
-
-                    return new FormField(
-                        'date',
-                        $this->getGeneralOptionsForField($def, $options, $is_agent)
-                    );
                 } else {
                     $options = [
                         'input'  => 'string',
                         'widget' => 'choice',
-                        'format' => 'y-M-d',
                     ];
-
-                    return new FormField(
-                        'deskpro_date',
-                        $this->getGeneralOptionsForField($def, $options, $is_agent)
-                    );
                 }
+
+                return new FormField(
+                    'deskpro_date',
+                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                );
 
             case 'datetime':
                 if ($is_inline) {

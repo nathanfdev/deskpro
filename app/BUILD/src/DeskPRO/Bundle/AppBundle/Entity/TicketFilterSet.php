@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,12 +35,14 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
  * @ORM\Table(name="ticket_filter_sets")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
@@ -50,6 +52,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -59,6 +64,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(name="title", type="string")
      *
      * @Assert\NotBlank()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $title;
 
@@ -66,6 +74,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @var int
      *
      * @ORM\Column(name="display_order", type="integer")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $display_order;
 
@@ -78,7 +89,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *     cascade={"remove"}
      * )
      * @ORM\OrderBy({"display_order" = "ASC"})
-     * @Serializer\Exclude()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
      */
     protected $filters;
 
@@ -86,6 +99,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @var bool
      *
      * @ORM\Column(name="is_default", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $is_default = false;
 
@@ -94,6 +110,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id", onDelete="CASCADE")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $private_agent;
 
@@ -110,6 +129,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *          @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
      */
     protected $shared_agents;
 
@@ -196,28 +218,6 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     public function setIsDefault($default)
     {
         $this->setModelField('is_default', (bool) $default);
-    }
-
-    /**
-     * Returns the filters in the set as an array of filter ids.
-     *
-     * @return array the filter IDs attached.
-     *
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("filters")
-     */
-    public function getFiltersIds()
-    {
-        if (!$this->filters) {
-            return [];
-        }
-
-        $my_ids = [];
-        foreach ($this->filters as $filter) {
-            $my_ids[] = $filter->getId();
-        }
-
-        return $my_ids;
     }
 
     /**

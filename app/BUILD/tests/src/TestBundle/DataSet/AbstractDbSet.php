@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -294,7 +294,8 @@ abstract class AbstractDbSet implements DataSetInterface
         if ($this->isCached()) {
             $this->installFromCache();
         } else {
-            $this->installDatabase();
+            $this->installDatabase('default', true);
+            $this->installDatabase('system');
             $this->installSet();
 
             // This is required or else some e2e tests
@@ -313,19 +314,26 @@ abstract class AbstractDbSet implements DataSetInterface
     /**
      * Installs a fresh DeskPRO database with the bare data to make it a functional install.
      *
+     * @param string $em_name
+     * @param bool   $is_master_schema
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
      * @return int The number of queries executed
+     *
      */
-    private function installDatabase()
+    private function installDatabase($em_name, $is_master_schema = false)
     {
         $base_schema_cache = null;
         if ($this->cache_dir) {
-            $base_schema_cache = $this->cache_dir.'/base_schema.php';
+            $base_schema_cache = $this->cache_dir."/{$em_name}_schema.php";
         }
 
         if ($base_schema_cache && file_exists($base_schema_cache)) {
             $queries = require $base_schema_cache;
         } else {
-            $gs      = new \Application\InstallBundle\Data\GenerateSchema($this->getEm());
+            $em      = $this->container->get("doctrine.orm.{$em_name}_entity_manager");
+            $gs      = new \Application\InstallBundle\Data\GenerateSchema($em, $is_master_schema);
             $queries = array(
                 'creates' => $gs->getCreates(),
                 'alters'  => $gs->getAlters(),

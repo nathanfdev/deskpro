@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
 
 use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\Callback\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -94,6 +94,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
+            'linked_tickets',
             'date_done',
             'display_order',
         ];

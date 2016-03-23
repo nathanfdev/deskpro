@@ -19,13 +19,17 @@ import { typeCountersSelector, categoryCountersSelector, statusCountersSelector,
 })
 export class NavContainer extends Component {
 
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
+
   componentDidMount() {
     this.props.dispatch(actions.initialLoad());
   }
 
   render() {
     return (
-        <Nav {...this.props} />
+      <Nav {...this.props} />
     );
   }
 }

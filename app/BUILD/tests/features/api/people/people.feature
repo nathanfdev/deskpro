@@ -1,4 +1,4 @@
-@chat-nav @tasks-nav
+@basic @chat-nav @tasks-nav
 Feature: /people endpoint
   To retrieve DeskPRO people
   As a developer
@@ -23,7 +23,6 @@ Feature: /people endpoint
     And the JSON node "data.id" should be equal to "1"
     And the JSON node "data.name" should be equal to "Link Admin"
 
-  @basic
   Scenario: I create a person
     When I send a POST request to "/api/v2/people" with body:
     """
@@ -36,6 +35,20 @@ Feature: /people endpoint
   "agent_groups": [7, 8],
   "fields": {
     "6": "some text"
+  },
+  "contact_data": {
+    "website": [
+      {"url": "http://site.com"}
+    ],
+    "facebook": [
+      {"url": "http://facebook.com/profile"}
+    ],
+    "twitter": [
+      {
+        "username": "twitter_username",
+        "comment": "some text"
+      }
+    ]
   }
 }
     """
@@ -45,7 +58,7 @@ Feature: /people endpoint
     And the JSON node "data.organization" should be equal to 1
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
     And the JSON node "data.primary_email" should be equal to "sample.person@deskpro.com"
-    And the JSON node "data.fields" should have 3 elements
+    And the JSON node "data.fields" should have 4 elements
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
@@ -54,6 +67,14 @@ Feature: /people endpoint
     And the JSON node "data.usergroups[1]" should be equal to 2
     And the JSON node "data.usergroups[2]" should be equal to 7
     And the JSON node "data.usergroups[3]" should be equal to 8
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "website"
+    And the JSON node "data.contact_data[0].id" should be equal to 1
+    And the JSON node "data.contact_data[1].id" should be equal to 2
+    And the JSON node "data.contact_data[1].contact_type" should be equal to "twitter"
+    And the JSON node "data.contact_data[1].username" should be equal to "twitter_username"
+    And the JSON node "data.contact_data[1].comment" should be equal to "some text"
+    And the JSON node "data.contact_data[2].contact_type" should be equal to "facebook"
+    And the JSON node "data.contact_data[2].id" should be equal to 3
 
   Scenario: I try to create a person providing empty data
     When I send a POST request to "/api/v2/people"

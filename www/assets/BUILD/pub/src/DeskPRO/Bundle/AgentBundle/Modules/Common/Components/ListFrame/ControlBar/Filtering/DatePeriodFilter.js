@@ -6,21 +6,19 @@ import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class DatePeriodFilter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    setParamsAction: PropTypes.func.isRequired,
-    unsetParams: PropTypes.func.isRequired,
-    stateValue: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
+    unsetParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     activeItem: PropTypes.object,
     filter: PropTypes.object.isRequired
   };
 
   handleChange() {
-    const { dispatch, setParamsAction } = this.props;
+    const { setParam } = this.props;
     const filter = this.refs.filter.value;
     if (filter) {
       const value = this.refs.filterValue.value;
-      dispatch(setParamsAction({ date_filter: { [filter]: value }, delayReload: true }));
+      setParam({ param: 'date_filter', value: { [filter]: value } });
     }
   }
 
@@ -36,9 +34,9 @@ export class DatePeriodFilter extends Component {
   }
 
   render() {
-    const { filter, unsetParams, setActiveItem, activeItem, stateValue } = this.props;
+    const { filter, unsetParam, setActiveItem, activeItem, currentParams } = this.props;
     const {icon, label} = filter;
-    const value = stateValue(filter.param);
+    const value = currentParams[filter.param];
     let filterType = 'Select option';
     let filterValue = 'Today';
     for (const property in value) {
@@ -55,14 +53,17 @@ export class DatePeriodFilter extends Component {
                   label={label}
                   isActive={isActive}
                   setActiveItem={setActiveItem}
-                  resetFilter={unsetParams.bind(this)}>
+                  resetFilter={unsetParam.bind(this, 'date_filter')}>
+        {isActive && <span className="dpw-navigation-dropdown-item-inline-info">
+          {filterType} {filterValue}
+        </span> }
         <Menu>
-          <div
-            className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
+          <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-navigation-dropdown-panel-content">
               <div className="dpw-navigation-dropdown-panel-content-line">
                 <div className="dpw-navigation-dropdown-panel-content-full">
-                  <select ref="filter" value={filterType}
+                  <select ref="filter"
+                          value={filterType}
                           onChange={this.handleChange.bind(this)}>
                     <option value="">Select option</option>
                     <option value="period_created">Created</option>
@@ -82,7 +83,7 @@ export class DatePeriodFilter extends Component {
               </div>
             </div>
           </div>
-        </Menu >
+        </Menu>
       </FilterItem>
     );
   }

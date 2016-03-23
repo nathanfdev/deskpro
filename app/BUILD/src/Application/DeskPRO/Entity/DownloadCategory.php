@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_downloads_browse", route_param_map={"slug":"slug"})
@@ -45,20 +46,38 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class DownloadCategory extends CategoryAbstract
 {
     /**
+     * Category`s parent.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\DownloadCategory>")
      */
     protected $parent;
 
     /**
+     * Category`s children.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadCategory>>")
      */
     protected $children;
 
     /**
-     * ArrayCollection.
+     * Downloads belong this category.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadCategory>>")
+     *
+     * @var ArrayCollection
      */
     protected $downloads;
 
     /**
-     * @var Doctrine\Common\Collections\ArrayCollection
+     * Usergroups that has access to this category.
+     *
+     * @JMS\Groups("download_categories")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Download>>")
+     *
+     * @var ArrayCollection
      */
     protected $usergroups;
 
@@ -136,7 +155,7 @@ class DownloadCategory extends CategoryAbstract
             array(
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-                0           => array(
+                0 => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
             ), 'dpApi' => true,
@@ -152,8 +171,8 @@ class DownloadCategory extends CategoryAbstract
             array(
                 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
                 'cascade'   => array('persist', 'merge'), 'joinTable' => array(
-                'name'      => 'download_category2usergroup', 'schema' => null, 'joinColumns' => array(
-                    0       => array(
+                'name' => 'download_category2usergroup', 'schema' => null, 'joinColumns' => array(
+                    0 => array(
                         'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),

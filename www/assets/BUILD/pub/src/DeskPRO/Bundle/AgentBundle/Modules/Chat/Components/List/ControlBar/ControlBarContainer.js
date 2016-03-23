@@ -3,37 +3,27 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { connect } from 'react-redux';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
-import { listOrderBySelector, listOrderDirSelector, viewModeSelector }
-  from '../../../Selectors/list';
-import { changeSort, toggleOrder, applyParams }
-  from '../../../Actions/chatListActions';
+import { currentListParamsSelector, viewModeSelector } from '../../../Selectors/list';
+import { applyParams } from '../../../Actions/chatListActions';
 
 @connect(state => ({
-  orderBy: listOrderBySelector(state),
-  orderDir: listOrderDirSelector(state),
+  currentParams: currentListParamsSelector(state),
   viewMode: viewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    orderBy: PropTypes.string.isRequired,
-    orderDir: PropTypes.string.isRequired,
+    currentParams: PropTypes.object.isRequired,
     viewMode: PropTypes.string.isRequired
   };
 
   render() {
     const config = {
-      onMenuUnmount: applyParams,
+      applyParams: applyParams,
+      currentParams: this.props.currentParams,
       sorting: {
-        options: {
-          date_created: { label: 'Date', icon: 'calendar' },
-          agent: { label: 'Agent', icon: 'calendar' },
-          department: { label: 'Department', icon: 'calendar-o' }
-        },
-        orderBy: this.props.orderBy,
-        orderDir: this.props.orderDir,
-        sortAction: changeSort,
-        orderAction: toggleOrder
+        date_created: { label: 'Date', icon: 'calendar' },
+        agent: { label: 'Agent', icon: 'calendar' },
+        department: { label: 'Department', icon: 'calendar-o' }
       },
       view: {
         options: {

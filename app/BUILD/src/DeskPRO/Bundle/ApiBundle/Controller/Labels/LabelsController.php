@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,11 +48,34 @@ use Symfony\Component\HttpFoundation\Response;
 class LabelsController extends BaseController
 {
     /**
+     * Fetch labels for given entity types and you can filter labels by some term.
+     *
      * @ApiDoc(
-     *      description="Get all labels by types",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     resourceDescription="Operations about labels",
+     *     tags={"unstable"="#ff6666"},
+     *     description="Get all labels by types",
+     *     requirements={
+     *         {
+     *             "name"="type",
+     *             "requirement"="ticket|person|organization|feedback|news|chat|article|download",
+     *             "description"="Which entity type labels we are searching?",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *     filters={
+     *         {
+     *             "name"="term",
+     *             "requirement"="\w",
+     *             "description"="Filter label by given word",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *         400="We will return this status in case your {type} wasn't found"
+     *     },
+     *     output="Application\DeskPRO\Entity\LabelDef"
+     *
      * )
      * @Get(
      *     "/{type}_labels",
@@ -64,8 +87,6 @@ class LabelsController extends BaseController
      *
      * @param Request $request
      * @param string  $type
-     *
-     * @throws \LogicException
      *
      * @return View
      */
@@ -117,7 +138,7 @@ class LabelsController extends BaseController
         $definitions = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->dataSerialize($definitions),
+            $this->wrap($definitions),
             Response::HTTP_OK
         );
     }

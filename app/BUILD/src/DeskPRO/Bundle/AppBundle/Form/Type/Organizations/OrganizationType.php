@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,9 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
+use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -93,6 +95,10 @@ class OrganizationType extends AbstractType
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])
+            ->add('contact_data', ContactDataType::class, [
+                'owner'          => $builder->getData(),
+                'parent_builder' => $builder,
+            ])
         ;
     }
 
@@ -110,7 +116,7 @@ class OrganizationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'      => 'Application\DeskPRO\Entity\Organization',
+            'data_class'      => Organization::class,
             'agent_interface' => false,
         ]);
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,6 +75,7 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
             $this->getEntityManager(),
             $this->edit_theme_set,
             __DIR__."/scss/$style",
+            __DIR__."/scss-rtl/$style",
             $custom_scss
         );
     }
@@ -93,7 +94,9 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     public function it_should_return_null_if_no_CSS_file_stored_in_the_Edit_ThemeSet()
     {
-        $this->assertNull($this->service->getEditThemeSetCssBlobStorage());
+        foreach (['LTR', 'RTL'] as $dir) {
+            $this->assertNull($this->service->getEditThemeSetCssBlobStorage($dir));
+        }
     }
 
     /**
@@ -101,9 +104,13 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     public function it_should_create_CSS_blob_on_the_edit_ThemeSet_asset()
     {
-        $this->assertNull($this->service->getEditThemeSetCssBlobStorage());
+        foreach (['LTR', 'RTL'] as $dir) {
+            $this->assertNull($this->service->getEditThemeSetCssBlobStorage($dir));
+        }
         $this->service->recompile([]);
-        $this->assertNotNull($this->service->getEditThemeSetCssBlobStorage());
+        foreach (['LTR', 'RTL'] as $dir) {
+            $this->assertNotNull($this->service->getEditThemeSetCssBlobStorage($dir));
+        }
     }
 
     /**
@@ -123,8 +130,12 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $service = $this->createService('dummy-no-vars.scss');
         $service->recompile([]);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
             '.dummy-container .dummy-style { background: #fffaaa; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
+            '.dummy-container .dummy-style-rtl { background: #fffaaa; }'
         );
     }
 
@@ -136,8 +147,12 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $service = $this->createService('dummy-color.scss');
         $service->recompile(['color' => '#123456']);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
             '.dummy-style { background: #123456; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
+            '.dummy-style-rtl { background: #123456; }'
         );
     }
 
@@ -149,8 +164,12 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $service = $this->createService('dummy-size.scss');
         $service->recompile(['size' => ['value' => 42, 'unit' => '%']]);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
             '.dummy-style { margin-top: 42%; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
+            '.dummy-style-rtl { margin-top: 42%; }'
         );
     }
 
@@ -162,8 +181,12 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $service = $this->createService('dummy-font.scss');
         $service->recompile(['font' => 'Arial Test']);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
             '.dummy-style { font: Arial Test; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
+            '.dummy-style-rtl { font: Arial Test; }'
         );
     }
 
@@ -175,8 +198,12 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         $service = $this->createService('dummy-font.scss');
         $service->recompile(['font' => 'custom string']);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
             '.dummy-style { font: custom string; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
+            '.dummy-style-rtl { font: custom string; }'
         );
     }
 
@@ -194,7 +221,11 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
         ');
         $service->recompile([]);
         $this->assertEqualCss(
-            $service->getEditThemeSetCssBlobStorage()->getData(),
+            $service->getEditThemeSetCssBlobStorage('LTR')->getData(),
+            '.dp-test-custom-scss .dp-test-custom-inner { color: purple; }'
+        );
+        $this->assertEqualCss(
+            $service->getEditThemeSetCssBlobStorage('RTL')->getData(),
             '.dp-test-custom-scss .dp-test-custom-inner { color: purple; }'
         );
     }

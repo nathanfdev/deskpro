@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,6 +50,13 @@ class Hierarchy extends BaseHierarchy
      */
     private $leaf_selections_only;
 
+    /**
+     * Constructor.
+     *
+     * @param array                            $root_nodes
+     * @param HierarchyFormatterInterface|null $formatter
+     * @param string                           $node_id_path
+     */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
         parent::__construct($root_nodes, $formatter, $node_id_path);
@@ -95,8 +102,8 @@ class Hierarchy extends BaseHierarchy
      */
     public function getChoiceList()
     {
-        $choices = array();
-        $labels  = array();
+        $choices = [];
+        $labels  = [];
 
         if (!$this->leaf_selections_only) {
             /** @var HierarchyNode $node */
@@ -143,7 +150,7 @@ class Hierarchy extends BaseHierarchy
     }
 
     /**
-     * Similar to countSelectable(), this method will return this first slectable (the first that would appear in a slect box, for example).
+     * Similar to countSelectable(), this method will return this first selectable (the first that would appear in a select box, for example).
      *
      * @return mixed
      */
@@ -152,8 +159,15 @@ class Hierarchy extends BaseHierarchy
         foreach ($this->root_nodes as $node) {
             return $this->findSelectable($node)->getData(); // find the first leaf of the first root node
         }
+
+        return false;
     }
 
+    /**
+     * @param BaseNode $node
+     *
+     * @return BaseNode
+     */
     public function findSelectable(BaseNode $node)
     {
         if ($node->isLeaf()) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -66,7 +65,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getId", setter="setId")
      */
     protected $id;
 
@@ -78,7 +76,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\SerializedName("chat_type")
-     * @JMS\Accessor(getter="getType", setter="setType")
      */
     protected $type;
 
@@ -87,7 +84,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      *
      * @var bool
      * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
-     * @JMS\Exclude()
      */
     protected $is_archived = false;
 
@@ -98,7 +94,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="datetime", nullable=false)
      * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\Accessor(getter="getDateCreated", setter="setDateCreated")
      */
     protected $date_created;
 
@@ -109,7 +104,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="datetime", nullable=false)
      * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\Accessor(getter="getDateLastMessage", setter="setDateLastMessage")
      */
     protected $date_last_message;
 
@@ -118,9 +112,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      *
      * @var AgentChatParticipant[] an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat", cascade={"persist", "remove"})
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant>>")
-     * @JMS\MaxDepth(1)
-     * @JMS\Accessor(getter="getParticipants", setter="addParticipant")
      */
     protected $participants;
 
@@ -136,7 +127,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage", mappedBy="chat", cascade={"persist", "remove"})
      * @ORM\OrderBy({"date_created" = "DESC"})
      * @JMS\Type("array")
-     * @JMS\Accessor(getter="getMessages", setter="addMessage")
      */
     protected $messages;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
@@ -86,10 +87,14 @@ class TicketsSelectCriteria
 
         foreach ($parameters as $param => $value) {
             if (TicketGrouping::isCustom($param, '_')) {
-                $composite->addTerm(new CustomDataTerm([
-                    'field_id'          => TicketGrouping::getCustomFieldIdFromName($param, '_'),
-                    'custom_data_value' => $value,
-                ]));
+                $composite->addTerm(
+                    new CustomDataTerm(
+                        [
+                            'field_id'          => TicketGrouping::getCustomFieldIdFromName($param, '_'),
+                            'custom_data_value' => $value,
+                        ]
+                    )
+                );
                 continue;
             }
 
@@ -127,8 +132,17 @@ class TicketsSelectCriteria
                 case 'urgency':
                     $composite->addTerm(new TicketUrgencyTerm(['num' => [$value]]));
                     break;
+                case 'from':
+                    $composite
+                        ->addTerm(
+                            new TicketDateCreatedTerm(
+                                ['date' => new \DateTime(str_replace(' ', '+', $value))],
+                                TermInterface::OP_GTE
+                            )
+                        );
+                    break;
                 default:
-                    throw new \Exception("Unknown ticket filtering option $param");
+                    throw new \Exception("Unknown ticket filtering option '$param'");
             }
         }
 

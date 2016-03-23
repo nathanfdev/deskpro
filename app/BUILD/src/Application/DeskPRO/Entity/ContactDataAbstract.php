@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\ContactData\ContactData;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Contact data is stuff like address, instant messaging, phone etc.
@@ -42,8 +45,23 @@ use Application\DeskPRO\ContactData\ContactData;
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
  */
-abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject implements GroupSequenceProviderInterface
 {
+    const TYPE_PHONE           = 'phone';
+    const TYPE_WEBSITE         = 'website';
+    const TYPE_INSTANT_MESSAGE = 'instant_message';
+    const TYPE_TWITTER         = 'twitter';
+    const TYPE_LINKED_IN       = 'linked_in';
+    const TYPE_FACEBOOK        = 'facebook';
+    const TYPE_ADDRESS         = 'address';
+
+    const IM_AIM   = 'aim';
+    const IM_MSN   = 'msn';
+    const IM_ICQ   = 'icq';
+    const IM_SKYPE = 'skype';
+    const IM_GTALK = 'gtalk';
+    const IM_OTHER = 'other';
+
     /**
      * The unique ID.
      *
@@ -55,6 +73,11 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The handler class.
      *
      * @var string
+     *
+     * @Assert\Choice(
+     *     choices={"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"},
+     *     groups={"common"}
+     * )
      */
     protected $contact_type;
 
@@ -62,21 +85,31 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * The label/comment/name for this contact entry (Work, Home, etc).
      *
      * @var string
+     *
+     * @Assert\NotNull(groups={"common"})
      */
     protected $comment = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"})
+     * @Assert\Url(groups={"website", "facebook", "linked_in"})
      */
     protected $field_1 = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"address", "phone"})
+     * @AppAssert\ProfileUrl(groups={"facebook", "linked_in"})
      */
     protected $field_2 = '';
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"phone"})
      */
     protected $field_3 = '';
 
@@ -87,6 +120,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank(groups={"address"})
      */
     protected $field_5 = '';
 
@@ -107,6 +142,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     /**
      * @var string
+     *
+     * @AppAssert\PhoneNumber(groups={"phone"})
      */
     protected $field_9 = '';
 
@@ -125,7 +162,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     /**
      * @var array
      */
-    protected $_save_callbacks = array();
+    protected $_save_callbacks = [];
 
     /**
      * @return int
@@ -133,6 +170,19 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return object
+     */
+    abstract public function getRef();
+
+    /**
+     * @return string
+     */
+    public function getContactType()
+    {
+        return $this->contact_type;
     }
 
     /**
@@ -416,7 +466,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      */
     public function getSearchString($prevent = false)
     {
-        $pieces = array();
+        $pieces = [];
         for ($i = 1; $i <= 10; ++$i) {
             $field = 'field_'.$i;
             if ($this->$field) {
@@ -426,8 +476,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
         $pieces = implode(',', $pieces);
         if (!$prevent) {
-        $pieces = preg_replace('#\s#', '', $pieces);
-        $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
+            $pieces = preg_replace('#\s#', '', $pieces);
+            $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
         }
 
         return $pieces;
@@ -443,31 +493,45 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $string = preg_replace('#\s#', '', $string);
         $string = \Orb\Util\Strings::utf8_strtolower($string);
 
-        return (strpos($this->getSearchString(), $string) !== false);
+        return strpos($this->getSearchString(), $string) !== false;
     }
 
-    public function addSaveCallback(\Closure $callback)
-    {
-        $this->_save_callbacks[] = $callback;
-    }
-
-    public function _preSave()
-    {
-        foreach ($this->_save_callbacks as $callback) {
-            $callback($this);
-        }
-    }
-
-    public function _preDelete()
-    {
-        $this->getHandler()->deleteType($this);
-    }
-
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         $data = array_merge($data, $this->getHandler()->getApiVars($this));
 
         return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getInstantMessageTypes()
+    {
+        return [
+            self::IM_AIM,
+            self::IM_MSN,
+            self::IM_ICQ,
+            self::IM_SKYPE,
+            self::IM_GTALK,
+            self::IM_OTHER,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['common'];
+        if ($this->contact_type) {
+            $groups[] = $this->contact_type;
+        }
+
+        return $groups;
     }
 }

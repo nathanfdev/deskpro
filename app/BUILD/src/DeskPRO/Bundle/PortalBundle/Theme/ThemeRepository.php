@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -112,7 +112,14 @@ class ThemeRepository
         if (file_exists($this->config_cache->getPath())) {
             $this->logger->debug('theme repository: unserializing from file cache');
 
-            return $this->theme_map = require $this->config_cache->getPath();
+            $this->theme_map = require $this->config_cache->getPath();
+
+            // the cache only saves resolved tags, need to re-resolve parents
+            foreach ($this->theme_map as $theme) {
+                $this->resolveParent($theme);
+            }
+
+            return $this->theme_map;
         }
 
         $this->logger->debug('theme repository: creating theme map and then caching it for future use');

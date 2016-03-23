@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,9 +28,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Parser;
 
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use JMS\Serializer\Metadata\PropertyMetadata;
-use Nelmio\ApiDocBundle\DataTypes;
 
 /**
  * Class JmsMetadataParser.
@@ -40,7 +39,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
     /**
      * It's use to handle our super-trouper custom type called "entity"
      * So if it's entity array - then in doc you'll see something like
-     * "array of interger ids (EntityName)".
+     * "array of integer ids (EntityName)".
      * In case it's not an array, but entity - then you'll see text like below:
      * "integer id (EntityName)"
      * Everybody dance now!
@@ -51,60 +50,93 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      */
     protected function processDataType(PropertyMetadata $item)
     {
-        // check for a type inside something that could be treated as an array
-        if ($nestedType = $this->checkIfDpCustomEntity($item)) {
-            $return = [
-                'class'     => $nestedType['name'],
-                'primitive' => true,
-                'inline'    => false,
-            ];
-            $base_name = end(explode('\\', $nestedType['name']));
-            if ($item->type === EntityInterface::SERIALIZER_TYPE) {
-                return $return + [
-                            'normalized' => sprintf('integer id (%s)', $base_name),
-                            'actualType' => DataTypes::COLLECTION,
-                        ];
-            } else {
-                return $return + [
-                            'normalized' => sprintf('array of integer ids (%s)', $base_name),
-                            'actualType' => DataTypes::INTEGER,
-                        ];
+        if ($item->type['name'] === SerializerTypes::TYPE_COLLECTION) {
+            $item->type['name'] = 'array';
+        }
+
+        foreach ($this->getSupportedTypes() as $supported_type) {
+            if (
+                ($nestedType = $this->checkCustom($item, NestedConfiguration::getConfig($supported_type)))
+                && $nestedType instanceof NestedType
+            ) {
+                return $nestedType->composeResponse();
             }
+        }
+
+        return parent::processDataType($item);
+    }
+
+    /**
+     * @param PropertyMetadata    $item
+     * @param NestedConfiguration $config
+     *
+     * @return NestedType|bool
+     */
+    protected function checkCustom(PropertyMetadata $item, NestedConfiguration $config)
+    {
+        $type = $this->sliceDeferred($item->type); // we should just remove deferred wrapper for type
+
+        if ($this->checkArray($type)) {
+            $type        = $this->sliceType($type);
+            $nested_type = $config->getCollectionType();
         } else {
-            return parent::processDataType($item);
+            $type        = $item->type;
+            $nested_type = $config->getType();
+        }
+        try {
+            $inner_type = $this->sliceType($type);
+            if ($type['name'] === $config->getSerializerType()) {
+                return new NestedType($inner_type['name'], $nested_type);
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
     /**
-     * @param PropertyMetadata $item
+     * @param array $type
      *
-     * @return array|bool
+     * @return bool
      */
-    protected function checkIfDpCustomEntity(PropertyMetadata $item)
+    protected function checkArray(array $type)
     {
-        if (isset($item->type['name']) && in_array($item->type['name'], array('array', 'ArrayCollection'))) {
-            if (
-                isset($item->type['params'][0]['name'])
-                && $item->type['params'][0]['name'] === EntityInterface::SERIALIZER_TYPE
-                // OMG!
-                && isset($item->type['params'][0]['params'][0]['name'])
-            ) {
-                $type = $item->type['params'][0]['params'][0];
+        return isset($type['name']) && in_array($type['name'], array('array', 'ArrayCollection'));
+    }
 
-                return $type;
-            }
+    /**
+     * @param $type
+     *
+     * @return mixed
+     */
+    protected function sliceType($type)
+    {
+        return $type['params'][0];
+    }
 
-            return false;
-        } elseif (
-            isset($item->type['name'])
-            && $item->type['name'] === EntityInterface::SERIALIZER_TYPE
-            && isset($item->type['params'][0]['name'])
-        ) {
-            return [
-                'name' => $item->type['params'][0]['name'],
-            ];
+    /**
+     * @return array
+     */
+    protected function getSupportedTypes()
+    {
+        return [
+            SerializerTypes::TYPE_ENTITY,
+            SerializerTypes::TYPE_TO_STRING,
+        ];
+    }
+
+    /**
+     * @param $type
+     *
+     * @return mixed
+     */
+    protected function sliceDeferred($type)
+    {
+        if ($type['name'] === SerializerTypes::TYPE_DEFERRED) {
+            $type = $this->sliceType($type);
         }
 
-        return false;
+        return $type;
     }
 }

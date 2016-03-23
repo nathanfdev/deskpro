@@ -56,6 +56,7 @@ export class TaskCard extends BaseTaskCard {
   render() {
     const { task, moving, selected } = this.props;
     const { onToggleSelected, onChange } = this.props;
+    console.info(task.toJS());
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">

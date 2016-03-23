@@ -307,9 +307,28 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "invalid_email"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "is not a valid email address."
+    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "person_not_found"
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "Person with identifier"
     And the JSON node "errors.fields.cc.errors[0].message" should contain "not_valid_email"
+
+  Scenario: I confused participant fields
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "cc": ["agent@deskpro.dev"],
+  "followers": ["user@deskpro.dev"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "person_not_user"
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "agent@deskpro.dev"
+    And the JSON node "errors.fields.cc.errors[0].message" should contain "is not user"
+    And the JSON node "errors.fields.followers.errors[0].code" should be equal to "person_not_agent"
+    And the JSON node "errors.fields.followers.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.followers.errors[0].message" should contain "user@deskpro.dev"
+    And the JSON node "errors.fields.followers.errors[0].message" should contain "is not agent"
 
   Scenario: I sent not valid data for custom data
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -350,6 +369,20 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_5.errors[0].code" should be equal to "invalid_data_type"
     And the JSON node "errors.fields.fields.fields.fields_5.errors[0].message" should contain "This data type is not is data type that was expected."
+
+  Scenario: I sent not valid date string
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "12": "not_vaild_datetime"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_12.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.fields.fields.fields_12.errors[0].message" should contain "This data type is not is data type that was expected."
 
   Scenario: I sent not valid custom data text
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

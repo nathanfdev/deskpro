@@ -8,6 +8,7 @@ Feature: /ticket_departments endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @basic
   Scenario: I get paginated list of departments
     When I send a GET request to "/api/v2/ticket_departments"
     Then the response should be in JSON

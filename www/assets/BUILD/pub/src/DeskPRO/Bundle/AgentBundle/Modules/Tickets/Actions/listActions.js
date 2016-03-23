@@ -32,9 +32,6 @@ export const applyListParams = createAction(
       delete params.page;
     }
 
-    const { delayReload } = params;
-    // todo?
-    delete params.delayReload;
     dispatch(setListParams(params));
 
     // reload if filter param is set i.e. navigation menu item is selected

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -45,7 +45,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository")
  * @ORM\Table(name="custom_ticket_filters")
- * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyChanged
 {
@@ -56,7 +57,8 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
-     * @Serializer\Expose()
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -65,9 +67,10 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      *
      * @ORM\Column(name="title", type="string")
      *
-     * @Serializer\Expose()
-     *
      * @Assert\NotBlank()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $title;
 
@@ -76,10 +79,10 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      *
      * @ORM\Column(name="term", type="term_engine_term")
      *
-     * @Serializer\Expose()
-     *
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @JMS\Expose()
      */
     protected $term;
 
@@ -87,15 +90,21 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @var int
      *
      * @ORM\Column(name="display_order", type="integer")
-     * @Serializer\Expose()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
-    protected $display_order;
+    protected $display_order = 0;
 
     /**
      * @var TicketFilterSet
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
      * @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet>")
+     * @JMS\SerializedName("ticket_filter_set")
      */
     protected $filter_set;
 
@@ -103,6 +112,9 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @var TicketFilterView[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterView>>")
      */
     protected $filter_views;
 
@@ -110,6 +122,9 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @var TicketFilterPreference[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference>>")
      */
     protected $filter_preferences;
 
@@ -117,7 +132,9 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @var \DateTime
      *
      * @ORM\Column(name="date_created", type="datetime")
-     * @Serializer\Expose()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_created;
 
@@ -125,7 +142,9 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @var \DateTime
      *
      * @ORM\Column(name="date_updated", type="datetime")
-     * @Serializer\Expose()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_updated;
 
@@ -136,10 +155,8 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
     {
         $this->filter_views       = new ArrayCollection();
         $this->filter_preferences = new ArrayCollection();
-
-        $this->setDisplayOrder(0);
-        $this->setDateUpdated($updated = new \DateTime());
-        $this->setDateCreated($updated);
+        $this->date_created       = new \DateTime();
+        $this->date_updated       = new \DateTime();
     }
 
     /**

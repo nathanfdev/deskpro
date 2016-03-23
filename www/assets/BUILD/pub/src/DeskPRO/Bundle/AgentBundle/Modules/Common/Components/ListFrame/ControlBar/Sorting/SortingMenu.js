@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Button } from '../Button';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -13,23 +12,23 @@ export class SortingMenu extends Component {
 
   static propTypes = {
     options: PropTypes.object.isRequired,
-    orderBy: PropTypes.string.isRequired,
-    orderDir: PropTypes.string.isRequired,
-    orderByAction: PropTypes.func.isRequired,
-    orderDirAction: PropTypes.func.isRequired
+    currentParams: PropTypes.object.isRequired,
+    setParam: PropTypes.func.isRequired,
+    onMenuUnmount: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = { expanded: false };
+  componentWillMount() {
+    this.setState({
+      expanded: false
+    });
   }
 
   toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
   collapse = () => this.setState({ expanded: false });
 
   render() {
-    const { orderBy, orderDir, options } = this.props;
-    const current = options[orderBy];
+    const { options, currentParams } = this.props;
+    const current = options[currentParams.order_by];
 
     return (
       <li ref="menuItem">
@@ -38,7 +37,7 @@ export class SortingMenu extends Component {
                 ref="button"
                 title="Order by:"
                 icon={current ? current.icon : null}
-                label={current ? `${current.label} (${orderDir})` : '(no order)'}/>
+                label={current ? `${current.label} (${currentParams.order_dir})` : '(no order)'}/>
 
         <Detached isOpen={this.state.expanded}
                   positionAt="left bottom"
@@ -53,49 +52,42 @@ export class SortingMenu extends Component {
   }
 }
 
-@connect() class OrderByDropdownContainer extends Component {
+class OrderByDropdownContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    setParam: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired,
     options: PropTypes.object.isRequired,
-    orderBy: PropTypes.string.isRequired,
-    orderDir: PropTypes.string.isRequired,
-    onMenuUnmount: PropTypes.func,
-    orderByAction: PropTypes.func.isRequired,
-    orderDirAction: PropTypes.func.isRequired
+    onMenuUnmount: PropTypes.func.isRequired
   };
 
   componentWillUnmount() {
-    const {dispatch, onMenuUnmount} = this.props;
-
-    if (onMenuUnmount) {
-      dispatch(onMenuUnmount());
-    }
+    this.props.onMenuUnmount();
   }
 
   changeOrder(orderDir, e) {
     e.preventDefault();
-    const { dispatch, orderDirAction } = this.props;
-    dispatch(orderDirAction(orderDir));
+    const { setParam } = this.props;
+    setParam({ param: 'order_dir', value: orderDir });
   }
 
   renderOptions() {
-    const { dispatch, orderBy, orderByAction, options } = this.props;
+    const { setParam, options, currentParams } = this.props;
 
     return (
       jQuery.map(options, (option, type) =>
           <Item key={type}
                 label={option.label}
-                isActive={orderBy === type}
-                checked={orderBy === type}
-                onClick={() => dispatch(orderByAction(type))}
+                isActive={currentParams.order_by === type}
+                checked={currentParams.order_by === type}
+                onClick={() => setParam({param: 'order_by', value: type})}
                 icon={option.icon}/>
       )
     );
   }
 
   render() {
-    const { orderDir } = this.props;
+    const { currentParams } = this.props;
     const options = [
       { id: 'asc', onClick: this.changeOrder.bind(this, 'asc'), label: 'Asc' },
       { id: 'desc', onClick: this.changeOrder.bind(this, 'desc'), label: 'Desc' }
@@ -105,7 +97,7 @@ export class SortingMenu extends Component {
       <Menu>
         {this.renderOptions()}
         <MenuFooter>
-          <MenuFooterOptions options={options} active={orderDir}>
+          <MenuFooterOptions options={options} active={currentParams.order_dir}>
             Sort
           </MenuFooterOptions>
         </MenuFooter>

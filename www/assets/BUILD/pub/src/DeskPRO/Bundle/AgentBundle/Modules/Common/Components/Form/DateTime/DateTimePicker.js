@@ -14,13 +14,17 @@ export class DateTimePicker extends React.Component {
     onChange: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
+  componentWillMount() {
+    this.setState({
       isOpen: false,
-      value: props.value
-    };
+      value: this.props.value
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      value: nextProps.value
+    });
   }
 
   onChange = (val) => {

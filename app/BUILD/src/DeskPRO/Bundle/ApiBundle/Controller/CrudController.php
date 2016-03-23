@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
  * Class CrudController.
@@ -55,6 +56,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudController extends BaseController
 {
     public static $entity;
+    public static $output_entity;
     public static $type;
 
     /**
@@ -74,8 +76,11 @@ abstract class CrudController extends BaseController
     public static $listMaxResults = 200;
 
     /**
+     * Get resource with provided id.
+     *
      * @ApiDoc(
      *      description="Get a resource",
+     *      tags={"CRUD"="#ffa500"},
      *      requirements={
      *          {
      *              "name"="id",
@@ -85,9 +90,8 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          403="Denied",
-     *          404="Not Found"
+     *          200="We will return such status in case we wound your entity",
+     *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
      * @Get("/{id}", requirements={"id"="\d+"})
@@ -111,22 +115,20 @@ abstract class CrudController extends BaseController
     /**
      * Entities list.
      *
-     * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided
+     * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided.
+     * Look carefully at filters section to have a great filtering, grouping or sorting power
      *
      * @ApiDoc(
      *      description="Get collection of resources",
-     *      requirements={
-     *          {
-     *              "name"="ids",
-     *              "requirement"="[\d,]+",
-     *              "description"="(Optional) Comma separated list of IDs",
-     *              "dataType"="string"
-     *          }
+     *      tags={"CRUD"="#ffa500"},
+     *      filters={
+     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
+     *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          403="Denied",
-     *          404="Not Found"
+     *          200="Returned if your request was successful",
+     *          400="An error will occur if you provide wrong filters set",
      *      }
      * )
      * @Get("")
@@ -186,12 +188,17 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * You can create new resource. Just provide well formed request.
+     * Look into requirements for details.
+     *
+     * **We will ship resource representation as soon as it will be created.**
+     *
      * @ApiDoc(
      *      description="Create a new resource",
+     *      tags={"CRUD"="#ffa500"},
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
+     *          201="Returned in case of successful resource creation",
+     *          400="We will return this in case your request was malformed",
      *      }
      * )
      * @Post("")
@@ -208,8 +215,12 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * Update the resource with specified ID.
+     * Look carefully in requirements section to form request well.
+     *
      * @ApiDoc(
      *      description="Update an existing resource",
+     *      tags={"CRUD"="#ffa500"},
      *      requirements={
      *          {
      *              "name"="id",
@@ -219,9 +230,8 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
+     *          204="Returned in case of successful resource creation",
+     *          400="We will return this in case your request was malformed",
      *      }
      * )
      * @Put("/{id}", requirements={"id"="\d+"})
@@ -235,12 +245,16 @@ abstract class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm($entity = $this->findEntity($id, $request), $request);
+        return $this->handleForm($this->findEntity($id, $request), $request);
     }
 
     /**
+     * Obviously it's an ability to erase what you've done.
+     * Be careful there is no CTRL+Z shortcut.
+     *
      * @ApiDoc(
      *      description="Delete a resource",
+     *      tags={"CRUD"="#ffa500"},
      *      requirements={
      *          {
      *              "name"="id",
@@ -250,9 +264,8 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
+     *          200="Returned if everything is ok and there is no such resource anymore",
+     *          404="Well, looks like either resource already deleted either it doesn't exists at all"
      *      }
      * )
      * @Delete("/{id}", requirements={"id"="\d+"})
@@ -420,7 +433,7 @@ abstract class CrudController extends BaseController
         $action = TypeUtils::cleanAction($actionMethodName);
 
         if (!in_array($action, static::$exposeOnly)) {
-            throw $this->createAccessDeniedException('Action is restricted');
+            throw new MethodNotAllowedHttpException(static::$exposeOnly, sprintf('Action [ %s ] is not allowed', strtoupper($action)));
         }
     }
 }

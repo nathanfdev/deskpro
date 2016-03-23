@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,12 +85,13 @@ class SchemaGenerator implements SchemaInterface
 
     /**
      * @param string $path
+     * @param bool   $is_master_schema Master schema contains non-entity SQL
      *
      * @throws string
      */
-    public function dumpToFile($path)
+    public function dumpToFile($path, $is_master_schema = false)
     {
-        $this->load();
+        $this->load($is_master_schema);
 
         $write_content = $this->php_file;
 
@@ -126,8 +127,12 @@ class SchemaGenerator implements SchemaInterface
 
     /**
      * Loads the schema.
+     *
+     * @param bool $is_master_schema Master schema contains non-entity SQL
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    private function load()
+    private function load($is_master_schema = false)
     {
         if ($this->creates !== null) {
             return;
@@ -151,7 +156,8 @@ class SchemaGenerator implements SchemaInterface
         # Non-entity tables
         #------------------------------
 
-        $all_sql[] = <<<SQL
+        if ($is_master_schema) {
+            $all_sql[] = <<<SQL
 CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
@@ -160,6 +166,7 @@ CREATE TABLE `content_search` (
   FULLTEXT KEY `content` (`content`)
 ) ENGINE=MyISAM
 SQL;
+        }
 
         #------------------------------
         # Organise it

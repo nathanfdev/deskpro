@@ -114,38 +114,30 @@ export const updateDisplayFieldsToPersonSetting = createAction(
 
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
-  (overwrite = {}) => (dispatch, getState) => {
-    const current = currentListParamsSelector(getState()).toJS();
-    if (overwrite.hasOwnProperty('navItem')) {
+  (params = {}) => (dispatch, getState) => {
+    if (params.hasOwnProperty('navItem')) {
       const typesOfStatus = ['status', 'status_category', 'hidden_status'];
       typesOfStatus.forEach((type)=> {
-        if (overwrite.navItem.hasOwnProperty(type)) {
+        if (params.navItem.hasOwnProperty(type)) {
           typesOfStatus.splice(typesOfStatus.indexOf(type), 1);
-          typesOfStatus.forEach((item) => delete current[item]);
+          typesOfStatus.forEach((item) => delete params[item]);
         }
       });
     }
-    console.log('OverWrite', overwrite);
-    const params = { ...current, ...overwrite };
-    const { delayReload } = params;
-    if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
-      delete params.page;
-    }
-    delete params.delayReload;
-    dispatch(setParams(params));
-    if (params.navItem && !delayReload) {
-      dispatch(loadList(params));
-    }
+    const current = currentListParamsSelector(getState()).toJS();
+    const newParams = { ...current, ...params };
+    dispatch(setParams(newParams));
+    dispatch(loadList(newParams));
   }
 );
 
 export const setOrderBy = createAction(
   'FEEDBACK_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy, delayReload: true }))
+    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy }))
 );
 export const setOrderDir = createAction(
   'FEEDBACK_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir, delayReload: true }))
+    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir }))
 );
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');

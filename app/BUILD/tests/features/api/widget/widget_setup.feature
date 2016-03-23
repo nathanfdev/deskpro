@@ -23,6 +23,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button" should exist
     And the JSON node "data.settings.brand.chat" should exist
 
+  @basic
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
@@ -58,6 +59,7 @@ Feature: Widget Setup
     }
     """
     Then the response status code should be 204
+    And the response should be empty
 
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON

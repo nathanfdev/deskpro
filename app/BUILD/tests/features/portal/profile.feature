@@ -1,3 +1,4 @@
+@basic
 Feature: User Profile
   To manage my account
   As a user
@@ -11,7 +12,6 @@ Feature: User Profile
     When I go to "/profile"
     Then I should be on "/login"
 
-  @basic
   Scenario: I visit my profile page
     Given I am authenticated as user
     When I go to "/profile"

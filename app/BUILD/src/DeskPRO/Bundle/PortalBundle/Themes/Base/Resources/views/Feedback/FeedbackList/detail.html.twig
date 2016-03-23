@@ -8,11 +8,6 @@
         <span class="counter">{{ item.total_rating }}</span>
       </span>
     </a>
-    {# fav/stars feature not supported yet #}
-    {#<a href="#" class="star">#}
-      {#<i class="fa fa-star-o"></i>#}
-      {#<div>2</div>#}
-      {#</a>#}
     </div>
 
     <div class="feedback-item-content">
@@ -37,18 +32,6 @@
       <div class="comment">
         <p>{{ item.content_html|raw|slice(0,350) ~ '...' }}</p>
       </div>
-
-      <div class="response">
-        <div class="response-meta">
-
-          <div class="avatar" style="background-image: url(https://secure.gravatar.com/avatar/79cfcfdf770db09a40fca15bb845fef1?&amp;s=80);"></div>
-          Response by: <span>Chris Padfield</span>
-        </div>
-        <div class="response-content">
-          <p>These suggestions have been submitted by customers like you; we encourage you to discuss and vote lorel ipsum dolor. Lorel ipsum some more text to have a third line.</p>
-        </div>
-      </div>
-
 
       <div class="article-meta">
         {{ phrase('portal.general.by_2') }}

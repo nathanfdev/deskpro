@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,13 +41,14 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -114,7 +115,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime                           $date_password_set
  * @property \DateTime                           $date_picture_check
  * @property string                              $browser
- * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
     EquatableInterface, Chatable, LabelsOwner
@@ -132,7 +134,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The unique ID.
      *
      * @var int
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -140,7 +141,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The users profile picture.
      *
      * @var \Application\DeskPRO\Entity\Blob
-     * @Serializer\Expose()
      */
     protected $picture_blob = null;
 
@@ -173,31 +173,44 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $is_user = false;
 
     /**
+     * It his person is an agent?
+     *
      * @var bool
      */
     protected $is_agent = 0;
 
     /**
+     * Is this person was an agent?
+     *
      * @var bool
      */
     protected $was_agent = 0;
 
     /**
+     * Can this person use agent interface?
+     *
      * @var bool
      */
     protected $can_agent = 0;
 
     /**
+     * Can this person use admin interface?
+     *
      * @var bool
      */
     protected $can_admin = 0;
 
     /**
+     * Can this person use billing interface?
+     *
      * @var bool
      */
     protected $can_billing = 0;
 
     /**
+     * Can this person use reports interface?
+     *
+     *
      * @var bool
      */
     protected $can_reports = 0;
@@ -215,11 +228,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $disable_autoresponses = 0;
 
     /**
+     * Autoresponses log.
+     *
      * @var string
      */
     protected $disable_autoresponses_log = '';
 
     /**
+     * Does person confirmed they email?
+     *
      * @var bool
      */
     protected $is_confirmed = false;
@@ -246,6 +263,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $importance = 0;
 
     /**
+     * The way person was created.
+     *
      * @var string
      */
     protected $creation_system = 'web.person';
@@ -254,7 +273,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      * The users name (best guess from other sources etc).
      *
      * @var string
-     * @Serializer\Expose()
      *
      * @Assert\NotBlank()
      */
@@ -390,6 +408,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $contact_data;
 
@@ -500,7 +520,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     protected $_updated_org = false;
 
-    /** @var string */
+    /**
+     * The browser person was used last time.
+     *
+     * @var string
+     */
     protected $browser;
 
     /**
@@ -527,7 +551,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var TaskAssignment[]|ArrayCollection
-     * @Serializer\Expose()
      */
     protected $assigned_tasks;
 
@@ -1659,7 +1682,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             return $this->contact_data;
         }
 
-        $ret = array();
+        $ret = [];
 
         foreach ($this->contact_data as $cd) {
             if ($cd->contact_type == $type) {
@@ -2031,6 +2054,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->emails;
     }
 
+    /**
+     * @param PersonEmail $email
+     *
+     * @return $this
+     */
     public function addEmail(PersonEmail $email)
     {
         if (!$this->primary_email) {
@@ -2040,6 +2068,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->emails->add($email);
         $email->setPerson($this);
         $this->_onPropertyChanged('emails', null, $this->emails);
+
+        return $this;
     }
 
     /**
@@ -3413,6 +3443,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Get person`s phones.
+     *
      * @return array
      */
     public function getPhoneNumbersArray()
@@ -3430,6 +3462,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Count of tickets person was assigned.
+     *
      * @return int
      */
     public function getTicketsCount()
@@ -3438,11 +3472,26 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * Count of tickets person participating.
+     *
      * @return int
      */
     public function getChatsCount()
     {
         return $this->chats->count();
+    }
+
+    /**
+     * List of person emails.
+     *
+     * @return array
+     */
+    public function getEmailsArray()
+    {
+        return ListUtils::filterMap($this->getEmails(), function ($email) {
+            /* @var \Application\DeskPRO\Entity\PersonEmail $email */
+            return $email->getEmail();
+        });
     }
 
     ############################################################################

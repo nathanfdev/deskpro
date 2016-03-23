@@ -10,15 +10,15 @@ Feature: Api should log any request
   Scenario: I send some request to API
     When I send a GET request to "/api/v2/notify/heartbeat"
     Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node data should exist
+    And the response status code should be 202
+    And the response should be empty
     And the header "X-DeskPRO-Request-ID" should match "#\d+-[a-zA-Z0-9]{30}#"
     And api log should appear in table
 
   Scenario: I send some request to API and provide an client request id with
     Given I add "X-DeskPRO-Client-Request-ID" header equal to "de_dupe_header"
     When I send a GET request to "/api/v2/notify/heartbeat"
-    Then the response status code should be 200
+    Then the response status code should be 202
     And the response should be in JSON
     And the header "X-DeskPRO-Request-ID" should be equal to "de_dupe_header-c"
     And api log with "de_dupe_header-c" id should appear in table
@@ -34,7 +34,7 @@ Feature: Api should log any request
     Examples:
       | dup_mode | fail_mode | status |
       | fail     | skip       | 409   |
-      | resend   | skip       | 200   |
+      | resend   | skip       | 202   |
 
   Scenario Outline: I send some request to API and provide duplicate client request id.
     Request is failed. Checking different modes.
@@ -46,9 +46,9 @@ Feature: Api should log any request
 
     Examples:
       | dup_mode | fail_mode | status |
-      | fail     | skip       | 400    |
-      | fail     | save       | 400    |
-      | fail    | skip       | 409     |
+      | fail     | skip       | 400   |
+      | fail     | save       | 400   |
+      | fail     | skip       | 409   |
       | resend   | skip       | 400   |
 
   Scenario Outline: I send some request to API and previous request was sent with eager mode, and still in progress.
@@ -60,7 +60,7 @@ Feature: Api should log any request
     And the header "X-DeskPRO-Request-ID" should be equal to <gen_id>
 
     Examples:
-      | dup_mode | fail_mode | status |           id             |             gen_id            |
+      | dup_mode | fail_mode | status |           id             |             gen_id         |
       | fail     | skip       | 423     | de_dupe_header_eager1  | "de_dupe_header_eager1-c"  |
       | fail     | save       | 423     | de_dupe_header_eager2  | "de_dupe_header_eager2-c"  |
       | resend   | skip       | 423     | de_dupe_header_eager3  | "de_dupe_header_eager3-c"  |

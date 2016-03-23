@@ -210,7 +210,7 @@
                                         </option>
                                     </select>
                                     <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
+                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
@@ -219,6 +219,11 @@
                             <li>
                                 <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
                                 <label>User Selects Department</label>
+                            </li>
+                        </ul>
+                        <ul class="errors">
+                            <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
+                                {{ ng_var('error.message') }}
                             </li>
                         </ul>
                         <ul class="errors">

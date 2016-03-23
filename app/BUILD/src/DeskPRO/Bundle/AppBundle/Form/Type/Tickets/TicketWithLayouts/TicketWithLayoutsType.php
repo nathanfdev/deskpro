@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,16 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
@@ -53,7 +55,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -91,6 +92,11 @@ class TicketWithLayoutsType extends AbstractType
      * @var TicketLayoutHelper
      */
     private $ticket_layout_helper;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     /**
      * Constructor.
@@ -143,12 +149,13 @@ class TicketWithLayoutsType extends AbstractType
             ->setDefaults([
                 'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
                 'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
-                'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
+                'data_class'          => Ticket::class,
                 'method'              => 'POST',
                 'allow_extra_fields'  => false,
                 'full_version'        => false,
                 'use_captcha'         => true,
                 'for_api'             => false,
+                'department_id'       => null,
             ])
             ->setRequired([
                 'person',
@@ -162,8 +169,9 @@ class TicketWithLayoutsType extends AbstractType
                 ],
             ])
             ->setAllowedTypes([
-                'person'   => 'Application\\DeskPRO\\Entity\\Person',
-                'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
+                'person'        => Person::class,
+                'settings'      => SettingsBag::class,
+                'department_id' => ['null', 'integer'],
             ])
         ;
     }
@@ -191,31 +199,36 @@ class TicketWithLayoutsType extends AbstractType
      */
     public function onPreData(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket = $event->getData();
+        /** @var \Application\DeskPRO\Entity\Ticket $data */
+        $data   = $event->getData();
         $form   = $event->getForm();
         $config = $form->getConfig();
+
         $person = $config->getOption('person');
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($data->getDepartment() ?: null);
 
         // Setting ticket person if not defined
-        if (!$ticket->getPerson()) {
-            $ticket->setPerson($config->getOption('person'));
+        if (!$data->getPerson()) {
+            $data->setPerson($config->getOption('person'));
         }
 
         if ($config->getOption('full_version')) {
             $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
         }
 
-        $context = $this->createTicketFormContext($form, $ticket, new TicketLayout());
+        $context = new TicketWithLayoutsContext($form, $data, new TicketLayout());
         $context->setNewLayout($layout);
 
         // if there is only one department we want to make sure to set it now...
         $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
 
         // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
-        if (!$ticket->getDepartment() && $hierarchy->countSelectable() == 1) {
-            $ticket->setDepartment($hierarchy->getFirstSelectable());
+        if (!$data->getDepartment()) {
+            if ($hierarchy->countSelectable() === 1) {
+                $data->setDepartment($hierarchy->getFirstSelectable());
+            } elseif ($context->getOption('department_id')) {
+                $data->setDepartment($this->em->getRepository(Department::class)->find($context->getOption('department_id')));
+            }
         }
 
         $this->manipulateForm($context);
@@ -242,7 +255,7 @@ class TicketWithLayoutsType extends AbstractType
 
         // calculate the initial layout of the form (before any form submissions took place)
         $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
-        $context = $this->createTicketFormContext($form, $ticket, $layout);
+        $context = new TicketWithLayoutsContext($form, $ticket, $layout);
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($data[FormFields::DEPARTMENT])) {
@@ -292,6 +305,7 @@ class TicketWithLayoutsType extends AbstractType
         $extracted_data      = $this->ticket_layout_helper->getTicketDataIds($data, $context);
         $had_previous_layout = count($context->getPreviouslyActiveLayout()->all()) > 0;
         $has_not_submitted   = false;
+        $displayed_fields    = isset($data['displayed_fields']) ? array_flip(explode(',', $data['displayed_fields'])) : [];
 
         $changes = $this->ticket_layout_helper->getLayoutChanges($context, $extracted_data);
 
@@ -327,7 +341,7 @@ class TicketWithLayoutsType extends AbstractType
                 }
 
                 // check if there was submitted data for this field
-                if (!array_key_exists($field->getId(), $data)) {
+                if (!array_key_exists($field->getId(), $data) && !isset($displayed_fields[$field->getId()])) {
                     $has_not_submitted = true;
                 }
             }
@@ -348,12 +362,18 @@ class TicketWithLayoutsType extends AbstractType
             foreach ($custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
                     $form->add($form_field_name, 'deskpro_combined_type', [
-                        'forms'          => $custom_field_groups[ $field_type ],
+                        'forms'          => $custom_field_groups[$field_type],
                         'error_bubbling' => false,
                     ]);
                 }
             }
         } else {
+            if (!$form->has('displayed_fields')) {
+                $form->add('displayed_fields', 'hidden', [
+                    'mapped' => false,
+                ]);
+            }
+
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
             if ($had_previous_layout && $has_not_submitted && count($changes->getFieldsRequiringRerender()) > 0 && count($data) > 0) {
                 if (!$form->has('rerender_form')) {
@@ -444,6 +464,8 @@ class TicketWithLayoutsType extends AbstractType
                 return $this->createCaptcha($context, $ignore_validation);
             case FormFields::CC:
                 return $this->createCc($context);
+            case FormFields::FOLLOWERS:
+                return $this->createFollowers($context);
             case FormFields::ATTACHMENTS:
                 return $this->createAttach($context);
             case FormFields::USER_EMAIL:
@@ -557,7 +579,7 @@ class TicketWithLayoutsType extends AbstractType
                 'label_name'       => $this->phrase('portal.forms.label_name'),
                 'label_email'      => $this->phrase('portal.forms.label_email'),
                 'available_fields' => ['id', 'email', 'name'],
-                'error_bubbling'   => false,
+                'allow_create'     => true,
             ]);
         } else {
             return new FormField('deskpro_combined_type', [
@@ -931,12 +953,30 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCc(TicketWithLayoutsContext $context)
     {
-        return new FormField('deskpro_cc', [
-            'label'     => $this->phrase('portal.forms.label_cc'),
-            'ticket'    => $context->getTicket(),
-            'mapped'    => false,
-            'required'  => false,
-            'view_type' => $context->forApi() ? 'array' : 'inline',
+        return new FormField('ticket_participants', [
+            'label'         => $this->phrase('portal.forms.label_cc'),
+            'owner'         => $context->getTicket(),
+            'is_agent'      => false,
+            'property_path' => 'participants',
+            'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
+        ]);
+    }
+
+    /**
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return FormField
+     */
+    private function createFollowers(TicketWithLayoutsContext $context)
+    {
+        return new FormField('ticket_participants', [
+            'label'         => $this->phrase('portal.forms.label_followers'),
+            'owner'         => $context->getTicket(),
+            'is_agent'      => true,
+            'property_path' => 'participants',
+            'required'      => false,
+            'view_type'     => $context->forApi() ? 'array' : 'inline',
         ]);
     }
 
@@ -973,18 +1013,6 @@ class TicketWithLayoutsType extends AbstractType
         $context->getForm()->add('submit', 'submit', [
             'label' => $label,
         ]);
-    }
-
-    /**
-     * @param FormInterface $form
-     * @param Ticket        $ticket
-     * @param TicketLayout  $initial_layout
-     *
-     * @return TicketWithLayoutsContext
-     */
-    private function createTicketFormContext(FormInterface $form, Ticket $ticket, TicketLayout $initial_layout)
-    {
-        return new TicketWithLayoutsContext($form, $ticket, $initial_layout);
     }
 
     /**

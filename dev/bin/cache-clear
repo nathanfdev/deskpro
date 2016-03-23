@@ -1,19 +1,5 @@
 #!/bin/bash
 
-environments[0]="dev"
-environments[1]="test"
-
-function __in_array {
-    local haystack=${1}
-    local needle=${2}
-    for i in ${haystack}; do
-        if [[ ${i} == ${needle} ]]; then
-            return 0
-        fi
-    done
-    return 1
-}
-
 function __fail {
     local EXIT_STATUS=${1}||1
     echo "
@@ -52,7 +38,15 @@ do
     esac
 done
 
-__in_array ${environments} ${ENV} || __fail
+case ${ENV} in
+    'test')
+        ;;
+    'dev')
+        ;;
+    *)
+        __fail
+        ;;
+esac
 
 cd $SCRIPT_DIR
 
@@ -60,6 +54,10 @@ cd $SCRIPT_DIR
         'api_permissions' | 'jms_serializer' | 'api_limits')
             echo "clearing $MODE cache in $ENV environment"
             rm -rf ../../var/kernel_cache/BUILD/$ENV/api_permissions/*
+            ;;
+        'api_doc')
+            echo "clearing api_docs cache in $ENV environment"
+            rm -rf ../../var/kernel_cache/BUILD/$ENV/api-doc.cache.*
             ;;
         'all')
             echo "clearing all caches in $ENV environment"

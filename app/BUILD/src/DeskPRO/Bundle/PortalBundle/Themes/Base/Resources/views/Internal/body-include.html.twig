@@ -12,9 +12,15 @@
         ;
 
         if (window.WITH_DPUI) {
-            document.body.className = document.body.className + ' with-dpui';
+            document.body.className += ' with-dpui';
         } else {
-            document.body.className = document.body.className + ' without-dpui';
+            document.body.className += ' without-dpui';
+        }
+
+        if ("ontouchstart" in document.documentElement) {
+            document.body.className += ' with-touch-device';
+        } else {
+            document.body.className += ' without-touch-device';
         }
 
         window.DP_LOAD_FN = [];
@@ -45,10 +51,11 @@
     })();
 </script>
 <script type="text/javascript" src="{{ url('portal_api_lang_widget_phrases', {_format: 'js'}) }}"></script>
+<script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
+<script type="text/javascript" src="{{ asset('iframeResizer_contentWindow.js', 'app_assets') }}" async="async"></script>
 
 {% if portal_mode() != 'focus-window' %}
     {% if is_portal_widget_enabled() %}
-        <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}" async="async"></script>
         {% if app.environment == 'prod' %}
             <script type="text/javascript">
                 {{ minified_widget_loader(root_url(), asset('DeskPRO_WidgetBundle.js', 'app_assets')) | raw  }}

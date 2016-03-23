@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,13 +32,13 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
-use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\TicketFieldsFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -62,7 +62,6 @@ use Orb\Types\JsonObjectSerializer;
  */
 class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    private static $cnt     = 1;
     private static $ref_cnt = 1;
 
     /**
@@ -79,38 +78,6 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
      * @var int[]
      */
     private $agent_teams;
-
-    /**
-     * @var int[]
-     */
-    private $usergroups;
-
-    /**
-     * @var \Application\DeskPRO\Entity\Department[]
-     */
-    private $all_departments;
-
-    /**#@+
-     * @var \Application\DeskPRO\Entity\Department
-     */
-    private $dep1;
-    private $dep2;
-    private $dep2_a;
-    private $dep2_b;
-    private $dep3;
-    /**#@-*/
-
-    /**
-     * @var \Application\DeskPRO\Entity\CustomDefTicket[]
-     */
-    private $fields;
-
-    /**
-     * Array of depId => field.
-     *
-     * @var \Application\DeskPRO\Entity\CustomDefTicket[][]
-     */
-    private $dep_to_fields;
 
     /**
      * @var RandomFileFromDir
@@ -148,7 +115,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
      */
     public function getOrder()
     {
-        return 60;
+        return 70;
     }
 
     /**
@@ -159,12 +126,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->manager = $manager;
         $this->em      = $this->container->get('doctrine.orm.entity_manager');
 
-        $this->ava_files  = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
-        $this->usergroups = $this->fetchIds(self::TABLE_USERGROUPS);
+        $this->ava_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
 
         $this->initRecords();
-        $this->initDeps();
-        $this->initFields();
         $this->initLayouts();
         $this->initContent();
     }
@@ -176,161 +140,19 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->agent_teams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
     }
 
-    ####################################################################################################################
-    # Setup deps and fields
-    ####################################################################################################################
-
-    protected function initDeps()
-    {
-        $this->dep1                     = new Department();
-        $this->dep1->is_tickets_enabled = true;
-        $this->dep1->title              = 'Widgets';
-        $this->dep1->display_order      = self::$cnt++;
-        $this->all_departments[]        = $this->dep1;
-
-        $this->dep2                     = new Department();
-        $this->dep2->is_tickets_enabled = true;
-        $this->dep2->title              = 'Regulation and Control of Magical Creatures';
-        $this->dep2->display_order      = self::$cnt++;
-        $this->all_departments[]        = $this->dep2;
-
-        $this->dep2_a                     = new Department();
-        $this->dep2_a->is_tickets_enabled = true;
-        $this->dep2_a->title              = 'Regulation';
-        $this->dep2_a->parent             = $this->dep2;
-        $this->dep2_a->display_order      = self::$cnt++;
-        $this->all_departments[]          = $this->dep2_a;
-
-        $this->dep2_b                     = new Department();
-        $this->dep2_b->is_tickets_enabled = true;
-        $this->dep2_b->title              = 'Control';
-        $this->dep2_b->parent             = $this->dep2;
-        $this->dep2_b->display_order      = self::$cnt++;
-        $this->all_departments[]          = $this->dep2_b;
-
-        $this->dep3                     = new Department();
-        $this->dep3->is_tickets_enabled = true;
-        $this->dep3->title              = 'Hotdogs';
-        $this->dep3->display_order      = self::$cnt++;
-        $this->all_departments[]        = $this->dep3;
-
-        foreach ($this->all_departments as $d) {
-            $this->em->persist($d);
-        }
-        $this->em->flush();
-
-        // Perms
-        $perms = [];
-        foreach ($this->all_departments as $d) {
-            $perms[] = [
-                'department_id' => $d->getId(),
-                'usergroup_id'  => $this->usergroups[0], // everyone
-                'app'           => 'tickets',
-                'name'          => 'full',
-                'value'         => 1,
-            ];
-        }
-
-        $this->db->batchInsert('department_permissions', $perms, true);
-    }
-
-    private function initFields()
-    {
-        $this->fields        = [];
-        $this->dep_to_fields = [];
-
-        #------------------------------
-        # Default
-        #------------------------------
-
-        $depId                       = 0;
-        $this->dep_to_fields[$depId] = [];
-
-        $f = $this->createField(
-            'select',
-            'Flumdiggler',
-            ['Agree', 'Disagree', 'I\'d rather not say']
-        );
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        #------------------------------
-        # Widgets
-        #------------------------------
-
-        $depId                       = $this->dep1->getId();
-        $this->dep_to_fields[$depId] = [];
-
-        $f                             = $this->createField('text', 'Widget Type');
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        $f                             = $this->createField('textarea', 'Widget Description');
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        $f                             = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        $f                             = $this->createField('date', 'Manufacture Date');
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        #------------------------------
-        # Regulation and Control of Magical Creatures [both]
-        #------------------------------
-
-        $depIda                       = $this->dep2_a->getId();
-        $depIdb                       = $this->dep2_b->getId();
-        $this->dep_to_fields[$depIda] = [];
-        $this->dep_to_fields[$depIdb] = [];
-
-        $f = $this->createField(
-            'radio',
-            'Reason for Complaint',
-            ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']
-        );
-        $this->fields[]                 = $f;
-        $this->dep_to_fields[$depIda][] = $f;
-        $this->dep_to_fields[$depIdb][] = $f;
-
-        $f = $this->createField(
-            'multiselect',
-            'Suggested Actions',
-            ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']
-        );
-        $this->fields[]                 = $f;
-        $this->dep_to_fields[$depIda][] = $f;
-        $this->dep_to_fields[$depIdb][] = $f;
-
-        #------------------------------
-        # Hotdogs
-        #------------------------------
-
-        $depId                       = $this->dep3->getId();
-        $this->dep_to_fields[$depId] = [];
-
-        $f = $this->createField(
-            'select',
-            'Hotdog Kind',
-            [
-                'Normal',
-                ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
-                'Large',
-            ]
-        );
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-
-        $f                             = $this->createField('datetime', 'Delivery Time');
-        $this->fields[]                = $f;
-        $this->dep_to_fields[$depId][] = $f;
-    }
-
     protected function initLayouts()
     {
-        foreach ($this->dep_to_fields as $depId => $fields) {
+        $refs = [
+            'widgets',
+            'regulation',
+            'control',
+            'hotdogs',
+        ];
+
+        foreach ($refs as $ref) {
+            $department = $this->getReference('department.'.$ref);
+            $fields     = TicketFieldsFixture::$fields[$ref];
+
             $layout = new Layout();
             $layout->add(new LayoutField('person'));
             $layout->add(new LayoutField('department'));
@@ -347,7 +169,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
             $enc = JsonObjectSerializer::serialize($layout);
 
             $insert_layout = [
-                'department_id' => $depId ?: null,
+                'department_id' => $department->getId() ?: null,
                 'is_enabled'    => 1,
                 'user_layout'   => $enc,
                 'agent_layout'  => $enc,
@@ -391,7 +213,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $person->setPassword('password');
 
         $ava_file = $this->ava_files->next();
-        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromString(
+        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
             $ava_file->getRealPath(),
             $ava_file->getFilename(),
             ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
@@ -401,18 +223,20 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->makeTicket($person, $this->dep1, 'resolved');
-        $this->makeTicket($person, $this->dep1, 'awaiting_agent');
+        $this->makeTicket($person, 'widgets', 'resolved');
+        $this->makeTicket($person, 'widgets', 'awaiting_agent');
 
-        $this->makeTicket($person, $this->dep2_a, 'awaiting_user');
-        $this->makeTicket($person, $this->dep2_b, 'resolved');
+        $this->makeTicket($person, 'regulation', 'awaiting_user');
+        $this->makeTicket($person, 'control', 'resolved');
 
-        $this->makeTicket($person, $this->dep3, 'awaiting_agent');
-        $this->makeTicket($person, $this->dep3, 'awaiting_user');
+        $this->makeTicket($person, 'hotdogs', 'awaiting_agent');
+        $this->makeTicket($person, 'hotdogs', 'awaiting_user');
     }
 
-    private function makeTicket(Person $person, Department $dep, $status)
+    private function makeTicket(Person $person, $department_ref, $status)
     {
+        $department = $this->getReference('department.'.$department_ref);
+
         #------------------------------
         # Ticket
         #------------------------------
@@ -422,7 +246,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
         $ticket->person               = $person;
-        $ticket->department           = $dep;
+        $ticket->department           = $department;
         $ticket->ref                  = 'DEMO-'.self::$ref_cnt++;
         $ticket->agent                = $this->faker->randomElement($this->agents);
         $ticket->agent_team           = $this->faker->randomElement($this->agent_teams);
@@ -471,7 +295,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
 
             $is_note = ($as_agent && $this->faker->boolean(10));
 
-            $batch[] = array(
+            $batch[] = [
                 'ticket_id'    => $ticket->getId(),
                 'person_id'    => $author->getId(),
                 'date_created' => date(
@@ -485,7 +309,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
                 'geo_country'     => $this->faker->countryCode,
                 'message_hash'    => sha1(uniqid('', true)),
                 'message'         => $text,
-            );
+            ];
         }
 
         $this->db->batchInsert('tickets_messages', $batch, true);
@@ -495,7 +319,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         #------------------------------
 
         /** @var CustomDefTicket[] $fields */
-        $fields = array_merge($this->dep_to_fields[0], $this->dep_to_fields[$dep->getId()]);
+        $fields = TicketFieldsFixture::$fields[$department_ref];
 
         $batch = [];
         foreach ($fields as $f) {
@@ -541,116 +365,5 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         if ($batch) {
             $this->db->batchInsert(self::TABLE_CUSTOM_DATA_TICKET, $batch, true);
         }
-    }
-
-    ####################################################################################################################
-
-    /**
-     * @param string     $type
-     * @param string     $title
-     * @param array|null $choices
-     *
-     * @return CustomDefTicket
-     */
-    private function createField($type, $title, array $choices = null)
-    {
-        $handlers = 'Application\DeskPRO\CustomFields\Handler\\';
-        $options  = [];
-        switch ($type) {
-            case 'text':
-                $handler_class = $handlers.'Text';
-                break;
-            case 'textarea':
-                $handler_class = $handlers.'Textarea';
-                break;
-            case 'date':
-                $handler_class = $handlers.'Date';
-                break;
-            case 'datetime':
-                $handler_class = $handlers.'DateTime';
-                break;
-            case 'select':
-                $handler_class = $handlers.'Choice';
-                break;
-            case 'multiselect':
-                $handler_class       = $handlers.'Choice';
-                $options['multiple'] = true;
-                break;
-            case 'checkbox':
-                $handler_class       = $handlers.'Choice';
-                $options['multiple'] = true;
-                $options['expanded'] = true;
-                break;
-            case 'radio':
-                $handler_class       = $handlers.'Choice';
-                $options['multiple'] = false;
-                $options['expanded'] = true;
-                break;
-            default:
-                throw new \InvalidArgumentException();
-        }
-
-        $f                  = new CustomDefTicket();
-        $f->title           = $title;
-        $f->description     = 'A custom '.$f->getWidgetType().' field';
-        $f->handler_class   = $handler_class;
-        $f->options         = $options;
-        $f->is_user_enabled = true;
-        $f->is_enabled      = true;
-        $f->display_order   = self::$cnt++;
-
-        $this->em->persist($f);
-        $this->em->flush();
-
-        if ($handler_class === $handlers.'Choice' && $choices) {
-            foreach ($choices as $c) {
-                $this->_createSubOptions($f, null, $c);
-            }
-        }
-
-        return $f;
-    }
-
-    /**
-     * @param CustomDefTicket      $parent
-     * @param CustomDefTicket|null $parent_opt
-     * @param array|string         $desc
-     *
-     * @return CustomDefTicket
-     */
-    private function _createSubOptions(CustomDefTicket $parent, CustomDefTicket $parent_opt = null, $desc)
-    {
-        if (is_array($desc)) {
-            $title  = $desc[0];
-            $others = $desc[1];
-        } else {
-            $title  = $desc;
-            $others = array();
-        }
-
-        $opt_f                  = new CustomDefTicket();
-        $opt_f->parent          = $parent;
-        $opt_f->title           = $title;
-        $opt_f->description     = '';
-        $opt_f->is_user_enabled = true;
-        $opt_f->is_enabled      = true;
-        $opt_f->display_order   = self::$cnt++;
-
-        if ($parent_opt) {
-            $opt_f->setOption('parent_id', $parent_opt->getId());
-        }
-
-        $parent->addChild($opt_f);
-
-        $this->em->persist($opt_f);
-        $this->em->flush();
-
-        if ($others) {
-            foreach ($others as $sub_title) {
-                $this->_createSubOptions($parent, $opt_f, $sub_title);
-            }
-        }
-
-        return $opt_f;
     }
 }

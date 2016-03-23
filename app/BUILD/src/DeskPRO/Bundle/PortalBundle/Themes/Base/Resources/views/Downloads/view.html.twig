@@ -25,18 +25,14 @@
             </div>
         </header>
 
-        <div class="article-extras">
-            <a href="{{ portal_path(file, 'save') }}" id="file-download-link">
-                {% if file.blob and file.blob.is_image %}
-                    <img style="max-width: 100%;"
-                         src="{{ portal_path(file, 'serve') }}"
-                         alt="{{ file.title }}"/><br>
-                {% elseif file.blob %}
-                    {{ content_icon(file) }}
-                {% endif %}
-                {% if file.blob %}[{{ file.blob.content_type }}]{% endif %}
-                {{ phrase('portal.downloads.btn-download', { size: file.readableFileSize }) }}
-            </a>
+        <div class="article-extras as-top">
+            {% if file.blob and file.blob.is_image %}
+                <a href="{{ portal_path(file, 'save') }}" id="file-download-link"><img style="max-width: 100%; max-height: 400px;" src="{{ portal_path(file, 'serve') }}" alt="{{ file.title }}"/></a><br>
+            {% elseif file.blob %}
+                {{ content_icon(file) }}
+                <a href="{{ portal_path(file, 'save') }}" id="file-download-link">{{ file.filename }}</a>
+                ({{ file.readableFileSize }})
+            {% endif %}
         </div>
 
         <div class="article-content padded">

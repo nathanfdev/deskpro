@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,42 +29,45 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class OrganizationsController.
+ * Class AgentAlertsController.
  *
+ * @ApiDocSection("Notifications and alerts")
  * @ApiModes("all")
- * @Route("/me/notifications")
+ * @Annotations\Route("/me/notifications")
  */
 class AgentAlertsController extends CrudController
 {
-    public static $entity    = AgentAlert::class;
-    public static $listSort  = 'date_created';
-    public static $listOrder = 'desc';
+    public static $entity        = AgentAlert::class;
+    public static $output_entity = AgentAlert::class;
+    public static $listSort      = 'date_created';
+    public static $listOrder     = 'desc';
 
     /**
+     * Dismiss alerts with given ids array.
+     *
      * @ApiDoc(
-     *      description="Dismiss set of alerts",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
-     *      }
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about agent alerts",
+     *     description="Dismiss set of alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *     }
      * )
-     * @Post("/dismiss")
+     * @Annotations\Post("/dismiss")
      *
      * @param Request $request
      *
@@ -92,15 +95,17 @@ class AgentAlertsController extends CrudController
     }
 
     /**
+     * You can dismiss all users alerts for current authenticated user.
+     *
      * @ApiDoc(
-     *      description="Dismiss all alerts of the current user",
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
-     *      }
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about agent alerts",
+     *     description="dismiss all alerts for the current user",
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *     }
      * )
-     * @Post("/dismiss/all")
+     * @Annotations\Post("/dismiss/all")
      *
      * @return View
      */

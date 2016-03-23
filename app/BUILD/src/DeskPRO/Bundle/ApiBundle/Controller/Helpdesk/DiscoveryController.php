@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -50,11 +49,16 @@ use Symfony\Component\HttpFoundation\Response;
 class DiscoveryController extends BaseController
 {
     /**
+     * Used by apps to detect that this is a real helpdesk.
+     *
      * @ApiDoc(
-     *      description="Used by apps to detect that this is a real helpdesk",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Helpdesk",
+     *     tags={"unstable"="#ff6666"},
+     *     resourceDescription="Operations about helpdesk discovering",
+     *     description="Used by apps to detect that this is a real helpdesk",
+     *     statusCodes={
+     *         200="Returned in case of successful request"
+     *     }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
      */
@@ -78,13 +82,18 @@ class DiscoveryController extends BaseController
         ];
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($ret)),
+            $this->wrap(new PrimitiveArray($ret)),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Used by apps when they need to know general information about a helpdesk such as which features are enabled.
+     *
      * @ApiDoc(
+     *     section="Helpdesk",
+     *     tags={"unstable"="#ff6666"},
+     *     resourceDescription="Operations about helpdesk discovering",
      *     description="Used by apps when they need to know general information about a helpdesk such as which features are enabled",
      *     statusCodes={200="Success"}
      * )
@@ -226,7 +235,7 @@ class DiscoveryController extends BaseController
         ];
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($data)),
+            $this->wrap(new PrimitiveArray($data)),
             Response::HTTP_OK
         );
     }

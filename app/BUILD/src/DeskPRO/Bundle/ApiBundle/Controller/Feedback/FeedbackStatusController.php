@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,13 +48,19 @@ use Symfony\Component\HttpFoundation\Response;
 class FeedbackStatusController extends BaseController
 {
     /**
+     * Fetch feedback statuses.
+     *
      * @ApiDoc(
-     *      description="get list of feedback statuses",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Feedback",
+     *     tags={"unstable"="#ff6666", "feedback"="#4422bb"},
+     *     resourceDescription="Operations about feedback",
+     *     description="get list of feedback statuses",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus"
      * )
-     * @Get("/feedback_statuses", name="api_feedback_statuses")
+     * @Annotations\Get("/feedback_statuses", name="api_feedback_statuses")
      *
      * @param Request $request
      *
@@ -61,23 +68,10 @@ class FeedbackStatusController extends BaseController
      */
     public function cgetAction(Request $request)
     {
-        /* @ToDo move below functionality into repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
-        $qb
-            ->select('f.id', 'f.status', 's.title', 'f.hidden_status')
-            ->from('DeskPRO:Feedback', 'f')
-            ->leftJoin('f.status_category', 's');
-        $ids = $request->get('ids');
-        if ($ids) {
-            $qb
-                ->andWhere('f.id IN (:ids)')
-                ->setParameter('ids', explode(',', $ids));
-        }
-
-        $statuses = $qb->getQuery()->getResult();
+        $statuses = $this->getRepository('Application\\DeskPRO\\Entity\\Feedback')->findAll();
 
         return View::create(
-            $this->dataSerialize($statuses),
+            $this->wrap($statuses, FeedbackStatus::class),
             Response::HTTP_OK
         );
     }

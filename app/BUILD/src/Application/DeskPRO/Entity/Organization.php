@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -119,6 +119,8 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
      */
     protected $contact_data;
 
@@ -267,6 +269,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->_onPropertyChanged('importance', $old, $this->importance);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImportance()
+    {
+        return $this->importance;
     }
 
     /**
@@ -513,6 +523,22 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
+    /**
+     * @return Organization|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Set organization picture.
      *
      * @param Blob|null $blob
@@ -676,6 +702,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getEmailDomains()
+    {
+        return $this->email_domains;
+    }
+
+    /**
      * Set date created.
      *
      * @param \DateTime $date_created
@@ -687,6 +721,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->setModelField('date_created', $date_created);
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     public function __toString()

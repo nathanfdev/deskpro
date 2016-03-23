@@ -1,0 +1,50 @@
+services:
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Common services
+  # --------------------------------------------------------------------------------------------------------------------
+
+  dp_sys.alerts.event_logger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger
+    arguments:
+      - "@doctrine.orm.system_entity_manager"
+
+  dp_sys.alerts.incident_manager:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\IncidentManager
+    arguments:
+      - "@dp_sys.alerts.triggering_process"
+      - "@doctrine.orm.system_entity_manager"
+
+  dp_sys.alerts.triggering_process_state_manager:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcessStateManager
+    arguments:
+      - "@dp_sys.key_value_storage"
+      - "@doctrine.orm.system_entity_manager"
+
+  dp_sys.alerts.triggering_process:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess
+    arguments:
+      - "@dp_sys.alerts.triggering_process_state_manager"
+      - "@doctrine.orm.system_entity_manager"
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Trigger services
+  # --------------------------------------------------------------------------------------------------------------------
+
+  dp_sys.alerts.incoming_email_failure_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger
+    arguments:
+      - "@doctrine.orm.system_entity_manager"
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      - [setSilenceTime, [10]]
+
+  dp_sys.alerts.outgoing_email_failure_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger
+    arguments:
+      - "@doctrine.orm.system_entity_manager"
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      - [setSilenceTime, [10]]

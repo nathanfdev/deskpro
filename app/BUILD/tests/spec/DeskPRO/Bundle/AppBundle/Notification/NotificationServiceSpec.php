@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,8 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notification\NotificationClient;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notification\NotificationConfiguration;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
@@ -53,15 +55,14 @@ class NotificationServiceSpec extends ObjectBehavior
 
     public function it_could_construct_configuration_array()
     {
-        $this->getClientsSetup()->shouldBe([
-            [
-                'type'    => 'polling',
-                'options' => [
-                    'last_alert'       => $this->lastAlert(),
-                    'polling_interval' => 25000,
-                ],
-            ],
-        ]);
+        $this->getClientsSetup()->shouldHaveType(NotificationConfiguration::class);
+        $clients = $this->getClientsSetup()->getClients();
+        $clients->shouldBeArray();
+        $clients->shouldHaveCount(1);
+        $client = $clients[0];
+        $client->shouldHaveType(NotificationClient::class);
+        $client->getType()->shouldBe('polling');
+        $client->getOptions()->shouldBe(['last_alert' => $this->lastAlert(), 'polling_interval' => 25000]);
     }
 
     private function getStrategies()

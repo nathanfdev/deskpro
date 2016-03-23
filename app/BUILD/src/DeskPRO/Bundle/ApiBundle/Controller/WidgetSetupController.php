@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,13 +32,16 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\DataStore;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup;
 use DeskPRO\Bundle\AppBundle\Widget\WidgetSettings;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -49,6 +52,18 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class WidgetSetupController extends BaseController
 {
     /**
+     * Gather widget setup information.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="get widget setup",
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *     },
+     
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
+     *)
      * @Get("/widget/setup", name="api_widget_setup_get")
      *
      * @return View
@@ -65,29 +80,47 @@ class WidgetSetupController extends BaseController
             $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
         );
 
-        return new View([
-            'data' => [
-                'url' => [
-                    'widget_loader' => $asset_package->getUrl('widget_loader.js', 'app_assets'),
-                    'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
-                    'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
-                ],
-                'company'  => $widget_settings->getCompanySettings(),
-                'settings' => [
-                    'global' => [
-                        'chat' => [
-                            'require_login'    => $widget_settings->isPortalRequireLogin(),
-                            'email_validation' => $widget_settings->isPortalEmailValidation(),
-                        ],
-                    ],
-                    'brand' => $brand_settings,
-                ],
-                'enabled_on_portal' => $widget_settings->isEnabledOnPortal(),
+        $setup = new WidgetSetup(
+            $widget_settings->getCompanySettings(),
+            $widget_settings->isEnabledOnPortal(),
+            [
+                'widget_loader' => $asset_package->getUrl('widget_loader.js', 'app_assets'),
+                'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
+                'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+
             ],
-        ]);
+            [
+                'global' => [
+                    'chat' => [
+                        'require_login'    => $widget_settings->isPortalRequireLogin(),
+                        'email_validation' => $widget_settings->isPortalEmailValidation(),
+                    ],
+                ],
+                'brand' => $brand_settings,
+            ]
+        );
+
+        return View::create($this->wrap($setup), Response::HTTP_OK);
     }
 
     /**
+     * Create widget.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="create widget",
+     *
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="In case your request was malformed",
+     *     },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType",
+     *         "name"="",
+     *         "options"={"method"="POST"},
+     *     }
+     *)
      * @Post("/widget/setup", name="api_widget_setup_post")
      *
      * @param Request $request
@@ -98,10 +131,27 @@ class WidgetSetupController extends BaseController
     {
         $this->handleForm($request);
 
-        return new View();
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
+     * Apply widget settings.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="apply settings",
+     *
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="In case your request was malformed",
+     *     },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType",
+     *         "name"="",
+     *         "options"={"method"="POST"},
+     *     }
+     *)
      * @Post("/widget/portal/apply", name="api_widget_portal_apply")
      *
      * @param Request $request
@@ -125,10 +175,21 @@ class WidgetSetupController extends BaseController
         $setting_repo = $this->getSettingsRepository();
         $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, true);
 
-        return new View();
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
+     * Remove widget.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="remove widget",
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *     },
+     *)
+     *
      * @Post("/widget/portal/remove", name="api_widget_portal_remove")
      *
      * @return View
@@ -138,7 +199,7 @@ class WidgetSetupController extends BaseController
         $setting_repo = $this->getSettingsRepository();
         $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, false);
 
-        return new View();
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

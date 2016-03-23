@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -50,6 +51,7 @@ use Orb\Util\Strings;
  * @PortalLinkRoute("portal_downloads_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  * @PortalLinkRoute("portal_downloads_download", route_param_map={"slug":"slug"}, type="save")
  * @PortalLinkCustom(type="serve")
+ * @JMS\ExclusionPolicy("all")
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
@@ -61,6 +63,11 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $category;
 
     /**
+     * Revisions of this download.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadRevision>>")
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $revisions;
@@ -93,6 +100,11 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     protected $num_downloads = 0;
 
     /**
+     * String array of labels associated with this download.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\DownloadLabel>>")
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;

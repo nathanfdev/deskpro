@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,26 +31,38 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Glossary.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
+     * The unique id.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Word definition itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      * @Assert\NotBlank
      */
@@ -155,6 +167,12 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         return $this->words;
     }
     /**
+     * An array of words belongs this definition.
+     *
+     * @JMS\Type("array<string>")
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("words");
+     *
      * @return array
      */
     public function getStringWords()

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
@@ -46,6 +47,30 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends BaseController
 {
     /**
+     * Search through articles, donwloads, feedback, news, tickets, chat_conversations, people and organizations.
+     *
+     * @ApiDoc(
+     *     section="Search",
+     *     resourceDescription="Operations about search",
+     *     filters={
+     *          {
+     *              "name"="q",
+     *              "requirement"=".*",
+     *              "description"="search term",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="sort",
+     *              "requirement"=".*",
+     *              "description"="how to sort",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Annotations\Get("/search", name="api_quick_search")
      *
      * @param Request $request
@@ -63,6 +88,30 @@ class SearchController extends BaseController
     }
 
     /**
+     * Search only organizations and people.
+     *
+     * @ApiDoc(
+     *     section="Search",
+     *     resourceDescription="Operations about search",
+     *     filters={
+     *          {
+     *              "name"="q",
+     *              "requirement"=".*",
+     *              "description"="search term",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="sort",
+     *              "requirement"=".*",
+     *              "description"="how to sord",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
      * @Annotations\Get("/search/people_and_orgs", name="api_quick_search_people_and_orgs")
      *
      * @param Request $request

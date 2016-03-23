@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
 use Orb\Util\TimeUnit;
@@ -66,6 +67,8 @@ use Orb\Util\WorkHoursSetAll;
  * @property int $fail_time
  * @property string $fail_time_unit
  * @property TriggerActions $fail_actions
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Sla extends DomainObject
 {
@@ -76,17 +79,28 @@ class Sla extends DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * SLA title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title = '';
 
     /**
      * Type of SLA - first_response, resolution, waiting_time.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -96,6 +110,9 @@ class Sla extends DomainObject
      * Whether active all the time (all) or during work hours only (work_hours)
      * or use the default ticket-wide settings (default).
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $active_time = 'default';
@@ -103,12 +120,18 @@ class Sla extends DomainObject
     /**
      * When the work day starts. This is stored as the number of seconds after 00:00:00.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $work_start;
 
     /**
      * When the work day ends. This is stored as the number of seconds after 00:00:00.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -118,12 +141,18 @@ class Sla extends DomainObject
      * Array of work days, stored with keys corresponding to day numbers. Values are true.
      * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday).
      *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
      * @var array
      */
     protected $work_days = array();
 
     /**
      * Timezone for work hours/days to be considered in.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -132,6 +161,9 @@ class Sla extends DomainObject
     /**
      * List of work holidays.
      *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
      * @var array
      */
     protected $work_holidays = array();
@@ -139,41 +171,71 @@ class Sla extends DomainObject
     /**
      * Controls how the SLA is applied to tickets: all, auto, manual.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $apply_type = 'all';
 
     /**
+     * Conditions to apply.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
      */
     protected $apply_terms = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $warn_time = 1;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $warn_time_unit = 'days';
 
     /**
+     * How to warn about SLA will fail.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $warn_actions = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $fail_time = 1;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $fail_time_unit = 'days';
 
     /**
+     * What to do if SLA failed.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
     protected $fail_actions = null;

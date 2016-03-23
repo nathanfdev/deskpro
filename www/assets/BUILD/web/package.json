@@ -1,7 +1,7 @@
 {
   "name": "DeskPRO",
   "version": "1.0.0",
-  "dependencies": {
+  "devDependencies": {
     "bower": "^1.5.2",
     "coffee-script": "1.9.1",
     "del": "1.1.1",
@@ -29,14 +29,12 @@
     "lazypipe": "0.2.2",
     "less": "2.3.1",
     "node-sass": "3.3.3",
-    "run-sequence": "1.0.2"
+    "run-sequence": "1.0.2",
+    "sassdoc": "^2.1.18"
   },
   "scripts": {
     "bower-install": "bower install --config.interactive=false --allow-root",
     "gulp-prod": "gulp prod",
     "gulp": "gulp"
-  },
-  "devDependencies": {
-    "sassdoc": "^2.1.18"
   }
 }

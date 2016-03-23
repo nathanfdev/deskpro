@@ -1,5 +1,6 @@
 import React from 'react';
 import { StatusCategory } from './StatusCategory';
+import { TouchFocusWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/TouchFocusWidget';
 import _ from 'lodash';
 
 export class Tab extends React.Component {
@@ -13,15 +14,27 @@ export class Tab extends React.Component {
     return _.includes(this.props.activeCategories, cat_id);
   }
 
+  componentDidMount() {
+    if ("ontouchstart" in document.documentElement) {
+      if (this.refs.quickJump) {
+        const $el = $(this.refs.quickJump);
+
+        const widget = new TouchFocusWidget($el);
+        widget.render();
+      }
+    }
+  }
+
   render() {
     let dropdownCats = this.props.available.getStatusCategoriesForStatus(this.props.id);
     let canRenderDropdown = dropdownCats.length > 0;
     return (
       <li>
-        <div className={"quick-jump" + (canRenderDropdown ? "" : " no-dropdown")}>
+        <div className={"quick-jump" + (canRenderDropdown ? "" : " no-dropdown")} ref="quickJump">
           <a href={'/feedback/browse/' + this.props.id}
              className={this.props.active ? "active" : ""}
              onClick={this.clickTab.bind(this)}
+             onTouchStart={this.clickTab.bind(this)}
             >
             {this.props.label}
             {this.renderActiveCats()}

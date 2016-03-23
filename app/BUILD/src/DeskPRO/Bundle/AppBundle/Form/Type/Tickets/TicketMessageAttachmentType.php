@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -161,7 +163,7 @@ class TicketMessageAttachmentType extends AbstractType
             // Got uploaded file, try to accept and set blob auth code as form data
             $this->setUploadFieldOnForm($form);
 
-            $file = $form->get('upload')->getData();
+            $file = isset($data['upload']) ? $data['upload'] : null;
             if ($file instanceof UploadedFile) {
                 $error = $this->attachment_accepter->getError($file, 'user');
 
@@ -178,11 +180,10 @@ class TicketMessageAttachmentType extends AbstractType
                     $phrase = sprintf('portal.forms.error_accept_%s', $error_code);
                     $form->get('upload')->addError(new FormError($phrase, $phrase, $params));
                 } else {
-                    $this->setAttachmentFieldsOnForm($form);
-
                     $blob = $this->attachment_accepter->accept($file, true);
                     $attachment->setBlob($blob);
 
+                    $this->setAttachmentFieldsOnForm($form);
                     $event->setData([
                         'blob_auth' => $blob->authcode,
                     ]);
@@ -240,7 +241,7 @@ class TicketMessageAttachmentType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'     => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'data_class'     => TicketAttachment::class,
                 'error_bubbling' => false,
             ])
             ->setRequired([
@@ -248,8 +249,8 @@ class TicketMessageAttachmentType extends AbstractType
                 'person',
             ])
             ->setAllowedTypes([
-                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'person'         => 'Application\\DeskPRO\\Entity\\Person',
+                'ticket_message' => TicketMessage::class,
+                'person'         => Person::class,
             ])
         ;
     }

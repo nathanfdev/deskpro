@@ -31,9 +31,7 @@
  */
 namespace DpTest;
 
-use Prophecy\PhpUnit\ProphecyTestCase;
-
-abstract class DeskProTestCase extends ProphecyTestCase
+abstract class DeskProTestCase extends \PHPUnit_Framework_TestCase
 {
     use \DpTestSrc\TestBundle\MockHelpers\DbalMocksHelper;
 

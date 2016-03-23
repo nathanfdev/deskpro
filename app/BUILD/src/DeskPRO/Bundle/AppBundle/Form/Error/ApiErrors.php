@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,7 +62,9 @@ class ApiErrors
     const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS                = 'bad_credentials';
-    const NO_PERSON                      = 'no_person';
+    const NO_PERSON                      = 'person_not_found';
+    const NOT_AGENT                      = 'person_not_agent';
+    const NOT_USER                       = 'person_not_user';
 
     /** Validator/Constraint specific error codes */
     const NOT_NULL                    = 'required';
@@ -71,6 +73,8 @@ class ApiErrors
     const BAD_CHOICE                  = 'bad_choice';
     const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
+    const INVALID_URL                 = 'invalid_url';
+    const PROFILE_URL                 = 'profile_url';
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
     const RESOURCE_NOT_FOUND          = 'resource_not_found';

@@ -113,7 +113,7 @@ class ObjLang extends AbstractFunc
 
     protected function _toLiteral(\Application\DeskPRO\Dpql\Statement\Part\AbstractPart $part)
     {
-        if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\String) {
+        if ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\StringPart) {
             return $part->string;
         } elseif ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
             return $part->number;

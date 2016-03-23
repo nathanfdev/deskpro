@@ -1,3 +1,4 @@
+@basic
 Feature: Ticket List
   Viewing a ticket list
 
@@ -32,7 +33,7 @@ Feature: Ticket List
     Then I should be on "/login"
     And the response status code should be 200
 
-  @reinstall @basic
+  @reinstall
   Scenario: Viewing my tickets list
     Given I login with user credentials
     When I go to "/tickets"

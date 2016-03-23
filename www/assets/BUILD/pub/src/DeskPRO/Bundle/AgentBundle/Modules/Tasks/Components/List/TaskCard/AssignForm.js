@@ -1,20 +1,16 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
-import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Immutable from 'immutable';
+import { FieldGroup, Popup} from '../../../../Common/Components/Popup';
 import {
   BaseForm,
   Header,
-  Popup,
-  FieldGroup,
   FullField,
   FloatField,
-  CollectionField,
-  Unassign,
-  AgentsList,
-  AgentTeamsList,
-  DepartmentsList
+  Unassign
 } from '../../Form';
+import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
+  from '../../../../Common/Components/Form/Lists';
+
 import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 
 export class AssignForm extends BaseForm {
@@ -62,14 +58,8 @@ export class AssignForm extends BaseForm {
     this.props.onSubmit(submitData);
   };
 
-  onChange(prop, value) {
-    this.setState({
-      [prop]: value
-    });
-  }
-
   render() {
-    const { agents, agentTeams, departments, task } = this.props;
+    const { task } = this.props;
 
     return (
       <Popup additionalClassNames="assign-form">
@@ -79,38 +69,25 @@ export class AssignForm extends BaseForm {
           <div className="dpw--popup-content">
             <FieldGroup>
               <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
+                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter}/>
               </FloatField>
 
               <FloatField align="right">
-                <Unassign onClick={this.onUnassignAll} />
+                <Unassign onClick={this.onUnassignAll}/>
               </FloatField>
             </FieldGroup>
 
             <FieldGroup>
-              <CollectionField>
-                <div part="title">
-                  Agent <a href="#" onClick={this.onAssignSelf}>Assign to me</a>
-                </div>
-                <AgentsList values={agents}
-                            selected={this.state.agents}
-                            filter={this.state.quickFilter}
-                            onChange={this.onChange.bind(this, 'agents')} />
-              </CollectionField>
-
-              <CollectionField title="Team">
-                <AgentTeamsList values={agentTeams}
-                                selected={this.state.teams}
-                                filter={this.state.quickFilter}
-                                onChange={this.onChange.bind(this, 'teams')} />
-              </CollectionField>
-
-              <CollectionField title="Department">
-                <DepartmentsList values={departments}
-                                 selected={this.state.departments}
-                                 filter={this.state.quickFilter}
-                                 onChange={this.onChange.bind(this, 'departments')} />
-              </CollectionField>
+              <AgentsListContainer selected={this.state.agents}
+                                   filter={this.state.quickFilter}
+                                   selfAssign={this.onAssignSelf}
+                                   onChange={this.onChange.bind(this, 'agents')}/>
+              <TeamsListContainer selected={this.state.teams}
+                                  filter={this.state.quickFilter}
+                                  onChange={this.onChange.bind(this, 'teams')}/>
+              <DepartmentsListContainer selected={this.state.departments}
+                                        filter={this.state.quickFilter}
+                                        onChange={this.onChange.bind(this, 'departments')}/>
             </FieldGroup>
 
             <FieldGroup>
