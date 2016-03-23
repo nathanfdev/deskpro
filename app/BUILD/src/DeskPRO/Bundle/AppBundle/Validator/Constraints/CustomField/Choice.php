@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,36 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
+
 /**
- * DeskPRO.
+ * Class Choice.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService;
-
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\EntityRepository\Person as PersonRepo;
-
-class TicketMacrosDataService extends AbstractDataService
+class Choice extends AbstractCustomDefConstraint
 {
-    public function loadAll()
-    {
-        return $this->getRepo()->findAll();
-    }
-
-    public function loadSingle($macro_id)
-    {
-        return $this->getRepo()->findOneBy(['id' => $macro_id]);
-    }
-
-    public function loadForPerson($person_id)
-    {
-        return $this->getRepo()->findBy(['person' => $person_id]);
-    }
-
-    /**
-     * @return PersonRepo
-     */
-    public function getRepo()
-    {
-        return $this->em->getRepository('DeskPRO:TicketMacro');
-    }
 }

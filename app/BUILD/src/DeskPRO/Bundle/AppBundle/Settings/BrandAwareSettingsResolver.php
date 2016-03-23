@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,12 +55,24 @@ class BrandAwareSettingsResolver
      */
     private $settings_resolver;
 
+    /**
+     * Constructor.
+     *
+     * @param SettingsResolver $settings_resolver
+     * @param BrandStack|null  $brand_stack
+     */
     public function __construct(SettingsResolver $settings_resolver, BrandStack $brand_stack = null)
     {
         $this->brand_stack       = $brand_stack;
         $this->settings_resolver = $settings_resolver;
     }
 
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
     public function getSetting($name, $default = null)
     {
         if ($this->brand_stack && $this->brand_stack->getActive()) {
@@ -70,6 +82,12 @@ class BrandAwareSettingsResolver
         return $this->getGlobalSetting($name, $default);
     }
 
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
     protected function getBrandSetting($name, $default = null)
     {
         if (!$brand_container = $this->brand_stack->getActive()) {
@@ -81,6 +99,12 @@ class BrandAwareSettingsResolver
         return $brand_container->getSetting($name, $default);
     }
 
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
     protected function getGlobalSetting($name, $default = null)
     {
         return $this->settings_resolver->getGlobalSettings()->get($name, $default);

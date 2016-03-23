@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -141,20 +142,20 @@ SQL
         // prepare custom defs for people, organizations and tickets
         foreach (['custom_def_people', 'custom_def_organizations', 'custom_def_ticket'] as $custom_def_table) {
             $this->getDb()->exec(
-                "
+                <<<SQL
                 INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
                 INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('5', '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', '?', '1', '1', '10', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:5:{s:20:"custom_css_classname";s:0:"";s:21:"agent_validation_type";s:8:"required";s:14:"agent_required";b:1;s:16:"agent_min_length";s:2:"10";s:16:"agent_max_length";s:0:"";}', '1', '1', '10', '0');
                 INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('7', '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('8', '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:\"multiple\";b:1;s:8:\"expanded\";b:1;}', '1', '1', '12', '0');
+                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('8', '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('9', '8', '', '0', '0', 'Choice 1', '', '?', '1', '1', '13', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('10', '8', '', '0', '0', 'Choice 2', '', '?', '1', '1', '14', '0');
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('11', '8', '', '0', '0', 'Choice 3', '', '?', '1', '1', '15', '0');
                 INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('12', '', '0', '0', 'Delivery Date', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Date', '?', '1', '1', '38', '0');
-            "
+SQL
             );
         }
 
@@ -799,6 +800,25 @@ SQL
 SQL
         );
         // end of legacy ticket filters
+
+        // Ticket macros test data ----------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `ticket_macros`
+                (`id`, `person_id`, `title`, `is_enabled`, `is_global`, `actions`)
+            VALUES
+                ('1', '1', 'Update ticket macro 1', '1', '1', 'a:2:{i:0;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:2:"-1";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
+                ('2', '1', 'Update ticket macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label1";i:1;s:6:"label2";i:2;s:6:"label3";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}}'),
+                ('3', '1', 'Update ticket macro 3', '1', '0', 'a:3:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label4";i:1;s:6:"label5";i:2;s:6:"label6";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}i:2;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
+                ('4', '2', 'Update ticket macro 4', '1', '0', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:13:"awaiting_user";}}}'),
+                ('5', '2', 'Update ticket macro 5', '1', '1', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:14:"awaiting_agent";}}}'),
+                ('6', '1', 'Update and reply ticket macro 1', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:5:"reply";s:7:"options";a:2:{s:10:"reply_text";s:14:"My reply text.";s:9:"reply_pos";s:6:"append";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
+                ('7', '1', 'Fail validation macro 1', '1', '0', 'a:6:{i:0;a:2:{s:4:"type";s:5:"reply";s:7:"options";a:2:{s:10:"reply_text";s:0:"";s:9:"reply_pos";s:6:"append";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}i:2;a:2:{s:4:"type";s:6:"add_cc";s:7:"options";a:1:{s:10:"add_emails";s:16:"user@deskpro.dev";}}i:3;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:1:"3";}}i:4;a:2:{s:4:"type";s:15:"ticket_field[8]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_8";a:2:{i:0;s:1:"1";i:1;s:1:"9";}}}}i:5;a:2:{s:4:"type";s:15:"ticket_field[5]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_5";s:12:"invalid_date";}}}}'),
+                ('8', '1', 'Fail validation macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:15:"ticket_field[6]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_6";s:3:"abc";}}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"2";}}}')
+            ;
+SQL
+        );
+        // end of ticket macros filters
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec(

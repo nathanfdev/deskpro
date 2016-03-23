@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -220,7 +221,7 @@ class Date extends HandlerAbstract
 
             // Specific date ranges
             if ($this->field_def->getOption('date_valid_type') == 'date') {
-                $d1 = $this->field_def->getOption('date_valid_range1');
+                $d1 = $this->field_def->getOption('date_valid_date1');
                 $d2 = $this->field_def->getOption('date_valid_date2');
 
                 if ($d1) {

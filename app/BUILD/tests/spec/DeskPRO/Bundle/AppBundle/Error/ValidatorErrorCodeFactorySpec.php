@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
 use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
@@ -60,10 +61,10 @@ class ValidatorErrorCodeFactorySpec extends ObjectBehavior
         $violation->getConstraint()->willReturn(new NotBlank());
         $this->getConstraintErrorCode($violation)->shouldReturn(ApiErrors::NOT_BLANK);
 
-        $violation->getConstraint()->willReturn(new Length(array('min' => 5)));
-        $this->getConstraintErrorCode($violation)->shouldReturn(ApiErrors::WRONG_LENGTH);
+        $violation->getConstraint()->willReturn(new Length(['min' => 5]));
+        $this->getConstraintErrorCode($violation)->shouldReturn(ApiErrors::LENGTH_TOO_SHORT);
 
-        $violation->getConstraint()->willReturn(new Type(array('type' => 'null')));
+        $violation->getConstraint()->willReturn(new Type(['type' => 'null']));
         $this->getConstraintErrorCode($violation)->shouldReturn(ApiErrors::INVALID_DATA_TYPE);
 
         $violation->getConstraint()->willReturn(new Valid());

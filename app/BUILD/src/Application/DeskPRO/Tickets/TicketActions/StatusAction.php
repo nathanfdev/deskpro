@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,9 +68,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * True to stop processing actions after this one.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkPermission(Ticket $ticket, Person $person)
     {
@@ -96,9 +94,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -150,19 +146,17 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
         if ($ticket->getStatusCode() == $this->status) {
-            return array();
+            return [];
         }
 
-        return array(
-            array('action' => 'status', 'status' => $this->status),
-        );
+        return [
+            ['action' => 'status', 'status' => $this->status],
+        ];
     }
 
     /**
@@ -176,9 +170,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -186,7 +178,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {

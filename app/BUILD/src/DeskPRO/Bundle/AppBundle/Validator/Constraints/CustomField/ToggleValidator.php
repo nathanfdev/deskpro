@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,48 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ProductType.
+ * Class ToggleValidator.
  */
-class ProductType extends AbstractType
+class ToggleValidator extends AbstractSingleValueValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
     {
-        return 'deskpro_product';
-    }
+        $validators = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return 'entity_hierarchy';
-    }
+        // Required validator
+        if ($constraint->getCustomDefOption('validation_type', true)) {
+            $validators[] = new Assert\IsTrue();
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults([
-            'choice_list' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
-
-                return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
-            },
-        ]);
+        return $validators;
     }
 }

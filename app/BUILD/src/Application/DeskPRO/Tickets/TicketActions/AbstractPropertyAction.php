@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,9 +39,16 @@ use Application\DeskPRO\Entity\Ticket;
  */
 abstract class AbstractPropertyAction extends AbstractAction
 {
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     protected $value;
 
+    /**
+     * Constructor.
+     *
+     * @param int $value
+     */
     public function __construct($value = 0)
     {
         $this->value = $value;
@@ -64,9 +72,7 @@ abstract class AbstractPropertyAction extends AbstractAction
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -77,11 +83,7 @@ abstract class AbstractPropertyAction extends AbstractAction
     }
 
     /**
-     * With properties, the other action always overwrites the previous action.
-     *
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {

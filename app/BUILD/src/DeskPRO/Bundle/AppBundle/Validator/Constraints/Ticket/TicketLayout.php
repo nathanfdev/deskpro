@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,50 +29,36 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class WorkflowType.
+ * Class TicketLayout.
  */
-class WorkflowType extends AbstractType
+class TicketLayout extends Constraint
 {
     /**
-     * {@inheritdoc}
+     * Could be "agent" or "user".
+     *
+     * @var string
      */
-    public function getName()
-    {
-        return 'deskpro_workflow';
-    }
+    public $context = 'agent';
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getTargets()
     {
-        return 'entity';
+        return self::CLASS_CONSTRAINT;
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function isAgent()
     {
-        $resolver->setDefaults([
-            'class'         => 'Application\\DeskPRO\\Entity\\TicketWorkflow',
-            'property'      => 'title',
-            'empty_data'    => null,
-            'required'      => true,
-            'query_builder' => function (EntityRepository $repository) {
-                return $repository
-                    ->createQueryBuilder('w')
-                    ->select('w')
-                    ->addOrderBy('w.display_order')
-                ;
-            },
-        ]);
+        return $this->context === 'agent';
     }
 }

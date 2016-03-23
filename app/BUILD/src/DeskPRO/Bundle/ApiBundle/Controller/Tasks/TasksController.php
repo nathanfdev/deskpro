@@ -108,7 +108,7 @@ class TasksController extends CrudController
 
         $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
-        return View::create($this->wrap($tasks), Response::HTTP_OK);
+        return View::create($this->dataSerialize($tasks), Response::HTTP_OK);
     }
 
     /**

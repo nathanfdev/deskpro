@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,43 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Validator;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * Class TicketMacroTransformer.
+ * Class ValidatorErrorsException.
  */
-class TicketMacroTransformer extends AbstractDataSerializerTransformer
+class ValidatorErrorsException extends BadRequestHttpException
 {
     /**
-     * {@inheritdoc}
+     * @var ConstraintViolationListInterface
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    private $errors;
+
+    /**
+     * Constructor.
+     *
+     * @param ConstraintViolationListInterface $errors
+     * @param string                           $message
+     * @param int                              $code
+     */
+    public function __construct(ConstraintViolationListInterface $errors, $message = '', $code = 0)
     {
-        return [
-            'id',
-            'person',
-            'title',
-            'is_enabled',
-            'is_global',
-            'actions',
-        ];
+        parent::__construct($message, null, $code);
+
+        $this->errors = $errors;
     }
 
     /**
-     * {@inheritdoc}
+     * @return ConstraintViolationListInterface|ConstraintViolationInterface[]
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public function getErrors()
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        return [
-        ];
+        return $this->errors;
     }
 }

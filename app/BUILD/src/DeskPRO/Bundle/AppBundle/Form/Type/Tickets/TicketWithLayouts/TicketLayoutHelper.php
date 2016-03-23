@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 
 /**
@@ -44,11 +44,6 @@ use Symfony\Component\Form\AbstractType;
 class TicketLayoutHelper extends AbstractType
 {
     /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
      * @var \DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutDiffer
      */
     protected $layout_differ;
@@ -56,81 +51,11 @@ class TicketLayoutHelper extends AbstractType
     /**
      * Constructor.
      *
-     * @param EntityManager      $em
      * @param TicketLayoutDiffer $layout_differ
      */
-    public function __construct(EntityManager $em, TicketLayoutDiffer $layout_differ)
+    public function __construct(TicketLayoutDiffer $layout_differ)
     {
-        $this->em            = $em;
         $this->layout_differ = $layout_differ;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    public function canProductBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_product', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\Product $repository */
-        $repository = $this->em->getRepository('DeskPRO:Product');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    public function canPriorityBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_priority', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketPriority $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketPriority');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    public function canCategoryBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_category', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketCategory $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketCategory');
-
-        return $repository->countAll() > 0;
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return bool
-     */
-    public function canWorkflowBeDisplayed(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getSetting('core.use_ticket_workflow', false)) {
-            return false;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\TicketWorkflow $repository */
-        $repository = $this->em->getRepository('DeskPRO:TicketWorkflow');
-
-        return $repository->countAll() > 0;
     }
 
     /**
