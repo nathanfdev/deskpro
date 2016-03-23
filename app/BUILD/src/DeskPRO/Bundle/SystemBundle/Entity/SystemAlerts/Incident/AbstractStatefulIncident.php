@@ -29,58 +29,42 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AbstractContinuingFailureIncident.
+ * Class AbstractStatefulIncident.
  *
- * Base class representing incidents which are raised based on sequence of failing events.
+ * @ORM\MappedSuperclass
+ * @JMS\ExclusionPolicy("all")
  */
-abstract class AbstractContinuingFailureIncident extends Incident
+abstract class AbstractStatefulIncident extends AbstractIncident implements StatefulIncident
 {
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @var bool
+     * @ORM\Column(type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
-    private $date_first_failure;
+    protected $resolved = false;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * {@inheritdoc}
      */
-    private $date_last_failure;
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateFirstFailure()
+    public function isResolved()
     {
-        return $this->date_first_failure;
+        return $this->resolved;
     }
 
     /**
-     * @param \DateTime $date_first_failure
+     * {@inheritdoc}
      */
-    public function setDateFirstFailure(\DateTime $date_first_failure)
+    public function setResolved($resolved)
     {
-        $this->date_first_failure = $date_first_failure;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastFailure()
-    {
-        return $this->date_last_failure;
-    }
-
-    /**
-     * @param \DateTime $date_last_failure
-     */
-    public function setDateLastFailure(\DateTime $date_last_failure)
-    {
-        $this->date_last_failure = $date_last_failure;
+        $this->resolved = $resolved;
     }
 }

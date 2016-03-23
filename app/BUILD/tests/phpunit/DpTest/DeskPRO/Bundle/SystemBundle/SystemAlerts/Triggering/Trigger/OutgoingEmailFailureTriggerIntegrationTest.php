@@ -29,26 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger;
-use DpTest\Bundle\SystemBundle\SystemAlerts\BaseIntegrationTest;
 
-require_once realpath(__DIR__.'/../../BaseIntegrationTest.php');
+require_once 'IncomingEmailFailureTriggerIntegrationTest.php';
 
 /**
  * Class OutgoingEmailFailureTriggerIntegrationTest.
+ *
+ * This simply extends IncomingEmailFailureTriggerIntegrationTest and overrides factory methods as their criteria
+ * are the same and only input data are different (differnt event types)
  */
-class OutgoingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
+class OutgoingEmailFailureTriggerIntegrationTest extends IncomingEmailFailureTriggerIntegrationTest
 {
-    /**
-     * @var OutgoingEmailFailureTrigger
-     */
-    private $trigger;
-
     /**
      * {@inheritdoc}
      */
@@ -58,86 +55,36 @@ class OutgoingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
         $this->trigger = $this->get('dp_sys.alerts.outgoing_email_failure_trigger');
     }
 
-    /**
-     * @test
-     */
-    public function it_should_count_OutgoingEmailFailure_events()
-    {
-        $this->event_logger->log($this->dummyFailure());
-        $this->event_logger->log($this->dummyFailure());
-        $this->event_logger->log($this->dummyFailure());
-
-        $this->triggering_process->run();
-
-        $this->assertCount(3, $this->trigger->getState()['failing_event_ids']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_flush_state_after_OutgoingEmailSuccess_event()
-    {
-        $initial_trigger_state = (new OutgoingEmailFailureTrigger($this->em))->getState();
-
-        $this->event_logger->log($this->dummyFailure());
-        $this->assertNotEquals($initial_trigger_state, $this->trigger->getState());
-
-        $this->event_logger->log($this->dummySuccess());
-        $this->triggering_process->run();
-
-        $this->assertEquals($initial_trigger_state, $this->trigger->getState());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_an_incident_when_failing_for_more_than_the_allowed_interval()
-    {
-        $this->assertEquals(0, $this->countIncidents());
-        $this->trigger->setSilenceTime(7);
-        $this->event_logger->log($this->dummyFailure('-10 minutes'));
-        $this->event_logger->log($this->dummyFailure('now'));
-
-        $this->triggering_process->run();
-
-        $this->assertEquals(1, $this->countIncidents());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_not_create_an_incident_when_success_split_failures_for_periods_shorter_than_the_allowed()
-    {
-        $this->assertEquals(0, $this->countIncidents());
-        $this->trigger->setSilenceTime(7);
-        $this->event_logger->log($this->dummyFailure('-10 minutes'));
-        $this->event_logger->log($this->dummySuccess('-5 minutes'));
-        $this->event_logger->log($this->dummyFailure('now'));
-
-        $this->triggering_process->run();
-
-        $this->assertEquals(0, $this->countIncidents());
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @param string $when
+     * @param int    $account_id
      *
      * @return OutgoingEmailFailureEvent
      */
-    private function dummyFailure($when = 'now')
+    protected function dummyFailure($when = 'now', $account_id = 1)
     {
-        return new OutgoingEmailFailureEvent(new RawTransportException(), new \DateTime($when));
+        $event = new OutgoingEmailFailureEvent(
+            $account_id, 'test@dev.lo', new RawTransportException(), new \DateTime($when));
+        $this->em->persist($event);
+        $this->em->flush($event);
+
+        return $event;
     }
 
     /**
      * @param string $when
+     * @param int    $account_id
      *
      * @return OutgoingEmailSuccessEvent
      */
-    private function dummySuccess($when = 'now')
+    protected function dummySuccess($when = 'now', $account_id = 1)
     {
-        return new OutgoingEmailSuccessEvent(new \DateTime($when));
+        $event = new OutgoingEmailSuccessEvent($account_id, 'test@dev.lo', new \DateTime($when));
+        $this->em->persist($event);
+        $this->em->flush($event);
+
+        return $event;
     }
 }

@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
+
+require_once realpath(__DIR__.'/../BaseIntegrationTest.php');
 
 /**
  * Class TriggeringProcessIntegrationTest.

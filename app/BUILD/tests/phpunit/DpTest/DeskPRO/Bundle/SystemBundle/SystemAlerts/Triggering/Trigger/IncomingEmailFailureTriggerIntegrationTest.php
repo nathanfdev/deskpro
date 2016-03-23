@@ -29,8 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
+use Application\DeskPRO\Entity\EmailAccount;
+use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger;
@@ -47,7 +50,7 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @var IncomingEmailFailureTrigger
      */
-    private $trigger;
+    protected $trigger;
 
     /**
      * {@inheritdoc}
@@ -61,46 +64,56 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @test
      */
-    public function it_should_count_IncomingEmailFailure_events()
+    public function it_should_group_events_into_incidents_by_email_account_id()
     {
-        $this->event_logger->log($this->dummyFailure());
-        $this->event_logger->log($this->dummyFailure());
-        $this->event_logger->log($this->dummyFailure());
+        $this->assertEquals(0, $this->countAllIncidents());
+        $this->event_logger->log($this->dummyFailure('-20 minutes', 1));
+        $this->event_logger->log($this->dummyFailure('-19 minutes', 2));
+        $this->event_logger->log($this->dummySuccess('-15 minutes', 3));
+        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+        $this->event_logger->log($this->dummySuccess('-5 minutes', 2));
+        $this->event_logger->log($this->dummyFailure('now', 1));
 
         $this->triggering_process->run();
 
-        $this->assertCount(3, $this->trigger->getState()['failing_event_ids']);
+        $this->assertEquals(3, $this->countAllIncidents());
     }
 
     /**
      * @test
      */
-    public function it_should_flush_state_after_IncomingEmailSuccess_event()
+    public function it_should_raise_incidents_for_an_account_despite_success_events_of_another_account()
     {
-        $initial_trigger_state = (new IncomingEmailFailureTrigger($this->em))->getState();
-
-        $this->event_logger->log($this->dummyFailure());
-        $this->assertNotEquals($initial_trigger_state, $this->trigger->getState());
-
-        $this->event_logger->log($this->dummySuccess());
-        $this->triggering_process->run();
-
-        $this->assertEquals($initial_trigger_state, $this->trigger->getState());
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_create_an_incident_when_failing_for_more_than_the_allowed_interval()
-    {
-        $this->assertEquals(0, $this->countIncidents());
+        $this->assertEquals(0, $this->countAllIncidents());
         $this->trigger->setSilenceTime(7);
-        $this->event_logger->log($this->dummyFailure('-10 minutes'));
-        $this->event_logger->log($this->dummyFailure('now'));
+
+        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+        $this->event_logger->log($this->dummySuccess('-5 minutes', 2));
+        $this->event_logger->log($this->dummyFailure('now', 1));
 
         $this->triggering_process->run();
 
-        $this->assertEquals(1, $this->countIncidents());
+        $this->assertEquals(2, $this->countAllIncidents());
+        $this->assertEquals(1, $this->countRaisedIncidents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_not_create_incident_if_two_accounts_fail_for_more_than_the_allowed_period_but_none_of_them_individually()
+    {
+        $this->assertEquals(0, $this->countAllIncidents());
+        $this->trigger->setSilenceTime(7);
+
+        $this->event_logger->log($this->dummyFailure('-12 minutes', 1));
+        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+        $this->event_logger->log($this->dummyFailure('-5 minutes', 2));
+        $this->event_logger->log($this->dummyFailure('now', 2));
+
+        $this->triggering_process->run();
+
+        $this->assertEquals(2, $this->countAllIncidents());
+        $this->assertEquals(0, $this->countRaisedIncidents());
     }
 
     /**
@@ -108,36 +121,114 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_not_create_an_incident_when_success_split_failures_for_periods_shorter_than_the_allowed()
     {
-        $this->assertEquals(0, $this->countIncidents());
+        $this->assertEquals(0, $this->countRaisedIncidents());
+
         $this->trigger->setSilenceTime(7);
+        $this->event_logger->log($this->dummyFailure('-20 minutes'));
+        $this->event_logger->log($this->dummyFailure('-19 minutes'));
+        $this->event_logger->log($this->dummySuccess('-15 minutes'));
         $this->event_logger->log($this->dummyFailure('-10 minutes'));
         $this->event_logger->log($this->dummySuccess('-5 minutes'));
         $this->event_logger->log($this->dummyFailure('now'));
 
         $this->triggering_process->run();
 
-        $this->assertEquals(0, $this->countIncidents());
+        $this->assertEquals(0, $this->countRaisedIncidents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_create_an_incident_when_failing_for_more_than_the_allowed_interval()
+    {
+        $this->assertEquals(0, $this->countRaisedIncidents());
+        $this->trigger->setSilenceTime(7);
+        $this->event_logger->log($this->dummyFailure('-61 minutes'));
+        $this->event_logger->log($this->dummyFailure('now'));
+
+        $this->triggering_process->run();
+
+        $this->assertEquals(1, $this->countRaisedIncidents());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_notify_all_admins_via_email_when_an_incident_is_raised()
+    {
+        /* @var \Swift_Plugins_MessageLogger $mailer */
+        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
+        $logger->clear();
+        $this->assertEquals(0, $this->countRaisedIncidents());
+        $this->assertEquals(0, $logger->countMessages());
+
+        $this->trigger->setSilenceTime(7);
+        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+        $this->event_logger->log($this->dummyFailure('now', 1));
+        $this->triggering_process->run();
+
+        $this->assertEquals(1, $this->countRaisedIncidents());
+        $this->assertEquals(1, $logger->countMessages());
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_not_notify_before_an_incident_is_raised()
+    {
+        /* @var \Swift_Plugins_MessageLogger $mailer */
+        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
+        $logger->clear();
+        $this->assertEquals(0, $this->countRaisedIncidents());
+        $this->assertEquals(0, $logger->countMessages());
+
+        $this->trigger->setSilenceTime(100);
+        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+        $this->event_logger->log($this->dummyFailure('now', 1));
+        $this->triggering_process->run();
+
+        $this->assertEquals(1, $this->countAllIncidents());
+        $this->assertEquals(0, $this->countRaisedIncidents());
+        $this->assertEquals(0, $logger->countMessages());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @param string $when
+     * @param int    $account_id
      *
      * @return IncomingEmailFailureEvent
      */
-    private function dummyFailure($when = 'now')
+    protected function dummyFailure($when = 'now', $account_id = 1)
     {
-        return new IncomingEmailFailureEvent(new RuntimeException(), new \DateTime($when));
+        $email          = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $email->id      = $account_id;
+        $email->address = 'test@dev.lo';
+
+        $event = new IncomingEmailFailureEvent($email, new RuntimeException(), new \DateTime($when));
+        $this->em->persist($event);
+        $this->em->flush($event);
+
+        return $event;
     }
 
     /**
      * @param string $when
+     * @param int    $account_id
      *
      * @return IncomingEmailSuccessEvent
      */
-    private function dummySuccess($when = 'now')
+    protected function dummySuccess($when = 'now', $account_id = 1)
     {
-        return new IncomingEmailSuccessEvent(new \DateTime($when));
+        $email          = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $email->id      = $account_id;
+        $email->address = 'test@dev.lo';
+
+        $event = new IncomingEmailSuccessEvent($email, new \DateTime($when));
+        $this->em->persist($event);
+        $this->em->flush($event);
+
+        return $event;
     }
 }

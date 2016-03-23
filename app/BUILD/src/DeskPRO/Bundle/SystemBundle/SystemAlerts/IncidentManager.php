@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\StatefulIncidentTrigger;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Doctrine\ORM\EntityManager;
@@ -65,9 +67,9 @@ class IncidentManager
     }
 
     /**
-     * @param Incident $incident
+     * @param StatefulIncident $incident
      */
-    public function dismiss(Incident $incident)
+    public function dismiss(StatefulIncident $incident)
     {
         $incident->setDismissed(true);
         $this->em->persist($incident);
@@ -91,12 +93,16 @@ class IncidentManager
      */
     public function remove(Incident $incident)
     {
+        $this->em->beginTransaction();
+
         $this
             ->em
-            ->createQuery('DELETE FROM '.Event::class.' e WHERE e.id IN(:ids)')
+            ->createQuery('DELETE FROM '.AbstractEvent::class.' e WHERE e.id IN(:ids)')
             ->execute(['ids' => $incident->getEventIds()]);
 
         $this->em->remove($incident);
         $this->em->flush($incident);
+
+        $this->em->commit();
     }
 }

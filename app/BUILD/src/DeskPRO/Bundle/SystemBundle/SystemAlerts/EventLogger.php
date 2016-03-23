@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
@@ -72,7 +73,7 @@ class EventLogger
         $this->em->flush($event);
 
         if ($aloud) {
-            echo (string) $event, "\n";
+            echo 'The following subject has failed: ', (string) $event, "\n";
         }
 
         !is_null($halt) or $halt = $aloud;
@@ -128,8 +129,9 @@ class EventLogger
     {
         $success_type = get_class($event);
         $failure_type = $event->getFailureType();
-        $success      = $this->em->getRepository($success_type)->findOneBy([], ['id' => 'desc']);
-        $failure      = $this->em->getRepository($failure_type)->findOneBy([], ['id' => 'desc']);
+        $criteria     = ['subject_unique_id' => $event->getSubjectUniqueId()];
+        $success      = $this->em->getRepository($success_type)->findOneBy($criteria, ['id' => 'desc']);
+        $failure      = $this->em->getRepository($failure_type)->findOneBy($criteria, ['id' => 'desc']);
 
         if (($failure && !$success) || ($failure && $success && ($failure->getId() > $success->getId()))) {
             $this->em->persist($event);

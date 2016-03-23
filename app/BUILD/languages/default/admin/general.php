@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -176,8 +176,13 @@ return array(
     'admin.general.usergroup_perms'                     => 'Usergroup Permissions',
     'admin.general.username'                            => 'Username',
     'admin.general.variable_name'                       => 'Variable Name',
+    'admin.general.remove'                              => 'Remove',
     'admin.general.view'                                => 'View',
     'admin.general.view_by'                             => 'View by',
+    'admin.general.dismiss'                             => 'Dismiss',
+    'admin.general.revert_notifications'                => 'Revert Notifications',
+    'admin.general.incident'                            => 'Incident',
+    'admin.general.instructions'                        => 'Instructions',
     'admin.general.website_embed'                       => 'Website Embed',
     'admin.general.x_departments'                       => '{{count}} Department|{{count}} Departments',
     'admin.general.yes'                                 => 'Yes',

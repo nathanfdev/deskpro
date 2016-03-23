@@ -29,18 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcessStateManager;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use DpTest\DeskProTestCase;
 
-include_once '../_mocks.php';
+require_once realpath(__DIR__.'/../_mocks.php');
 
 /**
  * Class TriggeringProcessTest.
@@ -72,25 +72,25 @@ class TriggeringProcessTest extends DeskProTestCase
     {
         $this->events = [new MockEvent(), new MockEvent(), new MockEvent()];
         $instance     = $this->instance();
-        $instance->addTrigger($trigger1 = new MockTrigger());
-        $instance->addTrigger($trigger2 = new MockTrigger());
+        $instance->addTrigger($trigger1 = $this->getMock(MockTrigger::class));
+        $instance->addTrigger($trigger2 = $this->getMock(MockTrigger::class));
+
+        $trigger1->expects($this->exactly(3))->method('consume');
+        $trigger2->expects($this->exactly(3))->method('consume');
 
         $instance->run();
-
-        $this->assertEquals(3, $trigger1->getState()['events_counter']);
-        $this->assertEquals(3, $trigger2->getState()['events_counter']);
     }
 
     /**
      * @test
      */
-    public function it_should_persist_raised_incidents()
+    public function it_should_persist_incident_each_time_it_receives_an_event()
     {
         $this->events = [new MockEvent(), new MockEvent(), new MockEvent(), new MockEvent(), new MockEvent()];
         $instance     = $this->instance();
         $instance->addTrigger($trigger = new MockTrigger());
 
-        $this->em->expects($this->once())->method('persist');
+        $this->em->expects($this->exactly(5))->method('persist');
         $this->em->expects($this->once())->method('flush');
 
         $instance->run();
@@ -116,15 +116,9 @@ class TriggeringProcessTest extends DeskProTestCase
         $event_repository->method('findBy')->willReturn($this->events);
 
         $this->em = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor()->getMock();
-        $this->em->method('getRepository')->with(Event::class)->willReturn($event_repository);
+        $this->em->method('getRepository')->with(AbstractEvent::class)->willReturn($event_repository);
         $this->em->method('createQueryBuilder')->willReturn($qb);
 
-        $state_manager = $this
-            ->getMockBuilder(TriggeringProcessStateManager::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['saveState', 'provideState'])
-            ->getMock();
-
-        return new TriggeringProcess($state_manager, $this->em);
+        return new TriggeringProcess($this->em);
     }
 }

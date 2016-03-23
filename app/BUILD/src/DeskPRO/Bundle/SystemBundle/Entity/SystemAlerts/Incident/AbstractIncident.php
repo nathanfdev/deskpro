@@ -1,0 +1,298 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
+
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class AbstractIncident.
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="system_alerts_incidents")
+ * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
+ * @ORM\DiscriminatorMap({
+ *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\ExceptionIncident",
+ *     "incoming_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident",
+ *     "outgoing_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\OutgoingEmailFailureIncident"
+ * })
+ *
+ * @JMS\ExclusionPolicy("all")
+ */
+abstract class AbstractIncident implements Incident
+{
+    use NotifyPropertyChangedTrait;
+
+    /**
+     * @var int
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     */
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $subject_unique_id;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     */
+    protected $date_created;
+
+    /**
+     * @var Event[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent",
+     *     inversedBy="incidents",
+     *     cascade={"all"}
+     * )
+     * @ORM\JoinTable(
+     *     name="system_alerts_incident_events"
+     * )
+     */
+    protected $events;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    protected $raised = false;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    protected $dismissed = false;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("title")
+     * @JMS\Type("string")
+     */
+    abstract public function getTitle();
+
+    /**
+     * Incident constructor.
+     */
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+        $this->events       = new ArrayCollection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEventIds()
+    {
+        $ids = [];
+        foreach ($this->events as $event) {
+            $ids[] = $event->getId();
+        }
+
+        return $ids;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEventsCount()
+    {
+        return count($this->events);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEvents(array $events)
+    {
+        $this->events = new ArrayCollection($events);
+        if (count($this->events)) {
+            $this->subject_unique_id = $this->events[0]->getSubjectUniqueId();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addEvent(Event $event)
+    {
+        $this->events[]          = $event;
+        $this->subject_unique_id = $event->getSubjectUniqueId();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFirstEvent()
+    {
+        if (count($this->events)) {
+            return $this->events[0];
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastEvent()
+    {
+        return $this->events->last();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLastFailureEvent()
+    {
+        $i = $this->events->count() - 1;
+        while ($i >= 0) {
+            if (!$this->events[$i] instanceof SuccessEvent) {
+                return $this->events[$i];
+            }
+            --$i;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateFirstFailure()
+    {
+        return $this->getFirstEvent()->getDateCreated();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateLastFailure()
+    {
+        return $this->getLastFailureEvent()->getDateCreated();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFailureEventsCount()
+    {
+        $count = 0;
+        foreach ($this->events as $event) {
+            if (!$event instanceof SuccessEvent) {
+                ++$count;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRaised()
+    {
+        return $this->raised;
+    }
+
+    /**
+     * @param bool $raised
+     */
+    public function setRaised($raised)
+    {
+        $this->raised = $raised;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDismissed()
+    {
+        return $this->dismissed;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDismissed($dismissed)
+    {
+        $this->dismissed = $dismissed;
+    }
+}

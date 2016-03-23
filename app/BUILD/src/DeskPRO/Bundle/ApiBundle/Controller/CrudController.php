@@ -361,7 +361,7 @@ abstract class CrudController extends BaseController
      */
     protected function persistModel($model)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getManager();
         $em->persist($model);
         $em->flush();
 

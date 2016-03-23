@@ -29,18 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\AbstractContinuingFailureTrigger;
 
 /**
  * Class IncomingEmailFailureTrigger.
  */
-class IncomingEmailFailureTrigger extends AbstractContinuingFailureTrigger
+class IncomingEmailFailureTrigger extends AbstractEmailFailureTrigger
 {
     /**
      * {@inheritdoc}
@@ -53,24 +53,8 @@ class IncomingEmailFailureTrigger extends AbstractContinuingFailureTrigger
     /**
      * {@inheritdoc}
      */
-    protected function isFailure(Event $event)
+    public function getIncidentClass()
     {
-        return $event instanceof IncomingEmailFailureEvent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function isSuccess(Event $event)
-    {
-        return $event instanceof IncomingEmailSuccessEvent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateIncident()
-    {
-        return new IncomingEmailFailureIncident();
+        return IncomingEmailFailureIncident::class;
     }
 }

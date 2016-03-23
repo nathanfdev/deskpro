@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -747,10 +748,10 @@ class Runner
 
                         break;
                     }
-                    App::getEventLogger()->log(new IncomingEmailSuccessEvent());
+                    App::getEventLogger()->log(new IncomingEmailSuccessEvent($account));
                 } catch (RuntimeException $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($e));
+                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($account, $e));
                     break;
                 }
             }

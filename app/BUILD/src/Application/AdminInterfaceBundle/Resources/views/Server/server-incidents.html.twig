@@ -1,0 +1,69 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Incidents</h3>
+		</header>
+
+		<article class="padd" ng-if="ServerIncidents.incidents.length">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('agent.general.id') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.status') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.date') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.title') }}
+						</th>
+						<th>
+							&nbsp;
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="incident in ServerIncidents.incidents">
+						<td class="alt dp-id-col">
+							{{ ng_var('incident.id') }}
+						</td>
+						<td>
+							{{ ng_var('ServerIncidents.getStatus(incident)') }}
+						</td>
+						<td>
+							{{ ng_var('incident.date_created | date') }}
+						</td>
+						<td>
+							{{ ng_var('incident.title') }}
+						</td>
+						<td>
+							<a class="btn btn-primary" ng-href="{{ ng_href('server.incidents.view', '{id: incident.id}') }}">
+								{{ phrase('admin.general.view') }}
+							</a>
+							<a class="btn btn-warning" ng-click="ServerIncidents.dismiss(incident)" ng-if="!incident.resolved && !incident.dismissed">
+								{{ phrase('admin.general.dismiss') }}
+							</a>
+							<a class="btn btn-success" ng-click="ServerIncidents.revertNotifications(incident)" ng-if="!incident.resolved && incident.dismissed">
+								{{ phrase('admin.general.revert_notifications') }}
+							</a>
+							<a class="btn btn-primary" ng-click="ServerIncidents.remove(incident)" ng-if="incident.resolved">
+								{{ phrase('admin.general.remove') }}
+							</a>
+							<a class="btn btn-danger" ng-click="ServerIncidents.remove(incident)" ng-if="!incident.resolved">
+								{{ phrase('admin.general.remove') }}
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

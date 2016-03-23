@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-include_once '../_mocks.php';
-include_once 'TriggerTest.php';
+require_once realpath(__DIR__.'/../_mocks.php');
+require_once 'TriggerTest.php';
 
 /**
  * Class StatefulIncidentTriggerTest.
@@ -44,19 +45,31 @@ class StatefulIncidentTriggerTest extends TriggerTest
     /**
      * @test
      */
-    public function it_should_call_resolved_and_closed_callbacks_when_a_continuing_incident_no_longer_meets_incident_criteria()
+    public function it_should_call_resolved_callback_when_a_continuing_incident_no_longer_meets_incident_criteria()
     {
-        $resolved_called_times = 0;
-        $closed_called_times   = 0;
-        $trigger               = new MockStatefulIncidentTrigger();
-        $trigger->setContinuingIncident(new MockIncident());
-        $trigger->setResolvedCallback(function () use (&$resolved_called_times) { ++$resolved_called_times; });
-        $trigger->setClosedCallback(function () use (&$closed_called_times) { ++$closed_called_times; });
+        $called_times = 0;
+        $trigger      = new MockStatefulIncidentTrigger();
+        $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
+        $trigger->setResolvedCallback(function () use (&$called_times) { ++$called_times; });
 
-        $trigger->consume(new MockEvent());
+        $trigger->consume(new MockSuccessEvent(false, 'test'));
 
-        $this->assertEquals(1, $resolved_called_times);
-        $this->assertEquals(1, $closed_called_times);
+        $this->assertEquals(1, $called_times);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_call_closed_callback_when_a_continuing_incident_no_longer_meets_incident_criteria()
+    {
+        $called_times = 0;
+        $trigger      = new MockStatefulIncidentTrigger();
+        $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
+        $trigger->setClosedCallback(function () use (&$called_times) { ++$called_times; });
+
+        $trigger->consume(new MockSuccessEvent(false, 'test'));
+
+        $this->assertEquals(1, $called_times);
     }
 
     /**
@@ -66,14 +79,27 @@ class StatefulIncidentTriggerTest extends TriggerTest
     {
         $called_times = 0;
         $trigger      = new MockStatefulIncidentTrigger();
-        $trigger->setState(['events_counter' => 5]);
-        $trigger->setContinuingIncident(new MockIncident());
+        $trigger->setContinuingIncidents([$this->createRaisedIncident()]);
         $trigger->setContinuingCallback(function () use (&$called_times) { ++$called_times; });
 
         for ($i = 0; $i < 3; ++$i) {
-            $trigger->consume(new MockEvent());
+            $trigger->consume(new MockEvent(false, 'test'));
         }
 
         $this->assertEquals(3, $called_times);
+    }
+
+    /**
+     * @return MockIncident
+     */
+    private function createRaisedIncident()
+    {
+        $incident = new MockIncident();
+        for ($i = 0; $i < 5; ++$i) {
+            $incident->addEvent(new MockEvent(false, 'test'));
+        }
+        $incident->setRaised(true);
+
+        return $incident;
     }
 }

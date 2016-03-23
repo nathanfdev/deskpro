@@ -110,7 +110,7 @@ class BaseController extends FOSRestController
      */
     protected function findOr404($class, $id, $message = 'Not found')
     {
-        if (!$entity = $this->getDoctrine()->getRepository($class)->find($id)) {
+        if (!$entity = $this->getManager()->getRepository($class)->find($id)) {
             throw $this->createNotFoundException($message);
         }
 
