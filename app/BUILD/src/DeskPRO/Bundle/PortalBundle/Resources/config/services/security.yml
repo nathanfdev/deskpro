@@ -16,6 +16,7 @@ services:
             class:  DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler
             arguments:
                 - "@doctrine.orm.default_entity_manager"
+                - "@security.http_utils"
 
     security.authentication.failure_handler:
         class: DeskPRO\Bundle\AppBundle\Security\Handler\AuthenticationFailureHandler

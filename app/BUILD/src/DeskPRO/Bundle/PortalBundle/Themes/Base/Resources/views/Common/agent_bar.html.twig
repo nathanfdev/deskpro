@@ -26,7 +26,7 @@ if impersonation is OFF "impersonator" is the agent
         <div class="datb-user-impersonator on">
             <i class="fa fa-user-secret"></i>
             <span>{{ phrase('portal.general.impersonation_mode') }}: <span class="datb-impersonated-user-email">{{ user.primary_email_address }}</span></span>
-            <a href="{{ path('portal_logout', { _dp_impersonate_exit: 1 }) }}" class="datb-user-impersonator-toggle"><i class="fa fa-times-circle"></i></a>
+            <a href="{{ logout_path('portal') }}&_dp_impersonate_exit=1" class="datb-user-impersonator-toggle"><i class="fa fa-times-circle"></i></a>
         </div>
         {% endif %}
 

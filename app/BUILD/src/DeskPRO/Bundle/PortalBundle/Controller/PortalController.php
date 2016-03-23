@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -44,6 +45,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -154,6 +156,22 @@ class PortalController extends AbstractController
                 'usersources_view'     => $usersources_view,
             )
         );
+    }
+
+    /**
+     * @Route("/logout/{auth}", name="user_logout")
+     *
+     * @return RedirectResponse
+     */
+    public function legacyLogoutLinkAction($auth)
+    {
+        $appSecret = $this->get('settings_resolver')->getGlobalSettings()->get('core.app_secret', '');
+
+        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5($appSecret.'user_logout'))) {
+            throw $this->createNotFoundException();
+        }
+
+        return new RedirectResponse($this->get('security.logout_url_generator')->getLogoutUrl('portal'));
     }
 
     /**

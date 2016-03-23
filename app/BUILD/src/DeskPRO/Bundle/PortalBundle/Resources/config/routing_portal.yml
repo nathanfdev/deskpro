@@ -12,8 +12,6 @@ user_context_hash:
 # The following are caught by our security system, and therefore do not need to have default controllers set on them
 portal_logout:
     path: /logout
-user_logout: #B.C.
-    path: /logout
 
 portal_login_submit:
     path: /login/authenticate-password

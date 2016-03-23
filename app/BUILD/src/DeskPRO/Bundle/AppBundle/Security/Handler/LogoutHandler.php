@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,21 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 /**
  * When a logout request is made, this class is notified so it can do some cleanup.
  */
-class LogoutHandler implements LogoutHandlerInterface
+class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInterface
 {
     const RECENT_LOGOUT = 'recent_logout';
 
@@ -49,9 +52,15 @@ class LogoutHandler implements LogoutHandlerInterface
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var HttpUtils
+     */
+    private $httpUtils;
+
+    public function __construct(EntityManager $em, HttpUtils $httpUtils)
     {
-        $this->em = $em;
+        $this->em        = $em;
+        $this->httpUtils = $httpUtils;
     }
 
     public function logout(Request $request, Response $response, TokenInterface $token)
@@ -77,5 +86,20 @@ class LogoutHandler implements LogoutHandlerInterface
         }
 
         $request->getSession()->set(self::RECENT_LOGOUT, time());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onLogoutSuccess(Request $request)
+    {
+        switch ($request->get('to', null)) {
+            case 'admin':
+                return $this->httpUtils->createRedirectResponse($request, '/admin/');
+            case 'agent':
+                return $this->httpUtils->createRedirectResponse($request, '/agent/');
+            default:
+                return $this->httpUtils->createRedirectResponse($request, '/');
+        }
     }
 }
