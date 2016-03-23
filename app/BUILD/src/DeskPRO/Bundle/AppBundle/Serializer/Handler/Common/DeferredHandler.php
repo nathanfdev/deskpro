@@ -62,6 +62,12 @@ class DeferredHandler implements SubscribingHandlerInterface
                 'type'      => SerializerTypes::TYPE_DEFERRED,
                 'method'    => 'serialize',
             ],
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => CallbackDeferredProperty::class,
+                'method'    => 'serialize',
+            ],
         ];
     }
 

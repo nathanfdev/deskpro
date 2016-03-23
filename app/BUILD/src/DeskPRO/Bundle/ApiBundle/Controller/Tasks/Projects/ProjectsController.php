@@ -84,8 +84,6 @@ class ProjectsController extends CrudController
     /**
      * Fetch task list associated with the project specified by id.
      *
-     * @todo should be edited to use wrap when Task entity will be moved to jms
-     *
      * @ApiDoc(
      *     section="TaskProjects",
      *     resourceDescription="Operations about task projects",
@@ -119,7 +117,7 @@ class ProjectsController extends CrudController
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
+        return View::create($this->wrap($pager), Response::HTTP_OK);
     }
 
     /**

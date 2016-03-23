@@ -80,7 +80,7 @@ class TaskProject
     /**
      * Agents - members of the project.
      *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\AgentTeam>>")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      *
      * @var Person[]
      */

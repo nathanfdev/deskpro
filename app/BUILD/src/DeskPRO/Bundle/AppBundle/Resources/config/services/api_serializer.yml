@@ -55,6 +55,19 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.task_project:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+  api_serializer.handler.task:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.ticket_participant:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketParticipantHandler
     arguments:

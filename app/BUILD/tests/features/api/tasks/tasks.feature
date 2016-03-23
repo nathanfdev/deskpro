@@ -56,8 +56,7 @@ Feature: /tasks endpoint
   "title": "New task title"
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request
@@ -74,8 +73,7 @@ Feature: /tasks endpoint
       "labels": ["test", "labels"]
     }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
     And the response should be empty
 
   Scenario: I verify that the labels have been added

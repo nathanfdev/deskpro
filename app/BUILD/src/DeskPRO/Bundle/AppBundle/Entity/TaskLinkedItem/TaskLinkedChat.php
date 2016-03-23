@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,8 +36,10 @@ namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
+ * @JMS\ExclusionPolicy("all")
  * @ORM\Entity
  */
 class TaskLinkedChat extends TaskLinkedItem
@@ -45,9 +47,15 @@ class TaskLinkedChat extends TaskLinkedItem
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var ChatConversation
+     * Chat linked to task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
      * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
+     *
+     * @var ChatConversation
      */
     protected $chat;
 

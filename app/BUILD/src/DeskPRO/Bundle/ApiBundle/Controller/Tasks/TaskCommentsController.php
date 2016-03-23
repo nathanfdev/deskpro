@@ -64,27 +64,11 @@ class TaskCommentsController extends CrudController
      *     section="Tasks",
      *     description="get attachments for a comment",
      *     requirements={
-     *         {
-     *             "name"="id",
-     *             "requirement"="\d+",
-     *             "description"="the id of the comment",
-     *             "dataType"="integer"
-     *         }
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the comment", "dataType"="integer"}
      *     },
      *     filters={
-     *         {
-     *             "name"="page",
-     *             "pattern"="\d+",
-     *             "description"="the page you are requesting",
-     *             "dataType"="integer",
-     *             "required"=false
-     *         },
-     *         {
-     *             "name"="count",
-     *             "pattern"="\d+",
-     *             "description"="results per page",
-     *             "dataType"="integer",
-     *         }
+     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer", "required"=false},
+     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
      *     },
      *     statusCodes={
      *         200="Returned with fetched attachments list",
