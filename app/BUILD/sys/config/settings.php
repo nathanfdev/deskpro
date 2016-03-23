@@ -623,7 +623,7 @@ return array(
     /*
      * http cache s-maxage for a user "tag"
      */
-    'portal.smaxage_user_tag' => 600,
+    'portal.smaxage_user_tag' => 0,
 
     ####################################################################################################################
     # core_misc
