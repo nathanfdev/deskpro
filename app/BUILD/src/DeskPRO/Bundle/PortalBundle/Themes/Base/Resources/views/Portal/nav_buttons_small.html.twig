@@ -5,7 +5,7 @@
     {% if 'articles' == tab %}
 
       {% if can_use_articles() and show_tab_articles() %}
-        <li class="{{ is_page_kb() ? 'active' }}">
+        <li class="item-kb {{ is_page_kb() ? 'active' }}">
           <a href="{{ path('portal_kb') }}">
             <i class="fa fa-list-alt"></i>
             <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
@@ -17,7 +17,7 @@
     {% elseif 'news' == tab %}
 
       {% if can_use_news() and show_tab_news() %}
-        <li class="{{ is_page_news() ? 'active' }}">
+        <li class="item-news {{ is_page_news() ? 'active' }}">
           <a href="{{ path('portal_news') }}">
             <i class="fa fa-calendar-o"></i>
             <span class="title">{{ phrase('portal.general.nav-news') }}</span>
@@ -29,7 +29,7 @@
     {% elseif 'feedback' == tab %}
 
       {% if can_use_feedback() and show_tab_feedback() %}
-        <li class="{{ is_page_feedback() ? 'active' }}">
+        <li class="item-feedback {{ is_page_feedback() ? 'active' }}">
           <a href="{{ path('portal_feedback') }}">
             <i class="fa fa-thumbs-o-up"></i>
             <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
@@ -41,7 +41,7 @@
     {% elseif 'downloads' == tab %}
 
       {% if can_use_downloads() and show_tab_downloads() %}
-        <li class="{{ is_page_downloads() ? 'active' }}">
+        <li class="item-downloads {{ is_page_downloads() ? 'active' }}">
           <a href="{{ path('portal_downloads') }}">
             <i class="fa fa-files-o"></i>
             <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
@@ -53,7 +53,7 @@
     {% elseif 'newticket' == tab %}
 
       {% if can_use_tickets() and show_tab_tickets() %}
-        <li class="{{ is_page_tickets() ? 'active' }}">
+        <li class="item-tickets {{ is_page_tickets() ? 'active' }}">
           <a href="{{ path('portal_new_ticket') }}">
             <i class="fa fa-envelope-o"></i>
             <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>

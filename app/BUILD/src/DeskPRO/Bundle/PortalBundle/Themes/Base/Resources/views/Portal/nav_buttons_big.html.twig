@@ -1,11 +1,11 @@
 <ul class="big-button-collection dpx-toggle-mobile">
-  
+
   {% for tab in get_ordered_tabs() %}
 
     {% if 'articles' == tab %}
 
       {% if can_use_articles() and show_tab_articles() %}
-        <li>
+        <li class="item-kb">
           <a href="{{ path('portal_kb') }}">
             <i class="fa fa-list-alt"></i>
             <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
@@ -17,7 +17,7 @@
     {% elseif 'news' == tab %}
 
       {% if can_use_news() and show_tab_news() %}
-        <li>
+        <li class="item-news">
           <a href="{{ path('portal_news') }}">
             <i class="fa fa-calendar-o"></i>
             <span class="title">{{ phrase('portal.general.nav-news') }}</span>
@@ -29,7 +29,7 @@
     {% elseif 'feedback' == tab %}
 
       {% if can_use_feedback() and show_tab_feedback() %}
-        <li>
+        <li class="item-feedback">
           <a href="{{ path('portal_feedback') }}">
             <i class="fa fa-thumbs-o-up"></i>
             <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
@@ -41,7 +41,7 @@
     {% elseif 'downloads' == tab %}
 
       {% if can_use_downloads() and show_tab_downloads() %}
-        <li class="{{ is_page_downloads() ? 'active' }}">
+        <li class="item-downloads {{ is_page_downloads() ? 'active' }}">
           <a href="{{ path('portal_downloads') }}">
             <i class="fa fa-files-o"></i>
             <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
@@ -53,7 +53,7 @@
     {% elseif 'newticket' == tab %}
 
       {% if can_use_tickets() and show_tab_tickets() %}
-        <li>
+        <li class="item-newticket">
           <a href="{{ path('portal_new_ticket') }}">
             <i class="fa fa-envelope-o"></i>
             <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
