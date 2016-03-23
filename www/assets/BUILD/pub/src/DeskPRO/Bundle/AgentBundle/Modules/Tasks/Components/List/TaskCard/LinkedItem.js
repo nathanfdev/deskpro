@@ -7,6 +7,9 @@ import { quickSearchAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Select from 'react-select-plus';
+import { connect } from 'react-redux';
+
+@connect()
 
 export class LinkedItem extends CardWidget {
 
@@ -151,7 +154,7 @@ export class LinkedItem extends CardWidget {
 
           <ClickOut onClickOut={this.onClose}
                     onClick={this.test}
-                    additionalNodes={[this.refs.button, 'popup']}>
+                    additionalNodes={[this.refs.button, '.fa-times']}>
             <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
                 <div className="dpw-navigation-dropdown-panel-content-line">

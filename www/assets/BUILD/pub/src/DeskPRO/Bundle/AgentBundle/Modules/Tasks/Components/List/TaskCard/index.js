@@ -10,6 +10,5 @@ export { CardWidget } from './CardWidget';
 export { CardProject } from './CardProject';
 export { CardProjectContainer } from './CardProjectContainer';
 export { LinkedItem } from './LinkedItem';
-export { LinkedItemContainer } from './LinkedItemContainer';
 export { AssigneeName } from './AssigneeName';
 export { AssigneeAvatar } from './AssigneeAvatar';
