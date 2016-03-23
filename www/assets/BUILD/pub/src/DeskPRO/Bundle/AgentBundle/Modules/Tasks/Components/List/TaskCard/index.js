@@ -9,7 +9,6 @@ export { AssignButton } from './AssignButton';
 export { CardWidget } from './CardWidget';
 export { CardProject } from './CardProject';
 export { CardProjectContainer } from './CardProjectContainer';
-export { SearchResults } from './SearchResults';
 export { LinkedItem } from './LinkedItem';
 export { LinkedItemContainer } from './LinkedItemContainer';
 export { AssigneeName } from './AssigneeName';

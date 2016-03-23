@@ -94,7 +94,6 @@ class TaskTransformer extends AbstractDataSerializerTransformer
             'project',
             'list',
             'urgency',
-            'linked_tickets',
             'date_done',
             'display_order',
         ];
@@ -156,10 +155,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 [$this, 'getSubtasksDone'],
                 [$id]
             ),
-            'linked_items' => new CallbackDeferredProperty(
-                [$this, 'getLinkedItems'],
-                [$data]
-            ),
+            'linked_items' => $this->getLinkedItems($data),
         ];
     }
 
