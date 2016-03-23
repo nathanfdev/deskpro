@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -46,10 +47,14 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -99,6 +104,11 @@ class TicketWithLayoutsType extends AbstractType
     private $em;
 
     /**
+     * @var TicketFieldSettings
+     */
+    private $field_settings;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager    $field_manager
@@ -108,6 +118,7 @@ class TicketWithLayoutsType extends AbstractType
      * @param LanguageManager       $language_manager
      * @param CustomPerFieldManager $custom_per_field_manager
      * @param TicketLayoutHelper    $ticket_layout_helper
+     * @param TicketFieldSettings   $field_settings
      */
     public function __construct(
         CustomFieldManager    $field_manager,
@@ -116,15 +127,16 @@ class TicketWithLayoutsType extends AbstractType
         EntityManager         $em,
         LanguageManager       $language_manager,
         CustomPerFieldManager $custom_per_field_manager,
-        TicketLayoutHelper    $ticket_layout_helper
+        TicketLayoutHelper    $ticket_layout_helper,
+        TicketFieldSettings   $field_settings
     ) {
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->hierarchy_generator      = $hierarchy_generator;
-        $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->ticket_layout_helper     = $ticket_layout_helper;
+        $this->field_settings           = $field_settings;
     }
 
     /**
@@ -510,7 +522,6 @@ class TicketWithLayoutsType extends AbstractType
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
             'constraints' => [
-                new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
                 new Assert\NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
@@ -831,7 +842,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCategory(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canCategoryBeDisplayed($context)) {
+        if (!$this->field_settings->canCategoryBeDisplayed()) {
             return false;
         }
 
@@ -842,7 +853,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_category', [
+        return new FormField(TicketCategoryType::class, [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
         ]);
@@ -855,7 +866,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createPriority(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canPriorityBeDisplayed($context)) {
+        if (!$this->field_settings->canPriorityBeDisplayed()) {
             return false;
         }
 
@@ -866,7 +877,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_priority', [
+        return new FormField(TicketPriorityType::class, [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
         ]);
@@ -879,7 +890,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createWorkflow(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canWorkflowBeDisplayed($context)) {
+        if (!$this->field_settings->canWorkflowBeDisplayed()) {
             return false;
         }
 
@@ -890,7 +901,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_workflow', [
+        return new FormField(TicketWorkflowType::class, [
             'label' => $this->phrase('portal.forms.label_workflow'),
         ]);
     }
@@ -902,7 +913,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createProduct(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canProductBeDisplayed($context)) {
+        if (!$this->field_settings->canProductBeDisplayed()) {
             return false;
         }
 
@@ -913,7 +924,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_product', [
+        return new FormField(TicketProductType::class, [
             'placeholder' => '',
         ]);
     }

@@ -50,9 +50,9 @@ return array(
     'api.error_codes.invalid_api_token'              => 'Invalid API token.',
     'api.error_codes.bad_credentials'                => 'Bad credentials.',
     # Length
-    'api.error_codes.length_too_long'  => 'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.',
-    'api.error_codes.length_too_short' => 'This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.',
-    'api.error_codes.length_invalid'   => 'This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.',
+    'api.error_codes.length_too_long'  => 'This value is too long. It should have {{ limit }} characters or less.',
+    'api.error_codes.length_too_short' => 'This value is too short. It should have {{ limit }} characters or more.',
+    'api.error_codes.length_invalid'   => 'This value should have exactly {{ limit }} characters.',
     'api.error_codes.invalid_charset'  => 'This value does not match the expected {{ charset }} charset.',
     # NotNull/NotBlank
     'api.error_codes.required' => 'This value should not be blank.',
@@ -60,7 +60,6 @@ return array(
     'api.error_codes.person_not_found'            => 'Person with identifier "{{ value }}" not found.',
     'api.error_codes.person_not_agent'            => 'Person with identifier "{{ value }}" is not agent.',
     'api.error_codes.person_not_user'             => 'Person with identifier "{{ value }}" is not user.',
-    'api.error_codes.wrong_length'                => 'The value must be at least {{ limit }} characters in length.',
     'api.error_codes.bad_choice'                  => 'One or more of the given values is invalid.',
     'api.error_codes.unique_entity'               => 'This value already exists in the system.',
     'api.error_codes.invalid_email'               => 'This value "{{ value }}" is not a valid email address.',
@@ -75,8 +74,8 @@ return array(
     'api.error_codes.email_wrong_validation_code' => 'Wrong email validation code.',
     'api.error_codes.already_in_organization'     => 'That user is already in an organization.',
     'api.error_codes.not_unique_collection'       => 'One or more of the given values is not unique.',
-    'api.error_codes.too_few_elements'            => 'This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.',
-    'api.error_codes.too_many_elements'           => 'This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.',
+    'api.error_codes.too_few_elements'            => 'This collection should contain {{ limit }} elements or more.',
+    'api.error_codes.too_many_elements'           => 'This collection should contain {{ limit }} elements or less.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',

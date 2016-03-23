@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,31 +29,26 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
+
+use Application\DeskPRO\Entity\TicketWorkflow;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class CategoryType.
+ * Class WorkflowType.
  */
-class CategoryType extends AbstractType
+class TicketWorkflowType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_category';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getParent()
     {
-        return 'entity_hierarchy';
+        return EntityType::class;
     }
 
     /**
@@ -62,11 +57,16 @@ class CategoryType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'choice_list' => function (Options $options) {
-                /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
-
-                return $hierarchy_generator->generateTicketCategoriesHierarchy()->getChoiceList();
+            'class'         => TicketWorkflow::class,
+            'property'      => 'title',
+            'empty_data'    => null,
+            'required'      => true,
+            'query_builder' => function (EntityRepository $repository) {
+                return $repository
+                    ->createQueryBuilder('w')
+                    ->select('w')
+                    ->addOrderBy('w.display_order')
+                ;
             },
         ]);
     }

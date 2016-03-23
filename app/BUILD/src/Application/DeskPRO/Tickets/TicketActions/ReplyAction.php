@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -64,13 +65,16 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * {@inheritdoc}
      */
     public function setPersonContext(Person $person)
     {
         $this->person_context = $person;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function checkPermission(Ticket $ticket, Person $person)
     {
         if (!$person->PermissionsManager->TicketChecker->canReply($ticket, 'reply')) {
@@ -81,9 +85,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Apply the property to the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function apply(Ticket $ticket)
     {
@@ -153,15 +155,19 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * Get an array of actions that would be performed on the ticket.
-     *
-     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     * {@inheritdoc}
      */
     public function getApplyActions(Ticket $ticket)
     {
-        return array(
-            array('action' => 'reply', 'reply_text' => $this->reply_text, 'attach_ids' => $this->attach_ids, 'is_html' => $this->is_html, 'person_id' => $this->person_id),
-        );
+        return [
+            [
+                'action'     => 'reply',
+                'reply_text' => $this->reply_text,
+                'attach_ids' => $this->attach_ids,
+                'is_html'    => $this->is_html,
+                'person_id'  => $this->person_id,
+            ],
+        ];
     }
 
     /**
@@ -193,9 +199,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-     *
-     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
     {
@@ -203,7 +207,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription($as_html = true)
     {
