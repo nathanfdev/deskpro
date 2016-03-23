@@ -46,20 +46,20 @@ export const massActionsSelector = createSelector(
       { label: 'Workflow', options: workflowOptions, param: 'set_workflow', type: 'set_action' },
       { label: 'Language', options: languagesOptions, param: 'set_language', type: 'set_action' }
     ];
-    massActions.push({ label: 'Set', type: 'menu', param: 'other', options: setOptions });
+    massActions.push({ label: 'Set', type: 'menu', param: 'set_menu', options: setOptions });
 
     // Followers options
     const followerOptions = agents.toArray().map(type => ({ value: type.get('id'), label: type.get('name') }));
 
-    massActions.push({ label: 'Followers', type: 'select_action', param: 'followers', options: followerOptions });
+    massActions.push({ label: 'Followers', type: 'select_action', param: 'set_followers', options: followerOptions });
 
     // Reply options
     massActions.push({ label: 'Reply', type: 'set_action', param: 'reply', options: [] });
 
     // Other options
     const otherOptions = [
-      { label: 'Delete', param: 'delete' },
-      { label: 'Spam', param: 'mark_as_spam' }
+      { label: 'Delete', value: 'delete' },
+      { label: 'Mark as Spam', value: 'mark_as_spam' }
     ];
     massActions.push({
       icon: 'fa-asterisk',

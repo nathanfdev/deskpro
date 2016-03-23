@@ -40,7 +40,7 @@ export class MassActionDropdown extends Component {
       );
     } else if (item.type === 'select_action') {
       return (
-        <MultipleActionChoiceContainer options={item.options}
+        <MultipleActionChoiceContainer item={item}
                                        setParams={setMassActionsParams}
                                        currentParams={currentParams}
                                        resetSingleAction={resetParam}/>

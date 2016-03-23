@@ -49,6 +49,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetStatusCategoryActi
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetTypeAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetDueDateAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task\SetProjectAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetFollowersAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetProductAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets\SetWorkflowAction;
@@ -105,6 +106,9 @@ class ActionCollection
                     break;
                 case AbstractAction::SET_LANGUAGE_ACTION:
                     $this->addAction(new SetLanguageAction(['id' => $options]));
+                    break;
+                case AbstractAction::SET_FOLLOWERS_ACTION:
+                    $this->addAction(new SetFollowersAction(['ids' => $options]));
                     break;
                 case AbstractAction::SET_PRODUCT_ACTION:
                     $this->addAction(new SetProductAction(['id' => $options]));

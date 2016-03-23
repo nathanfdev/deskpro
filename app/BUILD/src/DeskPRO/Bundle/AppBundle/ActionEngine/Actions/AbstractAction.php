@@ -44,6 +44,7 @@ abstract class AbstractAction implements ActionInterface
     const SET_INT_CATEGORY_ACTION    = 'set_int_category';
     const SET_DUE_DATE_ACTION        = 'set_due_date';
     const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
+    const SET_FOLLOWERS_ACTION       = 'set_followers';
     const SET_LANGUAGE_ACTION        = 'set_language';
     const SET_PROJECT_ACTION         = 'set_project';
     const SET_PRODUCT_ACTION         = 'set_product';

@@ -61,3 +61,8 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
+  action_engine.tickets.set_followers:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetFollowersAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
