@@ -134,6 +134,18 @@ class ActionCollection
                 case AbstractAction::MARK_AS_SPAM_ACTION:
                     $this->addAction(new MarkAsSpamAction());
                     break;
+                case AbstractAction::SET_OF_ACTIONS:
+                    foreach ($options as $type) {
+                        switch ($type) {
+                            case AbstractAction::DELETE_ACTION:
+                                $this->addAction(new DeleteAction());
+                                break;
+                            case AbstractAction::MARK_AS_SPAM_ACTION:
+                                $this->addAction(new MarkAsSpamAction());
+                                break;
+                        }
+                    }
+                    break;
             }
         }
     }

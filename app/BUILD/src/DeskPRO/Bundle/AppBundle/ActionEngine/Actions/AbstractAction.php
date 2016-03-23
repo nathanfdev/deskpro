@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 abstract class AbstractAction implements ActionInterface
 {
+    const SET_OF_ACTIONS             = 'set_of_actions';
     const APPROVE_ACTION             = 'approve';
     const ASSIGN_ACTION              = 'assign';
     const DELETE_ACTION              = 'delete';

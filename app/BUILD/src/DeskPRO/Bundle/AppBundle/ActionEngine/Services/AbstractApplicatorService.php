@@ -65,6 +65,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     public function apply(array $ids, array $actions)
     {
         $entities = $this->getEntities($this->class, $ids);
+        print_r($actions);
         $this->actionCollection->prepare($actions);
         /** @var ActionInterface $action */
         foreach ($this->actionCollection->getActions() as $action) {

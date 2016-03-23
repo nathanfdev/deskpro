@@ -64,7 +64,7 @@ export const massActionsSelector = createSelector(
     massActions.push({
       icon: 'fa-asterisk',
       type: 'select_action',
-      param: 'other',
+      param: 'set_of_actions',
       options: otherOptions
     });
 
