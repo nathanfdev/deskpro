@@ -147,7 +147,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     loadLogo: () ->
-      @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data.url)
+      @$http.get('/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
 
     upload: (files) =>
       for file in files
