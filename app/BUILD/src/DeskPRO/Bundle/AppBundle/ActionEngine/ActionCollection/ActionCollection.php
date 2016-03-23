@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\AssignAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\DeleteAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\MarkAsSpamAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\RemoveLabelsAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetIntCategoryAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetIntStatusAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\SetLanguageAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback\SetCategoryAction;
@@ -98,6 +99,9 @@ class ActionCollection
                     break;
                 case AbstractAction::SET_CATEGORY_ACTION:
                     $this->addAction(new SetCategoryAction(['input' => $options]));
+                    break;
+                case AbstractAction::SET_INT_CATEGORY_ACTION:
+                    $this->addAction(new SetIntCategoryAction(['id' => $options]));
                     break;
                 case AbstractAction::SET_LANGUAGE_ACTION:
                     $this->addAction(new SetLanguageAction(['id' => $options]));

@@ -41,7 +41,7 @@ class SetWorkflowAction extends AbstractAction implements ActionWithOptionsInter
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('id');
-        $resolver->setAllowedTypes('id', 'int');
+        $resolver->setAllowedTypes('id', ['string', 'int']);
         $resolver->setAllowedValues(
             'id',
             function ($value) {

@@ -63,6 +63,7 @@ export class ActionMenu extends Component {
                             filter={option}
                             state={currentParams}
                             setParamsAction={setParams}
+                            stateValue={this.stateValue}
                             unsetParams={resetSingleAction}/>
       );
     }

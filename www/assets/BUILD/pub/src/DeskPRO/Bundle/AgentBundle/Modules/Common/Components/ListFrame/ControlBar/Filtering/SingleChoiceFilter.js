@@ -43,8 +43,9 @@ export class SingleChoiceFilter extends Component {
         <Menu>
           <SingleChoicePanel title={label}
                              depth
-                             currentParams={state.get(param)}
+                             currentParams={state}
                              setParams={setParamsAction}
+                             resetSingleAction={unsetParams}
                              quickFilter={quickFilter}
                              item={filter}/>
         </Menu>

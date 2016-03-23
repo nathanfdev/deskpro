@@ -30,13 +30,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class SetProductAction extends AbstractAction implements ActionWithOptionsInterface
+class SetIntCategoryAction extends AbstractAction implements ActionWithOptionsInterface
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {

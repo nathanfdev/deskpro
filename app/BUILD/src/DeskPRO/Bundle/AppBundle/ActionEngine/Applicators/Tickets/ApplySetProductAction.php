@@ -34,13 +34,25 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Doctrine\ORM\EntityManager;
 
 class ApplySetProductAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
+    /** @var  EntityManager */
+    protected $em;
     /** @var  Product */
     private $product;
+    /** @var  TicketManager */
+    private $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
+    {
+        parent::__construct($em);
+        $this->tm = $tm;
+    }
 
     /**
      * @param Ticket[] $tickets
@@ -50,6 +62,8 @@ class ApplySetProductAction extends AbstractActionApplicator implements ActionAp
         $this->init();
         foreach ($tickets as $ticket) {
             $ticket->setProduct($this->product);
+            $context = $this->tm->createAgentExecutorContext(null, 'set_product', 'mass_actions');
+            $this->tm->saveTicket($ticket, $context);
         }
     }
 

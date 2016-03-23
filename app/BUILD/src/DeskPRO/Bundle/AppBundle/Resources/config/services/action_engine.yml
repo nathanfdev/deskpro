@@ -12,6 +12,11 @@ services:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskApplicatorService
     arguments:
       - "@service_container"
+
+# --------------------------
+# Tickets action applicators
+# --------------------------
+
   action_engine.tickets:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketApplicatorService
     arguments:
@@ -36,4 +41,23 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
-
+  action_engine.tickets.set_product:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetProductAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+  action_engine.tickets.set_workflow:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetWorkflowAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+  action_engine.tickets.set_language:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetLanguageAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"
+  action_engine.tickets.set_int_category:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetCategoryAction
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_manager"

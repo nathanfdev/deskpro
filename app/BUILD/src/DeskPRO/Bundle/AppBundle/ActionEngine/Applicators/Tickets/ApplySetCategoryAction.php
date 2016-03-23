@@ -32,19 +32,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use Doctrine\ORM\EntityManager;
 
-class ApplySetLanguageAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  Language */
-    private $language;
     /** @var  EntityManager */
     protected $em;
+    /** @var  TicketCategory */
+    private $category;
     /** @var  TicketManager */
     private $tm;
 
@@ -61,18 +61,15 @@ class ApplySetLanguageAction extends AbstractActionApplicator implements ActionA
     {
         $this->init();
         foreach ($tickets as $ticket) {
-            $ticket->setLanguage($this->language);
+            $ticket->setCategory($this->category);
             $context = $this->tm->createAgentExecutorContext(null, 'set_category', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
     }
 
-    /**
-     * Fetch language(Language).
-     */
     private function init()
     {
         $id             = $this->options['id'];
-        $this->language = $this->em->getRepository('DeskPRO:Language')->find($id);
+        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($id);
     }
 }

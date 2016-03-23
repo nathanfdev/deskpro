@@ -41,6 +41,7 @@ abstract class AbstractAction implements ActionInterface
     const DELETE_ACTION              = 'delete';
     const MARK_AS_SPAM_ACTION        = 'mark_as_spam';
     const SET_CATEGORY_ACTION        = 'set_category';
+    const SET_INT_CATEGORY_ACTION    = 'set_int_category';
     const SET_DUE_DATE_ACTION        = 'set_due_date';
     const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
     const SET_LANGUAGE_ACTION        = 'set_language';

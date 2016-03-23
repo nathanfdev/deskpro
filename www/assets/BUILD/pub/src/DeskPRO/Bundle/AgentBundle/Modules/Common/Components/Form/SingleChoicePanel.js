@@ -14,7 +14,6 @@ export class SingleChoicePanel extends Component {
 
   render() {
     const { item, setParams, currentParams, depth, resetSingleAction } = this.props;
-    console.log(currentParams);
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;

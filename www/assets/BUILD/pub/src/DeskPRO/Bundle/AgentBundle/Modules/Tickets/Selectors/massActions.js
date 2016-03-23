@@ -42,7 +42,7 @@ export const massActionsSelector = createSelector(
 
     const setOptions = [
       { label: 'Product', options: productOptions, param: 'set_product', type: 'set_action' },
-      { label: 'Category', options: categoryOptions, param: 'set_category', type: 'set_action' },
+      { label: 'Category', options: categoryOptions, param: 'set_int_category', type: 'set_action' },
       { label: 'Workflow', options: workflowOptions, param: 'set_workflow', type: 'set_action' },
       { label: 'Language', options: languagesOptions, param: 'set_language', type: 'set_action' }
     ];

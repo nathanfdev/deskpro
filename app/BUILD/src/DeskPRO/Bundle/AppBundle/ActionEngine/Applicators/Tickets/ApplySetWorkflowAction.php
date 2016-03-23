@@ -34,13 +34,25 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Doctrine\ORM\EntityManager;
 
 class ApplySetWorkflowAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     /** @var  TicketWorkflow */
     private $workflow;
+    /** @var  EntityManager */
+    protected $em;
+    /** @var  TicketManager */
+    private $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
+    {
+        parent::__construct($em);
+        $this->tm = $tm;
+    }
 
     /**
      * @param Ticket[] $tickets
@@ -50,6 +62,8 @@ class ApplySetWorkflowAction extends AbstractActionApplicator implements ActionA
         $this->init();
         foreach ($tickets as $ticket) {
             $ticket->setWorkflow($this->workflow);
+            $context = $this->tm->createAgentExecutorContext(null, 'set_workflow', 'mass_actions');
+            $this->tm->saveTicket($ticket, $context);
         }
     }
 
