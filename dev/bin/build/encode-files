@@ -1,0 +1,95 @@
+#!/usr/bin/env php
+<?php
+
+namespace DpDev\Build;
+
+/*
+ * This script encodes/obfuscates certain files and then replaces their regular path
+ * with a file that simple require()'s the encoded one.
+ */
+
+class EncodeFiles
+{
+    /**
+     * @var string
+     */
+    private $baseDir;
+
+    /**
+     * @var string
+     */
+    private $targetDir = '/sys/enc';
+
+    /**
+     * @var string[]
+     */
+    private $fileList = [
+        '/src/DeskPRO/Bundle/AppBundle/EventListener/LicenseCheckListener.php',
+        '/sys/License.php'
+    ];
+
+    public function __construct()
+    {
+        $this->baseDir = realpath(__DIR__.'/../../../');
+    }
+
+    public function run()
+    {
+        $realTargetDir = $this->getAppFilePath('/sys/enc');
+
+        if (!is_dir($realTargetDir)) {
+            mkdir($realTargetDir);
+            chmod($realTargetDir, 0755);
+        }
+
+        foreach ($this->fileList as $file) {
+            $this->encodeFile($file);
+        }
+    }
+
+    private function encodeFile($file)
+    {
+        $targetName     = md5($file) . '.php';
+        $targetPath     = $this->targetDir . '/' . $targetName;
+        $realTargetPath = $this->getAppFilePath($targetPath);
+        $srcPath        = $this->getAppFilePath($file);
+
+        $enc = $this->getEncoder();
+
+        $result = $enc->encodeFile($srcPath);
+        file_put_contents($realTargetPath, $result);
+
+        $numUp = substr_count($file, '/') - 1;
+        if ($numUp) {
+            $navUp = trim(str_repeat('../', $numUp), '/');
+        } else {
+            $navUp = '';
+        }
+
+        // Replace original file with alias to the encoded one
+        $aliasCode = "<?php require_once __DIR__.'/{$navUp}{$targetPath}';\n";
+        file_put_contents($srcPath, $aliasCode);
+    }
+
+    /**
+     * @return \DpDev\PhpEncoder\Encoder
+     */
+    private function getEncoder()
+    {
+        require_once __DIR__.'/lib/PhpEncoder/Encoder.php';
+        $enc = new \DpDev\PhpEncoder\Encoder();
+        return $enc;
+    }
+
+    /**
+     * @param string $file
+     * @return string
+     */
+    private function getAppFilePath($file)
+    {
+        return $this->baseDir . '/app/BUILD' . $file;
+    }
+}
+
+$x = new EncodeFiles();
+$x->run();
