@@ -47,38 +47,38 @@ class PhraseProject
     {
         switch ($projectId) {
             case 'portal':
-                $files = Finder::create()
-                    ->in([
-                        $langDir.'/portal',
-                        $langDir.'/user',
-                    ])
-                    ->files()
-                    ->name('*.php');
+                $dirs = [
+                    $langDir.'/portal',
+                    $langDir.'/user',
+                ];
                 break;
 
             case 'agent':
-                $files = Finder::create()
-                    ->in([
-                        $langDir.'/agent',
-                    ])
-                    ->files()
-                    ->name('*.php');
+                $dirs = [$langDir.'/agent'];
                 break;
 
             case 'other':
-                $files = Finder::create()
-                    ->in([
-                        $langDir.'/adm',
-                        $langDir.'/admin',
-                        $langDir.'/api',
-                    ])
-                    ->files()
-                    ->name('*.php');
+                $dirs = [
+                    $langDir.'/adm',
+                    $langDir.'/admin',
+                    $langDir.'/api',
+                ];
                 break;
 
             default:
                 throw new \InvalidArgumentException();
         }
+
+        $dirs = array_filter($dirs, function ($v) { return is_dir($v); });
+
+        if (!$dirs) {
+            return new self([]);
+        }
+
+        $files = Finder::create()
+            ->in($dirs)
+            ->files()
+            ->name('*.php');
 
         return new self(iterator_to_array($files));
     }
