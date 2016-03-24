@@ -14,6 +14,7 @@ export const ticketsListInitialState = {
   },
   pagination: {},
   elements: [], // array of filtered tickets IDs
+  selected: [],
 
   tableVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status'],
   cardVisibleFields: ['id', 'urgency', 'person', 'agent', 'subject', 'status', 'date_created', 'labels']
