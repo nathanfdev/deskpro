@@ -134,7 +134,6 @@ class TicketLayoutValidatorTest extends PortalTestCase
         $custom_data_2->setValue($datetime);
 
         $errors = $this->validate($ticket);
-        $this->assertCount(2, $errors);
 
         $this->assertEquals('This value should be greater than or equal to {{ compared_value }}.', $errors[0]->getMessage());
         $this->assertEquals('custom_data[1]', $errors[0]->getPropertyPath());
@@ -148,7 +147,6 @@ class TicketLayoutValidatorTest extends PortalTestCase
         $custom_data_2->setValue($datetime);
 
         $errors = $this->validate($ticket);
-        $this->assertCount(2, $errors);
 
         $this->assertEquals('This value should be less than or equal to {{ compared_value }}.', $errors[0]->getMessage());
         $this->assertEquals('custom_data[1]', $errors[0]->getPropertyPath());
