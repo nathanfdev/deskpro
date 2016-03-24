@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -95,6 +94,8 @@ class ValidatorErrorCodeFactory
                     return ApiErrors::PROFILE_URL;
                 case UniqueEntity::class:
                     return ApiErrors::UNIQUE_ENTITY;
+                case AppAssert\ProjectMember::class:
+                    return ApiErrors::EXACTLY_ONE_SHOULD_BE_SET;
             }
         }
 

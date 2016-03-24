@@ -26,19 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Entity\Task as TaskEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task as TaskModel;
 use Doctrine\DBAL\Connection;
 
 /**
- * Class TaskTransformer.
+ * Class TaskHandler.
  */
-class TaskTransformer extends AbstractDataSerializerTransformer
+class TaskHandler extends AbstractEntityHandler
 {
     /**
      * @var Connection
@@ -48,116 +46,45 @@ class TaskTransformer extends AbstractDataSerializerTransformer
     /**
      * @var int[]
      */
-    private $count_ids;
+    private $ids;
 
     /**
-     * @var null
+     * @var array
      */
     private $commentCounts;
 
     /**
-     * @var null
+     * @var array
      */
     private $subtaskCounts;
 
-    /**
-     * Constructor.
-     *
-     * @param Connection $connection
-     */
     public function __construct(Connection $connection)
     {
-        $this->connection    = $connection;
-        $this->count_ids     = [];
-        $this->commentCounts = null;
-        $this->subtaskCounts = null;
+        $this->connection = $connection;
+    }
+
+    /**
+     * @param TaskEntity $entity
+     *
+     * @return TaskModel
+     */
+    protected function createModel($entity)
+    {
+        $id             = $entity->getId();
+        $this->ids[]    = $id;
+        $comment_count  = new CallbackDeferredProperty([$this, 'getCommentCount'], [$id]);
+        $subtasks_total = new CallbackDeferredProperty([$this, 'getSubtasksCount'], [$id]);
+        $subtasks_done  = new CallbackDeferredProperty([$this, 'getSubtasksDone'], [$id]);
+
+        return new TaskModel($entity, $comment_count, $subtasks_total, $subtasks_done);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return [
-            'id',
-            'title',
-            'is_done',
-            'percent_complete',
-            'date_created',
-            'task_type',
-            'date_due',
-            'date_event_start',
-            'date_event_end',
-            'creator',
-            'visibility',
-            'project',
-            'list',
-            'urgency',
-            'linked_tickets',
-            'linked_chats',
-            'linked_articles',
-            'date_done',
-            'display_order',
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        $labels = [];
-
-        if (!empty($data->getLabels())) {
-            foreach ($data->getLabels() as $label) {
-                $labels[] = $label->getLabel();
-            }
-        }
-
-        $assignees = $data->getAssigned();
-
-        $grouped = [
-            'departments' => [],
-            'teams'       => [],
-            'agents'      => [],
-        ];
-
-        if (!empty($assignees)) {
-            foreach ($assignees as $assigned) {
-                if (!empty($assigned->getDepartment())) {
-                    $grouped['departments'][] = $assigned->getDepartment()->getId();
-                } elseif (!empty($assigned->getTeam())) {
-                    $grouped['teams'][] = $assigned->getTeam()->getId();
-                } else {
-                    $grouped['agents'][] = $assigned->getPerson()->getId();
-                }
-            }
-        }
-
-        $id                = $data->getId();
-        $this->count_ids[] = $id;
-
-        return [
-            'departments'   => $grouped['departments'],
-            'teams'         => $grouped['teams'],
-            'agents'        => $grouped['agents'],
-            'labels'        => $labels,
-            'comment_count' => new CallbackDeferredProperty(
-                [$this, 'getCommentCount'],
-                [$id]
-            ),
-            'subtasks_total' => new CallbackDeferredProperty(
-                [$this, 'getSubtasksCount'],
-                [$id]
-            ),
-            'subtasks_done' => new CallbackDeferredProperty(
-                [$this, 'getSubtasksDone'],
-                [$id]
-            ),
-        ];
+        return TaskEntity::class;
     }
 
     /**
@@ -179,7 +106,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                     GROUP BY task_id'
             );
 
-            $taskIds = implode(',', $this->count_ids);
+            $taskIds = implode(',', $this->ids);
             $statement->bindValue('task_ids', $taskIds);
 
             $statement->execute();
@@ -241,7 +168,7 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                     GROUP BY task_id'
             );
 
-            $taskIds = implode(',', $this->count_ids);
+            $taskIds = implode(',', $this->ids);
             $statement->bindValue('task_ids', $taskIds);
 
             $statement->execute();

@@ -28,15 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
+use Application\DeskPRO\Entity\Department as DepartmentEntity;
+use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
 
-/**
- * Class Timezone.
- */
-class Timezone
+class Department
 {
     /**
-     * Timezone ID.
+     * The unique ID.
      *
      * @JMS\Type("integer")
      *
@@ -45,7 +44,16 @@ class Timezone
     protected $id;
 
     /**
-     * Timezone Title.
+     * Parent Department entity.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var DepartmentEntity
+     */
+    protected $parent = null;
+
+    /**
+     * Department`s title.
      *
      * @JMS\Type("string")
      *
@@ -54,14 +62,48 @@ class Timezone
     protected $title;
 
     /**
-     * Timezone constructor.
+     * Given by user Department`s title.
      *
-     * @param int    $id
-     * @param string $title
+     * @JMS\Type("string")
+     *
+     * @var string
      */
-    public function __construct($id, $title)
+    protected $user_title = '';
+
+    /**
+     * Are tickets enabled for this Department?
+     *
+     * 
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $is_tickets_enabled = true;
+
+    /**
+     * Are chats enabled for this Department?
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $is_chat_enabled = true;
+
+    /**
+     * Avatar for this department.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
+     *
+     * @var Avatar
+     */
+    protected $avatar;
+
+    public function __construct(DepartmentEntity $department, Avatar $avatar)
     {
-        $this->id    = $id;
-        $this->title = $title;
+        $this->id                 = $department->getId();
+        $this->title              = $department->getTitle();
+        $this->user_title         = $department->getUserTitle();
+        $this->is_chat_enabled    = $department->isChatEnabled();
+        $this->is_tickets_enabled = $department->isTicketsEnabled();
     }
 }

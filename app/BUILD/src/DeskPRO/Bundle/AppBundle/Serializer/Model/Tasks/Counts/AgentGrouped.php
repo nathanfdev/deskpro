@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,40 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class TaskSubtaskTransformer.
+ * Class AgentGrouped.
  */
-class TaskSubtaskTransformer extends AbstractDataSerializerTransformer
+class AgentGrouped
 {
     /**
-     * {@inheritdoc}
+     * Agent ID this count of tasks attached to.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
-    {
-        return [
-            'id',
-            'task',
-            'title',
-            'is_done',
-            'display_order',
-            'date_completed',
-            'creator',
-        ];
-    }
+    protected $agent_id;
 
     /**
-     * {@inheritdoc}
+     * Count of tasks assigned to this agent.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    protected $tasks_count;
+
+    /**
+     * AgentGrouped constructor.
+     *
+     * @param int $agent_id
+     * @param int $tasks_count
+     */
+    public function __construct($agent_id, $tasks_count)
     {
-        return [];
+        $this->agent_id    = $agent_id;
+        $this->tasks_count = $tasks_count;
     }
 }

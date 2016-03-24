@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,25 +29,18 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use DeskPRO\Bundle\AppBundle\Form\Type\TaskCommentType;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,220 +48,36 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TaskCommentsController.
  *
  * @ApiModes("all")
+ * @Annotations\Route("/task_comments")
+ * @ApiDocSection("Tasks")
  */
-class TaskCommentsController extends BaseController implements ClassResourceInterface
+class TaskCommentsController extends CrudController
 {
-    /**
-     * @ApiDoc(
-     *      description="get a list of comments",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("/task_comments", name="api_task_comments")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function cgetAction(Request $request)
-    {
-        $comments = $this->getDoctrine()->getManager()->createQueryBuilder()->select('c')
-            ->from('App:TaskComment', 'c')->orderBy('c.date_created', 'ASC');
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($comments));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->dataSerialize($pager),
-            Response::HTTP_OK
-        );
-    }
+    public static $entity        = TaskComment::class;
+    public static $output_entity = TaskComment::class;
+    public static $type          = TaskCommentType::class;
+    public static $listSort      = 'date_created';
+    public static $listOrder     = 'asc';
 
     /**
      * @ApiDoc(
-     *      description="get a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the comment",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskComment"
-     * )
-     * @Get("/task_comments/{id}", name="api_task_comments_get")
-     *
-     * @param int $id
-     *
-     * @return View
-     */
-    public function getAction($id)
-    {
-        $comment = $this->getTaskComment($id);
-
-        if (empty($comment)) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create(
-            $this->dataSerialize($comment),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @ApiDoc(
-     *      description="create a new comment",
-     *      input={"class"="comment", "name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskComment"
-     * )
-     * @Post("/task_comments", name="api_task_comments_post")
-     *
-     * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        $comment = new TaskComment($this->getUser());
-
-        return $this->handleFormSubmission($request, $comment);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="update a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="comment", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Put("/task_comments/{id}", name="api_task_comments_put")
-     *
-     * @param Request $request
-     * @param $id
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    public function putAction(Request $request, $id)
-    {
-        $comment = $this->getTaskComment($id);
-
-        return $this->handleFormSubmission($request, $comment);
-    }
-
-    /**
-     * @APIDoc(
-     *      description="delete a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Delete("/task_comments/{id}", name="api_task_comments_delete")
-     *
-     * @param $id
-     *
-     * @return View
-     */
-    public function deleteAction($id)
-    {
-        $comment = $this->getTaskComment($id);
-        $this->getDoctrine()->getManager()->remove($comment);
-        $this->getDoctrine()->getManager()->flush();
-
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @APIDoc(
-     *      description="get attachments for a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the comment",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tasks",
+     *     description="get attachments for a comment",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the comment", "dataType"="integer"}
+     *     },
+     *     filters={
+     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer", "required"=false},
+     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned with fetched attachments list",
+     *         404="Returned if we can't find task comment with given ID"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
      * )
      *
-     * @Get("/task_comments/{id}/attachments", name="api_task_comments_attachments_get")
+     * @Annotations\Get("/{id}/attachments", name="api_task_comments_attachments_get")
      *
      * @param Request $request
      * @param int     $id
@@ -277,7 +86,8 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
      */
     public function getAttachmentsAction(Request $request, $id)
     {
-        $comment = $this->getTaskComment($id);
+        /** @var TaskComment $comment */
+        $comment = $this->findEntity($id, $request);
 
         if (empty($comment)) {
             throw $this->createNotFoundException();
@@ -299,58 +109,12 @@ class TaskCommentsController extends BaseController implements ClassResourceInte
     }
 
     /**
-     * @param int $id
+     * @param Request $request
      *
      * @return TaskComment
      */
-    protected function getTaskComment($id)
+    protected function instantiateEntity(Request $request)
     {
-        $id      = (int) $id;
-        $comment = $this->getDoctrine()->getManager()->getRepository('App:TaskComment')->find($id);
-
-        if (!$comment) {
-            throw $this->createNotFoundException();
-        }
-
-        return $comment;
-    }
-
-    /**
-     * Will be abstracted for use by other controllers.
-     *
-     * @param Request     $request
-     * @param TaskComment $comment
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    protected function handleFormSubmission(Request $request, TaskComment $comment)
-    {
-        $status = $comment->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task_comment', $comment)->getForm();
-
-        $submitted = $request->request->all();
-
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($comment);
-            $this->getDoctrine()->getManager()->flush();
-
-            $location = $this->generateUrl('api_task_comments_get', array('id' => $comment->getId()));
-
-            return View::create(
-                $this->dataSerialize($comment),
-                $status,
-                array(
-                    'Location' => $location,
-                )
-            );
-        }
-
-        throw new InvalidFormException($form);
+        return new static::$entity($this->getUser());
     }
 }

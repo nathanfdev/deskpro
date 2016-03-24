@@ -26,56 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember as ProjectMemberEntity;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
+ * Class ProjectMemberValidator.
  */
-class TaskLinkedChat extends TaskLinkedItem
+class ProjectMemberValidator extends ConstraintValidator
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * Chat linked to task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
-     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
-     *
-     * @var ChatConversation
+     * {@inheritdoc}
      */
-    protected $chat;
-
-    /**
-     * @return ChatConversation
-     */
-    public function getChat()
+    public function validate($object, Constraint $constraint)
     {
-        return $this->chat;
-    }
+        if (!$object instanceof ProjectMemberEntity) {
+            throw new UnexpectedTypeException($constraint, ProjectMemberEntity::class);
+        }
 
-    /**
-     * @param ChatConversation $chat
-     *
-     * @return $this
-     */
-    public function setChat(ChatConversation $chat)
-    {
-        $this->setModelField('chat', $chat);
+        $fields = [
+            'team'       => $object->getTeam() ? 1 : 0,
+            'department' => $object->getDepartment() ? 1 : 0,
+            'person'     => $object->getPerson() ? 1 : 0,
+        ];
 
-        return $this;
+        if (array_sum($fields) != 1) {
+            $this->context->addViolation(
+                ProjectMember::EXACTLY_ONE_SHOULD_BE_SET,
+                ['values' => implode(', ', array_keys($fields))]
+            );
+        }
     }
 }

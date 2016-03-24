@@ -53,7 +53,7 @@ cd $SCRIPT_DIR
     case "$MODE" in
         'api_permissions' | 'jms_serializer' | 'api_limits')
             echo "clearing $MODE cache in $ENV environment"
-            rm -rf ../../var/kernel_cache/BUILD/$ENV/api_permissions/*
+            rm -rf ../../var/kernel_cache/BUILD/$ENV/$MODE/*
             ;;
         'api_doc')
             echo "clearing api_docs cache in $ENV environment"

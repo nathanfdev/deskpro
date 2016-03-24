@@ -64,8 +64,7 @@ Feature: /task_links endpoint
   "article": 2
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request

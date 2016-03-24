@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,32 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class TaskListTransformer.
+ * Class ProjectMember.
+ *
+ * @Annotation
  */
-class TaskListTransformer extends AbstractDataSerializerTransformer
+class ProjectMember extends Constraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
-    {
-        return ['id', 'title', 'project'];
-    }
+    const EXACTLY_ONE_SHOULD_BE_SET = 'exactly_one_value_should_be_set';
 
     /**
      * {@inheritdoc}
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public function getTargets()
     {
-        return [];
+        return self::CLASS_CONSTRAINT;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,9 +38,12 @@ use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @JMS\ExclusionPolicy("all")
+ *
  * @ORM\Entity
  * @ORM\Table(name="task_links", uniqueConstraints={
  *      @ORM\UniqueConstraint(name="ticket_unique", columns={"task_id", "ticket_id"}),
@@ -61,19 +64,31 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var Task
+     * Related task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @var Task
      */
     protected $task;
 

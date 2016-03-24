@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,32 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Department as DepartmentModel;
 
 /**
- * Class LabelTaskTransformer.
+ * Class TaskProjectHandler.
  */
-class LabelTaskTransformer extends AbstractDataSerializerTransformer
+class DepartmentHandler extends AbstractEntityHandler
 {
     /**
-     * {@inheritdoc}
+     * @var AvatarResolver
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    protected $resolver;
+
+    /**
+     * DepartmentHandler constructor.
+     *
+     * @param AvatarResolver $resolver
+     */
+    public function __construct(AvatarResolver $resolver)
     {
-        return ['id', 'label', 'task'];
+        $this->resolver = $resolver;
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return [];
+        return Department::class;
+    }
+
+    /**
+     * @param Department $entity
+     *
+     * @return DepartmentModel
+     */
+    protected function createModel($entity)
+    {
+        $avatar = $this->resolver->getAvatarModel($entity);
+
+        return new DepartmentModel($entity, $avatar);
     }
 }

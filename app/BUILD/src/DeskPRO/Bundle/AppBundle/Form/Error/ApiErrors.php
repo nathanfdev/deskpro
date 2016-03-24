@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
@@ -87,6 +86,7 @@ class ApiErrors
     const BANNED_EMAIL                = 'banned_email';
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
+    const EXACTLY_ONE_SHOULD_BE_SET   = 'exactly_one_value_should_be_set';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
