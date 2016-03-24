@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,22 +27,22 @@
  */
 
 return array(
-    'user.knowledgebase.article-viewed'       => 'Ten artykuł został przejrzany 1 raz|Ten artykuł został przejrzany razy - {{count}}',
-    'user.knowledgebase.article_not_found'    => 'Ten artykuł nie był znaleziony.',
+    'user.knowledgebase.article-viewed'           => 'Ten artykuł został przejrzany 1 raz|Ten artykuł został przejrzany razy - {{count}}',
+    'user.knowledgebase.article_not_found'        => 'Ten artykuł nie był znaleziony.',
     'user.knowledgebase.auto_action_on_date'      => 'Automatycznie {{action}} dnia {{date}}',
-    'user.knowledgebase.category_no-articles' => 'Ta kategoria na razie nie posiada artykułów.',
+    'user.knowledgebase.category_no-articles'     => 'Ta kategoria na razie nie posiada artykułów.',
     'user.knowledgebase.creating_pending_article' => 'Tworzenie artykułu oczekującego',
-    'user.knowledgebase.knowledgebase'        => 'Baza Wiedzy',
-    'user.knowledgebase.link_view-all'        => 'Zobacz 1 artykuł|Zobacz wszystkie artykuły: {{count}}',
-    'user.knowledgebase.related_articles'     => 'Powiązane artykuły',
+    'user.knowledgebase.knowledgebase'            => 'Baza Wiedzy',
+    'user.knowledgebase.link_view-all'            => 'Zobacz 1 artykuł|Zobacz wszystkie artykuły: {{count}}',
+    'user.knowledgebase.related_articles'         => 'Powiązane artykuły',
     'user.knowledgebase.sidebar_description'      => 'Nasza Baza Wiedzy zawiera 1 artykuł, napisany przez naszych pracowników, żeby pomóc Ci znaleźć odpowiedź na swoje pytanie|Nasza Baza Wiedzy zawiera {{count}} artykułów, napisanych przez naszych pracowników, żeby pomóc Ci znaleźć odpowiedź na swoje pytanie',
     'user.knowledgebase.subscribe-article'        => '<a href="{{link}}">Subskrybuj</a> ten artykuł i otrzymuj powiadomienia email, gdy jest aktualizowany.',
     'user.knowledgebase.subscribe-category'       => '<a href="{{link}}">Subskrybuj</a> tą kategorię i otrzymuj powiadomienia email, gdy publikowane są  nowe artykuły.',
-    'user.knowledgebase.title'                => 'Baza Wiedzy',
-    'user.knowledgebase.title-articles'       => 'Znaleziony 1 artykuł|Znalezionych artykułów - {{count}}',
-    'user.knowledgebase.title-articles-paged' => 'Pokazano artykuły od {{first}} do {{last}} z {{total}}',
-    'user.knowledgebase.title-categories'     => 'Znaleziona 1 podkategoria|Znalezionych podkategorii - {{count}}',
-    'user.knowledgebase.type_article'         => 'Artykuł',
+    'user.knowledgebase.title'                    => 'Baza Wiedzy',
+    'user.knowledgebase.title-articles'           => 'Znaleziony 1 artykuł|Znalezionych artykułów - {{count}}',
+    'user.knowledgebase.title-articles-paged'     => 'Pokazano artykuły od {{first}} do {{last}} z {{total}}',
+    'user.knowledgebase.title-categories'         => 'Znaleziona 1 podkategoria|Znalezionych podkategorii - {{count}}',
+    'user.knowledgebase.type_article'             => 'Artykuł',
     'user.knowledgebase.unsubscribe-article'      => 'Subskrybujesz ten artykuł i otrzymasz powiadomienie email, gdy zostanie zaktualiowany. <a href="{{link}}">Nie subskrybuj</a>.',
     'user.knowledgebase.unsubscribe-category'     => 'Subskrybujesz tą kategorię i otrzymasz powiadomienie email, gdy zostaną opublikowane nowe artykuły. <a href="{{link}}">Nie subskrybuj</a>.',
 );
