@@ -5,8 +5,8 @@ import { initialLoad } from '../../Actions/navActions';
 import { loadIndicator } from '../../Actions/listActions';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { massActionsSelector } from '../../Selectors/massActions';
-
 import { connect } from 'react-redux';
+
 @connect(state => ({
   selected: selectedSelector(state),
   actions: massActionsSelector(state)
@@ -25,13 +25,6 @@ export class MassActionContainer extends Component {
     });
   }
 
-
-  toggleExpanded = (event) => {
-    event.preventDefault();
-    this.setState({ expanded: !this.state.expanded });
-  };
-  collapse = () => this.setState({ expanded: false });
-
   render() {
     const { actions } = this.props;
 
@@ -42,7 +35,6 @@ export class MassActionContainer extends Component {
       loadIndicatorAction: loadIndicator,
       reloadNavAction: initialLoad
     };
-
 
     return (
       <MassActionBarContainer {...config} />
