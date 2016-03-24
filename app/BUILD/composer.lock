@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f2ca0f4ff70903a93ad8634e06e2e1d9",
-    "content-hash": "47774fe8d8d5f4806cf2a1ef9ca9678c",
+    "hash": "d9ad1f96454066195033573e454a9ce7",
+    "content-hash": "ac888028a75dfa469077d56b6c1f377c",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -4312,7 +4312,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/90c383e3c7ed679ee70040dc13413be1d0bf619b",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/fde1268c7a69f4dcad0ac7c2b254f0941a8d792d",
                 "reference": "90c383e3c7ed679ee70040dc13413be1d0bf619b",
                 "shasum": ""
             },
@@ -4355,6 +4355,41 @@
                 "saml"
             ],
             "time": "2016-03-07 09:59:17"
+        },
+        {
+            "name": "onesky/api-library-php5",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/onesky/api-library-php5.git",
+                "reference": "0b2907a4c62def5fc7590af467d8ec7574494b5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/onesky/api-library-php5/zipball/0b2907a4c62def5fc7590af467d8ec7574494b5a",
+                "reference": "0b2907a4c62def5fc7590af467d8ec7574494b5a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Onesky\\Api\\": "src/Onesky/Api/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP interface for OneSky Platform API",
+            "homepage": "https://github.com/onesky/api-library-php5",
+            "time": "2015-06-09 02:00:31"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -6406,7 +6441,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/BehatPageObjectExtension/zipball/faf0a08d55cb8179fb66317fc8f66a9896be0332",
+                "url": "https://api.github.com/repos/sensiolabs/BehatPageObjectExtension/zipball/2e6b3793673e889fa72dc86cdf3683f7e91c72b9",
                 "reference": "faf0a08d55cb8179fb66317fc8f66a9896be0332",
                 "shasum": ""
             },
@@ -7909,7 +7944,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/53f556beed129d4369d8c0ede0d2a4481cb76825",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/bb29a5384aa480df70d5c294c3e60775aa86230a",
                 "reference": "53f556beed129d4369d8c0ede0d2a4481cb76825",
                 "shasum": ""
             },
