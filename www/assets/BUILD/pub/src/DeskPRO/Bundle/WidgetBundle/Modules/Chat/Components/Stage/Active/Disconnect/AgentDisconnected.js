@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import { AgentAvatar } from '../../../../../Application/Components/Trigger/Popups/AgentAvatar';
 
 export class AgentDisconnected extends React.Component {
