@@ -33,22 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplyMarkAsSpamAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyMarkAsSpamAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    protected $em;
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
-
     /**
      * @param Ticket[] $tickets
      */

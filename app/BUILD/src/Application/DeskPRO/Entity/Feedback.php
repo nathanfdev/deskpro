@@ -490,7 +490,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\LabelFeedback[]
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getLabels()
     {

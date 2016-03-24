@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
@@ -63,7 +64,8 @@ class ActionTransformerTest extends DeskProTestCase
     public function actionToApplicator_should_return_ActionApplicatorInterface()
     {
         $transformer = $this->instance();
-        $action      = $transformer->arrayToActionApplicator('Feedback', self::$serializedArray);
+        $em          = $this->prophesize(EntityManager::class);
+        $action      = $transformer->actionToApplicator($em->reveal(), 'Feedback', self::$serializedArray['type']);
         $this->assertInstanceOf(ActionApplicatorInterface::class, $action);
     }
 
@@ -74,14 +76,13 @@ class ActionTransformerTest extends DeskProTestCase
     public function arrayToActionApplicator_should_raise_ActionApplicatorDoesNotExists_on_wrong_action()
     {
         $transformer = $this->instance();
+        $em          = $this->prophesize(EntityManager::class);
 
-        return $transformer->arrayToActionApplicator('Feedback', self::$wrongSerializedArray);
+        return $transformer->actionToApplicator($em->reveal(), 'Feedback', self::$wrongSerializedArray['type']);
     }
 
     private function instance()
     {
-        $em = $this->prophesize(EntityManager::class);
-
-        return new ActionTransformer($em->reveal());
+        return new ActionTransformer();
     }
 }

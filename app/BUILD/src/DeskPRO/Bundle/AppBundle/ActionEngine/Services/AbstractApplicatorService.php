@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\Container;
@@ -54,8 +53,8 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     {
         $this->container        = $container;
         $this->em               = $this->container->get('doctrine.orm.default_entity_manager');
-        $this->transformer      = new ActionTransformer();
-        $this->actionCollection = new ActionCollection();
+        $this->transformer      = $this->container->get('action_engine.action_transformer');
+        $this->actionCollection = $this->container->get('action_engine.action_collection');
     }
 
     /**
@@ -65,12 +64,12 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     public function apply(array $ids, array $actions)
     {
         $entities = $this->getEntities($this->class, $ids);
-        print_r($actions);
-        $this->actionCollection->prepare($actions);
+        $this->actionCollection->prepare($this->namespace, $actions);
         /** @var ActionInterface $action */
         foreach ($this->actionCollection->getActions() as $action) {
             $serialized = $action->serialize();
-            $options    = array_key_exists('options', $serialized) && $serialized['options'] ?
+            print_r($serialized);
+            $options = array_key_exists('options', $serialized) && $serialized['options'] ?
                 $serialized['options'] : [];
             $type       = ActionTypeCodes::getActionTypeCode($action);
             $applicator = $this->container->get(

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -46,7 +47,7 @@ class ApplyApproveAction extends AbstractActionApplicator implements ActionAppli
     {
         $this->init();
         foreach ($feedback as $item) {
-            if ($item->status === Feedback::STATUS_HIDDEN) {
+            if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
                 $item->setHiddenStatus();
                 $item->setStatus(Feedback::STATUS_ACTIVE);
                 $item->setStatusCategory($this->defaultStatusCategory);

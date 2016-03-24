@@ -40,6 +40,6 @@ class AssignAction extends AbstractAction implements ActionWithOptionsInterface
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('assign');
+        $resolver->setRequired('options');
     }
 }

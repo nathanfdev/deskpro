@@ -33,29 +33,17 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplySetStatusAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetStatusAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    protected $em;
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
-
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
         foreach ($tickets as $ticket) {
-            $ticket->setStatus($this->options['status']);
+            $ticket->setStatus($this->options);
             $context = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }

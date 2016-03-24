@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Feedback;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
@@ -40,10 +41,10 @@ class SetTypeAction extends AbstractAction implements ActionWithOptionsInterface
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_ID);
-        $resolver->setAllowedTypes(self::OPTION_ID, ['string', 'int']);
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', ['string', 'int']);
         $resolver->setAllowedValues(
-            self::OPTION_ID,
+            'options',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

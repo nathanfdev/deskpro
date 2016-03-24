@@ -44,7 +44,7 @@ abstract class AbstractActionApplicator
         $this->em = $em;
     }
 
-    public function setOptions(array $options)
+    public function setOptions($options)
     {
         $this->options = $options;
 

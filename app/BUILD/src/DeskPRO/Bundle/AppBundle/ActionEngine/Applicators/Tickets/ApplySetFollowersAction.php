@@ -34,25 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplySetFollowersAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  EntityManager */
-    protected $em;
-    /** @var  TicketManager */
-    private $tm;
     /** @var  Person[] */
     private $followers;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
 
     /**
      * @param Ticket[] $tickets
@@ -69,13 +56,12 @@ class ApplySetFollowersAction extends AbstractActionApplicator implements Action
 
     private function init()
     {
-        $ids = $this->options['ids'];
-        $qb  = $this->em->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $qb
             ->select('p')
             ->from('DeskPRO:Person', 'p')
             ->andWhere('p.id IN (:ids)')
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $this->options);
         $this->followers = $qb->getQuery()->getResult();
     }
 }

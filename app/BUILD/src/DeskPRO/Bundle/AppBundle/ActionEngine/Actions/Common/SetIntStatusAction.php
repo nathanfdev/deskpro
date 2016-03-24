@@ -40,8 +40,8 @@ class SetIntStatusAction extends AbstractAction implements ActionWithOptionsInte
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('status');
-        $resolver->setAllowedTypes('status', 'int');
-        $resolver->setAllowedValues('status', [0, 1]);
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', 'int');
+        $resolver->setAllowedValues('options', [0, 1]);
     }
 }

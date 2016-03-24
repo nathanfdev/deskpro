@@ -36,30 +36,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 abstract class AbstractAction implements ActionInterface
 {
-    const SET_OF_ACTIONS             = 'set_of_actions';
-    const APPROVE_ACTION             = 'approve';
-    const ASSIGN_ACTION              = 'assign';
-    const DELETE_ACTION              = 'delete';
-    const MARK_AS_SPAM_ACTION        = 'mark_as_spam';
-    const SET_CATEGORY_ACTION        = 'set_category';
-    const SET_INT_CATEGORY_ACTION    = 'set_int_category';
-    const SET_DUE_DATE_ACTION        = 'set_due_date';
-    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
-    const SET_FOLLOWERS_ACTION       = 'set_followers';
-    const SET_LANGUAGE_ACTION        = 'set_language';
-    const SET_PROJECT_ACTION         = 'set_project';
-    const SET_PRODUCT_ACTION         = 'set_product';
-    const SET_INT_STATUS_ACTION      = 'set_int_status';
-    const SET_TICKET_STATUS_ACTION   = 'set_ticket_status';
-    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
-    const SET_TYPE_ACTION            = 'set_type';
-    const SET_WORKFLOW_ACTION        = 'set_workflow';
-    const ADD_LABELS_ACTION          = 'add_labels';
-    const REMOVE_LABELS_ACTION       = 'remove_labels';
-
-    const OPTION_LABELS = 'labels';
-    const OPTION_INPUT  = 'input';
-    const OPTION_ID     = 'id';
+    const SET_OF_ACTIONS = 'set_of_actions';
 
     protected $options;
 
@@ -87,6 +64,6 @@ abstract class AbstractAction implements ActionInterface
     /** @return array */
     public function serialize()
     {
-        return ['options' => $this->options];
+        return $this->options;
     }
 }

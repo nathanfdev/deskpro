@@ -1,5 +1,10 @@
 services:
 
+  action_engine.action_transformer:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer
+  action_engine.action_collection:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection
+
   action_engine.feedback:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackApplicatorService
     arguments:

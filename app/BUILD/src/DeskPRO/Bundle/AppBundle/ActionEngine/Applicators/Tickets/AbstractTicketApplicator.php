@@ -30,23 +30,22 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use Doctrine\ORM\EntityManager;
 
-class SetLanguageAction extends AbstractAction implements ActionWithOptionsInterface
+abstract class AbstractTicketApplicator extends AbstractActionApplicator
 {
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /** @var  EntityManager */
+    protected $em;
+    /** @var  TicketManager */
+    protected $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
-        $resolver->setAllowedValues(
-            'options',
-            function ($value) {
-                return (is_int($value) && $value > 0) || ctype_digit($value);
-            }
-        );
+        parent::__construct($em);
+        $this->tm = $tm;
     }
 }

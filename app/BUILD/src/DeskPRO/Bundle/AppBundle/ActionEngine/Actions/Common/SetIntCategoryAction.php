@@ -40,10 +40,10 @@ class SetIntCategoryAction extends AbstractAction implements ActionWithOptionsIn
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('id');
-        $resolver->setAllowedTypes('id', ['string', 'int']);
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', ['string', 'int']);
         $resolver->setAllowedValues(
-            'id',
+            'options',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

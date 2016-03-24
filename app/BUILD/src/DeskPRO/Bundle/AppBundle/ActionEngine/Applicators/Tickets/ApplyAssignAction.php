@@ -33,23 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var EntityManager  */
-    protected $em;
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
-
     /**
      * @param Ticket[] $tickets
      */
@@ -87,9 +74,8 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
      */
     private function init()
     {
-        $assign     = $this->options['assign'];
         $collection = [];
-        foreach ($assign as $type => $id) {
+        foreach ($this->options as $type => $id) {
             switch ($type) {
                 case 'agent':
                     $collection['agent'] = $this->em->getRepository('DeskPRO:Person')->find($id[0]);

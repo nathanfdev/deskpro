@@ -34,25 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplySetLanguageAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
     /** @var  Language */
     private $language;
-    /** @var  EntityManager */
-    protected $em;
-    /** @var  TicketManager */
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
 
     /**
      * @param Ticket[] $tickets
@@ -72,7 +59,6 @@ class ApplySetLanguageAction extends AbstractActionApplicator implements ActionA
      */
     private function init()
     {
-        $id             = $this->options['id'];
-        $this->language = $this->em->getRepository('DeskPRO:Language')->find($id);
+        $this->language = $this->em->getRepository('DeskPRO:Language')->find($this->options);
     }
 }

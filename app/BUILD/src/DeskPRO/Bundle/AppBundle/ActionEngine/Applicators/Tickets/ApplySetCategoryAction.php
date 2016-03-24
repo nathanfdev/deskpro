@@ -33,26 +33,11 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketCategory;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
 
-class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  EntityManager */
-    protected $em;
-    /** @var  TicketCategory */
     private $category;
-    /** @var  TicketManager */
-    private $tm;
-
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
-        parent::__construct($em);
-        $this->tm = $tm;
-    }
 
     /**
      * @param Ticket[] $tickets
@@ -69,7 +54,6 @@ class ApplySetCategoryAction extends AbstractActionApplicator implements ActionA
 
     private function init()
     {
-        $id             = $this->options['id'];
-        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($id);
+        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options);
     }
 }

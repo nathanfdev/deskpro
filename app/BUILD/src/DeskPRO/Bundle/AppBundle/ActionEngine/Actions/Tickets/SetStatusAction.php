@@ -41,9 +41,9 @@ class SetStatusAction extends AbstractAction implements ActionWithOptionsInterfa
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('status');
-        $resolver->setAllowedTypes('status', 'string');
-        $resolver->setAllowedValues('status',
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', 'string');
+        $resolver->setAllowedValues('options',
             [
                 Ticket::STATUS_AWAITING_AGENT,
                 Ticket::STATUS_AWAITING_USER,
