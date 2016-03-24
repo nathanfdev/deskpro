@@ -736,7 +736,7 @@ class ServeFileScript extends LowScriptAbstract
         # can serve it without a db connection
         #------------------------------
 
-        $base_path = dp_get_blob_dir();
+        $base_path = $this->dpEnv->getUserFilesDir();
 
         $filepath_part = $batch.DIRECTORY_SEPARATOR.$batch.$authcode.$blob_id.$namehash;
         $filepath      = $base_path.DIRECTORY_SEPARATOR.$filepath_part;
@@ -1075,7 +1075,7 @@ class ServeFileScript extends LowScriptAbstract
         $this->sendHeaders($blob);
 
         // folder we store blobs in
-        $base_path = dp_get_blob_dir();
+        $base_path = $this->dpEnv->getUserFilesDir();
 
         $filepath_part = $blob['save_path'];
         $filepath      = $base_path.DIRECTORY_SEPARATOR.$blob['save_path'];
@@ -1293,7 +1293,7 @@ class ServeFileScript extends LowScriptAbstract
         // where the GD handler tries to save a temp file and the default
         // temp dir is not writable.
         } catch (\Imagine\Exception\RuntimeException $e) {
-            $tmp = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
+            $tmp = $this->dpEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
             $image->save($tmp);
             $file = file_get_contents($tmp);
             @unlink($tmp);
