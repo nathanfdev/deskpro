@@ -39,30 +39,20 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    private $customDef;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $customDef = $this->em
+            ->getRepository('DeskPRO:CustomDefFeedback')
+            ->findOneBy(['title' => 'Category']);
         foreach ($feedback as $item) {
             $item->resetCustomData();
             $customCategory = new CustomDataFeedback();
             $customCategory->setInput($this->options);
-            $customCategory->setField($this->customDef);
+            $customCategory->setField($customDef);
             $item->addCustomData($customCategory);
         }
-    }
-
-    /**
-     * Fetch CustomDef.
-     */
-    private function init()
-    {
-        $this->customDef = $this->em
-            ->getRepository('DeskPRO:CustomDefFeedback')
-            ->findOneBy(['title' => 'Category']);
     }
 }

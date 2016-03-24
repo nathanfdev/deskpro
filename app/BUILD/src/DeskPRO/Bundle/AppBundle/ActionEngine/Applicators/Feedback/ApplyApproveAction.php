@@ -38,31 +38,21 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    private $defaultStatusCategory;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+        $defaultStatusCategory = $activeStatusCategories[0];
         foreach ($feedback as $item) {
             if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
                 $item->setHiddenStatus();
                 $item->setStatus(Feedback::STATUS_ACTIVE);
-                $item->setStatusCategory($this->defaultStatusCategory);
+                $item->setStatusCategory($defaultStatusCategory);
             }
             $item->setIsReviewed(true);
         }
-    }
-
-    /**
-     * Fetch default status category.
-     */
-    private function init()
-    {
-        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
-            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
-        $this->defaultStatusCategory = $activeStatusCategories[0];
     }
 }

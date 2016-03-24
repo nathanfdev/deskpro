@@ -38,25 +38,15 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 
 class ApplySetProjectAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \DeskPRO\Bundle\AppBundle\Entity\TaskProject */
-    private $project;
-
     /**
      * @param Task[] $tasks
      */
     public function apply(array $tasks)
     {
-        $this->init();
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskProject $project */
+        $project = $this->em->getRepository('App:TaskProject')->find($this->options);
         foreach ($tasks as $task) {
-            $task->setProject($this->project);
+            $task->setProject($project);
         }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $this->project = $this->em->getRepository('App:TaskProject')->find($this->options);
     }
 }

@@ -32,30 +32,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetProductAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  Product */
-    private $product;
-
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
-        $this->init();
+        $product = $this->em->getRepository('DeskPRO:Product')->find($this->options);
         foreach ($tickets as $ticket) {
-            $ticket->setProduct($this->product);
+            $ticket->setProduct($product);
             $context = $this->tm->createAgentExecutorContext(null, 'set_product', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
-    }
-
-    private function init()
-    {
-        $this->product = $this->em->getRepository('DeskPRO:Product')->find($this->options);
     }
 }

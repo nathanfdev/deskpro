@@ -32,33 +32,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  Language */
-    private $language;
-
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
-        $this->init();
+        $language = $this->em->getRepository('DeskPRO:Language')->find($this->options);
         foreach ($tickets as $ticket) {
-            $ticket->setLanguage($this->language);
+            $ticket->setLanguage($language);
             $context = $this->tm->createAgentExecutorContext(null, 'set_language', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
-    }
-
-    /**
-     * Fetch language(Language).
-     */
-    private function init()
-    {
-        $this->language = $this->em->getRepository('DeskPRO:Language')->find($this->options);
     }
 }

@@ -37,23 +37,16 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    private $category;
-
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
-        $this->init();
+        $category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options);
         foreach ($tickets as $ticket) {
-            $ticket->setCategory($this->category);
+            $ticket->setCategory($category);
             $context = $this->tm->createAgentExecutorContext(null, 'set_category', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
-    }
-
-    private function init()
-    {
-        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options);
     }
 }

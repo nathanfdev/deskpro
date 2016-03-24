@@ -38,24 +38,14 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    private $statusCategory;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->options);
         foreach ($feedback as $entity) {
-            $entity->setStatusCategory($this->statusCategory);
+            $entity->setStatusCategory($statusCategory);
         }
-    }
-
-    /**
-     * Fetch status category (FeedbackStatusCategory).
-     */
-    private function init()
-    {
-        $this->statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->options);
     }
 }

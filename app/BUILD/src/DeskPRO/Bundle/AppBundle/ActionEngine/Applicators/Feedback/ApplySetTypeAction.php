@@ -38,25 +38,14 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($this->options);
         foreach ($feedback as $item) {
-            $item->setCategory($this->type);
+            $item->setCategory($type);
         }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($this->options);
     }
 }

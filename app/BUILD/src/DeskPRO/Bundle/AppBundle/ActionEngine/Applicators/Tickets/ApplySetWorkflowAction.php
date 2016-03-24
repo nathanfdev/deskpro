@@ -33,29 +33,20 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketWorkflow;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    /** @var  TicketWorkflow */
-    private $workflow;
-
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
-        $this->init();
+        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options);
         foreach ($tickets as $ticket) {
-            $ticket->setWorkflow($this->workflow);
+            $ticket->setWorkflow($workflow);
             $context = $this->tm->createAgentExecutorContext(null, 'set_workflow', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
-    }
-
-    private function init()
-    {
-        $this->workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options);
     }
 }
