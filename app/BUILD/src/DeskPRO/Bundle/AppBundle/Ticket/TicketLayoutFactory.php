@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Department;
@@ -206,22 +207,12 @@ class TicketLayoutFactory
         }
 
         // if no email input exists, add the new PERSON
-        if (!$layout->has(FormFields::USER_EMAIL) && !$layout->has(FormFields::PERSON)) {
+        if (!$layout->has(FormFields::PERSON)) {
             $new = new LayoutField(FormFields::PERSON);
             $new->enableOnNew();
             $new->enableOnEdit();
             $new->enableOnView();
             $layout->add($new);
-        }
-
-        // finally, if PERSON exists, remove USER_EMAIL and USER_NAME as they are redundant
-        if ($layout->has(FormFields::PERSON)) {
-            if ($layout->has(FormFields::USER_EMAIL)) {
-                $layout->remove(FormFields::USER_EMAIL);
-            }
-            if ($layout->has(FormFields::USER_NAME)) {
-                $layout->remove(FormFields::USER_NAME);
-            }
         }
     }
 

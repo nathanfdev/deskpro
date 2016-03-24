@@ -65,11 +65,6 @@ services:
     tags:
       - { name: form.type, alias: entity_hierarchy }
 
-  form.person_email:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType
-    tags:
-      - { name: form.type, alias: deskpro_person_email }
-
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
     arguments: ["@custom_field_manager"]

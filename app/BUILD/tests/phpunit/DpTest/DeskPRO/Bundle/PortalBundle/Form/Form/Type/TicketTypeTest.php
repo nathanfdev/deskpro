@@ -51,7 +51,7 @@ class TicketTypeTest extends PortalTestCase
 
     public function tearDown()
     {
-        $this->installDataSet('fresh', true); // clear out the changes we made to the db
+        //$this->installDataSet('fresh', true); // clear out the changes we made to the db
     }
 
     /**
@@ -97,7 +97,7 @@ class TicketTypeTest extends PortalTestCase
             'department',
             'subject',
             'message',
-            'user_email',
+            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -124,7 +124,7 @@ class TicketTypeTest extends PortalTestCase
             'department',
             'subject',
             'message',
-            'user_email',
+            'person',
             'attachments',
             'more_attachments',
             'ticket_field_1',
@@ -159,7 +159,7 @@ class TicketTypeTest extends PortalTestCase
             'department',
             'subject',
             'message',
-            'user_email',
+            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -175,7 +175,9 @@ class TicketTypeTest extends PortalTestCase
                 'message' => 'This is my message, a test message!',
                 'format'  => 'text',
             ],
-            FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
+            FormFields::PERSON => [
+                FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
+            ],
         ];
         $form->submit($submit_data);
 
@@ -185,7 +187,7 @@ class TicketTypeTest extends PortalTestCase
             'department',
             'subject',
             'message',
-            'user_email',
+            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -222,7 +224,7 @@ class TicketTypeTest extends PortalTestCase
             'department',
             'subject',
             'message',
-            'user_email',
+            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -238,8 +240,10 @@ class TicketTypeTest extends PortalTestCase
                 'message' => 'This is my message, a test message!',
                 'format'  => 'text',
             ],
-            FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
-            'ticket_field_1'       => null,
+            FormFields::PERSON => [
+                FormFields::USER_EMAIL => $person->getPrimaryEmailId(),
+            ],
+            'ticket_field_1' => null,
         ];
         $form->submit($submit_data);
 
@@ -275,8 +279,10 @@ class TicketTypeTest extends PortalTestCase
                     'message' => 'This is my message, a test message!',
                     'format'  => 'text',
                 ],
-                FormFields::USER_EMAIL => [
-                    'email' => 'some@test.email',
+                FormFields::PERSON => [
+                    FormFields::USER_EMAIL => [
+                        'email' => 'some@test.email',
+                    ],
                 ],
             ],
         ]);
@@ -309,8 +315,10 @@ class TicketTypeTest extends PortalTestCase
                     'message' => 'This is my message, a test message!',
                     'format'  => 'text',
                 ],
-                FormFields::USER_EMAIL => [
-                    'email' => 'some@test.email',
+                FormFields::PERSON => [
+                    FormFields::USER_EMAIL => [
+                        'email' => 'some@test.email',
+                    ],
                 ],
             ],
         ]);
@@ -330,8 +338,10 @@ class TicketTypeTest extends PortalTestCase
                     'message' => 'This is my message, a test message!',
                     'format'  => 'text',
                 ],
-                FormFields::USER_EMAIL => [
-                    'email' => 'some@test.email',
+                FormFields::PERSON => [
+                    FormFields::USER_EMAIL => [
+                        'email' => 'some@test.email',
+                    ],
                 ],
                 'ticket_field_1' => ['data' => 7], // <---- this is the new field, and we couldn't have submitted this field last time
             ],
@@ -543,7 +553,7 @@ class TicketTypeTest extends PortalTestCase
             $ticket_layout->agent_layout = new Layout();
             $ticket_layout->department   = $sales_dep;
 
-            foreach ([FormFields::DEPARTMENT, FormFields::SUBJECT, FormFields::MESSAGE, FormFields::USER_EMAIL] as $field) {
+            foreach ([FormFields::DEPARTMENT, FormFields::SUBJECT, FormFields::MESSAGE, FormFields::PERSON] as $field) {
                 $ticket_layout->user_layout->add(new LayoutField($field));
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }

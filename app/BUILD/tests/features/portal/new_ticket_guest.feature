@@ -14,7 +14,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_ticket_department_required"
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -22,7 +21,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_ticket_subject_required"
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -31,7 +29,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_ticket_msg_required"
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -41,7 +38,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_email_required"
 
-  @reinstall
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -52,7 +48,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/thank-you"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 
-  @reinstall
   Scenario: Submitting a VALID FORM but being forced to LOGIN
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -64,10 +59,9 @@ Feature: Guests can submit new tickets
     When I fill in "Email" with "user@deskpro.dev"
     And I fill in "Your password" with "12345"
     And I press "Login"
-    Then I should be on "/thank-you/1"
+    Then I should be on "/thank-you/2"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 
-  @reinstall
   Scenario: Submitting a VALID FORM but needing to validate email before submitting
     Given the setting "core_tickets.web_require_validation" is set to "1"
     And I go to "/new-ticket"

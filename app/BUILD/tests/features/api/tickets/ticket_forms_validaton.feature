@@ -94,8 +94,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "wrong_length"
-    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "The value must be at least 10 characters in length."
+    And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "length_too_short"
+    And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value is too short. It should have 10 characters or more."
 
   Scenario: I try to create a ticket with empty subject (empty subject)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -116,8 +116,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "wrong_length"
-    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "The value must be at least 5 characters in length."
+    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "length_too_short"
+    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value is too short. It should have 5 characters or more."
 
   Scenario: I sent not valid data type in subject:
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
