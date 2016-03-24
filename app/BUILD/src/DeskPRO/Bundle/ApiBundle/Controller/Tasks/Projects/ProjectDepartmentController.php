@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Annotations\Route("/project_members/{parentId}/departments")
  * @ApiDocSection("TaskProjects")
+ * @OutputEntity("Application\DeskPRO\Entity\Department")
  * @ApiModes("all")
  */
 class ProjectDepartmentController extends AbstractProjectCrudSubController

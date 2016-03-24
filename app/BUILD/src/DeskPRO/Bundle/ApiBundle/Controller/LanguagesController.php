@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
 
@@ -40,13 +41,13 @@ use FOS\RestBundle\Controller\Annotations;
  * API access to languages.
  *
  * @ApiDocSection("Languages")
+ * @OutputEntity("Application\DeskPRO\Entity\Language")
  * @ApiModes("all")
  * @Annotations\Route("/languages")
  */
 class LanguagesController extends CrudController
 {
-    public static $entity        = Language::class;
-    public static $output_entity = Language::class;
-    public static $listOrder     = 'asc';
-    public static $exposeOnly    = ['list', 'get'];
+    public static $entity     = Language::class;
+    public static $listOrder  = 'asc';
+    public static $exposeOnly = ['list', 'get'];
 }

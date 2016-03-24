@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
@@ -46,14 +47,14 @@ use Symfony\Component\HttpFoundation\Request;
  * @Annotations\Route("/task_labels")
  * @ApiModes("all")
  * @ApiDocSection("Tasks")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\LabelTask")
  */
 class TaskLabelsController extends CrudController
 {
-    public static $entity        = LabelTask::class;
-    public static $output_entity = LabelTask::class;
-    public static $type          = TaskLabelType::class;
-    public static $listSort      = 'label';
-    public static $listOrder     = 'asc';
+    public static $entity    = LabelTask::class;
+    public static $type      = TaskLabelType::class;
+    public static $listSort  = 'label';
+    public static $listOrder = 'asc';
 
     /**
      * {@inheritdoc}

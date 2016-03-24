@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
@@ -44,15 +45,15 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Annotations\Route("/subtasks")
  * @ApiDocSection("Tasks")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\TaskSubtask")
  * @ApiModes("all")
  */
 class TaskSubtasksController extends CrudController
 {
-    public static $entity        = TaskSubtask::class;
-    public static $output_entity = TaskSubtask::class;
-    public static $type          = TaskSubtaskType::class;
-    public static $listOrder     = 'asc';
-    public static $listSort      = 'display_order';
+    public static $entity    = TaskSubtask::class;
+    public static $type      = TaskSubtaskType::class;
+    public static $listOrder = 'asc';
+    public static $listSort  = 'display_order';
 
     /**
      * @param Request $request

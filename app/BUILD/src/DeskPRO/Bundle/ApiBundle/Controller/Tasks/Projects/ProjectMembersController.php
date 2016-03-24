@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
@@ -48,15 +49,15 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ProjectMembersController.
  *
  * @ApiDocSection("TaskProjects")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
  * @Annotations\Route("/project_members")
  * @ApiModes("all")
  */
 class ProjectMembersController extends CrudController
 {
-    public static $entity        = ProjectMember::class;
-    public static $output_entity = ProjectMember::class;
-    public static $type          = ProjectMemberType::class;
-    public static $exposeOnly    = ['get', 'put', 'post', 'delete'];
+    public static $entity     = ProjectMember::class;
+    public static $type       = ProjectMemberType::class;
+    public static $exposeOnly = ['get', 'put', 'post', 'delete'];
 
     /**
      * Fetch tasks list for project member.

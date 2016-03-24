@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Component\Util\TypeUtils;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -95,10 +96,12 @@ class ApiDocExtractor extends BaseApiDocExtractor
         ) {
             if (!$annotation->getOutput()
                 && in_array(TypeUtils::cleanAction($method->name, true), $this->getCreativeMethods())
-                && $output = $class_reflection->getStaticPropertyValue('output_entity', null)
+                && ($output = $this->reader->getClassAnnotation($class_reflection, OutputEntity::class))
+                && ($output instanceof OutputEntity)
             ) {
+                $output = $output->getOutput();
                 if (TypeUtils::cleanAction($method->name, true) === 'list') {
-                    $output = "array<$output>";
+                    $output = "array<{$output}>";
                 }
                 $annotation->setClassOutput($output);
             }

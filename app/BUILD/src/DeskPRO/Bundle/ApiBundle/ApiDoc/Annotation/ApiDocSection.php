@@ -42,11 +42,19 @@ class ApiDocSection
      */
     protected $section;
 
+    /**
+     * ApiDocSection constructor.
+     *
+     * @param $params
+     */
     public function __construct($params)
     {
         $this->section = $params['value'];
     }
 
+    /**
+     * @return string
+     */
     public function getSection()
     {
         return $this->section;

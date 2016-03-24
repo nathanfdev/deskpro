@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
-use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType;
@@ -43,7 +42,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 abstract class AbstractProjectCrudSubController extends CrudSubController
 {
     public static $entity         = ProjectMember::class;
-    public static $output_entity  = Department::class;
     public static $type           = ProjectMemberType::class;
     public static $exposeOnly     = ['list', 'post', 'delete'];
     public static $parentProperty = 'project';
