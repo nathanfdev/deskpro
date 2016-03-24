@@ -47,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
@@ -57,6 +58,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -133,6 +135,7 @@ class TicketWithLayoutsType extends AbstractType
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
         $this->hierarchy_generator      = $hierarchy_generator;
+        $this->em                       = $em;
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->ticket_layout_helper     = $ticket_layout_helper;
@@ -480,10 +483,6 @@ class TicketWithLayoutsType extends AbstractType
                 return $this->createFollowers($context);
             case FormFields::ATTACHMENTS:
                 return $this->createAttach($context);
-            case FormFields::USER_EMAIL:
-                return $this->createUserEmail($context);
-            case FormFields::USER_NAME:
-                return $this->createUserName($context);
             case FormFields::USER_TIMEZONE:
                 return $this->createUserTimezone();
             case FormFields::LABELS:
@@ -605,43 +604,19 @@ class TicketWithLayoutsType extends AbstractType
     /**
      * @param TicketWithLayoutsContext $context
      *
-     * @return FormField
-     */
-    private function createUserName(TicketWithLayoutsContext $context)
-    {
-        $form_field = $this->createUserNameOptions($context);
-
-        return new FormField($form_field['type'], $form_field['options']);
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
      * @return array
      */
     private function createUserNameOptions(TicketWithLayoutsContext $context)
     {
         return [
             'name'    => FormFields::USER_NAME,
-            'type'    => 'text',
+            'type'    => TextType::class,
             'options' => [
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
                 'empty_data'    => $context->getPerson()->getDisplayName(),
             ],
         ];
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return FormField
-     */
-    private function createUserEmail(TicketWithLayoutsContext $context)
-    {
-        $form_field = $this->createUserEmailOptions($context);
-
-        return new FormField($form_field['type'], $form_field['options']);
     }
 
     /**
@@ -666,11 +641,11 @@ class TicketWithLayoutsType extends AbstractType
 
         return [
             'name'    => FormFields::USER_EMAIL,
-            'type'    => 'deskpro_person_email',
+            'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
                 'label'         => false,
-                'constraints'   => [], // ignore the "unqiue entity" constraint here
+                'constraints'   => [], // ignore the "unique entity" constraint here
             ],
         ];
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -100,7 +101,7 @@ class SavedFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm('deskpro_person_email');
+        $form = $this->createForm(PersonEmailType::class);
         $form->handleRequest($request);
         if ($form->isValid()) {
             /** @var \Application\DeskPRO\Entity\PersonEmail $email */

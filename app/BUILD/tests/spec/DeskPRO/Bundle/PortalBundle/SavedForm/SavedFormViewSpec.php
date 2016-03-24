@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\SavedForm;
 
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
@@ -44,47 +45,49 @@ class SavedFormViewSpec extends ObjectBehavior
     ) {
         $saved_form->getFormData()->willReturn(
             array(
-                'ticket' => array(
+                'ticket' => [
                     'department' => 2,
                     'subject'    => 'my ticket subject',
-                    'message'    => array(
+                    'message'    => [
                         'message' => 'my ticket message',
-                    ),
-                    'user_email' => array(
-                        'email' => 'chris.tickner@deskpro.com',
-                    ),
+                    ],
+                    'person' => [
+                        'user_email' => [
+                            'email' => 'chris.tickner@deskpro.com',
+                        ],
+                    ],
                     'submit'         => '',
                     '_dp_csrf_token' => '34dadfa',
-                ),
+                ],
             )
         );
 
         $this->beConstructedWith($saved_form);
 
         $this->getFields()->shouldReturn(
-            array(
-                'ticket[department]'        => 2,
-                'ticket[subject]'           => 'my ticket subject',
-                'ticket[message][message]'  => 'my ticket message',
-                'ticket[user_email][email]' => 'chris.tickner@deskpro.com',
-                'ticket[submit]'            => '',
-                'ticket[_dp_csrf_token]'    => '', // NOTE: _dp_csrf_token's value must be empty when rendering
-            )
+            [
+                'ticket[department]'                => 2,
+                'ticket[subject]'                   => 'my ticket subject',
+                'ticket[message][message]'          => 'my ticket message',
+                'ticket[person][user_email][email]' => 'chris.tickner@deskpro.com',
+                'ticket[submit]'                    => '',
+                'ticket[_dp_csrf_token]'            => '', // NOTE: _dp_csrf_token's value must be empty when rendering
+            ]
         );
     }
 
     public function it_gets_route_info(
         SavedForm $saved_form
     ) {
-        $saved_form->getMetaData()->willReturn(array(
+        $saved_form->getMetaData()->willReturn([
             'route'        => 'portal_new_ticket',
-            'route_params' => array('some' => 'params'),
-        ));
+            'route_params' => ['some' => 'params'],
+        ]);
 
         $this->beConstructedWith($saved_form);
 
         $this->getRouteName()->shouldBe('portal_new_ticket');
-        $this->getRouteParams()->shouldBe(array('some' => 'params'));
+        $this->getRouteParams()->shouldBe(['some' => 'params']);
     }
 
     public function it_always_says_post_is_the_form_method(
