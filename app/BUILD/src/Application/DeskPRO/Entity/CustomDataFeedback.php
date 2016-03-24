@@ -39,10 +39,13 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Custom data.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
+     * @JMS\Expose()
      * @JMS\Groups("details")
      * @JMS\Type("entity<DeskPRO\Application\Entity\CustomDefFeedback>")
      *
@@ -51,6 +54,7 @@ class CustomDataFeedback extends CustomDataAbstract
     protected $feedback;
 
     /**
+     * @JMS\Expose()
      * @JMS\Groups("details")
      * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
      *
@@ -59,6 +63,7 @@ class CustomDataFeedback extends CustomDataAbstract
     protected $field = null;
 
     /**
+     * @JMS\Expose()
      * @JMS\Groups("details")
      * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
      *

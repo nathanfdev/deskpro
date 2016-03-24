@@ -663,6 +663,30 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOverrideDisplayName()
+    {
+        return $this->override_display_name;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getPictureBlob()
+    {
+        return $this->picture_blob;
+    }
+
     public function _initPersonLogger()
     {
         if ($this->_person_logger) {

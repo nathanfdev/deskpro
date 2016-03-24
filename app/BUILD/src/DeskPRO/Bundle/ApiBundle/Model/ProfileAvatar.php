@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,42 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+namespace DeskPRO\Bundle\ApiBundle\Model;
 
 /**
- * Class UsergroupTransformer.
+ * Class ProfileAvatar.
  */
-class UsergroupTransformer extends AbstractDataSerializerTransformer
+class ProfileAvatar
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
-    {
-        return [
-            'id',
-            'title',
-            'note',
-            'is_agent_group',
-            'sys_name',
-            'is_enabled',
-        ];
-    }
+    private $blob_auth_id;
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
-    {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
-        $data = $transformation_request->getDataToBeTransformed();
+    private $url;
 
-        return [];
+    /**
+     * ProfileAvatar constructor.
+     *
+     * @param $blob_auth_id
+     * @param $url
+     */
+    public function __construct($blob_auth_id, $url)
+    {
+        $this->blob_auth_id = $blob_auth_id;
+        $this->url          = $url;
     }
 }

@@ -42,16 +42,28 @@ use JMS\Serializer\Annotation as JMS;
 abstract class AbstractContactData
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Contact type.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $contact_type;
 
     /**
+     * Comment attached to contact.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $comment;

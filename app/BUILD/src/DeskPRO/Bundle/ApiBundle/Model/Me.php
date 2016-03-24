@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,10 +31,47 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Model;
 
+use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class Me.
+ */
 class Me
 {
+    /**
+     * Current user auth method.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     public $auth_method;
+
+    /**
+     * Current person ID.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
     public $person_id;
+
+    /**
+     * Current application id.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     public $app_id;
+
+    /**
+     * Person entity.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
+     */
     public $person;
 }

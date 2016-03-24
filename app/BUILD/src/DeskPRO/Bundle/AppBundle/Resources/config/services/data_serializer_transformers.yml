@@ -16,24 +16,10 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_layout_factory"
 
-  data_serializer.transformer.person_profile:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\PersonProfileTransformer
-    arguments:
-      - "@avatar_resolver"
-
-  data_serializer.transformer.department:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\DepartmentTransformer
-    arguments:
-      - "@avatar_resolver"
-
   data_serializer.transformer.widget_person:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\WidgetPersonTransformer
     arguments:
       - "@avatar_resolver"
-
-  data_serializer.transformer.custom_data_collection:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollectionTransformer
-    arguments: ~
 
   data_serializer.transformer.theme_set_asset:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ThemeSetAssetTransformer

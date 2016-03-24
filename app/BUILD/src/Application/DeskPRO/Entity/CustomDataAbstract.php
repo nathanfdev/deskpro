@@ -43,12 +43,14 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @property CustomDefAbstract $field
  * @property CustomDefAbstract $root_field
+ * @JMS\ExclusionPolicy("all")
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
      * @JMS\Groups({"list", "details"})
      * @JMS\Type("integer")
      *
@@ -66,6 +68,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     /**
      * User string data.
      *
+     * @JMS\Expose()
      * @JMS\Groups({"list", "details"})
      * @JMS\Type("string")
      *

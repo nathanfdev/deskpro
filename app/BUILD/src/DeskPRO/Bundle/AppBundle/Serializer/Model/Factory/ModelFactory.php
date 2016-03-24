@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
@@ -67,6 +68,11 @@ class ModelFactory
                 'default' => true,
                 'factory' => 'api_serializer.api_person_factory',
                 'method'  => 'create',
+            ],
+            PersonProfile::class => [
+                'default' => false,
+                'factory' => 'api_serializer.api_person_factory',
+                'method'  => 'createProfile',
             ],
         ],
         'agent_team' => 'createAgentTeam',
