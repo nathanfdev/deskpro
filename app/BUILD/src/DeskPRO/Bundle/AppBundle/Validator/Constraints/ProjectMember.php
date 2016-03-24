@@ -37,6 +37,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class ProjectMember extends Constraint
 {
+    const EXACTLY_ONE_SHOULD_BE_SET = 'exactly_one_value_should_be_set';
+
     /**
      * {@inheritdoc}
      */

@@ -53,10 +53,11 @@ class ProjectMemberValidator extends ConstraintValidator
             'person'     => $object->getPerson() ? 1 : 0,
         ];
 
-        if (array_sum($fields) > 1) {
-            $this->context->addViolation('Only one of person, team or department should be set');
-        } elseif (array_sum($fields) < 1) {
-            $this->context->addViolation('At least one of person, team or department should be set');
+        if (array_sum($fields) != 1) {
+            $this->context->addViolation(
+                ProjectMember::EXACTLY_ONE_SHOULD_BE_SET,
+                ['values' => implode(', ', array_keys($fields))]
+            );
         }
     }
 }
