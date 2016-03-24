@@ -59,6 +59,7 @@ class ActionCollection
     public function prepare($namespace, array $actions)
     {
         foreach ($actions as $name => $options) {
+            // Set of actions without options (like delete, mark as spam, approve and so on)
             if ($name === AbstractAction::SET_OF_ACTIONS) {
                 foreach ($options as $type) {
                     $this->resolveAction($namespace, $type);

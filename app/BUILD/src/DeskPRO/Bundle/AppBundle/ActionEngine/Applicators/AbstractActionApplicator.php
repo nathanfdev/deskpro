@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
 use Doctrine\ORM\EntityManager;
 
-abstract class AbstractActionApplicator
+abstract class AbstractActionApplicator implements ActionApplicatorInterface
 {
     protected $em;
     protected $options;
@@ -50,4 +50,6 @@ abstract class AbstractActionApplicator
 
         return $this;
     }
+
+    abstract public function apply(array $entities);
 }

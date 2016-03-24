@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists;
 use Doctrine\ORM\EntityManager;
 
@@ -71,7 +71,7 @@ class ActionTransformer
      * @param string        $namespace
      * @param string        $type
      *
-     * @return ActionApplicatorInterface
+     * @return AbstractActionApplicator
      */
     public function actionToApplicator(EntityManager $em, $namespace, $type)
     {
