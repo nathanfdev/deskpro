@@ -181,12 +181,12 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         for ($i = 0; $i < $this->num_problems; ++$i) {
-            $batch[] = array(
+            $batch[] = [
                 'person_id' => $this->faker->randomElement($this->agent_ids),
                 'title'     => $this->faker->sentence(4),
                 'created'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'is_open'   => (int) $this->faker->boolean(25),
-            );
+            ];
         }
 
         $this->db->batchInsert(self::TABLE_PROBLEMS, $batch);
@@ -198,11 +198,10 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         for ($i = 1; $i <= $this->num_categories; ++$i) {
-            $batch[] =
-                [
-                    'title'         => 'Ticket Category '.$i,
-                    'display_order' => 1,
-                ];
+            $batch[] = [
+                'title'         => 'Ticket Category '.$i,
+                'display_order' => 1,
+            ];
         }
 
         $this->db->batchInsert(self::TABLE_TICKET_CATEGORIES, $batch);
@@ -214,11 +213,10 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         for ($i = 1; $i <= $this->num_workflows; ++$i) {
-            $batch[] =
-                [
-                    'title'         => 'Workflow '.$i,
-                    'display_order' => 1,
-                ];
+            $batch[] = [
+                'title'         => 'Workflow '.$i,
+                'display_order' => 1,
+            ];
         }
 
         $this->db->batchInsert(self::TABLE_TICKET_WORKFLOWS, $batch);
@@ -230,12 +228,11 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         for ($i = 1; $i <= $this->num_products; ++$i) {
-            $batch[] =
-                [
-                    'title'         => 'Product '.$i,
-                    'display_order' => 1,
-                    'depth'         => 1,
-                ];
+            $batch[] = [
+                'title'         => 'Product '.$i,
+                'display_order' => 1,
+                'depth'         => 1,
+            ];
         }
 
         $this->db->batchInsert(self::TABLE_PRODUCTS, $batch);

@@ -3,11 +3,8 @@ import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 import { SingleChoicePanel } from '../../../Form/SingleChoicePanel';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
 
-import { connect } from 'react-redux';
-@connect()
 export class SingleChoiceFilter extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     stateValue: PropTypes.func.isRequired,
     setParamsAction: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
@@ -18,7 +15,7 @@ export class SingleChoiceFilter extends Component {
   };
 
   render() {
-    const { dispatch, setParamsAction, filter, activeItem, setActiveItem, unsetParams, state } = this.props;
+    const { setParamsAction, filter, activeItem, setActiveItem, unsetParams, state } = this.props;
     const { label, icon, param, quickFilter, options } = filter;
     const params = [param];
     options.map(option=> {
@@ -30,7 +27,6 @@ export class SingleChoiceFilter extends Component {
     });
     const filterValue = state.get(param);
     const isActive = Boolean(filterValue);
-    const onClick = (value) => () => dispatch(setParamsAction({ [param]: value }));
 
     return (
       <FilterItem activeItem={activeItem}

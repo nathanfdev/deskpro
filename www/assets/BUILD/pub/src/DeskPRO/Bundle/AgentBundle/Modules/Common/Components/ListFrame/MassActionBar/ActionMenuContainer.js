@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import { AddLabelsContainer } from './AddLabelsContainer';
-import { RemoveLabelsContainer } from './RemoveLabelsContainer';
+import { LabelsFilter }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/Filtering/LabelsFilter';
 import { SingleChoiceFilter } from '../../ListFrame/ControlBar/Filtering/SingleChoiceFilter';
-
+import { paramsSelector } from '../../../../Application/Selectors/massActions';
 import { connect } from 'react-redux';
-@connect()
-export class ActionMenu extends Component {
+
+@connect(state => ({
+  currentParams: paramsSelector(state)
+}))
+export class ActionMenuContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     options: PropTypes.array.isRequired,
@@ -16,15 +19,15 @@ export class ActionMenu extends Component {
     currentParams: PropTypes.object
   };
 
-  setParam = (params)=> {
+  setLabelsParam = (params)=> {
     const {setParams, dispatch } = this.props;
     dispatch(setParams({ [params.param]: params.value }));
   };
 
-  unsetParam(param) {
+  unsetLabelsParam = (param)=> {
     const {resetSingleAction, dispatch } = this.props;
     dispatch(resetSingleAction(param));
-  }
+  };
 
   stateValue = (param) => {
     const {currentParams} = this.props;
@@ -53,21 +56,16 @@ export class ActionMenu extends Component {
   choiceOtherAction = (option, key)=> {
     const {setParams, currentParams, resetSingleAction } = this.props;
 
-    if (option.param === 'add_labels') {
+    if (option.param === 'add_labels' || option.param === 'remove_labels') {
       return (
-        <AddLabelsContainer key={key}
-                            option={option}
-                            stateValue={this.stateValue}
-                            setParams={this.setParam}
-                            unsetParams={this.unsetParam}/>
-      );
-    } else if (option.param === 'remove_labels') {
-      return (
-        <RemoveLabelsContainer key={key}
-                               option={option}
-                               stateValue={this.stateValue}
-                               setParams={this.setParam}
-                               unsetParams={this.unsetParam}/>
+        <LabelsFilter key={key}
+                      filter={option}
+                      icon={option.icon || 'tags'}
+                      label={option.label}
+                      currentParams={currentParams.toJS()}
+                      stateValue={this.stateValue}
+                      setParam={this.setLabelsParam}
+                      unsetParam={this.unsetLabelsParam}/>
       );
     } else if (option.type === 'set_action') {
       return (
