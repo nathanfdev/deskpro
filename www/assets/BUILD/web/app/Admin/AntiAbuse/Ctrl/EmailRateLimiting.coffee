@@ -1,10 +1,4 @@
-define [
- 'Admin/Main/Ctrl/Base'
- 'angular'
-], (
- Admin_Ctrl_Base
- angular
-) ->
+define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
  class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base
   @CTRL_ID = 'Admin_AntiAbuse_Ctrl_EmailRateLimiting'
   @CTRL_AS = 'EmailRateLimiting'
