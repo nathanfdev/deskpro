@@ -5,12 +5,12 @@ import { LabelsForm } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class LabelsFilter extends Component {
   static propTypes = {
-    currentParams: PropTypes.object.isRequired,
     setParam: PropTypes.func.isRequired,
     setActiveItem: PropTypes.func,
     matchMode: PropTypes.bool,
     activeItem: PropTypes.object,
     unsetParam: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired
   };
 
@@ -30,9 +30,13 @@ export class LabelsFilter extends Component {
     };
     const deselectLabel = (deselectedLabel, event) => {
       event.preventDefault();
-      if (selected.indexOf(deselectedLabel) !== -1) {
+      if (selected.indexOf(deselectedLabel) > -1) {
         selected.splice(selected.indexOf(deselectedLabel), 1);
+      }
+      if (selected.length > 0) {
         setParam({ param: [param], value: selected });
+      } else {
+        unsetParam(param);
       }
     };
 

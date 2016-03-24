@@ -56,7 +56,6 @@ class ApplySetProductAction extends AbstractTicketApplicator implements ActionAp
 
     private function init()
     {
-        print_r($this->options);
         $this->product = $this->em->getRepository('DeskPRO:Product')->find($this->options);
     }
 }

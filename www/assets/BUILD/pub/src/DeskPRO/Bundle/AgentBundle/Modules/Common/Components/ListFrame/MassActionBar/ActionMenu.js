@@ -5,13 +5,26 @@ import { AddLabelsContainer } from './AddLabelsContainer';
 import { RemoveLabelsContainer } from './RemoveLabelsContainer';
 import { SingleChoiceFilter } from '../../ListFrame/ControlBar/Filtering/SingleChoiceFilter';
 
+import { connect } from 'react-redux';
+@connect()
 export class ActionMenu extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     options: PropTypes.array.isRequired,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object
   };
+
+  setParam = (params)=> {
+    const {setParams, dispatch } = this.props;
+    dispatch(setParams({ [params.param]: params.value }));
+  };
+
+  unsetParam(param) {
+    const {resetSingleAction, dispatch } = this.props;
+    dispatch(resetSingleAction(param));
+  }
 
   stateValue = (param) => {
     const {currentParams} = this.props;
@@ -36,6 +49,7 @@ export class ActionMenu extends Component {
       return value;
     }
   };
+
   choiceOtherAction = (option, key)=> {
     const {setParams, currentParams, resetSingleAction } = this.props;
 
@@ -43,27 +57,25 @@ export class ActionMenu extends Component {
       return (
         <AddLabelsContainer key={key}
                             option={option}
-                            setParams={setParams}
-                            currentParams={currentParams}
                             stateValue={this.stateValue}
-                            unsetParams={resetSingleAction}/>
+                            setParams={this.setParam}
+                            unsetParams={this.unsetParam}/>
       );
     } else if (option.param === 'remove_labels') {
       return (
         <RemoveLabelsContainer key={key}
                                option={option}
-                               setParams={setParams}
-                               currentParams={currentParams}
                                stateValue={this.stateValue}
-                               unsetParams={resetSingleAction}/>
+                               setParams={this.setParam}
+                               unsetParams={this.unsetParam}/>
       );
     } else if (option.type === 'set_action') {
       return (
         <SingleChoiceFilter key={key}
                             filter={option}
                             state={currentParams}
-                            setParamsAction={setParams}
                             stateValue={this.stateValue}
+                            setParamsAction={setParams}
                             unsetParams={resetSingleAction}/>
       );
     }

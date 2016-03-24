@@ -1,12 +1,15 @@
 import React, { Component, PropTypes } from 'react';
+import { paramsSelector } from '../../../../Application/Selectors/massActions';
 import { LabelsFilter }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/Filtering/LabelsFilter';
 
 import { connect } from 'react-redux';
-@connect()
+@connect(state => ({
+  currentParams: paramsSelector(state)
+}))
 export class RemoveLabelsContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    currentParams: PropTypes.object.isRequired,
     setParams: PropTypes.func.isRequired,
     stateValue: PropTypes.func.isRequired,
     unsetParams: PropTypes.func.isRequired,
@@ -14,16 +17,16 @@ export class RemoveLabelsContainer extends Component {
   };
 
   render() {
-    const {dispatch, option, stateValue, setParams, unsetParams} = this.props;
+    const { option, stateValue, setParams, unsetParams, currentParams } = this.props;
 
     return (
-      <LabelsFilter dispatch={dispatch}
-                    filter={option}
-                    setParamsAction={setParams}
+      <LabelsFilter filter={option}
+                    setParam={setParams}
+                    currentParams={currentParams.toJS()}
                     icon={option.icon || 'tags'}
                     label={option.label}
                     stateValue={stateValue}
-                    unsetParams={unsetParams.bind(this, 'removeLabels')}/>
+                    unsetParam={unsetParams}/>
     );
   }
 }
