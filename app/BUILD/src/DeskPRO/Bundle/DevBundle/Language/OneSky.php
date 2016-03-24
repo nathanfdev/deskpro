@@ -26,37 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\DevBundle\Language;
 
-namespace DeskPRO\Bundle\DevBundle;
+use Onesky\Api\Client as OneSkyClient;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class DevBundle extends Bundle
+class OneSky extends OneSkyClient
 {
-    public function registerCommands(Application $application)
+    const PROJECT_PORTAL = 'portal';
+    const PROJECT_AGENT  = 'agent';
+    const PROJECT_OTHER  = 'other';
+
+    /**
+     * Array of name => projectId.
+     *
+     * @var array
+     */
+    private $projects;
+
+    public function __construct($apiKey, $apiSecret, array $projects)
     {
-        $application->add(new Command\DevTestCommand());
-
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-        $application->add(new Command\Gen\GenTemplateMapCommand());
-
-        $application->add(new Command\Lang\CheckUsesCommand());
-        $application->add(new Command\Lang\OneSkyDownloadCommand());
-        $application->add(new Command\Lang\OneSkyUploadCommand());
+        parent::__construct();
+        $this->setApiKey($apiKey)->setSecret($apiSecret);
+        $this->projects = $projects;
     }
 
-    public function getNamespace()
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getProjectId($name)
     {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        return $this->projects[$name];
     }
 }

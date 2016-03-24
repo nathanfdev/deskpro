@@ -1,0 +1,7 @@
+services:
+  dpdev.onesky:
+    class: DeskPRO\Bundle\DevBundle\Language\OneSky
+    arguments:
+      - "@=service('deskpro.app_env').getConfig('onesky.api_key')"
+      - "@=service('deskpro.app_env').getConfig('onesky.api_secret')"
+      - "@=service('deskpro.app_env').getConfig('onesky.projects')"

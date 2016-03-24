@@ -1,0 +1,3 @@
+imports:
+  - { resource: "../config_prod.php" }
+  - { resource: dev_config.yml }

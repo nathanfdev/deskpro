@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -40,7 +41,7 @@ class DevKernel extends BaseKernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
+        $loader->load(DP_ROOT.'/sys/config/dev/dev_config_'.$this->getEnvironment().'.yml');
     }
 
     ####################################################################################################################

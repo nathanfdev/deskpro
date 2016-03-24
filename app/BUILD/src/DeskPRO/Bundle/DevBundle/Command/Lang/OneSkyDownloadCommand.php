@@ -30,33 +30,32 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\DevBundle;
+namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use DeskPRO\Bundle\DevBundle\Language\OneSky;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class DevBundle extends Bundle
+class OneSkyDownloadCommand extends ContainerAwareCommand
 {
-    public function registerCommands(Application $application)
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
-        $application->add(new Command\DevTestCommand());
-
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-        $application->add(new Command\Gen\GenTemplateMapCommand());
-
-        $application->add(new Command\Lang\CheckUsesCommand());
-        $application->add(new Command\Lang\OneSkyDownloadCommand());
-        $application->add(new Command\Lang\OneSkyUploadCommand());
+        $this->setName('dpdev:lang:onesky:download')
+            ->setDescription('Downloads phrases from OneSky and into the PHP lang files')
+        ;
     }
 
-    public function getNamespace()
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        return __NAMESPACE__;
-    }
+        $onesky = $this->getContainer()->get('dpdev.onesky');
 
-    public function getPath()
-    {
-        return __DIR__;
+        return 0;
     }
 }
