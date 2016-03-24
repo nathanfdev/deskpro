@@ -36,12 +36,12 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class SetIntStatusAction extends AbstractAction implements ActionWithOptionsInterface
+class SetStatusAction extends AbstractAction implements ActionWithOptionsInterface
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
         $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'int');
-        $resolver->setAllowedValues('options', [0, 1]);
+        $resolver->setAllowedTypes('options', 'string');
+        $resolver->setAllowedValues('options', ['0', '1']);
     }
 }
