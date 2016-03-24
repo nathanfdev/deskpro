@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,17 +31,32 @@
  *
  * @category DependencyInjection
  */
+
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\ServerPhpInfo\ServerPhpInfo;
+use Application\DeskPRO\Server\ServerPhpInfo;
 
 class ServerPhpInfoService
 {
     public static function create(DeskproContainer $container)
     {
-        $x = new ServerPhpInfo($container->getEm());
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        return $x;
+        $baseUrl = '/';
+
+        if ($container->has('request_stack')) {
+            $req = $container->get('request_stack')->getMasterRequest();
+            if ($req) {
+                $baseUrl = rtrim($req->getUriForPath('/'), '/');
+            }
+        }
+
+        return new ServerPhpInfo(
+            $container->get('deskpro.app_env'),
+            $baseUrl,
+            $DP_ENV->getDatManager()->readTxtFile('server_info_auth', '')
+        );
     }
 }

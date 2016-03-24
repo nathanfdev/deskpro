@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -136,6 +137,15 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
+
+        ob_start();
+        phpinfo();
+        $phpinfo = ob_get_clean();
+
+        @file_put_contents(
+            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpinfo.html',
+            $phpinfo
+        );
 
         #------------------------------
         # Run
