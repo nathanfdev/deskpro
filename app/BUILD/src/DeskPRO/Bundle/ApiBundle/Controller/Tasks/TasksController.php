@@ -33,13 +33,13 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task as TaskModel;
 use Doctrine\ORM\Query;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Put;
@@ -58,14 +58,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class TasksController.
  *
  * @ApiDocSection("Tasks")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
  * @ApiModes("all")
  * @Route("/tasks")
  */
 class TasksController extends CrudController
 {
-    public static $entity        = Task::class;
-    public static $output_entity = TaskModel::class;
-    public static $type          = 'task';
+    public static $entity = Task::class;
+    public static $type   = 'task';
 
     /**
      * You can provide additionaly "me" as value for creator, team, agent or department to fetch list of task related to

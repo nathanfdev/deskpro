@@ -26,29 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation;
 
-use Application\DeskPRO\Entity\Sla;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
- * API access to languages.
- *
- * @ApiModes("all")
- * @ApiDocSection("Slas")
- * @OutputEntity("Application\DeskPRO\Entity\Sla")
- * @Annotations\Route("/slas")
+ * @Annotation
+ * @Target("CLASS")
+ * Class ApiDocSection
  */
-class SlasController extends CrudController
+class OutputEntity
 {
-    public static $entity       = Sla::class;
-    public static $listOrder    = 'desc';
-    public static $exposeOnly   = ['list', 'get'];
-    public static $listPaginate = false;
+    /**
+     * @var string
+     */
+    protected $output;
+
+    /**
+     * OutputEntity constructor.
+     *
+     * @param $params
+     */
+    public function __construct($params)
+    {
+        $this->output = $params['value'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
 }

@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType;
@@ -42,13 +43,13 @@ use FOS\RestBundle\Controller\Annotations;
  * Class GlossaryController.
  *
  * @ApiDocSection("Glossary")
+ * @OutputEntity("Application\DeskPRO\Entity\GlossaryWordDefinition")
  * @ApiModes("all")
  * @Annotations\Route("/glossary")
  */
 class GlossaryController extends CrudController
 {
-    public static $entity        = GlossaryWordDefinition::class;
-    public static $output_entity = GlossaryWordDefinition::class;
-    public static $type          = GlossaryWordDefinitionType::class;
-    public static $listOrder     = 'asc';
+    public static $entity    = GlossaryWordDefinition::class;
+    public static $type      = GlossaryWordDefinitionType::class;
+    public static $listOrder = 'asc';
 }

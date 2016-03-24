@@ -33,12 +33,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use DeskPRO\Bundle\AppBundle\Form\Type\ProjectType;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as ProjectModel;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
@@ -50,15 +50,15 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @Annotations\Route("/projects")
  * @ApiDocSection("TaskProjects")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
  * @ApiModes("all")
  */
 class ProjectsController extends CrudController
 {
-    public static $entity        = Project::class;
-    public static $output_entity = ProjectModel::class;
-    public static $type          = ProjectType::class;
-    public static $listSort      = 'title';
-    public static $listOrder     = 'asc';
+    public static $entity    = Project::class;
+    public static $type      = ProjectType::class;
+    public static $listSort  = 'title';
+    public static $listOrder = 'asc';
 
     /**
      * @todo this should be done with special SelectCriteria, but I'm hurry

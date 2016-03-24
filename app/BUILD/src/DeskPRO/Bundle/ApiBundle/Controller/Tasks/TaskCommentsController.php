@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
@@ -50,14 +51,14 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Annotations\Route("/task_comments")
  * @ApiDocSection("Tasks")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\TaskComment")
  */
 class TaskCommentsController extends CrudController
 {
-    public static $entity        = TaskComment::class;
-    public static $output_entity = TaskComment::class;
-    public static $type          = TaskCommentType::class;
-    public static $listSort      = 'date_created';
-    public static $listOrder     = 'asc';
+    public static $entity    = TaskComment::class;
+    public static $type      = TaskCommentType::class;
+    public static $listSort  = 'date_created';
+    public static $listOrder = 'asc';
 
     /**
      * @ApiDoc(

@@ -56,7 +56,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 abstract class CrudController extends BaseController
 {
     public static $entity;
-    public static $output_entity;
     public static $type;
 
     /**
