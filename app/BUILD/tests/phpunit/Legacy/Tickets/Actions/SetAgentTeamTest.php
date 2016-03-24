@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -113,11 +113,11 @@ class SetAgentTeamTest extends DeskProTestCase
     public function testNoop()
     {
         $ticket             = new Ticket();
-        $ticket->agent_team = $this->getMockContainer()->getAgentData()->get(55);
+        $ticket->agent_team = $this->getMockContainer()->getAgentData()->getTeam(1);
 
         $exec = new ExecutorContext();
 
-        $action = new SetAgentTeam(array('agent_team_id' => 55));
+        $action = new SetAgentTeam(['agent_team_id' => 1]);
         $action->setContainer($this->container);
 
         $this->assertTrue($action->isNoop($ticket, $exec));

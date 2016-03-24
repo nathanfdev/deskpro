@@ -2182,7 +2182,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
     }
 
-    public function setProduct(Product $product)
+    public function setProduct(Product $product = null)
     {
         $this->setModelField('product', $product);
 
@@ -2251,7 +2251,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
     }
 
-    public function setWorkflow(TicketWorkflow $workflow)
+    public function setWorkflow(TicketWorkflow $workflow = null)
     {
         $this->setModelField('workflow', $workflow);
 
@@ -2327,7 +2327,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return $this
      */
-    public function setAgentTeam(AgentTeam $team)
+    public function setAgentTeam(AgentTeam $team = null)
     {
         $this->setModelField('agent_team', $team);
 

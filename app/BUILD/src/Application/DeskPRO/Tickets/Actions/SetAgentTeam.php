@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -121,8 +121,8 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
             return true;
         }
 
-        $set_team_id    = $team ? $team->id : 0;
-        $ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
+        $set_team_id    = $team ? $team->getId() : 0;
+        $ticket_team_id = $ticket->agent_team ? $ticket->agent_team->getId() : 0;
 
         if ($ticket_team_id == $set_team_id) {
             return true;
