@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,15 +33,14 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\TaskStarType;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar as TicketStarModel;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,16 +55,20 @@ class TicketStarsController extends BaseController
     const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ticket_stars.name.';
 
     /**
+     * Get a list of ticket stars.
+     *
      * @ApiDoc(
-     *      description="Get a list of ticket flags",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="get a list of ticket flags",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar>")
      * )
      *
-     * @Get("/ticket_stars", name="api_ticket_flags")
+     * @Annotations\Get("/ticket_stars", name="api_ticket_flags")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $stars = [];
 
@@ -86,28 +89,37 @@ class TicketStarsController extends BaseController
 
         for ($i = 1; $i <= 7; ++$i) {
             $name    = array_key_exists($i, $customNames) ? $customNames[$i] : TicketStar::idToColorLabel($i);
-            $stars[] = [
-                'id'    => $i,
-                'name'  => $name,
-                'color' => TicketStar::idToColorHex($i),
-            ];
+            $stars[] = new TicketStarModel($i, $name, TicketStar::idToColorHex($i));
         }
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($stars)),
+            $this->wrap($stars),
             Response::HTTP_OK
         );
     }
 
     /**
+     * Update a ticket star name.
+     *
      * @ApiDoc(
-     *      description="Update ticket star name",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Update ticket star name",
+     *     statusCodes={
+     *         204="If update was successful",
+     *         400="If you provided wrong formed request",
+     *     },
+     *     requirements={
+     *         {"name" = "id", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to update"},
+     *         {"name" = "name", "requirement" = "\w", "dataType" = "string", "description" = "the name of star to set"},
+     *     }
      * )
      *
-     * @Put("/ticket_stars/{id}", requirements={"id"="\d+"})
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @Annotations\Put("/ticket_stars/{id}", requirements={"id"="\d+"})
      */
     public function putAction($id, Request $request)
     {
@@ -135,13 +147,15 @@ class TicketStarsController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get the counts of tickets marked with each star",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get the counts of tickets marked with each star",
+     *     statusCodes={
+     *         200="Returned if success"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      *
-     * @Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
+     * @Annotations\Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
      */
     public function getTicketFlagsCountsAction()
     {
@@ -155,35 +169,60 @@ class TicketStarsController extends BaseController
             $count->addNested($flag_count, $flag_id, 'ticket_star', TicketStar::idToColorLabel($flag_id), true);
         }
 
-        return View::create($this->dataSerialize($count), Response::HTTP_OK);
+        return View::create($this->wrap($count), Response::HTTP_OK);
     }
 
     /**
+     * Get a count of tickets that current person flagged with provided flag.
+     *
      * @ApiDoc(
-     *      description="Get the count of tickets marked with each flag",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get the count of tickets marked with given flag",
+     *     requirements={
+     *         {"name" = "star", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of flag to filter"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if success"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      *
-     * @Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
+     * @param int $star
+     *
+     * @return View
+     *
+     * @Annotations\Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
      */
     public function getTicketFlagCountAction($star)
     {
         $tickets = $this->get('data.ticketflags')->getAllRecordsForFlag($this->getUser()->getId(), $star);
 
-        return View::create($this->dataSerialize(Count::fromValue(count($tickets))), Response::HTTP_OK);
+        $count = count($tickets);
+
+        return View::create($this->wrap(Count::fromValue($count)), Response::HTTP_OK);
     }
 
     /**
+     * Fetch a list of tickets starred with provided star.
+     *
      * @ApiDoc(
-     *      description="Get the tickets for a star",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get the tickets for a star",
+     *     statusCodes={
+     *         200="Returned if success"
+     *     },
+     *     requirements={
+     *         {"name" = "star", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to filter by"},
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Ticket>"
      * )
      *
-     * @Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
+     * @param Request $request
+     * @param int     $star
+     *
+     * @return View
+     *
+     * @Annotations\Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
      */
     public function getTicketsAction(Request $request, $star)
     {

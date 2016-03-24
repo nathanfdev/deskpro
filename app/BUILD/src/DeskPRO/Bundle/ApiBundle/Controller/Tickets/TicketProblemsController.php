@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,15 +37,15 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TicketProblemController.
  *
  * @ApiModes("all")
- * @Route("/ticket_problems")
+ * @Annotations\Route("/ticket_problems")
  */
 class TicketProblemsController extends CrudController
 {
@@ -55,12 +55,23 @@ class TicketProblemsController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Get tickets associated with the given problem",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get tickets associated with the given problem",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "dataType"="integer", "description"="problem id"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if success"
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Ticket>"
      * )
-     * @Get("/{id}/tickets")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     *
+     * @Annotations\Get("/{id}/tickets")
      */
     public function getTicketsAction(Request $request, $id)
     {

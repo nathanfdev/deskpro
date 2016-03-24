@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -48,46 +47,52 @@ use Symfony\Component\HttpFoundation\Response;
 class TicketStatusesController extends BaseController
 {
     /**
+     * Fetch available ticket statuses.
+     *
      * @ApiDoc(
-     *      description="Get all available statuses for tickets, sorted alphabetically",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get all available statuses for tickets, sorted alphabetically",
+     *     statusCodes={
+     *         200="Will be returned if everything is ok"
+     *     },
+     *     output="array<string>"
      * )
      *
-     * @Get("/ticket_statuses", name="api_ticket_statuses")
+     * @Annotations\Get("/ticket_statuses", name="api_ticket_statuses")
      */
-    public function cgetAction()
+    public function listAction()
     {
         $service = $this->get('data.ticketstatuses');
 
         return View::create(
-            $this->dataSerialize(new PrimitiveArray($service->getStatuses())),
+            $this->wrap($service->getStatuses()),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
-     *      description="Get tickets with the given status",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get tickets with the given status",
+     *     requirements={
+     *         {"name" = "status", "requirement"="\w", "description" = "provide a status to filter", "dataType" = "string"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="Application\DeskPRO\Entity\Ticket"
      * )
+     * @Annotations\Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
      *
-     * @Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
+     * @param Request $request
+     * @param string  $status
+     *
+     * @return View
      */
-    public function getTicketsForStatusAction($status)
+    public function getTicketsForStatusAction(Request $request, $status)
     {
-        $service = $this->get('data.ticketstatuses');
-
-        return View::create(
-            $this->dataSerialize($service->getAllTicketsForStatus($status)),
-            Response::HTTP_OK
-        );
+        return TicketsController::subRequestSearch($this->getKernel(), $request, ['status' => $status]);
     }
-
-    // A bit of comfort.
     protected function getEm()
     {
         return $this->getDoctrine()->getManager();
