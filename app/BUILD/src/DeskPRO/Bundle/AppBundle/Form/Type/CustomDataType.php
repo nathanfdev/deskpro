@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -345,6 +346,8 @@ class CustomDataType extends AbstractType
             $default_value = $custom_def->getDefaultValue();
             if ($default_value) {
                 $default_custom_data = $this->createCustomData($custom_def);
+                $default_custom_data->setField($custom_def);
+                $default_custom_data->setRootField($custom_def);
                 $default_custom_data->setData($default_value);
 
                 $custom_def_data->add($default_custom_data);
