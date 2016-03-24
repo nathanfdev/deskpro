@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use DeskPRO\Bundle\AppBundle\Form\Type\ProjectType;
@@ -41,8 +42,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as ProjectModel;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -98,6 +97,7 @@ class ProjectsController extends CrudController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\Task>"
      * )
      * @Annotations\Get("/{id}/tasks", name="api_projects_tasks_get")
      *
@@ -108,16 +108,7 @@ class ProjectsController extends CrudController
      */
     public function getTasksAction(Request $request, $id)
     {
-        $id    = (int) $id;
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(['project' => $id]);
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create($this->wrap($pager), Response::HTTP_OK);
+        return TasksController::subRequestSearch($this->getKernel(), $request, ['project' => $id]);
     }
 
     /**

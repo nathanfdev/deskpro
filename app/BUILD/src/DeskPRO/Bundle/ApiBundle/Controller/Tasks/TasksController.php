@@ -50,6 +50,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -128,6 +129,23 @@ class TasksController extends CrudController
         $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
 
         return View::create($this->wrap($tasks), Response::HTTP_OK);
+    }
+
+    /**
+     * @param HttpKernelInterface $kernel
+     * @param Request             $masterRequest
+     * @param array               $params
+     *
+     * @return Response
+     */
+    public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
+    {
+        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
+            '_controller' => 'ApiBundle:Tasks\Tasks:list',
+        ]);
+        $request->query->add($params);
+
+        return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
     }
 
     /**
