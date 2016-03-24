@@ -65,11 +65,14 @@ class ActionTypeCodes
     public static function getActionClass($namespace, $actionName)
     {
         $actionClassName = ucfirst(Strings::underscoreToCamelCase($actionName));
-        $actionClass     = sprintf(
+
+        // Search action class in $namespace
+        $actionClass = sprintf(
             'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Actions\\%s\\%sAction',
             $namespace,
             $actionClassName
         );
+        // If not found - try to search in common actions
         if (!class_exists($actionClass)) {
             $actionClass = sprintf(
                 'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Actions\\Common\\%sAction',

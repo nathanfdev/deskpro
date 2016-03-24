@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
@@ -51,6 +50,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 
     public function __construct(Container $container)
     {
+        // Applicator Service need Container for inject additional services into action applicators (if necessary)
         $this->container        = $container;
         $this->em               = $this->container->get('doctrine.orm.default_entity_manager');
         $this->transformer      = $this->container->get('action_engine.action_transformer');
@@ -64,18 +64,21 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     public function apply(array $ids, array $actions)
     {
         $entities = $this->getEntities($this->class, $ids);
+        // Transform array of actions into ActionInterface collection
         $this->actionCollection->prepare($this->namespace, $actions);
         /** @var ActionInterface $action */
         foreach ($this->actionCollection->getActions() as $action) {
             $serialized = $action->serialize();
-            print_r($serialized);
-            $options = array_key_exists('options', $serialized) && $serialized['options'] ?
+            $options    = array_key_exists('options', $serialized) && $serialized['options'] ?
                 $serialized['options'] : [];
-            $type       = ActionTypeCodes::getActionTypeCode($action);
+            $type = ActionTypeCodes::getActionTypeCode($action);
+
+            // If applicator need some injected services (except Entity Manager), it must be configured in container
             $applicator = $this->container->get(
                 'action_engine.'.strtolower($this->namespace).'.'.$type,
                 ContainerInterface::NULL_ON_INVALID_REFERENCE
             );
+            // Otherwise we try to get applicator by Action Transformer
             if (null === $applicator) {
                 $applicator = $this->transformer->actionToApplicator($this->em, $this->namespace, $type);
             }
@@ -86,6 +89,14 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
         $this->em->flush();
     }
 
+    /**
+     * Fetch entities for mass action apply.
+     *
+     * @param string $class
+     * @param array  $ids
+     *
+     * @return array
+     */
     private function getEntities($class, array $ids)
     {
         $qb = $this->em->createQueryBuilder();

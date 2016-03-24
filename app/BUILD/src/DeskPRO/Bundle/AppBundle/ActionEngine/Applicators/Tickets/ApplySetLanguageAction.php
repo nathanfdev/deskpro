@@ -49,7 +49,7 @@ class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionA
         $this->init();
         foreach ($tickets as $ticket) {
             $ticket->setLanguage($this->language);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_category', 'mass_actions');
+            $context = $this->tm->createAgentExecutorContext(null, 'set_language', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }
     }
