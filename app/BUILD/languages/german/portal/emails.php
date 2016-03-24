@@ -1,0 +1,79 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'portal.emails.auto-close'                  => 'Ihr Ticket "{{ticket.subject}}" wird automatisch geschlossen werden weil Sie es in letzter Zeit nicht aktualisiert haben. Wenn Sie nicht wollen dass Ihr Ticket geschlossen wird können Sie eine neue Antwort hinzufügen sodass unsere Agents Ihnen weiterhin helfen können.',
+    'portal.emails.chat_transcript'             => 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat Abschrift.',
+    'portal.emails.comment_approved'            => 'Ihr Kommentar wurde veröffentlicht.',
+    'portal.emails.comment_deleted'             => 'Ihr Kommentar wurde verwendet um die Seite zu verbessern.',
+    'portal.emails.comment_thank-you'           => 'Vielen Dank für Ihren Kommentar zu {{link}}.',
+    'portal.emails.comment_validate-email'      => 'Bitte bestätigen Sie Ihre Email Adresse online indem Sie auf folgenden Link klicken:',
+    'portal.emails.do-not-reply'                => 'Bitte nicht auf diese Email antworten. Dies ist eine maschinell erzeugte Nachricht und Antworten werden von unserem Personal nicht gelesen werden.',
+    'portal.emails.email-too-big'               => 'Ihr Email "{{subject}}" wurde nicht angenommen weil es zu gross ist. Die maximale Email-Größe die dieser Helpdesk akzeptiert beträgt {{max_size}}. Entfernen Sie etwaige Anlagen und versuchen Sie es noch einmal.',
+    'portal.emails.feedback_approved'           => 'Wir mailen Ihnen damit Sie wissen dass Ihr Feedback genehmigt wurde und nun öffentlich auf unserer Website sichtbar ist.',
+    'portal.emails.feedback_closed'             => 'Ihre eingereichtes Feedback "{{title}}" wurde geschlossen: {{status}}',
+    'portal.emails.feedback_disapproved'        => 'Wir mailen Ihnen damit Sie wissen dass Ihr Feedback leider abgelehnt wurde und nicht öffentlich auf unserer Website erscheinen wird.',
+    'portal.emails.feedback_disapproved-reason' => 'Wir mailen Ihnen damit Sie wissen dass Ihr Feedback leider abgelehnt wurde und nicht öffentlich auf unserer Website erscheinen wird. {{name}} gab folgenden Grund an:',
+    'portal.emails.feedback_new-comment'        => '{{name}} hat einen neuen Kommentar gepostet:',
+    'portal.emails.feedback_published'          => 'Ihr eingereichtes Feedback "{{title}}" wurde validiert und wird nun auf unserer Website erscheinen.',
+    'portal.emails.feedback_thank-you'          => 'Vielen Dank für Ihr Feedback "{{title}}"',
+    'portal.emails.feedback_updated'            => 'Ihr eingereichtes Feedback "{{title}}" wurde aktualisiert. Es wird nun unter dem neuen Status eingereicht "{{status}}"',
+    'portal.emails.feedback_validate-email'     => 'Bitte bestätigen Sie Ihre Email Adresse online indem Sie auf folgenden Link klicken:',
+    'portal.emails.feedback_votes'              => 'Ihr Feedback hat derzeit <strong>1</strong> Votum. Sehen Sie sich Ihr Feedback online an unter: | Ihr Feedback hat derzeit <strong>{{count}}</strong> Vota. Sehen Sie sich Ihr Feedback online an unter:',
+    'portal.emails.greeting'                    => 'Liebe(r) {{to_name}},',
+    'portal.emails.kb-explain'                  => 'Sie erhalten dieses Email weil Sie unsere Konledgebase unter <a href="{{ deskpro_url }}">{{ deskpro_url }}</a> abonniert haben.<br />Sie wollen diese Emails nicht mehr? <a href="{{ unsubscribe_url }}">Klicken Sie hier um sich abzumelden.</a>',
+    'portal.emails.kb-new-articles'             => '1 neuer Artikel|{{count}} neue Artikel',
+    'portal.emails.kb-updated-articles'         => '1 aktualisierter Artikel|{{count}} aktualisierte Artikel',
+    'portal.emails.label_view-online'           => 'Online ansehen',
+    'portal.emails.message-clipped'             => '(Nachricht wurde abgeschnitten)',
+    'portal.emails.password_agent-reset'        => 'Ein Agent hat Ihr Kennwort zurückgesetzt. Sie können sich mit diesen Anmeldeinformationen anmelden',
+    'portal.emails.password_reset'              => 'Sie baten um einen Kennwort-Reset. Um Ihr Kennwort zurückzusetzen klicken Sie auf den untenstehenden Link:',
+    'portal.emails.profile_email-new-confirm'   => 'Um das Hinzufügen dieser sekundären Email Adresse zu Ihrem Konto abzuschliessen einfach auf den folgenden Validierungslink klicken',
+    'portal.emails.profile_email_link-validate' => 'Klicken Sie einfach auf den folgenden Link um Ihre Email Adresse zu bestätigen',
+    'portal.emails.register-agent-validation'   => 'Hinweis: Damit Ihr Account vollständig aktiviert werden kann muss er von unseren Agents manuell validiert werden. Tickets und andere Inhalte die Sie einsenden werden in einer Warteschlange zwischengespeichert bis ein Agent Ihren Account validiert hat.',
+    'portal.emails.register-confirm'            => 'Danke für die Registrierung eines Kontos.<br /><br />Um Ihr Konto nutzen zu können müssen Sie auf den folgenden Link klicken um Ihre Email Adresse zu bestätigen',
+    'portal.emails.register-welcome'            => 'Danke für Ihre Registrierung. Sie können sich nun mit Ihrer Emailadresse {{to_email}} am Helpdesk anmelden:',
+    'portal.emails.registration_closed'         => 'Liebe(r) {{name}},<br /><br /><br /><br />neue Tickets werden nur von bestehenden Helpdesk Mitgliedern akzeptiert. Wenn Sie bereits ein Konto haben, mailen Sie uns bitte nochmals von Ihrer registrierten Email Adresse.',
+    'portal.emails.reject_resolved'             => 'Ihre Antwort wurde nicht angenommen weil dieses Ticket bereits als gelöst markiert wurde. Unsere Agents werden diese Nachricht weder lesen noch darauf antworten.',
+    'portal.emails.reject_resolved-new'         => 'Wenn sie ein komplett neues Ticket erstellen wollen können Sie ein neues Email an <a href="mailto:{{email_to}}">{{email_to}}</a> senden oder unser Online Formular ausfüllen unter:<br /><a href="{{link}}">{{link}}</a>',
+    'portal.emails.reject_resolved-newemail'    => 'Wenn sie ein komplett neues Ticket erstellen wollen können Sie ein neues Email an <a href="mailto:{{email_to}}">{{email_to}}</a>',
+    'portal.emails.ticket_access_ticket_online' => 'Ansehen und Verwalten dieses Tickets online:',
+    'portal.emails.ticket_cc-new'               => 'Sie wurden einem Ticket hinzugefügt das durch {{name}} eröffnet wurde.',
+    'portal.emails.ticket_flood'                => 'Sie haben vor Kurzem eine Email an unseren Helpdesk gesendet. Unser automatisiertes System hat festgestellt, dass Sie viele Nachrichten in schneller Folge gesendet haben, die wahrscheinlich automatisiert geschickt wurden.<br /><br />Als Schutz vor einer Auto-Responder Schleife wird unser Helpdesk keine weiteren automatischen Benachrichtigungsemails mehr an Sie senden.',
+    'portal.emails.ticket_message_title'        => 'Am {{date}} um {{time}} schrieb {{author}}:',
+    'portal.emails.ticket_no-autoresponse'      => 'Warnung: Bestätigungemails ausgeschaltet',
+    'portal.emails.ticket_rate-negative'        => 'Nein',
+    'portal.emails.ticket_rate-neutral'         => 'Es war OK',
+    'portal.emails.ticket_rate-positive'        => 'Ja',
+    'portal.emails.ticket_rate-question'        => 'War diese Nachricht hilfreich?',
+    'portal.emails.ticket_received'             => 'Wir haben Ihr Ticket erhalten. Einer unserer Mitarbeiter wird in Kürze antworten.',
+    'portal.emails.ticket_reply-confirm'        => 'Vielen Dank für Ihre Antwort. Einer unserer Mitarbeiter wird in Kürze antworten.',
+    'portal.emails.ticket_validate'             => 'Vielen Dank für die Kontaktaufnahme.<br /><br />Damit unsere Agenten Ihre Nachricht lesen und Ihnen antworten müssen Sie Ihre Email Adresse validieren.',
+    'portal.emails.tickets_ommitted'            => '1 Nachricht wurde ausgelassen | {{count}} Nachrichten wurden ausgelassen',
+    'portal.emails.view_full_history_online'    => 'Geamtes Ticket online ansehen',
+);

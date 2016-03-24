@@ -1,0 +1,76 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'portal.emails.auto-close'                  => 'Tichetul dumneavoastra "{{ticket.subject}}" va fi inchis automat deoarece nu am primit niciun raspuns. Daca nu doriti ca tichetul sa fie inchis, va rugam sa ne trimiteti un mesaj iar agentii nostri va vor ajuta cu cea mai mare placere.',
+    'portal.emails.chat_transcript'             => 'Va multumim pentru conversatie. Aceasta este o copie a acesteia',
+    'portal.emails.comment_approved'            => 'Comentariul dumneavoastra a fost publicat',
+    'portal.emails.comment_deleted'             => 'Comentariul dumneavoastra a fost folosit pentru imbunatatirea paginii',
+    'portal.emails.comment_thank-you'           => 'Va multumim pentru comentariul dumneavoastra de la {{link}}.',
+    'portal.emails.comment_validate-email'      => 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:',
+    'portal.emails.do-not-reply'                => 'Va rugam sa nu raspundeti la acest email. Acesta este un mesaj generat automat si nu va fi raspuns de unul din membrii echipei noastre.',
+    'portal.emails.email-too-big'               => 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat deoarece este prea mare. Dimensiunea maxima acceptata de Helpdesk-ul nostru este {{max_size}}. Va rugam sa renuntati la atasamente si sa incercati din nou.',
+    'portal.emails.feedback_approved'           => 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.',
+    'portal.emails.feedback_closed'             => 'Feedback-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}',
+    'portal.emails.feedback_disapproved'        => 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.',
+    'portal.emails.feedback_disapproved-reason' => 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:',
+    'portal.emails.feedback_new-comment'        => '{{name}} a adaugat un nou comentariu:',
+    'portal.emails.feedback_published'          => 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.',
+    'portal.emails.feedback_thank-you'          => 'Va multumim pentru feedback-ul "{{title}}"',
+    'portal.emails.feedback_updated'            => 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"',
+    'portal.emails.feedback_validate-email'     => 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:',
+    'portal.emails.feedback_votes'              => 'Feedback-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:| Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:',
+    'portal.emails.greeting'                    => 'Draga {{to_name}},',
+    'portal.emails.label_view-online'           => 'Vedeti Online',
+    'portal.emails.message-clipped'             => '(Acest mesaj a fost trunchiat)',
+    'portal.emails.password_agent-reset'        => 'Un agent v-a resetat parola contului dumneavoastra. Va puteti loga folosind urmatoarele credentiale',
+    'portal.emails.password_reset'              => 'Ati solicitat resetarea parolei. Pentru a va reseta parola, dati click pe link-ul de mai jos:',
+    'portal.emails.profile_email-new-confirm'   => 'Pentru a finaliza adaugarea aceste adrese secundare contului dumneavoastra, va rugam sa dati click pe urmatorul link',
+    'portal.emails.profile_email_link-validate' => 'Dati click pe urmatorul link pentru a valida adresa dumneavoastra de email',
+    'portal.emails.register-agent-validation'   => 'Nota: Pentru a deveni activ, contul dumneavoastra trebuie sa fie validat manual de catre unul dintre agentii nostri. Tichetele si orice alt continut trimis va fi tinut intr-o coada de validare pana cand un agent va confirma contul.',
+    'portal.emails.register-confirm'            => 'Va multumim pentru crearea contului.<br /><br />Inainte sa va puteti folosi contul trebuie sa dati click pe urmatorul link pentru a valida adresa dumneavoastra de email.',
+    'portal.emails.register-welcome'            => 'Va multumim ca v-ati inregistrat. Incepand din acest moment va puteti loga in Helpdesk-ul nostru folosind urmatoarea adresa de email: {{to_email}}',
+    'portal.emails.registration_closed'         => 'Draga {{name}},<br /><br /><br /><br />Tichetele noi sunt acceptate doar de la membrii existenti ai Helpdesk-ului. Daca aveti deja un cont, va rugam sa ne trimiteti un email de la adresa deja inregistrata.',
+    'portal.emails.reject_resolved'             => 'Mesajul dumneavoastra nu a fost acceptat deoarece tichetul a fost deja marcat ca fiind rezolvat. Agentii nostri nu vor citi sau raspunde la acest mesaj.',
+    'portal.emails.reject_resolved-new'         => 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a> sau sa completati formularul nostru online la adresa: <br /><a href="{{link}}">{{link}}</a>',
+    'portal.emails.reject_resolved-newemail'    => 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a>',
+    'portal.emails.ticket_access_ticket_online' => 'Vedeti si modificati acest tichet online:',
+    'portal.emails.ticket_cc-new'               => 'Ati fost inclus in conversatia de pe un tichet deschis de {{name}}.',
+    'portal.emails.ticket_flood'                => 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate. <br /><br />Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.',
+    'portal.emails.ticket_message_title'        => 'La {{date}}; {{time}}, {{author}} a scris:',
+    'portal.emails.ticket_no-autoresponse'      => 'Avertizare: Email-urile de confirmare au fost oprite',
+    'portal.emails.ticket_rate-negative'        => 'Nu',
+    'portal.emails.ticket_rate-neutral'         => 'A fost in regula',
+    'portal.emails.ticket_rate-positive'        => 'Da',
+    'portal.emails.ticket_rate-question'        => 'A fost acest mesaj de ajutor?',
+    'portal.emails.ticket_received'             => 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.',
+    'portal.emails.ticket_reply-confirm'        => 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.',
+    'portal.emails.ticket_validate'             => 'Va multumim ca ne-ati contactat. <br /><br />Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.',
+    'portal.emails.tickets_ommitted'            => '1 mesaj a fost omis| {{count}} mesaje au fost omise',
+    'portal.emails.view_full_history_online'    => 'Vedeti intregul tichet online',
+);
