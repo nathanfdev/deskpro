@@ -33,9 +33,33 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
+use Doctrine\ORM\EntityManager;
 
 class TicketApplicatorService extends AbstractApplicatorService
 {
     protected $class     = Ticket::class;
     protected $namespace = 'Tickets';
+
+    /** @var  EntityManager */
+    protected $em;
+    /** @var  TicketManager */
+    protected $tm;
+
+    public function __construct(EntityManager $em, TicketManager $tm)
+    {
+        parent::__construct($em);
+        $this->tm = $tm;
+    }
+
+    protected function createApplicator($class)
+    {
+        $applicator = new $class($this->em);
+        if ($applicator instanceof TicketManagerAwareInterface) {
+            $applicator->setTicketManager($this->tm);
+        }
+
+        return $applicator;
+    }
 }

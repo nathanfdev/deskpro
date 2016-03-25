@@ -30,19 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-abstract class AbstractTicketApplicator extends AbstractActionApplicator implements TicketManagerAwareInterface
+class SetCategoryAction extends AbstractAction implements ActionWithOptionsInterface
 {
-    /** @var  TicketManager */
-    protected $tm;
-
-    public function setTicketManager(TicketManager $tm)
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $this->tm = $tm;
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setAllowedValues(
+            'options',
+            function ($value) {
+                return (is_int($value) && $value > 0) || ctype_digit($value);
+            }
+        );
     }
 }

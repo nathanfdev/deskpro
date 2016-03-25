@@ -1,73 +1,18 @@
 services:
-
-  action_engine.action_transformer:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer
-  action_engine.action_collection:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection
-
   action_engine.feedback:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackApplicatorService
     arguments:
-      - "@service_container"
+      - "@doctrine.orm.default_entity_manager"
   action_engine.feedback_comments:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentApplicatorService
     arguments:
-      - "@service_container"
+      - "@doctrine.orm.default_entity_manager"
   action_engine.tasks:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskApplicatorService
     arguments:
-      - "@service_container"
-
-# --------------------------
-# Tickets action applicators
-# --------------------------
-
+      - "@doctrine.orm.default_entity_manager"
   action_engine.tickets:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketApplicatorService
-    arguments:
-      - "@service_container"
-  action_engine.tickets.delete:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyDeleteAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_status:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetStatusAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.mark_as_spam:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyMarkAsSpamAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.assign:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyAssignAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_product:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetProductAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_workflow:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetWorkflowAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_language:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetLanguageAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_int_category:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetCategoryAction
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
-  action_engine.tickets.set_followers:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplySetFollowersAction
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"

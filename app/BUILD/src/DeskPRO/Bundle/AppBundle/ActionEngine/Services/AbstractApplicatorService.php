@@ -38,8 +38,6 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 {
@@ -52,15 +50,11 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     /** @var ActionTransformer */
     protected $transformer;
 
-    private $container;
-
-    public function __construct(Container $container)
+    public function __construct(EntityManager $em)
     {
-        // Applicator Service need Container for inject additional services into action applicators (if necessary)
-        $this->container        = $container;
-        $this->em               = $this->container->get('doctrine.orm.default_entity_manager');
-        $this->transformer      = $this->container->get('action_engine.action_transformer');
-        $this->actionCollection = $this->container->get('action_engine.action_collection');
+        $this->em               = $em;
+        $this->transformer      = new ActionTransformer();
+        $this->actionCollection = new ActionCollection();
     }
 
     /**
@@ -75,14 +69,25 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 
         /** @var ActionInterface $action */
         foreach ($this->actionCollection->getActions() as $action) {
-            $applicator = $this->getApplicator($action);
-            $options    = $this->getOptions($action);
+            $options         = $this->getOptions($action);
+            $applicatorClass = $this->getApplicatorClass($action);
+            $applicator      = $this->createApplicator($applicatorClass);
             $applicator
                 ->setOptions($options)
                 ->apply($entities);
         }
 
         $this->em->flush();
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return AbstractActionApplicator
+     */
+    protected function createApplicator($class)
+    {
+        return new $class($this->em);
     }
 
     /**
@@ -122,22 +127,12 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     /**
      * @param ActionInterface $action
      *
-     * @return AbstractActionApplicator
+     * @return string
      */
-    private function getApplicator(ActionInterface $action)
+    private function getApplicatorClass(ActionInterface $action)
     {
         $type = ActionTypeCodes::getActionTypeCode($action);
 
-        // If applicator need some injected services (except Entity Manager), it must be configured in container
-        $applicator = $this->container->get(
-            'action_engine.'.strtolower($this->namespace).'.'.$type,
-            ContainerInterface::NULL_ON_INVALID_REFERENCE
-        );
-        // Otherwise we try to get applicator by Action Transformer
-        if (null === $applicator) {
-            $applicator = $this->transformer->actionToApplicator($this->em, $this->namespace, $type);
-        }
-
-        return $applicator;
+        return $this->transformer->actionToApplicatorClassName($this->namespace, $type);
     }
 }

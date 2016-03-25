@@ -33,9 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists;
-use Doctrine\ORM\EntityManager;
 
 class ActionTransformer
 {
@@ -67,19 +65,18 @@ class ActionTransformer
     }
 
     /**
-     * @param EntityManager $em
-     * @param string        $namespace
-     * @param string        $type
+     * @param string $namespace
+     * @param string $type
      *
-     * @return AbstractActionApplicator
+     * @return string
      */
-    public function actionToApplicator(EntityManager $em, $namespace, $type)
+    public function actionToApplicatorClassName($namespace, $type)
     {
         $class = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $type);
         if (!class_exists($class)) {
             throw new ActionApplicatorDoesNotExists($type);
         }
 
-        return new $class($em);
+        return $class;
     }
 }
