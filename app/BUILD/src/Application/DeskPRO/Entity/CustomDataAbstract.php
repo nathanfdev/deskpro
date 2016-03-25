@@ -33,8 +33,6 @@
  */
 namespace Application\DeskPRO\Entity;
 
-use JMS\Serializer\Annotation as JMS;
-
 /**
  * Base class used for storing custom field data.
  *
@@ -43,16 +41,11 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @property CustomDefAbstract $field
  * @property CustomDefAbstract $root_field
- * @JMS\ExclusionPolicy("all")
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID.
-     *
-     * @JMS\Expose()
-     * @JMS\Groups({"list", "details"})
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -67,10 +60,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * User string data.
-     *
-     * @JMS\Expose()
-     * @JMS\Groups({"list", "details"})
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -141,11 +130,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Groups("details")
-     * @JMS\SerializedName("field_id")
-     * @JMS\Type("integer")
-     *
      * @return int
      */
     public function fetchFieldId()
