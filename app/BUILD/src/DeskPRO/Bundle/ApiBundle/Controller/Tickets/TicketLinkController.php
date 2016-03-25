@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
@@ -45,6 +46,28 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TicketLinkController extends BaseController
 {
     /**
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="link two tickets",
+     *     requirements={
+     *         {"name"="ticket_id", "requirement"="\d+", "dataType"="integer", "description"="base ticket"},
+     *         {"name"="link_ticket_id", "requirement"="\d+", "dataType"="integer", "description"="ticket to link"},
+     *         {
+     *             "name"="parent",
+     *             "requirement"="true|false",
+     *             "dataType"="boolean",
+     *             "description"="set true if you want to make link ticket as parent for ticket"},
+     *     },
+     *     statusCodes={
+     *         201="Tickets was linked successfully",
+     *         400="You are trying to link ticket to itself",
+     *         404={
+     *             "Ticket with 'ticket_id' wasn't found",
+     *             "Ticket with 'link_ticket_id' wasn't found",
+     *         },
+     *     },
+     * )
+     *
      * @param Request $request
      * @param int     $ticket_id
      
@@ -85,6 +108,18 @@ class TicketLinkController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="get tickets linked with ticket under provided id",
+     *     requirements={
+     *         {"name"="ticket_id", "requirement"="\d+", "dataType"="integer", "description"="ticket to find id"},
+     *     },
+     *     statusCodes={
+     *         200="Returned in case of successful request",
+     *         404="Ticket with specified id wasn't found",
+     *     },
+     * )
+     *
      * @param int $ticket_id
      *
      * @Annotations\Get("/tickets/{ticket_id}/link", name="api_tickets_link_list")
@@ -102,15 +137,41 @@ class TicketLinkController extends BaseController
         $linker = $this->get('tickets.linker');
 
         return View::create(
-            $this->dataSerialize($linker->getLinkedTickets($ticket)),
+            $this->wrap($linker->getLinkedTickets($ticket)),
             Response::HTTP_OK
         );
     }
 
     /**
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="delete relation between two tickets",
+     *     requirements={
+     *         {"name"="ticket_id", "requirement"="\d+", "dataType"="integer", "description"="base ticket"},
+     *         {"name"="unlink_ticket_id", "requirement"="\d+", "dataType"="integer", "description"="ticket to unlink"},
+     *         {
+     *             "name"="link_type",
+     *             "requirement"="parent|sibling|child",
+     *             "dataType"="string",
+     *             "description"="you have to specify relation type to unlink tickets properly"},
+     *     },
+     *     statusCodes={
+     *         201="Tickets was unlinked successfully",
+     *         400={
+     *             "You are trying to unlink ticket from itself",
+     *             "Wrong relation type",
+     *         },
+     *         404={
+     *             "Ticket with 'ticket_id' wasn't found",
+     *             "Ticket with 'unlink_ticket_id' wasn't found",
+     *         },
+     *     },
+     * )
+     *
      * @param int     $ticket_id
      * @param int     $unlink_ticket_id
      * @param Request $request
+     *
      * @Annotations\Delete("/tickets/{ticket_id}/link/{unlink_ticket_id}", name="api_tickets_link_unlink")
      *
      * @return View

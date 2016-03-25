@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Ticket;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LinkedTickets;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -117,12 +118,12 @@ class TicketLinker
         $siblings = $this->getTicketSiblings($ticket);
         $children = $this->getTicketChildren($ticket);
 
-        return [
-            'parent'   => $ticket->getParentTicket() ?: '',
-            'siblings' => array_values($siblings),
-            'children' => array_values($children),
-            'count'    => array_sum([$ticket->getParentTicket() ? 1 : 0, count($siblings), count($children)]),
-        ];
+        return new LinkedTickets(
+            $ticket->getParentTicket() ?: null,
+            $siblings,
+            $children,
+            array_sum([$ticket->getParentTicket() ? 1 : 0, count($siblings), count($children)])
+        );
     }
 
     /**
