@@ -123,7 +123,7 @@ class ChatController extends AbstractController
             'department_id' => ChatConversationSearch::TERM_DEPARTMENT_ID,
             'label'         => ChatConversationSearch::TERM_LABEL,
             'person_id'     => ChatConversationSearch::TERM_PERSON_ID,
-            'status'        => ChatConversationSearch::TERM_DATE_CREATED,
+            'status'        => ChatConversationSearch::TERM_STATUS,
         );
 
         $terms = array();
@@ -139,12 +139,12 @@ class ChatController extends AbstractController
         $date_created_end   = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
-                'date2'             => $date_created_end,
+                'date1' => $date_created_start,
+                'date2' => $date_created_end,
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => ChatConversationSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1'             => $date_created_start,
+                'date1' => $date_created_start,
             ));
         }
 
