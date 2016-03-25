@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
@@ -42,6 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketMessageController.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Tickets")
+ * @OutputEntity("Application\DeskPRO\Entity\TicketMessage")
  * @Annotations\Route("/tickets/{parentId}/messages")
  */
 class TicketMessagesController extends CrudSubController

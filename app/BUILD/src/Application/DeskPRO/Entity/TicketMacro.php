@@ -31,10 +31,10 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -48,53 +48,65 @@ use Orb\Util\Arrays;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
+class TicketMacro extends DomainObject
 {
     /**
-     * @var int
+     * The unique ID.
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * The person - owner of the macro.
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
     /**
-     * @var string
+     * Title of the macro.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $title;
 
     /**
-     * @var bool
+     * Is macro enabled?
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
+     *
+     * @var bool
      */
     protected $is_enabled = true;
 
     /**
-     * @var bool
+     * Is macro global?
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
+     *
+     * @var bool
      */
     protected $is_global = false;
 
     /**
-     * @var array
+     * Macro actions.
      *
      * @JMS\Expose()
      * @JMS\Type("array")
+     *
+     * @var array
      */
     protected $actions = [];
 

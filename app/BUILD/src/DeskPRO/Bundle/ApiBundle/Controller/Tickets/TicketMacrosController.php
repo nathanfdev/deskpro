@@ -29,19 +29,20 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +51,9 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketMacrosController.
  *
  * @ApiModes("all")
- * @Route("/ticket_macros")
+ * @Annotations\Route("/ticket_macros")
+ * @OutputEntity("Application\DeskPRO\Entity\TicketMacro")
+ * @ApiDocSection("Tickets")
  */
 class TicketMacrosController extends CrudController
 {
@@ -59,7 +62,26 @@ class TicketMacrosController extends CrudController
     public static $listOrder  = 'asc';
 
     /**
-     * @Post("/{id}/apply/{ticket_id}")
+     * Apply macro with given id to the specified ticket.
+     *
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="apply macro to ticket",
+     *     statusCodes={
+     *         204="Everthing is OK",
+     *         403="User is not allowed to modify the ticket",
+     *         404={
+     *             "Ticket wasn't found",
+     *             "Macro wasn't found",
+     *         }
+     *     },
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "dataType"="integer", "description"="the macro identity"},
+     *         {"name"="ticket_id", "requirement"="\d+", "dataType"="integer", "description"="the ticket identity"},
+     *     }
+     * )
+     *
+     * @Annotations\Post("/{id}/apply/{ticket_id}")
      *
      * @param int     $id
      * @param int     $ticket_id
