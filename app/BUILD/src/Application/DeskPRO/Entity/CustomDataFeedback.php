@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Custom data.
@@ -43,25 +42,16 @@ use JMS\Serializer\Annotation as JMS;
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
-     * @JMS\Groups("details")
-     * @JMS\Type("entity<DeskPRO\Application\Entity\CustomDefFeedback>")
-     *
      * @var \Application\DeskPRO\Entity\Feedback
      */
     protected $feedback;
 
     /**
-     * @JMS\Groups("details")
-     * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
-     *
      * @var CustomDefFeedback
      */
     protected $field = null;
 
     /**
-     * @JMS\Groups("details")
-     * @JMS\Type("DeskPRO\Application\Entity\CustomDefFeedback")
-     *
      * @var CustomDefFeedback
      */
     protected $root_field = null;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,8 +35,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -48,35 +47,23 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @ApiModes("all")
  */
-class PeopleCountsController extends BaseController implements ClassResourceInterface
+class PeopleCountsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get people count",
-     *      parameters={
-     *          {
-     *              "name"="is_agent",
-     *              "requirement"="0|1",
-     *              "description"="Agents filter",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="is_deleted",
-     *              "requirement"="0|1",
-     *              "description"="Soft-deleted filter",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *     section="People",
+     *     description="Get people count",
+     *     filters={
+     *         {"name"="is_agent", "requirement"="0|1", "description"="Agents filter", "dataType"="integer"},
+     *         {"name"="is_deleted", "requirement"="0|1", "description"="Soft-deleted filter", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned in case of success",
+     *         400="Your request was malformed",
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get("/people/counts", name="api_people_counts")
+     * @Annotations\Get("/people/counts", name="api_people_counts")
      *
      * @param Request $request
      *
@@ -97,6 +84,6 @@ class PeopleCountsController extends BaseController implements ClassResourceInte
 
         $count = $dataService->countPeople($criteria);
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 }

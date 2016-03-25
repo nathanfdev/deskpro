@@ -14,4 +14,5 @@ Feature: /agents endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].name" should be equal to "Link Admin"
+    And the JSON node "data[2].name" should be equal to "Link Admin"
+

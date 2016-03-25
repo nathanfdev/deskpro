@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson;
@@ -77,6 +78,14 @@ class ApiPersonFactory
         }
 
         return $api_person;
+    }
+
+    public function createProfile(Person $person)
+    {
+        $profile = new PersonProfile($person);
+        $profile->setAvatar($this->resolver->getAvatarModel($person));
+
+        return $profile;
     }
 
     /**

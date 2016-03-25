@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,20 +28,109 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Model;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonEmail;
+use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * User profile settings.
  *
  * Class PersonProfile
+ *
+ * @JMS\ExclusionPolicy("none")
  */
 class PersonProfile
 {
     /**
+     * @JMS\Exclude()
+     *
      * @var Person
      */
     private $person;
+
+    /**
+     * The unique person ID.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $id;
+
+    /**
+     * Person name.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $name;
+
+    /**
+     * Person overriden name.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $display_name;
+
+    /**
+     * Person primary email.
+     *
+     * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
+     *
+     * @var PersonEmail
+     */
+    private $primary_email;
+
+    /**
+     * Person emails list.
+     *
+     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
+     *
+     * @var ArrayCollection
+     */
+    private $emails;
+
+    /**
+     * Person phone.
+     *
+     * @JMS\Type("array<array<string>>")
+     *
+     * @var array|null
+     */
+    private $phone;
+
+    /**
+     * Person language.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
+     *
+     * @var Language
+     */
+    private $language_id;
+
+    /**
+     * Person timezone.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $timezone;
+
+    /**
+     * Persons avatar.
+     *
+     * @JMS\Type("DeskPRO\Bundle\ApiBundle\Model\ProfileAvatar")
+     *
+     * @var ProfileAvatar|null
+     */
+    private $avatar;
 
     /**
      * Constructor.
@@ -50,82 +139,33 @@ class PersonProfile
      */
     public function __construct(Person $person)
     {
-        $this->person = $person;
+        $this->person        = $person;
+        $this->id            = $person->getId();
+        $this->name          = $person->getName();
+        $this->display_name  = $person->getOverrideDisplayName();
+        $this->primary_email = $person->getPrimaryEmail();
+        $this->emails        = $person->getEmails();
+        $this->language_id   = $person->getLanguage();
+        $this->timezone      = $person->getTimezone();
+
+        $phone_number     = $person->getPrimaryPhoneNumber();
+        $phone_serialized = null;
+        if ($phone_number) {
+            $phone_serialized = [
+                'number'    => $phone_number->getNumberFormatted(),
+                'extension' => $phone_number->getExt(),
+            ];
+        }
+        $this->phone = $phone_serialized;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function setAvatar(Avatar $avatar)
     {
-        return $this->person->getId();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->person->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOverrideDisplayName()
-    {
-        return $this->person->override_display_name;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getPrimaryEmail()
-    {
-        $email = $this->person->getPrimaryEmail();
-
-        return $email ? $email->getEmail() : null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEmails()
-    {
-        return $this->person->getEmailAddresses();
-    }
-
-    /**
-     * @return PhoneNumber|null
-     */
-    public function getPhoneNumber()
-    {
-        return $this->person->getPrimaryPhoneNumber();
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getLanguageId()
-    {
-        $language = $this->person->getLanguage();
-
-        return $language ? $language->getId() : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTimezone()
-    {
-        return $this->person->getTimezone();
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
+        if ($this->person->getPictureBlob()) {
+            $this->avatar = new ProfileAvatar(
+                $this->person->getPictureBlob()->getAuthId(),
+                $avatar->getUrl(200)
+            );
+        }
     }
 }

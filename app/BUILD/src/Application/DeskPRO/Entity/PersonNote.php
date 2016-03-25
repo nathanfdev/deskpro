@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,15 +33,24 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * A note is a private note added by an agent to a persons account.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class PersonNote extends \Application\DeskPRO\Domain\DomainObject
+class PersonNote extends DomainObject
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
@@ -49,14 +58,20 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The person the note is attached to.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
      * The agent that added the note.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $agent;
 
@@ -67,6 +82,9 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * The note contents.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */

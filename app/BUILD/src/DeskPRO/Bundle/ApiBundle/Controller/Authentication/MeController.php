@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -40,8 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,15 +52,19 @@ use Symfony\Component\HttpFoundation\Response;
 class MeController extends BaseController
 {
     /**
+     * Gather specific info about authentication.
+     *
      * @ApiDoc(
-     *      description="get information about the authenticated user",
-     *      output="DeskPRO\Bundle\ApiBundle\Model\Me",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Auth",
+     *     description="get information about the authenticated user",
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Me",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
-     * @Get("/me", name="api_me")
+     * @Annotations\Get("/me", name="api_me")
      */
     public function meAction()
     {
@@ -80,31 +82,50 @@ class MeController extends BaseController
         }
 
         return View::create(
-            $this->createRepresentation(
-               $me
-            ),
+            $this->wrap($me),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Get("/me/profile", name="api_get_my_profile")
+     * Get my profile.
+     *
+     * @ApiDoc(
+     *     section="Auth",
+     *     description="get my profile action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
+     * )
+     *
+     * @Annotations\Get("/me/profile", name="api_get_my_profile")
      */
     public function getProfileAction()
     {
         return View::create(
-            $this->dataSerialize(new PersonProfile($this->getUser())),
+            $this->wrap($this->getUser(), PersonProfile::class),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Get("/me/devise-setup-token")
+     * Get device setup token.
+     *
+     * @ApiDoc(
+     *     section="Auth",
+     *     description="get my profile action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Annotations\Get("/me/device-setup-token")
      */
     public function getDeviseSetupTokenAction()
     {
         $tmpData = TmpData::create(
-            'devise_setup_token',
+            'device_setup_token',
             ['agent_id' => $this->getUser()->getId()],
             '+10 minutes'
         );
@@ -114,15 +135,23 @@ class MeController extends BaseController
         $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->auth], true);
 
         return View::create(
-            $this->createRepresentation([
-                'setup_token' => 'dp_device_setup:'.$url,
-            ]),
+            $this->wrap(['setup_token' => 'dp_device_setup:'.$url]),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @Put("/me/profile", name="api_put_my_profile")
+     * @ApiDoc(
+     *     section="Auth",
+     *     description="update my profile action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     input="DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType",
+     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
+     * )
+     *
+     * @Annotations\Put("/me/profile", name="api_put_my_profile")
      *
      * @param Request $request
      *
@@ -143,9 +172,6 @@ class MeController extends BaseController
         $em->persist($person);
         $em->flush();
 
-        return View::create(
-            $this->dataSerialize(new PersonProfile($person)),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->wrap($person, PersonProfile::class), Response::HTTP_CREATED);
     }
 }
