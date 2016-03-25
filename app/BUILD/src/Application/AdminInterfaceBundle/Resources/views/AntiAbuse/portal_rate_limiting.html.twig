@@ -3,8 +3,333 @@
 {% block fullpane_content %}
     <section class="dp-paneblock dp-listpane">
         <header>
-            <h3>Portal rate limiting</h3>
+            <h3>Account Rate Limiting</h3>
         </header>
 
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.account_rate_limit.login_settings.enabled" />
+                                <h4>Login Rate Limiting (<a href="{{ ng_href('setup.login_lockout_settings') }}">see also Login Lockout</a>)</h4>
+                            </label>
+                            <div ng-show="settings.account.account_rate_limit.login_settings.enabled">
+                                After an user has attempted to login
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.login_settings.limit" class="form-control" style="width: 50px;" />
+                                times within
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.login_settings.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.account_rate_limit.login_setting.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.account_rate_limit.registration_settings.enabled" />
+                                <h4>Registration Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.account_rate_limit.registration_settings.enabled">
+                                After an user has attempted to login
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.registration_settings.limit" class="form-control" style="width: 50px;" />
+                                times within
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.registration_settings.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.account_rate_limit.registration_settings.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.account_rate_limit.reset_password_settings.enabled" />
+                                <h4>Forgot Password Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.account_rate_limit.reset_password_settings.enabled">
+                                After an user used the "Forgot password" form
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 50px;" />
+                                times within
+                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.account_rate_limit.reset_password_settings.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
     </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Rate Limiting for Logged-In Users</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_ticket.enabled" />
+                                <h4>Ticket Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.user_rate_limit.submit_ticket.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 50px;" />
+                                tickets within
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_ticket.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.user_rate_limit.submit_ticket.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_feedback.enabled" />
+                                <h4>Feedback Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.user_rate_limit.submit_feedback.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 50px;" />
+                                feedback items within
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_feedback.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.user_rate_limit.submit_feedback.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_comment.enabled" />
+                                <h4>Comment Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.user_rate_limit.submit_comment.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_comment.limit" class="form-control" style="width: 50px;" />
+                                comments within
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_comment.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.user_rate_limit.submit_comment.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.user_rate_limit.upload_attachment.enabled" />
+                                <h4>Upload Attachment Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.user_rate_limit.upload_attachment.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 50px;" />
+                                attachments within
+                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.upload_attachment.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.user_rate_limit.upload_attachment.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Rate Limiting for Guests</h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_ticket.enabled" />
+                                <h4>Ticket Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.guest_rate_limit.submit_ticket.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 50px;" />
+                                tickets within
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.guest_rate_limit.submit_ticket.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" />
+                                <h4>Feedback Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.guest_rate_limit.submit_feedback.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" class="form-control" style="width: 50px;" />
+                                feedback items within
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.guest_rate_limit.submit_feedback.enabled">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" />
+                                <h4>Comment Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.guest_rate_limit.submit_comment.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" class="form-control" style="width: 50px;" />
+                                comments within
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.guest_rate_limit.submit_comment.enabled">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" />
+                                <h4>Upload Attachment Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.account.guest_rate_limit.upload_attachment.enabled">
+                                After an user has submitted
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" class="form-control" style="width: 50px;" />
+                                attachments within
+                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" class="form-control" style="width: 50px;" />
+                                minutes,
+                                <select ng-model="settings.account.guest_rate_limit.upload_attachment.enabled">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <footer>
+            <div class="dp-content">
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div dp-hide-spinning="saving_settings">
+                        <button class="btn btn-primary"  ng-click="LoginLockoutSettings.save()">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving_settings">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div dp-register-message="saved_settings">Settings saved successfully.</div>
 {% endblock %}

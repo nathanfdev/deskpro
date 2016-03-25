@@ -35,6 +35,10 @@ use JMS\Serializer\Annotation as JMS;
  */
 class CaptchaAntiAbuseSettings
 {
+    const TYPE_BASED_RATE_LIMITS = false;
+    const TYPE_GUESTS            = 'guests';
+    const TYPE_EVERYONE          = 'everyone';
+
     /**
      * @var bool
      *
@@ -52,22 +56,22 @@ class CaptchaAntiAbuseSettings
     /**
      * @var bool|string
      */
-    private $tickets = false;
+    private $tickets = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
      */
-    private $comments = false;
+    private $comments = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
      */
-    private $feedback = false;
+    private $feedback = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
      */
-    private $register = false;
+    private $register = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @return mixed

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha;
 
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -53,9 +54,9 @@ class CaptchaSettingChoiceType extends AbstractType
         $resolver->setDefaults([
             'choices_as_values' => true,
             'choices'           => [
-                false,
-                'guests',
-                'everyone',
+                CaptchaAntiAbuseSettings::TYPE_BASED_RATE_LIMITS,
+                CaptchaAntiAbuseSettings::TYPE_GUESTS,
+                CaptchaAntiAbuseSettings::TYPE_EVERYONE,
             ],
         ]);
     }
