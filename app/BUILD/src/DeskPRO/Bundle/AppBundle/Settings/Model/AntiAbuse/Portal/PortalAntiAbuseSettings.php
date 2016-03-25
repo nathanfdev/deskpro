@@ -26,46 +26,59 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
+
 /**
- * DeskPRO.
- *
- * @category Entities
+ * Class PortalAntiAbuseSettings.
  */
-
-namespace Application\DeskPRO\EntityRepository;
-
-class Setting extends AbstractEntityRepository
+class PortalAntiAbuseSettings
 {
     /**
-     * Update a database setting.
-     *
-     * This updates the database but not the currently loaded set of settings. If you need
-     * the value to take affect immediately (this process), then use the Settings service,
-     *
-     * <code>$this->container->get('settings')->setSetting($name, $value);</code>
-     *
-     * @param string $name  The name of the setting
-     * @param mixed  $value The value to set. Null means any existing value will be unset
-     *
-     * @return $this
+     * @var PortalAccountRateLimit
      */
-    public function updateSetting($name, $value)
+    private $accountRateLimit;
+
+    /**
+     * @var PortalUserRateLimit
+     */
+    private $userRateLimit;
+
+    /**
+     * @var PortalUserRateLimit
+     */
+    private $guestRateLimit;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        $db = $this->_em->getConnection();
+        $this->accountRateLimit = new PortalAccountRateLimit();
+        $this->userRateLimit    = new PortalUserRateLimit();
+        $this->guestRateLimit   = new PortalUserRateLimit();
+    }
 
-        if ($value !== null) {
-            $db->executeUpdate('
-                INSERT INTO settings
-                    (name, value)
-                VALUES
-                    (?, ?)
-                ON DUPLICATE KEY UPDATE
-                    value = VALUES(value)
-            ', [$name, $value]);
-        } else {
-            $db->delete('settings', ['name' => $name]);
-        }
+    /**
+     * @return PortalAccountRateLimit
+     */
+    public function getAccountRateLimit()
+    {
+        return $this->accountRateLimit;
+    }
 
-        return $this;
+    /**
+     * @return PortalUserRateLimit
+     */
+    public function getUserRateLimit()
+    {
+        return $this->userRateLimit;
+    }
+
+    /**
+     * @return PortalUserRateLimit
+     */
+    public function getGuestRateLimit()
+    {
+        return $this->guestRateLimit;
     }
 }

@@ -26,21 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAccountRateLimit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class PortalAccountRateLimitType.
  */
-class WidgetSetupType extends AbstractType
+class PortalAccountRateLimitType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -48,8 +45,19 @@ class WidgetSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
+            ->add('login_settings', RateLimitGroupType::class)
+            ->add('registration_settings', RateLimitGroupType::class)
+            ->add('reset_password_settings', RateLimitGroupType::class)
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => PortalAccountRateLimit::class,
+        ]);
     }
 }

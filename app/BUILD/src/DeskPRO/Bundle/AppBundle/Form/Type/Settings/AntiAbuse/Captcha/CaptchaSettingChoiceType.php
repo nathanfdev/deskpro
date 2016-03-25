@@ -26,30 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class CaptchaSettingChoiceType.
  */
-class WidgetSetupType extends AbstractType
+class CaptchaSettingChoiceType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getParent()
     {
-        $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
-        ;
+        return ChoiceType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'choices_as_values' => true,
+            'choices'           => [
+                false,
+                'guests',
+                'everyone',
+            ],
+        ]);
     }
 }

@@ -26,30 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace DeskPRO\Bundle\AppBundle\Settings;
 
 /**
- * Class WidgetSetupType.
+ * Interface AntiAbuseSettingsAwareInterface.
  */
-class WidgetSetupType extends AbstractType
+interface AntiAbuseSettingsAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
-        ;
-    }
+    public function getAntiAbuseSettings();
 }

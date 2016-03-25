@@ -26,30 +26,61 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 
 /**
- * Class WidgetSetupType.
+ * Class PortalAccountRateLimit.
  */
-class WidgetSetupType extends AbstractType
+class PortalAccountRateLimit
 {
     /**
-     * {@inheritdoc}
+     * @var RateLimitGroup
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $loginSettings;
+
+    /**
+     * @var RateLimitGroup
+     */
+    private $registrationSettings;
+
+    /**
+     * @var RateLimitGroup
+     */
+    private $resetPasswordSettings;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
-        ;
+        $this->loginSettings         = new RateLimitGroup();
+        $this->registrationSettings  = new RateLimitGroup();
+        $this->resetPasswordSettings = new RateLimitGroup();
+    }
+
+    /**
+     * @return RateLimitGroup
+     */
+    public function getLoginSettings()
+    {
+        return $this->loginSettings;
+    }
+
+    /**
+     * @return RateLimitGroup
+     */
+    public function getRegistrationSettings()
+    {
+        return $this->registrationSettings;
+    }
+
+    /**
+     * @return RateLimitGroup
+     */
+    public function getResetPasswordSettings()
+    {
+        return $this->resetPasswordSettings;
     }
 }

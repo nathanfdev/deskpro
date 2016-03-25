@@ -29,14 +29,18 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup;
-use DeskPRO\Bundle\AppBundle\Widget\WidgetSettings;
+use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\View\View;
@@ -74,7 +78,7 @@ class WidgetSetupController extends BaseController
         $asset_package = $this->container->get('assets.packages');
         $base_router   = $this->container->get('router');
 
-        $widget_settings = $this->container->get('widget.settings');
+        $widget_settings = $this->container->get('widget_settings_resolver');
         $brand_settings  = array_merge(
             $widget_settings->getDefaultBrandSettings(),
             $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
@@ -173,7 +177,7 @@ class WidgetSetupController extends BaseController
 
         // enable widget on the portal
         $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, true);
+        $setting_repo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -197,7 +201,7 @@ class WidgetSetupController extends BaseController
     public function removePortalWidgetAction()
     {
         $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettings::ENABLED_ON_PORTAL, false);
+        $setting_repo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -209,7 +213,7 @@ class WidgetSetupController extends BaseController
      */
     protected function handleForm(Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'widget_setup')->getForm();
+        $form = $this->get('form.factory')->createNamedBuilder(null, WidgetSetupType::class)->getForm();
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -220,8 +224,8 @@ class WidgetSetupController extends BaseController
         $new_global_chat_settings = $form->getData()['global']['chat'];
 
         $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettings::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
-        $setting_repo->updateSetting(WidgetSettings::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
+        $setting_repo->updateSetting(WidgetSettingsResolver::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
+        $setting_repo->updateSetting(WidgetSettingsResolver::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
 
         $data_store = $this->getOrCreateWidgetBrandSettings();
         $data_store->setData('brand_settings', $form->getData()['brand']);
@@ -236,7 +240,7 @@ class WidgetSetupController extends BaseController
      */
     protected function getSettingsRepository()
     {
-        return $this->getRepository('DeskPRO:Setting');
+        return $this->getRepository(Setting::class);
     }
 
     /**
