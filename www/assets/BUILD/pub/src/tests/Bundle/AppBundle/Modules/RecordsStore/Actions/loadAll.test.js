@@ -7,8 +7,8 @@ describe('RecordsStore loadAll() action', () => {
 
   it('should call loadAll() on the record\'s repository', () => {
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadAll']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadAll.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadAll.and.returnValue({then: () => {}});
 
     dispatchInAgent(loadAll('Ticket'));
 
@@ -18,8 +18,8 @@ describe('RecordsStore loadAll() action', () => {
   it('should return payload.promise when called for the first time', () => {
     const fakeState = fakeRecordsStore({Ticket: {records: {}}});
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadAll']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadAll.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadAll.and.returnValue({then: () => {}});
 
     const action = dispatchInAgent(loadAll('Ticket'), fakeState);
 

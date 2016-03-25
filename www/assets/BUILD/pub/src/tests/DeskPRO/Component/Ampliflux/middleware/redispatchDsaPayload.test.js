@@ -26,8 +26,8 @@ describe('Ampliflux Redispatch DSA Payload Middleware', () => {
 
         actionHandler(actionFn());
 
-        expect(args.dispatch.calls.length).toEqual(1);
-        expect(args.dispatch.argsForCall[0][0]).toEqual(inner);
+        expect(args.dispatch.calls.count()).toEqual(1);
+        expect(args.dispatch.calls.argsFor(0)[0]).toEqual(inner);
       });
     });
   });

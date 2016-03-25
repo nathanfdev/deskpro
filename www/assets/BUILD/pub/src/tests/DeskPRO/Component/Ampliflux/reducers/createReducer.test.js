@@ -13,8 +13,8 @@ describe('Ampliflux createReducer()', () => {
   it('should accept any number of handler objects', () => {
     const initialState = {};
     const handlerObj = {
-      ACTION_ONE: jasmine.createSpy('ACTION_ONE_handler').andReturn(toImmutable({})),
-      ACTION_TWO: jasmine.createSpy('ACTION_TWO_handler').andReturn(toImmutable({}))
+      ACTION_ONE: jasmine.createSpy('ACTION_ONE_handler').and.returnValue(toImmutable({})),
+      ACTION_TWO: jasmine.createSpy('ACTION_TWO_handler').and.returnValue(toImmutable({}))
     };
 
     // passing several handler objects after the first initialState param
@@ -28,7 +28,7 @@ describe('Ampliflux createReducer()', () => {
   describe('Handler objects', () => {
     it('should be {actionType: handlerFunction} maps', () => {
       const handlerObj = {
-        TEST: jasmine.createSpy('TEST_handler').andReturn(toImmutable({}))
+        TEST: jasmine.createSpy('TEST_handler').and.returnValue(toImmutable({}))
       };
       const reducer = createReducer({}, handlerObj);
 
@@ -43,22 +43,22 @@ describe('Ampliflux createReducer()', () => {
        'where payload === action.payload', () => // eslint-disable-line brace-style
     {
       const handlerObj = {
-        TEST: jasmine.createSpy('TEST_handler').andReturn(toImmutable({}))
+        TEST: jasmine.createSpy('TEST_handler').and.returnValue(toImmutable({}))
       };
       const reducer = createReducer({}, handlerObj);
 
       reducer({}, {type: 'TEST', payload: {}});
 
       expect(handlerObj.TEST).toHaveBeenCalled();
-      expect(handlerObj.TEST.argsForCall[0].length).toEqual(3);
-      expect(handlerObj.TEST.argsForCall[0][1]).toBe(handlerObj.TEST.argsForCall[0][2].payload);
+      expect(handlerObj.TEST.calls.argsFor(0).length).toEqual(3);
+      expect(handlerObj.TEST.calls.argsFor(0)[1]).toBe(handlerObj.TEST.calls.argsFor(0)[2].payload);
     });
 
     it('should throw error when handler function doesn\'t return Immutable', () => {
       const reducer = createReducer({}, {TEST: () => ({})});
       expect(() => {
         reducer({}, {type: 'TEST'});
-      }).toThrow('Reducers must return Immutable objects');
+      }).toThrow(new Error('Reducers must return Immutable objects'));
     });
 
     it('should return a new state when there is an appropriate handler function', () => {

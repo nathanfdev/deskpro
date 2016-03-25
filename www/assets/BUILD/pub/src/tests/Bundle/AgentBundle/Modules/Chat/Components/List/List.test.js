@@ -25,20 +25,20 @@ describe('List', () => {
   };
 
   it('should render ListFrameContainer', () => {
-    spyOn(ListFrameContainer.prototype, 'render').andCallThrough();
+    spyOn(ListFrameContainer.prototype, 'render').and.callThrough();
     renderList();
     expect(ListFrameContainer.prototype.render).toHaveBeenCalled();
   });
 
   it('should render its control bar', () => {
-    spyOn(ControlBarContainer.prototype, 'render').andCallThrough();
+    spyOn(ControlBarContainer.prototype, 'render').and.callThrough();
     renderList();
     expect(ControlBarContainer.prototype.render).toHaveBeenCalled();
   });
 
   it('should render ChatsCardsContainer when the passed viewMode is "card"', () => {
-    spyOn(ChatsCardsContainer.prototype, 'render').andCallThrough();
-    spyOn(ChatsTableContainer.prototype, 'render').andCallThrough();
+    spyOn(ChatsCardsContainer.prototype, 'render').and.callThrough();
+    spyOn(ChatsTableContainer.prototype, 'render').and.callThrough();
 
     renderList('card');
 
@@ -47,8 +47,8 @@ describe('List', () => {
   });
 
   it('should render ChatsTableContainer when the passed viewMode is "table"', () => {
-    spyOn(ChatsCardsContainer.prototype, 'render').andCallThrough();
-    spyOn(ChatsTableContainer.prototype, 'render').andCallThrough();
+    spyOn(ChatsCardsContainer.prototype, 'render').and.callThrough();
+    spyOn(ChatsTableContainer.prototype, 'render').and.callThrough();
 
     renderList('table');
 

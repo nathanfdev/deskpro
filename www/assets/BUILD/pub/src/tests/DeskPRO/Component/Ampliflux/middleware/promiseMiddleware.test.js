@@ -33,7 +33,7 @@ describe('Ampliflux Promise Middleware', () => {
       });
 
       it('should dispatch promise result when action is not DSA', async((done) => {
-        spyOn(actionUtils, 'isDSA').andCallFake(() => false);
+        spyOn(actionUtils, 'isDSA').and.callFake(() => false);
         const promise = new Promise(resolve => resolve('result'));
         const actionFn = createAction('TEST', promise);
         const actionHandler = nextHandler();
@@ -50,7 +50,7 @@ describe('Ampliflux Promise Middleware', () => {
       describe('Sequence', () => {
         let actionHandler;
         beforeEach(() => {
-          spyOn(actionUtils, 'isDSA').andCallFake(() => true);
+          spyOn(actionUtils, 'isDSA').and.callFake(() => true);
           actionHandler = nextHandler();
         });
 

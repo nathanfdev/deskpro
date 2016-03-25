@@ -55,7 +55,7 @@ describe('Ampliflux Interval Middleware', () => {
           const actionHandler = nextHandler(next);
 
           actionHandler(dummyAction);
-          const intervalFn = window.setInterval.argsForCall[0][0];
+          const intervalFn = window.setInterval.calls.argsFor(0)[0];
           expect(next).not.toHaveBeenCalled();
 
           intervalFn();

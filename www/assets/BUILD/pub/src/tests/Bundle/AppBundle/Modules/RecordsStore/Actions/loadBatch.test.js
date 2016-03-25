@@ -12,15 +12,15 @@ describe('RecordsStore loadBatch() action', () => {
   });
 
   it('should request records via record repository', () => {
-    spyOn(DAL, 'repository').andCallThrough();
+    spyOn(DAL, 'repository').and.callThrough();
     dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'));
     expect(DAL.repository).toHaveBeenCalledWith('Ticket');
   });
 
   it('should call loadBatch() on the record\'s repository', () => {
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadBatch.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadBatch.and.returnValue({then: () => {}});
 
     dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'));
 
@@ -30,8 +30,8 @@ describe('RecordsStore loadBatch() action', () => {
   it('should pass only missing record IDs to the repository\'s loadBatch()', () => {
     const fakeState = fakeRecordsStore({Ticket: {records: {2: {id: 2}}}});
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadBatch.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadBatch.and.returnValue({then: () => {}});
 
     dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'), fakeState);
 
@@ -41,8 +41,8 @@ describe('RecordsStore loadBatch() action', () => {
   it('should return all targets in payload.ids', () => {
     const fakeState = fakeRecordsStore({Ticket: {records: {2: {id: 2}}}});
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadBatch.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadBatch.and.returnValue({then: () => {}});
 
     const action = dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'), fakeState);
 
@@ -58,8 +58,8 @@ describe('RecordsStore loadBatch() action', () => {
   it('should return payload.promise if not all requested records are loaded', () => {
     const fakeState = fakeRecordsStore({Ticket: {records: {1: {}}}});
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
-    spyOn(DAL, 'repository').andReturn(TicketRepository);
-    TicketRepository.loadBatch.andReturn({then: () => {}});
+    spyOn(DAL, 'repository').and.returnValue(TicketRepository);
+    TicketRepository.loadBatch.and.returnValue({then: () => {}});
 
     const action = dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'), fakeState);
 
