@@ -12,16 +12,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.account_rate_limit.login_settings.enabled" />
+                                <input type="checkbox" ng-model="settings.account_rate_limit.login_settings.enabled" />
                                 <h4>Login Rate Limiting (<a href="{{ ng_href('setup.login_lockout_settings') }}">see also Login Lockout</a>)</h4>
                             </label>
-                            <div ng-show="settings.account.account_rate_limit.login_settings.enabled">
+                            <div ng-show="settings.account_rate_limit.login_settings.enabled">
                                 After an user has attempted to login
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.login_settings.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.login_settings.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.account_rate_limit.login_setting.response">
+                                <select ng-model="settings.account_rate_limit.login_settings.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -33,22 +33,22 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form">
+        <article class="form-horizontal dp-form" ng-if="registration_settings.reg_enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.account_rate_limit.registration_settings.enabled" />
+                                <input type="checkbox" ng-model="settings.account_rate_limit.registration_settings.enabled" />
                                 <h4>Registration Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.account_rate_limit.registration_settings.enabled">
+                            <div ng-show="settings.account_rate_limit.registration_settings.enabled">
                                 After an user has attempted to login
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.registration_settings.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.registration_settings.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.account_rate_limit.registration_settings.response">
+                                <select ng-model="settings.account_rate_limit.registration_settings.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -66,16 +66,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.account_rate_limit.reset_password_settings.enabled" />
+                                <input type="checkbox" ng-model="settings.account_rate_limit.reset_password_settings.enabled" />
                                 <h4>Forgot Password Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.account_rate_limit.reset_password_settings.enabled">
+                            <div ng-show="settings.account_rate_limit.reset_password_settings.enabled">
                                 After an user used the "Forgot password" form
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
-                                <input type="number" min="1" ng-model="settings.account.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.account_rate_limit.reset_password_settings.response">
+                                <select ng-model="settings.account_rate_limit.reset_password_settings.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -99,16 +99,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_ticket.enabled" />
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_ticket.enabled" />
                                 <h4>Ticket Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.user_rate_limit.submit_ticket.enabled">
+                            <div ng-show="settings.user_rate_limit.submit_ticket.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
                                 tickets within
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_ticket.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.user_rate_limit.submit_ticket.response">
+                                <select ng-model="settings.user_rate_limit.submit_ticket.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -120,22 +120,22 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form">
+        <article class="form-horizontal dp-form" ng-if="feedback_settings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_feedback.enabled" />
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_feedback.enabled" />
                                 <h4>Feedback Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.user_rate_limit.submit_feedback.enabled">
+                            <div ng-show="settings.user_rate_limit.submit_feedback.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
                                 feedback items within
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_feedback.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.user_rate_limit.submit_feedback.response">
+                                <select ng-model="settings.user_rate_limit.submit_feedback.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -153,16 +153,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.user_rate_limit.submit_comment.enabled" />
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_comment.enabled" />
                                 <h4>Comment Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.user_rate_limit.submit_comment.enabled">
+                            <div ng-show="settings.user_rate_limit.submit_comment.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_comment.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
                                 comments within
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.submit_comment.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.user_rate_limit.submit_comment.response">
+                                <select ng-model="settings.user_rate_limit.submit_comment.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -180,16 +180,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.user_rate_limit.upload_attachment.enabled" />
+                                <input type="checkbox" ng-model="settings.user_rate_limit.upload_attachment.enabled" />
                                 <h4>Upload Attachment Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.user_rate_limit.upload_attachment.enabled">
+                            <div ng-show="settings.user_rate_limit.upload_attachment.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
                                 attachments within
-                                <input type="number" min="1" ng-model="settings.account.user_rate_limit.upload_attachment.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.user_rate_limit.upload_attachment.response">
+                                <select ng-model="settings.user_rate_limit.upload_attachment.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -213,16 +213,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_ticket.enabled" />
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_ticket.enabled" />
                                 <h4>Ticket Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.guest_rate_limit.submit_ticket.enabled">
+                            <div ng-show="settings.guest_rate_limit.submit_ticket.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
                                 tickets within
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.guest_rate_limit.submit_ticket.response">
+                                <select ng-model="settings.guest_rate_limit.submit_ticket.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -234,22 +234,22 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form">
+        <article class="form-horizontal dp-form" ng-if="feedback_settings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" />
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_feedback.enabled" />
                                 <h4>Feedback Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.guest_rate_limit.submit_feedback.enabled">
+                            <div ng-show="settings.guest_rate_limit.submit_feedback.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
                                 feedback items within
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_feedback.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.guest_rate_limit.submit_feedback.enabled">
+                                <select ng-model="settings.guest_rate_limit.submit_feedback.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -267,16 +267,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" />
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_comment.enabled" />
                                 <h4>Comment Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.guest_rate_limit.submit_comment.enabled">
+                            <div ng-show="settings.guest_rate_limit.submit_comment.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
                                 comments within
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.submit_comment.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.guest_rate_limit.submit_comment.enabled">
+                                <select ng-model="settings.guest_rate_limit.submit_comment.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -294,16 +294,16 @@
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" />
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.upload_attachment.enabled" />
                                 <h4>Upload Attachment Rate Limiting</h4>
                             </label>
-                            <div ng-show="settings.account.guest_rate_limit.upload_attachment.enabled">
+                            <div ng-show="settings.guest_rate_limit.upload_attachment.enabled">
                                 After an user has submitted
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
                                 attachments within
-                                <input type="number" min="1" ng-model="settings.account.guest_rate_limit.upload_attachment.enabled" class="form-control" style="width: 50px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
                                 minutes,
-                                <select ng-model="settings.account.guest_rate_limit.upload_attachment.enabled">
+                                <select ng-model="settings.guest_rate_limit.upload_attachment.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>
@@ -321,7 +321,7 @@
             <div class="dp-content">
                 <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
                     <div dp-hide-spinning="saving_settings">
-                        <button class="btn btn-primary"  ng-click="LoginLockoutSettings.save()">{{ phrase('agent.general.save') }}</button>
+                        <button class="btn btn-primary"  ng-click="PortalRateLimiting.save()">{{ phrase('agent.general.save') }}</button>
                     </div>
                     <div dp-show-spinning="saving_settings">
                         <i class="spinner-flat"></i>

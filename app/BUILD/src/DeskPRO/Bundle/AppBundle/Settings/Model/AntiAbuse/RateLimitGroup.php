@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class RateLimitGroup.
  */
@@ -38,21 +40,29 @@ class RateLimitGroup
 
     /**
      * @var bool
+     *
+     * @JMS\Type("boolean")
      */
     private $enabled = false;
 
     /**
      * @var int
+     *
+     * @JMS\Type("integer")
      */
     private $limit = 0;
 
     /**
      * @var int
+     *
+     * @JMS\Type("integer")
      */
     private $time = 0;
 
     /**
      * @var string
+     *
+     * @JMS\Type("string")
      */
     private $response = self::RESPONSE_LOCKOUT;
 

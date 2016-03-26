@@ -42,6 +42,7 @@ class CaptchaAntiAbuseSettings
     /**
      * @var bool
      *
+     * @JMS\Type("integer")
      * @JMS\SerializedName("use_recaptcha2")
      */
     private $useReCaptcha2 = false;
@@ -55,21 +56,29 @@ class CaptchaAntiAbuseSettings
 
     /**
      * @var bool|string
+     *
+     * @JMS\Type("string")
      */
     private $tickets = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
+     *
+     * @JMS\Type("string")
      */
     private $comments = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
+     *
+     * @JMS\Type("string")
      */
     private $feedback = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * @var bool|string
+     *
+     * @JMS\Type("string")
      */
     private $register = self::TYPE_BASED_RATE_LIMITS;
 

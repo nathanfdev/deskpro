@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,11 +50,11 @@ class PortalController extends AbstractController
 
         $view = $this->renderThemeView(
             'Theme:Portal:Header/top_bar.html.twig',
-            array(
+            [
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language'  => $language_manager->getLanguageStack()->getActive(),
                 'is_multi_language' => $language_manager->isMultiLanguagePortal(),
-            )
+            ]
         );
 
         return $view;
@@ -118,9 +118,8 @@ class PortalController extends AbstractController
 
         $auth_manager = $this->get('dp_authentication_manager.user');
 
-        $page_vars = array(
-            'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(
-            ),
+        $page_vars = [
+            'display_registration_link'     => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
             'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user) : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
@@ -131,7 +130,7 @@ class PortalController extends AbstractController
             'show_remember_me'              => $auth_manager->isRememberMeEnabled(),
             'show_login_form'               => $auth_manager->isLoginFormVisible(),
             'show_auth'                     => $auth_manager->isAuthVisible(),
-        );
+        ];
 
         return $this->renderThemeView(
             'Theme:Portal:Header/small_user_info.html.twig',
