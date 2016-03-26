@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -38,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -53,38 +53,20 @@ class DiscoveryController extends BaseController
      *
      * @ApiDoc(
      *     section="Helpdesk",
-     *     tags={"unstable"="#ff6666"},
      *     resourceDescription="Operations about helpdesk discovering",
      *     description="Used by apps to detect that this is a real helpdesk",
      *     statusCodes={
-     *         200="Returned in case of successful request"
+     *         200="Success"
+     *     },
+     *     output={
+     *         "class"="DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings"
      *     }
      * )
      * @Get("/helpdesk/discover", name="api_helpdesk_discover")
      */
-    public function discoverAction(Request $request)
+    public function discoverAction()
     {
-        //TODO use a model
-        //TODO use brand stack
-        //$brand = $this->get('brand_stack')->getActive();
-        //$helpdesk_url = rtrim($brand->getSetting('core.deskpro_url'), '/') . '/';
-
-        $s            = $this->get('deskpro.core.settings');
-        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/').'/';
-
-        $base_api_url = $helpdesk_url.'api/v2/';
-
-        $ret = [
-            'is_deskpro'   => true,
-            'helpdesk_url' => $helpdesk_url,
-            'base_api_url' => $base_api_url,
-            'build'        => DP_BUILD_TIME,
-        ];
-
-        return View::create(
-            $this->wrap(new PrimitiveArray($ret)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('dicover_settings_resolver')->getSettings()));
     }
 
     /**

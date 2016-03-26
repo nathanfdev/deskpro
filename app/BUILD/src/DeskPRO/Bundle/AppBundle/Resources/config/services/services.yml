@@ -16,6 +16,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver
     arguments: ["@brand_aware_settings_resolver"]
 
+  dicover_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\DiscoverSettingsResolver
+    arguments: ["@brand_aware_settings_resolver"]
+
   usersource_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\UsersourceSettingsResolver
     arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@brand_aware_settings_resolver"]
