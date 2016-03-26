@@ -112,9 +112,9 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
         if (!$property) {
             $property = 'title';
         }
-        $phrase_name = 'obj_ticketworkflow.'.$this->id.'_'.$property;
+        $phraseName = 'obj_ticketworkflow.'.$this->id.'_'.$property;
 
-        return $phrase_name;
+        return $phraseName;
     }
 
     /**

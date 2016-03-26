@@ -61,7 +61,7 @@ class TicketLayoutsController extends BaseController
      *     description="Get ticket layouts",
      *     requirements={
      *         {"name"="context", "requirement"="agent|user", "dataType"="string", "description"="context for layout"},
-     *     }
+     *     },
      *     statusCodes={
      *         200="Returned with list of layouts"
      *     },
@@ -78,14 +78,14 @@ class TicketLayoutsController extends BaseController
      */
     public function listAction($context)
     {
-        $ticket_layouts = $this->getTicketLayoutRepository()->findAll();
-        if (empty($ticket_layouts)) {
-            $ticket_layouts[] = new TicketLayoutEntity();
+        $ticketLayouts = $this->getTicketLayoutRepository()->findAll();
+        if (empty($ticketLayouts)) {
+            $ticketLayouts[] = new TicketLayoutEntity();
         }
 
         $response = [];
-        foreach ($ticket_layouts as $ticket_layout) {
-            $response[] = $this->getContextLayoutResponse($ticket_layout, $context);
+        foreach ($ticketLayouts as $ticketLayout) {
+            $response[] = $this->getContextLayoutResponse($ticketLayout, $context);
         }
 
         return View::create($response);
@@ -96,57 +96,57 @@ class TicketLayoutsController extends BaseController
      *     section="Tickets",
      *     description="Get ticket department layout for given context",
      *     requirements={
-     *         {"name"="department_id", "requirement"="\d+", "dataType"="integer", "description"="department id for which you wan to get layout"},
+     *         {"name"="departmentId", "requirement"="\d+", "dataType"="integer", "description"="department id for which you wan to get layout"},
      *         {"name"="context", "requirement"="agent|user", "dataType"="string", "description"="context of layout"},
-     *     }
+     *     },
      *     statusCodes={
      *         200="Returned if everything is ok",
-     *         400="Returned if department wasn't found',
+     *         400="Returned if department wasn't found",
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout"
      * )
-     * @Annotations\Get("/ticket_layouts/{context}/{department_id}",
+     * @Annotations\Get("/ticket_layouts/{context}/{departmentId}",
      *      name="api_ticket_layout",
-     *      requirements={"context"="(agent|user)", "department_id"="(\d+|default)"}
+     *      requirements={"context"="(agent|user)", "departmentId"="(\d+|default)"}
      * )
      *
      * @param string     $context
-     * @param string|int $department_id
+     * @param string|int $departmentId
      *
      * @return View
      */
-    public function getAction($context, $department_id = null)
+    public function getAction($context, $departmentId = null)
     {
         $department = null;
-        if ($department_id !== 'default') {
-            $department = $this->getRepository('DeskPRO:Department')->find((int) $department_id);
+        if ($departmentId !== 'default') {
+            $department = $this->getRepository('DeskPRO:Department')->find((int) $departmentId);
             if (!$department) {
                 throw new NotFoundHttpException();
             }
         }
 
-        $ticket_layout = $this->getTicketLayoutRepository()->findOneBy(['department' => $department]);
-        if (!$ticket_layout) {
-            $ticket_layout = $this->getTicketLayoutRepository()->findOneBy(['department' => null]);
+        $ticketLayout = $this->getTicketLayoutRepository()->findOneBy(['department' => $department]);
+        if (!$ticketLayout) {
+            $ticketLayout = $this->getTicketLayoutRepository()->findOneBy(['department' => null]);
         }
-        if (!$ticket_layout) {
-            $ticket_layout = new TicketLayoutEntity();
+        if (!$ticketLayout) {
+            $ticketLayout = new TicketLayoutEntity();
         }
 
-        return View::create($this->getContextLayoutResponse($ticket_layout, $context, $department));
+        return View::create($this->getContextLayoutResponse($ticketLayout, $context, $department));
     }
 
     /**
-     * @param TicketLayoutEntity $ticket_layout
+     * @param TicketLayoutEntity $ticketLayout
      * @param string             $context
      * @param Department         $department
      *
      * @return Layout
      */
-    protected function getContextLayoutResponse(TicketLayoutEntity $ticket_layout, $context, Department $department = null)
+    protected function getContextLayoutResponse(TicketLayoutEntity $ticketLayout, $context, Department $department = null)
     {
-        $context_layout = $context === 'agent' ? $ticket_layout->agent_layout : $ticket_layout->user_layout;
-        $department     = $department ?: $ticket_layout->department;
+        $context_layout = $context === 'agent' ? $ticketLayout->agent_layout : $ticketLayout->user_layout;
+        $department     = $department ?: $ticketLayout->department;
 
         $this->getLayoutFieldFilter()->filterInvalid($context_layout);
 

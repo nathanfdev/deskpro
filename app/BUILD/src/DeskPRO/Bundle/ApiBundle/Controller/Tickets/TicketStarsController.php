@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count as CountModel;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -161,12 +161,12 @@ class TicketStarsController extends BaseController
     {
         $flags_service = $this->get('data.ticketflags');
 
-        $count = Count::create(0, null, null, null, 'ticket_star');
+        $count = CountModel::create(0, null, null, null, 'ticket_star');
         foreach ($flags_service->getFlags() as $i => $color) {
-            $flag_id = $i + 1;
+            $flagId = $i + 1;
 
-            $flag_count = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flag_id));
-            $count->addNested($flag_count, $flag_id, 'ticket_star', TicketStar::idToColorLabel($flag_id), true);
+            $flagCount = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flagId));
+            $count->addNested($flagCount, $flagId, 'ticket_star', TicketStar::idToColorLabel($flagId), true);
         }
 
         return View::create($this->wrap($count), Response::HTTP_OK);
@@ -199,7 +199,7 @@ class TicketStarsController extends BaseController
 
         $count = count($tickets);
 
-        return View::create($this->wrap(Count::fromValue($count)), Response::HTTP_OK);
+        return View::create($this->wrap(CountModel::fromValue($count)), Response::HTTP_OK);
     }
 
     /**
