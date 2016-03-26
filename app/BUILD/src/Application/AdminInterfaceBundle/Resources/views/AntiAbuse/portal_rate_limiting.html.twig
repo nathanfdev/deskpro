@@ -1,12 +1,12 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 
 {% block fullpane_content %}
-    <section class="dp-paneblock dp-listpane">
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.reg_enabled || usersourceSettings.has_user_login_form">
         <header>
             <h3>Account Rate Limiting</h3>
         </header>
 
-        <article class="form-horizontal dp-form">
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.has_user_login_form">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
@@ -16,7 +16,7 @@
                                 <h4>Login Rate Limiting (<a href="{{ ng_href('setup.login_lockout_settings') }}">see also Login Lockout</a>)</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.login_settings.enabled">
-                                After an user has attempted to login
+                                After a user has attempted to login
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
@@ -33,7 +33,7 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form" ng-if="registration_settings.reg_enabled">
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.reg_enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
@@ -43,7 +43,7 @@
                                 <h4>Registration Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.registration_settings.enabled">
-                                After an user has attempted to login
+                                After a user has attempted to login
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.time" class="form-control" style="width: 60px;" />
@@ -60,7 +60,7 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form">
+        <article class="form-horizontal dp-form" ng-if="usersourceSettings.has_user_login_form">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
@@ -70,7 +70,7 @@
                                 <h4>Forgot Password Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.reset_password_settings.enabled">
-                                After an user used the "Forgot password" form
+                                After a user used the "Forgot password" form
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 60px;" />
                                 times within
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 60px;" />
@@ -103,7 +103,7 @@
                                 <h4>Ticket Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_ticket.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
                                 tickets within
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
@@ -120,7 +120,7 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form" ng-if="feedback_settings.enabled">
+        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
@@ -130,7 +130,7 @@
                                 <h4>Feedback Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_feedback.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
                                 feedback items within
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
@@ -157,7 +157,7 @@
                                 <h4>Comment Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_comment.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
                                 comments within
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
@@ -184,7 +184,7 @@
                                 <h4>Upload Attachment Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.upload_attachment.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
                                 attachments within
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
@@ -217,7 +217,7 @@
                                 <h4>Ticket Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_ticket.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
                                 tickets within
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
@@ -234,7 +234,7 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form" ng-if="feedback_settings.enabled">
+        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
@@ -244,7 +244,7 @@
                                 <h4>Feedback Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_feedback.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
                                 feedback items within
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
@@ -271,7 +271,7 @@
                                 <h4>Comment Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_comment.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
                                 comments within
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
@@ -298,7 +298,7 @@
                                 <h4>Upload Attachment Rate Limiting</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.upload_attachment.enabled">
-                                After an user has submitted
+                                After a user has submitted
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
                                 attachments within
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />

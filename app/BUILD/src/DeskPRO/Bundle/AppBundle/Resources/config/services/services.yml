@@ -16,6 +16,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver
     arguments: ["@brand_aware_settings_resolver"]
 
+  usersource_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\UsersourceSettingsResolver
+    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@brand_aware_settings_resolver"]
+
   user_rule_processor:
     class: Application\DeskPRO\People\UserRuleProcessor
     arguments: ["@doctrine.orm.default_entity_manager"]

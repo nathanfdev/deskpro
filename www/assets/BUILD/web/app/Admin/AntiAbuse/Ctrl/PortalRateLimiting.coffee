@@ -7,22 +7,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.settings = null
-      @$scope.feedback_settings = null
-      @$scope.registration_settings = null
+      @$scope.feedbackSettings = null
+      @$scope.usersourceSettings = null
 
     initialLoad: ->
       promise = @Api.sendGet(_url).then (res) =>
         @$scope.settings = res.data.data
+      feedbackPromise = @Api.sendGet('/settings/portal/feedback').then (res) =>
+        @$scope.feedbackSettings = res.data.settings
+      usersourcePromise = @Api.sendGet('/v2/settings/user_source').then (res) =>
+        @$scope.usersourceSettings = res.data.data
 
-      feedbackSettingsPromise = @Api.sendGet('/settings/portal/feedback').then( (res) =>
-        @$scope.feedback_settings = res.data.settings
-      )
-
-      registrationSettingsPromise = @Api.sendGet('/registration_settings?rate_limit_context=user').then( (res) =>
-        @$scope.registration_settings = res.data.registration_settings
-      )
-
-      return @$q.all([promise, feedbackSettingsPromise, registrationSettingsPromise])
+      return @$q.all([promise, feedbackPromise, usersourcePromise])
 
     save: ->
       @startSpinner('saving')

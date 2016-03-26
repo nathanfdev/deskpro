@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], ( Admin_Ctrl_Base) ->
     _url = '/password_settings'
 
     init: ->
+      @$scope.usersourceSettings = null
       @$scope.agent_reg_settings = null
       @$scope.agent_rate_settings = null
       @$scope.user_reg_settings = null
@@ -18,8 +19,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], ( Admin_Ctrl_Base) ->
       usersPromise = @Api.sendGet(_url, {rate_limit_context: 'user'}).then (res) =>
         @$scope.user_settings = res.data.settings
         @$scope.user_rate_settings = res.data.rate_limit_settings
+      usersourcePromise = @Api.sendGet('/v2/settings/user_source').then (res) =>
+        @$scope.usersourceSettings = res.data.data
 
-      return @$q.all([agentsPromise, usersPromise])
+      return @$q.all([agentsPromise, usersPromise, usersourcePromise])
 
     save: ->
       agentsPromise = @Api.sendPostJson(_url, {

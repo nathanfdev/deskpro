@@ -1,9 +1,9 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 
 {% block fullpane_content %}
-    <section class="dp-paneblock dp-listpane">
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.has_agent_login_form">
         <header>
-            <h3>Agent Login lockout</h3>
+            <h3>Agent Login Lockout</h3>
         </header>
 
         <article class="form-horizontal dp-form">
@@ -34,9 +34,9 @@
         </article>
     </section>
 
-    <section class="dp-paneblock dp-listpane">
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.has_user_login_form">
         <header>
-            <h3>User Login lockout</h3>
+            <h3>User Login Lockout</h3>
         </header>
 
         <article class="form-horizontal dp-form">
