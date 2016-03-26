@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -147,7 +148,6 @@ class MeController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     input="DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType",
      *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
      * )
      *
