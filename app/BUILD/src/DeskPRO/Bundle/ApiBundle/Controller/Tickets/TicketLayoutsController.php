@@ -38,7 +38,7 @@ use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout as TicketLayoutModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem as TicketLayoutItemModel;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -65,7 +65,7 @@ class TicketLayoutsController extends BaseController
      *     statusCodes={
      *         200="Returned with list of layouts"
      *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem>"
      * )
      * @Annotations\Get("/ticket_layouts/{context}",
      *      name="api_ticket_layouts",
@@ -103,7 +103,7 @@ class TicketLayoutsController extends BaseController
      *         200="Returned if everything is ok",
      *         400="Returned if department wasn't found",
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem"
      * )
      * @Annotations\Get("/ticket_layouts/{context}/{departmentId}",
      *      name="api_ticket_layout",
@@ -155,7 +155,7 @@ class TicketLayoutsController extends BaseController
             $fields[] = $field->exportToArray();
         }
 
-        return new TicketLayoutModel($department, $fields, $context);
+        return new TicketLayoutItemModel($department, $fields, $context);
     }
 
     /**

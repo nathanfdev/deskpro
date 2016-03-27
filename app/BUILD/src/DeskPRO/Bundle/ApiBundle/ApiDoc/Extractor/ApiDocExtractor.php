@@ -70,7 +70,8 @@ class ApiDocExtractor extends BaseApiDocExtractor
                 if (
                     $reflection->isSubclassOf(CrudController::class)
                     && in_array($action, array_keys($this->action_list))
-                    && $expose = $reflection->getProperty('exposeOnly')->getValue()
+                    && ($expose = $reflection->getProperty('exposeOnly'))
+                    && (is_array($expose = $expose->getValue()))
                 ) {
                     $exposed = in_array($action, $expose);
                 }

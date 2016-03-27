@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,11 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use Doctrine\DBAL\DBALException;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,22 +49,31 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  *
  * @ApiModes("all")
  */
-class TaskLinkedItemsController extends BaseController implements ClassResourceInterface
+class TaskLinkedItemsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="get a list of links by the type",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tasks",
+     *     description="get a list of links by the type",
+     *     requirements={
+     *         {"name"="type", "requirement"="\w", "dataType"="string", "description"="link type"},
+     *     },
+     *     filters={
+     *         {"name"="ids", "pattern"="(\d+,)+", "dataType"="string", "description"="filter with given comma separated ids list"},
+     *     },
+     *     statusCodes={
+     *         200="Returned if everything is ok",
+     *         400="You provided wrong type or not provided it at all"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Get("/task_links", name="api_task_links")
+     * @Annotations\Get("/task_links", name="api_task_links")
      *
      * @param Request $request
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         $query = $request->query->all();
         if (!array_key_exists('type', $query)) {
@@ -82,27 +87,23 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
             $taskLinks = $this->getDoctrine()->getManager()->getRepository($type)->findAll();
         }
 
-        return View::create($this->dataSerialize($taskLinks), Response::HTTP_OK);
+        return View::create($this->wrap($taskLinks), Response::HTTP_OK);
     }
 
     /**
      * @ApiDoc(
-     *      description="get a link",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the link",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
+     *     section="Tasks",
+     *     description="get a link",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the link", "dataType"="integer"},
+     *     },
+     *     statusCodes={
+     *         200="Everything is OK",
+     *         404="We can find linked item you ask"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Get("/task_links/{id}", name="api_task_links_get")
+     * @Annotations\Get("/task_links/{id}", name="api_task_links_get")
      *
      * @param int $id
      *
@@ -115,20 +116,21 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->dataSerialize($link), Response::HTTP_OK);
+        return View::create($this->wrap($link), Response::HTTP_OK);
     }
 
     /**
      * @ApiDoc(
-     *      description="create a new link",
-     *      input={"class"="task_link", "name"=""},
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
+     *     section="Tasks",
+     *     description="create a new link",
+     *     input={"class"="task_link", "name"=""},
+     *     statusCodes={
+     *         201="We have created new link for you",
+     *         400="Request malformed have you, possibly type forgot you provide to"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Post("/task_links/{type}", name="api_task_links_post")
+     * @Annotations\Post("/task_links/{type}", name="api_task_links_post")
      *
      * @param Request $request
      * @param string  $type
@@ -148,24 +150,20 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     }
 
     /**
-     * @APIDoc(
-     *      description="update a link",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the link",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      input={"class"="task_link", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="update a link",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the link", "dataType"="integer"}
+     *     },
+     *     input={"class"="task_link", "name"=""},
+     *     statusCodes={
+     *         204="We have updated task link successfully",
+     *         400="Wrong request parameters",
+     *         404="This is not the task link you are looking for"
+     *     }
      * )
-     * @Put("/task_links/{type}/{id}", name="api_task_links_put")
+     * @Annotations\Put("/task_links/{type}/{id}", name="api_task_links_put")
      *
      * @param Request $request
      * @param         $id
@@ -181,22 +179,18 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
     }
 
     /**
-     * @APIDoc(
-     *      description="delete a link",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      }
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="delete a link",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="The task link was destroyed",
+     *         404="This is not the task link you are looking for"
+     *     }
      * )
-     * @Delete("/task_links/{id}", name="api_task_links_delete")
+     * @Annotations\Delete("/task_links/{id}", name="api_task_links_delete")
      *
      * @param $id
      *
@@ -259,7 +253,7 @@ class TaskLinkedItemsController extends BaseController implements ClassResourceI
             $location = $this->generateUrl('api_task_links_get', ['id' => $link->getId()]);
 
             return View::create(
-                $this->dataSerialize($link),
+                $this->wrap($link),
                 $status,
                 [
                     'Location' => $location,

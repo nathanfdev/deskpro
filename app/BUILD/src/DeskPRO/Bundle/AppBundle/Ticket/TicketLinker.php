@@ -120,8 +120,8 @@ class TicketLinker
 
         return new LinkedTickets(
             $ticket->getParentTicket() ?: null,
-            $siblings,
-            $children,
+            array_values($siblings),
+            array_values($children),
             array_sum([$ticket->getParentTicket() ? 1 : 0, count($siblings), count($children)])
         );
     }
@@ -131,7 +131,7 @@ class TicketLinker
      *
      * @return array
      */
-    private function getTicketSiblings(Ticket $ticket)
+    public function getTicketSiblings(Ticket $ticket)
     {
         $parent = $ticket->getParentTicket();
 
@@ -150,7 +150,7 @@ class TicketLinker
      *
      * @return array
      */
-    private function getTicketChildren(Ticket $ticket)
+    public function getTicketChildren(Ticket $ticket)
     {
         return $this->getTicketRepo()->getLinkedTickets($ticket);
     }

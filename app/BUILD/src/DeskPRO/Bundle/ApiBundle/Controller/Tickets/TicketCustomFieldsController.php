@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketCustomFieldsController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickes")
+ * @ApiDocSection("Tickets")
  * @Route("/ticket_custom_fields")
  */
 class TicketCustomFieldsController extends CrudController

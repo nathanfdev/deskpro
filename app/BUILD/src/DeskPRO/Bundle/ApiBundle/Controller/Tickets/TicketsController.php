@@ -33,6 +33,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
@@ -50,6 +52,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TicketsController.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Tickets")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
  * @Route("/tickets")
  */
 class TicketsController extends AbstractTicketsController
@@ -78,97 +82,40 @@ class TicketsController extends AbstractTicketsController
     /**
      * @ApiDoc(
      *      description="Get a list of tickets (see parameters description for additional information)",
-     *      parameters={
+     *      filters={
      *          {
      *              "name"="sort",
-     *              "description"="Tickets list sort. Available options: 'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply', 'date_last_reply', 'date_user_waiting', 'total_user_waiting'.",
+     *              "description"="tickets list sort",
+     *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
      *              "dataType"="string",
-     *              "required"=false
      *          },
-     *          {
-     *              "name"="order",
-     *              "description"="Tickets list sort order. Available options: asc, desc.",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="page",
-     *              "description"="Pagination page parameter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "description"="Pagination results per page parameter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="filter",
-     *              "description"="TicketFilter ID option.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="labels",
-     *              "description"="Labels filter option.",
-     *              "dataType"="array",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="star",
-     *              "description"="Star filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="status",
-     *              "description"="Status filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="agent",
-     *              "description"="Agent filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="person",
-     *              "description"="Person filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="organization",
-     *              "description"="Organization filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="problem",
-     *              "description"="Problem filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="department",
-     *              "description"="Department filter.",
-     *              "dataType"="number",
-     *              "required"=false
-     *          },
+     *          {"name"="ids", "description"="ticket list to fetch, comma separated list", "dataType"="string", "pattern"="[\d+,]+"},
+     *          {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
+     *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\d+,]+"},
+     *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
      *          {
      *              "name"="ticket_field.{id}",
      *              "description"="
      *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
      *                  ?ticket_field.1=value to the query string",
-     *              "dataType"="number|string",
-     *              "required"=false
+     *              "dataType"="string",
+     *              "pattern"="\d+|\w"
      *          }
      *      },
      *      statusCodes={
-     *          200="Success"
-     *      }
+     *          200="Returned if everything is OK",
+     *          400="You request was malformed"
+     *      },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      * @Get("", name="api_tickets")
      *
@@ -253,7 +200,7 @@ class TicketsController extends AbstractTicketsController
         $pager->setCurrentPage($currentPage);
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->wrap($pager),
             Response::HTTP_OK
         );
     }
