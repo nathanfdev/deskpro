@@ -3,7 +3,6 @@ jest.dontMock('DeskPRO/Component/Ampliflux/actions/createAction');
 jest.dontMock('lodash/utility/uniqueId');
 
 describe('Ampliflux Promise Middleware', () => {
-  const { async } = require('Helpers/async');
   const { promiseMiddleware } = require('DeskPRO/Component/Ampliflux/middleware/promiseMiddleware');
   const { createAction } = require('DeskPRO/Component/Ampliflux/actions/createAction');
   const actionUtils = require('DeskPRO/Component/Ampliflux/actions/actionUtils');
@@ -11,7 +10,10 @@ describe('Ampliflux Promise Middleware', () => {
   let args;
   let nextHandler;
   beforeEach(() => {
-    args = {dispatch: jasmine.createSpy('dispatch'), getState: () => {}};
+    args = {
+      dispatch: jasmine.createSpy('dispatch'), getState: () => {
+      }
+    };
     nextHandler = promiseMiddleware(args);
   });
 
@@ -27,12 +29,12 @@ describe('Ampliflux Promise Middleware', () => {
 
     describe('Action handler', () => {
       it('should pass action to next handler when payload isn\'t a promise and payload.promise isn\'t set', () => {
-        const dummyAction = {type: 'TEST', payload: 'this is not a promise'};
+        const dummyAction = { type: 'TEST', payload: 'this is not a promise' };
         const actionHandler = nextHandler((action) => expect(action).toBe(dummyAction));
         actionHandler(dummyAction);
       });
 
-      it('should dispatch promise result when action is not DSA', async((done) => {
+      it('should dispatch promise result when action is not DSA', (done) => {
         spyOn(actionUtils, 'isDSA').and.callFake(() => false);
         const promise = new Promise(resolve => resolve('result'));
         const actionFn = createAction('TEST', promise);
@@ -41,11 +43,11 @@ describe('Ampliflux Promise Middleware', () => {
         actionHandler(actionFn());
 
         promise.then(() => {
-          expect(args.dispatch.calls.length).toEqual(1);
-          expect(args.dispatch.argsForCall[0][0]).toEqual('result');
+          expect(args.dispatch.calls.count()).toEqual(1);
+          expect(args.dispatch.calls.argsFor(0)[0]).toEqual('result');
           done();
         });
-      }));
+      });
 
       describe('Sequence', () => {
         let actionHandler;
@@ -54,31 +56,31 @@ describe('Ampliflux Promise Middleware', () => {
           actionHandler = nextHandler();
         });
 
-        it('should be dispatched when action payload is a promise', async((done) => {
+        it('should be dispatched when action payload is a promise', (done) => {
           const promise = new Promise(resolve => resolve());
           const actionFn = createAction('TEST', promise);
 
           actionHandler(actionFn());
 
           promise.then(() => {
-            expect(args.dispatch.calls.length).toEqual(3);
+            expect(args.dispatch.calls.count()).toEqual(3);
             done();
           });
-        }));
+        });
 
-        it('should be dispatched when action payload has the promise property (payload.promise)', async((done) => {
+        it('should be dispatched when action payload has the promise property (payload.promise)', (done) => {
           const promise = new Promise(resolve => resolve());
-          const actionFn = createAction('TEST', {promise});
+          const actionFn = createAction('TEST', { promise });
 
           actionHandler(actionFn());
 
           promise.then(() => {
-            expect(args.dispatch.calls.length).toEqual(3);
+            expect(args.dispatch.calls.count()).toEqual(3);
             done();
           });
-        }));
+        });
 
-        it('should have a unique ID per promise', async((done) => {
+        it('should have a unique ID per promise', (done) => {
           const promise1 = new Promise(resolve => resolve());
           const promise2 = new Promise(resolve => resolve());
 
@@ -87,12 +89,12 @@ describe('Ampliflux Promise Middleware', () => {
 
           promise1.then(() => {
             promise2.then(() => {
-              expect(args.dispatch.calls.length).toEqual(6);
+              expect(args.dispatch.calls.count()).toEqual(6);
 
               const uniqueIds = [];
               const idsCount = {};
               for (let i = 0; i < 6; i++) {
-                const id = args.dispatch.argsForCall[i][0].meta.sequenceId;
+                const id = args.dispatch.calls.argsFor(i)[0].meta.sequenceId;
                 if (uniqueIds.indexOf(id) === -1) {
                   uniqueIds.push(id);
                   idsCount[id] = 1;
@@ -106,38 +108,38 @@ describe('Ampliflux Promise Middleware', () => {
               done();
             });
           });
-        }));
+        });
 
-        it('should consists of start, success and done actions', async((done) => {
+        it('should consists of start, success and done actions', (done) => {
           const promise = new Promise(resolve => resolve('result'));
           const actionFn = createAction('TEST', promise);
 
           actionHandler(actionFn());
 
           promise.then(() => {
-            expect(args.dispatch.calls.length).toEqual(3);
-            expect(args.dispatch.argsForCall[0][0].meta.sequence).toEqual('start');
-            expect(args.dispatch.argsForCall[1][0].meta.sequence).toEqual('success');
-            expect(args.dispatch.argsForCall[2][0].meta.sequence).toEqual('done');
+            expect(args.dispatch.calls.count()).toEqual(3);
+            expect(args.dispatch.calls.argsFor(0)[0].meta.sequence).toEqual('start');
+            expect(args.dispatch.calls.argsFor(1)[0].meta.sequence).toEqual('success');
+            expect(args.dispatch.calls.argsFor(2)[0].meta.sequence).toEqual('done');
             done();
           });
-        }));
+        });
 
-        it('should share meta.sequenceId between start, success and done actions of the same promise', async((done) => {
+        it('should share meta.sequenceId between start, success and done actions of the same promise', (done) => {
           const promise = new Promise(resolve => resolve('result'));
           const actionFn = createAction('TEST', promise);
 
           actionHandler(actionFn());
 
           promise.then(() => {
-            expect(args.dispatch.calls.length).toEqual(3);
-            expect(args.dispatch.argsForCall[0][0].meta.sequenceId)
-              .toEqual(args.dispatch.argsForCall[1][0].meta.sequenceId);
-            expect(args.dispatch.argsForCall[1][0].meta.sequenceId)
-              .toEqual(args.dispatch.argsForCall[2][0].meta.sequenceId);
+            expect(args.dispatch.calls.count()).toEqual(3);
+            expect(args.dispatch.calls.argsFor(0)[0].meta.sequenceId)
+              .toEqual(args.dispatch.calls.argsFor(1)[0].meta.sequenceId);
+            expect(args.dispatch.calls.argsFor(1)[0].meta.sequenceId)
+              .toEqual(args.dispatch.calls.argsFor(2)[0].meta.sequenceId);
             done();
           });
-        }));
+        });
       });
     });
   });
