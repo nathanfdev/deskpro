@@ -26,30 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class TasksSettings.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+class TasksSettings extends AbstractAppSettings
 {
-    /**
-     * @return DiscoverSettings
-     */
-    public function getSettings()
-    {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
-
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
-
-        return $model;
-    }
 }

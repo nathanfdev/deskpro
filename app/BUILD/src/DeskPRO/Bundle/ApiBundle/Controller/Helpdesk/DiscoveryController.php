@@ -34,12 +34,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
-use Orb\Util\Arrays;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class DiscoveryController.
@@ -62,11 +59,11 @@ class DiscoveryController extends BaseController
      *         "class"="DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings"
      *     }
      * )
-     * @Get("/helpdesk/discover", name="api_helpdesk_discover")
+     * @Get("/helpdesk/discover")
      */
     public function discoverAction()
     {
-        return View::create($this->wrap($this->get('dicover_settings_resolver')->getSettings()));
+        return View::create($this->wrap($this->get('discover_settings_resolver')->getSettings()));
     }
 
     /**
@@ -74,151 +71,19 @@ class DiscoveryController extends BaseController
      *
      * @ApiDoc(
      *     section="Helpdesk",
-     *     tags={"unstable"="#ff6666"},
      *     resourceDescription="Operations about helpdesk discovering",
      *     description="Used by apps when they need to know general information about a helpdesk such as which features are enabled",
-     *     statusCodes={200="Success"}
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output={
+     *         "class"="DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings"
+     *     }
      * )
-     * @Get("/helpdesk/agent-client/info", name="api_helpdesk_agent_client_info")
+     * @Get("/helpdesk/agent-client/info")
      */
     public function agentClientInfoAction()
     {
-        //TODO use a model/transformer
-
-        /** @var \Application\DeskPRO\DependencyInjection\DeskproContainer $container */
-        $container = $this->container;
-
-        /** @var \Application\DeskPRO\Settings\Settings $settings */
-        $settings = $container->get('deskpro.core.settings');
-
-        /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $field_manager */
-        $field_manager = $this->container->getSystemService('ticket_fields_manager');
-
-        /** @var \Application\DeskPRO\Entity\Person $me */
-        $me = $this->getUser();
-        $me->loadHelper('Agent');
-        $me->loadHelper('AgentTeam');
-        $me->loadHelper('AgentPermissions');
-        $me->loadHelper('PermissionsManager');
-
-        $data = [];
-
-        $data['settings'] = [
-            'multi_lang'    => $settings->get('core.enable_languages'),
-            'helpdesk_name' => $settings->get('core.deskpro_name'),
-            'attachments'   => [
-                'agents' => [
-                    'max_size'  => $settings->get('core.attach_agent_maxsize'),
-                    'whitelist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_must_exts') ?: '')) ?: null,
-                    'blacklist' => Arrays::removeEmptyString(explode(',', $settings->get('core.attach_agent_not_exts') ?: '')) ?: null,
-                ],
-            ],
-        ];
-
-        // TODO is there a repository somewhere this comes from?
-        // See also DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/FilterEditPopupContainer.js
-        $group_fields = [
-            ['type' => 'department'],
-            ['type' => 'organization'],
-            ['type' => 'person'],
-            ['type' => 'language'],
-            ['type' => 'urgency'],
-            ['type' => 'agent'],
-            ['type' => 'agent_team'],
-            ['type' => 'waiting_time'],
-            ['type' => 'all_waiting_time'],
-            ['type' => 'open_time'],
-        ];
-
-        $order_fields = [
-            ['type' => 'urgency'],
-            ['type' => 'date_created'],
-            ['type' => 'date_last_agent_reply'],
-            ['type' => 'date_last_user_reply'],
-            ['type' => 'date_last_reply'],
-            ['type' => 'date_user_waiting'],
-            ['type' => 'total_user_waiting'],
-        ];
-
-        $group_fields = array_map(function ($v) {
-            Arrays::unshiftAssoc($v, 'id', $v['type']);
-
-            return $v;
-        }, $group_fields);
-
-        $order_fields = array_map(function ($v) {
-            Arrays::unshiftAssoc($v, 'id', $v['type']);
-
-            return $v;
-        }, $order_fields);
-
-        foreach ($field_manager->getFields() as $f) {
-            $group_fields[] = [
-                'id'       => 'ticket_field.'.$f->getId(),
-                'type'     => 'ticket_field',
-                'field_id' => $f->getId(),
-            ];
-        }
-
-        $data['tickets'] = [
-            'enabled'    => $me->hasPerm('agent_tickets.use'),
-            'ref_code'   => $settings->get('core_tickets.use_ref'),
-            'archiving'  => $settings->get('core_tickets.use_archive'),
-            'field_info' => [
-                'product' => [
-                    'enabled'    => $field_manager->isProductEnabled(),
-                    'default_id' => $settings->get('core.default_prod_id') ?: null,
-                ],
-                'category' => [
-                    'enabled'    => $field_manager->isCategoryEnabled(),
-                    'default_id' => $settings->get('core.default_ticket_cat') ?: null,
-                ],
-                'workflow' => [
-                    'enabled'    => $field_manager->isWorkflowEnabled(),
-                    'default_id' => $settings->get('core.default_ticket_work') ?: null,
-                ],
-                'priority' => [
-                    'enabled'    => $field_manager->isPriorityEnabled(),
-                    'default_id' => $settings->get('core.default_ticket_pri') ?: null,
-                ],
-                'custom' => [
-                    'has_any' => count($field_manager->getFields()) > 0,
-                ],
-            ],
-            'billing' => [
-                'enabled'       => $settings->get('core_tickets.enable_billing'),
-                'currency_name' => $settings->get('core_tickets.enable_billing') ? $settings->get('core_tickets.billing_currency') : null,
-            ],
-            'timelog' => [
-                'enabled' => $settings->get('core_tickets.enable_timelog'),
-            ],
-            'group_fields' => $group_fields,
-            'order_fields' => $order_fields,
-        ];
-
-        $data['chat'] = [
-            'enabled' => $settings->get('core.apps_chat') && $me->hasPerm('agent_chat.use'),
-        ];
-
-        $data['crm'] = [
-            'enabled' => $me->hasPerm('agent_people.use'),
-        ];
-
-        $data['feedback'] = [
-            'enabled' => $me->hasPerm('core.apps_feedback'),
-        ];
-
-        $data['publish'] = [
-            'enabled' => $me->hasPerm('core.apps_kb'),
-        ];
-
-        $data['tasks'] = [
-            'enabled' => $me->hasPerm('core.apps_tasks'),
-        ];
-
-        return View::create(
-            $this->wrap(new PrimitiveArray($data)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('agent_client_info_settings_resolver')->getSettings()));
     }
 }

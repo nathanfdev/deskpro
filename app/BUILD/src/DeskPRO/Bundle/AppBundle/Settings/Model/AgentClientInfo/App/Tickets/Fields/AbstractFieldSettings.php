@@ -26,30 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class AbstractFieldSettings.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+abstract class AbstractFieldSettings
 {
     /**
-     * @return DiscoverSettings
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    public function getSettings()
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $type;
+
+    /**
+     * Constructor.
+     *
+     * @param string $id
+     * @param string $type
+     */
+    public function __construct($id, $type)
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        $this->id   = $id;
+        $this->type = $type;
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-        return $model;
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

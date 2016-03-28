@@ -26,30 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class TicketCustomFieldInfoSettings.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+class TicketCustomFieldInfoSettings
 {
     /**
-     * @return DiscoverSettings
+     * @var bool
+     *
+     * @JMS\Type("boolean")
      */
-    public function getSettings()
+    private $hasAny = false;
+
+    /**
+     * @return bool
+     */
+    public function isHasAny()
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        return $this->hasAny;
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
-
-        return $model;
+    /**
+     * @param bool $hasAny
+     */
+    public function setHasAny($hasAny)
+    {
+        $this->hasAny = $hasAny;
     }
 }

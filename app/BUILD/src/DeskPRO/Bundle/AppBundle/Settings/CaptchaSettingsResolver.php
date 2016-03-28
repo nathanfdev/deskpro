@@ -33,7 +33,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 /**
  * Class CaptchaSettingsResolver.
  */
-class CaptchaSettingsResolver implements AntiAbuseSettingsAwareInterface
+class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
     const TICKETS  = 'user.captcha.tickets';
     const COMMENTS = 'user.captcha.comments';
@@ -43,21 +43,6 @@ class CaptchaSettingsResolver implements AntiAbuseSettingsAwareInterface
     const USE_RECAPTCHA        = 'core.use_recaptcha2';
     const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
     const RECAPTCHA_SECRET_KEY = 'core.recaptcha2_secret_key';
-
-    /**
-     * @var BrandAwareSettingsResolver
-     */
-    protected $settingsResolver;
-
-    /**
-     * Constructor.
-     *
-     * @param BrandAwareSettingsResolver $settingsResolver
-     */
-    public function __construct(BrandAwareSettingsResolver $settingsResolver)
-    {
-        $this->settingsResolver = $settingsResolver;
-    }
 
     /**
      * {@inheritdoc}
@@ -77,15 +62,5 @@ class CaptchaSettingsResolver implements AntiAbuseSettingsAwareInterface
         ;
 
         return $model;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    private function getSetting($name)
-    {
-        return $this->settingsResolver->getSetting($name);
     }
 }

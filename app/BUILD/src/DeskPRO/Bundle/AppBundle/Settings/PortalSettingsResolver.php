@@ -35,23 +35,8 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 /**
  * Class PortalSettingsResolver.
  */
-class PortalSettingsResolver implements AntiAbuseSettingsAwareInterface
+class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
-    /**
-     * @var BrandAwareSettingsResolver
-     */
-    protected $settingsResolver;
-
-    /**
-     * Constructor.
-     *
-     * @param BrandAwareSettingsResolver $settingsResolver
-     */
-    public function __construct(BrandAwareSettingsResolver $settingsResolver)
-    {
-        $this->settingsResolver = $settingsResolver;
-    }
-
     /**
      * {@inheritdoc}
      *
@@ -70,16 +55,6 @@ class PortalSettingsResolver implements AntiAbuseSettingsAwareInterface
         $this->setUserRateLimit($model->getGuestRateLimit(), 'guest');
 
         return $model;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    private function getSetting($name)
-    {
-        return $this->settingsResolver->getSetting($name);
     }
 
     /**

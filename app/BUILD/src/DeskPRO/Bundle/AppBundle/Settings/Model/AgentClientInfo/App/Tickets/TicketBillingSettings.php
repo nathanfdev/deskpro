@@ -26,30 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class TicketBillingSettings.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+class TicketBillingSettings
 {
+    use EnabledOptionTrait;
+
     /**
-     * @return DiscoverSettings
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    public function getSettings()
+    private $currencyName;
+
+    /**
+     * @return string
+     */
+    public function getCurrencyName()
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        return $this->currencyName;
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
-
-        return $model;
+    /**
+     * @param string $currencyName
+     */
+    public function setCurrencyName($currencyName)
+    {
+        $this->currencyName = $currencyName;
     }
 }

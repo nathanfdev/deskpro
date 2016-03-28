@@ -28,28 +28,33 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
-
 /**
- * Class DiscoverSettingsResolver.
+ * Class AbstractBrandAwareSettingsResolver.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+abstract class AbstractBrandAwareSettingsResolver
 {
     /**
-     * @return DiscoverSettings
+     * @var BrandAwareSettingsResolver
      */
-    public function getSettings()
+    protected $settingsResolver;
+
+    /**
+     * Constructor.
+     *
+     * @param BrandAwareSettingsResolver $settingsResolver
+     */
+    public function __construct(BrandAwareSettingsResolver $settingsResolver)
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        $this->settingsResolver = $settingsResolver;
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
-
-        return $model;
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    protected function getSetting($name)
+    {
+        return $this->settingsResolver->getSetting($name);
     }
 }

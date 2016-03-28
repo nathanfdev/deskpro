@@ -26,30 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class EnabledOptionTrait.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+trait EnabledOptionTrait
 {
     /**
-     * @return DiscoverSettings
+     * @var bool
+     *
+     * @JMS\Type("boolean")
      */
-    public function getSettings()
+    private $enabled = false;
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        return $this->enabled;
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
 
-        return $model;
+        return $this;
     }
 }

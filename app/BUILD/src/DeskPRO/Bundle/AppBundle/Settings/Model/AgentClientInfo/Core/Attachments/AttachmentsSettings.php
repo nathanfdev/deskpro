@@ -26,30 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class DiscoverSettingsResolver.
+ * Class AttachmentsSettings.
  */
-class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
+class AttachmentsSettings
 {
     /**
-     * @return DiscoverSettings
+     * @var AttachmentSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments\AttachmentSettings")
      */
-    public function getSettings()
+    private $agents;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        $this->agents = new AttachmentSettings();
+    }
 
-        $model = new DiscoverSettings();
-        $model
-            ->setIsDeskpro(true)
-            ->setHelpdeskUrl($helpdeskUrl)
-            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
-            ->setBuild(DP_BUILD_TIME)
-        ;
-
-        return $model;
+    /**
+     * @return AttachmentSettings
+     */
+    public function getAgents()
+    {
+        return $this->agents;
     }
 }

@@ -26,98 +26,92 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class AttachmentSettings.
  */
-class RateLimitGroup
+class AttachmentSettings
 {
-    use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
-
     /**
      * @var string
      *
-     * @JMS\Type("string")
+     * @JMS\Type("integer")
      */
-    private $response = self::RESPONSE_LOCKOUT;
+    private $maxSize;
 
     /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param int $limit
+     * @var array
      *
-     * @return $this
+     * @JMS\Type("array<string>")
      */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
+    private $whitelist = [];
 
     /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
+     * @var array
      *
-     * @return $this
+     * @JMS\Type("array<string>")
      */
-    public function setTime($time)
-    {
-        $this->time = $time;
-
-        return $this;
-    }
+    private $blacklist = [];
 
     /**
      * @return string
      */
-    public function getResponse()
+    public function getMaxSize()
     {
-        return $this->response;
+        return $this->maxSize;
     }
 
     /**
-     * @param string $response
+     * @param string $maxSize
      *
      * @return $this
      */
-    public function setResponse($response)
+    public function setMaxSize($maxSize)
     {
-        $this->response = $response;
+        $this->maxSize = $maxSize;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWhitelist()
+    {
+        return $this->whitelist;
+    }
+
+    /**
+     * @param array $whitelist
+     *
+     * @return $this
+     */
+    public function setWhitelist(array $whitelist)
+    {
+        $this->whitelist = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlacklist()
+    {
+        return $this->blacklist;
+    }
+
+    /**
+     * @param array $blacklist
+     *
+     * @return $this
+     */
+    public function setBlacklist(array $blacklist)
+    {
+        $this->blacklist = $blacklist;
 
         return $this;
     }
