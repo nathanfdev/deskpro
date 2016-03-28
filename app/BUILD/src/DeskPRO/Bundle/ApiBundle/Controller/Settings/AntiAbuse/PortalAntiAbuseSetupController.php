@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  *
  * @ApiModes("all")
  * @Route("/settings/anti_abuse/portal")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\PortalAntiAbuseSettings")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings")
  */
 class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
 {

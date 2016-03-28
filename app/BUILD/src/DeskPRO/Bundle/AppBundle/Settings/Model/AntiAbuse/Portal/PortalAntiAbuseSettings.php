@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class PortalAntiAbuseSettings.
  */
@@ -35,16 +37,22 @@ class PortalAntiAbuseSettings
 {
     /**
      * @var PortalAccountRateLimit
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAccountRateLimit")
      */
     private $accountRateLimit;
 
     /**
      * @var PortalUserRateLimit
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")
      */
     private $userRateLimit;
 
     /**
      * @var PortalUserRateLimit
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")
      */
     private $guestRateLimit;
 

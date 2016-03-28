@@ -39,7 +39,6 @@ class UsersourceSettings
      * @var bool
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("has_agent_login_form")
      */
     private $hasAgentLoginForm = false;
 
@@ -47,7 +46,6 @@ class UsersourceSettings
      * @var bool
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("has_user_login_form")
      */
     private $hasUserLoginForm = false;
 
@@ -55,7 +53,6 @@ class UsersourceSettings
      * @var bool
      *
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("reg_enabled")
      */
     private $regEnabled = false;
 

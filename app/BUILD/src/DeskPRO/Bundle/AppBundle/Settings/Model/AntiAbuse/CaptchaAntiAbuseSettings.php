@@ -43,16 +43,15 @@ class CaptchaAntiAbuseSettings
      * @var bool
      *
      * @JMS\Type("integer")
-     * @JMS\SerializedName("use_recaptcha2")
      */
-    private $useReCaptcha2 = false;
+    private $useRecaptcha2 = false;
 
     /**
      * @var string
      *
-     * @JMS\SerializedName("recaptcha2_site_key")
+     * @JMS\Type("string")
      */
-    private $reCaptcha2SiteKey = '';
+    private $recaptcha2SiteKey = '';
 
     /**
      * @var bool|string
@@ -85,19 +84,19 @@ class CaptchaAntiAbuseSettings
     /**
      * @return mixed
      */
-    public function getUseReCaptcha2()
+    public function getUseRecaptcha2()
     {
-        return $this->useReCaptcha2;
+        return $this->useRecaptcha2;
     }
 
     /**
-     * @param mixed $useReCaptcha2
+     * @param mixed $useRecaptcha2
      *
      * @return $this
      */
-    public function setUseReCaptcha2($useReCaptcha2)
+    public function setUseRecaptcha2($useRecaptcha2)
     {
-        $this->useReCaptcha2 = $useReCaptcha2;
+        $this->useRecaptcha2 = $useRecaptcha2;
 
         return $this;
     }
@@ -105,19 +104,19 @@ class CaptchaAntiAbuseSettings
     /**
      * @return mixed
      */
-    public function getReCaptcha2SiteKey()
+    public function getRecaptcha2SiteKey()
     {
-        return $this->reCaptcha2SiteKey;
+        return $this->recaptcha2SiteKey;
     }
 
     /**
-     * @param mixed $reCaptcha2SiteKey
+     * @param mixed $recaptcha2SiteKey
      *
      * @return $this
      */
-    public function setReCaptcha2SiteKey($reCaptcha2SiteKey)
+    public function setRecaptcha2SiteKey($recaptcha2SiteKey)
     {
-        $this->reCaptcha2SiteKey = $reCaptcha2SiteKey;
+        $this->recaptcha2SiteKey = $recaptcha2SiteKey;
 
         return $this;
     }

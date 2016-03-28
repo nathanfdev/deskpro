@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
@@ -52,7 +53,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
         'list'   => true,
         'get'    => true,
         'post'   => true,
-        'put'    => true,
+        'put'    => false,
         'delete' => false,
     ];
 
@@ -92,7 +93,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     protected function extractData(ApiDoc $annotation, Route $route, \ReflectionMethod $method)
     {
         if ($annotation instanceof DpApiDoc
-            && ($class_reflection = $this->getClassReflection($method, $route))
+            && ($class_reflection = $this->extractControllerReflection($route))
         ) {
             if (!$annotation->getOutput()
                 && in_array(TypeUtils::cleanAction($method->name, true), $this->getCreativeMethods())
@@ -125,31 +126,6 @@ class ApiDocExtractor extends BaseApiDocExtractor
     }
 
     /**
-     * Get reflection class for controller.
-     *
-     * @param \ReflectionMethod $method
-     * @param Route             $route
-     *
-     * @return bool|\ReflectionClass|void
-     */
-    protected function getClassReflection(\ReflectionMethod $method, Route $route)
-    {
-        $class_reflection = false;
-        if (strpos($method->class, 'CrudController') !== false || strpos($method->class, 'CrudSubController')) {
-            $class_reflection = $this->extractControllerReflection($route);
-        }
-        if (!$class_reflection) {
-            $class_reflection = new \ReflectionClass($method->class);
-        }
-
-        if ($class_reflection->isSubclassOf(CrudController::class)) {
-            return $class_reflection;
-        }
-
-        return false;
-    }
-
-    /**
      * return the list of methods that should return some output.
      *
      * @return array
@@ -171,7 +147,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
      *
      * @param Route $route
      *
-     * @return \ReflectionClass|void
+     * @return \ReflectionClass|false
      */
     protected function extractControllerReflection(Route $route)
     {
@@ -183,6 +159,6 @@ class ApiDocExtractor extends BaseApiDocExtractor
             return new \ReflectionClass($parts[0]);
         }
 
-        return;
+        return false;
     }
 }

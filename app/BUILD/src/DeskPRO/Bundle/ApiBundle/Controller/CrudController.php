@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -89,7 +90,7 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="We will return such status in case we wound your entity",
+     *          200="We will return such status in case we found your entity",
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )

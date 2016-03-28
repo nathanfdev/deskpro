@@ -48,15 +48,18 @@ class UsersourceSettingsController extends BaseController
      *     section="Usersource settings",
      *     description="Get usersource settings",
      *     statusCodes={
-     *         200
-     *     }
+     *         200="Success"
+     *     },
+     *     output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings"
+     *      }
      * )
      *
      * @Get("")
      *
      * @return View
      */
-    public function getSettingsAction()
+    public function getAction()
     {
         return new View($this->wrap($this->get('usersource_settings_resolver')->getSettings()));
     }

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class PortalAccountRateLimit.
@@ -37,16 +38,22 @@ class PortalAccountRateLimit
 {
     /**
      * @var RateLimitGroup
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $loginSettings;
 
     /**
      * @var RateLimitGroup
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $registrationSettings;
 
     /**
      * @var RateLimitGroup
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $resetPasswordSettings;
 

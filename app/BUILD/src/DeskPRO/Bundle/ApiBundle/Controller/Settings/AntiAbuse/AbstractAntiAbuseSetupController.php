@@ -52,7 +52,7 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *     resourceDescription="Admin anti-abuse settings ui",
      *     description="Get anti-abuse settings",
      *     statusCodes={
-     *         200
+     *         200="Success"
      *     }
      * )
      *
@@ -60,7 +60,7 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *
      * @return View
      */
-    public function getSettingsAction()
+    public function getAction()
     {
         return new View($this->wrap($this->getModel()));
     }
@@ -71,8 +71,8 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *     resourceDescription="Admin anti-abuse settings ui",
      *     description="Update anti-abuse settings",
      *     statusCodes={
-     *         204,
-     *         400
+     *         204="Success",
+     *         400="Bad request"
      *     }
      * )
      *
@@ -82,7 +82,7 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *
      * @return View
      */
-    public function putSettingsAction(Request $request)
+    public function putAction(Request $request)
     {
         $model = $this->getModel();
         $form  = $this->get('form.factory')->createNamedBuilder(null, static::$model, $model)->getForm();

@@ -68,8 +68,8 @@ class CaptchaSettingsResolver implements AntiAbuseSettingsAwareInterface
     {
         $model = new CaptchaAntiAbuseSettings();
         $model
-            ->setUseReCaptcha2($this->getSetting(self::USE_RECAPTCHA))
-            ->setReCaptcha2SiteKey($this->getSetting(self::RECAPTCHA_SITE_KEY))
+            ->setUseRecaptcha2($this->getSetting(self::USE_RECAPTCHA))
+            ->setRecaptcha2SiteKey($this->getSetting(self::RECAPTCHA_SITE_KEY))
             ->setTickets($this->getSetting(self::TICKETS))
             ->setComments($this->getSetting(self::COMMENTS))
             ->setFeedback($this->getSetting(self::FEEDBACK))

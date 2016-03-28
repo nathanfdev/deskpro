@@ -39,28 +39,28 @@ class PortalUserRateLimit
     /**
      * @var RateLimitGroup
      *
-     * @JMS\SerializedName("submit_ticket")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $submitTicket;
 
     /**
      * @var RateLimitGroup
      *
-     * @JMS\SerializedName("submit_feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $submitFeedback;
 
     /**
      * @var RateLimitGroup
      *
-     * @JMS\SerializedName("submit_comment")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $submitComment;
 
     /**
      * @var RateLimitGroup
      *
-     * @JMS\SerializedName("upload_attachment")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $uploadAttachment;
 
