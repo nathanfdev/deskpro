@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Sideload;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Component\Util\TypeUtils;
 
 /**
@@ -58,6 +59,11 @@ class SideloadStore
     protected $not_loaded;
 
     /**
+     * @var array
+     */
+    protected $customs = [];
+
+    /**
      * @param $entity
      */
     public function addSideload($entity)
@@ -76,6 +82,42 @@ class SideloadStore
     }
 
     /**
+     * @param string                   $interest
+     * @param int                      $id
+     * @param CallbackDeferredProperty $deferred
+     */
+    public function addCustomSideload($interest, $id, CallbackDeferredProperty $deferred)
+    {
+        if (!isset($this->customs[$interest])) {
+            $this->customs[$interest] = [];
+        }
+
+        $this->customs[$interest][] = new CustomSideload($id, $deferred);
+    }
+
+    /**
+     * @param $interest
+     *
+     * @return bool
+     */
+    public function hasCustom($interest)
+    {
+        return isset($this->customs[$interest]);
+    }
+
+    /**
+     * @param $interest
+     *
+     * @return CustomSideload[]
+     */
+    public function getCustom($interest)
+    {
+        $this->not_loaded[$interest] = false;
+
+        return $this->customs[$interest];
+    }
+
+    /**
      * @param array $interests
      */
     public function setInterests(array $interests = [])
@@ -84,6 +126,9 @@ class SideloadStore
             $fqcn = $this->getFqcn($interest);
             if ($fqcn) {
                 $this->not_loaded[$fqcn] = true;
+            }
+            if (array_key_exists($interest, $this->customs)) {
+                $this->not_loaded[$interest] = true;
             }
         }
     }

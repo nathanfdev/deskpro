@@ -29,9 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLinker;
+use Doctrine\ORM\EntityManager;
+use JMS\Serializer\JsonSerializationVisitor;
 
 /**
  * Class TicketHandler.
@@ -49,15 +53,22 @@ class TicketHandler extends AbstractEntityHandler
     private $layoutFactory;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * TicketHandler constructor.
      *
      * @param TicketLinker        $ticketLinker
      * @param TicketLayoutFactory $layoutFactory
+     * @param EntityManager       $em
      */
-    public function __construct(TicketLinker $ticketLinker, TicketLayoutFactory $layoutFactory)
+    public function __construct(TicketLinker $ticketLinker, TicketLayoutFactory $layoutFactory, EntityManager $em)
     {
         $this->ticketLinker  = $ticketLinker;
         $this->layoutFactory = $layoutFactory;
+        $this->em            = $em;
     }
 
     /**
@@ -66,6 +77,82 @@ class TicketHandler extends AbstractEntityHandler
     public static function getClassNames()
     {
         return TicketEntity::class;
+    }
+
+    /**
+     * @param JsonSerializationVisitor     $visitor
+     * @param TicketEntity                 $entity
+     * @param array                        $type
+     * @param SideloadSerializationContext $context
+     *
+     * @return mixed
+     */
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    {
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'ticket_layout',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getTicketLayout'], [$entity])
+        );
+        $sideloads->addCustomSideload(
+            'ticket_excerpt',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity])
+        );
+
+        return parent::serialize($visitor, $entity, $type, $context);
+    }
+
+    /**
+     * @param TicketEntity $ticket
+     *
+     * @return array
+     */
+    public function getTicketLayout(TicketEntity $ticket)
+    {
+        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment());
+        $view_layout = $this->layoutFactory->getLayoutForView($ticket->getDepartment());
+
+        return [
+            'edit' => [
+                'user'  => $edit_layout->getUserLayout()->exportToArray(),
+                'agent' => $edit_layout->getAgentLayout()->exportToArray(),
+            ],
+            'view' => [
+                'user'  => $view_layout->getUserLayout()->exportToArray(),
+                'agent' => $view_layout->getAgentLayout()->exportToArray(),
+            ],
+        ];
+    }
+
+    /**
+     * @param TicketEntity $entity
+     *
+     * @return array
+     */
+    public function getExcerpt(TicketEntity $entity)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $repo */
+        $repo = $this->em->getRepository('DeskPRO:TicketMessage');
+
+        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+        $message = $repo->getLastReply($entity);
+
+        if ($message && $excerpt = $message->getMessagePreviewText(200)) {
+            return [
+                'message_id' => $message->getId(),
+                'excerpt'    => $excerpt,
+            ];
+        } else {
+            $excerpt = preg_replace('#[^a-zA-Z0-9\' \.]#', '', \Faker\Factory::create()->realText());
+            $excerpt = preg_replace('#-{2}#', '-', $excerpt);
+
+            return [
+                'message_id' => $entity->getId() + 1000,
+                'excerpt'    => $excerpt,
+            ];
+        }
     }
 
     /**
