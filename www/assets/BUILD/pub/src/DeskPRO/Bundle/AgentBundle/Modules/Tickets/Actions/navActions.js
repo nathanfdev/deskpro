@@ -5,6 +5,14 @@ import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+
+
+/**
+ * Used to identify requests within record stores
+ * @type {string}
+ */
+const recordStoresId = 'tickets';
 
 // Private -------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +67,9 @@ export const initialLoad = createAction(
         const batch = 'DP_API/batch'
           + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F' + groupingQueryString
           + '&get[labels]=DP_API/ticket_labels'
+          + '&get[categories]=DP_API/ticket_categories'
+          + '&get[workflows]=DP_API/ticket_workflows'
+          + '&get[products]=DP_API/ticket_products'
           + '&get[starsCount]=DP_API/ticket_stars_counts'
           + '&get[filters]=DP_API/ticket_filters'
         ;
@@ -66,6 +77,12 @@ export const initialLoad = createAction(
         api.sendGet(batch).success(({responses}) => {
           const payload = flattenBatchResponses(responses);
           payload.starsCount = payload.starsCount.nested;
+          dispatch(setCollection('TicketCategory', recordStoresId, payload.categories));
+          dispatch(setCollection('TicketWorkflow', recordStoresId, payload.workflows));
+          dispatch(setCollection('TicketProduct', recordStoresId, payload.products));
+          delete payload.categories;
+          delete payload.workflows;
+          delete payload.products;
           resolve(payload);
         });
       }

@@ -23,8 +23,8 @@ describe('Tickets List: ListCardViewContainer', () => {
   const TicketCard = require('~ListView/TicketCard').TicketCard;
 
   it('should render 3 TicketCard elements when passing 3 children', () => {
-    spyOn(TicketCard.prototype, 'render').andCallThrough();
+    spyOn(TicketCard.prototype, 'render').and.callThrough();
     renderInTicketsApp(fakeState, <ListCardViewContainer />);
-    expect(TicketCard.prototype.render.calls.length).toEqual(3);
+    expect(TicketCard.prototype.render.calls.count()).toEqual(3);
   });
 });

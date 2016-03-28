@@ -5,7 +5,6 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { FilteringMenu } from './FilteringMenu';
 
-
 export class FilteringMenuContainer extends Component {
   static propTypes = {
     onMenuUnmount: PropTypes.func,

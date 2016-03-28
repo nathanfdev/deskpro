@@ -30,16 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
-class AssignAction extends AbstractAction implements ActionWithOptionsInterface
+class SetLanguageAction extends AbstractAction implements ActionWithOptionsInterface
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('assign');
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setAllowedValues(
+            'options',
+            function ($value) {
+                return (is_int($value) && $value > 0) || ctype_digit($value);
+            }
+        );
     }
 }

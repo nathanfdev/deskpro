@@ -24,17 +24,14 @@ describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   });
 
   it('should dispatch the applyFilterEditing() event when changing select value', () => {
-    dispatch.reset();
-    spyOn(actions, 'applyFilterEditing').andCallThrough();
+    dispatch.calls.reset();
+    spyOn(actions, 'applyFilterEditing').and.callThrough();
     const component = render();
     const selectComponent = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
 
     selectComponent.value = 'urgency';
     TestUtils.Simulate.change(selectComponent);
 
-    expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
-      type: actions.applyFilterEditing.originalValue.type
-    }));
     expect(actions.applyFilterEditing).toHaveBeenCalled();
   });
 });

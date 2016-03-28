@@ -55,7 +55,7 @@ describe('Ampliflux Timeout Middleware', () => {
           const actionHandler = nextHandler(next);
 
           actionHandler(dummyAction);
-          const timeoutFn = window.setTimeout.argsForCall[0][0];
+          const timeoutFn = window.setTimeout.calls.argsFor(0)[0];
           expect(next).not.toHaveBeenCalled();
 
           timeoutFn();

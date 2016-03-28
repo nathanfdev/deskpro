@@ -13,14 +13,14 @@ describe('ChatsTableContainer', () => {
   const TableHeader = require('~List/View/Table/TableHeader').TableHeader;
 
   it('should render its header', () => {
-    spyOn(TableHeader.prototype, 'render').andCallThrough();
+    spyOn(TableHeader.prototype, 'render').and.callThrough();
     renderChatsInRedux(1, <ChatsTableContainer />);
     expect(TableHeader.prototype.render).toHaveBeenCalled();
   });
 
   it('should render 3 rows when passing 3 children', () => {
-    spyOn(Row.prototype, 'render').andCallThrough();
+    spyOn(Row.prototype, 'render').and.callThrough();
     renderChatsInRedux(3, <ChatsTableContainer />);
-    expect(Row.prototype.render.calls.length).toEqual(3);
+    expect(Row.prototype.render.calls.count()).toEqual(3);
   });
 });

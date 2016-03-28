@@ -2182,6 +2182,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
     }
 
+    public function setProduct(Product $product = null)
+    {
+        $this->setModelField('product', $product);
+
+        return $this;
+    }
+
     public function getProblemIds()
     {
         $ids = [];
@@ -2242,6 +2249,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         } else {
             $this['workflow'] = null;
         }
+    }
+
+    public function setWorkflow(TicketWorkflow $workflow = null)
+    {
+        $this->setModelField('workflow', $workflow);
+
+        return $this;
     }
 
     /**
@@ -2306,6 +2320,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         return $this->agent_team['id'];
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return $this
+     */
+    public function setAgentTeam(AgentTeam $team = null)
+    {
+        $this->setModelField('agent_team', $team);
+
+        return $this;
     }
 
     public function setAgentTeamId($id)

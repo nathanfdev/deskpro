@@ -11,8 +11,8 @@ describe('ChatsCardsContainer', () => {
   const ChatCard = require('~ListView/ChatCard').ChatCard;
 
   it('should render 3 ChatCard elements when passing 3 children', () => {
-    spyOn(ChatCard.prototype, 'render').andCallThrough();
+    spyOn(ChatCard.prototype, 'render').and.callThrough();
     renderChatsInRedux(3, <ChatsCardsContainer />);
-    expect(ChatCard.prototype.render.calls.length).toEqual(3);
+    expect(ChatCard.prototype.render.calls.count()).toEqual(3);
   });
 });

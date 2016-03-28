@@ -15,7 +15,7 @@ export class TeamsListContainer extends Component {
     multiple: PropTypes.bool,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
-    selected: PropTypes.array
+    selected: PropTypes.object
   };
 
   render() {

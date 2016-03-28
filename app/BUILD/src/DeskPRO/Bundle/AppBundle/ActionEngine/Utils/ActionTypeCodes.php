@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,6 +60,30 @@ class ActionTypeCodes
                 substr(implode('', array_slice(explode('\\', get_class($action)), -1)), 0, -6)
             )
         );
+    }
+
+    public static function getActionClass($namespace, $actionName)
+    {
+        $actionClassName = ucfirst(Strings::underscoreToCamelCase($actionName));
+
+        // Search action class in $namespace
+        $actionClass = sprintf(
+            'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Actions\\%s\\%sAction',
+            $namespace,
+            $actionClassName
+        );
+        // If not found - try to search in common actions
+        if (!class_exists($actionClass)) {
+            $actionClass = sprintf(
+                'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Actions\\Common\\%sAction',
+                $actionClassName
+            );
+            if (!class_exists($actionClass)) {
+                throw new ActionApplicatorDoesNotExists('Action Class Does Not Exists '.$actionName);
+            }
+        }
+
+        return $actionClass;
     }
 
     /**

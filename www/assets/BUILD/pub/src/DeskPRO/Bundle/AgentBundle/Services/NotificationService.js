@@ -51,7 +51,7 @@ export class NotificationService {
   }
 
   heartbeat() {
-    api.sendGet('DP_API/notify/heartbeat');
+    api.sendPut('DP_API/notify/heartbeat', {});
   }
 
   startHeartbeat() {

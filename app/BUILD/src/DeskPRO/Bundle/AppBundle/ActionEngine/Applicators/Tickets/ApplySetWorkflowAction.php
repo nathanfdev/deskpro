@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,18 +30,23 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Task;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
-class SetStatusAction extends AbstractAction implements ActionWithOptionsInterface
+class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /**
+     * @param Ticket[] $tickets
+     */
+    public function apply(array $tickets)
     {
-        $resolver->setRequired('status');
-        $resolver->setAllowedTypes('status', 'int');
-        $resolver->setAllowedValues('status', [0, 1]);
+        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options);
+        foreach ($tickets as $ticket) {
+            $ticket->setWorkflow($workflow);
+            $context = $this->tm->createAgentExecutorContext(null, 'set_workflow', 'mass_actions');
+            $this->tm->saveTicket($ticket, $context);
+        }
     }
 }

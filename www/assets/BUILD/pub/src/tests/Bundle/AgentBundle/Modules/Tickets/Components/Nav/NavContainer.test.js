@@ -8,9 +8,9 @@ import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
-  const Nav          = require('~nav/Nav').Nav;
-  const actions      = require('~root/Actions/navActions');
-  const dispatch     = jasmine.createSpy('dispatch');
+  const Nav = require('~nav/Nav').Nav;
+  const actions = require('~root/Actions/navActions');
+  const dispatch = jasmine.createSpy('dispatch');
 
   function render() {
     return renderInTicketsApp({}, <NavContainer />, dispatch);
@@ -23,12 +23,10 @@ describe('Tickets Navigation: NavContainer component', () => {
   });
 
   it('should dispatch the initialLoad() event', () => {
-    dispatch.reset();
-    spyOn(actions, 'initialLoad').andCallThrough();
+    dispatch.calls.reset();
+    spyOn(actions, 'initialLoad').and.callThrough();
 
     render();
-
-    expect(dispatch).toHaveBeenCalledWith(jasmine.objectContaining({type: actions.initialLoad.originalValue.type}));
     expect(actions.initialLoad).toHaveBeenCalled();
   });
 });

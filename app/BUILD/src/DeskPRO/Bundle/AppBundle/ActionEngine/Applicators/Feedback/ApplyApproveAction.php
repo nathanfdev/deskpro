@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -37,31 +38,21 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    private $defaultStatusCategory;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
+        $defaultStatusCategory = $activeStatusCategories[0];
         foreach ($feedback as $item) {
-            if ($item->status === Feedback::STATUS_HIDDEN) {
+            if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
                 $item->setHiddenStatus();
                 $item->setStatus(Feedback::STATUS_ACTIVE);
-                $item->setStatusCategory($this->defaultStatusCategory);
+                $item->setStatusCategory($defaultStatusCategory);
             }
             $item->setIsReviewed(true);
         }
-    }
-
-    /**
-     * Fetch default status category.
-     */
-    private function init()
-    {
-        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
-            ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
-        $this->defaultStatusCategory = $activeStatusCategories[0];
     }
 }

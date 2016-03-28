@@ -4,8 +4,8 @@ import { MassActionBarContainer }
 import { massActionsSelector } from '../../Selectors/massActions';
 import { loadIndicator } from '../../Actions/listActions';
 import { initialLoad } from '../../Actions/navActions';
-
 import { connect } from 'react-redux';
+
 @connect(state => ({
   actions: massActionsSelector(state)
 }))

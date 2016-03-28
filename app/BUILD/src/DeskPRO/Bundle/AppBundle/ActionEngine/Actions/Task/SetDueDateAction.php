@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,10 +40,10 @@ class SetDueDateAction extends AbstractAction implements ActionWithOptionsInterf
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('date');
-        $resolver->setAllowedTypes('date', 'string');
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', 'string');
         $resolver->setAllowedValues(
-            'date',
+            'options',
             function ($value) {
                 $dateTime = new \DateTime($value);
                 $errors = \DateTime::getLastErrors();

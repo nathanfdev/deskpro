@@ -22,7 +22,7 @@ describe('ListContainer', () => {
   });
 
   it('should render List component', () => {
-    spyOn(List.prototype, 'render').andCallThrough();
+    spyOn(List.prototype, 'render').and.callThrough();
     renderChatsInRedux(0, <ListContainer />);
     expect(List.prototype.render).toHaveBeenCalled();
   });

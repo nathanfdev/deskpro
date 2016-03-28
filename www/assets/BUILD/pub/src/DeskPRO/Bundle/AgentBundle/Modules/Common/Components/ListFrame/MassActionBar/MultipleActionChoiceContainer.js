@@ -7,41 +7,47 @@ import { connect } from 'react-redux';
 export class MultipleActionChoiceContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    options: PropTypes.array.isRequired,
+    item: PropTypes.object.isRequired,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object
   };
 
-  handleClick(param) {
-    const { setParams, dispatch, currentParams, resetSingleAction } = this.props;
-    if (currentParams && currentParams.get(param)) {
-      dispatch(resetSingleAction(param));
+  handleClick(param, value, values) {
+    const { setParams, dispatch, resetSingleAction } = this.props;
+    const index = values.indexOf(value);
+    if (index > -1) {
+      values.splice(index, 1);
     } else {
-      dispatch(setParams({ [param]: true }));
+      values.push(value);
+    }
+    if (values.length > 0) {
+      dispatch(setParams({ [param]: values }));
+    } else {
+      dispatch(resetSingleAction(param));
     }
   }
 
   renderCheckboxOption(option, index) {
-    const {currentParams } = this.props;
-    const values = currentParams && currentParams.get(option.param) ? [option.param] : [];
+    const {currentParams, item } = this.props;
+    const values = currentParams && currentParams.get(item.param) ? currentParams.get(item.param).toArray() : [];
 
     return (
       <CheckboxOption key={index}
-                      label={option.label}
                       values={values}
-                      value={option.param}
-                      onClick={this.handleClick.bind(this, option.param)}/>
+                      label={option.label}
+                      value={option.value}
+                      onClick={this.handleClick.bind(this, item.param, option.value, values)}/>
     );
   }
 
   render() {
-    const {options } = this.props;
+    const {item } = this.props;
 
     return (
       <ChoiceMenu>
         <ul>
-          {options.map((option, index) => this.renderCheckboxOption(option, index))}
+          {item.options.map((option, index) => this.renderCheckboxOption(option, index))}
         </ul>
       </ChoiceMenu>
     );

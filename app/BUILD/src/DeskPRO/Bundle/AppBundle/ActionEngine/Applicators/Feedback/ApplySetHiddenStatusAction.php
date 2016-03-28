@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
@@ -45,7 +45,7 @@ class ApplySetHiddenStatusAction extends AbstractActionApplicator implements Act
     {
         foreach ($feedback as $item) {
             $item
-                ->setHiddenStatus($this->options[AbstractAction::OPTION_INPUT])
+                ->setHiddenStatus($this->options)
                 ->setStatus(Feedback::STATUS_HIDDEN);
         }
     }
