@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -63,6 +62,9 @@ abstract class CrudController extends BaseController
      * @var array|null Array of exposed action names e.g. ['get', 'list'], if not defined all are exposed
      */
     public static $exposeOnly = null;
+
+    // this used only for moving period
+    public static $serializeMethod = 'dataSerialize';
 
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
@@ -109,7 +111,7 @@ abstract class CrudController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->dataSerialize($entity), Response::HTTP_OK);
+        return View::create($this->{static::$serializeMethod}($entity), Response::HTTP_OK);
     }
 
     /**
@@ -184,7 +186,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->dataSerialize($result), Response::HTTP_OK);
+        return View::create($this->{static::$serializeMethod}($result), Response::HTTP_OK);
     }
 
     /**
@@ -411,7 +413,7 @@ abstract class CrudController extends BaseController
 
         $form->submit($decoded, !$partial_update);
         if ($form->isValid()) {
-            return View::create($this->dataSerialize($this->persistModel($model)), $status);
+            return View::create($this->{static::$serializeMethod}($this->persistModel($model)), $status);
         }
 
         throw new InvalidFormException($form);

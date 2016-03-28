@@ -32,6 +32,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Component\Util\TypeUtils;
+use Doctrine\Common\Proxy\Proxy;
 
 /**
  * Class SideloadStore.
@@ -41,27 +42,37 @@ class SideloadStore
     /**
      * @var array
      */
-    protected $sideloads;
+    private $sideloads;
 
     /**
      * @var array
      */
-    protected $classmap;
+    private $classmap;
 
     /**
      * @var
      */
-    protected $loaded;
+    private $loaded;
 
     /**
      * @var
      */
-    protected $not_loaded;
+    private $notLoaded;
 
     /**
      * @var array
      */
-    protected $customs = [];
+    private $customs = [];
+
+    /**
+     * @var array
+     */
+    private $interests = [];
+
+    /**
+     * @var bool
+     */
+    private $interestsWasSet = false;
 
     /**
      * @param $entity
@@ -71,14 +82,26 @@ class SideloadStore
         $this->checkObject($entity);
 
         /* @var EntityInterface|DomainObject $entity */
-        $fqcn  = get_class($entity);
-        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
-        if (!isset($this->sideloads[$fqcn])) {
-            $this->sideloads[$fqcn] = [];
+        $fqcn = get_class($entity);
+
+        if ($entity instanceof Proxy) {
+            $reflection = new \ReflectionClass($entity);
+            $parent     = $reflection->getParentClass();
+            $fqcn       = $parent->getName();
         }
 
-        $this->sideloads[$fqcn][] = $entity->getId();
-        $this->classmap[$snake]   = $fqcn;
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+        if (!isset($this->sideloads[$snake])) {
+            $this->sideloads[$snake] = [];
+        }
+
+        if ($this->interestsWasSet) {
+            $this->updateNotLoaded($snake);
+        }
+
+        $this->sideloads[$snake][$entity->getId()] = $entity->getId();
+        asort($this->sideloads[$snake]);
+        $this->classmap[$snake] = $fqcn;
     }
 
     /**
@@ -92,7 +115,88 @@ class SideloadStore
             $this->customs[$interest] = [];
         }
 
-        $this->customs[$interest][] = new CustomSideload($id, $deferred);
+        $this->updateNotLoaded($interest);
+
+        $this->customs[$interest][$id] = new CustomSideload($id, $deferred);
+    }
+
+    /**
+     * @param array $interests
+     */
+    public function setInterests(array $interests = [])
+    {
+        $this->interestsWasSet = true;
+        $this->interests       = $interests;
+
+        foreach ($this->interests as $interest) {
+            $fqcn = $this->getFqcn($interest);
+            if ($fqcn || array_key_exists($interest, $this->customs)) {
+                $this->updateNotLoaded($interest);
+            }
+        }
+    }
+
+    /**
+     * @param $snake
+     *
+     * @return mixed
+     */
+    public function getFqcn($snake)
+    {
+        return isset($this->classmap[$snake]) ? $this->classmap[$snake] : null;
+    }
+
+    /**
+     * @param string $interest
+     *
+     * @return array
+     */
+    public function getSideloads($interest)
+    {
+        $this->updateNotLoaded($interest, false);
+
+        if (!isset($this->loaded[$interest])) {
+            $this->loaded[$interest] = [];
+        }
+
+        $ids_to_load = array_diff($this->sideloads[$interest], $this->loaded[$interest]);
+
+        $this->loaded[$interest] += $ids_to_load;
+
+        return $ids_to_load;
+    }
+
+    /**
+     * @param $interest
+     *
+     * @return CustomSideload[]
+     */
+    public function getCustom($interest)
+    {
+        $this->updateNotLoaded($interest, false);
+
+        if (!isset($this->loaded[$interest])) {
+            $this->loaded[$interest] = [];
+        }
+        $return = [];
+        foreach ($this->customs[$interest] as $custom) {
+            if (false === array_search((int) $custom->getId(), $this->loaded[$interest])) {
+                $this->loaded[$interest][] = (int) $custom->getId();
+                $return[]                  = $custom;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function hasSideloads()
+    {
+        $hasSideloads = array_reduce($this->notLoaded, [$this, 'reduce'], false);
+
+        return $hasSideloads;
     }
 
     /**
@@ -106,77 +210,12 @@ class SideloadStore
     }
 
     /**
-     * @param $interest
-     *
-     * @return CustomSideload[]
-     */
-    public function getCustom($interest)
-    {
-        $this->not_loaded[$interest] = false;
-
-        return $this->customs[$interest];
-    }
-
-    /**
-     * @param array $interests
-     */
-    public function setInterests(array $interests = [])
-    {
-        foreach ($interests as $interest) {
-            $fqcn = $this->getFqcn($interest);
-            if ($fqcn) {
-                $this->not_loaded[$fqcn] = true;
-            }
-            if (array_key_exists($interest, $this->customs)) {
-                $this->not_loaded[$interest] = true;
-            }
-        }
-    }
-
-    /**
-     * @param $snake
-     *
-     * @return mixed
-     */
-    public function getFqcn($snake)
-    {
-        return $this->classmap[$snake];
-    }
-
-    /**
-     * @param $fqcn
-     *
-     * @return array
-     */
-    public function getSideloads($fqcn)
-    {
-        $this->not_loaded[$fqcn] = false;
-        if (!isset($this->loaded[$fqcn])) {
-            $this->loaded[$fqcn] = [];
-        }
-
-        $ids_to_load = array_diff($this->sideloads[$fqcn], $this->loaded[$fqcn]);
-
-        $this->loaded[$fqcn] = array_merge($this->loaded[$fqcn], $ids_to_load);
-
-        return $ids_to_load;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function hasSideloads()
-    {
-        return array_reduce($this->not_loaded, [$this, 'reduce'], false);
-    }
-
-    /**
      * @param $carry
      * @param $item
      *
      * @return bool
      */
-    protected function reduce($carry, $item)
+    private function reduce($carry, $item)
     {
         return $carry || $item;
     }
@@ -184,7 +223,7 @@ class SideloadStore
     /**
      * @param $entity
      */
-    protected function checkObject($entity)
+    private function checkObject($entity)
     {
         if (!is_object($entity)) {
             throw new \InvalidArgumentException(
@@ -202,6 +241,18 @@ class SideloadStore
                     TypeUtils::getBaseTypeName($entity)
                 )
             );
+        }
+    }
+
+    /**
+     * @param      $interest
+     * @param bool $notLoaded
+     */
+    private function updateNotLoaded($interest, $notLoaded = true)
+    {
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($interest);
+        if (in_array($snake, $this->interests)) {
+            $this->notLoaded[$snake] = $notLoaded;
         }
     }
 }

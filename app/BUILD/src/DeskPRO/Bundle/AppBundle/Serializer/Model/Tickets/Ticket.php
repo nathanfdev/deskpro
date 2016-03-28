@@ -693,8 +693,6 @@ class Ticket
             $this->personEmail = $ticket->getPersonEmail();
         } elseif ($ticket->getPerson() && $ticket->getPerson()->getPrimaryEmail()) {
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
-        } else {
-            $this->personEmail = null;
         }
 
         $this->fields               = $ticket->getCustomData();

@@ -20,15 +20,6 @@ services:
     arguments:
       - "@router"
 
-  data_serializer.transformer.agent_alert:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-
-  data_serializer.transformer.custom_data_collection:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollectionTransformer
-    arguments: ~
-
   data_serializer.transformer.text_snippet:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TextSnippetTransformer
     arguments:

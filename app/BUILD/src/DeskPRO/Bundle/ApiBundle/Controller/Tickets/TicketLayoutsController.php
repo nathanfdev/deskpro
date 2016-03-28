@@ -32,13 +32,13 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
+use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem as TicketLayoutItemModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem;
 use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -80,7 +80,7 @@ class TicketLayoutsController extends BaseController
     {
         $ticketLayouts = $this->getTicketLayoutRepository()->findAll();
         if (empty($ticketLayouts)) {
-            $ticketLayouts[] = new TicketLayoutEntity();
+            $ticketLayouts[] = new TicketLayout();
         }
 
         $response = [];
@@ -130,20 +130,20 @@ class TicketLayoutsController extends BaseController
             $ticketLayout = $this->getTicketLayoutRepository()->findOneBy(['department' => null]);
         }
         if (!$ticketLayout) {
-            $ticketLayout = new TicketLayoutEntity();
+            $ticketLayout = new TicketLayout();
         }
 
         return View::create($this->getContextLayoutResponse($ticketLayout, $context, $department));
     }
 
     /**
-     * @param TicketLayoutEntity $ticketLayout
-     * @param string             $context
-     * @param Department         $department
+     * @param TicketLayout $ticketLayout
+     * @param string       $context
+     * @param Department   $department
      *
      * @return Layout
      */
-    protected function getContextLayoutResponse(TicketLayoutEntity $ticketLayout, $context, Department $department = null)
+    protected function getContextLayoutResponse(TicketLayout $ticketLayout, $context, Department $department = null)
     {
         $context_layout = $context === 'agent' ? $ticketLayout->agent_layout : $ticketLayout->user_layout;
         $department     = $department ?: $ticketLayout->department;
@@ -155,7 +155,7 @@ class TicketLayoutsController extends BaseController
             $fields[] = $field->exportToArray();
         }
 
-        return new TicketLayoutItemModel($department, $fields, $context);
+        return new TicketLayoutItem($department, $fields, $context);
     }
 
     /**

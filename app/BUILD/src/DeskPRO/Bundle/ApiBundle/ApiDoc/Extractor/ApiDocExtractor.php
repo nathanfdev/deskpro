@@ -63,22 +63,53 @@ class ApiDocExtractor extends BaseApiDocExtractor
     {
         return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
             $ctrl = $r->getDefault('_controller');
+            $action = $ctrl ? TypeUtils::cleanAction($ctrl, true) : false;
+            $reflection = $this->extractControllerReflection($r);
 
-            $exposed = true;
-            if ($reflection = $this->extractControllerReflection($r)) {
-                $action = TypeUtils::cleanAction($ctrl, true);
-                if (
-                    $reflection->isSubclassOf(CrudController::class)
-                    && in_array($action, array_keys($this->action_list))
-                    && ($expose = $reflection->getProperty('exposeOnly'))
-                    && (is_array($expose = $expose->getValue()))
-                ) {
-                    $exposed = in_array($action, $expose);
-                }
-            }
-
-            return $ctrl && $reflection && $exposed;
+            return $action && $reflection && $this->isExposedAction($action, $reflection);
         });
+    }
+
+    /**
+     * @param string           $action
+     * @param \ReflectionClass $reflection
+     *
+     * @return bool
+     */
+    protected function isExposedAction($action, \ReflectionClass $reflection)
+    {
+        if ($reflection->isSubclassOf(CrudController::class)
+           && $exposedMethods = $this->getExposedActions($action, $reflection)) {
+            // this is crud, and exposOnly is set, so we gonna check it
+            return in_array($action, $exposedMethods);
+        }
+
+        // by default everything is exposed
+        return true;
+    }
+
+    /**
+     * @param string           $action
+     * @param \ReflectionClass $reflection
+     *
+     * @return bool|array
+     */
+    protected function getExposedActions($action, \ReflectionClass $reflection)
+    {
+        if (!in_array($action, $this->action_list)) {
+            // This method is custom for crud - e.g. getMySuperListAction, shouldn't process it
+            return false;
+        }
+
+        $exposedMethods = $reflection->getProperty('exposeOnly');
+        $exposedMethods = $exposedMethods ? $exposedMethods->getValue() : null;
+
+        if (!is_array($exposedMethods)) {
+            // exposeOnly was not set, so everything is exposed
+            return false;
+        }
+
+        return $exposedMethods;
     }
 
     /**

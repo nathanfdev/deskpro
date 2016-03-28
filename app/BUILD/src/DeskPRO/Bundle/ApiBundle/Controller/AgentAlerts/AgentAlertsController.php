@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class AgentAlertsController.
  *
  * @ApiDocSection("Notifications and alerts")
- * @OutputEntity("Application\DeskPRO\Entity\AgentAlert")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert")
  * @ApiModes("all")
  * @Annotations\Route("/me/notifications")
  */
@@ -56,6 +56,8 @@ class AgentAlertsController extends CrudController
     public static $entity    = AgentAlert::class;
     public static $listSort  = 'date_created';
     public static $listOrder = 'desc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * Dismiss alerts with given ids array.

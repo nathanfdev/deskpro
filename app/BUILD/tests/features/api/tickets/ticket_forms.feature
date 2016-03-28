@@ -103,7 +103,6 @@ Feature: /ticket_forms endpoint
 
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
-    And print last JSON response
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2

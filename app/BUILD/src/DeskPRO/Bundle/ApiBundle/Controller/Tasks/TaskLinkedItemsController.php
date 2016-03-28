@@ -252,13 +252,7 @@ class TaskLinkedItemsController extends BaseController
 
             $location = $this->generateUrl('api_task_links_get', ['id' => $link->getId()]);
 
-            return View::create(
-                $this->wrap($link),
-                $status,
-                [
-                    'Location' => $location,
-                ]
-            );
+            return View::create($this->wrap($link), $status, ['Location' => $location]);
         }
         throw new InvalidFormException($form);
     }

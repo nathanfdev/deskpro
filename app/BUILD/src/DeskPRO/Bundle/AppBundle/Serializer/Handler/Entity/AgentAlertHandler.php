@@ -1,0 +1,143 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+
+use Application\DeskPRO\Entity\AgentAlert as AgentAlertEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert as AgentAlertModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlertData;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\NotifyData;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
+use JMS\Serializer\JsonSerializationVisitor;
+
+/**
+ * Class AgentAlertHandler.
+ */
+class AgentAlertHandler extends AbstractEntityHandler
+{
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * AgentAlertHandler constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getClassNames()
+    {
+        return AgentAlertEntity::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
+    {
+        /* @var AgentAlertEntity $entity */
+        $data      = $entity->getData();
+        $sideloads = $context->getSideloadStore();
+        if ($data['ticket']) {
+            $sideloads->addCustomSideload('ticket', $data['ticket'], new CallbackDeferredProperty([$this, 'getTicket'], [$entity, $context]));
+        }
+        if ($data['performer']) {
+            $sideloads->addCustomSideload('person', $data['performer'], new CallbackDeferredProperty([$this, 'getPerson'], [$entity, $context]));
+        }
+
+        return parent::serialize($visitor, $entity, $type, $context);
+    }
+
+    /**
+     * @param AgentAlertEntity             $entity
+     * @param SideloadSerializationContext $context
+     *
+     * @return mixed
+     */
+    public function getPerson(AgentAlertEntity $entity, SideloadSerializationContext $context)
+    {
+        $data      = $entity->getData();
+        $performer = $this->em->getRepository('DeskPRO:Person')->find($data['performer']);
+
+        return $context->accept($performer, ['name' => get_class($performer)]);
+    }
+
+    /**
+     * @param AgentAlertEntity             $entity
+     * @param SideloadSerializationContext $context
+     *
+     * @return mixed
+     */
+    public function getTicket(AgentAlertEntity $entity, SideloadSerializationContext $context)
+    {
+        $data   = $entity->getData();
+        $ticket = $this->em->getRepository('DeskPRO:Ticket')->find($data['ticket']);
+
+        return $context->accept($ticket, ['name' => get_class($ticket)]);
+    }
+
+    /**
+     * @param AgentAlertEntity $entity
+     *
+     * @return AgentAlertModel
+     */
+    protected function createModel($entity)
+    {
+        $type = 'notifications.'.$entity->getTypename();
+        $data = $entity->getData();
+
+        if ($entity->getTypename() === 'tickets') {
+            if ($data['is_new_ticket']) {
+                $type .= '.new_ticket';
+            } elseif ($data['is_new_agent_reply']) {
+                $type .= '.new_message.agent_reply';
+            } elseif ($data['is_new_agent_note']) {
+                $type .= '.new_message.agent_note';
+            } elseif ($data['is_new_user_reply']) {
+                $type .= '.new_message.user_reply';
+            } else {
+                $type .= '.updated';
+            }
+        }
+
+        $alertData = new AgentAlertData($data['ticket'], new NotifyData($data['browser_rendered']), $data['performer']);
+        $model     = new AgentAlertModel($entity, $type, $alertData);
+
+        return $model;
+    }
+}

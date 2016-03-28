@@ -79,8 +79,9 @@ class TicketLinkController extends BaseController
     {
         $linkTicketId = $request->request->get('link_ticket_id');
 
-        $ticket     = $this->get('ticket_manager')->getTicket($ticketId);
-        $linkTicket = $this->get('ticket_manager')->getTicket($linkTicketId);
+        $ticketManager = $this->get('ticket_manager');
+        $ticket        = $ticketManager->getTicket($ticketId);
+        $linkTicket    = $ticketManager->getTicket($linkTicketId);
 
         if ((int) $ticketId === (int) $linkTicketId) {
             throw new BadRequestHttpException('You can\'t link ticket to itself!');
@@ -198,9 +199,7 @@ class TicketLinkController extends BaseController
         return View::create(
             [],
             Response::HTTP_OK,
-            [
-                'Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId)),
-            ]
+            ['Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId))]
         );
     }
 }

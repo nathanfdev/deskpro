@@ -35,6 +35,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Component\Util\TypeUtils;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -69,7 +70,13 @@ class EntityHandler implements SubscribingHandlerInterface
      */
     public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $context->getSideloadStore()->addSideload($entity);
+        // we have to check what we are adding in sideloads since we can't control what is exactly happening here
+        // e.g. we cant control of person from organization should be sideloaded while from ticket should not.
+
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+        if (in_array($snake, $context->getIncludes())) {
+            $context->getSideloadStore()->addSideload($entity);
+        }
 
         return $entity->getId();
     }

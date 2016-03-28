@@ -26,31 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Component\Util;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert;
 
-use DeskPRO\Component\Util\TypeUtils;
-use DpTest\DeskProTestCase;
-
-/**
- * Class TypeUtilsTest.
- */
-class TypeUtilsTest extends DeskProTestCase
-{
-    public function testGetParts()
-    {
-        $parts = TypeUtils::getTypeNameParts(new TypeUtilsTestClass());
-        $this->assertEquals(['DpTest', 'DeskPRO', 'Component', 'Util', 'TypeUtilsTestClass'], $parts);
-    }
-
-    public function testGetBaseTypeName()
-    {
-        $this->assertEquals(TypeUtils::getBaseTypeName(new TypeUtilsTestClass()), 'TypeUtilsTestClass');
-    }
-}
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class TypeUtilsTestClass.
+ * Class AgentAlertData.
  */
-class TypeUtilsTestClass
+class AgentAlertData
 {
+    /**
+     * Ticket identity.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $ticket;
+
+    /**
+     * Additional data about notification.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\NotifyData")
+     *
+     * @var NotifyData
+     */
+    private $notification;
+
+    /**
+     * Who performed this alert. Identity.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $performer;
+
+    /**
+     * AgentAlertData constructor.
+     *
+     * @param int        $ticket
+     * @param NotifyData $notification
+     * @param int        $performer
+     */
+    public function __construct($ticket, NotifyData $notification, $performer)
+    {
+        $this->ticket       = $ticket;
+        $this->notification = $notification;
+        $this->performer    = $performer;
+    }
 }
