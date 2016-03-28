@@ -69,7 +69,7 @@ class Me
     /**
      * Person entity.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      *
      * @var Person
      */
