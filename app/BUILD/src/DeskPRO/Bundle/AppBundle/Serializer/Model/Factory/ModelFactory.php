@@ -28,10 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
 
-use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -73,8 +71,7 @@ class ModelFactory
                 'method'  => 'createProfile',
             ],
         ],
-        'agent_team' => 'createAgentTeam',
-        'feedback'   => [
+        'feedback' => [
                 FeedbackStatus::class => ['default' => true, 'method' => 'createFeedbackStatus'],
             ],
 
@@ -167,22 +164,6 @@ class ModelFactory
         }
 
         return array_pop($polymorphs);
-    }
-
-    /**
-     * @param AgentTeamEntity $entity
-     *
-     * @return $this
-     *
-     * @deprecated Use entity custom handlers instead
-     */
-    protected function createAgentTeam(AgentTeamEntity $entity)
-    {
-        $avatar_resolver = $this->container->get('avatar_resolver');
-
-        $agent_team = new AgentTeam($entity);
-
-        return $agent_team->setAvatar($avatar_resolver->getAvatarModel($entity));
     }
 
     /**

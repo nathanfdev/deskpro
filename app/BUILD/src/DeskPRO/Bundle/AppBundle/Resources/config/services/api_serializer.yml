@@ -77,6 +77,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.agent_team:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
+      arguments:
+        - "@avatar_resolver"
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.ticket:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketHandler
     arguments:

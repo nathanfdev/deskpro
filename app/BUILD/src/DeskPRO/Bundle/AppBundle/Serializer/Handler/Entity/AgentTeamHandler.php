@@ -26,34 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization as SerializedOrganization;
+use Application\DeskPRO\Entity\AgentTeam;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam as SerializedAgentTeam;
 
 /**
- * Class OrganizationHandler.
+ * Class AgentTeamHandler.
  */
-class OrganizationHandler extends AbstractEntityHandler
+class AgentTeamHandler extends AbstractEntityHandler
 {
     /**
-     * @var ChatDataService
+     * @var AvatarResolver
      */
-    private $chat_data_service;
+    private $avatarResolver;
 
     /**
      * Constructor.
      *
-     * @param ChatDataService $chat_data_service
+     * @param AvatarResolver $avatarResolver
      */
-    public function __construct(ChatDataService $chat_data_service)
+    public function __construct(AvatarResolver $avatarResolver)
     {
-        $this->chat_data_service = $chat_data_service;
+        $this->avatarResolver = $avatarResolver;
     }
 
     /**
@@ -61,19 +57,19 @@ class OrganizationHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return Organization::class;
+        return AgentTeam::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param Organization $entity
+     * @param AgentTeam $entity
      */
     protected function createModel($entity)
     {
-        return new SerializedOrganization(
-            $entity,
-            $this->chat_data_service->getChatsCountForOrganization($entity)
-        );
+        $agent_team = new SerializedAgentTeam($entity);
+        $agent_team->setAvatar($this->avatarResolver->getAvatarModel($entity));
+
+        return $agent_team;
     }
 }
