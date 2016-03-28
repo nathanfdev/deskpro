@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], ( Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base'], ( Admin_Ctrl_Base) ->
   class Admin_AntiAbuse_Ctrl_LoginLockoutSettings extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_AntiAbuse_Ctrl_LoginLockoutSettings'
     @CTRL_AS = 'LoginLockoutSettings'
@@ -19,7 +19,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], ( Admin_Ctrl_Base) ->
       usersPromise = @Api.sendGet(_url, {rate_limit_context: 'user'}).then (res) =>
         @$scope.user_settings = res.data.settings
         @$scope.user_rate_settings = res.data.rate_limit_settings
-      usersourcePromise = @Api.sendGet('/v2/settings/user_source').then (res) =>
+      usersourcePromise = @Api2.sendGet('/settings/user_source').then (res) =>
         @$scope.usersourceSettings = res.data.data
 
       return @$q.all([agentsPromise, usersPromise, usersourcePromise])
