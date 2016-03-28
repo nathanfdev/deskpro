@@ -174,6 +174,10 @@ define([
   'Admin/RoundRobin/Ctrl/Edit',
   'Admin/Icons/Ctrl/List',
   'Admin/CustomFields/Ctrl/Edit',
+  'Admin/AntiAbuse/Ctrl/CaptchaSettings',
+  'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
+  'Admin/AntiAbuse/Ctrl/LoginLockoutSettings',
+  'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
 
   'CloudAdminLoad'
 

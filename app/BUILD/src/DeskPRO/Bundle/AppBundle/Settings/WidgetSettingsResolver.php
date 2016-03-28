@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,15 +29,17 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Widget;
 
+namespace DeskPRO\Bundle\AppBundle\Settings;
+
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Class WidgetSettings.
+ * Class WidgetSettingsResolver.
  */
-class WidgetSettings
+class WidgetSettingsResolver
 {
     const REQUIRE_LOGIN     = 'portal.chat.require_login';
     const EMAIL_VALIDATION  = 'portal.chat.email_validation';
@@ -130,7 +132,7 @@ class WidgetSettings
     public function getPortalBrandSettings()
     {
         $brand_settings = $this->getDefaultBrandSettings();
-        $data_store     = $this->em->getRepository('DeskPRO:DataStore')->findOneBy([
+        $data_store     = $this->em->getRepository(DataStore::class)->findOneBy([
             'name' => 'widget.portal_brand_settings',
         ]);
 

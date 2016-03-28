@@ -26,46 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
+
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\View\View;
+
 /**
- * DeskPRO.
+ * Class UsersourceSettingsController.
  *
- * @category Entities
+ * @ApiModes("all")
+ * @Route("/settings/user_source")
  */
-
-namespace Application\DeskPRO\EntityRepository;
-
-class Setting extends AbstractEntityRepository
+class UsersourceSettingsController extends BaseController
 {
     /**
-     * Update a database setting.
+     * @ApiDoc(
+     *     section="Usersource settings",
+     *     description="Get usersource settings",
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output={
+     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings"
+     *      }
+     * )
      *
-     * This updates the database but not the currently loaded set of settings. If you need
-     * the value to take affect immediately (this process), then use the Settings service,
+     * @Get("")
      *
-     * <code>$this->container->get('settings')->setSetting($name, $value);</code>
-     *
-     * @param string $name  The name of the setting
-     * @param mixed  $value The value to set. Null means any existing value will be unset
-     *
-     * @return $this
+     * @return View
      */
-    public function updateSetting($name, $value)
+    public function getAction()
     {
-        $db = $this->_em->getConnection();
-
-        if ($value !== null) {
-            $db->executeUpdate('
-                INSERT INTO settings
-                    (name, value)
-                VALUES
-                    (?, ?)
-                ON DUPLICATE KEY UPDATE
-                    value = VALUES(value)
-            ', [$name, $value]);
-        } else {
-            $db->delete('settings', ['name' => $name]);
-        }
-
-        return $this;
+        return new View($this->wrap($this->get('usersource_settings_resolver')->getSettings()));
     }
 }

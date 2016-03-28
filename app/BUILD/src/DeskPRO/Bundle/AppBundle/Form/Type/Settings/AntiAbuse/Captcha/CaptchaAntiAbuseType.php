@@ -26,21 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class CaptchaAntiAbuseType.
  */
-class WidgetSetupType extends AbstractType
+class CaptchaAntiAbuseType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -48,8 +46,22 @@ class WidgetSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
+            ->add('use_recaptcha2', ApiBooleanType::class)
+            ->add('recaptcha2_site_key', TextType::class)
+            ->add('tickets', CaptchaSettingChoiceType::class)
+            ->add('comments', CaptchaSettingChoiceType::class)
+            ->add('feedback', CaptchaSettingChoiceType::class)
+            ->add('register', CaptchaSettingChoiceType::class)
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => CaptchaAntiAbuseSettings::class,
+        ]);
     }
 }
