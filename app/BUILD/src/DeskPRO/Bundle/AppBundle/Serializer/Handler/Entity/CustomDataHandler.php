@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
@@ -69,67 +71,61 @@ class CustomDataHandler implements SubscribingHandlerInterface
      */
     public function serialize(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
     {
-        $collection = new CustomDataCollection($collection);
-        $data       = [];
+        if (!$collection instanceof Collection) {
+            throw new \RuntimeException('Expected instanceof '.Collection::class);
+        }
 
-        foreach ($collection->getData() as $cd) {
-            $row = [];
+        $result = [];
 
-            switch ($cd->getField()->getTypeName()) {
-                case 'choice':
-                    $vals    = [];
+        foreach ($collection as $customData) {
+            $customDef = $customData->field->getParent() ? $customData->field->getParent() : $customData->field;
+
+            switch ($customDef->getHandlerClass()) {
+                case CustomDefAbstract::HANDLER_CLASS_CHOICE:
+                    $values  = [];
                     $details = [];
 
-                    foreach ($cd->getData() as $v) {
-                        $fid = $v->field->getId();// value is the ID of the selected option
+                    foreach ($customData->getData() as $value) {
+                        $fid = $value->field->getId(); // value is the ID of the selected option
 
-                        $vals[]        = $fid;
+                        $values[]      = $fid;
                         $details[$fid] = [
-                            'id'    => $v->field->getId(),
-                            'title' => $v->field->getTitle(),
+                            'id'    => $value->field->getId(),
+                            'title' => $value->field->getTitle(),
                         ];
                     }
 
-                    $row['value']  = $vals;
+                    $row['value']  = $values;
                     $row['detail'] = $details;
                     break;
 
-                case 'date':
-                case 'datetime':
-                    $v = $cd->getData();
-                    $v = array_pop($v);
+                case CustomDefAbstract::HANDLER_CLASS_DATE:
+                case CustomDefAbstract::HANDLER_CLASS_DATETIME:
+                    $value = $customData->getInput();
 
-                    if ($v) {
-                        $v = $v->getInput();
-
+                    try {
+                        $row['value'] = new \DateTime('@'.$value);
+                    } catch (\Exception $e) {
                         try {
-                            $row['value'] = new \DateTime('@'.$v);
+                            $row['value'] = new \DateTime($value);
                         } catch (\Exception $e) {
-                            try {
-                                $row['value'] = new \DateTime($v);
-                            } catch (\Exception $e) {
-                                $row['value'] = null;
-                            }
+                            $row['value'] = null;
                         }
-                    } else {
-                        $row['value'] = null;
                     }
                     break;
 
                 default:
-                    $v = $cd->getData();
-                    $v = array_pop($v);
-                    if ($v) {
-                        $row['value'] = $v->getData();
+                    if ($customData->getData()) {
+                        $row['value'] = $customData->getData();
                     } else {
                         $row['value'] = null;
                     }
                     break;
             }
 
-            $data[$cd->getField()->getId()] = $context->accept($row);
+            $result[$customDef->getId()] = $context->accept($row);
         }
 
-        return $data;
+        return $result;
     }
 }

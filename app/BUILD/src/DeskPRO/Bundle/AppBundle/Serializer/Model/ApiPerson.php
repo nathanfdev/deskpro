@@ -29,10 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\CustomFields\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -329,7 +329,7 @@ class ApiPerson
     protected $chats_count;
 
     /**
-     * @var CustomDataCollection
+     * @var CustomDataPerson[]
      *
      * @JMS\Type("custom_data<array>")
      */
