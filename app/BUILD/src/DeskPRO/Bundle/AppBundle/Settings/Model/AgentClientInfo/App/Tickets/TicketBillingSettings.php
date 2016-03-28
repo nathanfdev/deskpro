@@ -26,99 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class TicketBillingSettings.
  */
-class RateLimitGroup
+class TicketBillingSettings
 {
     use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      */
-    private $response = self::RESPONSE_LOCKOUT;
-
-    /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param int $limit
-     *
-     * @return $this
-     */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
-     *
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-
-        return $this;
-    }
+    private $currencyName;
 
     /**
      * @return string
      */
-    public function getResponse()
+    public function getCurrencyName()
     {
-        return $this->response;
+        return $this->currencyName;
     }
 
     /**
-     * @param string $response
-     *
-     * @return $this
+     * @param string $currencyName
      */
-    public function setResponse($response)
+    public function setCurrencyName($currencyName)
     {
-        $this->response = $response;
-
-        return $this;
+        $this->currencyName = $currencyName;
     }
 }

@@ -26,99 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class TicketFieldInfoSettings.
  */
-class RateLimitGroup
+class TicketFieldInfoSettings
 {
     use EnabledOptionTrait;
 
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
     /**
      * @var int
      *
      * @JMS\Type("integer")
      */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    private $response = self::RESPONSE_LOCKOUT;
+    private $defaultId;
 
     /**
      * @return int
      */
-    public function getLimit()
+    public function getDefaultId()
     {
-        return $this->limit;
+        return $this->defaultId;
     }
 
     /**
-     * @param int $limit
-     *
-     * @return $this
+     * @param int $defaultId
      */
-    public function setLimit($limit)
+    public function setDefaultId($defaultId)
     {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
-     *
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     * @param string $response
-     *
-     * @return $this
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-
-        return $this;
+        $this->defaultId = $defaultId;
     }
 }

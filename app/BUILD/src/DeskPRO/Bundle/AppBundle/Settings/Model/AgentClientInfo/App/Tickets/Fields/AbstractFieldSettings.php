@@ -26,99 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class AbstractFieldSettings.
  */
-class RateLimitGroup
+abstract class AbstractFieldSettings
 {
-    use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
     /**
-     * @var int
+     * @var string
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
+    protected $id;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      */
-    private $response = self::RESPONSE_LOCKOUT;
+    protected $type;
 
     /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @param int $limit
+     * Constructor.
      *
-     * @return $this
+     * @param string $id
+     * @param string $type
      */
-    public function setLimit($limit)
+    public function __construct($id, $type)
     {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
-     *
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-
-        return $this;
+        $this->id   = $id;
+        $this->type = $type;
     }
 
     /**
      * @return string
      */
-    public function getResponse()
+    public function getId()
     {
-        return $this->response;
+        return $this->id;
     }
 
     /**
-     * @param string $response
-     *
-     * @return $this
+     * @return string
      */
-    public function setResponse($response)
+    public function getType()
     {
-        $this->response = $response;
-
-        return $this;
+        return $this->type;
     }
 }

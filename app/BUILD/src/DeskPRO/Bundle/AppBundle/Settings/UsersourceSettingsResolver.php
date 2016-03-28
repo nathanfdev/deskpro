@@ -35,17 +35,12 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings;
 /**
  * Class UsersourceSettingsResolver.
  */
-class UsersourceSettingsResolver
+class UsersourceSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
     /**
      * @var UsersourceManager
      */
     private $usersourceManager;
-
-    /**
-     * @var BrandAwareSettingsResolver
-     */
-    private $settingsResolver;
 
     /**
      * Constructor.
@@ -55,8 +50,9 @@ class UsersourceSettingsResolver
      */
     public function __construct(UsersourceManager $usersourceManager, BrandAwareSettingsResolver $settingsResolver)
     {
+        parent::__construct($settingsResolver);
+
         $this->usersourceManager = $usersourceManager;
-        $this->settingsResolver  = $settingsResolver;
     }
 
     /**
@@ -70,7 +66,7 @@ class UsersourceSettingsResolver
         $model
             ->setHasAgentLoginForm($this->hasCapability('agent', UsersourceInfo::CAPABILITY_FORM_LOGIN))
             ->setHasUserLoginForm($this->hasCapability('user', UsersourceInfo::CAPABILITY_FORM_LOGIN))
-            ->setRegEnabled($this->settingsResolver->getSetting('core.reg_enabled'))
+            ->setRegEnabled($this->getSetting('core.reg_enabled'))
         ;
 
         return $model;

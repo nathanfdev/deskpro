@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -97,6 +98,9 @@ class CustomDefAbstract extends AbstractEntityRepository
         return $q->execute();
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
+     */
     public function getEnabledTopFields()
     {
         $q = $this->_em->createQuery("
@@ -139,9 +143,9 @@ class CustomDefAbstract extends AbstractEntityRepository
     {
         $entity = str_replace('\\CustomDef', '\\CustomData', $this->getEntityName());
         $table  = $this->_em->getRepository($entity)->getTableName();
-        $con   = $this->_em->getConnection();
-        $q     = sprintf('select count(*) from %s where field_id in (:ids)', $table);
-        $res   = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();
+        $con    = $this->_em->getConnection();
+        $q      = sprintf('select count(*) from %s where field_id in (:ids)', $table);
+        $res    = $con->executeQuery($q, array('ids' => $ids), array('ids' => Connection::PARAM_INT_ARRAY))->fetchColumn();
 
         return (bool) $res;
     }

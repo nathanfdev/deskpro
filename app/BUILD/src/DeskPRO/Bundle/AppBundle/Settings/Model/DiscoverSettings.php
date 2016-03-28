@@ -26,78 +26,59 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class DiscoverSettings.
  */
-class RateLimitGroup
+class DiscoverSettings
 {
-    use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
     /**
-     * @var int
+     * @var bool
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("boolean")
      */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
+    private $isDeskpro = true;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      */
-    private $response = self::RESPONSE_LOCKOUT;
+    private $helpdeskUrl;
 
     /**
-     * @return int
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    public function getLimit()
+    private $baseApiUrl;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $build;
+
+    /**
+     * @return bool
+     */
+    public function isDeskpro()
     {
-        return $this->limit;
+        return $this->isDeskpro;
     }
 
     /**
-     * @param int $limit
+     * @param bool $isDeskpro
      *
      * @return $this
      */
-    public function setLimit($limit)
+    public function setIsDeskpro($isDeskpro)
     {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
-     *
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
+        $this->isDeskpro = $isDeskpro;
 
         return $this;
     }
@@ -105,19 +86,59 @@ class RateLimitGroup
     /**
      * @return string
      */
-    public function getResponse()
+    public function getHelpdeskUrl()
     {
-        return $this->response;
+        return $this->helpdeskUrl;
     }
 
     /**
-     * @param string $response
+     * @param string $helpdeskUrl
      *
      * @return $this
      */
-    public function setResponse($response)
+    public function setHelpdeskUrl($helpdeskUrl)
     {
-        $this->response = $response;
+        $this->helpdeskUrl = $helpdeskUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseApiUrl()
+    {
+        return $this->baseApiUrl;
+    }
+
+    /**
+     * @param string $baseApiUrl
+     *
+     * @return $this
+     */
+    public function setBaseApiUrl($baseApiUrl)
+    {
+        $this->baseApiUrl = $baseApiUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuild()
+    {
+        return $this->build;
+    }
+
+    /**
+     * @param string $build
+     *
+     * @return $this
+     */
+    public function setBuild($build)
+    {
+        $this->build = $build;
 
         return $this;
     }

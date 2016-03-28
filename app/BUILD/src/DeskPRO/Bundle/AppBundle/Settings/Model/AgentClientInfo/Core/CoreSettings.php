@@ -26,78 +26,61 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments\AttachmentsSettings;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class RateLimitGroup.
+ * Class CoreSettings.
  */
-class RateLimitGroup
+class CoreSettings
 {
-    use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
-
     /**
-     * @var int
+     * @var bool
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("boolean")
      */
-    private $limit = 0;
-
-    /**
-     * @var int
-     *
-     * @JMS\Type("integer")
-     */
-    private $time = 0;
+    private $multiLang = false;
 
     /**
      * @var string
      *
      * @JMS\Type("string")
      */
-    private $response = self::RESPONSE_LOCKOUT;
+    private $helpdeskName;
 
     /**
-     * @return int
+     * @var AttachmentsSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments\AttachmentsSettings")
      */
-    public function getLimit()
+    private $attachments;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        return $this->limit;
+        $this->attachments = new AttachmentsSettings();
     }
 
     /**
-     * @param int $limit
+     * @return bool
+     */
+    public function getMultiLang()
+    {
+        return $this->multiLang;
+    }
+
+    /**
+     * @param bool $multiLang
      *
      * @return $this
      */
-    public function setLimit($limit)
+    public function setMultiLang($multiLang)
     {
-        $this->limit = $limit;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param int $time
-     *
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
+        $this->multiLang = $multiLang;
 
         return $this;
     }
@@ -105,20 +88,36 @@ class RateLimitGroup
     /**
      * @return string
      */
-    public function getResponse()
+    public function getHelpdeskName()
     {
-        return $this->response;
+        return $this->helpdeskName;
     }
 
     /**
-     * @param string $response
+     * @param string $helpdeskName
      *
      * @return $this
      */
-    public function setResponse($response)
+    public function setHelpdeskName($helpdeskName)
     {
-        $this->response = $response;
+        $this->helpdeskName = $helpdeskName;
 
         return $this;
+    }
+
+    /**
+     * @return AttachmentsSettings
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param AttachmentsSettings $attachments
+     */
+    public function setAttachments(AttachmentsSettings $attachments)
+    {
+        $this->attachments = $attachments;
     }
 }

@@ -28,37 +28,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
 
 /**
- * Class CaptchaSettingsResolver.
+ * Class DiscoverSettingsResolver.
  */
-class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
+class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const TICKETS  = 'user.captcha.tickets';
-    const COMMENTS = 'user.captcha.comments';
-    const FEEDBACK = 'user.captcha.feedback';
-    const REGISTER = 'user.captcha.register';
-
-    const USE_RECAPTCHA        = 'core.use_recaptcha2';
-    const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
-    const RECAPTCHA_SECRET_KEY = 'core.recaptcha2_secret_key';
-
     /**
-     * {@inheritdoc}
-     *
-     * @return CaptchaAntiAbuseSettings
+     * @return DiscoverSettings
      */
-    public function getAntiAbuseSettings()
+    public function getSettings()
     {
-        $model = new CaptchaAntiAbuseSettings();
+        $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+
+        $model = new DiscoverSettings();
         $model
-            ->setUseRecaptcha2($this->getSetting(self::USE_RECAPTCHA))
-            ->setRecaptcha2SiteKey($this->getSetting(self::RECAPTCHA_SITE_KEY))
-            ->setTickets($this->getSetting(self::TICKETS))
-            ->setComments($this->getSetting(self::COMMENTS))
-            ->setFeedback($this->getSetting(self::FEEDBACK))
-            ->setRegister($this->getSetting(self::REGISTER))
+            ->setIsDeskpro(true)
+            ->setHelpdeskUrl($helpdeskUrl)
+            ->setBaseApiUrl($helpdeskUrl.'api/v2/')
+            ->setBuild(DP_BUILD_TIME)
         ;
 
         return $model;
