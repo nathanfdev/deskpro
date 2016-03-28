@@ -37,7 +37,8 @@ services:
   api_serializer.handler.person:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\PersonHandler
     arguments:
-      - "@api_serializer.api_person_factory"
+      - "@avatar_resolver"
+      - "@data.agent"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

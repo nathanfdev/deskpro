@@ -123,7 +123,7 @@ class MeController extends BaseController
      *
      * @Annotations\Get("/me/device-setup-token")
      */
-    public function getDeviseSetupTokenAction()
+    public function getDeviceSetupTokenAction()
     {
         $tmpData = TmpData::create(
             'device_setup_token',

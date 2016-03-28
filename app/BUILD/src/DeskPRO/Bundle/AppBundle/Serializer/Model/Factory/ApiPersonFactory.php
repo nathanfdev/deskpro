@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson;
 
 /**
  * Class ApiPersonFactory.
@@ -61,45 +60,11 @@ class ApiPersonFactory
         $this->service  = $service;
     }
 
-    /**
-     * @param Person $person
-     *
-     * @return ApiPerson
-     */
-    public function create(Person $person)
-    {
-        $api_person = new ApiPerson($person, $this->resolver, $this->service);
-        $api_person
-            ->setAvatar($this->resolver->getAvatarModel($person))
-            ->setOnline($this->service->isAgentOnline($person));
-        $last_seen = $this->service->getLastSeen($person);
-        if ($last_seen) {
-            $api_person->setLastSeen(new \DateTime($last_seen));
-        }
-
-        return $api_person;
-    }
-
     public function createProfile(Person $person)
     {
         $profile = new PersonProfile($person);
         $profile->setAvatar($this->resolver->getAvatarModel($person));
 
         return $profile;
-    }
-
-    /**
-     * @param Person[] $persons
-     *
-     * @return array
-     */
-    public function createArray($persons)
-    {
-        $api_persons = [];
-        foreach ($persons as $person) {
-            $api_persons[] = $this->create($person);
-        }
-
-        return $api_persons;
     }
 }
