@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
@@ -92,6 +91,8 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     protected function extractData(ApiDoc $annotation, Route $route, \ReflectionMethod $method)
     {
+        $annotation = clone $annotation;
+
         if ($annotation instanceof DpApiDoc
             && ($class_reflection = $this->extractControllerReflection($route))
         ) {
@@ -118,8 +119,8 @@ class ApiDocExtractor extends BaseApiDocExtractor
 
         $extracted_annotation = parent::extractData($annotation, $route, $method);
         if ($annotation instanceof DpApiDoc) {
-            $annotation->setSection('');
-            $annotation->setClassOutput('');
+            $annotation->setSection(null);
+            $annotation->setClassOutput(null);
         }
 
         return $extracted_annotation;
