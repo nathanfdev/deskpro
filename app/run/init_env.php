@@ -162,12 +162,29 @@ $parse_bytes = function($val) {
     return $val;
 };
 
+/**
+ * The size memory_limit in bytes that is set in config.php
+ */
 define('DP_REAL_MEMSIZE', $parse_bytes(@ini_get('memory_limit') ?: -1));
 
 if (DP_REAL_MEMSIZE && DP_REAL_MEMSIZE != '-1' && DP_REAL_MEMSIZE < 134217728/* 128 MB */) {
     // attempt to raise to at least 128 MB
     @ini_set('memory_limit', 134217728);
 }
+
+if (!defined('DP_MAX_MEMSIZE')) {
+    /**
+     * The max size DeskPRO should ever attempt to set itself.
+     * This is used in email processing where the size is raised temporarily.
+     */
+    define('DP_MAX_MEMSIZE', max(512 * 1024 * 1024, DP_REAL_MEMSIZE));
+}
+
+/**
+ * The memory size in bytes. This is the same as `ini_get('memory_limit')`,
+ * except it's always in bytes (or -1).
+ */
+define('DP_USE_MEMSIZE', $parse_bytes(@ini_get('memory_limit') ?: -1));
 
 #------------------------------
 # Time limit
