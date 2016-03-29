@@ -4,7 +4,6 @@ import { ListItemContainer } from './ListItemContainer';
 
 export class NestedList extends BaseNestedList {
   getListOptions(depth, item) {
-    console.log('Item', item);
     if (depth === 1) {
       return { navItem: { status: item.title } };
     } else if (item.type === 'hidden_status') {
@@ -14,7 +13,6 @@ export class NestedList extends BaseNestedList {
   }
 
   renderListItem(item, depth) {
-    console.log('Item', item);
     this.ensureValidDepth(depth);
     const { title, count } = item;
     const label = title[0].toUpperCase() + title.slice(1);
