@@ -10,12 +10,6 @@ services:
   # note: you don't need a tag for these to work. just make the prefix the same.
   #       to reference this transformer, just use "foo_bar" (ignore the prefix when using).
 
-  data_serializer.transformer.ticket:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TicketTransformer
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@ticket_layout_factory"
-
   data_serializer.transformer.widget_person:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\WidgetPersonTransformer
     arguments:
@@ -25,11 +19,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\ThemeSetAssetTransformer
     arguments:
       - "@router"
-
-  data_serializer.transformer.agent_alert:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\AgentAlertTransformer
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
 
   data_serializer.transformer.text_snippet:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TextSnippetTransformer

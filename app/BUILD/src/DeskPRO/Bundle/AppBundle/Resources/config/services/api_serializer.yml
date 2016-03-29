@@ -61,6 +61,7 @@ services:
       - "@doctrine.dbal.default_connection"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.task:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
     arguments:
@@ -75,6 +76,19 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.ticket:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketHandler
+    arguments:
+      - "@tickets.linker"
+      - "@ticket_layout_factory"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.agent_alert:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   # models
   api_serializer.model_factory:

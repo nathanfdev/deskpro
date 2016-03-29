@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -109,10 +111,17 @@ class SideloadListener implements EventSubscriberInterface
                 }
                 $fqcn = $sideloads->getFqcn($include);
                 if ($fqcn) {
-                    $ids_to_load = $sideloads->getSideloads($fqcn);
+                    $ids_to_load = $sideloads->getSideloads($include);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        $model              = $this->model_factory->create($entity);
-                        $linked[$include][] = $context->accept($model);
+                        /* @var DomainObject|EntityInterface $entity */
+                        $model                              = $this->model_factory->create($entity);
+                        $linked[$include][$entity->getId()] = $context->accept($model);
+                    }
+                }
+
+                if ($sideloads->hasCustom($include)) {
+                    foreach ($sideloads->getCustom($include) as $custom) {
+                        $linked[$include][$custom->getId()] = $custom->getData();
                     }
                 }
             }

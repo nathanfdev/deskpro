@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,36 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Sideload;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 
 /**
- * Class TicketMessageTransformer.
+ * Class CustomSideload.
  */
-class TicketMessageTransformer extends AbstractDataSerializerTransformer
+class CustomSideload
 {
     /**
-     * {@inheritdoc}
+     * @var
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    private $id;
+
+    /**
+     * @var CallbackDeferredProperty
+     */
+    private $deferredCallback;
+
+    /**
+     * CustomSideload constructor.
+     *
+     * @param                          $id
+     * @param CallbackDeferredProperty $deferredCallback
+     */
+    public function __construct($id, CallbackDeferredProperty $deferredCallback)
     {
-        return [
-            'id', 'ticket', 'person', 'email_source', 'attachments', 'date_created', 'is_agent_note', 'creation_system',
-            'ip_address', 'visitor_id', 'hostname', 'geo_country', 'email', 'message_hash', 'primary_translation',
-            'message', 'message_full', 'message_raw', 'show_full_hint', 'lang_code', 'email_reader',
-        ];
+        $this->id               = $id;
+        $this->deferredCallback = $deferredCallback;
     }
 
     /**
-     * {@inheritdoc}
+     * @return mixed
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    public function getId()
     {
-        return [];
+        return $this->id;
+    }
+
+    /**
+     * @return CallbackDeferredProperty
+     */
+    public function getData()
+    {
+        return $this->deferredCallback->call();
     }
 }

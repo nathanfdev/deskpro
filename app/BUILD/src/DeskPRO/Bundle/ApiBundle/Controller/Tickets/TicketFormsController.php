@@ -29,15 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketFormsController.
  *
  * @ApiModes("all")
- * @Route("/ticket_forms")
+ * @Annotations\Route("/ticket_forms")
  */
 class TicketFormsController extends AbstractTicketsController
 {
@@ -54,22 +51,24 @@ class TicketFormsController extends AbstractTicketsController
 
     /**
      * @ApiDoc(
-     *      description="Create a new resource",
-     *      requirements={
-     *          {
-     *              "name"="context",
-     *              "requirement"="agent|user",
-     *              "description"="Ticket layout context",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
-     *      }
+     *     section="Tickets",
+     *     description="Create a new resource",
+     *     requirements={
+     *         {
+     *             "name"="context",
+     *             "requirement"="agent|user",
+     *             "description"="Ticket layout context",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Everything is OK",
+     *         400="Returned if request is malformed",
+     *         403="You are not allowed to edit this layout"
+     *     },
+     *     output="Application\DeskPRO\Entity\Ticket"
      * )
-     * @Post("/{context}", requirements={"context"="(agent|user)"})
+     * @Annotations\Post("/{context}", requirements={"context"="(agent|user)"})
      *
      * @param string  $context
      * @param Request $request
@@ -85,28 +84,29 @@ class TicketFormsController extends AbstractTicketsController
 
     /**
      * @ApiDoc(
-     *      description="Update an existing resource",
-     *      requirements={
-     *          {
-     *              "name"="context",
-     *              "requirement"="agent|user",
-     *              "description"="Ticket layout context",
-     *              "dataType"="string"
-     *          },
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          400="Bad Request",
-     *          403="Denied"
-     *      }
+     *     section="Tickets",
+     *     description="Update an existing resource",
+     *     requirements={
+     *         {
+     *             "name"="context",
+     *             "requirement"="agent|user",
+     *             "description"="Ticket layout context",
+     *             "dataType"="string"
+     *         },
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Everything is OK",
+     *         400="Returned if request is malformed",
+     *         403="You are not allowed to edit this layout"
+     *     }
      * )
-     * @Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
+     * @Annotations\Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
      *
      * @param string  $context
      * @param Ticket  $ticket

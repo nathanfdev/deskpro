@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2032,6 +2031,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->department;
     }
 
+    /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->email_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailAccountAddress()
+    {
+        return $this->email_account_address;
+    }
+
     public function getEmailAccountId()
     {
         if (!$this->email_account) {
@@ -2332,6 +2347,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->setModelField('agent_team', $team);
 
         return $this;
+    }
+
+    /**
+     * @return AgentTeam
+     */
+    public function getAgentTeam()
+    {
+        return $this->agent_team;
     }
 
     public function setAgentTeamId($id)
@@ -2869,6 +2892,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         } else {
             return $this->status;
         }
+    }
+
+    /**
+     * Returns status code.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
     }
 
     public function isAwaitingUser()
@@ -4010,6 +4051,214 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->problems->remove($pk);
         }
         $this->_onPropertyChanged('problems', null, $this->problems);
+    }
+
+    /**
+     * @return ChatConversation
+     */
+    public function getLinkedChat()
+    {
+        return $this->linked_chat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationSystem()
+    {
+        return $this->creation_system;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationSystemOption()
+    {
+        return $this->creation_system_option;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFeedbackRating()
+    {
+        return $this->date_feedback_rating;
+    }
+
+    /**
+     * @return TicketSla[]
+     */
+    public function getTicketSlas()
+    {
+        return $this->ticket_slas;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateResolved()
+    {
+        return $this->date_resolved;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateArchived()
+    {
+        return $this->date_archived;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentAssign()
+    {
+        return $this->date_first_agent_assign;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentReply()
+    {
+        return $this->date_first_agent_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastAgentReply()
+    {
+        return $this->date_last_agent_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastUserReply()
+    {
+        return $this->date_last_user_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateAgentWaiting()
+    {
+        return $this->date_agent_waiting;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUserWaiting()
+    {
+        return $this->date_user_waiting;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateStatus()
+    {
+        return $this->date_status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalUserWaiting()
+    {
+        return $this->total_user_waiting;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalToFirstReply()
+    {
+        return $this->total_to_first_reply;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getLockedByAgent()
+    {
+        return $this->locked_by_agent;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLocked()
+    {
+        return $this->date_locked;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasAttachments()
+    {
+        return $this->has_attachments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalSubject()
+    {
+        return $this->original_subject;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountAgentReplies()
+    {
+        return $this->count_agent_replies;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountUserReplies()
+    {
+        return $this->count_user_replies;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProblems()
+    {
+        return $this->problems;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUrgency()
+    {
+        return $this->urgency;
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,7 @@ use DeskPRO\Component\Util\TypeUtils;
 use DpTest\DeskProTestCase;
 
 /**
- * Class TypeUtilsTest
+ * Class TypeUtilsTest.
  */
 class TypeUtilsTest extends DeskProTestCase
 {
@@ -42,22 +42,6 @@ class TypeUtilsTest extends DeskProTestCase
         $this->assertEquals(['DpTest', 'DeskPRO', 'Component', 'Util', 'TypeUtilsTestClass'], $parts);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetPartsFail()
-    {
-        TypeUtils::getTypeNameParts('string');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetBaseTypeNameFail()
-    {
-        TypeUtils::getTypeNameParts('string');
-    }
-
     public function testGetBaseTypeName()
     {
         $this->assertEquals(TypeUtils::getBaseTypeName(new TypeUtilsTestClass()), 'TypeUtilsTestClass');
@@ -65,7 +49,7 @@ class TypeUtilsTest extends DeskProTestCase
 }
 
 /**
- * Class TypeUtilsTestClass
+ * Class TypeUtilsTestClass.
  */
 class TypeUtilsTestClass
 {

@@ -72,10 +72,12 @@ class DeferredPropertiesListener implements EventSubscriberInterface
         $parent     = $reflection->getParentClass();
         $property   = $parent->getProperty('data');
         $property->setAccessible(true);
-        $data         = $property->getValue($visitor);
-        $data['data'] = $this->resolveArray($data['data'], $context);
-        $property->setValue($visitor, $data);
-        $property->setAccessible(false);
+        $data = $property->getValue($visitor);
+        if (is_array($data['data'])) {
+            $data['data'] = $this->resolveArray($data['data'], $context);
+            $property->setValue($visitor, $data);
+            $property->setAccessible(false);
+        }
     }
 
     public function resolveArray($data, SideloadSerializationContext $context)

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,32 +26,56 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\Department as DepartmentEntity;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ProblemTransformer.
+ * Class TicketLayoutItem.
+ *
+ * @JMS\ExclusionPolicy("none")
  */
-class ProblemTransformer extends AbstractDataSerializerTransformer
+class TicketLayoutItem
 {
     /**
-     * {@inheritdoc}
+     * Department uses this layout.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var DepartmentEntity
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
-    {
-        return ['id', 'creator', 'title', 'created', 'is_open', 'tickets'];
-    }
+    private $department;
 
     /**
-     * {@inheritdoc}
+     * An array of fields describing layout.
+     *
+     * @JMS\Type("array")
+     *
+     * @var array
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    private $fields;
+
+    /**
+     * Agent or user context.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $context;
+
+    /**
+     * TikcetLayout constructor.
+     *
+     * @param $department
+     * @param $fields
+     * @param $context
+     */
+    public function __construct($department, $fields, $context)
     {
-        return [];
+        $this->department = $department;
+        $this->fields     = $fields;
+        $this->context    = $context;
     }
 }

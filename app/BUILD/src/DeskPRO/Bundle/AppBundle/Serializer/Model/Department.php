@@ -90,6 +90,15 @@ class Department
     protected $is_chat_enabled = true;
 
     /**
+     * Department display order.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $display_order;
+
+    /**
      * Avatar for this department.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
@@ -105,5 +114,6 @@ class Department
         $this->user_title         = $department->getUserTitle();
         $this->is_chat_enabled    = $department->isChatEnabled();
         $this->is_tickets_enabled = $department->isTicketsEnabled();
+        $this->display_order      = $department->getDisplayOrder();
     }
 }
