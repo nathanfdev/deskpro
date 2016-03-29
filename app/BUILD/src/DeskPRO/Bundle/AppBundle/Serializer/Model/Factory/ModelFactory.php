@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
 
-use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackStatus;
 use DeskPRO\Component\Util\TypeUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -71,10 +69,6 @@ class ModelFactory
                 'method'  => 'createProfile',
             ],
         ],
-        'feedback' => [
-                FeedbackStatus::class => ['default' => true, 'method' => 'createFeedbackStatus'],
-            ],
-
     ];
 
     /**
@@ -164,17 +158,5 @@ class ModelFactory
         }
 
         return array_pop($polymorphs);
-    }
-
-    /**
-     * @param Feedback $feedback
-     *
-     * @return FeedbackStatus
-     *
-     * @deprecated Use entity custom handlers instead
-     */
-    protected function createFeedbackStatus(Feedback $feedback)
-    {
-        return new FeedbackStatus($feedback);
     }
 }
