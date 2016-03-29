@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Department as DepartmentModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class TaskProjectHandler.
@@ -43,7 +44,7 @@ class DepartmentHandler extends AbstractEntityHandler
     protected $resolver;
 
     /**
-     * DepartmentHandler constructor.
+     * Constructor.
      *
      * @param AvatarResolver $resolver
      */
@@ -53,7 +54,7 @@ class DepartmentHandler extends AbstractEntityHandler
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public static function getClassNames()
     {
@@ -61,11 +62,11 @@ class DepartmentHandler extends AbstractEntityHandler
     }
 
     /**
-     * @param Department $entity
+     * {@inheritdoc}
      *
-     * @return DepartmentModel
+     * @param Department $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         $avatar = $this->resolver->getAvatarModel($entity);
 

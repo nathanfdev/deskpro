@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use DeskPRO\Bundle\AppBundle\Entity\Task as TaskEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task as TaskModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -58,17 +59,22 @@ class TaskHandler extends AbstractEntityHandler
      */
     private $subtaskCounts;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
     /**
-     * @param TaskEntity $entity
+     * {@inheritdoc}
      *
-     * @return TaskModel
+     * @param TaskEntity $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         $id             = $entity->getId();
         $this->ids[]    = $id;

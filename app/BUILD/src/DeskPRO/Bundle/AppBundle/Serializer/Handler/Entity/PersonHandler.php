@@ -33,9 +33,11 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person as SerializedPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class PersonHandler.
@@ -77,19 +79,47 @@ class PersonHandler extends AbstractEntityHandler
      *
      * @param Person $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $api_person = new SerializedPerson($entity);
-        $api_person
+        $serializerClass = $context->getMappedClass(Person::class);
+        if ($serializerClass === PersonProfile::class) {
+            return $this->createPersonProfile($entity);
+        }
+
+        return $this->createPerson($entity);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return SerializedPerson
+     */
+    private function createPerson(Person $entity)
+    {
+        $model = new SerializedPerson($entity);
+        $model
             ->setAvatar($this->avatarResolver->getAvatarModel($entity))
             ->setOnline($this->agentDataService->isAgentOnline($entity))
         ;
 
         $last_seen = $this->agentDataService->getLastSeen($entity);
         if ($last_seen) {
-            $api_person->setLastSeen(new \DateTime($last_seen));
+            $model->setLastSeen(new \DateTime($last_seen));
         }
 
-        return $api_person;
+        return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PersonProfile
+     */
+    private function createPersonProfile(Person $entity)
+    {
+        $model = new PersonProfile($entity);
+        $model->setAvatar($this->avatarResolver->getAvatarModel($entity));
+
+        return $model;
     }
 }

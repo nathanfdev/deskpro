@@ -36,11 +36,12 @@ use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,6 +50,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class MeController.
  *
  * @ApiModes("all")
+ * @SerializerView(mapping={"Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\ApiBundle\Model\PersonProfile"})
  */
 class MeController extends BaseController
 {
@@ -65,7 +67,7 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
-     * @Annotations\Get("/me", name="api_me")
+     * @Get("/me", name="api_me")
      */
     public function meAction()
     {
@@ -82,10 +84,7 @@ class MeController extends BaseController
             $me->app_id = $token->getAppId();
         }
 
-        return View::create(
-            $this->wrap($me),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($me), Response::HTTP_OK);
     }
 
     /**
@@ -100,14 +99,11 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
      * )
      *
-     * @Annotations\Get("/me/profile", name="api_get_my_profile")
+     * @Get("/me/profile", name="api_get_my_profile")
      */
     public function getProfileAction()
     {
-        return View::create(
-            $this->wrap($this->getUser(), PersonProfile::class),
-            Response::HTTP_OK
-        );
+        return $this->wrap($this->getUser());
     }
 
     /**
@@ -121,7 +117,7 @@ class MeController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Get("/me/device-setup-token")
+     * @Get("/me/device-setup-token")
      */
     public function getDeviceSetupTokenAction()
     {
@@ -151,7 +147,7 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
      * )
      *
-     * @Annotations\Put("/me/profile", name="api_put_my_profile")
+     * @Put("/me/profile", name="api_put_my_profile")
      *
      * @param Request $request
      *
@@ -172,6 +168,6 @@ class MeController extends BaseController
         $em->persist($person);
         $em->flush();
 
-        return View::create($this->wrap($person, PersonProfile::class), Response::HTTP_CREATED);
+        return View::create($this->wrap($person), Response::HTTP_CREATED);
     }
 }

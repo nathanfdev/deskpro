@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\PersonContactData;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Orb\Util\Strings;
 
 /**
@@ -57,7 +59,7 @@ class ContactDataHandler extends AbstractEntityHandler
      *
      * @param ContactDataAbstract $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         $contact_type = $entity->getContactType();
         $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));

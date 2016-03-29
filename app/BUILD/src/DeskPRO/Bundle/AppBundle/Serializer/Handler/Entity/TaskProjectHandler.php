@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as TaskProjectModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class TaskProjectHandler.
@@ -37,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as TaskProjectMo
 class TaskProjectHandler extends AbstractEntityHandler
 {
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public static function getClassNames()
     {
@@ -45,11 +46,11 @@ class TaskProjectHandler extends AbstractEntityHandler
     }
 
     /**
-     * @param TaskProject $entity
+     * {@inheritdoc}
      *
-     * @return TaskProjectModel
+     * @param TaskProject $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         return new TaskProjectModel($entity);
     }

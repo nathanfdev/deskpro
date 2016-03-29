@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam as SerializedAgentTeam;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class AgentTeamHandler.
@@ -65,7 +66,7 @@ class AgentTeamHandler extends AbstractEntityHandler
      *
      * @param AgentTeam $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         $agent_team = new SerializedAgentTeam($entity);
         $agent_team->setAvatar($this->avatarResolver->getAvatarModel($entity));

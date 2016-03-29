@@ -98,24 +98,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  # models
-  api_serializer.model_factory:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory
-    arguments:
-      - "@service_container"
-
-  api_serializer.api_person_factory:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ApiPersonFactory
-    arguments:
-      - "@avatar_resolver"
-      - "@data.agent"
-
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
-      - "@api_serializer.model_factory"
     tags:
       - { name: "jms_serializer.event_subscriber" }
 

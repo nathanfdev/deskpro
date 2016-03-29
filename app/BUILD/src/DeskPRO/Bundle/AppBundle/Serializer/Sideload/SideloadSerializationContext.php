@@ -52,6 +52,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $exclusion_enabled = true;
 
     /**
+     * @var array
+     */
+    protected $mapping = [];
+
+    /**
      * SideloadSerializationContext constructor.
      *
      * @param SideloadStore $sideload_store
@@ -115,6 +120,40 @@ class SideloadSerializationContext extends SerializationContext
     public function getIncludes()
     {
         return $this->includes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMapping()
+    {
+        return $this->mapping;
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
+    public function getMappedClass($className)
+    {
+        if (isset($this->mapping[$className])) {
+            return $this->mapping[$className];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $mapping
+     *
+     * @return $this
+     */
+    public function setMapping(array $mapping)
+    {
+        $this->mapping = $mapping;
+
+        return $this;
     }
 
     /**

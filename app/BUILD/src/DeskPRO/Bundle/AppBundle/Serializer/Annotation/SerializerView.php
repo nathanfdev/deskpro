@@ -26,45 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Factory;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Annotation;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
+use FOS\RestBundle\Controller\Annotations\View;
 
 /**
- * Class ApiPersonFactory.
+ * We extend FOSRest View annotation to define serializer additional configuration params.
+ *
+ * @Annotation
+ * @Target({"METHOD","CLASS"})
  */
-class ApiPersonFactory
+class SerializerView extends View
 {
     /**
-     * @var AgentDataService
+     * @var array
      */
-    protected $service;
+    protected $mapping = [];
 
     /**
-     * @var AvatarResolver
+     * @return array
      */
-    protected $resolver;
-
-    /**
-     * ApiPersonFactory constructor.
-     *
-     * @param AvatarResolver   $resolver
-     * @param AgentDataService $service
-     */
-    public function __construct(AvatarResolver $resolver, AgentDataService $service)
+    public function getMapping()
     {
-        $this->resolver = $resolver;
-        $this->service  = $service;
+        return $this->mapping;
     }
 
-    public function createProfile(Person $person)
+    /**
+     * @param array $mapping
+     */
+    public function setMapping(array $mapping)
     {
-        $profile = new PersonProfile($person);
-        $profile->setAvatar($this->resolver->getAvatarModel($person));
-
-        return $profile;
+        $this->mapping = $mapping;
     }
 }
