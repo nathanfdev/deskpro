@@ -521,7 +521,7 @@ class TicketWithLayoutsType extends AbstractType
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
             'constraints' => [
-                new Assert\NotNull(['message' => 'portal.forms.error_ticket_department_required']),
+                new Assert\NotNull(),
             ],
         ]);
     }
@@ -537,13 +537,8 @@ class TicketWithLayoutsType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'portal.forms.error_ticket_subject_required',
-                ]),
-                new Assert\Length([
-                    'min'        => 5,
-                    'minMessage' => 'portal.forms.error_ticket_subject_length',
-                ]),
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => 5]),
             ],
         ];
 

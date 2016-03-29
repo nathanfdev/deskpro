@@ -93,6 +93,8 @@ class ValidatorErrorCodeFactory
                     return ErrorsCodes::INVALID_URL;
                 case AppAssert\ProfileUrl::class:
                     return ErrorsCodes::PROFILE_URL;
+                case AppAssert\NotBannedEmail::class:
+                    return ErrorsCodes::BANNED_EMAIL;
                 case UniqueEntity::class:
                     return ErrorsCodes::UNIQUE_ENTITY;
                 case AppAssert\ProjectMember::class:

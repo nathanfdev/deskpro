@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -341,7 +342,7 @@ class CustomFieldManager
         // required
         if ($field_type->isRequired($is_agent)) {
             $options['required'] = $field_type->isRequired($is_agent);
-            $constraints[]       = new NotBlank(['message' => 'portal.forms.error_required']);
+            $constraints[]       = new NotBlank();
         }
 
         // length
@@ -351,12 +352,10 @@ class CustomFieldManager
             $opts = [];
 
             if ($min) {
-                $opts['min']        = $min;
-                $opts['minMessage'] = 'portal.forms.error_length_min';
+                $opts['min'] = $min;
             }
             if ($max) {
-                $opts['max']        = $max;
-                $opts['maxMessage'] = 'portal.forms.error_length_max';
+                $opts['max'] = $max;
             }
 
             $constraints[] = new Length($opts);
@@ -369,7 +368,6 @@ class CustomFieldManager
         if ($regex) {
             $constraints[] = new ValidRegex([
                 'pattern' => Strings::getInputRegexPattern($regex),
-                'message' => 'portal.forms.error_regex',
             ]);
         }
 

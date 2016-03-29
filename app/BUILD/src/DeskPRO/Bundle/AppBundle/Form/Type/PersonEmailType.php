@@ -33,15 +33,12 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\PersonEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Class PersonEmailType.
@@ -74,11 +71,6 @@ class PersonEmailType extends AbstractType
                     new UniqueEntity(['fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email']),
                 ];
             },
-            'email_constraints' => [
-                new NotBannedEmail(['message' => 'portal.forms.error_banned_email']),
-                new NotBlank(['message' => 'portal.forms.error_email_required']),
-                new Email(['message' => 'portal.forms.error_email_invalid']),
-            ],
         ]);
     }
 }

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use DpSys\LowError\SystemErrorHandler;
@@ -61,7 +62,7 @@ class ExceptionController extends BaseController
 
         $errors_array = [];
         if ($exception instanceof FormExceptionInterface) {
-            $errors_array = $this->get('form_error.form_errors_generator')->generateFormErrors($exception->getForm());
+            $errors_array = $this->get('form_error.form_errors_generator')->generateFormErrors($exception->getForm(), ErrorMessageFactory::PREFIX_API);
         } elseif ($exception instanceof ValidatorErrorsException) {
             $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors($exception->getErrors());
         }
@@ -82,7 +83,7 @@ class ExceptionController extends BaseController
 
         $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
         $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
-        $message = $this->get('form_error.message_factory')->createMessage($code, $parameters);
+        $message = $this->get('form_error.message_factory')->createMessage(ErrorMessageFactory::PREFIX_API, $code, $parameters);
 
         // $exception has "getHeaders()" that we are interested in using
 

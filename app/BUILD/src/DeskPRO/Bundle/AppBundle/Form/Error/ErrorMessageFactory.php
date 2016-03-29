@@ -40,6 +40,9 @@ use Symfony\Component\Form\FormError;
  */
 class ErrorMessageFactory
 {
+    const PREFIX_API          = 'api.error_codes.';
+    const PREFIX_PORTAL_FORMS = 'portal.forms.error_';
+
     /**
      * @var Translate
      */
@@ -56,33 +59,35 @@ class ErrorMessageFactory
     }
 
     /**
-     * @param string $error_code
+     * @param string $codePrefix
+     * @param string $errorCode
      * @param array  $params
      *
      * @return string
      */
-    public function createMessage($error_code, array $params = [])
+    public function createMessage($codePrefix, $errorCode, array $params = [])
     {
-        $message = $this->translate->phrase('api.error_codes.'.$error_code, $params);
+        $message = $this->translate->phrase($codePrefix.$errorCode, $params);
 
-        return $message ?: $error_code;
+        return $message ?: $errorCode;
     }
 
     /**
-     * @param string    $error_code
-     * @param FormError $form_error
+     * @param string    $codePrefix
+     * @param string    $errorCode
+     * @param FormError $formError
      *
      * @return string
      */
-    public function createFormErrorMessage($error_code, FormError $form_error)
+    public function createFormErrorMessage($codePrefix, $errorCode, FormError $formError)
     {
-        $params = $this->parseParams($form_error->getMessageParameters());
+        $params = $this->parseParams($formError->getMessageParameters());
 
-        if ($form_error->getMessage() === 'This form should not contain extra fields.') {
-            $error_code = ErrorsCodes::EXTRA_FIELDS;
+        if ($formError->getMessage() === 'This form should not contain extra fields.') {
+            $errorCode = ErrorsCodes::EXTRA_FIELDS;
         }
 
-        return $this->createMessage($error_code, $params);
+        return $this->createMessage($codePrefix, $errorCode, $params);
     }
 
     /**
@@ -92,16 +97,16 @@ class ErrorMessageFactory
      */
     public function parseParams(array $array = [])
     {
-        $new_array = [];
-
+        $new = [];
         foreach ($array as $key => $val) {
             preg_match('#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#', $key, $matches);
             if (isset($matches[1])) {
                 $key = $matches[1];
             }
-            $new_array[$key] = $val;
+
+            $new[$key] = $val;
         }
 
-        return $new_array;
+        return $new;
     }
 }

@@ -33,6 +33,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -54,7 +55,7 @@ class ErrorMessageFactorySpec extends ObjectBehavior
     {
         $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
 
-        $this->createMessage(ErrorsCodes::BAD_REQUEST)->shouldReturn('Request is invalid.');
+        $this->createMessage(ErrorMessageFactory::PREFIX_API, ErrorsCodes::BAD_REQUEST)->shouldReturn('Request is invalid.');
     }
 
     public function it_will_get_the_error_message_for_formerror_code(
@@ -67,7 +68,7 @@ class ErrorMessageFactorySpec extends ObjectBehavior
         $form_error->getMessage()->willReturn('irrelevant');
         $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
 
-        $this->createFormErrorMessage(ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('Request is invalid.');
+        $this->createFormErrorMessage(ErrorMessageFactory::PREFIX_API, ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('Request is invalid.');
     }
 
     public function it_treats_extra_fields_specially(
@@ -81,6 +82,6 @@ class ErrorMessageFactorySpec extends ObjectBehavior
 
         $translate->phrase('api.error_codes.extra_fields', array())->willReturn('extra fields: email');
 
-        $this->createFormErrorMessage(ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('extra fields: email');
+        $this->createFormErrorMessage(ErrorMessageFactory::PREFIX_API, ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('extra fields: email');
     }
 }

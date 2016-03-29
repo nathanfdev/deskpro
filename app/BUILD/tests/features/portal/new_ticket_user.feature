@@ -14,14 +14,14 @@ Feature: User can submit new tickets
     And I have a verified email "alternate@email.com"
     And I press "Submit"
     Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_ticket_department_required"
+    And I should see a form error with the phrase "portal.forms.error_required"
 
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
     And I press "Submit"
     Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_ticket_subject_required"
+    And I should see a form error with the phrase "portal.forms.error_required"
 
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
@@ -29,7 +29,7 @@ Feature: User can submit new tickets
     And I fill in "Subject" with "This is a subject"
     And I press "Submit"
     Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_ticket_msg_required"
+    And I should see a form error with the phrase "portal.forms.error_required"
 
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
