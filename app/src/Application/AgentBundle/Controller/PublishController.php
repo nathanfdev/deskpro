@@ -688,7 +688,7 @@ class PublishController extends AbstractController
                     if ($type == 'feedback') {
                         $r->status = 'new';
                     } else {
-                        $r->status = 'publish';
+                        $r->status = 'published';
                     }
                 } else {
                     if ($reason) {

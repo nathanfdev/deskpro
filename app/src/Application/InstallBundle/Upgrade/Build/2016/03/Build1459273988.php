@@ -26,4 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-define('DP_BUILD_TIME', 1459273988);
+namespace Application\InstallBundle\Upgrade\Build;
+
+class Build1459273988 extends AbstractBuild
+{
+    public function run()
+    {
+        $this->out('Fix articles that enter limbo when mass action to publish them failed to set proper status');
+        $this->execMutateSql("UPDATE articles SET status = 'hidden', hidden_status = 'unpublished' WHERE status = 'publish'");
+    }
+}
