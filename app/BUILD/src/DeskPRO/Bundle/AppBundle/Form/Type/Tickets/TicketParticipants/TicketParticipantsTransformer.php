@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Person;
@@ -78,7 +79,7 @@ class TicketParticipantsTransformer implements DataTransformerInterface
 
         $result = [];
         foreach ($value as $participant) {
-            $result[] = $participant->getPersonEmail()->getEmail();
+            $result[] = $participant->getPersonEmail() ? $participant->getPersonEmail()->getEmail() : '';
         }
 
         return $result;
