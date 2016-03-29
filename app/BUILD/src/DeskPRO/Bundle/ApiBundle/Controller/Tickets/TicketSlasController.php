@@ -51,4 +51,6 @@ class TicketSlasController extends CrudController
     public static $exposeOnly   = ['list'];
     public static $entity       = Sla::class;
     public static $listPaginate = false;
+
+    public static $serializeMethod = 'wrap';
 }

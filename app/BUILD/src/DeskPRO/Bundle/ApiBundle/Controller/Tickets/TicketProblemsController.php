@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
@@ -58,6 +57,7 @@ class TicketProblemsController extends CrudController
     public static $type     = ProblemType::class;
     public static $listSort = 'created';
 
+    public static $serializeMethod = 'wrap';
     /**
      * @ApiDoc(
      *     section="Tickets",
