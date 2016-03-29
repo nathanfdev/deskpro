@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person as SerializedPerson;
 
 /**
  * Class PersonHandler.
@@ -79,7 +79,7 @@ class PersonHandler extends AbstractEntityHandler
      */
     protected function createModel($entity)
     {
-        $api_person = new ApiPerson($entity);
+        $api_person = new SerializedPerson($entity);
         $api_person
             ->setAvatar($this->avatarResolver->getAvatarModel($entity))
             ->setOnline($this->agentDataService->isAgentOnline($entity))
