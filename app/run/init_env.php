@@ -192,10 +192,14 @@ define('DP_USE_MEMSIZE', $parse_bytes(@ini_get('memory_limit') ?: -1));
 
 define('DP_REAL_MAX_EXEC_TIME', @ini_get('max_execution_time') ?: 0);
 
+// Disable time limit on cli
+if (php_sapi_name() === 'cli') {
+    @set_time_limit(0);
+
 // Set time limit to 40s unless there's a config saying not to
 // 40s should be enough for any normal script to complete
 // (The time limit is raised during cron run for things like email processing)
-if (!$DP_ENV->getConfig('settings.no_set_time_limit')) {
+} else if (!$DP_ENV->getConfig('settings.no_set_time_limit')) {
     @set_time_limit(40);
 }
 
