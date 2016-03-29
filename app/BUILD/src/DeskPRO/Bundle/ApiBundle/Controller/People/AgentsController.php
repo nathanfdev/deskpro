@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,8 +53,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AgentsController extends CrudController
 {
-    public static $entity     = Person::class;
-    public static $exposeOnly = ['list'];
+    public static $entity       = Person::class;
+    public static $exposeOnly   = ['list'];
+    public static $listPaginate = false;
 
     public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
