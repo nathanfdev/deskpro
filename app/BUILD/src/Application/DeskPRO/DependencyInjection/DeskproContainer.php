@@ -36,7 +36,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\App\AgentAppPermissions;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -278,18 +278,6 @@ class DeskproContainer extends Container
      */
     public function getDbRead($type = 'default', array $context = null)
     {
-        return $this->getDb();
-
-        //TODO
-        /*
-        $type_key_fn = dp_get_config('db_read_mapper');
-        if ($type_key_fn) {
-            $new_type = call_user_func($type_key_fn, $type, $context);
-            if ($new_type) {
-                $type = $new_type;
-            }
-        }
-
         // Already initialised
         if (isset($this->db_read_conns[$type])) {
             return $this->db_read_conns[$type];
@@ -298,7 +286,7 @@ class DeskproContainer extends Container
         // Get an appropriate connection
         $parts = explode('.', $type);
         do {
-            $config_key = 'db_read_'.implode('_', $parts);
+            $config_key = 'database_advanced.read_'.implode('_', $parts);
             $config_key = rtrim($config_key, '_');
 
             if (isset($this->db_read_conns[$config_key])) {
@@ -309,7 +297,7 @@ class DeskproContainer extends Container
             }
 
             // Init the connection
-            $read_configs = dp_get_config($config_key);
+            $read_configs = $this->get('deskpro.app_env')->getConfig($config_key);
             if ($read_configs) {
                 $read = null;
 
@@ -333,10 +321,12 @@ class DeskproContainer extends Container
                                 'password' => $read['password'],
                                 'dbname'   => $read['dbname'],
 
+                                'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection',
+
                                 // We only want to do the normal retry attempt if there's only one
                                 // reader, because otherwise if there are multiple,
                                 // it'll be faster/more successful to just try the next
-                                'dp_do_retry' => !$has_multiple,
+                                'dp_connect_attempts' => $has_multiple ? 1 : 2,
                             ));
 
                             $db->connect();
@@ -348,7 +338,7 @@ class DeskproContainer extends Container
                         } catch (\Exception $e) {
                             // Error connecting, log but ignore and try another
                             $ex = new \RuntimeException("Failed to connect to read database: {$read['user']}@{$read['host']}/{$read['dbname']}", 0, $e);
-                            KernelErrorHandler::logException($ex);
+                            SystemErrorHandler::logException($ex);
                         }
                     }
                 }
@@ -360,7 +350,6 @@ class DeskproContainer extends Container
         $this->db_read_conns[$config_key] = $this->getDb();
 
         return $this->db_read_conns[$type];
-        */
     }
 
     /**

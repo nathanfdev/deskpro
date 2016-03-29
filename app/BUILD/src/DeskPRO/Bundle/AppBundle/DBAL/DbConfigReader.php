@@ -80,8 +80,8 @@ class DbConfigReader
                     ?: $this->appEnv->getConfig('database');
                 break;
             case self::SEARCH_ID:
-                $conf_array_raw = $this->appEnv->getConfig('database_advanced.read_reports')
-                    ?: $this->appEnv->getConfig('database_advanced.read_reports')
+                $conf_array_raw = $this->appEnv->getConfig('database_advanced.read_search')
+                    ?: $this->appEnv->getConfig('database_advanced.read')
                     ?: $this->appEnv->getConfig('database');
                 break;
         }
@@ -99,8 +99,9 @@ class DbConfigReader
 
         $params = LowUtil::getMysqlInfoFromConfigArray($db_conf);
 
-        $doctrine_params                 = $params['doctrine'];
-        $doctrine_params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
+        $doctrine_params                        = $params['doctrine'];
+        $doctrine_params['wrapperClass']        = 'Application\\DeskPRO\\DBAL\\Connection';
+        $doctrine_params['dp_connect_attempts'] = 2;
 
         return $doctrine_params;
     }
