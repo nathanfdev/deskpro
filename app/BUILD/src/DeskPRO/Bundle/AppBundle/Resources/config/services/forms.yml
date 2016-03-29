@@ -240,11 +240,6 @@ services:
     tags:
       - { name: form.type, alias: feedback_comment }
 
-  form.person_profile:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType
-    tags:
-      - { name: form.type, alias: person_profile }
-
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]

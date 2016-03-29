@@ -38,19 +38,14 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class MeController.
  *
  * @ApiModes("all")
- * @SerializerView(mapping={"Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\ApiBundle\Model\PersonProfile"})
  */
 class MeController extends BaseController
 {
@@ -88,25 +83,6 @@ class MeController extends BaseController
     }
 
     /**
-     * Get my profile.
-     *
-     * @ApiDoc(
-     *     section="Auth",
-     *     description="get my profile action",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
-     * )
-     *
-     * @Get("/me/profile", name="api_get_my_profile")
-     */
-    public function getProfileAction()
-    {
-        return $this->wrap($this->getUser());
-    }
-
-    /**
      * Get device setup token.
      *
      * @ApiDoc(
@@ -135,39 +111,5 @@ class MeController extends BaseController
             $this->wrap(['setup_token' => 'dp_device_setup:'.$url]),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * @ApiDoc(
-     *     section="Auth",
-     *     description="update my profile action",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
-     * )
-     *
-     * @Put("/me/profile", name="api_put_my_profile")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function putProfileAction(Request $request)
-    {
-        $person = $this->getUser();
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'person_profile', $person)->getForm();
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($person);
-        $em->flush();
-
-        return View::create($this->wrap($person), Response::HTTP_CREATED);
     }
 }
