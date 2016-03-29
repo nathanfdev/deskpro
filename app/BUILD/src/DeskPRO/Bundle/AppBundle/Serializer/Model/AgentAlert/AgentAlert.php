@@ -48,9 +48,9 @@ class AgentAlert
     /**
      * Alert type.
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
-     * @var
+     * @var string
      */
     private $type;
 
