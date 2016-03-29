@@ -43,8 +43,10 @@ class LowUtil
     {
         // numeric index array, means an array of arrays,
         // choose one at random
+        $chosenKey = null;
         if (isset($config[0]) && !isset($config['host'])) {
-            $config = $config[array_rand($config)];
+            $chosenKey = array_rand($config);
+            $config = $config[$chosenKey];
         }
 
         $config = array_merge([
@@ -62,6 +64,7 @@ class LowUtil
             'password'     => $config['password'],
             'dbname'       => $config['dbname'],
             'dsn'          => null,
+            'chosen_key'   => $chosenKey,
             'doctrine'     => [
                 'driver'     => 'pdo_mysql',
                 'user'       => $config['user'],

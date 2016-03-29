@@ -124,6 +124,8 @@ define('DP_WEB_ROOT', $DP_ENV->getAppWwwAssetDir());
 
 @ini_set('log_errors', true);
 
+define('DP_REAL_ERROR_LOG', @ini_get('error_log'));
+
 // Attempt to set a log file if its not set
 if (!@ini_get('error_log')) {
     @ini_set('error_log', $DP_ENV->getUserLogsDir().'/server-php.log');
@@ -145,6 +147,40 @@ if (!file_exists($DP_ENV->getUserCacheDir().DIRECTORY_SEPARATOR.'is_installed.da
 
 // Increase error reporting
 error_reporting(E_ALL);
+
+#------------------------------
+# Memory Limits
+#------------------------------
+
+$parse_bytes = function($val) {
+    $val = trim($val);
+    switch(strtolower($val[strlen($val)-1])) {
+        case 'g': $val *= 1024;
+        case 'm': $val *= 1024;
+        case 'k': $val *= 1024;
+    }
+    return $val;
+};
+
+define('DP_REAL_MEMSIZE', $parse_bytes(@ini_get('memory_limit') ?: -1));
+
+if (DP_REAL_MEMSIZE && DP_REAL_MEMSIZE != '-1' && DP_REAL_MEMSIZE < 134217728/* 128 MB */) {
+    // attempt to raise to at least 128 MB
+    @ini_set('memory_limit', 134217728);
+}
+
+#------------------------------
+# Time limit
+#------------------------------
+
+define('DP_REAL_MAX_EXEC_TIME', @ini_get('max_execution_time') ?: 0);
+
+// Set time limit to 40s unless there's a config saying not to
+// 40s should be enough for any normal script to complete
+// (The time limit is raised during cron run for things like email processing)
+if (!$DP_ENV->getConfig('settings.no_set_time_limit')) {
+    @set_time_limit(40);
+}
 
 #------------------------------
 # Custom init part
