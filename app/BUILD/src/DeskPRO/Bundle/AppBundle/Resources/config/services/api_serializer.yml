@@ -87,10 +87,6 @@ services:
 
   api_serializer.handler.agent_alert:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@api_serializer.handler.person"
-      - "@api_serializer.handler.ticket"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

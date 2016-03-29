@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Proxy\Proxy;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -114,9 +113,6 @@ class SideloadListener implements EventSubscriberInterface
                 if ($fqcn) {
                     $ids_to_load = $sideloads->getSideloads($include);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        if ($entity instanceof Proxy) {
-                            $entity = $this->em->getRepository($fqcn)->find($entity->getId());
-                        }
                         /* @var DomainObject|EntityInterface $entity */
                         $model                              = $this->model_factory->create($entity);
                         $linked[$include][$entity->getId()] = $context->accept($model);

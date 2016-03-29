@@ -29,12 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\AgentAlert as AgentAlertEntity;
-use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert as AgentAlertModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlertData;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\NotifyData;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use Doctrine\ORM\EntityManager;
 use JMS\Serializer\JsonSerializationVisitor;
 
 /**
@@ -42,21 +42,6 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class AgentAlertHandler extends AbstractEntityHandler
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * AgentAlertHandler constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -74,41 +59,13 @@ class AgentAlertHandler extends AbstractEntityHandler
         $data      = $entity->getData();
         $sideloads = $context->getSideloadStore();
         if ($data['ticket']) {
-            $sideloads->addCustomSideload('ticket', $data['ticket'], new CallbackDeferredProperty([$this, 'getTicket'], [$entity, $context]));
+            $sideloads->addSideloadString(Ticket::class, $data['ticket']);
         }
         if ($data['performer']) {
-            $sideloads->addCustomSideload('person', $data['performer'], new CallbackDeferredProperty([$this, 'getPerson'], [$entity, $context]));
+            $sideloads->addSideloadString(Person::class, $data['performer']);
         }
 
         return parent::serialize($visitor, $entity, $type, $context);
-    }
-
-    /**
-     * @param AgentAlertEntity             $entity
-     * @param SideloadSerializationContext $context
-     *
-     * @return mixed
-     */
-    public function getPerson(AgentAlertEntity $entity, SideloadSerializationContext $context)
-    {
-        $data      = $entity->getData();
-        $performer = $this->em->getRepository('DeskPRO:Person')->find($data['performer']);
-
-        return $context->accept($performer, ['name' => get_class($performer)]);
-    }
-
-    /**
-     * @param AgentAlertEntity             $entity
-     * @param SideloadSerializationContext $context
-     *
-     * @return mixed
-     */
-    public function getTicket(AgentAlertEntity $entity, SideloadSerializationContext $context)
-    {
-        $data   = $entity->getData();
-        $ticket = $this->em->getRepository('DeskPRO:Ticket')->find($data['ticket']);
-
-        return $context->accept($ticket, ['name' => get_class($ticket)]);
     }
 
     /**

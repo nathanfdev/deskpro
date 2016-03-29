@@ -90,7 +90,12 @@ class SideloadStore
             $fqcn       = $parent->getName();
         }
 
-        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+        $this->addSideloadString($fqcn, $entity->getId());
+    }
+
+    public function addSideloadString($class, $id)
+    {
+        $snake = TypeUtils::getSnakeCaseBaseTypeName($class);
         if (!isset($this->sideloads[$snake])) {
             $this->sideloads[$snake] = [];
         }
@@ -99,9 +104,8 @@ class SideloadStore
             $this->updateNotLoaded($snake);
         }
 
-        $this->sideloads[$snake][$entity->getId()] = $entity->getId();
-        asort($this->sideloads[$snake]);
-        $this->classmap[$snake] = $fqcn;
+        $this->sideloads[$snake][$id] = $id;
+        $this->classmap[$snake]       = $class;
     }
 
     /**
