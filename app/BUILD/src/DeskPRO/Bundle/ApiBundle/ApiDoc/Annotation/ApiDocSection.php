@@ -32,7 +32,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
  * @Annotation
- * @Target("CLASS")
+ * @Target({"CLASS"})
  * Class ApiDocSection
  */
 class ApiDocSection
