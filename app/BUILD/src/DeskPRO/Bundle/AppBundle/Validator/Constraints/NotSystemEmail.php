@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class NotSystemEmail extends Constraint
 {
-    public $message = ApiErrors::SYSTEM_EMAIL;
+    public $message = ErrorsCodes::SYSTEM_EMAIL;
 
     /**
      * {@inheritdoc}

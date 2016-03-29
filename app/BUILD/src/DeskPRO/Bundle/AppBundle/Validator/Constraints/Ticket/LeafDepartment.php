@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class LeafDepartment extends Constraint
 {
-    public $message = ApiErrors::NOT_ASSIGNABLE_TICKET_DEPARTMENT;
+    public $message = ErrorsCodes::NOT_ASSIGNABLE_TICKET_DEPARTMENT;
 
     /**
      * {@inheritdoc}

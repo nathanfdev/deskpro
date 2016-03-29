@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Form\Extension\Validator\Constraints\Form;
@@ -53,7 +54,7 @@ class ErrorMessageFactorySpec extends ObjectBehavior
     {
         $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
 
-        $this->createMessage(ApiErrors::BAD_REQUEST)->shouldReturn('Request is invalid.');
+        $this->createMessage(ErrorsCodes::BAD_REQUEST)->shouldReturn('Request is invalid.');
     }
 
     public function it_will_get_the_error_message_for_formerror_code(
@@ -66,7 +67,7 @@ class ErrorMessageFactorySpec extends ObjectBehavior
         $form_error->getMessage()->willReturn('irrelevant');
         $translate->phrase('api.error_codes.bad_request', Argument::any())->willReturn('Request is invalid.');
 
-        $this->createFormErrorMessage(ApiErrors::BAD_REQUEST, $form_error)->shouldReturn('Request is invalid.');
+        $this->createFormErrorMessage(ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('Request is invalid.');
     }
 
     public function it_treats_extra_fields_specially(
@@ -80,6 +81,6 @@ class ErrorMessageFactorySpec extends ObjectBehavior
 
         $translate->phrase('api.error_codes.extra_fields', array())->willReturn('extra fields: email');
 
-        $this->createFormErrorMessage(ApiErrors::BAD_REQUEST, $form_error)->shouldReturn('extra fields: email');
+        $this->createFormErrorMessage(ErrorsCodes::BAD_REQUEST, $form_error)->shouldReturn('extra fields: email');
     }
 }

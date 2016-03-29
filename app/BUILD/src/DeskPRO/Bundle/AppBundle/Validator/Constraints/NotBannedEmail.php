@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class NotBannedEmail extends Constraint
 {
-    public $message = ApiErrors::BANNED_EMAIL;
+    public $message = ErrorsCodes::BANNED_EMAIL;
 
     /**
      * {@inheritdoc}

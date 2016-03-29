@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -65,7 +66,7 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function generateFormErrorsResponse(Form $form)
     {
-        $generator = $this->get('api_error.form_errors_generator');
+        $generator = $this->get('form_error.form_errors_generator');
         $errors    = $generator->generateFormErrors($form);
 
         return new View($errors, Response::HTTP_BAD_REQUEST);

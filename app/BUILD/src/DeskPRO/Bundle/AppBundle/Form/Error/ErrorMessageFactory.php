@@ -79,7 +79,7 @@ class ErrorMessageFactory
         $params = $this->parseParams($form_error->getMessageParameters());
 
         if ($form_error->getMessage() === 'This form should not contain extra fields.') {
-            $error_code = ApiErrors::EXTRA_FIELDS;
+            $error_code = ErrorsCodes::EXTRA_FIELDS;
         }
 
         return $this->createMessage($error_code, $params);

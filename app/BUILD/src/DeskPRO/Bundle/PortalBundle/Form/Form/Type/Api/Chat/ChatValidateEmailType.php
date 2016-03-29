@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -95,11 +96,11 @@ class ChatValidateEmailType extends AbstractType
         $conversation = $form->getParent()->getData();
 
         if ($conversation->getEmailValidated()) {
-            $form->addError(new FormError(ApiErrors::EMAIL_ALREADY_VALIDATED));
+            $form->addError(new FormError(ErrorsCodes::EMAIL_ALREADY_VALIDATED));
         } elseif (!$data) {
-            $form->addError(new FormError(ApiErrors::NOT_BLANK));
+            $form->addError(new FormError(ErrorsCodes::NOT_BLANK));
         } elseif ($data !== $form->getData()) {
-            $form->addError(new FormError(ApiErrors::EMAIL_WRONG_VALIDATION_CODE));
+            $form->addError(new FormError(ErrorsCodes::EMAIL_WRONG_VALIDATION_CODE));
         } else {
             // Mark conversation email validated
             $conversation->setEmailValidated(true);

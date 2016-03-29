@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
- * Class ApiErrors.
+ * Class ErrorsCodes.
  */
-class ApiErrors
+final class ErrorsCodes
 {
     /** The absolute last fallback error code for thrown exceptions */
     const EXCEPTION_FALLBACK = 'error';

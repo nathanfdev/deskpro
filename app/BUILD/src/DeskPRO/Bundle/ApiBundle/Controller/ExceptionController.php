@@ -61,9 +61,9 @@ class ExceptionController extends BaseController
 
         $errors_array = [];
         if ($exception instanceof FormExceptionInterface) {
-            $errors_array = $this->get('api_error.form_errors_generator')->generateFormErrors($exception->getForm());
+            $errors_array = $this->get('form_error.form_errors_generator')->generateFormErrors($exception->getForm());
         } elseif ($exception instanceof ValidatorErrorsException) {
-            $errors_array = $this->get('api_error.validator_errors_generator')->generateValidatorErrors($exception->getErrors());
+            $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors($exception->getErrors());
         }
 
         if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
@@ -81,8 +81,8 @@ class ExceptionController extends BaseController
         }
 
         $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
-        $code    = $this->get('api_error.code_factory')->getErrorCodeForException($exception);
-        $message = $this->get('api_error.message_factory')->createMessage($code, $parameters);
+        $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
+        $message = $this->get('form_error.message_factory')->createMessage($code, $parameters);
 
         // $exception has "getHeaders()" that we are interested in using
 
