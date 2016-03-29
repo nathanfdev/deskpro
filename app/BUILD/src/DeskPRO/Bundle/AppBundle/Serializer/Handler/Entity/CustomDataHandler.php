@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
-use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\Common\Collections\Collection;
@@ -79,51 +78,47 @@ class CustomDataHandler implements SubscribingHandlerInterface
 
         foreach ($collection as $customData) {
             $customDef = $customData->field->getParent() ? $customData->field->getParent() : $customData->field;
+            $defId     = $customDef->getId();
 
-            switch ($customDef->getHandlerClass()) {
-                case CustomDefAbstract::HANDLER_CLASS_CHOICE:
-                    $values  = [];
-                    $details = [];
+            switch ($customDef->getType()) {
+                case 'choice':
+                    $choiceDef = $customData->field;
+                    $choiceId  = $choiceDef->getId();
 
-                    foreach ($customData->getData() as $value) {
-                        $fid = $value->field->getId(); // value is the ID of the selected option
-
-                        $values[]      = $fid;
-                        $details[$fid] = [
-                            'id'    => $value->field->getId(),
-                            'title' => $value->field->getTitle(),
-                        ];
-                    }
-
-                    $row['value']  = $values;
-                    $row['detail'] = $details;
+                    $result[$defId]['value'][]           = $choiceId;
+                    $result[$defId]['detail'][$choiceId] = [
+                        'id'    => $choiceDef->getId(),
+                        'title' => $choiceDef->getTitle(),
+                    ];
                     break;
 
-                case CustomDefAbstract::HANDLER_CLASS_DATE:
-                case CustomDefAbstract::HANDLER_CLASS_DATETIME:
+                case 'date':
+                case 'datetime':
                     $value = $customData->getInput();
 
                     try {
-                        $row['value'] = new \DateTime('@'.$value);
+                        $value = new \DateTime('@'.$value);
                     } catch (\Exception $e) {
                         try {
-                            $row['value'] = new \DateTime($value);
+                            $value = new \DateTime($value);
                         } catch (\Exception $e) {
-                            $row['value'] = null;
+                            $value = null;
                         }
                     }
+
+                    $result[$defId]['value'] = $context->accept($value);
                     break;
 
                 default:
                     if ($customData->getData()) {
-                        $row['value'] = $customData->getData();
+                        $value = $customData->getData();
                     } else {
-                        $row['value'] = null;
+                        $value = null;
                     }
+
+                    $result[$defId]['value'] = $value;
                     break;
             }
-
-            $result[$customDef->getId()] = $context->accept($row);
         }
 
         return $result;
