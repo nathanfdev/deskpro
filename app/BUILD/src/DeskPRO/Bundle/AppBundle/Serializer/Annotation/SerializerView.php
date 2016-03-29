@@ -26,62 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Annotation;
 
-use Application\DeskPRO\Entity\Feedback;
-use JMS\Serializer\Annotation as JMS;
+use FOS\RestBundle\Controller\Annotations\View;
 
 /**
- * Class FeedbackStatus.
+ * We extend FOSRest View annotation to define serializer additional configuration params.
+ *
+ * @Annotation
+ * @Target({"METHOD","CLASS"})
  */
-class FeedbackStatus
+class SerializerView extends View
 {
     /**
-     * The unique id of feedback.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int
+     * @var array
      */
-    protected $id;
+    protected $mapping = [];
 
     /**
-     * Human readable status title.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * @return array
      */
-    protected $title;
-
-    /**
-     * Status system name.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $status;
-
-    /**
-     * Hidden status system name.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $hidden_status;
-
-    /**
-     * FeedbackStatus constructor.
-     *
-     * @param Feedback $feedback
-     */
-    public function __construct(Feedback $feedback)
+    public function getMapping()
     {
-        $this->id            = $feedback->getId();
-        $this->title         = $feedback->getStatusCategory() ? $feedback->getStatusCategory()->getTitle() : null;
-        $this->status        = $feedback->getStatus();
-        $this->hidden_status = $feedback->getHiddenStatus();
+        return $this->mapping;
+    }
+
+    /**
+     * @param array $mapping
+     */
+    public function setMapping(array $mapping)
+    {
+        $this->mapping = $mapping;
     }
 }

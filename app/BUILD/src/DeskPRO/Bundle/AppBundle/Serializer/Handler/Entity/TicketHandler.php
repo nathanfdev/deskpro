@@ -156,11 +156,11 @@ class TicketHandler extends AbstractEntityHandler
     }
 
     /**
-     * @param TicketEntity $entity
+     * {@inheritdoc}
      *
-     * @return TicketModel
+     * @param TicketEntity $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         return new TicketModel(
             $entity,

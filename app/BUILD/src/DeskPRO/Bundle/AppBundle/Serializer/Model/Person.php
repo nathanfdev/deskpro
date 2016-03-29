@@ -31,17 +31,14 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ApiPerson.
- *
- * @JMS\ExclusionPolicy("none")
+ * Class Person.
  */
-class ApiPerson
+class Person
 {
     /**
      * The unique ID.
@@ -343,9 +340,11 @@ class ApiPerson
     protected $contact_data;
 
     /**
-     * @param Person $person
+     * Constructor.
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
      */
-    public function __construct(Person $person)
+    public function __construct(\Application\DeskPRO\Entity\Person $person)
     {
         $this->id                        = $person->getId();
         $this->picture_blob              = $person->picture_blob;

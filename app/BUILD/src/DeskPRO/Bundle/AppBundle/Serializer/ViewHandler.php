@@ -28,10 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer;
 
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class ViewHandler.
+ */
 class ViewHandler extends \FOS\RestBundle\View\ViewHandler
 {
     /**
@@ -64,8 +68,15 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
     {
         $context = SideloadSerializationContext::createContext($this->container);
 
-        if ($this->annotation && $groups = $this->annotation->getSerializerGroups()) {
-            $context->setGroups(array_merge($groups, ['wrapper']));
+        if ($this->annotation) {
+            $groups = $this->annotation->getSerializerGroups();
+            if ($groups) {
+                $context->setGroups(array_merge($groups, ['wrapper']));
+            }
+
+            if ($this->annotation instanceof SerializerView) {
+                $context->setMapping($this->annotation->getMapping());
+            }
         }
 
         if ($context->attributes->get('version')->isEmpty() && $this->exclusionStrategyVersion) {

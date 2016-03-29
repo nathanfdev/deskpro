@@ -36,13 +36,10 @@ use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -65,7 +62,7 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
-     * @Annotations\Get("/me", name="api_me")
+     * @Get("/me", name="api_me")
      */
     public function meAction()
     {
@@ -82,32 +79,7 @@ class MeController extends BaseController
             $me->app_id = $token->getAppId();
         }
 
-        return View::create(
-            $this->wrap($me),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * Get my profile.
-     *
-     * @ApiDoc(
-     *     section="Auth",
-     *     description="get my profile action",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
-     * )
-     *
-     * @Annotations\Get("/me/profile", name="api_get_my_profile")
-     */
-    public function getProfileAction()
-    {
-        return View::create(
-            $this->wrap($this->getUser(), PersonProfile::class),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($me), Response::HTTP_OK);
     }
 
     /**
@@ -121,9 +93,9 @@ class MeController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Get("/me/device-setup-token")
+     * @Get("/me/device-setup-token")
      */
-    public function getDeviseSetupTokenAction()
+    public function getDeviceSetupTokenAction()
     {
         $tmpData = TmpData::create(
             'device_setup_token',
@@ -139,39 +111,5 @@ class MeController extends BaseController
             $this->wrap(['setup_token' => 'dp_device_setup:'.$url]),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * @ApiDoc(
-     *     section="Auth",
-     *     description="update my profile action",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
-     * )
-     *
-     * @Annotations\Put("/me/profile", name="api_put_my_profile")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function putProfileAction(Request $request)
-    {
-        $person = $this->getUser();
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'person_profile', $person)->getForm();
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($person);
-        $em->flush();
-
-        return View::create($this->wrap($person, PersonProfile::class), Response::HTTP_CREATED);
     }
 }

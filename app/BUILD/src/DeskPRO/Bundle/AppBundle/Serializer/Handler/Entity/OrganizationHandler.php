@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization as SerializedOrganization;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class OrganizationHandler.
@@ -67,9 +70,9 @@ class OrganizationHandler extends AbstractEntityHandler
      *
      * @param Organization $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new \DeskPRO\Bundle\AppBundle\Serializer\Model\Organization(
+        return new SerializedOrganization(
             $entity,
             $this->chat_data_service->getChatsCountForOrganization($entity)
         );

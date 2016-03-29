@@ -26,48 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\ContactDataAbstract;
-use Application\DeskPRO\Entity\OrganizationContactData;
-use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\AgentTeam;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam as SerializedAgentTeam;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use Orb\Util\Strings;
 
 /**
- * Class ContactDataHandler.
+ * Class AgentTeamHandler.
  */
-class ContactDataHandler extends AbstractEntityHandler
+class AgentTeamHandler extends AbstractEntityHandler
 {
+    /**
+     * @var AvatarResolver
+     */
+    private $avatarResolver;
+
+    /**
+     * Constructor.
+     *
+     * @param AvatarResolver $avatarResolver
+     */
+    public function __construct(AvatarResolver $avatarResolver)
+    {
+        $this->avatarResolver = $avatarResolver;
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function getClassNames()
     {
-        return [
-            PersonContactData::class,
-            OrganizationContactData::class,
-        ];
+        return AgentTeam::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param ContactDataAbstract $entity
+     * @param AgentTeam $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $contact_type = $entity->getContactType();
-        $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));
+        $agent_team = new SerializedAgentTeam($entity);
+        $agent_team->setAvatar($this->avatarResolver->getAvatarModel($entity));
 
-        if (!class_exists($class_name)) {
-            throw new \InvalidArgumentException("`$contact_type` is not a valid type");
-        }
-
-        return new $class_name($entity);
+        return $agent_team;
     }
 }

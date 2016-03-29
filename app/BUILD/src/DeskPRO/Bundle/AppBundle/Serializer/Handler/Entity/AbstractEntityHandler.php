@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -71,7 +72,7 @@ abstract class AbstractEntityHandler implements SubscribingHandlerInterface, Ent
      */
     public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
     {
-        $model      = $this->createModel($entity);
+        $model      = $this->createModel($entity, $context);
         $serialized = $context->accept($model);
 
         return $serialized;
@@ -80,9 +81,10 @@ abstract class AbstractEntityHandler implements SubscribingHandlerInterface, Ent
     /**
      * Returns api wrapper for the entity.
      *
-     * @param object $entity
+     * @param object                       $entity
+     * @param SideloadSerializationContext $context
      *
      * @return mixed
      */
-    abstract protected function createModel($entity);
+    abstract protected function createModel($entity, SideloadSerializationContext $context);
 }
