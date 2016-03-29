@@ -17,8 +17,8 @@ Feature: /ticket_macros endpoint
     And the setting "core_tickets.field_validation_ticket_work_agent_required" is set to 0
 
   @reinstall
-  Scenario: I retrieve a list of macros
-    When I send a GET request to "/api/v2/ticket_macros"
+  Scenario: I retrieve a list of macros with sideloading
+    When I send a GET request to "/api/v2/ticket_macros?include=person"
     And the response status code should be 200
     And the JSON node "data" should have 7 elements
 
@@ -105,11 +105,26 @@ Feature: /ticket_macros endpoint
     And the JSON node "data[6].actions[1].type" should be equal to "department"
     And the JSON node "data[6].actions[1].options.department" should be equal to 2
 
-  Scenario: I get a macro
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
+
+  Scenario: I get a macro with sideloading
+    When I send a GET request to "/api/v2/ticket_macros/1?include=person,organization"
+    Then the response status code should be 200
+    And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.title" should be equal to "Update ticket macro 1"
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.organization.1.id" should be equal to 1
+    And the JSON node "linked.organization.1.name" should be equal to "Organization 1"
+
+
+  Scenario: I get a macro w/o sideloading
     When I send a GET request to "/api/v2/ticket_macros/1"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.title" should be equal to "Update ticket macro 1"
+    And the JSON node "linked" should have 0 elements
 
   Scenario: I try to get not existing macro
     When I send a GET request to "/api/v2/ticket_macros/404"
