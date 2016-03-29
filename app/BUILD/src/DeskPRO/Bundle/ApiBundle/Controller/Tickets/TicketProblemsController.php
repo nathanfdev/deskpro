@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
@@ -89,9 +90,9 @@ class TicketProblemsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        if (!is_null($isOpen = $request->get('is_open'))) {
+        if (!is_null($is_open = $request->get('is_open'))) {
             $qb->andWhere("{$alias}.is_open = :is_open");
-            $qb->setParameters(compact('isOpen'));
+            $qb->setParameters(compact('is_open'));
         }
     }
 
