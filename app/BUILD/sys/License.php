@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -207,7 +207,14 @@ final class License
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_1';
-                include dirname(__FILE__).'/Resources/system-fail-func.php';
+
+                if (php_sapi_name() !== 'cli') {
+                    @header('HTTP/1.0 520 Unknown Error');
+                    @header('Content-Type: text/plain');
+                }
+                echo "Invalid license.\n";
+                echo "(Code:invalid_license_code_1)\n";
+                exit;
             };
             $fn();
 
@@ -286,7 +293,15 @@ final class License
                 $__license_code = $license_code;
                 $__install_key  = $install_key;
                 $__fail_message = 'invalid_license_code_2';
-                include dirname(__FILE__).'/Resources/system-fail-func.php';
+
+                if (php_sapi_name() !== 'cli') {
+                    @header('HTTP/1.0 520 Unknown Error');
+                    @header('Content-Type: text/plain');
+                }
+
+                echo "Invalid license.\n";
+                echo "(Code:invalid_license_code_2)\n";
+                exit;
             };
             $fn();
 
