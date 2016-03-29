@@ -33,6 +33,7 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
     ->exclude('vendor')
     ->exclude('vendor-src')
     ->exclude('config_new')
+    ->exclude('opcache-gui.php')
     ->in(PHP_CS_SRC_DIR)
 ;
 

@@ -26,6 +26,7 @@ $exclude_dirs = array(
 
 $exclude_file_names = array(
     'StaticReflectionProperty_Real.php',
+    'opcache-gui.php',
 );
 
 $changed_files = array_map(function($filename) {
