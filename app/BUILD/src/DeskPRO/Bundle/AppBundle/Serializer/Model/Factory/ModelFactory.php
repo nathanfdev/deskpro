@@ -39,6 +39,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ModelFactory.
+ *
+ * @deprecated Use entity custom handlers instead
  */
 class ModelFactory
 {
@@ -61,6 +63,8 @@ class ModelFactory
      * @todo we should move either move it into config either get rid of this
      *
      * @var array
+     *
+     * @deprecated Use entity custom handlers instead
      */
     protected $methodMap = [
         'person' => [
@@ -85,6 +89,8 @@ class ModelFactory
     /**
      * @param      $entity
      * @param null $concrete
+     *
+     * @deprecated Use entity custom handlers instead
      */
     public function create($entity, $concrete = null)
     {
@@ -109,6 +115,8 @@ class ModelFactory
      * @param null $concrete
      *
      * @return array
+     *
+     * @deprecated Use entity custom handlers instead
      */
     public function createArray($entities, $concrete = null)
     {
@@ -123,6 +131,8 @@ class ModelFactory
     /**
      * @param $polymorphs
      * @param $concrete
+     *
+     * @deprecated Use entity custom handlers instead
      */
     protected function createPolymorph($polymorphs, $entity, $concrete)
     {
@@ -151,6 +161,8 @@ class ModelFactory
      * @param $polymorphs
      *
      * @return mixed
+     *
+     * @deprecated Use entity custom handlers instead
      */
     protected function findDefault($polymorphs)
     {
@@ -167,6 +179,8 @@ class ModelFactory
      * @param AgentTeamEntity $entity
      *
      * @return $this
+     *
+     * @deprecated Use entity custom handlers instead
      */
     protected function createAgentTeam(AgentTeamEntity $entity)
     {
@@ -177,6 +191,13 @@ class ModelFactory
         return $agent_team->setAvatar($avatar_resolver->getAvatarModel($entity));
     }
 
+    /**
+     * @param Feedback $feedback
+     *
+     * @return FeedbackStatus
+     *
+     * @deprecated Use entity custom handlers instead
+     */
     protected function createFeedbackStatus(Feedback $feedback)
     {
         return new FeedbackStatus($feedback);
