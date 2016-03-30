@@ -344,10 +344,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getPermalink($absolute = true)
     {
-        SystemErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPermalink()')
-        );
-
         if ($absolute) {
             return App::getObjectRouter()->getPortalUrl($this, 'permalink');
         }
