@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 
@@ -157,6 +158,23 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_options', [$this, 'getPortalWidgetOptions']),
             new \Twig_SimpleFunction('minified_widget_loader', [$this, 'getMinifiedWidgetLoader']),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilters()
+    {
+        return [
+            // Copied from legacy templating, its used to render custom field values (eg for templates)
+            new \Twig_SimpleFilter('smart_wrap', function ($string, $len = 50, $break = null) {
+                if ($break === null) {
+                    $break = Strings::ZERO_WIDTH_SPACE;
+                }
+
+                return Strings::smartWordWrap($string, $len, $break);
+            }),
         ];
     }
 
