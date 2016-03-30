@@ -6345,15 +6345,16 @@ h1.fancy-header {
       color: #cecece;
     }
 
+    span {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      @include margin-left(5px);
+    }
+
     a {
       color: #3575bd;
       text-decoration: none;
-      span {
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-        @include margin-left(5px);
-      }
       &:hover {
         text-decoration: underline;
       }
