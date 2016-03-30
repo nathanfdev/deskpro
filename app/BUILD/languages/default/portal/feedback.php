@@ -53,7 +53,7 @@ return array(
     'portal.feedback.form_i_have_a'             => 'I have a',
     'portal.feedback.form_btn_submit'           => 'Add your feedback',
     'portal.feedback.form_start'                => 'Start',
-    'portal.feedback.attachments'               => 'Attachements',
+    'portal.feedback.attachments'               => 'Attachments',
     'portal.feedback.subscribed_info'           => 'You are subscribed to recieve notifications about this feedback item',
     'portal.feedback.submit_feedback'           => 'Submit feedback',
     'portal.feedback.status_all'                => 'All items',

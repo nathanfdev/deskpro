@@ -105,7 +105,7 @@ export class PortalAttach extends React.Component {
     }
 
     return (
-       <div className="new-ticket-attachements">
+       <div className="new-ticket-attachments">
          <DropZone
            ref="dropZone"
            getExternalInput={() => this.refs.fileUpload}
