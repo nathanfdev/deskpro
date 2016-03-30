@@ -112,7 +112,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
                 exit;
 
             case 'check_requirements':
-                $checker = require __DIR__.'/../SoftwareRequirements/load_checker.php';
+                $checker = require __DIR__.'/../../SoftwareRequirements/load_checker.php';
 
                 if (isset($_GET['encode-output'])) {
                     header('Content-Type: text/plain');
@@ -125,7 +125,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
                 $majorProblems = $checker->getFailedRequirements();
                 $minorProblems = $checker->getFailedRecommendations();
-                require __DIR__.'/../Resources/views/requirements.php';
+                require __DIR__.'/../../Resources/views/requirements.php';
                 exit;
 
             case 'opcache':
