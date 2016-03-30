@@ -51,4 +51,6 @@ class TicketPrioritiesController extends CrudController
     public static $exposeOnly   = ['list'];
     public static $entity       = TicketPriority::class;
     public static $listPaginate = false;
+
+    public static $serializeMethod = 'wrap';
 }

@@ -34,6 +34,7 @@ use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Problem.
@@ -59,6 +60,8 @@ class Problem extends DomainObject
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
      *
      * @var string
      */

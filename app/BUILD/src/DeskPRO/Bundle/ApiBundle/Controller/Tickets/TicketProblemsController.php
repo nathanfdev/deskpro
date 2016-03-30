@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
@@ -40,7 +39,8 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -50,7 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDocSection("Tickets")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
- * @Annotations\Route("/ticket_problems")
+ * @Route("/ticket_problems")
  */
 class TicketProblemsController extends CrudController
 {
@@ -58,6 +58,7 @@ class TicketProblemsController extends CrudController
     public static $type     = ProblemType::class;
     public static $listSort = 'created';
 
+    public static $serializeMethod = 'wrap';
     /**
      * @ApiDoc(
      *     section="Tickets",
@@ -76,7 +77,7 @@ class TicketProblemsController extends CrudController
      *
      * @return View
      *
-     * @Annotations\Get("/{id}/tickets")
+     * @Get("/{id}/tickets")
      */
     public function getTicketsAction(Request $request, $id)
     {
@@ -84,15 +85,14 @@ class TicketProblemsController extends CrudController
     }
 
     /**
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
+     * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        if (!is_null($is_open = $request->get('is_open'))) {
+        $isOpen = $request->get('is_open');
+        if (!is_null($isOpen)) {
             $qb->andWhere("{$alias}.is_open = :is_open");
-            $qb->setParameters(compact('is_open'));
+            $qb->setParameter('is_open', $isOpen);
         }
     }
 

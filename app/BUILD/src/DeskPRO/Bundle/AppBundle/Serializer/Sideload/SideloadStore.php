@@ -57,7 +57,7 @@ class SideloadStore
     /**
      * @var
      */
-    private $notLoaded;
+    private $notLoaded = [];
 
     /**
      * @var array
