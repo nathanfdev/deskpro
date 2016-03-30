@@ -43,8 +43,11 @@ class ProjectMemberValidator extends ConstraintValidator
      */
     public function validate($object, Constraint $constraint)
     {
+        if (!$constraint instanceof ProjectMember) {
+            throw new UnexpectedTypeException($constraint, ProjectMember::class);
+        }
         if (!$object instanceof ProjectMemberEntity) {
-            throw new UnexpectedTypeException($constraint, ProjectMemberEntity::class);
+            throw new UnexpectedTypeException($object, ProjectMemberEntity::class);
         }
 
         $fields = [
@@ -53,11 +56,15 @@ class ProjectMemberValidator extends ConstraintValidator
             'person'     => $object->getPerson() ? 1 : 0,
         ];
 
-        if (array_sum($fields) != 1) {
-            $this->context->addViolation(
-                ProjectMember::EXACTLY_ONE_SHOULD_BE_SET,
-                ['values' => implode(', ', array_keys($fields))]
-            );
+        if (array_sum($fields) !== 1) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setParameter('{{ values }}', $this->formatValue(implode(', ', array_keys($fields))))
+                ->setCode(ProjectMember::EXACTLY_ONE_SHOULD_BE_SET)
+                ->addViolation()
+            ;
         }
     }
 }

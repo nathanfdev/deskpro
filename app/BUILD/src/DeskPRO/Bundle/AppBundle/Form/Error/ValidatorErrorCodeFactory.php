@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
@@ -91,18 +90,12 @@ class ValidatorErrorCodeFactory
                         : ErrorsCodes::TOO_MANY_ELEMENTS;
                 case Assert\Url::class:
                     return ErrorsCodes::INVALID_URL;
-                case AppAssert\ProfileUrl::class:
-                    return ErrorsCodes::PROFILE_URL;
-                case AppAssert\NotBannedEmail::class:
-                    return ErrorsCodes::BANNED_EMAIL;
                 case UniqueEntity::class:
                     return ErrorsCodes::UNIQUE_ENTITY;
-                case AppAssert\ProjectMember::class:
-                    return ErrorsCodes::EXACTLY_ONE_SHOULD_BE_SET;
             }
         }
 
-        $code = $violation->getMessage();
+        $code = $violation->getCode() ?: $violation->getMessage();
         if ($code) {
             return $this->filterCode($code);
         }

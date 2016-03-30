@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,11 +60,11 @@ class FreeEmailValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof FreeEmail) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\FreeEmail');
+            throw new UnexpectedTypeException($constraint, FreeEmail::class);
         }
 
         if (!$value instanceof Entity\Person) {
-            throw new UnexpectedTypeException($value, 'Application\DeskPRO\Entity\Person');
+            throw new UnexpectedTypeException($value, Entity\Person::class);
         }
 
         $exist_persons = $this->person_repository->findByEmails($value->getEmailAddresses());
@@ -77,11 +77,15 @@ class FreeEmailValidator extends ConstraintValidator
             $exist_emails = array_merge($exist_emails, $exist_person->getEmailAddresses());
         }
 
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+
         $exist_emails = array_unique($exist_emails);
         foreach ($exist_emails as $email) {
-            $this
+            $context
                 ->buildViolation($constraint->message)
                 ->setParameter('email', $email)
+                ->setCode(FreeEmail::DUPE_EMAIL)
                 ->atPath($constraint->property)
                 ->addViolation()
             ;

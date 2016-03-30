@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -36,8 +35,16 @@ use Symfony\Component\Validator\Constraint;
  */
 class FreeEmail extends Constraint
 {
-    public $message = ErrorsCodes::DUPE_EMAIL;
+    const DUPE_EMAIL = 'dupe_email';
 
+    /**
+     * @var string
+     */
+    public $message = 'Email "{{ email }}" is already in use by other user.';
+
+    /**
+     * @var string
+     */
     public $property = 'email';
 
     /**

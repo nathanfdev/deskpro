@@ -26,27 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotBlankValidator;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class ProfileUrl.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class LinkedInValidator.
  */
-class ProfileUrl extends NotBlank
+class LinkedInUrlValidator extends ConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public function validate($value, Constraint $constraint)
     {
-        return NotBlankValidator::class;
+        if (!$constraint instanceof LinkedInUrl) {
+            throw new UnexpectedTypeException($constraint, LinkedInUrl::class);
+        }
+
+        if (!$value) {
+            return;
+        }
+        if (!is_scalar($value)) {
+            throw new UnexpectedTypeException($value, 'string');
+        }
+
+        if (!preg_match('#/in/(.*?)$#', $value)) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setCode(LinkedInUrl::NOT_PROFILE_URL)
+                ->addViolation()
+            ;
+        }
     }
 }

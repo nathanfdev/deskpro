@@ -62,6 +62,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
     const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
 
+    const TYPE_TEXT     = 'text';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_CHOICE   = 'choice';
+    const TYPE_TOGGLE   = 'toggle';
+    const TYPE_DATE     = 'date';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_DISPLAY  = 'display';
+    const TYPE_HIDDEN   = 'hidden';
+
     /**
      * The unique ID.
      *

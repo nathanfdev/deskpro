@@ -42,11 +42,11 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRegex;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -81,7 +81,7 @@ class CustomFieldManager
 
         // required
         if ($field->isRequired($agent_interface)) {
-            $constraints[] = new NotBlank(['message' => 'This value is required']);
+            $constraints[] = new Assert\NotBlank();
         }
 
         $options = [
@@ -106,7 +106,7 @@ class CustomFieldManager
      */
     public function getAvailablePersonDefs()
     {
-        return $this->getAvailableCustomDefs('DeskPRO:CustomDefPerson');
+        return $this->getAvailableCustomDefs(CustomDefPerson::class);
     }
 
     /**
@@ -114,7 +114,7 @@ class CustomFieldManager
      */
     public function getAvailableFeedbackDefs()
     {
-        return $this->getAvailableCustomDefs('DeskPRO:CustomDefFeedback');
+        return $this->getAvailableCustomDefs(CustomDefFeedback::class);
     }
 
     /**
@@ -122,7 +122,7 @@ class CustomFieldManager
      */
     public function getAvailableOrganizationDefs()
     {
-        return $this->getAvailableCustomDefs('DeskPRO:CustomDefOrganization');
+        return $this->getAvailableCustomDefs(CustomDefOrganization::class);
     }
 
     /**
@@ -152,7 +152,7 @@ class CustomFieldManager
      */
     public function getCustomTicketFieldById($id)
     {
-        return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
+        return $this->em->getRepository(CustomDefTicket::class)->find($id);
     }
 
     /**
@@ -162,7 +162,7 @@ class CustomFieldManager
      */
     public function getCustomPersonFieldById($id)
     {
-        return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
+        return $this->em->getRepository(CustomDefPerson::class)->find($id);
     }
 
     /**
@@ -172,7 +172,7 @@ class CustomFieldManager
      */
     public function getCustomOrganizationFieldById($id)
     {
-        return $this->em->getRepository('DeskPRO:CustomDefOrganization')->find($id);
+        return $this->em->getRepository(CustomDefOrganization::class)->find($id);
     }
 
     /**
@@ -184,7 +184,7 @@ class CustomFieldManager
      */
     public function getCustomPerFieldById($id)
     {
-        return $this->em->getRepository('DeskPRO:CustomFieldDefinition')->find($id);
+        return $this->em->getRepository(CustomFieldDefinition::class)->find($id);
     }
 
     /**
@@ -197,19 +197,11 @@ class CustomFieldManager
     public function createCustomField(CustomDefAbstract $def, $is_agent = false, $is_inline = false)
     {
         switch ($def->getType()) {
-            case 'text':
-                return new FormField(
-                    'text',
-                    $this->getGeneralOptionsForField($def, [], $is_agent)
-                );
-
-            case 'textarea':
-                return new FormField(
-                    'textarea',
-                    $this->getGeneralOptionsForField($def, [], $is_agent)
-                );
-
-            case 'toggle':
+            case CustomDefAbstract::TYPE_TEXT:
+                return new FormField(TextType::class, $this->getGeneralOptionsForField($def, [], $is_agent));
+            case CustomDefAbstract::TYPE_TEXTAREA:
+                return new FormField(TextareaType::class, $this->getGeneralOptionsForField($def, [], $is_agent));
+            case CustomDefAbstract::TYPE_TOGGLE:
                 $options = [
                     'checkbox_label' => $def->getOption('label_text') ?: '',
                     'force_boolean'  => true,
@@ -220,7 +212,7 @@ class CustomFieldManager
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
 
-            case 'display':
+            case CustomDefAbstract::TYPE_DISPLAY:
                 $options = [
                     'html'  => $def->getOption('html'),
                     'data'  => '',
@@ -232,7 +224,7 @@ class CustomFieldManager
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
 
-            case 'choice':
+            case CustomDefAbstract::TYPE_CHOICE:
                 $options = [
                     'expanded'     => (bool) $def->getOption('expanded'),
                     'multiple'     => (bool) $def->getOption('multiple'),
@@ -244,7 +236,7 @@ class CustomFieldManager
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
 
-            case 'date':
+            case CustomDefAbstract::TYPE_DATE:
                 if ($is_inline) {
                     $options = [
                         'input'  => 'string',
@@ -262,7 +254,7 @@ class CustomFieldManager
                     $this->getGeneralOptionsForField($def, $options, $is_agent)
                 );
 
-            case 'datetime':
+            case CustomDefAbstract::TYPE_DATETIME:
                 if ($is_inline) {
                     $options = [
                         'input'  => 'string',
@@ -286,7 +278,7 @@ class CustomFieldManager
                     );
                 }
 
-            case 'hidden':
+            case CustomDefAbstract::TYPE_HIDDEN:
                 $options = [
                     'auto_fill'          => false,
                     'hidden'             => true,
@@ -342,7 +334,7 @@ class CustomFieldManager
         // required
         if ($field_type->isRequired($is_agent)) {
             $options['required'] = $field_type->isRequired($is_agent);
-            $constraints[]       = new NotBlank();
+            $constraints[]       = new Assert\NotBlank();
         }
 
         // length
@@ -358,7 +350,7 @@ class CustomFieldManager
                 $opts['max'] = $max;
             }
 
-            $constraints[] = new Length($opts);
+            $constraints[] = new Assert\Length($opts);
         }
 
         $options['help'] = $field_type->getRealDescription();
@@ -366,7 +358,7 @@ class CustomFieldManager
         // regex
         $regex = $field_type->getRegex($is_agent);
         if ($regex) {
-            $constraints[] = new ValidRegex([
+            $constraints[] = new Assert\Regex([
                 'pattern' => Strings::getInputRegexPattern($regex),
             ]);
         }

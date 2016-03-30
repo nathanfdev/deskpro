@@ -41,9 +41,9 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_1.fields.url.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_2.fields.url.errors[0].code" should be equal to "invalid_url"
     And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_2.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_2.fields.url.errors[1].code" should be equal to "profile_url"
+    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_2.fields.url.errors[1].code" should be equal to "facebook_url"
     And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_2.fields.url.errors[1].message" should be equal to "This value is not a valid profile URL."
-    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_3.fields.url.errors[0].code" should be equal to "profile_url"
+    And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_3.fields.url.errors[0].code" should be equal to "facebook_url"
     And the JSON node "errors.fields.contact_data.fields.facebook.fields.facebook_3.fields.url.errors[0].message" should be equal to "This value is not a valid profile URL."
 
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_0.fields.url.errors[0].code" should be equal to "required"
@@ -52,9 +52,9 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_1.fields.url.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_2.fields.url.errors[0].code" should be equal to "invalid_url"
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_2.fields.url.errors[0].message" should be equal to "This value is not a valid URL."
-    And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_2.fields.url.errors[1].code" should be equal to "profile_url"
+    And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_2.fields.url.errors[1].code" should be equal to "linked_in_url"
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_2.fields.url.errors[1].message" should be equal to "This value is not a valid profile URL."
-    And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_3.fields.url.errors[0].code" should be equal to "profile_url"
+    And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_3.fields.url.errors[0].code" should be equal to "linked_in_url"
     And the JSON node "errors.fields.contact_data.fields.linked_in.fields.linked_in_3.fields.url.errors[0].message" should be equal to "This value is not a valid profile URL."
 
     And the JSON node "errors.fields.contact_data.fields.instant_message.fields.instant_message_0.fields.username.errors[0].code" should be equal to "required"

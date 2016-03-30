@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,5 +38,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class PhoneNumber extends Constraint
 {
-    public $message = ErrorsCodes::INVALID_PHONE_NUMBER;
+    const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
+
+    public $message = 'Invalid phone number format.';
 }

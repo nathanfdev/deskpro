@@ -26,27 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class NotBannedEmail.
+ * Class FacebookUrl.
  *
  * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class NotBannedEmail extends Constraint
+class FacebookUrl extends Constraint
 {
-    const BANNED_EMAIL = 'banned_email';
+    const NOT_PROFILE_URL = 'facebook_url';
 
-    public $message = 'Email "{{ email }}" is banned.';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
-    {
-        return 'not_banned_email_validator';
-    }
+    public $message = 'This value is not a valid profile URL.';
 }
