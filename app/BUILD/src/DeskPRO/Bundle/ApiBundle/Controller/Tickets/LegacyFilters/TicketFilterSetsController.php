@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,24 +31,29 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * Class TicketFilterSetsController.
  *
+ * @ApiDocSection("Ticket filters (legacy)")
  * @ApiModes("all")
  */
 class TicketFilterSetsController extends AbstractLegacyFiltersController
 {
     /**
+     * Get the list of ticket filter sets available.
+     *
      * @ApiDoc(
-     *      description="Get the list of ticket filter sets available",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     description="get filter sets",
+     *     statusCodes={
+     *         200="Returned with the list if filters"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet>"
      * )
      *
      * @Get("/ticket_filter_sets")
@@ -58,25 +63,28 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
         $data_service = $this->get('data.ticket_legacy_filter_sets');
         $filter_sets  = $data_service->getAllFilterSets();
 
-        return View::create($this->dataSerialize($filter_sets));
+        return View::create($this->wrap($filter_sets));
     }
 
     /**
+     * Get a filter set with given id.
+     *
      * @ApiDoc(
-     *      description="Get a filter set",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter set",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet"
+     *     description="get a filter set",
+     *
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the filter set",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Everything is OK, we found your filter set",
+     *         404="Filter set with provide ID wasn't found"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet"
      * )
      *
      * @Get("/ticket_filter_sets/{id}")
@@ -89,25 +97,29 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
     {
         $set = $this->getFilterSetOr404($id);
 
-        return View::create($this->dataSerialize($set));
+        return View::create($this->wrap($set));
     }
 
     /**
+     * Get the filters within a filter set.
+     *
+     * **note: that could be done with sideloading**
+     *
      * @ApiDoc(
-     *      description="Get the filters within a filter set",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter set",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *     description="get filters belong to filter set",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the filter set",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Everything is OK, here is your filters",
+     *         404="Filter set with provide ID wasn't found"
+     *     },
+     *     output="array<Application\DeskPRO\Entity\TicketFilter>"
      * )
      * @Get("/ticket_filter_sets/{id}/filters")
      *
@@ -119,6 +131,6 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
     {
         $set = $this->getFilterSetOr404($id);
 
-        return View::create($this->dataSerialize($set->getFilters()));
+        return View::create($this->wrap($set->getFilters()));
     }
 }

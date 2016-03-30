@@ -35,6 +35,43 @@ Feature: /ticket_filter_sets endpoint
     And the JSON node "data[2].is_default" should be equal to 1
     And the JSON node "data[2].filters" should have 1 elements
 
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: same as above but with sideloading
+    When I send a GET request to "/api/v2/ticket_filter_sets?include=legacy_ticket_filter"
+    And the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.legacy_ticket_filter" should exist
+    And the JSON node "linked.legacy_ticket_filter.1.id" should be equal to 1
+    And the JSON node "linked.legacy_ticket_filter.1.title" should be equal to "My Tickets"
+    And the JSON node "linked.legacy_ticket_filter.15.id" should be equal to 15
+    And the JSON node "linked.legacy_ticket_filter.15.title" should be equal to "All (Hold)"
+    And the JSON node "linked.legacy_ticket_filter.16.id" should be equal to 16
+    And the JSON node "linked.legacy_ticket_filter.16.title" should be equal to "My custom filter"
+
+  Scenario: I get filter_set w/o sideloading
+    When I send a GET request to "/api/v2/ticket_filter_sets/3"
+    And the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.id" should be equal to 3
+    And the JSON node "data.title" should be equal to "Custom filters"
+    And the JSON node "data.display_order" should be equal to 3
+    And the JSON node "data.is_default" should be equal to 1
+    And the JSON node "data.filters" should have 1 elements
+
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: I get filter_set with sideloading
+    When I send a GET request to "/api/v2/ticket_filter_sets/3?include=legacy_ticket_filter"
+
+    And the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.legacy_ticket_filter.16.id" should be equal to 16
+    And the JSON node "linked.legacy_ticket_filter.16.title" should be equal to "My custom filter"
+
   Scenario: I get related filters for awaiting agent filter set
     When I send a GET request to "/api/v2/ticket_filter_sets/1/filters"
     Then the response status code should be 200

@@ -26,35 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks;
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
-
-use Application\DeskPRO\Entity\TicketParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as TaskProjectModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class TicketParticipant.
+ * Class TaskProjectHandler.
  */
-class TicketParticipantHandler extends AbstractEntityHandler
+class TaskProjectHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
     public static function getClassNames()
     {
-        return TicketParticipant::class;
+        return TaskProject::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param TicketParticipant $entity
+     * @param TaskProject $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return $entity->getPerson();
+        return new TaskProjectModel($entity);
     }
 }

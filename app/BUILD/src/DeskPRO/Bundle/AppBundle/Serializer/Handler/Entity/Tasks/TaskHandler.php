@@ -26,10 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks;
 
 use DeskPRO\Bundle\AppBundle\Entity\Task as TaskEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task as TaskModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\DBAL\Connection;
