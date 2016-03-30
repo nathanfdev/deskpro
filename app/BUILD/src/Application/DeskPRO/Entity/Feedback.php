@@ -192,9 +192,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * @JMS\VirtualProperty()
      * @JMS\SerializedName("custom_data")
      *
+     * // FIXME: getCustomData is making $this->custom_data return a string from outside, which breaks FieldManager
+     * // So I've renamed it 'X' so this can be reviewed.
+     *
      * @return string
      */
-    public function getCustomData()
+    public function XgetCustomData()
     {
         return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : null;
     }
