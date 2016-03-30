@@ -1,5 +1,11 @@
 $border-color: #e7e7e7;
-$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+
+$pub-path: "../../../../../../../pub";
+$portal-res-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources";
+$portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
+
+$modules-path: "../../../../../../../pub/node_modules";
+$fa-font-path: "#{$modules-path}/font-awesome/fonts";
 
 @import "misc/mixins";
 @import "./normalize.css";

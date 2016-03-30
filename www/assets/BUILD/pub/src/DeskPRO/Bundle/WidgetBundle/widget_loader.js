@@ -22,6 +22,9 @@
     // Portal page widget config
     frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
 
+    // Asset URLs
+    frameWin.DESKPRO_APP_ASSETS_URL = appSrc.replace(/\/DeskPRO_WidgetBundle\.js.*?$/, '');
+
     let doc;
     let docDomain;
 
@@ -35,12 +38,18 @@
 
     // After onload, we load the script source for real
     doc.open()._load = () => {
+      const linkNode = document.createElement('link');
+      linkNode.type = 'text/css';
+      linkNode.rel  = 'stylesheet';
+      linkNode.href = frameWin.DESKPRO_APP_ASSETS_URL + '/DeskPRO_WidgetBundle_style.css';
+
+      doc.body.appendChild(linkNode);
+
       const appNode = doc.createElement('script');
       appNode.charset = 'UTF8';
       if (docDomain) {
         doc.domain = docDomain;
       }
-
       appNode.src = appSrc;
 
       doc.body.appendChild(appNode);

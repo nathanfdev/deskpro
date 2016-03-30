@@ -7,7 +7,6 @@ import { store } from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
 import $ from 'jquery';
 import './Services/WindowApi';
-import './Resources/style/widget-style.scss';
 
 export class WidgetApp {
 

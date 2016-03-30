@@ -19,14 +19,6 @@ var notifier = require('node-notifier');
 var reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
 
 // ######################################################################################################################
-// # Util
-// ######################################################################################################################
-
-var deskpro = {
-  isProd: false
-};
-
-// ######################################################################################################################
 // # Task Runners
 // ######################################################################################################################
 
@@ -76,7 +68,7 @@ gulp.task('dev:all', cb => {
 // ######################################################################################################################
 
 gulp.task('priv:start-prod', () => {
-  deskpro.isProd = true;
+
 });
 
 // ######################################################################################################################
@@ -139,18 +131,18 @@ gulp.task('bundle', callback => {
   refreshWidgetLoader('hit_recorder');
   refreshWidgetLoader('embed_loader');
   refreshPortalDesignerVariables();
-  runWebpackBundle(getWebpackConfig('all', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('all', true), callback);
 });
 
 gulp.task('bundle:agent', callback => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshPortalDesignerVariables();
-  runWebpackBundle(getWebpackConfig('agent', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('agent', true), callback);
 });
 
 gulp.task('bundle:portal', callback => {
-  runWebpackBundle(getWebpackConfig('portal', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('portal', true), callback);
 });
 
 gulp.task('bundle:widget', callback => {
@@ -159,7 +151,7 @@ gulp.task('bundle:widget', callback => {
   refreshWidgetLoader('widget_loader');
   refreshWidgetLoader('hit_recorder');
   refreshWidgetLoader('embed_loader');
-  runWebpackBundle(getWebpackConfig('widget', deskpro.isProd), callback);
+  runWebpackBundle(getWebpackConfig('widget', true), callback);
 });
 
 gulp.task('bundle:dev-server', () => {
@@ -300,9 +292,7 @@ function getWebpackConfig(mode, isProd) {
           include: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style')
-          ],
-          exclude: [
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
           ],
           loader: ExtractTextPlugin.extract('style-loader',
@@ -311,13 +301,6 @@ function getWebpackConfig(mode, isProd) {
             'includePaths[]=' + (path.resolve(__dirname, './node_modules')),
             { 'publicPath': './' }
           )
-        },
-        {
-          test: /\.scss$/,
-          include: [
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
-          ],
-          loader: 'style!css!sass?outputStyle=expanded&'
         },
         {
           test: /\.json/,
@@ -370,9 +353,10 @@ function getWebpackConfig(mode, isProd) {
   //---
 
   if (isProd) {
-    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-      exclude: [/(node_modules|bower_components)/]
-    }));
+    config.devtool = 'source-map';
+    // config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+    //   exclude: [/(node_modules|bower_components)/]
+    // }));
   }
 
   //---
