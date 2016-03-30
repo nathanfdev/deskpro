@@ -51,7 +51,13 @@ class TicketLayoutData extends AbstractDefaultData
             $ticket_layout->user_layout  = new Layout();
             $ticket_layout->agent_layout = new Layout();
 
-            foreach (array(FormFields::DEPARTMENT, FormFields::SUBJECT, FormFields::MESSAGE, FormFields::PERSON) as $field) {
+            foreach (array(
+                FormFields::PERSON,
+                FormFields::DEPARTMENT,
+                FormFields::SUBJECT,
+                FormFields::MESSAGE,
+                FormFields::ATTACHMENTS,
+            ) as $field) {
                 $ticket_layout->user_layout->add(new LayoutField($field));
                 $ticket_layout->agent_layout->add(new LayoutField($field));
             }

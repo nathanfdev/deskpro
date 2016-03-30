@@ -644,7 +644,7 @@ class TicketWithLayoutsType extends AbstractType
             'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
-                'label'         => false,
+                'label'         => $this->phrase('portal.forms.label_email'),
                 'constraints'   => [], // ignore the "unique entity" constraint here
             ],
         ];
