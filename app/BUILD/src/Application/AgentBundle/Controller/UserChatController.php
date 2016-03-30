@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -548,6 +549,7 @@ class UserChatController extends AbstractController
             $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
         }
 
+        /** @var Blob $blob */
         $blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
 
         if (!$blob) {
@@ -576,6 +578,7 @@ class UserChatController extends AbstractController
                     'download_url'      => $blob->getDownloadUrl(true, false),
                     'filename'          => $blob->getFilenameSafe(),
                     'filesize_readable' => $blob->getReadableFilesize(),
+                    'is_image'          => $blob->isImage(),
                 ],
             ]
         );
