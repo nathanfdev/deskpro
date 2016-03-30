@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,10 +34,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,40 +47,32 @@ use Symfony\Component\HttpFoundation\Request;
  * Class AgentsController.
  *
  * @ApiModes("all")
- * @Route("/agents")
+ * @Annotations\Route("/agents")
+ * @ApiDocSection("Agents")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
  */
 class AgentsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
+    public static $entity       = Person::class;
+    public static $exposeOnly   = ['list'];
+    public static $listPaginate = false;
 
-    /**
-     * @ApiDoc(
-     *      description="get a list of all agents w/o pagination",
-     *      statusCodes={
-     *          200="Success"
-     *      }
-     * )
-     * @Get("", name="api_agents")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function listAction(Request $request)
+    public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $agents = $this->getRepository(Person::class)->findBy(['is_agent' => true]);
-
-        return View::create($this->dataSerialize($agents));
+        $qb->andWhere("$alias.is_agent = 1");
+        parent::applyListFilters($qb, $alias, $request);
     }
 
     /**
      * @ApiDoc(
-     *      description="get a list of online",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Agents",
+     *     description="get a list of online agents",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array<integer>"
      * )
-     * @Get("/online", name="api_agents_online")
+     * @Annotations\Get("/online", name="api_agents_online")
      *
      * @return View
      */
@@ -86,6 +80,6 @@ class AgentsController extends CrudController
     {
         $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
 
-        return View::create($this->dataSerialize($agent_ids));
+        return View::create($this->wrap($agent_ids));
     }
 }

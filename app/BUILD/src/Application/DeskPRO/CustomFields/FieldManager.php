@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
@@ -391,8 +392,8 @@ class FieldManager
     {
         $field = $data->root_field ?: $data->field;
         $value = !$data->root_field || $data->root_field === $data->field
-            ? array('value'        => $data->getData())
-            : array('value'        => null, 'children' => array(
+            ? array('value' => $data->getData())
+            : array('value' => null, 'children' => array(
                 $data->field['id'] => array('value' => $data->getData(), 'children' => null),
             ));
 
@@ -431,10 +432,10 @@ class FieldManager
     {
         $field_data = $this->getFieldDataForObject($object);
 
-        // If the object has no id then it means it isnt perissted,
-        // which means we should use the default value to show on a form somewhre
+        // If the object has no id then it means it isn't persisted,
+        // which means we should use the default value to show on a form somewhere
         $use_default = false;
-        if (!$object->getId()) {
+        if ($object && !$object->getId()) {
             $use_default = true;
         }
 
@@ -449,14 +450,14 @@ class FieldManager
      *
      * You get back an array of display arrays, the same as youd get from getDisplayArrayForObject()
      *
-     * @param $object
-     * @param $field_group
+     * @param array $objects
+     * @param array $field_objects
      *
      * @return array
      */
     public function getDisplayArraysForObjectCollection(array $objects, array $field_objects)
     {
-        $data = array();
+        $data = [];
 
         foreach ($objects as $object) {
             if (!isset($field_objects[$object->getId()])) {
@@ -480,10 +481,10 @@ class FieldManager
     public function getFieldDataForObject($object)
     {
         $prop = $this->options->get('custom_data_property');
-        $data = $object->$prop;
+        $data = $object ? $object->$prop : null;
 
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         return $this->createFieldDataFromArray($data);
@@ -643,10 +644,14 @@ class FieldManager
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
      * @param array                                         $in_data
      *
-     * @return array|null
+     * @return array
      */
     public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
     {
+        if (!$object) {
+            return;
+        }
+
         list($set_field_id, $value_type, $value) = $in_data;
 
         // The field we're actually saving under
@@ -695,6 +700,10 @@ class FieldManager
      */
     public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
     {
+        if (!$object) {
+            return;
+        }
+
         $prop = $this->options->get('custom_data_property');
         if ($field_def->getParentId()) {
             foreach ($object->$prop as $v) {

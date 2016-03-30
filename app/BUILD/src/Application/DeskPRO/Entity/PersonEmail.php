@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -83,6 +85,8 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
      *
      * @Assert\NotBlank()
      * @Assert\Email()
+     * @AppAssert\NotSystemEmail()
+     * @AppAssert\NotBannedEmail()
      */
     protected $email;
 

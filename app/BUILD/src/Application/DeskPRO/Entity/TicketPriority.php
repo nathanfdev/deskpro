@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,30 +31,50 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Ticket priorities.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class TicketPriority extends DomainObject implements HasPhraseName
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Priority title.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
 
     /**
+     * The priority itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $priority = 10;

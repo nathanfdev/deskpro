@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
@@ -122,7 +124,7 @@ class NewFeedbackType extends AbstractType
                     'property_path' => 'person.name',
                     'label'         => $this->phrase('portal.forms.label_name'),
                 ])
-                ->add('email', 'deskpro_person_email', [
+                ->add('email', PersonEmailType::class, [
                     'label'         => false,
                     'property_path' => 'person.primary_email',
                     'constraints'   => [], // ignore the "unqiue entity" constraint here

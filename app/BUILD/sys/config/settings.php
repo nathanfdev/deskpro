@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
 
     ####################################################################################################################
     # core
     ####################################################################################################################
 
     /*
-     * Is registration enbaled?
+     * Is registration enabled?
      */
     'core.reg_enabled' => true,
 
     /*
-     * Is multi-language features enabeld?
+     * Is multi-language features enabled?
      */
     'core.enable_languages' => true,
 
@@ -902,8 +902,6 @@ return array(
     # captcha : FALSE (off), 'guests', 'everyone'
     ####################################################################################################################
 
-    //TODO need admin controls for these
-
     'user.captcha.tickets'  => false,
     'user.captcha.comments' => false,
     'user.captcha.feedback' => false,
@@ -1094,4 +1092,4 @@ return array(
     'api_limits.key.hour'    => 100,
     'api_limits.key.day'     => 300,
     'api_limits.key.default' => 50,
-);
+];

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -39,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations as Annotations;
-use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class AgentTeamsController extends BaseController implements ClassResourceInterface
+class AgentTeamsController extends BaseController
 {
     /**
      * Hit this endpoint and you'll fetch list of teams.
@@ -174,7 +174,6 @@ class AgentTeamsController extends BaseController implements ClassResourceInterf
      *          200="Will return when success",
      *          404="Returned when chat was not found",
      *          400="In all other cases except system error",
-     *          500="Will be returned in case server malfunction"
      *      },
      *      output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson>"
      * )

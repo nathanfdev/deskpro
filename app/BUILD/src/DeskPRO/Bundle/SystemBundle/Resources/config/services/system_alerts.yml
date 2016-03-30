@@ -32,7 +32,16 @@ services:
   # --------------------------------------------------------------------------------------------------------------------
 
   dp_sys.alerts.incoming_email_failure_trigger:
-    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\IncomingEmailFailureTrigger
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger
+    arguments:
+      - "@doctrine.orm.system_entity_manager"
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      - [setSilenceTime, [10]]
+
+  dp_sys.alerts.outgoing_email_failure_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger
     arguments:
       - "@doctrine.orm.system_entity_manager"
     tags:

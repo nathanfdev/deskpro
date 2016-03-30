@@ -2401,7 +2401,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $descriptions = $macro->getActionDescriptions($ticket);
+        $descriptions = $macro->getActionDescriptions();
 
         return $this->createJsonResponse(array(
             'macro_id'     => $macro->id,

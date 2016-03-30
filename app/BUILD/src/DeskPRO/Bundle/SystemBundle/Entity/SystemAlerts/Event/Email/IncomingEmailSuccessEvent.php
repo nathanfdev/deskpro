@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,6 +41,13 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class IncomingEmailSuccessEvent extends Event
+class IncomingEmailSuccessEvent extends Event implements SuccessEvent
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getFailureType()
+    {
+        return IncomingEmailFailureEvent::class;
+    }
 }

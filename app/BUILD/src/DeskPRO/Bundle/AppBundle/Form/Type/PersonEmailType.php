@@ -32,9 +32,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmail;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -51,7 +53,7 @@ class PersonEmailType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', [
+        $builder->add('email', EmailType::class, [
             'label'       => $options['email_label'],
             'required'    => $options['required'],
             'constraints' => $options['email_constraints'],
@@ -61,18 +63,10 @@ class PersonEmailType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'deskpro_person_email';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'                 => 'Application\\DeskPRO\\Entity\\PersonEmail',
+            'data_class'                 => PersonEmail::class,
             'email_label'                => false,
             'email_exists_error_message' => 'portal.account.registration-email-already-exists',
             'constraints'                => function (Options $options) {

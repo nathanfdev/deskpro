@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -56,13 +57,15 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 abstract class CrudController extends BaseController
 {
     public static $entity;
-    public static $output_entity;
     public static $type;
 
     /**
      * @var array|null Array of exposed action names e.g. ['get', 'list'], if not defined all are exposed
      */
     public static $exposeOnly = null;
+
+    // this used only for moving period
+    public static $serializeMethod = 'dataSerialize';
 
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
@@ -90,7 +93,7 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          200="We will return such status in case we wound your entity",
+     *          200="We will return such status in case we found your entity",
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
@@ -109,7 +112,7 @@ abstract class CrudController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->dataSerialize($entity), Response::HTTP_OK);
+        return View::create($this->{static::$serializeMethod}($entity), Response::HTTP_OK);
     }
 
     /**
@@ -184,7 +187,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->dataSerialize($result), Response::HTTP_OK);
+        return View::create($this->{static::$serializeMethod}($result), Response::HTTP_OK);
     }
 
     /**
@@ -398,10 +401,7 @@ abstract class CrudController extends BaseController
             $options
         );
 
-        $decoded = json_decode(
-            $request->getContent(),
-            true // convert to assoc arrays instead of stdClass instances
-        );
+        $decoded = $this->getRequestContent($request);
 
         // we use POST request for creating and updating entities (including partial updates)
         // so $clearMissing should depends on $model id (switch for POST and PATCH request)
@@ -414,10 +414,25 @@ abstract class CrudController extends BaseController
 
         $form->submit($decoded, !$partial_update);
         if ($form->isValid()) {
-            return View::create($this->dataSerialize($this->persistModel($model)), $status);
+            return View::create($this->{static::$serializeMethod}($this->persistModel($model)), $status);
         }
 
         throw new InvalidFormException($form);
+    }
+
+    /**
+     * It's useful for replacing content.
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    protected function getRequestContent(Request $request)
+    {
+        return json_decode(
+            $request->getContent(),
+            true // convert to assoc arrays instead of stdClass instances
+        );
     }
 
     /**

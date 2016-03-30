@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,109 +29,29 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonNote;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonNoteType;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * Class PersonNotesController.
  *
+ * @ApiDocSection("People")
+ * @OutputEntity("Application\DeskPRO\Entity\PersonNote")
  * @ApiModes("all")
+ * @Annotations\Route("/people/{parentId}/notes")
  */
-class PersonNotesController extends CrudController
+class PersonNotesController extends CrudSubController
 {
-    public static $exposeOnly = ['list', 'post', 'put', 'delete'];
-    public static $entity     = PersonNote::class;
-    public static $type       = PersonNoteType::class;
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Get("/people/{id}/notes")
-     */
-    public function listAction(Request $request)
-    {
-        return parent::listAction($request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Post("/people/{id}/notes")
-     */
-    public function postAction(Request $request)
-    {
-        return parent::postAction($request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Put("/people/{person_id}/notes/{id}")
-     */
-    public function putAction($id, Request $request)
-    {
-        $entity = $this->findEntity($id, $request);
-        if ($entity->getPerson()->getId() !== (int) $request->get('person_id')) {
-            throw $this->createBadRequestException();
-        }
-        if ($entity->getAgent() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        return parent::putAction($id, $request);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Delete("/people/{person_id}/notes/{id}")
-     */
-    public function deleteAction($id, Request $request)
-    {
-        $entity = $this->findEntity($id, $request);
-        if ($entity->getPerson()->getId() !== (int) $request->get('person_id')) {
-            throw $this->createBadRequestException();
-        }
-        if ($entity->getAgent() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        return parent::deleteAction($id, $request);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $person = $this->findOr404(Person::class, $request->get('id'));
-        $qb->andWhere("{$alias}.person = :person");
-        $qb->setParameter('person', $person->getId());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        $person = $this->findOr404(Person::class, $request->get('id'));
-
-        /** @var PersonNote $entity */
-        $entity         = new static::$entity();
-        $entity->agent  = $this->getUser();
-        $entity->person = $person;
-
-        return $entity;
-    }
+    public static $exposeOnly     = ['list', 'post', 'put', 'delete'];
+    public static $entity         = PersonNote::class;
+    public static $type           = PersonNoteType::class;
+    public static $parentProperty = 'person';
 }

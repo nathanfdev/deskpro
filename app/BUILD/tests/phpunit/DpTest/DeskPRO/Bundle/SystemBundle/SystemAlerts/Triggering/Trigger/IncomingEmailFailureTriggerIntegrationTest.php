@@ -29,12 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\IncomingEmailFailureTrigger;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger;
 use DpTest\Bundle\SystemBundle\SystemAlerts\BaseIntegrationTest;
+use Zend\Mail\Exception\RuntimeException;
+
+require_once realpath(__DIR__.'/../../BaseIntegrationTest.php');
 
 /**
  * Class IncomingEmailFailureTriggerIntegrationTest.
@@ -74,12 +78,15 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_flush_state_after_IncomingEmailSuccess_event()
     {
-        $this->trigger->setState('whatever');
-        $this->event_logger->log($this->dummySuccess());
+        $initial_trigger_state = (new IncomingEmailFailureTrigger($this->em))->getState();
 
+        $this->event_logger->log($this->dummyFailure());
+        $this->assertNotEquals($initial_trigger_state, $this->trigger->getState());
+
+        $this->event_logger->log($this->dummySuccess());
         $this->triggering_process->run();
 
-        $this->assertEquals((new IncomingEmailFailureTrigger($this->em))->getState(), $this->trigger->getState());
+        $this->assertEquals($initial_trigger_state, $this->trigger->getState());
     }
 
     /**
@@ -122,7 +129,7 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
      */
     private function dummyFailure($when = 'now')
     {
-        return new IncomingEmailFailureEvent(new \Swift_SwiftException('test'), new \DateTime($when));
+        return new IncomingEmailFailureEvent(new RuntimeException(), new \DateTime($when));
     }
 
     /**

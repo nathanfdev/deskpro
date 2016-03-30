@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
@@ -39,10 +40,10 @@ class AddLabelsAction extends AbstractAction implements ActionWithOptionsInterfa
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired(self::OPTION_LABELS);
-        $resolver->setAllowedTypes(self::OPTION_LABELS, 'array');
+        $resolver->setRequired('options');
+        $resolver->setAllowedTypes('options', 'array');
         $resolver->setAllowedValues(
-            self::OPTION_LABELS,
+            'options',
             function ($value) {
                 return !empty($value);
             }

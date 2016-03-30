@@ -76,14 +76,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\SlasDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.ticket_layouts:
-    class: DeskPRO\Bundle\AppBundle\DataService\TicketLayoutsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.ticket_macros:
-    class: DeskPRO\Bundle\AppBundle\DataService\TicketMacrosDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
   data.ticketstatuses:
     class: DeskPRO\Bundle\AppBundle\Model\TicketStatuses
     arguments: ["@doctrine.orm.default_entity_manager"]

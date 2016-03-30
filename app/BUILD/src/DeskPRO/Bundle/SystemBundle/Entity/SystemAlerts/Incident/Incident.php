@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
@@ -48,7 +49,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({
  *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\ExceptionIncident",
- *     "incoming_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident"
+ *     "incoming_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident",
+ *     "outgoing_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\OutgoingEmailFailureIncident"
  * })
  */
 abstract class Incident implements EntityInterface, NotifyPropertyChanged

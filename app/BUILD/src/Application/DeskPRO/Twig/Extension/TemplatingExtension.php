@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
@@ -164,7 +165,8 @@ class TemplatingExtension extends \Twig_Extension
             'is_action_limited' => new \Twig_Function_Method($this, 'isActionLimited'),
 
             // override so we can suppress errors where templates are out of date
-            'url' => new \Twig_Function_Method($this, 'getUrl'),
+            'url'            => new \Twig_Function_Method($this, 'getUrl'),
+            'has_login_form' => new \Twig_Function_Method($this, 'hasLoginForm', []),
         );
     }
 
@@ -1819,6 +1821,24 @@ class TemplatingExtension extends \Twig_Extension
     public function isActionLimited($action)
     {
         return $this->container->get(RateLimit::KEY)->isActionLimited($action);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasLoginForm()
+    {
+        /** @var UsersourceManager $usersourceManager */
+        $usersourceManager = $this->container->getSystemService('usersource_manager');
+
+        $count = $usersourceManager
+            ->getAll()
+            ->mustBeEnabled()
+            ->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)
+            ->count()
+        ;
+
+        return $count > 0;
     }
 }
 

@@ -45,7 +45,6 @@ use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ExecutionContextInterface;
@@ -61,13 +60,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property int $display_order
  * @property Department $parent
  * @property Department $children
- * @Serializer\ExclusionPolicy("ALL")
  */
 class Department extends DomainObject implements HasPhraseName, PersonList, Chatable, AvatarOwner
 {
     /**
      * @var int
-     * @Serializer\Expose()
      */
     protected $id;
 
@@ -83,7 +80,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
 
     /**
      * @var string
-     * @Serializer\Expose()
      */
     protected $title;
 
@@ -123,7 +119,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
 
     /**
      * @var ProjectMember[]|ArrayCollection
-     * @Serializer\Expose()
      */
     protected $project_members;
 
@@ -165,6 +160,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 
     /**
@@ -478,6 +481,16 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     public function getAvatarBlob()
     {
         return $this->avatar;
+    }
+
+    public function isChatEnabled()
+    {
+        return $this->is_chat_enabled;
+    }
+
+    public function isTicketsEnabled()
+    {
+        return $this->is_tickets_enabled;
     }
 
     ############################################################################

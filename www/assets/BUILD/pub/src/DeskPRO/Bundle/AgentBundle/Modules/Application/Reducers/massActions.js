@@ -3,11 +3,11 @@ import Immutable from 'immutable';
 import * as massActions from '../Actions/massActions';
 import { togglePayloadInCollection, handleMassAction, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 
-const initialState = {
+const massActionsInitialState = {
   selected: Immutable.fromJS([]) // array of IDs
 };
 
-export default createReducer(initialState, {
+export default createReducer(massActionsInitialState, {
   [massActions.toggleMassAction]: handleMassAction(),
   [massActions.toggleSelectedAction]: togglePayloadInCollection('selected'),
   [massActions.cancelMassActions]: state => state.set('params', Immutable.fromJS({})),

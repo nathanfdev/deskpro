@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -48,6 +49,15 @@ interface ActionInterface
     public function apply(Ticket $ticket);
 
     /**
+     * Get an array of actions that would be performed on the ticket.
+     *
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    public function getApplyActions(Ticket $ticket);
+
+    /**
      * Merge this action into another, and return the new merged action.
      *
      * For example, if a property is set, then the "other" action would overwrite the
@@ -56,7 +66,7 @@ interface ActionInterface
      * But if you were adding a value to a collection, then you could merge the two collections
      * together so the new action had new items from both actions.
      *
-     * @param ActionInterface $action
+     * @param ActionInterface $other_action
      *
      * @return ActionInterface
      */
@@ -64,6 +74,8 @@ interface ActionInterface
 
     /**
      * Get a text description of the action.
+     *
+     * @param bool $as_html
      *
      * @return string
      */
@@ -77,9 +89,12 @@ interface ActionInterface
     public function setMetaData(array $metadata);
 
     /**
+     * @param null $k
+     * @param null $default
+     *
      * @return array
      */
-    public function getMetaData();
+    public function getMetaData($k = null, $default = null);
 
     /**
      * @return bool

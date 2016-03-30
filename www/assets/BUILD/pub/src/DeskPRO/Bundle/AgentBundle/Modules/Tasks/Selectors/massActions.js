@@ -17,13 +17,11 @@ export const massActionsSelector = createSelector(
     });
 
     // Assign options
-    const assignOptions = agents.toArray().map(type => ({ value: type.get('id'), label: type.get('name') }));
     massActions.push({
       label: 'Assign',
       type: 'assign_action',
       param: 'assign',
-      quickFilter: true,
-      options: assignOptions
+      quickFilter: true
     });
 
     // Due date options

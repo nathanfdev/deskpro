@@ -388,7 +388,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
      * @Assert\Valid()
+     * @Assert\Count(min=1)
      */
     protected $emails;
 
@@ -672,6 +674,30 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOverrideDisplayName()
+    {
+        return $this->override_display_name;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getPictureBlob()
+    {
+        return $this->picture_blob;
     }
 
     public function _initPersonLogger()

@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
 
@@ -41,13 +43,13 @@ use FOS\RestBundle\Controller\Annotations;
  *
  * @ApiModes("all")
  * @ApiDocSection("Slas")
+ * @OutputEntity("Application\DeskPRO\Entity\Sla")
  * @Annotations\Route("/slas")
  */
 class SlasController extends CrudController
 {
-    public static $entity        = Sla::class;
-    public static $output_entity = Sla::class;
-    public static $listOrder     = 'desc';
-    public static $exposeOnly    = ['list', 'get'];
-    public static $listPaginate  = false;
+    public static $entity       = Sla::class;
+    public static $listOrder    = 'desc';
+    public static $exposeOnly   = ['list', 'get'];
+    public static $listPaginate = false;
 }

@@ -70,7 +70,7 @@ describe('Ampliflux Logger Middleware', () => {
         it('should throw next handler\'s exception', () => {
           const action = createAction('TEST')();
           const error = new Error();
-          const next = jasmine.createSpy('next_handler').andCallFake(() => {
+          const next = jasmine.createSpy('next_handler').and.callFake(() => {
             throw error;
           });
           const actionHandler = nextHandler(next);
@@ -85,7 +85,7 @@ describe('Ampliflux Logger Middleware', () => {
         it('should log exceptions within action handlers via console.error', () => {
           const action = createAction('TEST')();
           const error = new Error();
-          const next = jasmine.createSpy('next_handler').andCallFake(() => {
+          const next = jasmine.createSpy('next_handler').and.callFake(() => {
             throw error;
           });
           const actionHandler = nextHandler(next);
@@ -95,7 +95,7 @@ describe('Ampliflux Logger Middleware', () => {
           } catch (e) { // eslint-disable-line no-empty
           } finally {
             expect(console.error).toHaveBeenCalled();
-            expect(console.error.argsForCall[0][1]).toBe(error);
+            expect(console.error.calls.argsFor(0)[1]).toBe(error);
           }
         });
       });

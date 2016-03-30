@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\IncidentManager;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\IncomingEmailFailureTrigger;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger;
+use Zend\Mail\Exception\RuntimeException;
 
 include_once 'BaseIntegrationTest.php';
 
@@ -76,7 +78,7 @@ class IncidentManagerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_mark_Incident_dismissed_and_save_it()
     {
-        $incident = new IncomingEmailFailureIncident(new \Swift_SwiftException('test'));
+        $incident = new IncomingEmailFailureIncident(new RuntimeException());
         $this->assertFalse($incident->isDismissed());
 
         $this->incident_manager->dismiss($incident);
@@ -90,7 +92,7 @@ class IncidentManagerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_call_dismissed_and_closed_callbacks()
     {
-        $incident               = new IncomingEmailFailureIncident(new \Swift_SwiftException('test'));
+        $incident               = new IncomingEmailFailureIncident(new RuntimeException());
         $dismissed_called_times = 0;
         $closed_called_times    = 0;
         $this->trigger->setDismissedCallback(
@@ -110,9 +112,9 @@ class IncidentManagerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_remove_incidents_and_related_events()
     {
-        $this->event_logger->log(new IncomingEmailFailureEvent(new \Swift_SwiftException('test')));
-        $this->event_logger->log($e1 = new IncomingEmailFailureEvent(new \Swift_SwiftException('test')));
-        $this->event_logger->log($e2 = new IncomingEmailFailureEvent(new \Swift_SwiftException('test')));
+        $this->event_logger->log(new IncomingEmailFailureEvent(new RuntimeException()));
+        $this->event_logger->log($e1 = new IncomingEmailFailureEvent(new RuntimeException()));
+        $this->event_logger->log($e2 = new IncomingEmailFailureEvent(new RuntimeException()));
         $incident = new IncomingEmailFailureIncident();
         $incident->setEvents([$e1, $e2]);
         $this->em->persist($incident);

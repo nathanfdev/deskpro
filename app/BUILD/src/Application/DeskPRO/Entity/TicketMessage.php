@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -63,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string $message_raw
  * @property bool $show_full_hint
  * @property string $lang_code
+ * @JMS\ExclusionPolicy("all")
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -77,26 +79,51 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     const CREATED_GATEWAY_AGENT     = 'gateway.agent';
 
     /**
+     * The unique id of message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Ticket
+     * Ticket with which this message is associated.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
+     *
+     * @var Ticket
      */
     protected $ticket = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * Person this message was sent by.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailSource
+     * Info about email source, if message comes from such source.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\EmailSource>")
+     *
+     * @var EmailSource
      */
     protected $email_source = null;
 
     /**
+     * Items attached to the ticket.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\TicketAttachment>>")
+     *
      * @var TicketAttachment[]
      *
      * @Assert\Valid()
@@ -104,36 +131,71 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $attachments;
 
     /**
+     * Date when message was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
+     * Is this message agent note?
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var bool
      */
     protected $is_agent_note = false;
 
     /**
+     * How this message was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $creation_system = 'web';
 
     /**
+     * An ip address from which message was sent.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $ip_address = '';
 
     /**
+     * Unique ID of visitor left this message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $visitor_id;
 
     /**
+     * Host from which message was left.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $hostname = '';
 
     /**
+     * Country message is from.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $geo_country = null;
@@ -143,11 +205,17 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * This is a perm record and doesnt change even if the user changes/deletes their email
      * address.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $email = '';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $message_hash;
@@ -155,12 +223,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The primary translation is the one sent to the user.
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessageTranslated>")
+     *
      * @var TicketMessageTranslated
      */
     protected $primary_translation;
 
     /**
      * The message, will be in HTML!
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      *
@@ -173,6 +247,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * This will still be the HTMLPurifier'ed content (so it's safe),
      * it's just the message before it's been run through the cutter.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $message_full = null;
@@ -180,6 +257,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * This is the full raw message content. It has not been passed through
      * any HTML cleaning process.s.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -189,12 +269,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * A hint to say if we should show message_full by default. We do this when
      * we detect that the user has replied to a message inline rather than above the cut line.
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $show_full_hint = false;
 
     /**
      * The set/detected lang code.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */

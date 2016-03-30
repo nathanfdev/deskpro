@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -44,9 +45,9 @@ use Orb\Util\Numbers;
 /**
  * A custom field definition.
  *
- * @property int $display_order
- * @property CustomDefAbstract|null $parent
- * @property CustomDefAbstract[]|null $children
+ * @property int                                 $display_order
+ * @property CustomDefAbstract|null              $parent
+ * @property CustomDefAbstract[]|ArrayCollection $children
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -236,6 +237,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return 0;
     }
 
+    public function setDisplayOreder($int)
+    {
+        $this->setModelField('display_order', $int);
+
+        return $this;
+    }
+
     /**
      * Set title.
      *
@@ -313,7 +321,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return CustomDefAbstract[]|null
+     * @return CustomDefAbstract[]|ArrayCollection
      */
     public function getChildren()
     {
@@ -384,15 +392,46 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return int[]
+     */
+    public function getChoiceIds()
+    {
+        $ids      = [];
+        $iterator = function (CustomDefAbstract $custom_def) use (&$ids, &$iterator) {
+            $children = $custom_def->getChildren();
+            foreach ($children as $child) {
+                if (count($child->getChildren()) > 0) {
+                    $iterator($child);
+                } else {
+                    $ids[] = $child->getId();
+                }
+            }
+        };
+
+        $iterator($this);
+
+        return $ids;
+    }
+
+    /**
      * Add a child to this field.
      *
      * @param CustomDefAbstract $def
+     *
+     * @return $this
      */
     public function addChild(CustomDefAbstract $def)
     {
-        $this->children->add($def);
-        $def['parent'] = $this;
-        $this->_onPropertyChanged('children', $this->children, $this->children);
+        if (!$this->children->contains($def)) {
+            $this->children->add($def);
+            $this->_onPropertyChanged('children', $this->children, $this->children);
+        }
+
+        if ($def->getParent() !== $this) {
+            $def['parent'] = $this;
+        }
+
+        return $this;
     }
 
     /**
@@ -552,7 +591,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Get the value of an option, or a default value if none is set.
      *
-     * @param  $name
+     * @param      $name
      * @param null $default
      *
      * @return mixed

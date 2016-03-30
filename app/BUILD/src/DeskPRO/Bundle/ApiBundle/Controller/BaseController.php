@@ -29,15 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory;
 use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -99,25 +98,13 @@ class BaseController extends FOSRestController
     }
 
     /**
-     * @param mixed  $data
-     * @param string $concrete_model
-     * @param string $includes_string
+     * @param mixed $data
      *
      * @return ApiWrapper
      */
-    protected function wrap($data, $concrete_model = null, $includes_string = null)
+    protected function wrap($data)
     {
-        /** @var ModelFactory $factory */
-        $factory = $this->get('api_serializer.model_factory');
-        if ($data instanceof Pagerfanta) {
-            $result = $data;
-        } elseif (is_array($data) || ($data instanceof \Traversable)) {
-            $result = $factory->createArray($data, $concrete_model);
-        } else {
-            $result = $factory->create($data, $concrete_model);
-        }
-
-        return new ApiWrapper($result, $includes_string ?: []);
+        return new ApiWrapper($data);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -41,48 +45,51 @@ class ProjectMemberType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-               'person',
+        $builder
+            ->add(
+                'person',
                 'entity',
-                array(
-                    'class'    => 'DeskPRO:Person',
-                    'property' => 'name',
+                [
+                    'class'    => Person::class,
+                    'property' => 'id',
                     'required' => false,
-                )
+                ]
             )
             ->add(
                 'team',
                 'entity',
-                array(
-                    'class'    => 'DeskPRO:AgentTeam',
-                    'property' => 'name',
+                [
+                    'class'    => AgentTeam::class,
+                    'property' => 'id',
                     'required' => false,
-                )
+                ]
             )
             ->add(
                 'department',
                 'entity',
-                array(
-                    'class'    => 'DeskPRO:Department',
-                    'property' => 'name',
+                [
+                    'class'    => Department::class,
+                    'property' => 'id',
                     'required' => false,
-                )
+                ]
             )
             ->add(
                 'project',
                 'entity',
-                array(
-                    'class'    => 'App:TaskProject',
-                    'property' => 'title',
+                [
+                    'class'    => TaskProject::class,
+                    'property' => 'id',
                     'required' => true,
-                )
+                ]
             );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\ProjectMember',
-        ));
+        $resolver->setDefaults(
+            [
+                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\ProjectMember',
+            ]
+        );
     }
 }

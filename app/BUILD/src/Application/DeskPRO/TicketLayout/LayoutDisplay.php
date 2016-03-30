@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category TicketLayout
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -103,7 +104,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
             case 'department':
             case 'subject':
             case 'message':
-            case 'user_email':
+            case 'person':
                 break;
 
             default:

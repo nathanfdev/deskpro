@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -48,12 +51,15 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TasksController.
  *
+ * @ApiDocSection("Tasks")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
  * @ApiModes("all")
  * @Route("/tasks")
  */
@@ -63,27 +69,42 @@ class TasksController extends CrudController
     public static $type   = 'task';
 
     /**
+     * You can provide additionaly "me" as value for creator, team, agent or department to fetch list of task related to
+     * you, your command or department.
+     *
      * @ApiDoc(
-     *      description="get a list of tasks",
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tasks",
+     *     description="get a list of tasks",
+     *     filters={
+     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
+     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"},
+     *         {"name"="label", "pattern"="(\w,)+", "description"="filter by labels", "dataType"="string"},
+     *         {"name"="label_mode", "pattern"="+d+", "description"="additional filter for label, select where labels count > then you specified", "dataType"="string"},
+     *         {"name"="project", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
+     *         {"name"="creator", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
+     *         {"name"="no_assignments", "pattern"="1|0", "description"="select only unassigned", "dataType"="boolean"},
+     *         {"name"="assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has id", "dataType"="string"},
+     *         {"name"="not_assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has no id", "dataType"="string"},
+     *         {"name"="assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has id", "dataType"="string"},
+     *         {"name"="not_assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has no id", "dataType"="string"},
+     *         {"name"="assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has id", "dataType"="string"},
+     *         {"name"="not_assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has no id", "dataType"="string"},
+     *         {"name"="created_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by created date", "dataType"="string"},
+     *         {"name"="created_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by created date", "dataType"="string"},
+     *         {"name"="due_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by due date", "dataType"="string"},
+     *         {"name"="due_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by due date", "dataType"="string"},
+     *         {"name"="done_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by done date", "dataType"="string"},
+     *         {"name"="done_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by done date", "dataType"="string"},
+     *         {"name"="done", "pattern"="done", "description"="select only done|undone tasks", "dataType"="string"},
+     *         {"name"="order_by", "pattern"="id|title|list|project|date_due|date_done|date_created|assignee", "description"="how to order", "dataType"="string"},
+     *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"},
+     *
+     *     },
+     *     statusCodes={
+     *         200="Returned if success",
+     *         400="Returned if your request was malformed",
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task>"
      * )
      * @Get("", name="api_tasks")
      *
@@ -91,7 +112,7 @@ class TasksController extends CrudController
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         try {
             $params = $request->query->all();
@@ -112,14 +133,35 @@ class TasksController extends CrudController
     }
 
     /**
-     * @APIDoc(
-     *      description="update multiple tasks",
-     *      input={"class"="task", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
+     * @param HttpKernelInterface $kernel
+     * @param Request             $masterRequest
+     * @param array               $params
+     *
+     * @return Response
+     */
+    public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
+    {
+        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
+            '_controller' => 'ApiBundle:Tasks\Tasks:list',
+        ]);
+        $request->query->add($params);
+
+        return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    }
+
+    /**
+     * Perform a mass tasks update.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="update multiple tasks",
+     *     requirements={
+     *         {"name"="ids", "requirement"="\d+", "description"="task ids to perform an update", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         204="Returned if update was succesful",
+     *         400="Request was malformed",
+     *     }
      * )
      * @Put("/mass", name="api_tasks_mass_put")
      *
@@ -133,7 +175,7 @@ class TasksController extends CrudController
     {
         $submitted = $request->request->all();
         if (empty($submitted['ids'])) {
-            throw $this->createNotFoundException();
+            throw $this->createBadRequestException('You have to provide ids list to update');
         }
 
         // We only need to validate the data for one task
@@ -164,23 +206,23 @@ class TasksController extends CrudController
             $query->execute();
         }
 
-        return View::create($this->dataSerialize($task), Response::HTTP_NO_CONTENT);
+        return View::create($this->wrap($task), Response::HTTP_NO_CONTENT);
     }
 
     /**
-     * @APIDoc(
-     *      description="get subtasks for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     * Get subtasks for task with given id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get subtasks for a task",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *          200="Returned if everything is ok",
+     *          404="We will return this status if task with specified id was not found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskSubtask>"
      * )
      *
      * @Get("/{id}/subtasks", name="api_tasks_subtasks_get")
@@ -199,45 +241,33 @@ class TasksController extends CrudController
 
         $sub_tasks = $task->getSubtasks();
 
-        return View::create($this->dataSerialize($sub_tasks), Response::HTTP_OK);
+        return View::create($this->wrap($sub_tasks), Response::HTTP_OK);
     }
 
     /**
-     * @APIDoc(
-     *      description="get comments for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     * Get comments for task with given id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get comments for a task",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     parameters={
+     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
+     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if success",
+     *         404="We will return this status if task with specified id was not found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskComment>"
      * )
      *
      * @Get("/{id}/comments", name="api_tasks_comments_get")
      *
      * @param Request $request
-     * @param         $id
+     * @param int     $id
      *
      * @return View
      */
@@ -257,45 +287,33 @@ class TasksController extends CrudController
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
+        return View::create($this->wrap($pager), Response::HTTP_OK);
     }
 
     /**
-     * @APIDoc(
-     *      description="get attachments for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      parameters={
-     *          {
-     *              "name"="page",
-     *              "requirement"="\d+",
-     *              "description"="the page you are requesting",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          },
-     *          {
-     *              "name"="count",
-     *              "requirement"="\d+",
-     *              "description"="results per page",
-     *              "dataType"="integer",
-     *              "required"=false
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     * Get attachments for task with given id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get attachments for a task",
+     *     requirements={
+     *         { "name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     filters={
+     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
+     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if you request was successful",
+     *         404="Returned if task with given id was't found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskAttachment>"
      * )
      *
      * @Get("/{id}/attachments", name="api_tasks_attachments_get")
      *
      * @param Request $request
-     * @param         $id
+     * @param int     $id
      *
      * @return View
      */
@@ -315,34 +333,97 @@ class TasksController extends CrudController
         $pager->setMaxPerPage($count);
         $pager->setCurrentPage($page);
 
-        return View::create($this->dataSerialize($pager), Response::HTTP_OK);
+        return View::create($this->wrap($pager), Response::HTTP_OK);
     }
 
     /**
-     * @APIDoc(
-     *      description="get attached links for a task",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the task",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     * Get attached tickets for the task with specified id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get attached tickets",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if you request was successful",
+     *         404="Returned if task with given id was't found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket>"
      * )
      *
-     * @Get("/{id}/linked_items/{type}", name="api_tasks_links_get")
+     * @Get("/{id}/linked_items/tickets", name="api_tasks_linked_tickets_get")
      *
      * @param Request $request
      * @param int     $id
-     * @param string  $type
      *
      * @return View
      */
-    public function getLinksAction(Request $request, $id, $type = 'tickets')
+    public function getLinkedTicketsAction(Request $request, $id)
+    {
+        return $this->getLinked($request, $id, 'tickets');
+    }
+
+    /**
+     * Get attached chats for the task with specified id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get attached chats",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if you request was successful",
+     *         404="Returned if task with given id was't found"
+     *     },
+     *     input={"class"="task", "name"=""},
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat>"
+     * )
+     *
+     * @Get("/{id}/linked_items/chats", name="api_tasks_linked_chats_get")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getLinkedChatsAction(Request $request, $id)
+    {
+        return $this->getLinked($request, $id, 'chats');
+    }
+
+    /**
+     * Get attached chats for the task with specified id.
+     *
+     * @ApiDoc(
+     *     section="Tasks",
+     *     description="get attached articles",
+     *     section="Tasks",
+     *     description="get attached links for a task",
+     *     requirements={
+     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned if you request was successful",
+     *         404="Returned if task with given id was't found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle>"
+     * )
+     *
+     * @Get("/{id}/linked_items/articles", name="api_tasks_linked_articles_get")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getLinkedArticlesAction(Request $request, $id)
+    {
+        return $this->getLinked($request, $id, 'articles');
+    }
+
+    protected function getLinked(Request $request, $id, $type)
     {
         $task = $this->findEntity($id, $request);
         if (empty($task)) {
@@ -351,7 +432,7 @@ class TasksController extends CrudController
         $method = 'getLinked'.ucfirst($type);
         $links  = $task->$method();
 
-        return View::create($this->dataSerialize($links), Response::HTTP_OK);
+        return View::create($this->wrap($links), Response::HTTP_OK);
     }
 
     /**

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Message } from '../Message/Message';
 import { MessageAvatar } from '../Message/MessageAvatar';
-import { AvatarResolver } from '../../../../../../Application/Components/AvatarResolver';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 
 export class TypingEvent extends React.Component {
 

@@ -37,13 +37,6 @@ use Pagerfanta\Pagerfanta;
 class ApiWrapper
 {
     /**
-     * @JMS\Exclude()
-     *
-     * @var array
-     */
-    protected $includes = [];
-
-    /**
      * @JMS\Groups("wrapper")
      *
      * @var array|Pagerfanta
@@ -71,16 +64,13 @@ class ApiWrapper
     /**
      * ApiWrapper constructor.
      *
-     * @param            $data
-     * @param array|null $includes
+     * @param $data
      */
-    public function __construct($data, array $includes = [])
+    public function __construct($data)
     {
         if (!$this->checkPagination($data)) {
             $this->data = $data;
         }
-
-        $this->includes = $includes;
     }
 
     /**
@@ -116,13 +106,5 @@ class ApiWrapper
         }
 
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIncludes()
-    {
-        return $this->includes;
     }
 }

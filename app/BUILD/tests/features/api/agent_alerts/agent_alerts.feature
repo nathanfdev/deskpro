@@ -17,8 +17,8 @@ Feature: /me/notifications endpoint
     And the JSON node "linked.person" should not exist
     And the JSON node "linked.ticket" should not exist
 
-    And the JSON node "data[0].uuid" should be equal to "4"
-    And the JSON node "data[0].type" should be equal to "notifications.tickets.new_message.user_reply"
+    And the JSON node "data[0].uuid" should be equal to 4
+    And the JSON node "data[0].type" should contain "notifications.tickets.new_message.user_reply"
     And the JSON node "data[0].is_dismissed" should be equal to 0
     And the JSON node "data[0].date_created" should exist
     And the JSON node "data[0].data.ticket" should be equal to 569
@@ -26,8 +26,8 @@ Feature: /me/notifications endpoint
     And the JSON node "data[0].data.notification.title" should contain "Test Message #0510"
     And the JSON node "data[0].data.notification.summary" should be equal to "New user reply by User2 (user2@foobar.com)"
 
-    And the JSON node "data[1].uuid" should be equal to "3"
-    And the JSON node "data[1].type" should be equal to "notifications.tickets.new_ticket"
+    And the JSON node "data[1].uuid" should be equal to 3
+    And the JSON node "data[1].type" should contain "notifications.tickets.new_ticket"
     And the JSON node "data[1].is_dismissed" should be equal to 0
     And the JSON node "data[1].date_created" should exist
     And the JSON node "data[1].data.ticket" should be equal to 569
@@ -35,8 +35,8 @@ Feature: /me/notifications endpoint
     And the JSON node "data[1].data.notification.title" should contain "Test Message #0510"
     And the JSON node "data[1].data.notification.summary" should be equal to "New ticket by User2 (user2@foobar.com)"
 
-    And the JSON node "data[2].uuid" should be equal to "2"
-    And the JSON node "data[2].type" should be equal to "notifications.tickets.new_ticket"
+    And the JSON node "data[2].uuid" should be equal to 2
+    And the JSON node "data[2].type" should contain "notifications.tickets.new_ticket"
     And the JSON node "data[2].is_dismissed" should be equal to 0
     And the JSON node "data[2].date_created" should exist
     And the JSON node "data[2].data.ticket" should be equal to 568
@@ -44,8 +44,8 @@ Feature: /me/notifications endpoint
     And the JSON node "data[2].data.notification.title" should contain "Test Message #0509"
     And the JSON node "data[2].data.notification.summary" should be equal to "New ticket by User1 (user1@foobar.com)"
 
-    And the JSON node "data[3].uuid" should be equal to "1"
-    And the JSON node "data[3].type" should be equal to "notifications.tickets.new_ticket"
+    And the JSON node "data[3].uuid" should be equal to 1
+    And the JSON node "data[3].type" should contain "notifications.tickets.new_ticket"
     And the JSON node "data[3].is_dismissed" should be equal to 0
     And the JSON node "data[3].date_created" should exist
     And the JSON node "data[3].data.ticket" should be equal to 567

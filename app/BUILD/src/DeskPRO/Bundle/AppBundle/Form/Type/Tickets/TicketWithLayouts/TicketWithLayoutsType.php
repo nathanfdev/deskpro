@@ -47,12 +47,18 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\LeafDepartment;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -100,6 +106,11 @@ class TicketWithLayoutsType extends AbstractType
     private $em;
 
     /**
+     * @var TicketFieldSettings
+     */
+    private $field_settings;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager    $field_manager
@@ -109,6 +120,7 @@ class TicketWithLayoutsType extends AbstractType
      * @param LanguageManager       $language_manager
      * @param CustomPerFieldManager $custom_per_field_manager
      * @param TicketLayoutHelper    $ticket_layout_helper
+     * @param TicketFieldSettings   $field_settings
      */
     public function __construct(
         CustomFieldManager    $field_manager,
@@ -117,7 +129,8 @@ class TicketWithLayoutsType extends AbstractType
         EntityManager         $em,
         LanguageManager       $language_manager,
         CustomPerFieldManager $custom_per_field_manager,
-        TicketLayoutHelper    $ticket_layout_helper
+        TicketLayoutHelper    $ticket_layout_helper,
+        TicketFieldSettings   $field_settings
     ) {
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
@@ -126,6 +139,7 @@ class TicketWithLayoutsType extends AbstractType
         $this->language_manager         = $language_manager;
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->ticket_layout_helper     = $ticket_layout_helper;
+        $this->field_settings           = $field_settings;
     }
 
     /**
@@ -469,10 +483,6 @@ class TicketWithLayoutsType extends AbstractType
                 return $this->createFollowers($context);
             case FormFields::ATTACHMENTS:
                 return $this->createAttach($context);
-            case FormFields::USER_EMAIL:
-                return $this->createUserEmail($context);
-            case FormFields::USER_NAME:
-                return $this->createUserName($context);
             case FormFields::USER_TIMEZONE:
                 return $this->createUserTimezone();
             case FormFields::LABELS:
@@ -511,7 +521,6 @@ class TicketWithLayoutsType extends AbstractType
             'ticket'      => $context->getTicket(),
             'placeholder' => '',
             'constraints' => [
-                new LeafDepartment(['message' => 'portal.forms.error_ticket_department_invalid']),
                 new Assert\NotNull(['message' => 'portal.forms.error_ticket_department_required']),
             ],
         ]);
@@ -595,43 +604,19 @@ class TicketWithLayoutsType extends AbstractType
     /**
      * @param TicketWithLayoutsContext $context
      *
-     * @return FormField
-     */
-    private function createUserName(TicketWithLayoutsContext $context)
-    {
-        $form_field = $this->createUserNameOptions($context);
-
-        return new FormField($form_field['type'], $form_field['options']);
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
      * @return array
      */
     private function createUserNameOptions(TicketWithLayoutsContext $context)
     {
         return [
             'name'    => FormFields::USER_NAME,
-            'type'    => 'text',
+            'type'    => TextType::class,
             'options' => [
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
                 'empty_data'    => $context->getPerson()->getDisplayName(),
             ],
         ];
-    }
-
-    /**
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return FormField
-     */
-    private function createUserEmail(TicketWithLayoutsContext $context)
-    {
-        $form_field = $this->createUserEmailOptions($context);
-
-        return new FormField($form_field['type'], $form_field['options']);
     }
 
     /**
@@ -656,11 +641,11 @@ class TicketWithLayoutsType extends AbstractType
 
         return [
             'name'    => FormFields::USER_EMAIL,
-            'type'    => 'deskpro_person_email',
+            'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
-                'label'         => $this->phrase('portal.forms.label_email'),
-                'constraints'   => [], // ignore the "unqiue entity" constraint here
+                'label'         => false,
+                'constraints'   => [], // ignore the "unique entity" constraint here
             ],
         ];
     }
@@ -832,7 +817,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCategory(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canCategoryBeDisplayed($context)) {
+        if (!$this->field_settings->canCategoryBeDisplayed()) {
             return false;
         }
 
@@ -843,7 +828,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_category', [
+        return new FormField(TicketCategoryType::class, [
             'label'       => $this->phrase('portal.forms.label_category'),
             'placeholder' => '',
         ]);
@@ -856,7 +841,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createPriority(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canPriorityBeDisplayed($context)) {
+        if (!$this->field_settings->canPriorityBeDisplayed()) {
             return false;
         }
 
@@ -867,7 +852,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_priority', [
+        return new FormField(TicketPriorityType::class, [
             'label'       => $this->phrase('portal.forms.label_priority'),
             'placeholder' => '',
         ]);
@@ -880,7 +865,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createWorkflow(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canWorkflowBeDisplayed($context)) {
+        if (!$this->field_settings->canWorkflowBeDisplayed()) {
             return false;
         }
 
@@ -891,7 +876,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_workflow', [
+        return new FormField(TicketWorkflowType::class, [
             'label' => $this->phrase('portal.forms.label_workflow'),
         ]);
     }
@@ -903,7 +888,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createProduct(TicketWithLayoutsContext $context)
     {
-        if (!$this->ticket_layout_helper->canProductBeDisplayed($context)) {
+        if (!$this->field_settings->canProductBeDisplayed()) {
             return false;
         }
 
@@ -914,7 +899,7 @@ class TicketWithLayoutsType extends AbstractType
             }
         }
 
-        return new FormField('deskpro_product', [
+        return new FormField(TicketProductType::class, [
             'placeholder' => '',
         ]);
     }

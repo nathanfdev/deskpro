@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -75,7 +76,9 @@ class ValidatorErrorCodeFactory
                 case Assert\Type::class:
                     return ApiErrors::INVALID_DATA_TYPE;
                 case Assert\Length::class:
-                    return ApiErrors::WRONG_LENGTH;
+                    return $violation->getCode() === Assert\Length::TOO_SHORT_ERROR
+                        ? ApiErrors::LENGTH_TOO_SHORT
+                        : ApiErrors::LENGTH_TOO_LONG;
                 case Assert\Valid::class:
                     return ApiErrors::INVALID_INPUT;
                 case Assert\Choice::class:
@@ -92,6 +95,8 @@ class ValidatorErrorCodeFactory
                     return ApiErrors::PROFILE_URL;
                 case UniqueEntity::class:
                     return ApiErrors::UNIQUE_ENTITY;
+                case AppAssert\ProjectMember::class:
+                    return ApiErrors::EXACTLY_ONE_SHOULD_BE_SET;
             }
         }
 

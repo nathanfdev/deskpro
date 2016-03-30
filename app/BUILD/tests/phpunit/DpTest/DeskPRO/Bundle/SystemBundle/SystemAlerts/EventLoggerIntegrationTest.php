@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Zend\Mail\Exception\RuntimeException;
 
 include_once 'BaseIntegrationTest.php';
 
@@ -55,7 +57,7 @@ class EventLoggerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_not_log_a_success_event_if_there_was_no_corresponding_failure()
     {
-        $this->event_logger->logSuccess(new IncomingEmailSuccessEvent(), IncomingEmailFailureEvent::class);
+        $this->event_logger->log(new IncomingEmailSuccessEvent());
         $this->assertEquals(0, $this->countEvents());
     }
 
@@ -64,11 +66,11 @@ class EventLoggerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_not_log_a_success_event_if_there_is_one_already()
     {
-        $this->event_logger->log(new IncomingEmailFailureEvent(new \Swift_SwiftException('test')));
-        $this->event_logger->logSuccess(new IncomingEmailSuccessEvent(), IncomingEmailFailureEvent::class);
+        $this->event_logger->log(new IncomingEmailFailureEvent(new RuntimeException()));
+        $this->event_logger->log(new IncomingEmailSuccessEvent());
         $this->assertEquals(2, $this->countEvents());
 
-        $this->event_logger->logSuccess(new IncomingEmailSuccessEvent(), IncomingEmailFailureEvent::class);
+        $this->event_logger->log(new IncomingEmailSuccessEvent());
 
         $this->assertEquals(2, $this->countEvents());
     }
@@ -78,11 +80,11 @@ class EventLoggerIntegrationTest extends BaseIntegrationTest
      */
     public function it_should_log_a_single_success_record_from_series_when_there_was_a_corresponding_failure()
     {
-        $this->event_logger->log(new IncomingEmailFailureEvent(new \Swift_SwiftException('test')));
+        $this->event_logger->log(new IncomingEmailFailureEvent(new RuntimeException()));
         $this->assertEquals(1, $this->countEvents());
 
         for ($i = 0; $i < 5; ++$i) {
-            $this->event_logger->logSuccess(new IncomingEmailSuccessEvent(), IncomingEmailFailureEvent::class);
+            $this->event_logger->log(new IncomingEmailSuccessEvent());
         }
 
         $this->assertEquals(2, $this->countEvents());

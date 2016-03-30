@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -49,6 +51,8 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Route("/people")
+ * @ApiDocSection("People")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
  */
 class PeopleController extends CrudController
 {

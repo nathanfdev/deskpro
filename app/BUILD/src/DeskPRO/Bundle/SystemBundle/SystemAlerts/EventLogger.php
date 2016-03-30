@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -57,12 +59,43 @@ class EventLogger
 
     /**
      * @param \Exception|Event $event_or_exception
+     * @param bool             $aloud              Whether to print the event description
+     * @param bool|null        $halt               Whether to halt execution
      */
-    public function log($event_or_exception)
+    public function log($event_or_exception, $aloud = false, $halt = null)
     {
+        if ($event_or_exception instanceof SuccessEvent) {
+            return $this->logSuccess($event_or_exception);
+        }
+
         $event = $this->ensureEvent($event_or_exception);
         $this->em->persist($event);
         $this->em->flush($event);
+
+        if ($aloud) {
+            echo (string) $event, "\n";
+        }
+
+        !is_null($halt) or $halt = $aloud;
+        if ($halt) {
+            die();
+        }
+    }
+
+    /**
+     * @param \Exception|Event $event_or_exception
+     */
+    public function logAloud($event_or_exception)
+    {
+        $this->log($event_or_exception, true, false);
+    }
+
+    /**
+     * @param \Exception|Event $event_or_exception
+     */
+    public function halt($event_or_exception)
+    {
+        $this->log($event_or_exception, true, true);
     }
 
     /**
@@ -90,17 +123,18 @@ class EventLogger
      *     LIMIT 1
      * -----------------------------------------------------------------------------------------------------------------
      *
-     * @param Event  $event
-     * @param string $failure_type Event type to check for presence
+     * @param SuccessEvent $event
      */
-    public function logSuccess(Event $event, $failure_type)
+    private function logSuccess(SuccessEvent $event)
     {
         $success_type = get_class($event);
+        $failure_type = $event->getFailureType();
         $success      = $this->em->getRepository($success_type)->findOneBy([], ['id' => 'desc']);
         $failure      = $this->em->getRepository($failure_type)->findOneBy([], ['id' => 'desc']);
 
         if (($failure && !$success) || ($failure && $success && ($failure->getId() > $success->getId()))) {
-            $this->log($event);
+            $this->em->persist($event);
+            $this->em->flush($event);
         }
     }
 

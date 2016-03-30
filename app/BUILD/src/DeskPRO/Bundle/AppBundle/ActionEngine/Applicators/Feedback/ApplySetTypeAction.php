@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,26 +38,14 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
-    private $type;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($this->options);
         foreach ($feedback as $item) {
-            $item->setCategory($this->type);
+            $item->setCategory($type);
         }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id         = $this->options['id'];
-        $this->type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($id);
     }
 }

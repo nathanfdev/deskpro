@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -281,7 +282,7 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             $new_email      = new PersonEmail();
             $add_email_form = $this->createForm(
-                'deskpro_person_email',
+                PersonEmailType::class,
                 $new_email,
                 ['action' => $this->generateUrl('portal_user_profile_emails')]
             );

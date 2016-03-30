@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -42,6 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketCustomFieldsController.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Tickets")
  * @Route("/ticket_custom_fields")
  */
 class TicketCustomFieldsController extends CrudController
@@ -50,6 +53,7 @@ class TicketCustomFieldsController extends CrudController
     public static $entity     = CustomDefTicket::class;
     public static $listOrder  = 'asc';
 
+    public static $serializeMethod = 'wrap';
     /**
      * {@inheritdoc}
      */

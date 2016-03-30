@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,22 +36,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 abstract class AbstractAction implements ActionInterface
 {
-    const APPROVE_ACTION             = 'approve';
-    const ASSIGN_ACTION              = 'assign';
-    const DELETE_ACTION              = 'delete';
-    const SET_CATEGORY_ACTION        = 'set_category';
-    const SET_DUE_DATE_ACTION        = 'set_due_date';
-    const SET_HIDDEN_STATUS_ACTION   = 'set_hidden_status';
-    const SET_PROJECT_ACTION         = 'set_project';
-    const SET_STATUS_ACTION          = 'set_status';
-    const SET_STATUS_CATEGORY_ACTION = 'set_status_category';
-    const SET_TYPE_ACTION            = 'set_type';
-    const ADD_LABELS_ACTION          = 'add_labels';
-    const REMOVE_LABELS_ACTION       = 'remove_labels';
-
-    const OPTION_LABELS = 'labels';
-    const OPTION_INPUT  = 'input';
-    const OPTION_ID     = 'id';
+    const SET_OF_ACTIONS = 'set_of_actions';
 
     protected $options;
 
@@ -79,6 +64,6 @@ abstract class AbstractAction implements ActionInterface
     /** @return array */
     public function serialize()
     {
-        return ['options' => $this->options];
+        return $this->options;
     }
 }

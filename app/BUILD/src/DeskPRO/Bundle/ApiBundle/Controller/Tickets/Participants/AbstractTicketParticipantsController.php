@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
 use Application\DeskPRO\Entity\TicketParticipant;
@@ -47,6 +48,8 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
     public static $type           = TicketParticipantType::class;
     public static $parentProperty = 'ticket';
     public static $exposeOnly     = ['get', 'list', 'post', 'delete'];
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * {@inheritdoc}

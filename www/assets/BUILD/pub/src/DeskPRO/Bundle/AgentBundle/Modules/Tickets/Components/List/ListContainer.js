@@ -1,16 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
-import { connect } from 'react-redux';
 import { viewModeSelector } from '../../Selectors/list';
-import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection }
+  from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { selectedSelector } from '../../../Application/Selectors/massActions';
 
+import { connect } from 'react-redux';
 @connect(state => ({
   isLoaded: isLoadedCollectionSelectorFactory('Ticket', 'list')(state),
+  selected: selectedSelector(state),
   viewMode: viewModeSelector(state)
 }))
 export class ListContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    selected: PropTypes.object.isRequired
   };
 
   componentDidMount() {

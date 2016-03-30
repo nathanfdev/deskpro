@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { AvatarResolver } from '../../AvatarResolver';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import { AgentAvatar } from './AgentAvatar';
 import classNames from 'classnames';
 

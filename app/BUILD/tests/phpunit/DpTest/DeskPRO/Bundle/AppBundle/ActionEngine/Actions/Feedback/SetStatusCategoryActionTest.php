@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetStatusCategoryAction([AbstractAction::OPTION_ID => 1]);
+        $action = new SetStatusCategoryAction(['options' => 1]);
         $this->assertInstanceOf(SetStatusCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -67,14 +67,14 @@ class SetStatusCategoryActionTest extends DeskProTestCase
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
         $resolver
-            ->setRequired(Argument::exact(AbstractAction::OPTION_ID))
+            ->setRequired(Argument::exact('options'))
             ->shouldBeCalled();
         $resolver
-            ->setAllowedTypes(Argument::exact(AbstractAction::OPTION_ID), Argument::exact(['string', 'int']))
+            ->setAllowedTypes(Argument::exact('options'), Argument::exact(['string', 'int']))
             ->shouldBeCalled();
         $resolver
             ->setAllowedValues(
-                Argument::exact(AbstractAction::OPTION_ID),
+                Argument::exact('options'),
                 Argument::that(
                     function ($value) {
                         return !empty($value);
@@ -92,7 +92,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_id_param()
     {
-        new SetStatusCategoryAction([AbstractAction::OPTION_ID => 0]);
+        new SetStatusCategoryAction(['options' => 0]);
     }
 
     /**
@@ -101,7 +101,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_none_integer_id_param()
     {
-        new SetStatusCategoryAction([AbstractAction::OPTION_ID => ['one']]);
+        new SetStatusCategoryAction(['options' => ['one']]);
     }
 
     /**

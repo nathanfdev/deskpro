@@ -2055,7 +2055,7 @@ $search-btn-height: $search-height - 24;
             border-bottom: 0;
           }
 
-          > a {
+           a {
             display: block;
             padding: 15px 10px;
             text-decoration: none;
@@ -2064,10 +2064,18 @@ $search-btn-height: $search-height - 24;
             @include padding-left(50px);
             line-height: 1em;
 
-            &:hover {
+            &.disabled {
+              cursor: default;
               h1 {
-                color: #3575bd;
-                text-decoration: underline;
+                color: gray;
+              }
+            }
+            &:not(.disabled) {
+              &:hover {
+                h1 {
+                  color: #3575bd;
+                  text-decoration: underline;
+                }
               }
             }
 

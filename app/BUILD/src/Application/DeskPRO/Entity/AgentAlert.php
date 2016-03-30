@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -123,6 +124,38 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->data['@target_maps'][$target] = $keys;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypename()
+    {
+        return $this->typename;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDismissed()
+    {
+        return $this->is_dismissed;
     }
 
     ############################################################################

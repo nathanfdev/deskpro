@@ -49,3 +49,13 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: validator.constraint_validator, alias: 'dp_auth_validator' }
+
+  validator.ticket_layout:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketLayoutValidator
+    arguments:
+      - "@custom_field_manager"
+      - "@ticket_layout_factory"
+      - "@form_hierarchy_generator"
+      - "@ticket_field_settings"
+    tags:
+      - { name: validator.constraint_validator, alias: 'dp_ticket_layout' }

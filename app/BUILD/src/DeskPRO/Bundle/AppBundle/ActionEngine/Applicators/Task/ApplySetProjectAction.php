@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,26 +38,15 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 
 class ApplySetProjectAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    /** @var  \DeskPRO\Bundle\AppBundle\Entity\TaskProject */
-    private $project;
-
     /**
      * @param Task[] $tasks
      */
     public function apply(array $tasks)
     {
-        $this->init();
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskProject $project */
+        $project = $this->em->getRepository('App:TaskProject')->find($this->options);
         foreach ($tasks as $task) {
-            $task->setProject($this->project);
+            $task->setProject($project);
         }
-    }
-
-    /**
-     * Fetch type (FeedbackCategory) for setting to items.
-     */
-    private function init()
-    {
-        $id            = $this->options['id'];
-        $this->project = $this->em->getRepository('App:TaskProject')->find($id);
     }
 }

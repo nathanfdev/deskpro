@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-use DeskPRO\Bundle\AppBundle\Widget\WidgetSettings;
+use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
@@ -55,17 +56,17 @@ class ChatTranscriptInfoType extends AbstractType
     private $set_person_listener;
 
     /**
-     * @var WidgetSettings
+     * @var WidgetSettingsResolver
      */
     private $user_chat_settings;
 
     /**
      * Constructor.
      *
-     * @param SetPersonListener $set_person_listener
-     * @param WidgetSettings    $user_chat_settings
+     * @param SetPersonListener      $set_person_listener
+     * @param WidgetSettingsResolver $user_chat_settings
      */
-    public function __construct(SetPersonListener $set_person_listener, WidgetSettings $user_chat_settings)
+    public function __construct(SetPersonListener $set_person_listener, WidgetSettingsResolver $user_chat_settings)
     {
         $this->set_person_listener = $set_person_listener;
         $this->user_chat_settings  = $user_chat_settings;

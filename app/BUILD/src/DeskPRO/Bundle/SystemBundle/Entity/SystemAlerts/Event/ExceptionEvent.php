@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +42,12 @@ use Doctrine\ORM\Mapping as ORM;
 class ExceptionEvent extends Event
 {
     /**
+     * @var int
+     * @ORM\Column(type="integer", options={"unsigned"=true})
+     */
+    private $code = 0;
+
+    /**
      * ExceptionEvent constructor.
      *
      * @param \Exception     $exception
@@ -52,5 +59,14 @@ class ExceptionEvent extends Event
         $this->setGroup(get_class($exception));
         $this->setDescription($exception->getMessage());
         $this->setLog($exception->getTraceAsString());
+        $this->code = $exception->getCode();
+    }
+
+    /**
+     * @return int
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

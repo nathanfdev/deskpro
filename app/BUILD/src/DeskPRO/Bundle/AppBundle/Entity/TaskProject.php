@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -39,28 +40,38 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_projects")
+ * @JMS\ExclusionPolicy("all")
  */
 class TaskProject implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     *
+     * @var string
      */
     protected $title;
 

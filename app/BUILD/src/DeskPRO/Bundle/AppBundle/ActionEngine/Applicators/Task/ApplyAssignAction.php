@@ -97,13 +97,12 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
                 $this->em->remove($assigned);
             }
         }
-        $assign     = $this->options['assign'];
         $collection = [
             'agents'      => [],
             'teams'       => [],
             'departments' => [],
         ];
-        foreach ($assign as $type => $values) {
+        foreach ($this->options as $type => $values) {
             switch ($type) {
                 case 'agent':
                     foreach ($values as $id) {

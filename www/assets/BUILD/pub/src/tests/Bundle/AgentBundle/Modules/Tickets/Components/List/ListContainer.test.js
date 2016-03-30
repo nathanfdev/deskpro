@@ -9,10 +9,9 @@ import { renderInTicketsApp } from '../../tickets.test-helper';
 describe('ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;
   const List = require('~Components/List').List;
-  const Selectors = require('~Selectors/list');
 
   it('should render List component', () => {
-    spyOn(List.prototype, 'render').andCallThrough();
+    spyOn(List.prototype, 'render').and.callThrough();
     renderInTicketsApp(0, <ListContainer />);
     expect(List.prototype.render).toHaveBeenCalled();
   });

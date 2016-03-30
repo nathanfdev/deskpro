@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
-use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
 
 class ActionTransformerTest extends DeskProTestCase
@@ -60,28 +59,27 @@ class ActionTransformerTest extends DeskProTestCase
     /**
      * @test
      */
-    public function actionToApplicator_should_return_ActionApplicatorInterface()
+    public function actionToApplicatorClassName_should_return_string()
     {
-        $transformer = $this->instance();
-        $action      = $transformer->arrayToActionApplicator('Feedback', self::$serializedArray);
-        $this->assertInstanceOf(ActionApplicatorInterface::class, $action);
+        $transformer     = $this->instance();
+        $applicatorClass = $transformer->actionToApplicatorClassName('Feedback', self::$serializedArray['type']);
+        $this->assertStringStartsWith('DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Applicators\\', $applicatorClass);
+        $this->assertStringEndsWith('Action', $applicatorClass);
     }
 
     /**
      * @test
      * @expectedException \DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists
      */
-    public function arrayToActionApplicator_should_raise_ActionApplicatorDoesNotExists_on_wrong_action()
+    public function actionToApplicatorClassName_should_raise_ActionApplicatorDoesNotExists_on_wrong_action()
     {
         $transformer = $this->instance();
 
-        return $transformer->arrayToActionApplicator('Feedback', self::$wrongSerializedArray);
+        return $transformer->actionToApplicatorClassName('Feedback', self::$wrongSerializedArray['type']);
     }
 
     private function instance()
     {
-        $em = $this->prophesize(EntityManager::class);
-
-        return new ActionTransformer($em->reveal());
+        return new ActionTransformer();
     }
 }

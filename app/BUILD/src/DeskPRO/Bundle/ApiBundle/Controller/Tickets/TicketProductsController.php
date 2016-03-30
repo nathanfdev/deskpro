@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,19 +33,26 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Product;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * Class TicketProductController.
  *
  * @ApiModes("all")
- * @Route("/ticket_products")
+ * @ApiDocSection("Tickets")
+ * @OutputEntity("Application\DeskPRO\Entity\Product")
+ * @Annotations\Route("/ticket_products")
+ * @Annotations\View(serializerGroups={"list", "details", "product"})
  */
 class TicketProductsController extends CrudController
 {
     public static $exposeOnly   = ['list'];
     public static $entity       = Product::class;
     public static $listPaginate = false;
+
+    public static $serializeMethod = 'wrap';
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,13 +31,16 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Article;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
+ * @JMS\ExclusionPolicy("all")
  * @ORM\Entity
  */
 class TaskLinkedArticle extends TaskLinkedItem
@@ -45,9 +48,15 @@ class TaskLinkedArticle extends TaskLinkedItem
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var Article
+     * The article attached to the task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
+     *
+     * @var Article
      */
     protected $article;
 

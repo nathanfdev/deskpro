@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,16 +31,21 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Products.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Product extends CategoryAbstract implements HasPhraseName
 {
@@ -50,6 +55,12 @@ class Product extends CategoryAbstract implements HasPhraseName
     protected $custom_data;
 
     /**
+     * Parent of the product.
+     *
+     * @JMS\Expose()
+     * @JMS\Groups("details")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Product>")
+     *
      * @var \Application\DeskPRO\Entity\Product
      */
     protected $parent;
@@ -61,7 +72,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 
     public function __construct()
     {
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->custom_data = new ArrayCollection();
     }
 
     /**

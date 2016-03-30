@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,40 +29,30 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\Feedback;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 
 class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
-    private $customDef;
-
     /**
      * @param Feedback[] $feedback
      */
     public function apply(array $feedback)
     {
-        $this->init();
+        $customDef = $this->em
+            ->getRepository('DeskPRO:CustomDefFeedback')
+            ->findOneBy(['title' => 'Category']);
         foreach ($feedback as $item) {
             $item->resetCustomData();
             $customCategory = new CustomDataFeedback();
-            $customCategory->setInput($this->options[AbstractAction::OPTION_INPUT]);
-            $customCategory->setField($this->customDef);
+            $customCategory->setInput($this->options);
+            $customCategory->setField($customDef);
             $item->addCustomData($customCategory);
         }
-    }
-
-    /**
-     * Fetch CustomDef.
-     */
-    private function init()
-    {
-        $this->customDef = $this->em
-            ->getRepository('DeskPRO:CustomDefFeedback')
-            ->findOneBy(['title' => 'Category']);
     }
 }

@@ -61,64 +61,64 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Ticket.
  *
- * @property int                             $id
- * @property string                          $ref
- * @property string                          $auth
- * @property Language                        $language
- * @property Department                      $department
- * @property TicketCategory                  $category
- * @property TicketWorkflow                  $workflow
- * @property TicketPriority                  $priority
- * @property Product                         $product
- * @property Person                          $person
- * @property PersonEmail                     $person_email
- * @property Person                          $agent
- * @property AgentTeam                       $agent_team
- * @property Organization                    $organization
- * @property ChatConversation                $linked_chat
- * @property TicketAttachment[]              $attachments
- * @property TicketAccessCode[]              $access_codes
- * @property TicketMessage[]|ArrayCollection $messages
- * @property TicketSms[]                     $sms_messages
- * @property CustomDataTicket[]              $custom_data
- * @property LabelTicket[]                   $labels
- * @property string                          $sent_to_address
- * @property EmailAccount                    $email_account
- * @property string                          $email_account_address
- * @property string                          $creation_system
- * @property string                          $creation_system_option
- * @property string                          $ticket_hash
- * @property string                          $status
- * @property string                          $hidden_status
- * @property bool                            $is_hold
- * @property int                             $urgency
- * @property int                             $feedback_rating
- * @property \DateTime                       $date_feedback_rating
- * @property \DateTime                       $date_created
- * @property \DateTime                       $date_resolved
- * @property \DateTime                       $date_archived
- * @property \DateTime                       $date_first_agent_assign
- * @property \DateTime                       $date_first_agent_reply
- * @property \DateTime                       $date_last_agent_reply
- * @property \DateTime                       $date_last_user_reply
- * @property \DateTime                       $date_agent_waiting
- * @property \DateTime                       $date_user_waiting
- * @property \DateTime                       $date_status
- * @property int                             $total_user_waiting
- * @property int                             $total_to_first_reply
- * @property Person                          $locked_by_agent
- * @property \DateTime                       $date_locked
- * @property bool                            $has_attachments
- * @property string                          $subject
- * @property string                          $original_subject
- * @property array                           $properties
- * @property int                             $count_agent_replies
- * @property int                             $count_user_replies
- * @property string|null                     $worst_sla_status
- * @property array                           $waiting_times
- * @property TicketParticipant[]             $participants
- * @property TicketCharge[]                  $charges
- * @property TicketSla[]                     $ticket_slas
+ * @property int                                $id
+ * @property string                             $ref
+ * @property string                             $auth
+ * @property Language                           $language
+ * @property Department                         $department
+ * @property TicketCategory                     $category
+ * @property TicketWorkflow                     $workflow
+ * @property TicketPriority                     $priority
+ * @property Product                            $product
+ * @property Person                             $person
+ * @property PersonEmail                        $person_email
+ * @property Person                             $agent
+ * @property AgentTeam                          $agent_team
+ * @property Organization                       $organization
+ * @property ChatConversation                   $linked_chat
+ * @property TicketAttachment[]                 $attachments
+ * @property TicketAccessCode[]                 $access_codes
+ * @property TicketMessage[]|ArrayCollection    $messages
+ * @property TicketSms[]                        $sms_messages
+ * @property CustomDataTicket[]|ArrayCollection $custom_data
+ * @property LabelTicket[]                      $labels
+ * @property string                             $sent_to_address
+ * @property EmailAccount                       $email_account
+ * @property string                             $email_account_address
+ * @property string                             $creation_system
+ * @property string                             $creation_system_option
+ * @property string                             $ticket_hash
+ * @property string                             $status
+ * @property string                             $hidden_status
+ * @property bool                               $is_hold
+ * @property int                                $urgency
+ * @property int                                $feedback_rating
+ * @property \DateTime                          $date_feedback_rating
+ * @property \DateTime                          $date_created
+ * @property \DateTime                          $date_resolved
+ * @property \DateTime                          $date_archived
+ * @property \DateTime                          $date_first_agent_assign
+ * @property \DateTime                          $date_first_agent_reply
+ * @property \DateTime                          $date_last_agent_reply
+ * @property \DateTime                          $date_last_user_reply
+ * @property \DateTime                          $date_agent_waiting
+ * @property \DateTime                          $date_user_waiting
+ * @property \DateTime                          $date_status
+ * @property int                                $total_user_waiting
+ * @property int                                $total_to_first_reply
+ * @property Person                             $locked_by_agent
+ * @property \DateTime                          $date_locked
+ * @property bool                               $has_attachments
+ * @property string                             $subject
+ * @property string                             $original_subject
+ * @property array                              $properties
+ * @property int                                $count_agent_replies
+ * @property int                                $count_user_replies
+ * @property string|null                        $worst_sla_status
+ * @property array                              $waiting_times
+ * @property TicketParticipant[]                $participants
+ * @property TicketCharge[]                     $charges
+ * @property TicketSla[]                        $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
@@ -210,6 +210,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Department
+     *
+     * @AppAssert\Ticket\LeafDepartment()
      */
     protected $department = null;
 
@@ -1709,29 +1711,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @param $field
      */
-    public function removeCustomDataForField($field)
+    public function removeCustomDataForField(CustomDefTicket $field)
     {
-        $parent_id = null;
-        $field_id  = $field['id'];
-        if ($field->parent) {
-            $parent_id = $field->parent['id'];
-        }
-
-        $change = false;
+        $changed = false;
         foreach ($this->custom_data as $data) {
-            if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
-                $change = true;
+            if ($data->field === $field || $data->root_field == $field) {
+                $changed = true;
                 $this->custom_data->removeElement($data);
-
-                if ($parent_id) {
-                    $this->getStateChangeRecorder()->record("custom_data.$parent_id", $data, null, true);
-                } else {
-                    $this->getStateChangeRecorder()->record("custom_data.$field_id", $data, null, true);
-                }
+                $this->getStateChangeRecorder()->record('custom_data.'.$field->getId(), $data, null, true);
+            } elseif ($field->parent && ($data->field === $field->parent || $data->root_field === $field->parent)) {
+                $changed = true;
+                $this->custom_data->removeElement($data);
+                $this->getStateChangeRecorder()->record('custom_data.'.$field->parent->getId(), $data, null, true);
             }
         }
 
-        if ($change) {
+        if ($changed) {
             $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
@@ -2047,6 +2042,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->department;
     }
 
+    /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->email_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailAccountAddress()
+    {
+        return $this->email_account_address;
+    }
+
     public function getEmailAccountId()
     {
         if (!$this->email_account) {
@@ -2197,6 +2208,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
     }
 
+    public function setProduct(Product $product = null)
+    {
+        $this->setModelField('product', $product);
+
+        return $this;
+    }
+
     public function getProblemIds()
     {
         $ids = [];
@@ -2257,6 +2275,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         } else {
             $this['workflow'] = null;
         }
+    }
+
+    public function setWorkflow(TicketWorkflow $workflow = null)
+    {
+        $this->setModelField('workflow', $workflow);
+
+        return $this;
     }
 
     /**
@@ -2321,6 +2346,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         return $this->agent_team['id'];
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return $this
+     */
+    public function setAgentTeam(AgentTeam $team = null)
+    {
+        $this->setModelField('agent_team', $team);
+
+        return $this;
+    }
+
+    /**
+     * @return AgentTeam
+     */
+    public function getAgentTeam()
+    {
+        return $this->agent_team;
     }
 
     public function setAgentTeamId($id)
@@ -2858,6 +2903,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         } else {
             return $this->status;
         }
+    }
+
+    /**
+     * Returns status code.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
     }
 
     public function isAwaitingUser()
@@ -4012,6 +4075,214 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->problems->remove($pk);
         }
         $this->_onPropertyChanged('problems', null, $this->problems);
+    }
+
+    /**
+     * @return ChatConversation
+     */
+    public function getLinkedChat()
+    {
+        return $this->linked_chat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationSystem()
+    {
+        return $this->creation_system;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationSystemOption()
+    {
+        return $this->creation_system_option;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFeedbackRating()
+    {
+        return $this->date_feedback_rating;
+    }
+
+    /**
+     * @return TicketSla[]
+     */
+    public function getTicketSlas()
+    {
+        return $this->ticket_slas;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateResolved()
+    {
+        return $this->date_resolved;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateArchived()
+    {
+        return $this->date_archived;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentAssign()
+    {
+        return $this->date_first_agent_assign;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstAgentReply()
+    {
+        return $this->date_first_agent_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastAgentReply()
+    {
+        return $this->date_last_agent_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastUserReply()
+    {
+        return $this->date_last_user_reply;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateAgentWaiting()
+    {
+        return $this->date_agent_waiting;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateUserWaiting()
+    {
+        return $this->date_user_waiting;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateStatus()
+    {
+        return $this->date_status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalUserWaiting()
+    {
+        return $this->total_user_waiting;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalToFirstReply()
+    {
+        return $this->total_to_first_reply;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getLockedByAgent()
+    {
+        return $this->locked_by_agent;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLocked()
+    {
+        return $this->date_locked;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasAttachments()
+    {
+        return $this->has_attachments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalSubject()
+    {
+        return $this->original_subject;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountAgentReplies()
+    {
+        return $this->count_agent_replies;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountUserReplies()
+    {
+        return $this->count_user_replies;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProblems()
+    {
+        return $this->problems;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUrgency()
+    {
+        return $this->urgency;
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

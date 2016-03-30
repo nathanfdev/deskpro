@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -140,7 +141,7 @@ class SavedFormController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm('deskpro_person_email');
+        $form = $this->createForm(PersonEmailType::class);
         $form->handleRequest($request);
         if ($form->isValid()) {
             /** @var \Application\DeskPRO\Entity\PersonEmail $email */

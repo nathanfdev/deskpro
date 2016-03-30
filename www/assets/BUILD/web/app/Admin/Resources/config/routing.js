@@ -250,9 +250,40 @@ define(function() {
     controller: 'Admin_Settings_Ctrl_ResetDemo'
   });
 
-  //##################################################################################################################
-  // Agents
-  //##################################################################################################################
+	//###
+	//# Anti-Abuse
+	//###
+	routes.push({
+		id: 'setup.login_lockout_settings',
+		url: '/login_lockout_settings',
+		templateName: 'AntiAbuse/login_lockout_settings.html',
+		controller: 'Admin_AntiAbuse_Ctrl_LoginLockoutSettings'
+	});
+
+	routes.push({
+		id: 'setup.portal_rate_limiting',
+		url: '/portal_rate_limiting',
+		templateName: 'AntiAbuse/portal_rate_limiting.html',
+		controller: 'Admin_AntiAbuse_Ctrl_PortalRateLimiting'
+	});
+
+	routes.push({
+		id: 'setup.email_rate_limiting',
+		url: '/email_rate_limiting',
+		templateName: 'AntiAbuse/email_rate_limiting.html',
+		controller: 'Admin_AntiAbuse_Ctrl_EmailRateLimiting'
+	});
+
+	routes.push({
+		id: 'setup.captcha_settings',
+		url: '/captcha_settings',
+		templateName: 'AntiAbuse/captcha_settings.html',
+		controller: 'Admin_AntiAbuse_Ctrl_CaptchaSettings'
+	});
+
+	//##################################################################################################################
+	// Agents
+	//##################################################################################################################
 
   //###
   //# Agents
@@ -1136,7 +1167,7 @@ define(function() {
     id: 'tickets.problems',
     url: '/problems',
     templateName: 'TicketProblems/settings.html',
-    controller: 'Admin_TicketProblems_Ctrl_Settings',
+    controller: 'Admin_TicketProblems_Ctrl_Settings'
   });
 
   //##################################################################################################################

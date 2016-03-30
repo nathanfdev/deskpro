@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -60,6 +61,12 @@ class DeferredHandler implements SubscribingHandlerInterface
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format'    => 'json',
                 'type'      => SerializerTypes::TYPE_DEFERRED,
+                'method'    => 'serialize',
+            ],
+            [
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format'    => 'json',
+                'type'      => CallbackDeferredProperty::class,
                 'method'    => 'serialize',
             ],
         ];

@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -90,7 +92,7 @@ class PersonRegistrationType extends AbstractType
                     new NotBlank(['message' => 'portal.forms.error_required']),
                 ],
             ])
-            ->add('primary_email', 'deskpro_person_email', [
+            ->add('primary_email', PersonEmailType::class, [
                 'required' => true,
                 'label'    => false,
             ])

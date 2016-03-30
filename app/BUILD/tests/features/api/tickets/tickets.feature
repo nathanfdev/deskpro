@@ -9,18 +9,45 @@ Feature: /tickets endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: I retrieve a ticket
+  Scenario: I retrieve a ticket w/o sideloading
     When I send a GET request to "/api/v2/tickets/1"
     And the response status code should be 200
     And the JSON node "data.subject" should be equal to "Test"
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: I retrieve a ticket with sideloading
+    When I send a GET request to "/api/v2/tickets/2?include=person,organization"
+    And the response status code should be 200
+    And the JSON node "data.subject" should be equal to "Ticket #1"
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.person.3.id" should be equal to 3
+    And the JSON node "linked.person.3.primary_email" should be equal to "user@deskpro.dev"
+    And the JSON node "linked.organization.1.id" should be equal to 1
+    And the JSON node "linked.organization.1.name" should be equal to "Organization 1"
+    And the JSON node "linked.organization.2.id" should be equal to 2
+    And the JSON node "linked.organization.2.name" should be equal to "Organization 2"
 
   Scenario: I retrieve list of tickets
-    When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc"
+    When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc&include=person"
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "data" should exist
+    And the JSON node "data" should have 4 elements
     And the JSON node "data[0].subject" should be equal to "Ticket #3"
     And the JSON node "data[1].subject" should be equal to "Ticket #2"
+    And the JSON node "data[2].subject" should be equal to "Ticket #1"
+    And the JSON node "data[3].subject" should be equal to "Test"
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "linked.person.2.id" should be equal to 2
+    And the JSON node "linked.person.2.primary_email" should be equal to "agent@deskpro.dev"
+    And the JSON node "linked.person.3.id" should be equal to 3
+    And the JSON node "linked.person.3.primary_email" should be equal to "user@deskpro.dev"
+
+  Scenario: I retrieve list of tickets w/o sideloading
+    When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc"
+    And the JSON node "data" should have 4 elements
+    And the JSON node "linked.person" should not exist
 
   Scenario: I try to create a ticket providing empty data
     When I send a POST request to "/api/v2/tickets"
@@ -41,7 +68,6 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.agent.errors[0].code" should be equal to "person_not_agent"
     And the JSON node "errors.fields.agent.errors[0].message" should contain "is not agent."
 
-  @basic
   Scenario: I create a ticket
     When I send a POST request to "/api/v2/tickets" with body:
     """

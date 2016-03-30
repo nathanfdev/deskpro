@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -266,7 +267,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
+     * @return bool
      */
     public function isDone()
     {
@@ -418,7 +419,7 @@ class Task implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getDateDone()
     {

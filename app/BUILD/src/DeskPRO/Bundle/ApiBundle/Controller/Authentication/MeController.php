@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,14 +36,10 @@ use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -54,12 +50,16 @@ use Symfony\Component\HttpFoundation\Response;
 class MeController extends BaseController
 {
     /**
+     * Gather specific info about authentication.
+     *
      * @ApiDoc(
-     *      description="get information about the authenticated user",
-     *      output="DeskPRO\Bundle\ApiBundle\Model\Me",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Auth",
+     *     description="get information about the authenticated user",
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Me",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
      * @Get("/me", name="api_me")
@@ -79,32 +79,26 @@ class MeController extends BaseController
             $me->app_id = $token->getAppId();
         }
 
-        return View::create(
-            $this->createRepresentation(
-               $me
-            ),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($me), Response::HTTP_OK);
     }
 
     /**
-     * @Get("/me/profile", name="api_get_my_profile")
+     * Get device setup token.
+     *
+     * @ApiDoc(
+     *     section="Auth",
+     *     description="get my profile action",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Get("/me/device-setup-token")
      */
-    public function getProfileAction()
-    {
-        return View::create(
-            $this->dataSerialize(new PersonProfile($this->getUser())),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Get("/me/devise-setup-token")
-     */
-    public function getDeviseSetupTokenAction()
+    public function getDeviceSetupTokenAction()
     {
         $tmpData = TmpData::create(
-            'devise_setup_token',
+            'device_setup_token',
             ['agent_id' => $this->getUser()->getId()],
             '+10 minutes'
         );
@@ -114,38 +108,8 @@ class MeController extends BaseController
         $url = $this->generateUrl('api_authenticate_device', ['auth' => $tmpData->auth], true);
 
         return View::create(
-            $this->createRepresentation([
-                'setup_token' => 'dp_device_setup:'.$url,
-            ]),
+            $this->wrap(['setup_token' => 'dp_device_setup:'.$url]),
             Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @Put("/me/profile", name="api_put_my_profile")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function putProfileAction(Request $request)
-    {
-        $person = $this->getUser();
-
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'person_profile', $person)->getForm();
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($person);
-        $em->flush();
-
-        return View::create(
-            $this->dataSerialize(new PersonProfile($person)),
-            Response::HTTP_CREATED
         );
     }
 }

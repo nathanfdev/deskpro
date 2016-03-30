@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,12 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @property int $id
@@ -45,35 +47,66 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property \Application\DeskPRO\TicketLayout\Layout $user_layout
  * @property \Application\DeskPRO\TicketLayout\Layout $agent_layout
  * @property \DateTime $date_updated
+ * @JMS\ExclusionPolicy("all")
  */
 class TicketLayout extends DomainObject
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Department uses this layout.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
      * @var Department
      */
     protected $department;
 
     /**
+     * Is layout enabled?
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_enabled = true;
 
     /**
+     * Layout for users.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\TicketLayout\Layout>")
+     *
      * @var \Application\DeskPRO\TicketLayout\Layout
      */
     protected $user_layout;
 
     /**
+     * Layout for agents.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\TicketLayout\Layout>")
+     *
      * @var \Application\DeskPRO\TicketLayout\Layout
      */
     protected $agent_layout;
 
     /**
+     * Date when this stuff was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_updated;

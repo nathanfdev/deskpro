@@ -38,6 +38,8 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Component\Util\MathUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
@@ -718,7 +720,7 @@ class Runner
             if (App::getDb()->isTransactionActive()) {
                 $this->logger->log('WARNING: Unclosed transaction!', 'info');
                 $e = new \RuntimeException('WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processed_source_ids));
-                SystemErrorHandler::logException($e);
+                App::getEventLogger()->logAloud($e);
                 while (App::getDb()->isTransactionActive()) {
                     App::getDb()->commit();
                 }
@@ -754,9 +756,10 @@ class Runner
 
                         break;
                     }
+                    App::getEventLogger()->log(new IncomingEmailSuccessEvent());
                 } catch (\Exception $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    SystemErrorHandler::logException($e, false);
+                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($e));
                     break;
                 }
             }
