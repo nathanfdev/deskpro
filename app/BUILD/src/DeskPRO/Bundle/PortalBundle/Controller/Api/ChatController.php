@@ -210,8 +210,6 @@ class ChatController extends AbstractApiController
             ;
 
             $conversation->addMessage($chat_message);
-            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
-
             $chat_messages[] = $chat_message;
         }
 
@@ -249,12 +247,15 @@ class ChatController extends AbstractApiController
             ;
 
             $conversation->addMessage($chat_message);
-            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
-
             $chat_messages[] = $chat_message;
         }
 
         $this->saveConversation($conversation);
+
+        // Dispatch send message event after saving chat conversation to get message ids
+        foreach ($chat_messages as $chat_message) {
+            $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
+        }
 
         return View::create($this->dataSerialize($chat_messages));
     }
