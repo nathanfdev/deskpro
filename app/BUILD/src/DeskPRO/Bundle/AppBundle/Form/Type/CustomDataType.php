@@ -135,7 +135,7 @@ class CustomDataType extends AbstractType
         // the real label will be on the parent form which is adding the field
         $options = array_merge($field->getOptions(), [
             'label'          => false,
-            'help'           => $custom_def->getDescription(),
+            'help'           => false,
             'error_bubbling' => true,
             'mapped'         => false,
         ]);
@@ -285,6 +285,20 @@ class CustomDataType extends AbstractType
     {
         $resolver
             ->setDefaults([
+                'label' => function (Options $options) {
+                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
+                    $field = $options['custom_def'];
+                    if ($field) {
+                        return $field->getTitle();
+                    }
+                },
+                'help' => function (Options $options) {
+                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
+                    $field = $options['custom_def'];
+                    if ($field) {
+                        return $field->getDescription();
+                    }
+                },
                 'inline'            => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,

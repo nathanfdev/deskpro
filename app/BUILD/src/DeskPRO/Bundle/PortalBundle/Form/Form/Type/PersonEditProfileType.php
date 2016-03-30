@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -223,7 +224,6 @@ class PersonEditProfileType extends AbstractType
                 'custom_def'      => $field_def,
                 'property_path'   => 'custom_data',
                 'agent_interface' => false,
-                'label'           => false,
             ]);
         }
     }
