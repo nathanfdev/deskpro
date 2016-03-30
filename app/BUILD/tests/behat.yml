@@ -36,6 +36,32 @@ api:
                 env: test
                 debug: true
 
+install:
+    suites:
+        install:
+            paths:
+                - %paths.base%/features/install
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\E2E\E2EContext
+                - DpBehat\Install\ServerInfoContext
+    extensions:
+        Behat\MinkExtension:
+            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
+            # e.g.:
+            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
+            #base_url: '/'
+            default_session: default
+            sessions:
+                default:
+                    goutte: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/InstallKernel.php
+                class: DpSys\Kernel\InstallKernel
+                env: test
+                debug: true
 
 portal:
     suites:

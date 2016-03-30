@@ -241,6 +241,13 @@ class DpEnv
             $this->config_reader = $config_reader;
         } else {
             $config_dir  = $this->dp_root.DIRECTORY_SEPARATOR.'config';
+
+            // When E2E tests are running, we switch config dirs to the test config
+            // See DpBehat\E2E\E2EContext
+            if (file_exists($config_dir.DIRECTORY_SEPARATOR.'e2e_running.trigger')) {
+                $config_dir = $this->dp_root.'/app/BUILD/tests/config';
+            }
+
             $this->config_reader = new \DpRun\ConfigReader([$config_dir]);
         }
 

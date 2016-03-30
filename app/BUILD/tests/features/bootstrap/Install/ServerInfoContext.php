@@ -26,40 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DpBehat\Install;
 
-namespace DpSys\Kernel;
+use Behat\MinkExtension\Context\RawMinkContext;
+use DeskPRO\Component\Util\TypeUtils;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
-
-class InstallKernel extends BaseKernel
+class ServerInfoContext extends RawMinkContext
 {
     /**
-     * {@inheritdoc}
+     * @Then the encoded output should decode into :classname
      */
-    public function registerBundles()
+    public function theEncodedOutputShouldDecodeInto($classname)
     {
-        $bundles = [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        ];
-
-        if ('dev' === $this->getEnvironment() || 'test' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
+        $res = $this->getSession()->getPage()->getContent();
+        if (!$res) {
+            throw new \RuntimeException('Missing content');
         }
 
-        return $bundles;
-    }
+        $match = null;
+        if (!preg_match('#\-{10,}BEGIN\-{10}(.*?)\-{10,}END\-{10}#s', $res, $match)) {
+            throw new \RuntimeException('Invalid content missing begin/end markers.');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(DP_ROOT.'/sys/config/install/install_config_'.$this->getEnvironment().'.yml');
+        $checker = unserialize(base64_decode(trim($match[1])));
+        if (!$checker) {
+            throw new \RuntimeException('Failed to decode content');
+        }
+
+        $type = TypeUtils::getVarType($checker);
+
+        if ($type !== $classname) {
+            throw new \InvalidArgumentException("Expected $classname but got $type");
+        }
     }
 }

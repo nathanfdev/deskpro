@@ -30,36 +30,44 @@
  * DeskPRO.
  */
 
-namespace DpSys\Kernel;
+namespace DpBehat\E2E;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
+use DpBehat\BaseContext;
 
-class InstallKernel extends BaseKernel
+/**
+ * When E2E tests are running, the main DeskPRO config needs to read from the test config rather
+ * than the normal config (/app/BUILD/tests/config). See \DpRun\DpEnv.
+ */
+class E2EContext extends BaseContext
 {
+    private static $trigger_file_path;
+
     /**
-     * {@inheritdoc}
+     * @BeforeSuite
      */
-    public function registerBundles()
+    public static function enableTestMode()
     {
-        $bundles = [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        ];
+        /* \DpRun\DpEnv */
+        global $DP_ENV;
 
-        if ('dev' === $this->getEnvironment() || 'test' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
+        self::$trigger_file_path = $DP_ENV->getDpRoot().DIRECTORY_SEPARATOR.'/config/e2e_running.trigger';
+
+        touch(self::$trigger_file_path);
+        if (!file_exists(self::$trigger_file_path)) {
+            throw new \RuntimeException('Failed to touch: '.self::$trigger_file_path);
         }
-
-        return $bundles;
     }
 
     /**
-     * {@inheritdoc}
+     * @AfterSuite
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public static function disableTestMode()
     {
-        $loader->load(DP_ROOT.'/sys/config/install/install_config_'.$this->getEnvironment().'.yml');
+        if (self::$trigger_file_path) {
+            unlink(self::$trigger_file_path);
+            if (file_exists(self::$trigger_file_path)) {
+                throw new \RuntimeException('Failed unlink: '.self::$trigger_file_path);
+            }
+        }
     }
 }

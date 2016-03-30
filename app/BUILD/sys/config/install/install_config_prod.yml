@@ -1,0 +1,2 @@
+imports:
+  - { resource: install_config.yml }
