@@ -144,10 +144,15 @@ class NewTicket
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        // in this case we are authorized to make a person from a guest
-        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
-        $person->setName($person->getDisplayName());
-        $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
+        $exist_person = $this->person_factory->getPersonByEmail($person->getEmailAddress());
+        if ($exist_person) {
+            $person = $exist_person;
+        } else {
+            // in this case we are authorized to make a person from a guest
+            $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+            $person->setName($person->getDisplayName());
+            $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
+        }
 
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
