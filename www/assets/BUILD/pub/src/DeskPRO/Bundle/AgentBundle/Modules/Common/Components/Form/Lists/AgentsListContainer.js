@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 export class AgentsListContainer extends Component {
   static propTypes = {
-    onChange: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     selfAssign: PropTypes.func,
     me: PropTypes.object.isRequired,
     agents: PropTypes.object.isRequired,
@@ -23,19 +23,20 @@ export class AgentsListContainer extends Component {
   };
 
   render() {
-    const { selected, agents, onChange, filter, multiple, showOnlySelected, selfAssign } = this.props;
+    const { selected, agents, onClick, filter, multiple, showOnlySelected, selfAssign } = this.props;
 
     return (
       <CollectionField>
         <div part="title">
           Agent <a href="#" onClick={selfAssign}>Assign to me</a>
         </div>
-        <AgentsList values={agents}
+        <AgentsList param="agent"
+          values={agents}
                     selected={selected}
                     filter={filter}
                     multiple={multiple}
                     showOnlySelected={showOnlySelected}
-                    onChange={onChange}/>
+                    onClick={onClick}/>
       </CollectionField>
     );
   }

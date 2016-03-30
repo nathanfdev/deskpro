@@ -11,9 +11,9 @@ export class BaseForm extends React.Component {
 
     this.state = {
       quickFilter: '',
-      agents: [],
-      agentTeams: [],
-      departments: [],
+      agent: null,
+      agentTeam: null,
+      department: null,
       errors: {},
       submit: false
     };

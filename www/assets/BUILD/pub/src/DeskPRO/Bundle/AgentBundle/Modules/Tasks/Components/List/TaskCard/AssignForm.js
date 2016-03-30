@@ -29,9 +29,9 @@ export class AssignForm extends BaseForm {
     this.state = {
       ...localState,
 
-      agents: task.get('agents', emptyObject).toArray(),
-      agentTeams: task.get('teams', emptyObject).toArray(),
-      departments: task.get('departments', emptyObject).toArray()
+      agent: task.get('agents', emptyObject).toArray()[0],
+      agentTeam: task.get('teams', emptyObject).toArray()[0],
+      department: task.get('departments', emptyObject).toArray()[0]
     };
   }
 
@@ -40,21 +40,29 @@ export class AssignForm extends BaseForm {
     const emptyObject = Immutable.fromJS({});
 
     this.setState({
-      agents: task.get('agents', emptyObject).toArray(),
-      agentTeams: task.get('teams', emptyObject).toArray(),
-      departments: task.get('departments', emptyObject).toArray()
+      agent: task.get('agents', emptyObject).toArray()[0],
+      agentTeam: task.get('teams', emptyObject).toArray()[0],
+      department: task.get('departments', emptyObject).toArray()[0]
     });
   }
+
+  onClick = (param, value, isActive)=> {
+    if (isActive) {
+      this.setState({ [param]: null });
+    } else {
+      this.setState({ [param]: value });
+    }
+  };
 
   onSubmit = event => {
     event.preventDefault();
 
     const submitData = Immutable.fromJS({
-      agents: this.state.agents,
-      teams: this.state.agentTeams,
-      departments: this.state.departments
+      agents: [this.state.agent],
+      teams: [this.state.agentTeam],
+      departments: [this.state.department]
     });
-
+console.log('Submit', submitData.toJS());
     this.props.onSubmit(submitData);
   };
 
@@ -78,16 +86,16 @@ export class AssignForm extends BaseForm {
             </FieldGroup>
 
             <FieldGroup>
-              <AgentsListContainer selected={this.state.agents}
+              <AgentsListContainer selected={this.state.agent}
                                    filter={this.state.quickFilter}
                                    selfAssign={this.onAssignSelf}
-                                   onChange={this.onChange.bind(this, 'agents')}/>
-              <TeamsListContainer selected={this.state.teams}
+                                   onClick={this.onClick}/>
+              <TeamsListContainer selected={this.state.team}
                                   filter={this.state.quickFilter}
-                                  onChange={this.onChange.bind(this, 'teams')}/>
-              <DepartmentsListContainer selected={this.state.departments}
+                                  onClick={this.onClick}/>
+              <DepartmentsListContainer selected={this.state.department}
                                         filter={this.state.quickFilter}
-                                        onChange={this.onChange.bind(this, 'departments')}/>
+                                        onClick={this.onClick}/>
             </FieldGroup>
 
             <FieldGroup>
