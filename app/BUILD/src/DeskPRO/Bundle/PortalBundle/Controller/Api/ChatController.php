@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -182,12 +185,7 @@ class ChatController extends AbstractApiController
     {
         $this->checkValidSession($conversation, $request);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_message')
-            ->getForm()
-        ;
-
+        $form = $this->get('form.factory')->createNamedBuilder(null, ChatMessageType::class)->getForm();
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -315,12 +313,7 @@ class ChatController extends AbstractApiController
     {
         $this->checkValidSession($conversation, $request);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_user_typing')
-            ->getForm()
-        ;
-
+        $form = $this->get('form.factory')->createNamedBuilder(null, ChatUserTypingType::class)->getForm();
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
