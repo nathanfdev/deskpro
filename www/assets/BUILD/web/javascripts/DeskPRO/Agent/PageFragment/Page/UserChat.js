@@ -662,7 +662,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.userTypingTime = (new Date()).getTime();
 		var el = this.getEl('user_typing');
-		$('.prop-msg', el).text(preview);
+		$('.prop-msg', el).html(preview);
 		el.detach().appendTo(this.getEl('messages_box'));
 		el.show();
 
