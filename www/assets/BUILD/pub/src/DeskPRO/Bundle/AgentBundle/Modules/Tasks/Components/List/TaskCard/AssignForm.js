@@ -30,7 +30,7 @@ export class AssignForm extends BaseForm {
       ...localState,
 
       agent: task.get('agents', emptyObject).toArray()[0],
-      agentTeam: task.get('teams', emptyObject).toArray()[0],
+      team: task.get('teams', emptyObject).toArray()[0],
       department: task.get('departments', emptyObject).toArray()[0]
     };
   }
@@ -41,7 +41,7 @@ export class AssignForm extends BaseForm {
 
     this.setState({
       agent: task.get('agents', emptyObject).toArray()[0],
-      agentTeam: task.get('teams', emptyObject).toArray()[0],
+      team: task.get('teams', emptyObject).toArray()[0],
       department: task.get('departments', emptyObject).toArray()[0]
     });
   }
@@ -59,10 +59,9 @@ export class AssignForm extends BaseForm {
 
     const submitData = Immutable.fromJS({
       agents: [this.state.agent],
-      teams: [this.state.agentTeam],
+      teams: [this.state.team],
       departments: [this.state.department]
     });
-console.log('Submit', submitData.toJS());
     this.props.onSubmit(submitData);
   };
 

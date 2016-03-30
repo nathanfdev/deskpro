@@ -12,7 +12,7 @@ export class BaseForm extends React.Component {
     this.state = {
       quickFilter: '',
       agent: null,
-      agentTeam: null,
+      team: null,
       department: null,
       errors: {},
       submit: false
@@ -27,22 +27,22 @@ export class BaseForm extends React.Component {
 
   onAssignSelf = () => {
     const id = this.props.me.get('id');
-    const selected = this.state.agents;
+    const selected = this.state.agent;
     if (id && selected.indexOf(id) === -1) {
       selected.push(id);
     }
 
     this.setState({
-      agents: selected
+      agent: selected
     });
   };
 
   onUnassignAll = (event) => {
     event.preventDefault();
     this.setState({
-      agents: [],
-      agentTeams: [],
-      departments: []
+      agent: null,
+      team: null,
+      department: null
     });
   };
 
