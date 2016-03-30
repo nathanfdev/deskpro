@@ -354,9 +354,9 @@ function getWebpackConfig(mode, isProd) {
 
   if (isProd) {
     config.devtool = 'source-map';
-    // config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    //   exclude: [/(node_modules|bower_components)/]
-    // }));
+    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
+      exclude: [/(node_modules|bower_components)/]
+    }));
   }
 
   //---
