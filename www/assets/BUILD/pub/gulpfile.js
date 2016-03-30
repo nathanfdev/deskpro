@@ -170,24 +170,24 @@ gulp.task('bundle:dev-server', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
-  startWebpackServer(getWebpackConfig('all', true, false));
+  startWebpackServer(getWebpackConfig('all', false));
 });
 
 gulp.task('bundle:dev-server:agent', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   refreshPortalDesignerVariables();
-  startWebpackServer(getWebpackConfig('agent', true, false));
+  startWebpackServer(getWebpackConfig('agent', false));
 });
 
 gulp.task('bundle:dev-server:portal', () => {
-  startWebpackServer(getWebpackConfig('portal', true, false));
+  startWebpackServer(getWebpackConfig('portal', false));
 });
 
 gulp.task('bundle:dev-server:widget', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
-  startWebpackServer(getWebpackConfig('widget', true, false));
+  startWebpackServer(getWebpackConfig('widget', false));
 });
 
 var slate = require('gulp-slate');
@@ -225,12 +225,11 @@ gulp.task('slate', function() {
 
 /**
  * @param {String}  mode          all, agent, portal
- * @param {Boolean} isDevServer   To add settings needed for the dev server and hot-reloading
  * @param {Boolean} isProd        To add settings for prod such as uglify and source maps
  * @returns {Object}
  */
-function getWebpackConfig(mode, isDevServer, isProd) {
-  var node_modules_dir = path.join(__dirname, 'node_modules');
+function getWebpackConfig(mode, isProd) {
+  var isDevServer = !isProd;
 
   var config = {
     cache: true,
