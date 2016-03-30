@@ -32,8 +32,8 @@ use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
  * @Annotation
- * @Target("CLASS")
- * Class ApiDocSection
+ * @Target({"CLASS"})
+ * Class OutputEntity
  */
 class OutputEntity
 {

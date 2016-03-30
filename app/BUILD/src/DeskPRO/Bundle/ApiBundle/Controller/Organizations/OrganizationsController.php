@@ -29,19 +29,18 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,7 +48,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Class OrganizationsController.
  *
  * @ApiModes("all")
- * @Route("/organizations")
+ * @Annotations\Route("/organizations")
+ * @ApiDocSection("Organizations")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
  */
 class OrganizationsController extends CrudController
@@ -69,12 +69,15 @@ class OrganizationsController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Get tickets of the given organization",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Organizations",
+     *     description="Get tickets of the given organization",
+     *     statusCodes={
+     *         200="Everything is OK",
+     *         400="Malformed request"
+     *     },
+     *     output="array<DeskPRO\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
-     * @Get("/{id}/tickets")
+     * @Annotations\Get("/{id}/tickets")
      *
      * @param Request $request
      * @param int     $id

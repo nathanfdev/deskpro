@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\OrganizationNote;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationNoteType;
@@ -42,6 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class OrganizationNotesController.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Organizations")
+ * @OutputEntity("Application\DeskPRO\Entity\OrganizationNote")
  * @Route("/organizations/{parentId}/notes")
  */
 class OrganizationNotesController extends CrudSubController
