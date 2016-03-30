@@ -31,7 +31,7 @@ export class AgentsListContainer extends Component {
           Agent <a href="#" onClick={selfAssign}>Assign to me</a>
         </div>
         <AgentsList param="agent"
-          values={agents}
+                    values={agents}
                     selected={selected}
                     filter={filter}
                     multiple={multiple}

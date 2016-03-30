@@ -102,22 +102,16 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
             'teams'       => [],
             'departments' => [],
         ];
-        foreach ($this->options as $type => $values) {
+        foreach ($this->options as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    foreach ($values as $id) {
-                        $collection['agents'][] = $this->em->getRepository('DeskPRO:Person')->find($id);
-                    }
+                    $collection['agents'][] = $this->em->getRepository('DeskPRO:Person')->find($id);
                     break;
                 case 'team':
-                    foreach ($values as $id) {
-                        $collection['teams'][] = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
-                    }
+                    $collection['teams'][] = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
                     break;
                 case 'department':
-                    foreach ($values as $id) {
-                        $collection['departments'][] = $this->em->getRepository('DeskPRO:Department')->find($id);
-                    }
+                    $collection['departments'][] = $this->em->getRepository('DeskPRO:Department')->find($id);
                     break;
             }
         }
