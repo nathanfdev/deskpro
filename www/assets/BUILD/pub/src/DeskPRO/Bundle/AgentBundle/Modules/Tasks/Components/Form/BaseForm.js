@@ -11,9 +11,7 @@ export class BaseForm extends React.Component {
 
     this.state = {
       quickFilter: '',
-      agent: null,
-      team: null,
-      department: null,
+      assign: {},
       errors: {},
       submit: false
     };
@@ -33,17 +31,13 @@ export class BaseForm extends React.Component {
     }
 
     this.setState({
-      agent: selected
+      assign: { agent: selected }
     });
   };
 
   onUnassignAll = (event) => {
     event.preventDefault();
-    this.setState({
-      agent: null,
-      team: null,
-      department: null
-    });
+    this.setState({ assign: {} });
   };
 
   onChange(prop, value) {

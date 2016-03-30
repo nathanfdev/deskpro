@@ -19,7 +19,7 @@ export class AgentsListContainer extends Component {
     multiple: PropTypes.bool,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
-    selected: PropTypes.object
+    selected: PropTypes.number
   };
 
   render() {

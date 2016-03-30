@@ -74,10 +74,13 @@ export class TaskCardEditContainer extends React.Component {
     let params;
 
     if (prop === 'assignee') {
+      const agents = value.get('agent') ? [value.get('agent')] : [];
+      const teams = value.get('team') ? [value.get('team')] : [];
+      const departments = value.get('department') ? [value.get('department')] : [];
       params = {
-        agents: value.get('agents').toArray(),
-        teams: value.get('teams').toArray(),
-        departments: value.get('departments').toArray()
+        agents: agents,
+        teams: teams,
+        departments: departments
       };
       task = task.mergeWith(value);
     } else {
