@@ -234,7 +234,6 @@ class ChatMessage extends DomainObject
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("author_id")
      *
      * @return int
      */
@@ -252,7 +251,6 @@ class ChatMessage extends DomainObject
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("string")
-     * @JMS\SerializedName("author_type")
      *
      * @return int
      */
@@ -266,7 +264,6 @@ class ChatMessage extends DomainObject
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("conversation_id")
      *
      * @return int
      */

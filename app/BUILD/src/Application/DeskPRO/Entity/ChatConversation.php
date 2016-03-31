@@ -427,7 +427,6 @@ class ChatConversation extends DomainObject
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("conversation_id")
      *
      * @return int
      */
@@ -439,7 +438,6 @@ class ChatConversation extends DomainObject
     /**
      * @JMS\VirtualProperty()
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("need_validate_email")
      *
      * @return bool
      */
@@ -826,7 +824,6 @@ class ChatConversation extends DomainObject
      * Department identity which chat was assigned.
      *
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("department_id")
      * @JMS\Type("integer")
      *
      * @return int
@@ -844,7 +841,6 @@ class ChatConversation extends DomainObject
      * Department name which chat was assigned.
      *
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("department_name")
      * @JMS\Type("string")
      *
      * @return string
@@ -869,7 +865,6 @@ class ChatConversation extends DomainObject
      *
      * @JMS\Type("string")
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("subject_line")
      *
      * @return string
      */

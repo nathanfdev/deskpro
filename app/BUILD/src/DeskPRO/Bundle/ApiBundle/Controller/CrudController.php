@@ -329,6 +329,7 @@ abstract class CrudController extends BaseController
         }
 
         $qb->orderBy($alias.'.'.$sort, $order);
+        $qb->orderBy($alias.'.id', $order);
     }
 
     /**
