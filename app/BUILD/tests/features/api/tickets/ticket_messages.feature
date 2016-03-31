@@ -121,6 +121,18 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments[0]" should be equal to 1
     And the JSON node "data.attachments[1]" should be equal to 2
 
+  Scenario: I'm checking last created message with sideloading
+    When I send a GET request to "/api/v2/tickets/1/messages/5?include=ticket_attachment,blob"
+    Then the response status code should be 200
+    And the JSON node "data.id" should be equal to 5
+
+    And the JSON node "linked.ticket_attachment.1.id" should be equal to 1
+    And the JSON node "linked.ticket_attachment.2.id" should be equal to 2
+    And the JSON node "linked.blob.5.blob_id" should be equal to 5
+    And the JSON node "linked.blob.5.content_type" should be equal to "text/plain"
+    And the JSON node "linked.blob.6.blob_id" should be equal to 6
+    And the JSON node "linked.blob.6.content_type" should be equal to "text/plain"
+
   Scenario: I create a text message with is_note = false
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """

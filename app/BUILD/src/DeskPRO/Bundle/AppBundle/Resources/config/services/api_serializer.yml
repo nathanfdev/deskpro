@@ -105,6 +105,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.blob:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
