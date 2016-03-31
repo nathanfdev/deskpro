@@ -41,9 +41,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -189,18 +187,17 @@ class CustomFieldManager
 
     /**
      * @param CustomDefAbstract $def
-     * @param bool              $is_agent
      * @param bool              $is_inline
      *
      * @return FormField
      */
-    public function createCustomField(CustomDefAbstract $def, $is_agent = false, $is_inline = false)
+    public function createCustomField(CustomDefAbstract $def, $is_inline = false)
     {
         switch ($def->getType()) {
             case CustomDefAbstract::TYPE_TEXT:
-                return new FormField(TextType::class, $this->getGeneralOptionsForField($def, [], $is_agent));
+                return new FormField(TextType::class, $this->getGeneralOptionsForField($def, []));
             case CustomDefAbstract::TYPE_TEXTAREA:
-                return new FormField(TextareaType::class, $this->getGeneralOptionsForField($def, [], $is_agent));
+                return new FormField(TextareaType::class, $this->getGeneralOptionsForField($def, []));
             case CustomDefAbstract::TYPE_TOGGLE:
                 $options = [
                     'checkbox_label' => $def->getOption('label_text') ?: '',
@@ -209,7 +206,7 @@ class CustomFieldManager
 
                 return new FormField(
                     'single_checkbox',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    $this->getGeneralOptionsForField($def, $options)
                 );
 
             case CustomDefAbstract::TYPE_DISPLAY:
@@ -221,7 +218,7 @@ class CustomFieldManager
 
                 return new FormField(
                     'deskpro_display_html',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    $this->getGeneralOptionsForField($def, $options)
                 );
 
             case CustomDefAbstract::TYPE_CHOICE:
@@ -233,7 +230,7 @@ class CustomFieldManager
 
                 return new FormField(
                     'deskpro_custom_field_choice',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    $this->getGeneralOptionsForField($def, $options)
                 );
 
             case CustomDefAbstract::TYPE_DATE:
@@ -251,7 +248,7 @@ class CustomFieldManager
 
                 return new FormField(
                     'deskpro_date',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    $this->getGeneralOptionsForField($def, $options)
                 );
 
             case CustomDefAbstract::TYPE_DATETIME:
@@ -263,7 +260,7 @@ class CustomFieldManager
 
                     return new FormField(
                         'datetime',
-                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                        $this->getGeneralOptionsForField($def, $options)
                     );
                 } else {
                     $options = [
@@ -274,7 +271,7 @@ class CustomFieldManager
 
                     return new FormField(
                         'deskpro_datetime',
-                        $this->getGeneralOptionsForField($def, $options, $is_agent)
+                        $this->getGeneralOptionsForField($def, $options)
                     );
                 }
 
@@ -290,7 +287,7 @@ class CustomFieldManager
 
                 return new FormField(
                     'deskpro_hidden',
-                    $this->getGeneralOptionsForField($def, $options, $is_agent)
+                    $this->getGeneralOptionsForField($def, $options)
                 );
 
             default:
@@ -323,83 +320,12 @@ class CustomFieldManager
     /**
      * @param CustomDefAbstract $field_type
      * @param array             $specific_options
-     * @param bool              $is_agent
      *
      * @return array
      */
-    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options, $is_agent)
+    private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options)
     {
-        $constraints = $options = [];
-
-        // required
-        if ($field_type->isRequired($is_agent)) {
-            $options['required'] = $field_type->isRequired($is_agent);
-            $constraints[]       = new Assert\NotBlank();
-        }
-
-        // length
-        $min = $field_type->getMinLength($is_agent);
-        $max = $field_type->getMaxLength($is_agent);
-        if ($min || $max) {
-            $opts = [];
-
-            if ($min) {
-                $opts['min'] = $min;
-            }
-            if ($max) {
-                $opts['max'] = $max;
-            }
-
-            $constraints[] = new Assert\Length($opts);
-        }
-
         $options['help'] = $field_type->getRealDescription();
-
-        // regex
-        $regex = $field_type->getRegex($is_agent);
-        if ($regex) {
-            $constraints[] = new Assert\Regex([
-                'pattern' => Strings::getInputRegexPattern($regex),
-            ]);
-        }
-
-        // date stuff
-        if ($field_type->isDateType()) {
-            $weekdays = $field_type->getValidWeekDays();
-            if (!$weekdays || count($weekdays) === 0) {
-                $weekdays = [0, 1, 2, 3, 4, 5, 6];
-            }
-            $min_date = $field_type->getDateMin();
-            if (null !== $min_date) {
-                try {
-                    $min_date = $min_date instanceof \DateTime ? $min_date : new \DateTime(sprintf('now -%s days', $min_date));
-                    $min_date->setTime(0, 0, 0);
-                } catch (\Exception $e) {
-                    $min_date = null;
-                }
-            }
-            $max_date = $field_type->getDateMax();
-            if (null !== $max_date) {
-                try {
-                    $max_date = $max_date instanceof \DateTime ? $max_date : new \DateTime(sprintf('now +%s days', $max_date));
-                    $max_date->setTime(23, 59, 59);
-                } catch (\Exception $e) {
-                    $max_date = null;
-                }
-            }
-
-            if ($weekdays || $min_date || $max_date) {
-                $constraints[] = new DpDate(
-                    [
-                        'days_of_week' => $weekdays,
-                        'min_date'     => $min_date ?: null,
-                        'max_date'     => $max_date ?: null,
-                    ]
-                );
-            }
-        }
-
-        $options['constraints'] = $constraints;
 
         return array_merge($options, $specific_options);
     }

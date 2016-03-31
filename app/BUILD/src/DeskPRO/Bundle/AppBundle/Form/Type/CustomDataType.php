@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -123,11 +124,7 @@ class CustomDataType extends AbstractType
 
         /** @var CustomDefAbstract $custom_def */
         $custom_def = $config->getOption('custom_def');
-        $field      = $this->field_manager->createCustomField(
-            $custom_def,
-            $config->getOption('agent_interface'),
-            $config->getOption('inline')
-        );
+        $field      = $this->field_manager->createCustomField($custom_def, $config->getOption('inline'));
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas

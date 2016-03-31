@@ -56,6 +56,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -171,6 +172,11 @@ class TicketWithLayoutsType extends AbstractType
                 'use_captcha'         => true,
                 'for_api'             => false,
                 'department_id'       => null,
+                'constraints'         => [
+                    new AppAssert\Ticket\TicketLayout([
+                        'context' => 'agent',
+                    ]),
+                ],
             ])
             ->setRequired([
                 'person',
