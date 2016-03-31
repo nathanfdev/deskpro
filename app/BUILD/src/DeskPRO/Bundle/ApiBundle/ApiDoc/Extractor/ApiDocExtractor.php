@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Component\Util\TypeUtils;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -51,7 +52,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
         'list'   => true,
         'get'    => true,
         'post'   => true,
-        'put'    => true,
+        'put'    => false,
         'delete' => false,
     ];
 
@@ -62,21 +63,53 @@ class ApiDocExtractor extends BaseApiDocExtractor
     {
         return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
             $ctrl = $r->getDefault('_controller');
+            $action = $ctrl ? TypeUtils::cleanAction($ctrl, true) : false;
+            $reflection = $this->extractControllerReflection($r);
 
-            $exposed = true;
-            if ($reflection = $this->extractControllerReflection($r)) {
-                $action = TypeUtils::cleanAction($ctrl, true);
-                if (
-                    $reflection->isSubclassOf(CrudController::class)
-                    && in_array($action, array_keys($this->action_list))
-                    && $expose = $reflection->getProperty('exposeOnly')->getValue()
-                ) {
-                    $exposed = in_array($action, $expose);
-                }
-            }
-
-            return $ctrl && $reflection && $exposed;
+            return $action && $reflection && $this->isExposedAction($action, $reflection);
         });
+    }
+
+    /**
+     * @param string           $action
+     * @param \ReflectionClass $reflection
+     *
+     * @return bool
+     */
+    protected function isExposedAction($action, \ReflectionClass $reflection)
+    {
+        if ($reflection->isSubclassOf(CrudController::class)
+           && ($exposedMethods = $this->getExposedActions($action, $reflection)) !== false) {
+            // this is crud, and exposOnly is set, so we gonna check it
+            return in_array($action, $exposedMethods);
+        }
+
+        // by default everything is exposed
+        return true;
+    }
+
+    /**
+     * @param string           $action
+     * @param \ReflectionClass $reflection
+     *
+     * @return bool|array
+     */
+    protected function getExposedActions($action, \ReflectionClass $reflection)
+    {
+        if (!in_array($action, $this->action_list)) {
+            // This method is custom for crud - e.g. getMySuperListAction, shouldn't process it
+            return false;
+        }
+
+        $exposedMethods = $reflection->getProperty('exposeOnly');
+        $exposedMethods = $exposedMethods ? $exposedMethods->getValue() : null;
+
+        if (!is_array($exposedMethods)) {
+            // exposeOnly was not set, so everything is exposed
+            return false;
+        }
+
+        return $exposedMethods;
     }
 
     /**
@@ -90,15 +123,19 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     protected function extractData(ApiDoc $annotation, Route $route, \ReflectionMethod $method)
     {
+        $annotation = clone $annotation;
+
         if ($annotation instanceof DpApiDoc
-            && ($class_reflection = $this->getClassReflection($method, $route))
+            && ($class_reflection = $this->extractControllerReflection($route))
         ) {
             if (!$annotation->getOutput()
                 && in_array(TypeUtils::cleanAction($method->name, true), $this->getCreativeMethods())
-                && $output = $class_reflection->getStaticPropertyValue('output_entity', null)
+                && ($output = $this->reader->getClassAnnotation($class_reflection, OutputEntity::class))
+                && ($output instanceof OutputEntity)
             ) {
+                $output = $output->getOutput();
                 if (TypeUtils::cleanAction($method->name, true) === 'list') {
-                    $output = "array<$output>";
+                    $output = "array<{$output}>";
                 }
                 $annotation->setClassOutput($output);
             }
@@ -114,36 +151,11 @@ class ApiDocExtractor extends BaseApiDocExtractor
 
         $extracted_annotation = parent::extractData($annotation, $route, $method);
         if ($annotation instanceof DpApiDoc) {
-            $annotation->setSection('');
-            $annotation->setClassOutput('');
+            $annotation->setSection(null);
+            $annotation->setClassOutput(null);
         }
 
         return $extracted_annotation;
-    }
-
-    /**
-     * Get reflection class for controller.
-     *
-     * @param \ReflectionMethod $method
-     * @param Route             $route
-     *
-     * @return bool|\ReflectionClass|void
-     */
-    protected function getClassReflection(\ReflectionMethod $method, Route $route)
-    {
-        $class_reflection = false;
-        if (strpos($method->class, 'CrudController') !== false || strpos($method->class, 'CrudSubController')) {
-            $class_reflection = $this->extractControllerReflection($route);
-        }
-        if (!$class_reflection) {
-            $class_reflection = new \ReflectionClass($method->class);
-        }
-
-        if ($class_reflection->isSubclassOf(CrudController::class)) {
-            return $class_reflection;
-        }
-
-        return false;
     }
 
     /**
@@ -168,7 +180,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
      *
      * @param Route $route
      *
-     * @return \ReflectionClass|void
+     * @return \ReflectionClass|false
      */
     protected function extractControllerReflection(Route $route)
     {
@@ -180,6 +192,6 @@ class ApiDocExtractor extends BaseApiDocExtractor
             return new \ReflectionClass($parts[0]);
         }
 
-        return;
+        return false;
     }
 }

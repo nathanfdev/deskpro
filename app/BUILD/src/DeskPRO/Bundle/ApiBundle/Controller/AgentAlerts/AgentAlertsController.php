@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -46,15 +47,17 @@ use Symfony\Component\HttpFoundation\Response;
  * Class AgentAlertsController.
  *
  * @ApiDocSection("Notifications and alerts")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert")
  * @ApiModes("all")
  * @Annotations\Route("/me/notifications")
  */
 class AgentAlertsController extends CrudController
 {
-    public static $entity        = AgentAlert::class;
-    public static $output_entity = AgentAlert::class;
-    public static $listSort      = 'date_created';
-    public static $listOrder     = 'desc';
+    public static $entity    = AgentAlert::class;
+    public static $listSort  = 'date_created';
+    public static $listOrder = 'desc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * Dismiss alerts with given ids array.

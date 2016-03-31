@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -55,17 +58,17 @@ class ProjectType extends AbstractType
                 'description' => 'the project title',
             ])
             ->add('departments', 'entity', [
-                'class'    => 'DeskPRO:Department',
+                'class'    => Department::class,
                 'multiple' => true,
                 'required' => false,
             ])
             ->add('teams', 'entity', [
-                'class'    => 'DeskPRO:AgentTeam',
+                'class'    => AgentTeam::class,
                 'multiple' => true,
                 'required' => false,
             ])
             ->add('agents', 'entity', [
-                'class'    => 'DeskPRO:Person',
+                'class'    => Person::class,
                 'multiple' => true,
                 'required' => false,
             ])

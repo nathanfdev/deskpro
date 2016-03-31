@@ -84,12 +84,14 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I retrieve a ticket messages after adding
-    When I send a GET request to "/api/v2/tickets/1/messages"
+    When I send a GET request to "/api/v2/tickets/1/messages?include=person"
     Then the response status code should be 200
     And the JSON node "data" should have 4 element
     And the JSON node "data[0].message" should contain "my message"
     And the JSON node "data[1].message" should contain "my html message"
     And the JSON node "data[3].message" should contain "my note"
+    And the JSON node "linked.person.1.id" should be equal to 1
+    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
 
     When I send a GET request to "/api/v2/tickets/1/messages/1"
     Then the response status code should be 200

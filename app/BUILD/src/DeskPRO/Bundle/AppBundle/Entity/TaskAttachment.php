@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,57 +37,95 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_attachments")
+ * @JMS\ExclusionPolicy("all")
  */
 class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var Task
+     * The task this attachment relates to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @var Task
      */
     protected $task;
 
     /**
-     * @var TaskComment
+     * The task comment this attachment relates to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TaskComment>")
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
      * @ORM\JoinColumn(name="task_comment_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     *
+     * @var TaskComment
      */
     protected $comment;
 
     /**
-     * @var Person
+     * The person who added attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var Blob
+     * The attachment Blob itself.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
+     *
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id")
+     *
+     * @var Blob
      */
     protected $blob;
 
     /**
-     * @var \DateTime
+     * DateTime attachment was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @ORM\Column(type="datetime")
+     *
+     * @var \DateTime
      */
     protected $date_created;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -45,23 +43,29 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  */
-class TaskListController extends BaseController implements ClassResourceInterface
+class TaskListController extends BaseController
 {
     /**
+     * With this endpoint you can fetch task list entities.
+     *
      * @ApiDoc(
-     *      description="get a list of task lists",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tasks",
+     *     description="Fetch tasks lists",
+     *     resourceDescription="Operation about tasks",
+     *     statusCodes={
+     *         200="Returned if everything is OK"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskList>"
+     *
      * )
-     * @Get("/task_lists", name="api_task_lists")
+     * @Annotations\Get("/task_lists", name="api_task_lists")
      *
      * @return View
      */
-    public function cgetAction()
+    public function listAction()
     {
         $lists = $this->getDoctrine()->getRepository('App:TaskList')->findAll();
 
-        return View::create($this->dataSerialize($lists), Response::HTTP_OK);
+        return View::create($this->wrap($lists), Response::HTTP_OK);
     }
 }

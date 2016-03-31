@@ -29,31 +29,41 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ApiPersonFactory;
+use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person as SerializedPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class PersonHandler.
- *
- * @todo merge ApiPersonFactory with PersonSerializationHandler
  */
 class PersonHandler extends AbstractEntityHandler
 {
     /**
-     * @var ApiPersonFactory
+     * @var AgentDataService
      */
-    private $person_factory;
+    private $agentDataService;
+
+    /**
+     * @var AvatarResolver
+     */
+    private $avatarResolver;
 
     /**
      * Constructor.
      *
-     * @param ApiPersonFactory $person_factory
+     * @param AvatarResolver   $avatarResolver
+     * @param AgentDataService $agentDataService
      */
-    public function __construct(ApiPersonFactory $person_factory)
+    public function __construct(AvatarResolver $avatarResolver, AgentDataService $agentDataService)
     {
-        $this->person_factory = $person_factory;
+        $this->avatarResolver   = $avatarResolver;
+        $this->agentDataService = $agentDataService;
     }
 
     /**
@@ -69,8 +79,47 @@ class PersonHandler extends AbstractEntityHandler
      *
      * @param Person $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return $this->person_factory->create($entity);
+        $serializerClass = $context->getMappedClass(Person::class);
+        if ($serializerClass === PersonProfile::class) {
+            return $this->createPersonProfile($entity);
+        }
+
+        return $this->createPerson($entity);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return SerializedPerson
+     */
+    private function createPerson(Person $entity)
+    {
+        $model = new SerializedPerson($entity);
+        $model
+            ->setAvatar($this->avatarResolver->getAvatarModel($entity))
+            ->setOnline($this->agentDataService->isAgentOnline($entity))
+        ;
+
+        $last_seen = $this->agentDataService->getLastSeen($entity);
+        if ($last_seen) {
+            $model->setLastSeen(new \DateTime($last_seen));
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PersonProfile
+     */
+    private function createPersonProfile(Person $entity)
+    {
+        $model = new PersonProfile($entity);
+        $model->setAvatar($this->avatarResolver->getAvatarModel($entity));
+
+        return $model;
     }
 }

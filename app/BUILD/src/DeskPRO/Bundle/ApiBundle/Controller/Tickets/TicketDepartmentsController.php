@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,12 +33,13 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -46,7 +47,9 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketDepartmentsController.
  *
  * @ApiModes("all")
- * @Route("/ticket_departments")
+ * @ApiDocSection("Departments")
+ * @OutputEntity("Application\DeskPRO\Entity\Department")
+ * @Annotations\Route("/ticket_departments")
  */
 class TicketDepartmentsController extends CrudController
 {
@@ -54,24 +57,27 @@ class TicketDepartmentsController extends CrudController
     public static $type      = DepartmentType::class;
     public static $listOrder = 'asc';
 
+    public static $serializeMethod = 'wrap';
+
     /**
      * @ApiDoc(
-     *      description="Get agents belongs to department",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the department",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="Application\DeskPRO\Entity\Department"
+     *     section="Departments",
+     *     description="Get agents belongs to department",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the department",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *         404="Returned if department wasn't found"
+     *     },
+     *     output="Application\DeskPRO\Entity\Person"
      * )
-     * @Get("/{id}/agents")
+     * @Annotations\Get("/{id}/agents")
      *
      * @param int     $id
      * @param Request $request
@@ -82,7 +88,7 @@ class TicketDepartmentsController extends CrudController
     {
         $department = $this->findEntity($id, $request);
 
-        return View::create($this->dataSerialize($department->getPersonList()));
+        return View::create($this->wrap($department->getPersonList()));
     }
 
     /**
@@ -93,12 +99,12 @@ class TicketDepartmentsController extends CrudController
         $qb->andWhere('e.is_tickets_enabled = true');
 
         if ($request->query->getBoolean('my', false)) {
-            $permission_bag         = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
-            $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
+            $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
+            $allowedDepartmentIds = $permissionBag->getAllowedTicketDepartmentIds();
 
             $qb
                 ->andWhere('e.id IN (:allowed_department_ids)')
-                ->setParameter('allowed_department_ids', $allowed_department_ids)
+                ->setParameter('allowed_department_ids', $allowedDepartmentIds)
             ;
         }
     }

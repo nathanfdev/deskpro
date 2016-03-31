@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -46,13 +47,23 @@ class TicketLabelsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Get tickets with the given label",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Tickets",
+     *     description="Get tickets with the given label",
+     *     requirements={
+     *         {"name"="label", "requirement"="\w", "dataType"="string", "description"="label to filter tickets"},
+     *     },
+     *     statusCodes={
+     *         200="Will be returned in case of success",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Ticket>"
      * )
      *
-     * @Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
+     * @param Request $request
+     * @param string  $label
+     *
+     * @return View
+     *
+     * @Annotations\Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
      */
     public function getTicketsAction(Request $request, $label)
     {

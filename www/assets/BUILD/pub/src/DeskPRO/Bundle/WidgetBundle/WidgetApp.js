@@ -3,10 +3,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
-import $ from 'jquery';
 import { store } from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
-import { widgetEmitter } from './Services/emitter';
+import $ from 'jquery';
+import './Services/WindowApi';
 import './Resources/style/widget-style.scss';
 
 export class WidgetApp {
@@ -47,7 +47,6 @@ export class WidgetApp {
     });
 
     store.dispatch(bootstrapWidget());
-    window.emitter = widgetEmitter;
 
     const content = (
       <Provider store={store}>

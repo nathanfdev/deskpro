@@ -8,7 +8,7 @@ import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import { widgetEmitter } from '../../../Services/emitter';
+import * as windowApiActions from '../../../Services/WindowApi';
 import $ from 'jquery';
 
 export const ajaxOptions = {crossDomain: true, dataType: 'json'};
@@ -111,7 +111,7 @@ export const bootstrapWidget = createAction(
     ])
     .then(response => {
       const onFinish = () => {
-        widgetEmitter.emit('loaded');
+        windowApiActions.widgetLoaded();
         resolve(response);
       };
 

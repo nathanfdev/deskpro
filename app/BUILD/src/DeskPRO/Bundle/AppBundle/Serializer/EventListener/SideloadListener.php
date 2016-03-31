@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\EventDispatcher\Events;
@@ -51,20 +51,13 @@ class SideloadListener implements EventSubscriberInterface
     protected $em;
 
     /**
-     * @var ModelFactory
-     */
-    protected $model_factory;
-
-    /**
      * SideloadListener constructor.
      *
      * @param EntityManager $em
-     * @param ModelFactory  $model_factory
      */
-    public function __construct(EntityManager $em, ModelFactory $model_factory)
+    public function __construct(EntityManager $em)
     {
-        $this->em            = $em;
-        $this->model_factory = $model_factory;
+        $this->em = $em;
     }
 
     /**
@@ -90,13 +83,11 @@ class SideloadListener implements EventSubscriberInterface
     {
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
+
         /** @var SideloadSerializationContext $context */
         $context   = $event->getContext();
         $sideloads = $context->getSideloadStore();
-        /** @var ApiWrapper $object */
-        $object = $event->getObject();
-
-        $includes = $object->getIncludes() ?: $context->getIncludes();
+        $includes  = $context->getIncludes();
 
         $linked = [];
         $sideloads->setInterests($includes);
@@ -109,10 +100,15 @@ class SideloadListener implements EventSubscriberInterface
                 }
                 $fqcn = $sideloads->getFqcn($include);
                 if ($fqcn) {
-                    $ids_to_load = $sideloads->getSideloads($fqcn);
+                    $ids_to_load = $sideloads->getSideloads($include);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        $model              = $this->model_factory->create($entity);
-                        $linked[$include][] = $context->accept($model);
+                        $linked[$include][$entity->getId()] = $context->accept($entity);
+                    }
+                }
+
+                if ($sideloads->hasCustom($include)) {
+                    foreach ($sideloads->getCustom($include) as $custom) {
+                        $linked[$include][$custom->getId()] = $custom->getData();
                     }
                 }
             }

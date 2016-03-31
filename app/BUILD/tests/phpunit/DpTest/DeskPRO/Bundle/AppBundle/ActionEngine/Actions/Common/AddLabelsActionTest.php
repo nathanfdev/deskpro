@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new AddLabelsAction([AbstractAction::OPTION_LABELS => ['one', 'two']]);
+        $action = new AddLabelsAction(['options' => ['one', 'two']]);
         $this->assertInstanceOf(AddLabelsAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -67,10 +67,10 @@ class AddLabelsActionTest extends DeskProTestCase
     public function it_should_configure_the_labels_param()
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
-        $resolver->setRequired(Argument::exact(AbstractAction::OPTION_LABELS))->shouldBeCalled();
-        $resolver->setAllowedTypes(Argument::exact(AbstractAction::OPTION_LABELS), Argument::exact('array'))->shouldBeCalled();
+        $resolver->setRequired(Argument::exact('options'))->shouldBeCalled();
+        $resolver->setAllowedTypes(Argument::exact('options'), Argument::exact('array'))->shouldBeCalled();
         $resolver->setAllowedValues(
-            Argument::exact(AbstractAction::OPTION_LABELS),
+            Argument::exact('options'),
             Argument::that(
                 function ($value) {
                     return !empty($value);
@@ -87,7 +87,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_labels_param()
     {
-        new AddLabelsAction([AbstractAction::OPTION_LABELS => []]);
+        new AddLabelsAction(['options' => []]);
     }
 
     /**
@@ -96,7 +96,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_string_labels_param()
     {
-        new AddLabelsAction([AbstractAction::OPTION_LABELS => 'one']);
+        new AddLabelsAction(['options' => 'one']);
     }
 
     /**

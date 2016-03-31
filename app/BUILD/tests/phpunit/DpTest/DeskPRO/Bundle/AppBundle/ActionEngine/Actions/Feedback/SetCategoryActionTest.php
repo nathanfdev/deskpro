@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetCategoryAction([AbstractAction::OPTION_INPUT => 'Linux']);
+        $action = new SetCategoryAction(['options' => 'Linux']);
         $this->assertInstanceOf(SetCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -68,14 +68,14 @@ class SetCategoryActionTest extends DeskProTestCase
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
         $resolver
-            ->setRequired(Argument::exact(AbstractAction::OPTION_INPUT))
+            ->setRequired(Argument::exact('options'))
             ->shouldBeCalled();
         $resolver
-            ->setAllowedTypes(Argument::exact(AbstractAction::OPTION_INPUT), Argument::exact('string'))
+            ->setAllowedTypes(Argument::exact('options'), Argument::exact('string'))
             ->shouldBeCalled();
         $resolver
             ->setAllowedValues(
-                Argument::exact(AbstractAction::OPTION_INPUT),
+                Argument::exact('options'),
                 Argument::that(
                     function ($value) {
                         return !empty($value);
@@ -93,7 +93,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_input_param()
     {
-        new SetCategoryAction([AbstractAction::OPTION_INPUT => '']);
+        new SetCategoryAction(['options' => '']);
     }
 
     /**
@@ -102,7 +102,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_none_string_input_param()
     {
-        new SetCategoryAction([AbstractAction::OPTION_INPUT => ['one']]);
+        new SetCategoryAction(['options' => ['one']]);
     }
 
     /**

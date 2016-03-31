@@ -37,7 +37,8 @@ services:
   api_serializer.handler.person:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\PersonHandler
     arguments:
-      - "@api_serializer.api_person_factory"
+      - "@avatar_resolver"
+      - "@data.agent"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -48,6 +49,27 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.department:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
+    arguments:
+      - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_project:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.ticket_participant:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketParticipantHandler
     arguments:
@@ -55,25 +77,32 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.agent_team:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
+      arguments:
+        - "@avatar_resolver"
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
 
-  # models
-  api_serializer.model_factory:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ModelFactory
+  api_serializer.handler.ticket:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketHandler
     arguments:
-      - "@service_container"
+      - "@tickets.linker"
+      - "@ticket_layout_factory"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.api_person_factory:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Model\Factory\ApiPersonFactory
-    arguments:
-      - "@avatar_resolver"
-      - "@data.agent"
+  api_serializer.handler.agent_alert:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
-      - "@api_serializer.model_factory"
     tags:
       - { name: "jms_serializer.event_subscriber" }
 

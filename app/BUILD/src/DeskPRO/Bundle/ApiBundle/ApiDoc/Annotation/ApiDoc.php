@@ -102,6 +102,9 @@ class ApiDoc extends BaseApiDoc
         return $data;
     }
 
+    /**
+     * @return null|string
+     */
     public function getOutput()
     {
         $output = parent::getOutput();

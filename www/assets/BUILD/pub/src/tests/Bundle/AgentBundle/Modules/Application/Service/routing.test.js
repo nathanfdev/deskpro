@@ -25,26 +25,26 @@ describe('Application module: routing service', () => {
 
     it('should throw Error when trying to use a scalar instead of {} as a component state', () => {
       const test = () => routing.stateToString(toImmutable({component: 'scalar state'}));
-      expect(test).toThrow('Each component state stored in URL must be an object!');
+      expect(test).toThrow(new Error('Each component state stored in URL must be an object!'));
     });
 
     it('should throw Error when trying to put a reserved char such as .,:;- within a component name or state', () => {
       let test;
 
       test = () => routing.stateToString(toImmutable({'component.id': {dummy: 'data'}}));
-      expect(test).toThrow('Component identifier "component.id" contains a reserved char');
+      expect(test).toThrow(new Error('Component identifier "component.id" contains a reserved char'));
 
       test = () => routing.stateToString(toImmutable({'component': {'dummy,param': 'data'}}));
-      expect(test).toThrow('Component state key "dummy,param" contains a reserved char');
+      expect(test).toThrow(new Error('Component state key "dummy,param" contains a reserved char'));
 
       test = () => routing.stateToString(toImmutable({'component': {dummy: 'some:data'}}));
-      expect(test).toThrow('Component state value "some:data" contains a reserved char');
+      expect(test).toThrow(new Error('Component state value "some:data" contains a reserved char'));
 
       test = () => routing.stateToString(toImmutable({'component': {dummy: ['nested;', 'data']}}));
-      expect(test).toThrow('Component state value "nested;" contains a reserved char');
+      expect(test).toThrow(new Error('Component state value "nested;" contains a reserved char'));
 
       test = () => routing.stateToString(toImmutable({'component': {dummy: ['nested-data']}}));
-      expect(test).toThrow('Component state value "nested-data" contains a reserved char');
+      expect(test).toThrow(new Error('Component state value "nested-data" contains a reserved char'));
     });
   });
 

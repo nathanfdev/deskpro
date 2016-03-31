@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 class Setting extends AbstractEntityRepository
@@ -46,7 +47,7 @@ class Setting extends AbstractEntityRepository
      * @param string $name  The name of the setting
      * @param mixed  $value The value to set. Null means any existing value will be unset
      *
-     * @return \Application\DeskPRO\Entity\Setting
+     * @return $this
      */
     public function updateSetting($name, $value)
     {
@@ -60,9 +61,11 @@ class Setting extends AbstractEntityRepository
                     (?, ?)
                 ON DUPLICATE KEY UPDATE
                     value = VALUES(value)
-            ', array($name, $value));
+            ', [$name, $value]);
         } else {
-            $db->delete('settings', array('name' => $name));
+            $db->delete('settings', ['name' => $name]);
         }
+
+        return $this;
     }
 }

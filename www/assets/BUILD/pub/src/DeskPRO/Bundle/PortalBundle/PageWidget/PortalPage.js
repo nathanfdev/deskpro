@@ -20,6 +20,7 @@ import { ArticleHighlighter } from './ArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
 import { TouchFocusWidget } from './TouchFocusWidget';
+import { WidgetButton } from './WidgetButton';
 import $ from 'jquery';
 
 export class PortalPage extends PageWidget {
@@ -47,6 +48,7 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
     this.addWidgetDef(TouchFocusWidget, '.as-touch-focus');
+    this.addWidgetDef(WidgetButton, '.widget-button');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

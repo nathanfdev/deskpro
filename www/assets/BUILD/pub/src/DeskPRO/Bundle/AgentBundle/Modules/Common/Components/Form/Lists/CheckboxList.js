@@ -9,16 +9,12 @@ export class CheckboxList extends React.Component {
     renderLabel: PropTypes.func.isRequired,
     getKeyword: PropTypes.func.isRequired,
     multiple: PropTypes.bool,
-    selected: PropTypes.array,
+    selected: PropTypes.object,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
     options: PropTypes.any,
     onChange: PropTypes.func.isRequired
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   onClick(value) {
     const { multiple, selected = [], onChange } = this.props;

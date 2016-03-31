@@ -3,20 +3,20 @@ import { NestedList as BaseNestedList, ListItem } from 'DeskPRO/Bundle/AgentBund
 import { ListItemContainer } from './ListItemContainer';
 
 export class NestedList extends BaseNestedList {
-  getListOptions(depth, parent, group) {
+  getListOptions(depth, item) {
     if (depth === 1) {
-      return { navItem: { status: group } };
-    } else if (parent === 'hidden') {
-      return { navItem: { hidden_status: group } };
+      return { navItem: { status: item.title } };
+    } else if (item.type === 'hidden_status') {
+      return { navItem: { hidden_status: item.title } };
     }
-    return { navItem: { status_category: group } };
+    return { navItem: { status_category: item.id } };
   }
 
   renderListItem(item, depth) {
     this.ensureValidDepth(depth);
-    const { title, count, parent, id } = item;
+    const { title, count } = item;
     const label = title[0].toUpperCase() + title.slice(1);
-    const listOptions = this.getListOptions(depth, parent, id);
+    const listOptions = this.getListOptions(depth, item);
     listOptions.isComments = false;
 
     return (

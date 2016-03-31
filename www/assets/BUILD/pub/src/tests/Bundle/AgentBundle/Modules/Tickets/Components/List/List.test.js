@@ -4,12 +4,11 @@
 jest.dontMock('~List/List');
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('List', () => {
-  const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
-  const List                = require('~List/List').List;
+  const ListFrameContainer = require('~ListFrame/frame').ListFrameContainer;
+  const List = require('~List/List').List;
   const ControlBarContainer = require('~List/ControlBarContainer').ControlBarContainer;
   const ListCardViewContainer = require('~List/View/Card/ListCardViewContainer').ListCardViewContainer;
   const ListTableViewContainer = require('~List/View/Table/ListTableViewContainer').ListTableViewContainer;
@@ -17,24 +16,24 @@ describe('List', () => {
   const fakeState = {};
 
   const renderList = (viewMode = 'card') => {
-    renderInTicketsApp(fakeState, <List elements={[]} viewMode={viewMode} loaded={true} />);
+    renderInTicketsApp(fakeState, <List elements={[]} selected={[]} viewMode={viewMode} loaded/>);
   };
 
   it('should render ListFrameContainer', () => {
-    spyOn(ListFrameContainer.prototype, 'render').andCallThrough();
+    spyOn(ListFrameContainer.prototype, 'render').and.callThrough();
     renderList();
     expect(ListFrameContainer.prototype.render).toHaveBeenCalled();
   });
 
   it('should render its control bar', () => {
-    spyOn(ControlBarContainer.prototype, 'render').andCallThrough();
+    spyOn(ControlBarContainer.prototype, 'render').and.callThrough();
     renderList();
     expect(ControlBarContainer.prototype.render).toHaveBeenCalled();
   });
 
   it('should render ListCardViewContainer when the passed viewMode is "card"', () => {
-    spyOn(ListCardViewContainer.prototype, 'render').andCallThrough();
-    spyOn(ListTableViewContainer.prototype, 'render').andCallThrough();
+    spyOn(ListCardViewContainer.prototype, 'render').and.callThrough();
+    spyOn(ListTableViewContainer.prototype, 'render').and.callThrough();
 
     renderList('card');
 
@@ -43,8 +42,8 @@ describe('List', () => {
   });
 
   it('should render ListTableViewContainer when the passed viewMode is "table"', () => {
-    spyOn(ListCardViewContainer.prototype, 'render').andCallThrough();
-    spyOn(ListTableViewContainer.prototype, 'render').andCallThrough();
+    spyOn(ListCardViewContainer.prototype, 'render').and.callThrough();
+    spyOn(ListTableViewContainer.prototype, 'render').and.callThrough();
 
     renderList('table');
 

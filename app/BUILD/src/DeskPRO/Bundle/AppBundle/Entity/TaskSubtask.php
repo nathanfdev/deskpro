@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,43 +36,68 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="task_subtask")
+ * @JMS\ExclusionPolicy("all")
  */
 class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     /**
-     * @var int
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @var int
      */
     protected $id = null;
 
     /**
-     * @var string
+     * The title of the subtask.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     *
+     * @var string
      */
     protected $title;
 
     /**
+     * Is subtask is done?
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      * @ORM\Column(type="boolean", nullable=true)
      */
     protected $is_done = false;
 
     /**
-     * @var Task
+     * Task entity with which this subtask is associated.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\Entity\TaskSubtask>")
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @var Task
      */
     protected $task;
 
@@ -84,23 +109,41 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
     protected $date_created;
 
     /**
-     * @var Person
+     * The person who created the subtask.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @var Person
      */
     protected $creator;
 
     /**
-     * @var int
+     * Display order of this task in list of subtasks.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @Orm\Column(type="integer", nullable=true)
+     *
+     * @var int
      */
     protected $display_order = 0;
 
     /**
-     * @var \DateTime
+     * Date when this subtask was completed.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @var \DateTime
      */
     protected $date_completed = null;
 

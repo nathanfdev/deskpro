@@ -32,15 +32,19 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\OrganizationContactData;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations;
 
 /**
  * Class OrganizationContactDataController.
  *
  * @ApiModes("all")
- * @Route("/organizations/{parentId}/contact_data")
+ * @ApiDocSection("Organizations")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData\AbstractContactData")
+ * @Annotations\Route("/organizations/{parentId}/contact_data")
  */
 class OrganizationContactDataController extends CrudSubController
 {

@@ -76,6 +76,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     protected $slug;
 
     /**
+     * Display order.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("product")
+     *
      * @var int
      */
     protected $display_order = 0;

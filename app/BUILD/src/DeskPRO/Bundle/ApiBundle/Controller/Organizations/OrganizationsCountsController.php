@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,12 +48,14 @@ class OrganizationsCountsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *      description="Count Organizations",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     section="Organizations",
+     *     description="Count Organizations",
+     *     statusCodes={
+     *         200="Returned in case of successful response"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get("/organizations/counts", name="api_organizations_counts")
+     * @Annotations\Get("/organizations/counts", name="api_organizations_counts")
      */
     public function getCountAction()
     {
@@ -63,7 +65,7 @@ class OrganizationsCountsController extends BaseController
         $count = $qb->getQuery()->getSingleScalarResult();
 
         return View::create(
-            $this->dataSerialize(Count::fromValue($count)),
+            $this->wrap(Count::fromValue($count)),
             Response::HTTP_OK
         );
     }

@@ -177,7 +177,7 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
-    arguments: ["@form.api.chat.set_person_listener", "@widget.settings"]
+    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
     tags:
       - { name: form.type, alias: api_chat_create }
 
@@ -188,21 +188,9 @@ services:
       - { name: form.type, alias: api_chat_validate_email }
 
 
-  form.api.chat_user_typing:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType
-    tags:
-      - { name: form.type, alias: api_chat_user_typing }
-
-
-  form.api.chat_message:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType
-    tags:
-      - { name: form.type, alias: api_chat_message }
-
-
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
-    arguments: ["@form.api.chat.set_person_listener", "@widget.settings"]
+    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
     tags:
       - { name: form.type, alias: api_chat_transcription_info }
 

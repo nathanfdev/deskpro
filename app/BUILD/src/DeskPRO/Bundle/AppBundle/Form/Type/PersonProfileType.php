@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,22 +45,10 @@ class PersonProfileType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'person_profile';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', [
-                'constraints' => [
-                    new Constraints\NotBlank(),
-                ],
-            ])
+            ->add('name', 'text')
             ->add('display_name', 'text', [
                 'property_path' => 'override_display_name',
             ])
@@ -76,24 +64,12 @@ class PersonProfileType extends AbstractType
                 'by_reference'    => true,
                 'property_path'   => 'emailAddresses',
                 'error_bubbling'  => false,
-                'constraints'     => [
-                    new Constraints\All([
-                        new Constraints\Email(),
-                        new AppConstraints\NotSystemEmail(),
-                        new AppConstraints\NotBannedEmail(),
-                    ]),
-                ],
-                'options' => [
+                'options'         => [
                     'error_bubbling' => true,
                 ],
             ])
             ->add('primary_email', 'email', [
                 'property_path' => 'email',
-                'constraints'   => [
-                    new Constraints\Email(),
-                    new AppConstraints\NotSystemEmail(),
-                    new AppConstraints\NotBannedEmail(),
-                ],
             ])
             ->add('phone', new PhoneNumberType(), [
                 'property_path'  => 'primaryPhoneNumber',
@@ -119,7 +95,9 @@ class PersonProfileType extends AbstractType
             ])
             ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
                 $data = $event->getData();
-                $data['emails'] = Arrays::removeFalsey($data['emails']);
+                if (!empty($data['emails'])) {
+                    $data['emails'] = Arrays::removeFalsey($data['emails']);
+                }
 
                 $event->setData($data);
             })
@@ -133,10 +111,8 @@ class PersonProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
-            'constraints'     => [
-                new AppConstraints\FreeEmail([
-                    'property' => 'emailAddresses',
-                ]),
+            'error_mapping'   => [
+                'emails' => 'emails',
             ],
         ]);
     }

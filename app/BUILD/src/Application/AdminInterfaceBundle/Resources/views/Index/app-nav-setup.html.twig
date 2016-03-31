@@ -4,6 +4,16 @@
 	{{ nav.list() }}
 		{{ nav.list_item('Settings', ng_href('setup.settings'), 'setup.settings', 'fa-cog') }}
 		{% if app.isCloud() %}{{ nav.list_item('Domain / URL Setup', ng_href('setup.cloud_custom_domain'), 'setup.cloud_custom_domain', 'fa-link') }}{% endif %}
+
+		{{ nav.list_item_group('Anti-Abuse', 'fa-th-large') }}
+			{% if has_login_form() %}
+				{{ nav.list_subitem('Login Lockout Settings', ng_href('setup.login_lockout_settings'), 'setup.login_lockout_settings', 'fa-book') }}
+			{% endif %}
+			{{ nav.list_subitem('Portal Rate Limiting', ng_href('setup.portal_rate_limiting'), 'setup.portal_rate_limiting', 'fa-clock-o') }}
+			{{ nav.list_subitem('Email Rate Limiting', ng_href('setup.email_rate_limiting'), 'setup.email_rate_limiting', 'fa-download') }}
+			{{ nav.list_subitem('CAPTCHA Settings', ng_href('setup.captcha_settings'), 'setup.captcha_settings', 'fa-thumbs-up') }}
+		{{ nav.list_item_group_end() }}
+
 		{{ nav.list_item('Languages', ng_href('setup.languages'), 'setup.languages', 'fa-globe') }}
 	{{ nav.list_end() }}
 {% endblock %}

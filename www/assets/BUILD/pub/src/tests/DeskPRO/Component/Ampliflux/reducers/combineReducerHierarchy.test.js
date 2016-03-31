@@ -2,7 +2,7 @@
 
 jest.autoMockOff();
 
-import 'babel/polyfill';
+import 'babel-polyfill';
 import { toImmutable } from 'Helpers';
 
 describe('Ampliflux combineReducerHierarchy()', () => {
@@ -15,10 +15,10 @@ describe('Ampliflux combineReducerHierarchy()', () => {
   beforeEach(() => {
     // create action handler function spies
     handlers = {
-      one: jasmine.createSpy('ACTION_ONE_handler').andReturn(toImmutable({})),
-      two: jasmine.createSpy('ACTION_TWO_handler').andReturn(toImmutable({})),
-      three: jasmine.createSpy('ACTION_THREE_handler').andReturn(toImmutable({})),
-      four: jasmine.createSpy('ACTION_FOUR_handler').andReturn(toImmutable({})),
+      one: jasmine.createSpy('ACTION_ONE_handler').and.returnValue(toImmutable({})),
+      two: jasmine.createSpy('ACTION_TWO_handler').and.returnValue(toImmutable({})),
+      three: jasmine.createSpy('ACTION_THREE_handler').and.returnValue(toImmutable({})),
+      four: jasmine.createSpy('ACTION_FOUR_handler').and.returnValue(toImmutable({})),
     };
 
     // create reducers hierarchy using the spies
@@ -41,7 +41,7 @@ describe('Ampliflux combineReducerHierarchy()', () => {
   });
 
   it('should call redux combineReducers', () => {
-    spyOn(redux, 'combineReducers').andCallThrough();
+    spyOn(redux, 'combineReducers').and.callThrough();
     combineReducerHierarchy(hierarchy);
     expect(redux.combineReducers).toHaveBeenCalled();
   });
@@ -63,10 +63,10 @@ describe('Ampliflux combineReducerHierarchy()', () => {
     combined({}, {type: 'ACTION_THREE'});
     combined({}, {type: 'ACTION_FOUR'});
 
-    expect(handlers.one.calls.length).toEqual(1);
-    expect(handlers.two.calls.length).toEqual(1);
-    expect(handlers.three.calls.length).toEqual(1);
-    expect(handlers.four.calls.length).toEqual(1);
+    expect(handlers.one.calls.count()).toEqual(1);
+    expect(handlers.two.calls.count()).toEqual(1);
+    expect(handlers.three.calls.count()).toEqual(1);
+    expect(handlers.four.calls.count()).toEqual(1);
   });
 
   it('should preserve action type to handler function correspondence', () => {

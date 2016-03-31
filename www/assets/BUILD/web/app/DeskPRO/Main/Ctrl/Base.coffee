@@ -26,6 +26,8 @@ define ['angular'], (angular) ->
         @DEPS.unshift('AppState')
       if @DEPS.indexOf('Api') == -1
         @DEPS.unshift('Api')
+      if @DEPS.indexOf('Api2') == -1
+        @DEPS.unshift('Api2')
       if @DEPS.indexOf('Growl') == -1
         @DEPS.unshift('Growl')
       if @DEPS.indexOf('$scope') == -1

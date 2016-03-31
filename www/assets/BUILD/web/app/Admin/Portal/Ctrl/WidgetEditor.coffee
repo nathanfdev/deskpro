@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Functions) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl_Base, Functions) ->
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
@@ -52,8 +52,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
-      if (liveDemo)
-        options.widget.live_demo = true
+      if (liveDemo?.options?.widget)
+          options.widget.live_demo = true
 
       return options
 
@@ -70,8 +70,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
         <!-- /DeskPRO Chat -->
       """
 
+    getFrameNode: ->
+      document.getElementById('live-demo')
+
     getLiveDemoDocument: ->
-      document.getElementById('live-demo').contentDocument
+      @getFrameNode().contentDocument
 
     applyPortalWidgetSettings: ->
       @$scope.applying_to_portal = true
@@ -136,25 +139,25 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions'], (Admin_Ctrl_Base, Fun
       )
 
     initLiveDemo: ->
+      window.addEventListener('message', (event) =>
+        if (event.data?.type == 'widgetLoaded')
+          @$scope.$apply( => @$scope.widgetLoaded = true)
+      , false);
+
       demoDocument = @getLiveDemoDocument();
       demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
       demoDocument.close();
 
-      @emitter = null
-      interval = setInterval( =>
-        demoWindow = demoDocument.dp_loader;
-        if (demoWindow.emitter)
-          @emitter = demoWindow.emitter
-          @emitter.on('loaded', =>
-            @$scope.$apply( => @$scope.widgetLoaded = true)
-          )
-          clearInterval(interval)
-      , 1000)
+      @getFrameNode().contentWindow.addEventListener('message', (event) =>
+        parent.window.postMessage(event.data, '*')
+      , false);
 
+      return;
 
     updateLiveDemo: ->
-      if (@emitter)
-        @emitter.emit('reloadOptions', @getOptions(true))
-        @emitter.emit('reloadSettings', @$scope.global_settings)
+      frameWindow = @getLiveDemoDocument().dp_loader;
+      if (frameWindow)
+        frameWindow.postMessage({type: 'reloadOptions', options: @getOptions(true)}, '*');
+        frameWindow.postMessage({type: 'reloadSettings', options: @$scope.global_settings}, '*');
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

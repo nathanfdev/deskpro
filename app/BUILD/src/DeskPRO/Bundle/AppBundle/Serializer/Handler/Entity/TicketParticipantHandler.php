@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\TicketParticipant;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
  * Class TicketParticipant.
@@ -51,7 +53,7 @@ class TicketParticipantHandler extends AbstractEntityHandler
      *
      * @param TicketParticipant $entity
      */
-    protected function createModel($entity)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
         return $entity->getPerson();
     }

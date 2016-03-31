@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use FOS\RestBundle\View\View;
@@ -48,7 +49,7 @@ class WidgetController extends AbstractApiController
      */
     public function getWidgetSettingsAction()
     {
-        $user_chat_settings = $this->container->get('widget.settings');
+        $user_chat_settings = $this->container->get('widget_settings_resolver');
 
         return new View([
             'chat' => [

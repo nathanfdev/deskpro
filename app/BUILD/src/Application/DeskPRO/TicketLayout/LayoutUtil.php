@@ -31,31 +31,28 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 class LayoutUtil
 {
-    private function __construct()
-    {
-    }
-
     /**
      * @param Layout $layout
      */
     public static function ensureMinimumUserLayout(Layout $layout)
     {
-        if (!$layout->has('message')) {
-            $layout->prepend(new LayoutField('message'));
+        if (!$layout->has(FormFields::MESSAGE)) {
+            $layout->prepend(new LayoutField(FormFields::MESSAGE));
         }
 
-        if (!$layout->has('subject')) {
-            $layout->prepend(new LayoutField('subject'));
+        if (!$layout->has(FormFields::SUBJECT)) {
+            $layout->prepend(new LayoutField(FormFields::SUBJECT));
         }
 
-        if (!$layout->has('user_email') && !$layout->has(FormFields::PERSON)) {
-            $layout->prepend(new LayoutField('user_email'));
+        if (!$layout->has(FormFields::PERSON)) {
+            $layout->prepend(new LayoutField(FormFields::PERSON));
         }
     }
 

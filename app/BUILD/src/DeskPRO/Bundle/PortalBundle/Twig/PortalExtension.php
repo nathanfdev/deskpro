@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
@@ -513,7 +514,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function isPortalWidgetEnabled()
     {
-        return $this->container->get('widget.settings')->isEnabledOnPortal();
+        return $this->container->get('widget_settings_resolver')->isEnabledOnPortal();
     }
 
     /**
@@ -521,7 +522,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getPortalWidgetOptions()
     {
-        $widget_settings = $this->container->get('widget.settings');
+        $widget_settings = $this->container->get('widget_settings_resolver');
 
         return array_merge($widget_settings->getPortalBrandSettings(), [
             'company' => $widget_settings->getCompanySettings(),

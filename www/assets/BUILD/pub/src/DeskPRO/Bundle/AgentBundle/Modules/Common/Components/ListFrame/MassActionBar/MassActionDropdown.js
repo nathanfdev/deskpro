@@ -4,7 +4,7 @@ import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanel';
 import { setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
-import { ActionMenu } from './ActionMenu';
+import { ActionMenuContainer } from './ActionMenuContainer';
 import { MultipleActionChoiceContainer } from './MultipleActionChoiceContainer';
 import { AssignActionContainer } from './AssignActionContainer';
 import { SetDateAction } from './SetDateAction';
@@ -40,7 +40,7 @@ export class MassActionDropdown extends Component {
       );
     } else if (item.type === 'select_action') {
       return (
-        <MultipleActionChoiceContainer options={item.options}
+        <MultipleActionChoiceContainer item={item}
                                        setParams={setMassActionsParams}
                                        currentParams={currentParams}
                                        resetSingleAction={resetParam}/>
@@ -53,10 +53,10 @@ export class MassActionDropdown extends Component {
       );
     } else if (item.type === 'menu') {
       return (
-        <ActionMenu options={item.options}
-                    setParams={setMassActionsParams}
-                    currentParams={currentParams}
-                    resetSingleAction={resetParam}/>
+        <ActionMenuContainer options={item.options}
+                             setParams={setMassActionsParams}
+                             currentParams={currentParams}
+                             resetSingleAction={resetParam}/>
       );
     } else if (item.type === 'set_date') {
       return (

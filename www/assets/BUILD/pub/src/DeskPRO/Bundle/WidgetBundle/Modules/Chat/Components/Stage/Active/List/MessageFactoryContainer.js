@@ -7,7 +7,7 @@ import { MessageBody } from './Message/MessageBody';
 import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
-import { AvatarResolver } from '../../../../../Application/Components/AvatarResolver';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import { phraseTranslationsSelector, authorNameSelector } from '../../../../Selectors/chat';
 import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
 import Immutable from 'immutable';

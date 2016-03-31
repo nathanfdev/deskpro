@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
@@ -45,87 +46,148 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class TicketLinkController extends BaseController
 {
     /**
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="link two tickets",
+     *     requirements={
+     *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="base ticket"},
+     *         {"name"="link_ticket_id", "requirement"="\d+", "dataType"="integer", "description"="ticket to link"},
+     *         {
+     *             "name"="parent",
+     *             "requirement"="true|false",
+     *             "dataType"="boolean",
+     *             "description"="set true if you want to make link ticket as parent for ticket"},
+     *     },
+     *     statusCodes={
+     *         201="Tickets was linked successfully",
+     *         400="You are trying to link ticket to itself",
+     *         404={
+     *             "Ticket with 'ticketId' wasn't found",
+     *             "Ticket with 'link_ticket_id' wasn't found",
+     *         },
+     *     },
+     * )
+     *
      * @param Request $request
-     * @param int     $ticket_id
+     * @param int     $ticketId
      
      * @return View
      *
-     * @Annotations\Post("/tickets/{ticket_id}/link", name="api_tickets_link")
+     * @Annotations\Post("/tickets/{ticketId}/link", name="api_tickets_link")
      */
-    public function postAction(Request $request, $ticket_id)
+    public function postAction(Request $request, $ticketId)
     {
-        $link_ticket_id = $request->request->get('link_ticket_id');
+        $linkTicketId = $request->request->get('link_ticket_id');
 
-        $ticket      = $this->get('ticket_manager')->getTicket($ticket_id);
-        $link_ticket = $this->get('ticket_manager')->getTicket($link_ticket_id);
+        $ticketManager = $this->get('ticket_manager');
+        $ticket        = $ticketManager->getTicket($ticketId);
+        $linkTicket    = $ticketManager->getTicket($linkTicketId);
 
-        if ((int) $ticket_id === (int) $link_ticket_id) {
+        if ((int) $ticketId === (int) $linkTicketId) {
             throw new BadRequestHttpException('You can\'t link ticket to itself!');
         }
 
         if (!$ticket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticket_id));
+            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticketId));
         }
-        if (!$link_ticket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $link_ticket_id));
+        if (!$linkTicket) {
+            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $linkTicketId));
         }
 
         $make_parent = $request->request->get('parent', false);
         $linker      = $this->get('tickets.linker');
 
-        $make_parent ? $linker->linkTickets($ticket, $link_ticket) : $linker->linkTickets($link_ticket, $ticket);
+        $make_parent ? $linker->linkTickets($ticket, $linkTicket) : $linker->linkTickets($linkTicket, $ticket);
 
         return View::create(
             [],
             Response::HTTP_CREATED,
             [
-                'Location' => $this->generateUrl('api_tickets_link_list', array('ticket_id' => $ticket_id)),
+                'Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId)),
             ]
         );
     }
 
     /**
-     * @param int $ticket_id
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="get tickets linked with ticket under provided id",
+     *     requirements={
+     *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="ticket to find id"},
+     *     },
+     *     statusCodes={
+     *         200="Returned in case of successful request",
+     *         404="Ticket with specified id wasn't found",
+     *     },
+     * )
      *
-     * @Annotations\Get("/tickets/{ticket_id}/link", name="api_tickets_link_list")
+     * @param int $ticketId
+     *
+     * @Annotations\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
      *
      * @return View
      */
-    public function listAction($ticket_id)
+    public function listAction($ticketId)
     {
-        $ticket = $this->get('ticket_manager')->getTicket($ticket_id);
+        $ticket = $this->get('ticket_manager')->getTicket($ticketId);
 
         if (!$ticket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticket_id));
+            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticketId));
         }
 
         $linker = $this->get('tickets.linker');
 
         return View::create(
-            $this->dataSerialize($linker->getLinkedTickets($ticket)),
+            $this->wrap($linker->getLinkedTickets($ticket)),
             Response::HTTP_OK
         );
     }
 
     /**
-     * @param int     $ticket_id
-     * @param int     $unlink_ticket_id
+     * @ApiDoc(
+     *     section="Tickets",
+     *     description="delete relation between two tickets",
+     *     requirements={
+     *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="base ticket"},
+     *         {"name"="unlinkTicketId", "requirement"="\d+", "dataType"="integer", "description"="ticket to unlink"},
+     *         {
+     *             "name"="link_type",
+     *             "requirement"="parent|sibling|child",
+     *             "dataType"="string",
+     *             "description"="you have to specify relation type to unlink tickets properly"},
+     *     },
+     *     statusCodes={
+     *         201="Tickets was unlinked successfully",
+     *         400={
+     *             "You are trying to unlink ticket from itself",
+     *             "Wrong relation type",
+     *         },
+     *         404={
+     *             "Ticket with 'ticketId' wasn't found",
+     *             "Ticket with 'unlinkTicketId' wasn't found",
+     *         },
+     *     },
+     * )
+     *
+     * @param int     $ticketId
+     * @param int     $unlinkTicketId
      * @param Request $request
-     * @Annotations\Delete("/tickets/{ticket_id}/link/{unlink_ticket_id}", name="api_tickets_link_unlink")
+     *
+     * @Annotations\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
      *
      * @return View
      */
-    public function deleteAction(Request $request, $ticket_id, $unlink_ticket_id)
+    public function deleteAction(Request $request, $ticketId, $unlinkTicketId)
     {
-        $link_type = $request->query->get('link_type');
-        $linker    = $this->get('tickets.linker');
+        $linkType = $request->query->get('link_type');
+        $linker   = $this->get('tickets.linker');
 
-        if ((int) $ticket_id === (int) $unlink_ticket_id) {
+        if ((int) $ticketId === (int) $unlinkTicketId) {
             throw new BadRequestHttpException('You can\'t unlink ticket from itself!');
         }
 
         try {
-            $linker->unlinkTickets($ticket_id, $unlink_ticket_id, $link_type);
+            $linker->unlinkTickets($ticketId, $unlinkTicketId, $linkType);
         } catch (\InvalidArgumentException $e) {
             if ($e->getCode() === 404) {
                 throw new NotFoundHttpException($e->getMessage());
@@ -137,9 +199,7 @@ class TicketLinkController extends BaseController
         return View::create(
             [],
             Response::HTTP_OK,
-            [
-                'Location' => $this->generateUrl('api_tickets_link_list', array('ticket_id' => $ticket_id)),
-            ]
+            ['Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId))]
         );
     }
 }

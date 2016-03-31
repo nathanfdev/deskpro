@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,22 +29,32 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
 
 abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 {
-    protected $em;
-    protected $actions;
     protected $class;
     protected $namespace;
+    /** @var EntityManager */
+    protected $em;
+    /** @var ActionCollection */
+    protected $actionCollection;
+    /** @var ActionTransformer */
+    protected $transformer;
 
-    public function __construct(EntityManager $em, ActionCollection $actions)
+    public function __construct(EntityManager $em)
     {
-        $this->em      = $em;
-        $this->actions = $actions;
+        $this->em               = $em;
+        $this->transformer      = new ActionTransformer();
+        $this->actionCollection = new ActionCollection();
     }
 
     /**
@@ -54,10 +64,40 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     public function apply(array $ids, array $actions)
     {
         $entities = $this->getEntities($this->class, $ids);
-        $this->actions->apply($this->namespace, $entities, $actions);
+        // Transform array of actions into ActionInterface collection
+        $this->actionCollection->prepare($this->namespace, $actions);
+
+        /** @var ActionInterface $action */
+        foreach ($this->actionCollection->getActions() as $action) {
+            $options         = $this->getOptions($action);
+            $applicatorClass = $this->getApplicatorClass($action);
+            $applicator      = $this->createApplicator($applicatorClass);
+            $applicator
+                ->setOptions($options)
+                ->apply($entities);
+        }
+
         $this->em->flush();
     }
 
+    /**
+     * @param string $class
+     *
+     * @return AbstractActionApplicator
+     */
+    protected function createApplicator($class)
+    {
+        return new $class($this->em);
+    }
+
+    /**
+     * Fetch entities for mass action apply.
+     *
+     * @param string $class
+     * @param array  $ids
+     *
+     * @return array
+     */
     private function getEntities($class, array $ids)
     {
         $qb = $this->em->createQueryBuilder();
@@ -68,5 +108,31 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             ->setParameter('ids', $ids);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param ActionInterface $action
+     *
+     * @return array
+     */
+    private function getOptions(ActionInterface $action)
+    {
+        $serialized = $action->serialize();
+        $options    = array_key_exists('options', $serialized) && $serialized['options'] ?
+            $serialized['options'] : [];
+
+        return $options;
+    }
+
+    /**
+     * @param ActionInterface $action
+     *
+     * @return string
+     */
+    private function getApplicatorClass(ActionInterface $action)
+    {
+        $type = ActionTypeCodes::getActionTypeCode($action);
+
+        return $this->transformer->actionToApplicatorClassName($this->namespace, $type);
     }
 }
