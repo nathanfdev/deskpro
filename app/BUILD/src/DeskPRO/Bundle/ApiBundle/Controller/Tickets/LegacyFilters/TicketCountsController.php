@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,15 +32,19 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TicketCountsController.
  *
+ * @ApiDocSection("Ticket filters (legacy)")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\CountBadge\Count")
  * @ApiModes("all")
  */
 class TicketCountsController extends AbstractLegacyFiltersController
@@ -55,19 +59,21 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *              "description"="the id of the filter",
      *              "dataType"="integer"
      *          },
+     *     },
+     *     filters={
      *          {
      *              "name"="group_by",
      *              "description"="[Ticket filter ID => group_by] map",
-     *              "dataType"="array"
+     *              "dataType"="array",
+     *              "pattern"="\w+"
      *          }
      *      },
      *      statusCodes={
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/ticket_filter_sets/{id}/count")
+     * @Annotations\Get("/ticket_filter_sets/{id}/count")
      *
      * @param Request $request
      * @param int     $id
@@ -81,7 +87,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
         $set   = $this->getFilterSetOr404($id);
         $count = $data_service->getFilterSetCount($set, $request->get('group_by'));
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 
     /**
@@ -98,9 +104,8 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *              "dataType"="array"
      *          }
      *      },
-     *      output="array"
      * )
-     * @Get("/ticket_filter_sets/all/counts")
+     * @Annotations\Get("/ticket_filter_sets/all/counts")
      *
      * @param Request $request
      *
@@ -117,34 +122,33 @@ class TicketCountsController extends AbstractLegacyFiltersController
             $counts[] = $data_service->getFilterSetCount($set, $request->get('group_by'));
         }
 
-        return View::create($this->dataSerialize($counts));
+        return View::create($this->wrap($counts));
     }
 
     /**
      * @ApiDoc(
-     *      description="Get a filter's count",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="group_by",
-     *              "requirement"=".+",
-     *              "description"="the grouping order you want",
-     *              "dataType"="string",
-     *              "required"=false
-     *          },
-     *      },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Not Found"
-     *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *     description="Get a filter's count",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="the id of the filter",
+     *             "dataType"="integer"
+     *         },
+     *         {
+     *             "name"="group_by",
+     *             "requirement"=".+",
+     *             "description"="the grouping order you want",
+     *             "dataType"="string",
+     *             "required"=false
+     *         },
+     *     },
+     *     statusCodes={
+     *         200="Success",
+     *         404="Not Found"
+     *     },
      * )
-     * @Get("/ticket_filters/{id}/count")
+     * @Annotations\Get("/ticket_filters/{id}/count")
      *
      * @param Request            $request
      * @param LegacyTicketFilter $ticket_filter
@@ -158,7 +162,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
         $group_by = $request->get('group_by');
         $count    = $data_service->getFilterCount($ticket_filter, $group_by);
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 
     /**
@@ -177,9 +181,8 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
-     * @Get("/ticket_filters_counts")
+     * @Annotations\Get("/ticket_filters_counts")
      *
      * @param Request $request
      *
@@ -190,6 +193,6 @@ class TicketCountsController extends AbstractLegacyFiltersController
         $data_service = $this->get('data.ticket_legacy_filter_sets');
         $count        = $data_service->getFiltersCount(null, null, null, $data_service->getAllFilters(), $request->get('group_by'));
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 }

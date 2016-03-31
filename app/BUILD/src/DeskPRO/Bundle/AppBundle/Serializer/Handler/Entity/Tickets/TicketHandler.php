@@ -26,10 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;

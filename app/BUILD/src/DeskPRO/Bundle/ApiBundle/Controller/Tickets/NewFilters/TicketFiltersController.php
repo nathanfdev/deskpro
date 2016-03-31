@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -39,7 +42,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -48,6 +50,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TicketFiltersController.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Ticket filters")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\TicketFilter")
  * @Route("/new/ticket_filters")
  */
 class TicketFiltersController extends CrudController
@@ -55,6 +59,8 @@ class TicketFiltersController extends CrudController
     public static $entity    = TicketFilter::class;
     public static $type      = TicketFilterType::class;
     public static $listOrder = 'asc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * @param HttpKernelInterface $kernel
@@ -74,11 +80,15 @@ class TicketFiltersController extends CrudController
     }
 
     /**
+     * See /tickets endpoint (Tickets section) docs for the parameter details.
+     *
      * @ApiDoc(
-     *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *     description="get filtered tickets",
+     *     statusCodes={
+     *         200="Returned with list of tickets",
+     *         400="Returned in case of malformed request"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @Get("/{filter}/tickets")

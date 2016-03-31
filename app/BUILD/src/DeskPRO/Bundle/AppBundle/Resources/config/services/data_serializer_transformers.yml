@@ -29,8 +29,3 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\TextSnippetCategoryTransformer
     arguments:
       - "@security.token_storage"
-
-  data_serializer.transformer.legacy_ticket_filter:
-    class: DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer\LegacyTicketFilterTransformer
-    arguments:
-      - "@data.ticket_legacy_filter_sets"

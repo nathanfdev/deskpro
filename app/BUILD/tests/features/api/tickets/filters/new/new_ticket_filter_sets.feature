@@ -9,7 +9,7 @@ Feature: /new/ticket_filter_sets endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: I retrieve list of ticket filter sets
+  Scenario: I retrieve list of ticket filter sets w/o sideloading
     When I send a GET request to "/api/v2/new/ticket_filter_sets"
     And the response status code should be 200
     And the response should be in JSON
@@ -33,7 +33,21 @@ Feature: /new/ticket_filter_sets endpoint
     And the JSON node "data[2].display_order" should be equal to 30
     And the JSON node "data[2].is_default" should be equal to 1
 
-  Scenario: I get ticket filter set
+    And the JSON node "linked" should have 0 elements
+
+
+  Scenario: same as above but with sideloading
+    When I send a GET request to "/api/v2/new/ticket_filter_sets?include=ticket_filter"
+    And the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.ticket_filter" should exist
+    And the JSON node "linked.ticket_filter.1.id" should be equal to 1
+    And the JSON node "linked.ticket_filter.1.title" should be equal to "Filter 1"
+    And the JSON node "linked.ticket_filter.3.id" should be equal to 3
+    And the JSON node "linked.ticket_filter.3.title" should be equal to "Filter 3"
+
+  Scenario: I get ticket filter set w/o sideloading
     When I send a GET request to "/api/v2/new/ticket_filter_sets/1"
     And the response status code should be 200
     And the response should be in JSON
@@ -42,6 +56,19 @@ Feature: /new/ticket_filter_sets endpoint
     And the JSON node "data.title" should be equal to "Filter set 1"
     And the JSON node "data.display_order" should be equal to 10
     And the JSON node "data.is_default" should be equal to 1
+
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: same as above but with sideloading
+    When I send a GET request to "/api/v2/new/ticket_filter_sets/1?include=ticket_filter"
+    And the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.ticket_filter" should exist
+    And the JSON node "linked.ticket_filter.1.id" should be equal to 1
+    And the JSON node "linked.ticket_filter.1.title" should be equal to "Filter 1"
+    And the JSON node "linked.ticket_filter.2.id" should be equal to 2
+    And the JSON node "linked.ticket_filter.2.title" should be equal to "Filter 2"
 
   Scenario: I try to create a new filter set with empty request
     When I send a POST request to "/api/v2/new/ticket_filter_sets"
