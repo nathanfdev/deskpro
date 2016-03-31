@@ -80,7 +80,7 @@ class TicketAttachment extends DomainObject
      * Actual attachment.
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      *
      * @Assert\Valid()
      *
