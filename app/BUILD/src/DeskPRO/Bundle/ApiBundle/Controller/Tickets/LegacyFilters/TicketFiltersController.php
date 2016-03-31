@@ -35,12 +35,13 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\SearcherAbstract;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +50,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class TicketFiltersController.
  *
+ * @ApiDocSection("Ticket filters (legacy)")
  * @ApiModes("all")
  * @Route("/ticket_filters")
  */
@@ -57,6 +59,8 @@ class TicketFiltersController extends CrudController
     public static $exposeOnly = ['list', 'get'];
     public static $entity     = LegacyTicketFilter::class;
     public static $listOrder  = 'asc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * @ApiDoc(

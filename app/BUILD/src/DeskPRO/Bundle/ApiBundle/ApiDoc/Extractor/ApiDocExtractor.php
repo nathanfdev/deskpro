@@ -80,7 +80,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     protected function isExposedAction($action, \ReflectionClass $reflection)
     {
         if ($reflection->isSubclassOf(CrudController::class)
-           && $exposedMethods = $this->getExposedActions($action, $reflection)) {
+           && ($exposedMethods = $this->getExposedActions($action, $reflection)) !== false) {
             // this is crud, and exposOnly is set, so we gonna check it
             return in_array($action, $exposedMethods);
         }

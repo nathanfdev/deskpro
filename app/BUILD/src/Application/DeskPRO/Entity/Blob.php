@@ -461,6 +461,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->filename;
     }
 
+    public function getContentType()
+    {
+        return $this->content_type;
+    }
+
     public function addLabel(LabelBlob $label)
     {
         $label['blob'] = $this;

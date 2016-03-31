@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,39 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject as TaskProjectModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class PersonSettingTransformer.
+ * Class TaskProjectHandler.
  */
-class PersonSettingTransformer extends AbstractDataSerializerTransformer
+class TaskProjectHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return ['name'];
+        return TaskProject::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TaskProject $entity
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var PersonSetting $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        return [
-            'id'    => $data->getName(),
-            'value' => $data->getValue(),
-        ];
+        return new TaskProjectModel($entity);
     }
 }

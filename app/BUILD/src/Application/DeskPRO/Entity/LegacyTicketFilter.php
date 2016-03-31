@@ -42,17 +42,17 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * @property int $id
- * @property Person $person
+ * @property int       $id
+ * @property Person    $person
  * @property AgentTeam $agent_team
- * @property bool $is_global
- * @property string $title
- * @property bool $is_enabled
- * @property string $sys_name
- * @property array $terms
- * @property string $group_by
- * @property string $order_by
- * @property string $display_order
+ * @property bool      $is_global
+ * @property string    $title
+ * @property bool      $is_enabled
+ * @property string    $sys_name
+ * @property array     $terms
+ * @property string    $group_by
+ * @property string    $order_by
+ * @property int   $display_order
  *
  * @JMS\ExclusionPolicy("ALL")
  */
@@ -433,6 +433,22 @@ class LegacyTicketFilter extends DomainObject
     public function getResultsCount()
     {
         return count($this->getResults());
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTerms()
+    {
+        return $this->terms;
     }
 
     public function __toString()

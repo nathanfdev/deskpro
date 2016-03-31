@@ -33,6 +33,19 @@ Feature: /ticket_filters endpoint
     And the JSON node "data[2].title" should be equal to "Tickets I Follow"
     And the JSON node "data[2].display_order" should be equal to 3
     And the JSON node "data[2].ticket_filter_set" should be equal to 1
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: Same as previous but with sideloading
+    When I send a GET request to "/api/v2/ticket_filters?include=ticket_filter_set"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.ticket_filter_set" should exist
+    And the JSON node "linked.ticket_filter_set.1.id" should be equal to 1
+    And the JSON node "linked.ticket_filter_set.1.title" should be equal to "Awaiting agent"
+    And the JSON node "linked.ticket_filter_set.2.id" should be equal to 2
+    And the JSON node "linked.ticket_filter_set.2.title" should be equal to "All tickets"
+
 
   Scenario: I get ticket filter
     When I send a GET request to "/api/v2/ticket_filters/2"

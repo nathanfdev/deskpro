@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,9 +33,12 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class LegacyTicketFilterSet.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class LegacyTicketFilterSet
 {
@@ -44,36 +47,71 @@ class LegacyTicketFilterSet
     const TYPE_CUSTOM_FILTERS = 3;
 
     /**
+     * The unique ID of filter set.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Title for current filter set.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title;
 
     /**
+     * It's display order.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $display_order;
 
     /**
+     * Filters that belons this filter set.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\LegacyTicketFilter>>")
+     *
      * @var LegacyTicketFilter[]
      */
     protected $filters = [];
 
     /**
+     * True if this filter set is default one.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_default = false;
 
     /**
+     * Person id if this stuff belongs to somebody privately.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var Person
      */
     protected $private_agent;
 
     /**
+     * Ids of agent shares this filter set.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     *
      * @var Person[]
      */
     protected $shared_agents = [];

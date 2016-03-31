@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,45 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\Blob as BlobEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Blob as BlobModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class CustomDataTicketTransformer.
+ * Class BlobHandler.
  */
-class CustomDataFeedbackTransformer extends AbstractDataSerializerTransformer
+class BlobHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return [
-            'id',
-            'feedback_id',
-            'field_id',
-            'value',
-            'input',
-        ];
+        return BlobEntity::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param BlobEntity $entity
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $data */
-        $data = $transformation_request->getDataToBeTransformed();
-
-        if (!$data['field_id']) {
-            return ['field_id' => $data['root_field_id']];
-        }
-
-        return [];
+        return new BlobModel($entity);
     }
 }

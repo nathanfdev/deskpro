@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,10 +32,12 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -44,6 +46,8 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Annotations\Route("/organizations/{parentId}/members")
+ * @ApiDocSection("Organizations")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person")
  */
 class OrganizationMembersController extends CrudSubController
 {
@@ -70,7 +74,15 @@ class OrganizationMembersController extends CrudSubController
     }
 
     /**
-     * @Delete("/{person}", requirements={"id"="\d+"})
+     * @ApiDoc(
+     *     section="Organizations",
+     *     description="delete an organization member",
+     *     statusCodes={
+     *         200="Returned in case of successful response"
+     *     }
+     * )
+     *
+     * @Annotations\Delete("/{person}", requirements={"id"="\d+"})
      *
      * @param Person $person
      *

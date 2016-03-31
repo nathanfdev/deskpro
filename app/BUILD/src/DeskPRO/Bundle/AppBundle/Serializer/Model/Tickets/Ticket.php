@@ -611,7 +611,7 @@ class Ticket
      * All ticket slas.
      *
      * @JMS\Expose()
-     * @JMS\Type("collection<Application\DeskPRO\Entity\TicketSla>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\TicketSla>>")
      * @JMS\SerializedName("ticket_slas")
      *
      * @var TicketSla[]

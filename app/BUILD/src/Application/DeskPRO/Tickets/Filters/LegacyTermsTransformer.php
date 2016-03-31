@@ -31,7 +31,6 @@
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -51,7 +50,7 @@ use Orb\Util\Util;
  * but ran out of time because it affects so many things: ticket searching, escalations, filters.
  *
  * The admin interface is built up around the idea of the new system though, it's how it accepts and processes
- * forms for filters and escalations. So we need this transformer to convert new-style into old-style and visaversa.
+ * forms for filters and escalations. So we need this transformer to convert new-style into old-style and vice versa.
  */
 class LegacyTermsTransformer
 {

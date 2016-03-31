@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,40 +29,32 @@
 /**
  * DeskPRO.
  */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
-
-use Application\DeskPRO\Entity\Blob;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\TicketParticipant;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class BlobTransformer.
+ * Class TicketParticipant.
  */
-class BlobTransformer extends AbstractDataSerializerTransformer
+class TicketParticipantHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $request)
+    public static function getClassNames()
     {
-        return ['content_type', 'is_image'];
+        return TicketParticipant::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TicketParticipant $entity
      */
-    public function getCustomProperties(DataTransformerRequest $request)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var Blob $data */
-        $data = $request->getDataToBeTransformed();
-
-        return [
-            'blob_id'           => $data->getId(),
-            'blob_auth'         => $data->getAuthcode(),
-            'blob_auth_id'      => $data->getId().'-'.$data->getAuthcode(),
-            'download_url'      => $data->getDownloadUrl(true, false),
-            'filename'          => $data->getFilenameSafe(),
-            'filesize_readable' => $data->getReadableFilesize(),
-        ];
+        return $entity->getPerson();
     }
 }

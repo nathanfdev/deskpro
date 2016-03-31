@@ -34,7 +34,18 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data[2].display_order" should be equal to 30
     And the JSON node "data[2].ticket_filter_set" should be equal to 2
 
-  Scenario: I get ticket filter
+  Scenario: Same as previous but with sideloading
+    When I send a GET request to "/api/v2/new/ticket_filters?include=ticket_filter_set"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "linked.ticket_filter_set" should exist
+    And the JSON node "linked.ticket_filter_set.1.id" should be equal to 1
+    And the JSON node "linked.ticket_filter_set.1.title" should be equal to "Filter set 1"
+    And the JSON node "linked.ticket_filter_set.2.id" should be equal to 2
+    And the JSON node "linked.ticket_filter_set.2.title" should be equal to "Filter set 2"
+
+  Scenario: I get ticket filter w/o sideloading
     When I send a GET request to "/api/v2/new/ticket_filters/2"
     Then the response status code should be 200
     And the response should be in JSON
@@ -44,6 +55,17 @@ Feature: /new/ticket_filters endpoint
     And the JSON node "data.ticket_filter_set" should be equal to 1
     And the JSON node "data.term.op" should be equal to "is"
     And the JSON node "data.term.options.status[0]" should be equal to "resolved"
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: I get ticket filter with sideloading
+    When I send a GET request to "/api/v2/new/ticket_filters/2?include=ticket_filter_set"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data.id" should be equal to 2
+
+    And the JSON node "linked.ticket_filter_set" should exist
+    And the JSON node "linked.ticket_filter_set.1.id" should be equal to 1
+    And the JSON node "linked.ticket_filter_set.1.title" should be equal to "Filter set 1"
 
   Scenario: I retrieve list of filter's tickets
     When I send a GET request to "/api/v2/new/ticket_filters/1/tickets"

@@ -57,21 +57,21 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.task_project:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectHandler
     arguments:
       - "@doctrine.dbal.default_connection"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.task:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskHandler
     arguments:
       - "@doctrine.dbal.default_connection"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.ticket_participant:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketParticipantHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketParticipantHandler
     arguments:
       - "@data.chat"
     tags:
@@ -85,7 +85,7 @@ services:
         - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.ticket:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TicketHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketHandler
     arguments:
       - "@tickets.linker"
       - "@ticket_layout_factory"
@@ -97,6 +97,18 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.legacy_ticket_filter:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LegacyTicketFilterHandler
+    arguments:
+      - "@data.ticket_legacy_filter_sets"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.blob:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
 
   # listeners and subscribers
   api_serializer.sideload_listener:

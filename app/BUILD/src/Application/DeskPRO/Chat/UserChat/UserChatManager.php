@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -382,9 +382,9 @@ class UserChatManager
         $joined_left_counts = App::getDb()->fetchAllKeyValue('
             SELECT tag, COUNT(*)
             FROM chat_messages
-            WHERE tag IN (?, ?)
+            WHERE tag IN (?, ?) AND conversation_id = ?
             GROUP BY tag
-        ', array($tag1, $tag2));
+        ', [$tag1, $tag2, $convo->getId()]);
 
         if (
             $joined_left_counts
@@ -405,8 +405,8 @@ class UserChatManager
             $this->addSystemMessage(
                 $convo,
                 'message_user-joined',
-                array('name'        => $person->display_name_user),
-                array('user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id)
+                ['name'        => $person->display_name_user],
+                ['user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
             );
 
             $this->em->flush();

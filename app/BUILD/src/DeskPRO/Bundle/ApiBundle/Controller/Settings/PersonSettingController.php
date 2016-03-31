@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,7 @@
 /**
  * DeskPRO.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\PersonSetting;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -38,9 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +51,7 @@ class PersonSettingController extends BaseController
 {
     /**
      * @ApiDoc(
+     *      section="Person settings",
      *      description="create a new person setting",
      *      statusCodes={
      *          201="Created",
@@ -61,7 +59,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Post("/person_setting", name="api_person_setting_post")
+     * @Annotations\Post("/person_setting", name="api_person_setting_post")
      *
      * @param Request $request
      *
@@ -87,7 +85,7 @@ class PersonSettingController extends BaseController
         );
 
         return View::create(
-            $this->dataSerialize($setting),
+            $this->wrap($setting),
             Response::HTTP_CREATED,
             [
                 'Location' => $location,
@@ -97,6 +95,7 @@ class PersonSettingController extends BaseController
 
     /**
      * @ApiDoc(
+     *      section="Person settings",
      *      description="update person setting",
      *      statusCodes={
      *          204="Updated",
@@ -105,7 +104,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Put("/person_setting", name="api_person_setting_put")
+     * @Annotations\Put("/person_setting", name="api_person_setting_put")
      *
      * @param Request $request
      *
@@ -131,7 +130,7 @@ class PersonSettingController extends BaseController
         );
 
         return View::create(
-            $this->dataSerialize($setting),
+            $this->wrap($setting),
             Response::HTTP_CREATED,
             [
                 'Location' => $location,
@@ -141,17 +140,18 @@ class PersonSettingController extends BaseController
 
     /**
      * @ApiDoc(
+     *      section="Person settings",
      *      description="get person settings",
      *      statusCodes={
      *          200="Success"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Get("/person_setting", name="api_person_setting_cget")
+     * @Annotations\Get("/person_setting", name="api_person_setting_cget")
      *
      * @return View
      */
-    public function cgetAction()
+    public function listAction()
     {
         $settings = $this
             ->getDoctrine()
@@ -162,13 +162,14 @@ class PersonSettingController extends BaseController
         ;
 
         return View::create(
-            $this->dataSerialize($settings),
+            $this->wrap($settings),
             Response::HTTP_OK
         );
     }
 
     /**
      * @ApiDoc(
+     *      section="Person settings",
      *      description="get a person setting",
      *      requirements={
      *          {
@@ -180,11 +181,11 @@ class PersonSettingController extends BaseController
      *      },
      *      statusCodes={
      *          200="Success",
-     *          404="Not Found"
+     *          404="We can't find setting with given name"
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Get("/person_setting/{name}", name="api_person_setting_get")
+     * @Annotations\Get("/person_setting/{name}", name="api_person_setting_get")
      *
      * @param string $name
      *
@@ -206,7 +207,7 @@ class PersonSettingController extends BaseController
         }
 
         return View::create(
-            $this->dataSerialize($setting),
+            $this->wrap($setting),
             Response::HTTP_OK
         );
     }
