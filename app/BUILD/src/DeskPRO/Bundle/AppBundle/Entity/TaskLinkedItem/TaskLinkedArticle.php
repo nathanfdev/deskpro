@@ -70,4 +70,9 @@ class TaskLinkedArticle extends TaskLinkedItem
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getArticle()->getTitle();
+    }
 }

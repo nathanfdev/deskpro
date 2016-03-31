@@ -32,14 +32,26 @@ export class LinkedItem extends CardWidget {
     const empty = Immutable.fromJS({});
     this.state = {
       isOpen: props.isOpen,
-      value: props.value.get('linked_items') || empty
+      value: this.convertLinkedItems(props.value)
     };
+  }
+
+  convertLinkedItems(task) {
+    let items = Immutable.Map();
+
+    for (let type of ['ticket', 'article', 'chat']) {
+      for (let item of task.get(`linked_${type}s`)) {
+        items = items.set(type + '.' + item.get('id'), item);
+      }
+    }
+
+    return items;
   }
 
   componentWillReceiveProps(props) {
     const empty = Immutable.fromJS({});
     this.setState({
-      value: props.value.get('linked_items') || empty
+      value: this.convertLinkedItems(props.value)
     });
 
     if (undefined !== props.isOpen) {
@@ -59,10 +71,31 @@ export class LinkedItem extends CardWidget {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!Immutable.is(this.state.value, prevState.value)) {
-      // todo check controllers when they'll be ready
-      this.props.dispatch(editTask, {linked_items: this.state.value});
+    if (Immutable.is(this.state.value, prevState.value)) return;
+    if (!this.props.onChange) return;
+
+    let data = {
+      linked_tickets: [],
+      linked_articles: [],
+      linked_chats: []
+    };
+
+    for (let [k, item] of this.state.value) {
+      const type = k.split('.')[0];
+      switch (type) {
+        case 'ticket':
+          data.linked_tickets.push(item);
+          break;
+        case 'article':
+          data.linked_articles.push(item);
+          break;
+        case 'chat':
+          data.linked_chats.push(item);
+          break;
+      }
     }
+
+    this.props.onChange(Immutable.fromJS(data));
   }
 
   getOptions = (input, callback) => {
@@ -114,15 +147,11 @@ export class LinkedItem extends CardWidget {
     const [type, id] = value.value.split('.');
     const obj = {
       id: id,
-      title: value.label,
-      type: type
+      title: value.label
     };
     this.setState({
       value: this.state.value.set(value.value, Immutable.fromJS(obj))
     });
-
-    // todo check controllers when they'll be ready
-    this.props.dispatch(editTask, {linked_items: this.state.value});
   };
 
   render() {
@@ -133,7 +162,9 @@ export class LinkedItem extends CardWidget {
 
     if (1 === count) {
       const item = items.first();
-      title = `Linked ${item.get('type')}: ${item.get('title')}`;
+      const key = items.keySeq().first();
+      const type = key.split('.')[0];
+      title = `Linked ${type}: ${item.get('title')}`;
     } else if (count > 1) {
       title = count + ' linked items';
     }

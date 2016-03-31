@@ -138,6 +138,22 @@ class TaskType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
+
+            ->add('linked_tickets', 'collection', [
+                'entry_type'   => 'Application\DeskPRO\Entity\Ticket',
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ])
+            ->add('linked_articles', 'collection', [
+                'entry_type' => 'DeskPRO\Bundle\AppBundle\Entity\Article',
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ])
+            ->add('linked_chat', 'collection', [
+                'entry_type' => 'DeskPRO\Bundle\AppBundle\Entity\Chat',
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ])
         ;
     }
 

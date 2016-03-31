@@ -80,6 +80,9 @@ export class TaskCardEditContainer extends React.Component {
         departments: value.get('departments').toArray()
       };
       task = task.mergeWith(value);
+    } else if ('linked_items' === prop) {
+      task = task.mergeWith(value);
+      params = value;
     } else {
       params = { [prop]: value };
       task = task.set(prop, value);

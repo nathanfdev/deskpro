@@ -155,7 +155,15 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 [$this, 'getSubtasksDone'],
                 [$id]
             ),
-            'linked_items' => $this->getLinkedItems($data),
+            'linked_tickets' => $data->getLinkedTickets()->map(function($item){
+                return ['id' => $item->getId(), 'title' => (string) $item];
+            }),
+            'linked_articles' => $data->getLinkedArticles()->map(function($item){
+                return ['id' => $item->getId(), 'title' => (string) $item];
+            }),
+            'linked_chats' => $data->getLinkedChats()->map(function($item){
+                return ['id' => $item->getId(), 'title' => (string) $item];
+            }),
         ];
     }
 
@@ -254,39 +262,5 @@ class TaskTransformer extends AbstractDataSerializerTransformer
                 ];
             }
         }
-    }
-
-    public function getLinkedItems(Task $task)
-    {
-        $ret = [];
-
-        foreach ($task->getLinkedTickets() as $linkedTicket) {
-            $ticket = $linkedTicket->getTicket();
-            $ret['ticket.' . $ticket->getId()] = [
-                'id' => $ticket->getId(),
-                'title' => $ticket->getSubject(),
-                'type' => 'ticket',
-            ];
-        }
-
-        foreach ($task->getLinkedChats() as $linkedChat) {
-            $chat = $linkedChat->getChat();
-            $ret['chat.' . $chat->getId()] = [
-                'id' => $chat->getId(),
-                'title' => $chat->getSubjectLine(),
-                'type' => 'chat',
-            ];
-        }
-
-        foreach ($task->getLinkedArticles() as $linkedArticle) {
-            $article = $linkedArticle->getArticle();
-            $ret['article.' . $article->getId()] = [
-                'id' => $article->getId(),
-                'title' => $article->getTitle(),
-                'type' => 'article',
-            ];
-        }
-
-        return $ret;
     }
 }
