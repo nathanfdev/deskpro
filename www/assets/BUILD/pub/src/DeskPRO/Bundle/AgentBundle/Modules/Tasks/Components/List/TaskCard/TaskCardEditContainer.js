@@ -81,8 +81,20 @@ export class TaskCardEditContainer extends React.Component {
       };
       task = task.mergeWith(value);
     } else if ('linked_items' === prop) {
-      task = task.mergeWith(value);
-      params = value;
+
+      task = task.withMutations(map => {
+        map
+          .set('linked_tickets', value.get('linked_tickets'))
+          .set('linked_articles', value.get('linked_articles'))
+          .set('linked_chats', value.get('linked_chats'));
+      });
+
+      params = {
+        linked_tickets: value.get('linked_tickets').toArray(),
+        linked_articles: value.get('linked_articles').toArray(),
+        linked_chats: value.get('linked_chats').toArray()
+      };
+
     } else {
       params = { [prop]: value };
       task = task.set(prop, value);

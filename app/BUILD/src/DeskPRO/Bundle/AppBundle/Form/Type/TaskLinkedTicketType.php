@@ -31,15 +31,18 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TaskToIdTransformer;
-use Doctrine\Common\Persistence\ObjectManager;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TaskLinkedTicketType extends AbstractType
 {
-    public function __construct(ObjectManager $manager)
+    protected $manager;
+
+    public function __construct(EntityManager $manager)
     {
         $this->manager = $manager;
     }
@@ -53,20 +56,27 @@ class TaskLinkedTicketType extends AbstractType
         $builder
             ->add(
                 'ticket',
-                'entity',
-                [
-                    'class'    => 'DeskPRO:Ticket',
-                    'property' => 'title',
-                    'required' => false,
-                ]
+                TextType::class,
+                ['invalid_message' => 'That is not a valid Ticket ID']
             )
             ->add(
                 'task',
                 TextType::class,
-                ['invalid_message' => 'That is not a valid task number']
-            );
+                ['invalid_message' => 'That is not a valid Task ID']
+            )
+        ;
+        $builder->get('ticket')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('DeskPRO:Ticket')));
+        $builder->get('task')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('App:Task')));
+    }
 
-        $builder->get('task')->addModelTransformer(new TaskToIdTransformer($this->manager));
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket',
+        ]);
     }
 
     /**

@@ -13,7 +13,7 @@ import {
 import {
   TitleForm,
   DateDue,
-  LinkedItem,
+  LinkedItemContainer,
   CardProjectContainer,
   AssignButton,
   AssigneeAvatar
@@ -132,7 +132,7 @@ export class TaskCardNew extends React.Component {
                                   onChange={this.onChange.bind(this, 'project')}
                                   onSetEditing={this.onSetEditing}
                                   openBySingleClick />
-            <LinkedItem value={links} />
+            <LinkedItemContainer value={links} />
           </CardLineLeft>
         </CardLine>
       </Card>

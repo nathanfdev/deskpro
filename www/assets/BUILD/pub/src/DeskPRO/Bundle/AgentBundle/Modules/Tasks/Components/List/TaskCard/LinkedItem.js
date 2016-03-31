@@ -8,8 +8,7 @@ import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listA
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Select from 'react-select-plus';
 import { connect } from 'react-redux';
-
-@connect()
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export class LinkedItem extends CardWidget {
 
@@ -34,68 +33,82 @@ export class LinkedItem extends CardWidget {
       isOpen: props.isOpen,
       value: this.convertLinkedItems(props.value)
     };
+    this.fallback = {
+      linked_tickets: {},
+      linked_articles: {},
+      linked_chats: {}
+    };
+    this.update = {
+      linked_tickets: [],
+      linked_articles: [],
+      linked_chats: []
+    };
   }
 
   convertLinkedItems(task) {
-    let items = Immutable.Map();
-
-    for (let type of ['ticket', 'article', 'chat']) {
-      for (let item of task.get(`linked_${type}s`)) {
-        items = items.set(type + '.' + item.get('id'), item);
-      }
-    }
-
-    return items;
+    return Immutable.Map({
+      linked_tickets: task.get('linked_tickets').toSet(),
+      linked_articles: task.get('linked_articles').toSet(),
+      linked_chats: task.get('linked_chats').toSet()
+    });
   }
 
+  getItemTitle = (type, id) => {
+    const item = this.props[type.substr(7)].get(id);
+    switch (type) {
+      case 'linked_tickets':
+        return item ? item.get('subject') : this.fallback[type][id];
+        break;
+      case 'linked_articles':
+        return item ? item.get('title') : this.fallback[type][id];
+        break;
+      case 'linked_chats':
+        return item ? item.get('subject_line') : this.fallback[type][id];
+        break;
+    }
+    return '???';
+  };
+
   componentWillReceiveProps(props) {
-    const empty = Immutable.fromJS({});
     this.setState({
       value: this.convertLinkedItems(props.value)
     });
-
-    if (undefined !== props.isOpen) {
-      this.setState({isOpen: props.isOpen});
-    }
   }
 
   shouldComponentUpdate(props, state) {
-    return this.state.isOpen !== state.isOpen || this.state.value !== state.value
-      || !Immutable.is(this.state.value, state.value);
+    return this.state.isOpen !== state.isOpen || !Immutable.is(this.state.value, state.value);
   }
 
-  deleteLinkedItem(id) {
+  deleteLinkedItem(type, value) {
+    let items = this.state.value.get(type).delete(value);
     this.setState({
-      value: this.state.value.remove(id)
+      value: this.state.value.set(type, items)
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (Immutable.is(this.state.value, prevState.value)) return;
-    if (!this.props.onChange) return;
+    this.props.onChange && this.props.onChange(this.state.value);
 
-    let data = {
-      linked_tickets: [],
-      linked_articles: [],
-      linked_chats: []
-    };
-
-    for (let [k, item] of this.state.value) {
-      const type = k.split('.')[0];
+    for (let [type, items] of Object.entries(this.update)) {
       switch (type) {
-        case 'ticket':
-          data.linked_tickets.push(item);
+        case 'linked_tickets':
+          this.props.dispatch(addToCollection('Ticket', 'all', items));
           break;
-        case 'article':
-          data.linked_articles.push(item);
+        case 'linked_articles':
+          this.props.dispatch(addToCollection('Article', 'all', items));
           break;
-        case 'chat':
-          data.linked_chats.push(item);
+        case 'linked_chats':
+          this.props.dispatch(addToCollection('UserChat', 'all', items));
           break;
       }
     }
 
-    this.props.onChange(Immutable.fromJS(data));
+    this.update = {
+      linked_tickets: [],
+      linked_articles: [],
+      linked_chats: []
+    };
   }
 
   getOptions = (input, callback) => {
@@ -120,20 +133,24 @@ export class LinkedItem extends CardWidget {
         }
 
         for (let result of group.results) {
+
           if (group.type === 'ticket') {
             option.options.push({
               label: result.subject,
-              value: 'ticket.' + result.id
+              value: 'linked_tickets.' + result.id,
+              data: result
             });
           } else  if (group.type === 'chat') {
             option.options.push({
               label: result.subject,
-              value: 'chat.' + result.id
+              value: 'linked_chats.' + result.id,
+              data: result
             });
           } else  if (group.type === 'article') {
             option.options.push({
               label: result.title,
-              value: 'article.' + result.id
+              value: 'linked_articles.' + result.id,
+              data: result
             });
           }
         }
@@ -144,27 +161,39 @@ export class LinkedItem extends CardWidget {
   };
 
   onSelectItem = (value, selectedOptions) => {
-    const [type, id] = value.value.split('.');
-    const obj = {
-      id: id,
-      title: value.label
-    };
+    let [type, id] = value.value.split('.');
+    id = parseInt(id);
+    this.fallback[type][id] = value.label;
+    this.update[type].push(value.data);
+    let items = this.state.value.get(type);
     this.setState({
-      value: this.state.value.set(value.value, Immutable.fromJS(obj))
+      value: this.state.value.set(type, items.add(id))
     });
   };
 
   render() {
     const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
-    const items = this.state.value;
-    const count = items.size;
-    let title = 'N/A';
+    const linked_tickets = this.state.value.get('linked_tickets')
+      , linked_articles = this.state.value.get('linked_articles')
+      , linked_chats = this.state.value.get('linked_chats')
+      ;
+    const { tickets, articles, chats } = this.props;
+    const count = linked_tickets.size + linked_articles.size + linked_chats.size;
+    let type, title = 'N/A';
+    const getItemTitle = this.getItemTitle;
 
     if (1 === count) {
-      const item = items.first();
-      const key = items.keySeq().first();
-      const type = key.split('.')[0];
-      title = `Linked ${type}: ${item.get('title')}`;
+      switch(1) {
+        case linked_tickets.size:
+          title = 'Linked ticket: ' + getItemTitle('linked_tickets', linked_tickets.first());
+          break;
+        case linked_articles.size:
+          title = 'Linked article: ' + getItemTitle('linked_articles', linked_articles.first());
+          break;
+        case linked_chats.size:
+          title = 'Linked chat: ' + getItemTitle('linked_chats', linked_chats.first());
+          break;
+      }
     } else if (count > 1) {
       title = count + ' linked items';
     }
@@ -184,26 +213,48 @@ export class LinkedItem extends CardWidget {
                     zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose}
-                    onClick={this.test}
                     additionalNodes={[this.refs.button, '.fa-times']}>
             <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
 
-                    {items.size &&
+                    {count &&
                     <div className="dpw-label-pile">
                       <ul className="dpw-label-list">
-                        {items.map((item, key) =>
-                          <li key={key}>
+                        {linked_tickets.map((id) => {
+                          const item = tickets.get(id);
+                          return <li key={`linked_ticket.${id}`}>
                             <span className="dpw-item-label">
                               <i className="fa fa-times" style={{cursor: 'pointer'}}
-                                 onClick={this.deleteLinkedItem.bind(this, key)}>
+                                 onClick={this.deleteLinkedItem.bind(this, 'linked_tickets', id)}>
                               </i>
-                              {item.get('title')}
+                              {item ? item.get('subject') : getItemTitle('linked_tickets', id)}
                             </span>
                           </li>
-                        )}
+                        })}
+                        {linked_articles.map((id) => {
+                          const item = articles.get(id);
+                          return <li key={`linked_article.${id}`}>
+                            <span className="dpw-item-label">
+                              <i className="fa fa-times" style={{cursor: 'pointer'}}
+                                 onClick={this.deleteLinkedItem.bind(this, 'linked_articles', id)}>
+                              </i>
+                              {item ? item.get('title') : getItemTitle('linked_articles', id)}
+                            </span>
+                          </li>
+                        })}
+                        {linked_chats.map((id) => {
+                          const item = chats.get(id);
+                          return <li key={`linked_chat.${id}`}>
+                            <span className="dpw-item-label">
+                              <i className="fa fa-times" style={{cursor: 'pointer'}}
+                                 onClick={this.deleteLinkedItem.bind(this, 'linked_chats', id)}>
+                              </i>
+                              {item ? item.get('subject_line') : getItemTitle('linked_chats', id)}
+                            </span>
+                          </li>
+                        })}
                       </ul>
                     </div> || null}
 

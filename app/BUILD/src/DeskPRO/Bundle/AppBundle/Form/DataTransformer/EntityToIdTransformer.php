@@ -32,44 +32,41 @@
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class TaskToIdTransformer implements DataTransformerInterface
+class EntityToIdTransformer implements DataTransformerInterface
 {
-    private $manager;
+    protected $rep;
 
-    public function __construct(ObjectManager $manager)
+    public function __construct(EntityRepository $rep)
     {
-        $this->manager = $manager;
+        $this->rep = $rep;
     }
 
-    public function transform($task)
+    public function transform($value)
     {
-        if (null === $task) {
-            return '';
-        }
-
-        return $task->getId();
-    }
-
-    public function reverseTransform($taskId)
-    {
-        if (!$taskId) {
+        if (!is_object($value)) {
             return;
         }
 
-        $task = $this->manager->getRepository('App:Task')->find($taskId);
+        return $value->getId();
+    }
 
-        if (null === $task) {
-            throw new TransformationFailedException(
-                sprintf(
-                    'A task with number "%s" does not exist!',
-                    $taskId
-                )
-            );
+    public function reverseTransform($value)
+    {
+        if (!$value) {
+            return;
         }
 
-        return $task;
+        $object = $this->rep->find($value);
+
+        if (null === $object) {
+            throw new TransformationFailedException(sprintf('An object with ID "%d" does not exist!', $value));
+        }
+
+        return $object;
     }
 }

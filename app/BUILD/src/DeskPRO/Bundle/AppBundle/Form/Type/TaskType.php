@@ -32,6 +32,8 @@ use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -138,23 +140,44 @@ class TaskType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
-
             ->add('linked_tickets', 'collection', [
-                'entry_type'   => 'Application\DeskPRO\Entity\Ticket',
-                'allow_add'    => true,
+                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedTicketType',
+                'allow_add' => true,
                 'allow_delete' => true,
             ])
             ->add('linked_articles', 'collection', [
-                'entry_type' => 'DeskPRO\Bundle\AppBundle\Entity\Article',
-                'allow_add'    => true,
+                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedArticleType',
+                'allow_add' => true,
                 'allow_delete' => true,
             ])
-            ->add('linked_chat', 'collection', [
-                'entry_type' => 'DeskPRO\Bundle\AppBundle\Entity\Chat',
-                'allow_add'    => true,
+            ->add('linked_chats', 'collection', [
+                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedChatType',
+                'allow_add' => true,
                 'allow_delete' => true,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+    }
+
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $task = $event->getForm()->getData();
+
+        $data['linked_tickets'] = array_map(function($id) use ($task) {
+            return ['task' => $task->getId(), 'ticket' => $id];
+        }, $data['linked_tickets']);
+
+        $data['linked_articles'] = array_map(function($id) use ($task) {
+            return ['task' => $task->getId(), 'article' => $id];
+        }, $data['linked_articles']);
+
+        $data['linked_chats'] = array_map(function($id) use ($task) {
+            return ['task' => $task->getId(), 'chat' => $id];
+        }, $data['linked_chats']);
+
+        $event->setData($data);
     }
 
     /**

@@ -31,15 +31,18 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\TaskToIdTransformer;
-use Doctrine\Common\Persistence\ObjectManager;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TaskLinkedChatType extends AbstractType
 {
-    public function __construct(ObjectManager $manager)
+    protected $manager;
+
+    public function __construct(EntityManager $manager)
     {
         $this->manager = $manager;
     }
@@ -53,20 +56,28 @@ class TaskLinkedChatType extends AbstractType
         $builder
             ->add(
                 'chat',
-                'entity',
-                [
-                    'class'    => 'DeskPRO:ChatConversation',
-                    'property' => 'title',
-                    'required' => false,
-                ]
+                TextType::class,
+                ['invalid_message' => 'That is not a valid Chat ID']
             )
             ->add(
                 'task',
                 TextType::class,
-                ['invalid_message' => 'That is not a valid task number']
-            );
+                ['invalid_message' => 'That is not a valid Task ID']
+            )
+        ;
 
-        $builder->get('task')->addModelTransformer(new TaskToIdTransformer($this->manager));
+        $builder->get('chat')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('DeskPRO:ChatConversation')));
+        $builder->get('task')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('App:Task')));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat',
+        ]);
     }
 
     /**

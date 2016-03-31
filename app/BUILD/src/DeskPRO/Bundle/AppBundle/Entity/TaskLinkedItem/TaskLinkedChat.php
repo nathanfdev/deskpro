@@ -78,9 +78,4 @@ class TaskLinkedChat extends TaskLinkedItem
 
         return $this;
     }
-
-    public function __toString()
-    {
-        return $this->getChat()->getSubjectLine();
-    }
 }

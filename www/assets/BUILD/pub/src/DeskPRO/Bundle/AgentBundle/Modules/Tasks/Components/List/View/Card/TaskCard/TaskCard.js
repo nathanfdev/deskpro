@@ -18,8 +18,8 @@ import {
   ShowDetailsButton,
   AssignButton,
   CardProjectContainer,
-  LinkedItem
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard';
+  LinkedItemContainer
+} from '../../../TaskCard';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -39,7 +39,7 @@ export class TaskCard extends BaseTaskCard {
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
           <span className="dpw--card-disc"/>
-          <LinkedItem value={task} onChange={onChange.bind(null, 'linked_items')} />
+          <LinkedItemContainer value={task} onChange={onChange.bind(null, 'linked_items')} />
         </div>
         <div style={{position: 'absolute', right: 0, top: 0}}>
           <Comments count={this.state.comments} />
