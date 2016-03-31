@@ -146,7 +146,5 @@ export const editTask = createAction(
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
     });
-
-    // return promise;
   }
 );

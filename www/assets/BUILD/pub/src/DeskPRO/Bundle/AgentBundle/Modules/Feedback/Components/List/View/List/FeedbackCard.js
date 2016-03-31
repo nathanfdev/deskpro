@@ -22,7 +22,8 @@ export class FeedbackCard extends Component {
   };
 
   renderLabels(labels) {
-    if (labels.size && this.props.viewFields.includes('labels')) {
+    const {viewFields} = this.props;
+    if (labels.size && viewFields && viewFields.includes('labels')) {
       return (
         <CardLineItem>
           <CardDisc/>
@@ -74,16 +75,18 @@ export class FeedbackCard extends Component {
     const { feedback, viewFields } = this.props;
     const output = {};
     let index = 0;
-    if (viewFields.includes('id')) {
-      output['key' + index] = this.renderId(feedback.get('id'));
-      index++;
-    }
-    if (viewFields.includes('date_created')) {
-      output['key' + index] = this.renderDate(feedback.get('date_created'));
-      index++;
-    }
-    if (viewFields.includes('category')) {
-      output['key' + index] = this.renderCategory();
+    if (undefined !== viewFields) {
+      if (viewFields.includes('id')) {
+        output['key' + index] = this.renderId(feedback.get('id'));
+        index++;
+      }
+      if (viewFields.includes('date_created')) {
+        output['key' + index] = this.renderDate(feedback.get('date_created'));
+        index++;
+      }
+      if (viewFields.includes('category')) {
+        output['key' + index] = this.renderCategory();
+      }
     }
     return (
       <CardLine>
