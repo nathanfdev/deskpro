@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -43,28 +42,6 @@ class AppExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $config = $this->processConfiguration(new Configuration(), $config);
-
-        $types = [];
-
-        if (array_key_exists('data_serializer', $config)) {
-            if (array_key_exists('types', $config['data_serializer'])) {
-                foreach ($config['data_serializer']['types'] as $type => $matchers) {
-                    $classes = [];
-                    if (isset($matchers['classes'])) {
-                        foreach ($matchers['classes'] as $class) {
-                            $classes[] = $class;
-                            // automatically add the doctrine proxy name to the map as well
-                            $classes[] = 'Proxies\\__CG__\\'.$class;
-                        }
-                    }
-                    $types[$type] = [
-                        'classes' => $classes,
-                    ];
-                }
-            }
-        }
-
-        $container->setParameter('data_serializer.types', $types);
 
         $notification_config = [];
         if (array_key_exists('notification', $config)) {

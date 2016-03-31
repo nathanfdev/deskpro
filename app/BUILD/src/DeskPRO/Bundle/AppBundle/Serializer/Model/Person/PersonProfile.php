@@ -29,9 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\PersonEmail;
-use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
@@ -127,10 +126,10 @@ class PersonProfile
     /**
      * Constructor.
      *
-     * @param Person             $person
+     * @param PersonEntity       $person
      * @param ProfileAvatar|null $avatar
      */
-    public function __construct(Person $person, $avatar)
+    public function __construct(PersonEntity $person, $avatar)
     {
         $this->id            = $person->getId();
         $this->name          = $person->getName();

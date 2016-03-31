@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Search;
 
 use Application\DeskPRO\Entity;
@@ -39,8 +38,7 @@ use DeskPRO\Bundle\PortalBundle\View\PortalIconFactory;
 /**
  * There are very few serialization needs in the portal, so we just have a very simple class here that is capable
  * of serializing search results. This is not nearly as robust as the ApiBundle's serializer, and to use that here
- * is unnecessary. In fact, the DataSerializer component at time of writing this is for new-agent (php 5.5+) only,
- * so we couldn't use it in this new-portal branch even if we wanted to without backporting it to this branch.
+ * is unnecessary.
  */
 class SimplePortalEntitySerializer
 {
