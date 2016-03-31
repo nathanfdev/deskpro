@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import {QuickFilter} from './QuickFilter';
 import { RadioOption } from './RadioOption';
 
+import { connect } from 'react-redux';
+@connect()
 export class SingleChoicePanel extends Component {
   static propTypes = {
     setParams: PropTypes.func.isRequired,
@@ -10,6 +12,17 @@ export class SingleChoicePanel extends Component {
     currentParams: PropTypes.object,
     item: PropTypes.object.isRequired,
     depth: PropTypes.bool
+  };
+
+  onClick = (param, value, isActive)=> {
+    console.log('Param', param);
+    console.log('Value', value);
+    const { dispatch, resetSingleAction, setParams } = this.props;
+    if (isActive) {
+      dispatch(resetSingleAction(param));
+    } else {
+      dispatch(setParams({ [param]: value }));
+    }
   };
 
   render() {
@@ -28,14 +41,14 @@ export class SingleChoicePanel extends Component {
                            value={option.value}
                            param={option.param}
                            label={option.label}
-                           setParams={setParams.bind(this)}/>
+                           onClick={this.onClick.bind(this)}/>
           )}
         </ul>
       );
     };
 
     const classes = classNames('dpw-navigation-dropdown-panel', { 'dpw-navigation-dropdown-panel-corner-left': depth });
-
+console.log('Item', item);
     return (
       <div className={classes} style={{width: '250px'}}>
         <div className="dpw-navigation-dropdown-panel-content">
@@ -55,7 +68,7 @@ export class SingleChoicePanel extends Component {
                                    value={option.value}
                                    label={option.label}
                                    param={item.param}
-                                   setParams={setParams.bind(this)}>
+                                   onClick={this.onClick.bind(this)}>
                         {renderNested(option.nested)}
                       </RadioOption>
                   )}
