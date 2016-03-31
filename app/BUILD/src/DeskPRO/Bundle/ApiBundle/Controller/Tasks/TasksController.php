@@ -252,7 +252,7 @@ class TasksController extends CrudController
      *     requirements={
      *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
      *     },
-     *     parameters={
+     *     filters={
      *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
      *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
      *     },
