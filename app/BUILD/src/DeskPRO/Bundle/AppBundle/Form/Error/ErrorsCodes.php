@@ -85,7 +85,4 @@ final class ErrorsCodes
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
-
-    /** Ticket specific */
-    const NOT_ASSIGNABLE_TICKET_DEPARTMENT = 'not_assignable_ticket_department';
 }
