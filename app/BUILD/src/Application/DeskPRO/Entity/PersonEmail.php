@@ -31,13 +31,14 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -57,17 +58,27 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime $date_validated
  *
  * @UniqueEntity("email", message="This email already exists in the system.")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
+class PersonEmail extends DomainObject
 {
     /**
      * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
     protected $id = null;
 
     /**
+     * Person owner of email.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
@@ -81,23 +92,34 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The email address.
      *
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Email()
      * @AppAssert\NotSystemEmail()
      * @AppAssert\NotBannedEmail()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $email;
 
     /**
      * The email address domain.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $email_domain;
 
     /**
+     * True if validation passed.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_validated = false;
@@ -111,6 +133,9 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * The original time the email was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
