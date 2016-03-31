@@ -167,6 +167,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getFilters()
     {
         return [
+            new \Twig_SimpleFilter('html_content_preview', [$this, 'getHtmlContentPreview']),
+
             // Copied from legacy templating, its used to render custom field values (eg for templates)
             new \Twig_SimpleFilter('smart_wrap', function ($string, $len = 50, $break = null) {
                 if ($break === null) {
@@ -570,6 +572,29 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return '';
+    }
+
+    /**
+     * @param string $html     The content string
+     * @param int    $len      Max chars to use
+     * @param string $ellipses String to append when the string was truncated
+     *
+     * @return string
+     */
+    public function getHtmlContentPreview($html, $len, $ellipses = '…')
+    {
+        $html = Strings::decodeWhitespaceHtmlEntities($html);
+        $html = Strings::decodeHtmlEntities($html);
+        $html = Strings::stripTags($html);
+        $html = preg_replace('#\s{2,}#', '', $html);
+
+        if (isset($html[$len])) {
+            $html = Strings::utf8_substr($html, 0, $len);
+            $html = preg_replace('#\W$#u', '', $html); // strip non-word chars from end
+            $html .= $ellipses;
+        }
+
+        return $html;
     }
 
     /**

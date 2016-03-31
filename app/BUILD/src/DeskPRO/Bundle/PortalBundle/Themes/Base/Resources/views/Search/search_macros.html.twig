@@ -17,7 +17,7 @@
     {{ content_icon(article) }}
         <a href="{{ portal_path(article) }}">
           <span class="item-title">{{ article.title }}</span>
-          <p>{{ article.realContent|raw|slice(0,350) ~ '...' }}</p>
+          <p>{{ article.realContent|html_content_preview(350) }}</p>
         </a>
         <div class="article-meta">
           {{ phrase('portal.general.by_2') }} <a href="#"><span style="background: url({{ avatar_url(article.person, 36) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.display_name_user }}</a> {{ phrase('portal.general.on') }} {{ article.date_published|date('day') }}<hr>
@@ -58,7 +58,7 @@
           <span class="feedback-count"><i class="fa fa-thumbs-up"></i>{{ feedback.total_rating >= 0 ? (feedback.total_rating > 0 ? '+' : '') : '-' }}{{ feedback.total_rating }}</span>
           {{ feedback.title }}
       </span>
-      <p>{{ feedback.content_html|raw|slice(0,350) ~ '...' }}</p>
+      <p>{{ feedback.content_html|html_content_preview(350) }}</p>
     </a>
   </li>
 {% endmacro %}
@@ -68,7 +68,7 @@
     <li>
         <a href="{{ portal_path(news) }}">
           <span class="item-title"><span class="date-posted"><i class="fa fa-calendar-o"></i> {{ date_ago(news.date_published) }}</span>{{ news.title }}</span>
-          <p>{{ news.realContent|raw|slice(0,350) ~ '...' }}</p>
+          <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>
 {% endmacro %}
