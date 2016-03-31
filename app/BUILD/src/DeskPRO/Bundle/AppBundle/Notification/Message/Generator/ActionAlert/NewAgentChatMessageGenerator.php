@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,16 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -45,16 +47,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class NewAgentChatMessageGenerator extends AbstractGenerator
 {
     /**
-     * @var DataSerializer
+     * @var SerializerInterface
      */
     protected $serializer;
 
     /**
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
-     * @param DataSerializer        $serializer
+     * @param SerializerInterface   $serializer
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, DataSerializer $serializer)
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, SerializerInterface $serializer)
     {
         parent::__construct($em, $token_storage);
         $this->serializer = $serializer;
@@ -122,7 +124,17 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     {
         $message = $this->getChatMessage($event);
 
-        return $this->serializer->serialize($message)['data'];
+        $data = $this->extractData($message, $event);
+
+        return $data;
+    }
+
+    private function extractData(AgentChatMessage $message, NewMessageEvent $event)
+    {
+        $context = new SideloadSerializationContext(new SideloadStore(), []);
+        $data    = json_decode($this->serializer->serialize($message, 'json', $context), true);
+
+        return $data;
     }
 
     /**

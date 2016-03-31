@@ -190,8 +190,9 @@ class UserChatClientListener implements EventSubscriberInterface
     {
         //todo refactor
         $context = new SideloadSerializationContext(new SideloadStore(), []);
+        $data    = json_decode($this->serializer->serialize($event->getConversation(), 'json', $context), true);
 
-        return json_decode($this->serializer->serialize($event->getConversation(), 'json', $context), true)['data'];
+        return $data;
     }
 
     /**

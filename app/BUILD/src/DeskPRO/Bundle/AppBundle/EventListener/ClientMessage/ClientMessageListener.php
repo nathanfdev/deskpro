@@ -32,7 +32,6 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
 use Application\DeskPRO\Entity\ClientMessage;
-use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
@@ -81,18 +80,12 @@ class ClientMessageListener implements EventSubscriberInterface
      */
     public function onSendMessage(ClientMessageEvent $event)
     {
-
         //todo refactor
         $context = new SideloadSerializationContext(new SideloadStore(), []);
 
         $data = $event->getData();
         if (is_object($data)) {
-            $data = json_decode($this->serializer->serialize(
-                new ApiWrapper($data),
-                'json',
-                $context
-            ), true);
-            $data = $data['data'];
+            $data = json_decode($this->serializer->serialize($data, 'json', $context), true);
         }
 
         $client_message = new ClientMessage();

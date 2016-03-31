@@ -91,7 +91,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
-      - "@data_serializer"
+      - "@jms_serializer.serializer"
 
   deskpro.notification.generator.action_alert.refresh_counts:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\RefreshCountsMessageGenerator
