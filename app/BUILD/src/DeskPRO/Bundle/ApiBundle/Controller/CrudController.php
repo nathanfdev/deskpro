@@ -112,7 +112,7 @@ abstract class CrudController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->{static::$serializeMethod}($entity), Response::HTTP_OK);
+        return View::create($this->wrap($entity), Response::HTTP_OK);
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->{static::$serializeMethod}($result), Response::HTTP_OK);
+        return View::create($this->wrap($result), Response::HTTP_OK);
     }
 
     /**
@@ -411,7 +411,7 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        return View::create($this->{static::$serializeMethod}($this->persistModel($model)), $status);
+        return View::create($this->wrap($this->persistModel($model)), $status);
     }
 
     /**

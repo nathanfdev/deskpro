@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -54,7 +53,7 @@ class TicketSlasController extends BaseController
         $service = $this->get('data.ticket_slas');
 
         return View::create(
-            $this->dataSerialize($service->loadForTicket($ticket_id)),
+            $this->wrap($service->loadForTicket($ticket_id)),
             Response::HTTP_OK
         );
     }
@@ -67,7 +66,7 @@ class TicketSlasController extends BaseController
         $service = $this->get('data.ticket_slas');
 
         return View::create(
-            $this->dataSerialize($service->loadSingleForTicket($ticket_id, $sla_id)),
+            $this->wrap($service->loadSingleForTicket($ticket_id, $sla_id)),
             Response::HTTP_OK
         );
     }

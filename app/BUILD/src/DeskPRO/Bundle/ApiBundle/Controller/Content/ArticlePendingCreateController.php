@@ -135,7 +135,7 @@ class ArticlePendingCreateController extends BaseController
         $apc   = $dataService->selectAPC($criteria, $page, $count);
 
         return View::create(
-            $this->dataSerialize($apc),
+            $this->wrap($apc),
             Response::HTTP_OK
         );
     }
