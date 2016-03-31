@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
@@ -38,13 +41,14 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterSetType;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Route;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * API access to TicketFilterSet entities.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Ticket filters")
+ * @OutputEntity(TicketFilterSet::class)
  * @Route("/new/ticket_filter_sets")
  */
 class TicketFilterSetsController extends CrudController
@@ -52,6 +56,8 @@ class TicketFilterSetsController extends CrudController
     public static $entity    = TicketFilterSet::class;
     public static $type      = TicketFilterSetType::class;
     public static $listOrder = 'asc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * @ApiDoc(
@@ -68,7 +74,7 @@ class TicketFilterSetsController extends CrudController
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>"
      * )
      * @Get("/{set}/filters")
      *

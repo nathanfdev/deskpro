@@ -42,24 +42,28 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
  * @ORM\Table(name="ticket_filter_sets")
  *
- * @JMS\ExclusionPolicy("ALL")
+ * @JMS\ExclusionPolicy("all")
  */
 class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
     /**
+     * The unique set id.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $id;
 
     /**
-     * @var string
+     * The title of set.
      *
      * @ORM\Column(name="title", type="string")
      *
@@ -67,21 +71,25 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $title;
 
     /**
-     * @var int
+     * Display order for set.
      *
      * @ORM\Column(name="display_order", type="integer")
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $display_order;
 
     /**
-     * @var TicketFilter[]|ArrayCollection
+     * An array of filter object identities.
      *
      * @ORM\OneToMany(
      *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
@@ -92,32 +100,38 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
+     *
+     * @var TicketFilter[]|ArrayCollection
      */
     protected $filters;
 
     /**
-     * @var bool
+     * True if filter is default.
      *
      * @ORM\Column(name="is_default", type="boolean")
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
+     *
+     * @var bool
      */
     protected $is_default = false;
 
     /**
-     * @var Person
+     * Person id if this stuff belongs to somebody privately.
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $private_agent;
 
     /**
-     * @var Person[]|ArrayCollection
+     * Ids of agent shares this filter set.
      *
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinTable(
@@ -132,6 +146,8 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
+     *
+     * @var Person[]|ArrayCollection
      */
     protected $shared_agents;
 

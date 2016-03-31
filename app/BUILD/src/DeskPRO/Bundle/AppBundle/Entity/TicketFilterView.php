@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,11 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterViewRepository")
  * @ORM\Table(name="ticket_filter_views")
+ * @JMS\ExclusionPolicy("all")
  */
 class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 {
@@ -48,86 +49,110 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
     const TYPE_TABLE = 'table';
 
     /**
+     * The unique ID.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
     /**
-     * @var string
+     * Title for this view.
+     *
      * @ORM\Column(name="title", type="string", length=64)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $title;
 
     /**
-     * @var string
+     * View type.
+     *
      * @ORM\Column(name="type", type="string", length=10)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $type;
 
     /**
-     * @var TicketFilter
+     * Filter entity.
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_views")
-     * @Serializer\Exclude()
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>")
+     *
+     * @var TicketFilter
      */
     protected $filter;
 
     /**
-     * Returns the filter.
+     * Person owner of view.
      *
-     * @return int the filter ID attached.
-     *
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("filter")
-     */
-    public function getFilterId()
-    {
-        return $this->filter->getId();
-    }
-
-    /**
-     * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id")
-     * @Serializer\Exclude()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $agent;
 
     /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("agent")
-     */
-    public function getAgentId()
-    {
-        if ($this->agent) {
-            return $this->agent->getId();
-        } else {
-            return;
-        }
-    }
-
-    /**
-     * @var array
+     * Fields used by this view.
+     *
      * @ORM\Column(name="fields", type="json_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
      */
     protected $fields;
 
     /**
-     * @var array
+     * Icon for fields.
+     *
      * @ORM\Column(name="icon_fields", type="json_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
      */
     protected $icon_fields;
 
     /**
-     * @var array
+     * Additional view options.
+     *
      * @ORM\Column(name="options", type="json_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
      */
     protected $options;
 
     /**
-     * @var int
+     * Display order of view.
+     *
      * @ORM\Column(name="display_order", type="integer")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $display_order;
 

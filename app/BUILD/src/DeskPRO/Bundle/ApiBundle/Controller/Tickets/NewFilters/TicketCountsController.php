@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -45,6 +47,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class TicketCountsController.
  *
+ * @ApiDocSection("Ticket filters")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\CountBadge\Count")
  * @ApiModes("all")
  */
 class TicketCountsController extends BaseController
@@ -54,22 +58,24 @@ class TicketCountsController extends BaseController
      *      description="Get a filter set count",
      *      requirements={
      *          {
-     *              "name"="id",
+     *              "name"="set",
      *              "requirement"="\d+",
      *              "description"="the id of the filter",
      *              "dataType"="integer"
      *          },
+     *     },
+     *     filters={
      *          {
      *              "name"="group_by",
      *              "description"="[Ticket filter ID => group_by] map",
+     *              "pattern"="\d+",
      *              "dataType"="array"
      *          }
      *      },
      *      statusCodes={
      *          200="Success",
-     *          404="Not Found"
+     *          404="Returned if set was not found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      * @Get("/new/ticket_filter_sets/{set}/count")
      *
@@ -82,7 +88,7 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getFilterSetCount($set, $request->get('group_by'));
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 
     /**
@@ -92,14 +98,17 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *          404="Not Found"
      *      },
-     *      requirements={
+     *      filters={
      *          {
      *              "name"="group_by",
      *              "description"="[Ticket filter ID => group_by] map",
+     *              "pattern"="\w+",
      *              "dataType"="array"
      *          }
      *      },
-     *      output="array"
+     *      statusCodes={
+     *          200="Success",
+     *      },
      * )
      * @Get("/new/ticket_filter_sets/all/counts")
      *
@@ -117,7 +126,7 @@ class TicketCountsController extends BaseController
             $counts[] = $this->getCountsService()->getFilterSetCount($set, $request->get('group_by'));
         }
 
-        return View::create($this->dataSerialize($counts));
+        return View::create($this->wrap($counts));
     }
 
     /**
@@ -125,24 +134,24 @@ class TicketCountsController extends BaseController
      *      description="Get a filter's count",
      *      requirements={
      *          {
-     *              "name"="id",
+     *              "name"="filter",
      *              "requirement"="\d+",
      *              "description"="the id of the filter",
      *              "dataType"="integer"
      *          },
+     *     },
+     *     filters={
      *          {
      *              "name"="group_by",
-     *              "requirement"=".+",
+     *              "pattern"=".+",
      *              "description"="the grouping order you want",
      *              "dataType"="string",
-     *              "required"=false
      *          },
      *      },
      *      statusCodes={
      *          200="Success",
-     *          404="Not Found"
+     *          404="Returned if filter was not found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      * @Get("/new/ticket_filters/{filter}/count")
      *
@@ -155,13 +164,13 @@ class TicketCountsController extends BaseController
     {
         $count = $this->getCountsService()->getFilterCount($filter, $request->get('group_by'));
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 
     /**
      * @ApiDoc(
      *      description="Get all filters counts",
-     *      requirements={
+     *      filters={
      *          {
      *              "name"="group_by",
      *              "requirement"=".+",
@@ -172,9 +181,7 @@ class TicketCountsController extends BaseController
      *      },
      *      statusCodes={
      *          200="Success",
-     *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
      * )
      * @Get("/new/ticket_filters_counts")
      *
@@ -198,7 +205,7 @@ class TicketCountsController extends BaseController
             $count->addNestedInstance($filter_count, true);
         }
 
-        return View::create($this->dataSerialize($count));
+        return View::create($this->wrap($count));
     }
 
     /**
