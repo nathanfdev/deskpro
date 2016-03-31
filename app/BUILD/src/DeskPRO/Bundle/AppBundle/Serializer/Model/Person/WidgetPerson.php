@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;

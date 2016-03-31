@@ -26,7 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class ProfileAvatar.
@@ -34,11 +36,19 @@ namespace DeskPRO\Bundle\ApiBundle\Model;
 class ProfileAvatar
 {
     /**
+     * Auth identity for this blob.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $blob_auth_id;
 
     /**
+     * Actual url with blob data.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $url;

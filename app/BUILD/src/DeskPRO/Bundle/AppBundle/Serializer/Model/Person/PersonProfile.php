@@ -26,12 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -39,18 +40,9 @@ use JMS\Serializer\Annotation as JMS;
  * User profile settings.
  *
  * Class PersonProfile
- *
- * @JMS\ExclusionPolicy("none")
  */
 class PersonProfile
 {
-    /**
-     * @JMS\Exclude()
-     *
-     * @var Person
-     */
-    private $person;
-
     /**
      * The unique person ID.
      *
@@ -126,20 +118,20 @@ class PersonProfile
     /**
      * Persons avatar.
      *
-     * @JMS\Type("DeskPRO\Bundle\ApiBundle\Model\ProfileAvatar")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar")
      *
-     * @var ProfileAvatar|null
+     * @var \DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar|null
      */
     private $avatar;
 
     /**
      * Constructor.
      *
-     * @param Person $person
+     * @param Person             $person
+     * @param ProfileAvatar|null $avatar
      */
-    public function __construct(Person $person)
+    public function __construct(Person $person, $avatar)
     {
-        $this->person        = $person;
         $this->id            = $person->getId();
         $this->name          = $person->getName();
         $this->display_name  = $person->getOverrideDisplayName();
@@ -157,15 +149,7 @@ class PersonProfile
             ];
         }
         $this->phone = $phone_serialized;
-    }
 
-    public function setAvatar(Avatar $avatar)
-    {
-        if ($this->person->getPictureBlob()) {
-            $this->avatar = new ProfileAvatar(
-                $this->person->getPictureBlob()->getAuthId(),
-                $avatar->getUrl(200)
-            );
-        }
+        $this->avatar = $avatar;
     }
 }

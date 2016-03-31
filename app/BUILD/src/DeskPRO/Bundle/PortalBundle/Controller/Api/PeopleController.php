@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class PeopleController.
  *
  * @SerializerView(mapping={
- *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetPerson"
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"
  * })
  */
 class PeopleController extends AbstractApiController

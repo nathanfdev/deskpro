@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDocSection("Auth")
  * @Route("/me/profile")
  * @SerializerView(mapping={
- *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"
  * })
  */
 class ProfileController extends BaseController
@@ -63,7 +63,7 @@ class ProfileController extends BaseController
      *     statusCodes={
      *         200="Success"
      *     },
-     *     output="DeskPRO\Bundle\ApiBundle\Model\PersonProfile"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"
      * )
      *
      * @Get("")

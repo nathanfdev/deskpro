@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations\Route;
  *
  * @ApiModes("all")
  * @ApiDocSection("Ticket participants")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  * @Route("/tickets/{parentId}/cc")
  */
 class TicketCcController extends AbstractTicketParticipantsController
