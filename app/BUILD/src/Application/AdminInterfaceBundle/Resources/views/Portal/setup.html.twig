@@ -107,6 +107,158 @@
             </div><!-- End .content-section -->
 
             {##########################################################################################################}
+            {# PORTAL FEATURES #}
+            {##########################################################################################################}
+
+            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish'">
+                <h2 class="with-divider"><span>Portal Sections</span></h2>
+                <div class="apps-list">
+
+                    <div class="col-half">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_kb, 'widget-preview-disabled': !Ctrl.settings.apps_kb}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_kb" />
+                                <span class="title">Knowledgebase</span>
+                                <a class="control" href="{{ ng_href('portal.kb_settings') }}">Manage <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Interface/Resources/img/widget-preview-kb.png') }}" alt="Widget Preview: Knowledgebase">
+                            </div>
+
+                            <div class="form-text">
+                                <p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-half omega">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_downloads, 'widget-preview-disabled': !Ctrl.settings.apps_downloads}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_downloads" />
+                                <span class="title">Downloads</span>
+                                <a class="control" href="{{ ng_href('portal.downloads_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Interface/Resources/img/widget-preview-downloads.png') }}" alt="Widget Preview: Knowledgebase">
+                            </div>
+
+                            <div class="form-text">
+                                <p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-half">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_news, 'widget-preview-disabled': !Ctrl.settings.apps_news}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_news" />
+                                <span class="title">News</span>
+                                <a class="control" href="{{ ng_href('portal.news_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Interface/Resources/img/widget-preview-news.png') }}" alt="Widget Preview: Knowledgebase">
+                            </div>
+
+                            <div class="form-text">
+                                <p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-half omega">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_feedback, 'widget-preview-disabled': !Ctrl.settings.apps_feedback}">
+                            <div class="widget-header">
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
+                                <span class="title">Feedback</span>
+                                <a class="control" href="{{ ng_href('portal.feedback_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+                            </div>
+                            <div class="widget-image">
+                                <img src="{{ asset('app/Interface/Resources/img/widget-preview-feedback.png') }}" alt="Widget Preview: Knowledgebase">
+                            </div>
+
+                            <div class="form-text">
+                                <p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div><!-- End .content-section -->
+
+            {##################################################################################################}
+
+            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish'">
+                <h2 class="with-divider form-header"><span>Published Content Settings</span></h2>
+
+                <article class="form-horizontal dp-form">
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <div class="inner-group" dp-error-class="form_props.show_ratings">
+                                    <label>
+                                        <input type="checkbox" ng-model="show_ratings_opt" />
+                                        <h4>Show ratings publicly</h4>
+                                    </label>
+                                    <div ng-show="show_ratings_opt">
+                                        Show ratings publicly in the portal after there have been
+                                        <input type="number" name="show_ratings" class="form-control" ng-model="settings.show_ratings"
+                                               style="width: 80px;" required min="0" /> votes.
+                                    </div>
+                                </div>
+                                <div class="inner-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.publish_comments" />
+                                        <h4>Enable comments on published content</h4>
+                                    </label>
+								<span class="help-block">
+									Enable comments on articles, news and downloads. (This setting does not affect Feedback; discussons on feedback is always enabled).
+								</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            {##################################################################################################}
+
+            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish'">
+                <h2 class="with-divider form-header"><span>User Notifications</span></h2>
+
+                <article class="form-horizontal dp-form">
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <div class="inner-group">
+                                <label>
+                                    <input type="checkbox" ng-model="settings.feedback_notify_comments" />
+                                    <h4>Notify users when feedback is updated</h4>
+                                </label>
+							<span class="help-block">
+								When enabled, any user who participated in a feedback discussion will be notified when it is updated (new replies or status changes).
+							</span>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <input type="checkbox" ng-model="settings.kb_subscriptions" />
+                                    <h4>Enable knowledgebase subscriptions</h4>
+                                </label>
+							<span class="help-block">
+								When enabled, users can subscribe to knowledgebase categories or specific articles so they can be notified of updates.
+							</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+
+            {##########################################################################################################}
 
             <div class="form-footer">
                 <hr>
