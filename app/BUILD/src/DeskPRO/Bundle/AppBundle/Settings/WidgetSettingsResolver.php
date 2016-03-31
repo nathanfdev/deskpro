@@ -100,7 +100,7 @@ class WidgetSettingsResolver
             'widget' => [
                 'type'                  => 'column',
                 'position'              => 'right',
-                'agent_polling_timeout' => 10,
+                'agent_polling_timeout' => 5*60,
             ],
             'button' => [
                 'size'   => 'medium',
