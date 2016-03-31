@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,10 +37,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Basic hierarchical category entity. Hierarchy is maintained automatically
  * by a Doctrine NestedSet implementation.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class ChatMessage extends DomainObject
 {
@@ -48,6 +51,11 @@ class ChatMessage extends DomainObject
     const ORIGIN_USER  = 'user';
 
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
@@ -74,7 +82,10 @@ class ChatMessage extends DomainObject
     /**
      * Person who created the message.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $author = null;
 
@@ -88,6 +99,9 @@ class ChatMessage extends DomainObject
     /**
      * The message.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $content;
@@ -95,12 +109,18 @@ class ChatMessage extends DomainObject
     /**
      * Is this a system message? (ended, joined, etc).
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_sys = false;
 
     /**
      * Is this an user's message? (send from the widget).
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -116,23 +136,39 @@ class ChatMessage extends DomainObject
     /**
      * Is the content an HTML message?
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_html = false;
 
     /**
-     * Data.
+     * Additional data.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
      *
      * @var array
      */
     protected $metadata = array();
 
     /**
+     * Date message was created.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
+     * Date message was received.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_received = null;
@@ -146,6 +182,12 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * The unique message id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("message_id")
+     *
      * @return int
      */
     public function getId()
@@ -187,6 +229,15 @@ class ChatMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * Author id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("author_id")
+     *
+     * @return int
+     */
     public function getAuthorId()
     {
         if ($this->author) {
@@ -194,6 +245,34 @@ class ChatMessage extends DomainObject
         }
 
         return 0;
+    }
+
+    /**
+     * Author type (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     * @JMS\SerializedName("author_type")
+     *
+     * @return int
+     */
+    public function getAuthorType()
+    {
+        return $this->getIsSys() ? 'sys' : ($this->getIsUser() ? 'user' : 'agent');
+    }
+
+    /**
+     * Conversation id (legacy).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("conversation_id")
+     *
+     * @return int
+     */
+    public function getConversationId()
+    {
+        return $this->getConversation()->getId();
     }
 
     public function getAuthorName()

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,24 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * deskpro.
- *
- * @author Denis Ranneft (aka Immortal) <denis@ranneft.ru>
- * Date: 11.09.15
- * Time: 20:58
- */
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\Security\Handler\Entity;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
-use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset as ThemeSetAssetEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\ThemeSetAsset as ThemeSetAssetModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Class ThemeSetAssetTransformer.
+ * Class ThemeSetAssetHandler.
  */
-class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
+class ThemeSetAssetHandler extends AbstractEntityHandler
 {
     /**
      * @var RouterInterface
@@ -51,6 +46,8 @@ class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
     private $router;
 
     /**
+     * ThemeSetAssetHandler constructor.
+     *
      * @param RouterInterface $router
      */
     public function __construct(RouterInterface $router)
@@ -61,33 +58,28 @@ class ThemeSetAssetTransformer extends AbstractDataSerializerTransformer
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return [
-            'id',
-            'name',
-            'theme_set',
-        ];
+        return ThemeSetAssetEntity::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param ThemeSetAssetEntity $entity
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var ThemeSetAsset $entity */
-        $entity = $transformation_request->getDataToBeTransformed();
-
-        $data = [];
+        $url = null;
 
         // Generate a URL for user custom assets uploaded in the Portal Designer
         if (in_array(AssetsManager::CUSTOM_ASSET_TAG, $entity->getTags())
             || in_array(AssetsManager::CUSTOM_LOGO_TAG, $entity->getTags())
         ) {
-            $data['url'] = $this->router->generate(
+            $url = $this->router->generate(
                 'dp_portal_custom_asset', ['name' => $entity->getName()], RouterInterface::ABSOLUTE_URL);
         }
 
-        return $data;
+        return new ThemeSetAssetModel($entity, $url);
     }
 }

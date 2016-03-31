@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -37,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person as SerializedPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
@@ -82,11 +82,16 @@ class PersonHandler extends AbstractEntityHandler
     protected function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(Person::class);
-        if ($serializerClass === PersonProfile::class) {
-            return $this->createPersonProfile($entity);
-        }
 
-        return $this->createPerson($entity);
+        //oh how I dislike it
+        switch ($serializerClass) {
+            case PersonProfile::class:
+                return $this->createPersonProfile($entity);
+            case WidgetPerson::class:
+                return $this->createWidgetPerson($entity);
+            default:
+                return $this->createPerson($entity);
+        }
     }
 
     /**
@@ -121,5 +126,15 @@ class PersonHandler extends AbstractEntityHandler
         $model->setAvatar($this->avatarResolver->getAvatarModel($entity));
 
         return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return WidgetPerson
+     */
+    private function createWidgetPerson(Person $entity)
+    {
+        return new WidgetPerson($entity, $this->avatarResolver->getAvatarModel($entity));
     }
 }

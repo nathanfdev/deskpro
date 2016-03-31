@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -42,18 +43,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class UserChatClientListener implements EventSubscriberInterface
 {
     /**
-     * @var DataSerializer
+     * @var SerializerInterface
      */
-    private $data_serializer;
+    private $serializer;
 
     /**
      * Constructor.
      *
-     * @param DataSerializer $data_serializer
+     * @param SerializerInterface $serializer
      */
-    public function __construct(DataSerializer $data_serializer)
+    public function __construct(SerializerInterface $serializer)
     {
-        $this->data_serializer = $data_serializer;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -187,7 +188,10 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     protected function getInfo(UserChatEvent $event)
     {
-        return $this->data_serializer->serialize($event->getConversation())['data'];
+        //todo refactor
+        $context = new SideloadSerializationContext(new SideloadStore(), []);
+
+        return json_decode($this->serializer->serialize($event->getConversation(), 'json', $context), true)['data'];
     }
 
     /**

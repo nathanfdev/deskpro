@@ -27,7 +27,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
     arguments:
         - "@doctrine.orm.entity_manager"
-        - "@data_serializer"
+        - "@jms_serializer.serializer"
     tags:
         - { name: kernel.event_subscriber }
 
