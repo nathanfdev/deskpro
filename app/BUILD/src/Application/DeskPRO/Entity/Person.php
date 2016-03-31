@@ -1726,6 +1726,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return;
     }
 
+    /**
+     * @return CustomDataTicket[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
     public function removeCustomDataForField(CustomDefPerson $field)
     {
         $parent_id = null;

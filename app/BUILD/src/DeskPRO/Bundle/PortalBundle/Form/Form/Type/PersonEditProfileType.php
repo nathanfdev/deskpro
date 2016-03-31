@@ -219,7 +219,7 @@ class PersonEditProfileType extends AbstractType
                 continue;
             }
 
-            $id = $field_def->getId();
+            $id = 'user_field_'.$field_def->getId();
             $form->add($id, 'deskpro_custom_data', [
                 'custom_def'      => $field_def,
                 'property_path'   => 'custom_data',

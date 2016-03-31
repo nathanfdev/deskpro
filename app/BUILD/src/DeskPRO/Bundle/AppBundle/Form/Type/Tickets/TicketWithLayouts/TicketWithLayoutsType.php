@@ -462,7 +462,11 @@ class TicketWithLayoutsType extends AbstractType
             case FormFields::SUBJECT:
                 return $this->createSubject($ignore_validation);
             case FormFields::MESSAGE:
-                return $this->createMessage($context);
+                if ($context->getOption('ticket_visibility') === TicketWithLayoutsContext::VISIBILITY_NEW) {
+                    return $this->createMessage($context);
+                }
+
+                return false;
             case FormFields::PERSON:
                 return $this->createPerson($context);
             case FormFields::DEPARTMENT:

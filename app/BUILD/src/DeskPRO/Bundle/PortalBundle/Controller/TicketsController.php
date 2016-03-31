@@ -236,7 +236,7 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
             'settings'          => $this->getBrandContainer()->getSettings(),
@@ -263,13 +263,12 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm('ticket', $ticket, [
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
-            'ticket_message'    => null,
             'settings'          => $this->getBrandContainer()->getSettings(),
             'full_version'      => true,
             'ticket_visibility' => 'edit',
-            'action'            => $this->generateUrl('portal_new_ticket'),
+            'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
         ]);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
