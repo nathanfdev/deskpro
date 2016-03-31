@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -152,23 +152,29 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
                 $class = get_class($ent);
                 $class = substr($class, strrpos($class, '\\') + 1);
                 $ent   = $this->replaceEntity($ent);
-                if (0 === strpos($class, 'Label')) {
-                    $update[] = $ent;
-                } else {
-                    $delete[] = $ent;
+                if ($ent) {
+                    if (0 === strpos($class, 'Label')) {
+                        $update[] = $ent;
+                    } else {
+                        $delete[] = $ent;
+                    }
                 }
             }
         }
 
         foreach ($update as $ent) {
-            $name                                  = self::getEntityClassName($ent);
-            $id                                    = $ent->getId();
-            $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            if ($ent) {
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
+                $this->updates['updates']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            }
         }
         foreach ($delete as $ent) {
-            $name                                  = self::getEntityClassName($ent);
-            $id                                    = $ent->getId();
-            $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            if ($ent) {
+                $name                                  = self::getEntityClassName($ent);
+                $id                                    = $ent->getId();
+                $this->updates['deletes']["$name-$id"] = array('entity' => $name, 'id' => $id, 'ent' => $ent);
+            }
         }
 
         $this->is_running = false;
