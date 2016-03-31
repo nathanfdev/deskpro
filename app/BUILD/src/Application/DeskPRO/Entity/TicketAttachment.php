@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,50 +33,89 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Ticket attachments.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
+class TicketAttachment extends DomainObject
 {
     /**
+     * The unique ID.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
-    protected $id = null;
+    protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\Ticket
+     * Ticket this attachment belongs to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
+     *
+     * @var Ticket
      */
     protected $ticket;
 
     /**
      * Who created the attachment.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\Blob
+     * Actual attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
      *
      * @Assert\Valid()
+     *
+     * @var Blob
      */
     protected $blob;
 
     /**
-     * @var \Application\DeskPRO\Entity\TicketMessage
+     * Message - holder of this attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
+     *
+     * @Assert\Valid()
+     *
+     * @var TicketMessage
      */
-    protected $message = null;
+    protected $message;
 
     /**
+     * True if this attachmen just a note.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent_note = false;
 
     /**
+     * Is this attachment is embed in message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_inline = false;
