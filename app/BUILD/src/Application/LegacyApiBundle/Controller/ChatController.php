@@ -127,7 +127,7 @@ class ChatController extends AbstractController
             'department_id' => ChatConversationSearch::TERM_DEPARTMENT_ID,
             'label'         => ChatConversationSearch::TERM_LABEL,
             'person_id'     => ChatConversationSearch::TERM_PERSON_ID,
-            'status'        => ChatConversationSearch::TERM_DATE_CREATED,
+            'status'        => ChatConversationSearch::TERM_STATUS,
         );
 
         $terms = array();

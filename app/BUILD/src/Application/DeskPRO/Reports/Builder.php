@@ -213,7 +213,7 @@ class Builder
     public function parseInput()
     {
         $parts = $this->in->getArrayValue('parts');
-        $query = $this->in->getString('query');
+        $query = $this->in->getStringRaw('query');
 
         $currentType = $this->in->getString('currentType');
         $newType     = $this->in->getString('newType');
