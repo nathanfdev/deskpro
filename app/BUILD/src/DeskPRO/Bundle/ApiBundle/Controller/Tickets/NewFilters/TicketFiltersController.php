@@ -60,8 +60,6 @@ class TicketFiltersController extends CrudController
     public static $type      = TicketFilterType::class;
     public static $listOrder = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @param HttpKernelInterface $kernel
      * @param Request             $masterRequest

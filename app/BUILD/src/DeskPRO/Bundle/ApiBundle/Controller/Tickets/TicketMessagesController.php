@@ -58,7 +58,6 @@ class TicketMessagesController extends CrudSubController
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
 
-    public static $serializeMethod = 'wrap';
     /**
      * {@inheritdoc}
      */

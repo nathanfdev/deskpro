@@ -51,6 +51,4 @@ class TicketWorkflowsController extends CrudController
     public static $exposeOnly   = ['list'];
     public static $entity       = TicketWorkflow::class;
     public static $listPaginate = false;
-
-    public static $serializeMethod = 'wrap';
 }

@@ -64,9 +64,6 @@ abstract class CrudController extends BaseController
      */
     public static $exposeOnly = null;
 
-    // this used only for moving period
-    public static $serializeMethod = 'dataSerialize';
-
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
      */

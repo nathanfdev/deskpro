@@ -62,8 +62,6 @@ class TextSnippetCategoriesController extends CrudController
 
     public static $listOrder = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @ApiDoc(
      *      description="get the snippets within a category",

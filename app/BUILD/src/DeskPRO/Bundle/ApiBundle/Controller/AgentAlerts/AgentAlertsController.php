@@ -57,8 +57,6 @@ class AgentAlertsController extends CrudController
     public static $listSort  = 'date_created';
     public static $listOrder = 'desc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * Dismiss alerts with given ids array.
      *

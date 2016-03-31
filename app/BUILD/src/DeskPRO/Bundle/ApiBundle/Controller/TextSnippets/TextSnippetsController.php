@@ -62,8 +62,6 @@ class TextSnippetsController extends CrudController
     public static $type      = TextSnippetType::class;
     public static $listOrder = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @param HttpKernelInterface $kernel
      * @param Request             $masterRequest

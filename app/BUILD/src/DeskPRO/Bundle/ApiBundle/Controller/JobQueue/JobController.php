@@ -54,8 +54,6 @@ class JobController extends CrudController
 {
     public static $entity = Job::class;
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * Please refer to /api/v2/man for more information about mass actions.
      *
