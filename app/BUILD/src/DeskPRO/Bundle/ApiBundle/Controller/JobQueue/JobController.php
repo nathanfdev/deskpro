@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\JobQueue;
 
 use Application\DeskPRO\Entity\Job;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,14 +46,29 @@ use Symfony\Component\HttpFoundation\Response;
  * Class JobController.
  *
  * @ApiModes("all")
- * @Route("/mass_actions")
+ * @ApiDocSection("Mass actions")
+ * @OutputEntity(Job::class)
+ * @Rest\Route("/mass_actions")
  */
 class JobController extends CrudController
 {
     public static $entity = Job::class;
 
+    public static $serializeMethod = 'wrap';
+
     /**
-     * @Post("/", name="mass_action_create")
+     * Please refer to /api/v2/man for more information about mass actions.
+     *
+     * @ApiDoc(
+     *     description="create new job",
+     *     output="array",
+     *     statusCodes={
+     *         200="Your request was successful",
+     *         400="Malformed request, refer to manual",
+     *     }
+     * )
+     *
+     * @Rest\Post("/", name="mass_action_create")
      *
      * @param Request $request
      *
@@ -63,12 +79,10 @@ class JobController extends CrudController
         /** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
         $queue = $this->get('job.queue');
         $data  = $request->request->all();
-        /** @var \Application\DeskPRO\Entity\Job $job */
+
+        /** @var Job $job */
         $job = $queue->add($data['jobType'], $data['params']);
 
-        return View::create(
-            ['job' => $job->getId()],
-            Response::HTTP_CREATED
-        );
+        return View::create(['job' => $job->getId()], Response::HTTP_CREATED);
     }
 }
