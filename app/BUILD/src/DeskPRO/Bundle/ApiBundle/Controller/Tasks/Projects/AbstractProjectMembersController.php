@@ -44,21 +44,21 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ProjectMembersController.
  *
  * @ApiDocSection("TaskProjects")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
- * @Rest\Route("/task_projects/{parentId}/members")
+ * @Rest\Route("/task_projects/{parentId}/members/{type}")
  * @ApiModes("all")
  */
-class ProjectMembersController extends CrudSubController
+abstract class AbstractProjectMembersController extends CrudSubController
 {
     public static $entity          = ProjectMember::class;
     public static $type            = ProjectMemberType::class;
     public static $parentProperty  = 'project';
+    public static $exposeOnly      = ['get', 'list', 'post', 'delete'];
     public static $serializeMethod = 'wrap';
 
     /**
@@ -82,26 +82,18 @@ class ProjectMembersController extends CrudSubController
      * )
      * @Rest\Get("/{id}/tasks")
      *
-     * @param Request       $request
-     * @param ProjectMember $projectMember
+     * @param Request $request
+     * @param int     $id
      *
      * @return View
      */
-    public function getTasksAction(Request $request, ProjectMember $projectMember)
+    public function getTasksAction(Request $request, $id)
     {
+        $entity = $this->findEntity($id, $request);
         $params = [
-            'project' => $projectMember->getProject()->getId(),
+            'project'                     => $entity->getProject()->getId(),
+            $this->getTaskCriteriaParam() => $id,
         ];
-
-        if ($projectMember->getPerson()) {
-            $params['creator'] = $projectMember->getPerson()->getId();
-        }
-        if ($projectMember->getTeam()) {
-            $params['assigned_team'] = $projectMember->getTeam()->getId();
-        }
-        if ($projectMember->getDepartment()) {
-            $params['assigned_department'] = $projectMember->getDepartment()->getId();
-        }
 
         return TasksController::subRequestSearch($this->getKernel(), $request, $params);
     }
@@ -113,14 +105,8 @@ class ProjectMembersController extends CrudSubController
     {
         parent::applyListFilters($qb, $alias, $request);
 
-        $type = $request->query->getAlpha('type');
-        if ($type) {
-            if (!in_array($type, ['person', 'team', 'department'])) {
-                throw new BadRequestHttpException('Unknown member type');
-            }
-
-            $qb->andWhere("$alias.$type is not NULL");
-        }
+        $type = $this->getType();
+        $qb->andWhere("$alias.$type is not NULL");
     }
 
     /**
@@ -130,8 +116,36 @@ class ProjectMembersController extends CrudSubController
     {
         $options = array_merge($options, [
             'project' => $this->findParentOr404(),
+            'type'    => $this->getType(),
         ]);
 
         return parent::handleForm($model, $request, $options);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id, Request $request)
+    {
+        $entity = $this->getRepository(ProjectMember::class)->findOneBy([
+            'project'        => $this->findParentOr404(),
+            $this->getType() => $id,
+        ]);
+
+        if (!$entity) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @return string
+     */
+    abstract protected function getType();
+
+    /**
+     * @return string
+     */
+    abstract protected function getTaskCriteriaParam();
 }

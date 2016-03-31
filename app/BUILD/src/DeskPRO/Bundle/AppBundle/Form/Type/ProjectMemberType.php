@@ -50,22 +50,13 @@ class ProjectMemberType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('person', EntityType::class, [
-                'class'    => Person::class,
-                'required' => false,
-            ])
-            ->add('team', EntityType::class, [
-                'class'    => AgentTeam::class,
-                'required' => false,
-            ])
-            ->add('department', EntityType::class, [
-                'class'    => Department::class,
-                'required' => false,
-            ])
-        ;
+        $type = $options['type'];
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetData']);
+        $builder->add($type, EntityType::class, [
+            'class'    => $this->getMemberClass($type),
+            'required' => false,
+        ]);
+
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetProject']);
     }
 
@@ -75,29 +66,17 @@ class ProjectMemberType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setRequired('project')
+            ->setRequired(['project', 'type'])
             ->setDefaults([
                 'data_class' => ProjectMember::class,
             ])
             ->setAllowedTypes([
                 'project' => TaskProject::class,
             ])
+            ->setAllowedValues([
+                'type' => ['person', 'team', 'department'],
+            ])
         ;
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onResetData(FormEvent $event)
-    {
-        $data = $event->getData();
-        foreach (['person', 'team', 'department'] as $field) {
-            if (!isset($data[$field])) {
-                $data[$field] = null;
-            }
-        }
-
-        $event->setData($data);
     }
 
     /**
@@ -110,5 +89,24 @@ class ProjectMemberType extends AbstractType
         /** @var ProjectMember $data */
         $data = $event->getData();
         $data->setProject($form->getConfig()->getOption('project'));
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return mixed
+     */
+    protected function getMemberClass($type)
+    {
+        switch ($type) {
+            case 'person':
+                return Person::class;
+            case 'team':
+                return AgentTeam::class;
+            case 'department':
+                return Department::class;
+        }
+
+        return false;
     }
 }
