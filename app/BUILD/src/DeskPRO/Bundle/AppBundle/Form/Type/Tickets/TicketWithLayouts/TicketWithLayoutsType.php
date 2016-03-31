@@ -56,7 +56,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -71,6 +70,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TicketWithLayoutsType extends AbstractType
 {
+    private static $custom_data_mapping = [
+        FormFields::TICKET_FIELD => 'fields',
+        FormFields::ORG_FIELD    => 'organization_fields',
+        FormFields::USER_FIELD   => 'user_fields',
+    ];
+
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
@@ -172,11 +177,6 @@ class TicketWithLayoutsType extends AbstractType
                 'use_captcha'         => true,
                 'for_api'             => false,
                 'department_id'       => null,
-                'constraints'         => [
-                    new AppAssert\Ticket\TicketLayout([
-                        'context' => 'agent',
-                    ]),
-                ],
             ])
             ->setRequired([
                 'person',
@@ -374,13 +374,7 @@ class TicketWithLayoutsType extends AbstractType
 
         if ($context->forApi()) {
             // add custom field groups to the form
-            $custom_data_mapping = [
-                FormFields::TICKET_FIELD => 'fields',
-                FormFields::ORG_FIELD    => 'organization_fields',
-                FormFields::USER_FIELD   => 'user_fields',
-            ];
-
-            foreach ($custom_data_mapping as $field_type => $form_field_name) {
+            foreach (self::$custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
                     $form->add($form_field_name, 'deskpro_combined_type', [
                         'forms'          => $custom_field_groups[$field_type],
@@ -700,8 +694,13 @@ class TicketWithLayoutsType extends AbstractType
     private function createCustomUserField(TicketWithLayoutsContext $context, LayoutField $field, $ignore_validation = false)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
+        $field     = $this->createCustomField($context, 'person.custom_data', $field_def, $ignore_validation);
 
-        return $this->createCustomField($context, 'person.custom_data', $field_def, $ignore_validation);
+        if ($context->forApi()) {
+            $field->setOption('owner_form', $context->getForm()->get(FormFields::PERSON));
+        }
+
+        return $field;
     }
 
     /**

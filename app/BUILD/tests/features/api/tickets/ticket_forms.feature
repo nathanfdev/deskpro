@@ -220,7 +220,10 @@ Feature: /ticket_forms endpoint
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
-  "person": 2
+  "person": 2,
+  "user_fields": {
+    "6": "some text"
+  }
 }
     """
     Then the response status code should be 204
@@ -228,6 +231,26 @@ Feature: /ticket_forms endpoint
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.person" should be equal to 2
+
+    When I send a GET request to "/api/v2/people/1"
+    Then the response status code should be 200
+    And the JSON node "data.name" should be equal to "Changed Name"
+    And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "data.fields.1.value" should have 1 element
+    And the JSON node "data.fields.1.value[0]" should be equal to 2
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
+    And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
+    And the JSON node "data.fields.6.value" should be equal to "inline text"
+    And the JSON node "data.fields.7.value" should be equal to "textarea text"
+
+    When I send a GET request to "/api/v2/people/2"
+    Then the response status code should be 200
+    And the JSON node "data.name" should be equal to "Zelda Agent"
+    And the JSON node "data.primary_email" should be equal to "agent@deskpro.dev"
+    And the JSON node "data.fields.1.value" should not exist
+    And the JSON node "data.fields.5.value" should not exist
+    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.7.value" should not exist
 
   Scenario: I modify ticket person by email
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
