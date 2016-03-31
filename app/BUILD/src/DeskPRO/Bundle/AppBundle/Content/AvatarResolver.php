@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
@@ -130,7 +131,6 @@ class AvatarResolver
             }
             $default_pattern = $this->getDefaultCommonAvatar($safeSizePlaceholder);
         }
-
         if ($url_pattern) {
             $url_pattern = str_replace($safeSizePlaceholder, '{{IMG_SIZE}}', $url_pattern);
         }
@@ -173,15 +173,15 @@ class AvatarResolver
         if ($blob && $blob->isImage()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
-                array(
+                [
                     'blob_auth_id' => $blob->getAuthId(),
                     'filename'     => $blob->getFilenameSafe(),
                     's'            => $size,
-                ),
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-        } elseif ($this->use_gravatar && $person->primary_email) {
-            $url = $person->primary_email->getGravatarUrl(true).'&s='.$size;
+        } elseif ($this->use_gravatar && $person->getPrimaryEmail()) {
+            $url = $person->getPrimaryEmail()->getGravatarUrl(true).'&s='.$size;
 
             if ($person->organization) {
                 $org_url = $this->getCommonAvatar($person->organization, $size);
