@@ -10,7 +10,7 @@ Feature: /projects endpoint
 
   @reinstall
   Scenario: Successfully create a project
-    When I send a POST request to "/api/v2/projects" with body:
+    When I send a POST request to "/api/v2/task_projects" with body:
     """
 {
   "title": "My test project"
@@ -18,13 +18,13 @@ Feature: /projects endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    # And the header "Location" should be equal to "/api/v2/projects/1"
+    # And the header "Location" should be equal to "/api/v2/task_projects/1"
     # should be returned when https://trello.com/c/0q0iVrS9/599-gathered-from-code-add-location-header-in-crud-post is done
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
   Scenario: I try to make a broken POST request without a title
-    When I send a POST request to "/api/v2/projects" with body:
+    When I send a POST request to "/api/v2/task_projects" with body:
     """
 {
 }
@@ -33,14 +33,14 @@ Feature: /projects endpoint
     And the response status code should be 400
 
   Scenario: I GET a single project
-    When I send a GET request to "/api/v2/projects/1"
+    When I send a GET request to "/api/v2/task_projects/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
   Scenario: I GET projects
-    When I send a GET request to "/api/v2/projects"
+    When I send a GET request to "/api/v2/task_projects"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
@@ -48,7 +48,7 @@ Feature: /projects endpoint
     And the JSON node "data[0].title" should be equal to "My test project"
 
   Scenario: I modify a project
-    When I send a PUT request to "/api/v2/projects/1" with body:
+    When I send a PUT request to "/api/v2/task_projects/1" with body:
     """
 {
   "title": "New project title"
@@ -58,7 +58,7 @@ Feature: /projects endpoint
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request
-    When I send a GET request to "/api/v2/projects/1"
+    When I send a GET request to "/api/v2/task_projects/1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -76,18 +76,18 @@ Feature: /projects endpoint
     And the response status code should be 201
 
   Scenario: I verify that the project has tasks attached
-    When I send a GET request to "/api/v2/projects/1/tasks"
+    When I send a GET request to "/api/v2/task_projects/1/tasks"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "Test project task"
 
   Scenario: I DELETE a single project
-    When I send a DELETE request to "/api/v2/projects/1"
+    When I send a DELETE request to "/api/v2/task_projects/1"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I verify the resource has been removed by the DELETE request
-    When I send a GET request to "/api/v2/projects/1"
+    When I send a GET request to "/api/v2/task_projects/1"
     Then the response should be in JSON
     And the response status code should be 404

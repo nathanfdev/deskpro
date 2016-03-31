@@ -29,35 +29,37 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType;
-use FOS\RestBundle\Controller\Annotations;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ProjectMembersController.
  *
  * @ApiDocSection("TaskProjects")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
- * @Annotations\Route("/project_members")
+ * @Rest\Route("/task_projects/{parentId}/members")
  * @ApiModes("all")
  */
-class ProjectMembersController extends CrudController
+class ProjectMembersController extends CrudSubController
 {
-    public static $entity     = ProjectMember::class;
-    public static $type       = ProjectMemberType::class;
-    public static $exposeOnly = ['get', 'put', 'post', 'delete'];
+    public static $entity          = ProjectMember::class;
+    public static $type            = ProjectMemberType::class;
+    public static $parentProperty  = 'project';
+    public static $serializeMethod = 'wrap';
 
     /**
      * Fetch tasks list for project member.
@@ -74,31 +76,62 @@ class ProjectMembersController extends CrudController
      *          {"name"="count", "requirement"="\d+", "description"="results per page", "dataType"="integer"}
      *      },
      *      statusCodes={
-     *          200="Everything is ok"
+     *          200="Success"
      *      },
-     *      output="array<Application\DeskPRO\Entity\Task>"
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\Task>"
      * )
-     * @Annotations\Get("/{id}/tasks", name="api_project_members_tasks_get")
+     * @Rest\Get("/{id}/tasks")
      *
-     * @param Request $request
-     * @param int     $id
+     * @param Request       $request
+     * @param ProjectMember $projectMember
      *
      * @return View
      */
-    public function getTasksAction(Request $request, $id)
+    public function getTasksAction(Request $request, ProjectMember $projectMember)
     {
-        $id    = (int) $id;
-        $tasks = $this->getDoctrine()->getManager()->getRepository('App:Task')->findBy(array('member' => $id));
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
+        $params = [
+            'project' => $projectMember->getProject()->getId(),
+        ];
 
-        $pager = new Pagerfanta(new ArrayAdapter($tasks));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
+        if ($projectMember->getPerson()) {
+            $params['creator'] = $projectMember->getPerson()->getId();
+        }
+        if ($projectMember->getTeam()) {
+            $params['assigned_team'] = $projectMember->getTeam()->getId();
+        }
+        if ($projectMember->getDepartment()) {
+            $params['assigned_department'] = $projectMember->getDepartment()->getId();
+        }
 
-        return View::create(
-            $this->wrap($pager),
-            Response::HTTP_OK
-        );
+        return TasksController::subRequestSearch($this->getKernel(), $request, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        parent::applyListFilters($qb, $alias, $request);
+
+        $type = $request->query->getAlpha('type');
+        if ($type) {
+            if (!in_array($type, ['person', 'team', 'department'])) {
+                throw new BadRequestHttpException('Unknown member type');
+            }
+
+            $qb->andWhere("$alias.$type is not NULL");
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'project' => $this->findParentOr404(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
     }
 }

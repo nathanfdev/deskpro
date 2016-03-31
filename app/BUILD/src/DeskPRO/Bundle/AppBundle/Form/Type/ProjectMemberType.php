@@ -31,65 +31,84 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class ProjectMemberType.
+ */
 class ProjectMemberType extends AbstractType
 {
-    public function getName()
-    {
-        return 'projectmember';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'person',
-                'entity',
-                [
-                    'class'    => Person::class,
-                    'property' => 'id',
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'team',
-                'entity',
-                [
-                    'class'    => AgentTeam::class,
-                    'property' => 'id',
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'department',
-                'entity',
-                [
-                    'class'    => Department::class,
-                    'property' => 'id',
-                    'required' => false,
-                ]
-            )
-            ->add(
-                'project',
-                'entity',
-                [
-                    'class'    => TaskProject::class,
-                    'property' => 'id',
-                    'required' => true,
-                ]
-            );
+            ->add('person', EntityType::class, [
+                'class'    => Person::class,
+                'required' => false,
+            ])
+            ->add('team', EntityType::class, [
+                'class'    => AgentTeam::class,
+                'required' => false,
+            ])
+            ->add('department', EntityType::class, [
+                'class'    => Department::class,
+                'required' => false,
+            ])
+        ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onResetData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetProject']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\ProjectMember',
-            ]
-        );
+        $resolver
+            ->setRequired('project')
+            ->setDefaults([
+                'data_class' => ProjectMember::class,
+            ])
+            ->setAllowedTypes([
+                'project' => TaskProject::class,
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onResetData(FormEvent $event)
+    {
+        $data = $event->getData();
+        foreach (['person', 'team', 'department'] as $field) {
+            if (!isset($data[$field])) {
+                $data[$field] = null;
+            }
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetProject(FormEvent $event)
+    {
+        $form = $event->getForm();
+
+        /** @var ProjectMember $data */
+        $data = $event->getData();
+        $data->setProject($form->getConfig()->getOption('project'));
     }
 }

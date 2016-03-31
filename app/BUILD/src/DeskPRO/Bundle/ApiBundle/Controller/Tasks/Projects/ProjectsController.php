@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -40,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
 use DeskPRO\Bundle\AppBundle\Form\Type\ProjectType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class ProjectsController.
  *
- * @Annotations\Route("/projects")
+ * @Rest\Route("/task_projects")
  * @ApiDocSection("TaskProjects")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
  * @ApiModes("all")
@@ -99,7 +100,7 @@ class ProjectsController extends CrudController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\Task>"
      * )
-     * @Annotations\Get("/{id}/tasks", name="api_projects_tasks_get")
+     * @Rest\Get("/{id}/tasks", name="api_projects_tasks_get")
      *
      * @param Request $request
      * @param int     $id
@@ -124,7 +125,7 @@ class ProjectsController extends CrudController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskList>"
      * )
-     * @Annotations\Get("/{projectId}/lists", name="api_projects_lists_get")
+     * @Rest\Get("/{projectId}/lists", name="api_projects_lists_get")
      *
      * @param $projectId
      *
