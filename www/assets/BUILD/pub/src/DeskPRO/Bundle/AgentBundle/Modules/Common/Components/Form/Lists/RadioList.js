@@ -9,7 +9,7 @@ export class RadioList extends React.Component {
     renderLabel: PropTypes.func.isRequired,
     getKeyword: PropTypes.func.isRequired,
     multiple: PropTypes.bool,
-    selected: PropTypes.object,
+    selected: PropTypes.number,
     showOnlySelected: PropTypes.bool,
     param: PropTypes.string.isRequired,
     filter: PropTypes.string,

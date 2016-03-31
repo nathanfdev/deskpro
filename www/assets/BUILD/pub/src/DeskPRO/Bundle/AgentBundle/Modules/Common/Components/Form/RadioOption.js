@@ -7,7 +7,7 @@ export class RadioOption extends Component {
     onClick: PropTypes.func.isRequired,
     param: PropTypes.string.isRequired,
     isActive: PropTypes.bool,
-    label: PropTypes.string.isRequired,
+    label: PropTypes.any.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     children: PropTypes.any
   };
