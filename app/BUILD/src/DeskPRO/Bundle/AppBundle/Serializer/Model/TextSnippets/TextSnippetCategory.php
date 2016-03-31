@@ -26,100 +26,60 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets;
 
-use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\TextSnippetCategory as TextSnippetCategoryEntity;
 use JMS\Serializer\Annotation as JMS;
 
-/**
- * Class TextSnippetContent.
- */
-class TextSnippetContent
+class TextSnippetCategory
 {
     /**
-     * @var Language
+     * The unique snippet category ID.
      *
-     * @JMS\Exclude()
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    protected $language;
+    private $id;
 
     /**
-     * Snippet title
-     * у.
-     *
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    protected $title;
-
-    /**
-     * Snippet content.
-     *
-     * @var string
+     * Snippet category title (it's localized).
      *
      * @JMS\Type("string")
-     */
-    protected $content;
-
-    /**
-     * Constructor.
      *
-     * @param Language $language
+     * @var string
      */
-    public function __construct(Language $language)
-    {
-        $this->language = $language;
-    }
+    private $title;
 
     /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->language->getLocale();
-    }
-
-    /**
-     * @param string $title
+     * Person - owner of this snippet category.
      *
-     * @return $this
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @param string $content
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
-     * @return $this
+     * @var \Application\DeskPRO\Entity\Person
      */
-    public function setContent($content)
-    {
-        $this->content = $content;
-
-        return $this;
-    }
+    private $person;
 
     /**
-     * @return string
+     * Is this snippet category global?
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
      */
-    public function getTitle()
-    {
-        return $this->title;
-    }
+    private $isGlobal;
 
     /**
-     * @return string
+     * TextSnippet constructor.
+     *
+     * @param TextSnippetCategoryEntity $snippet
+     * @param string                    $title
      */
-    public function getContent()
+    public function __construct(TextSnippetCategoryEntity $snippet, $title)
     {
-        return $this->content;
+        $this->id       = $snippet->getId();
+        $this->title    = $title;
+        $this->person   = $snippet->getPerson();
+        $this->isGlobal = $snippet->getIsGlobal();
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,19 +29,19 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
-use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -50,7 +50,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TextSnippetsController.
  *
  * @ApiModes("all")
- * @Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
+ * @ApiDocSection("Text snippets")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet")
+ * @Rest\Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
  */
 class TextSnippetsController extends CrudController
 {
@@ -59,6 +61,8 @@ class TextSnippetsController extends CrudController
     public static $entity    = TextSnippet::class;
     public static $type      = TextSnippetType::class;
     public static $listOrder = 'asc';
+
+    public static $serializeMethod = 'wrap';
 
     /**
      * @param HttpKernelInterface $kernel
@@ -79,8 +83,30 @@ class TextSnippetsController extends CrudController
     }
 
     /**
-     * @Get("/{id}/content")
-     * @View()
+     * @ApiDoc(
+     *      description="get the snippets content",
+     *      requirements={
+     *          {
+     *              "name"="snippet",
+     *              "requirement"="ticket|chat",
+     *              "description"="the context of the category",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of the snippet",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Success",
+     *          404="We can't find such snippet or context is wrong"
+     *      },
+     *     output="array<Application\DeskPRO\Entity\TextSnippetContent>"
+     * )
+     *
+     * @Rest\Get("/{id}/content")
      *
      * @param Request $request
      * @param int     $id
@@ -107,7 +133,7 @@ class TextSnippetsController extends CrudController
             }
         }
 
-        return $this->dataSerialize($contents);
+        return $this->wrap($contents);
     }
 
     /**

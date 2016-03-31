@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,56 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TextSnippet;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataTransformerRequest;
+use Application\DeskPRO\Entity\TextSnippetCategory as TextSnippetCategoryEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory as TextSnippetCategoryModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class TextSnippetTransformer.
+ * Class TextSnippetCategoryHandler.
  */
-class TextSnippetTransformer extends AbstractDataSerializerTransformer
+class TextSnippetCategoryHandler extends AbstractEntityHandler
 {
     /**
      * @var TokenStorageInterface
      */
-    private $token_storage;
+    private $tokenStorage;
 
     /**
-     * Constructor.
+     * TextSnippetHandler constructor.
      *
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(TokenStorageInterface $token_storage)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->token_storage = $token_storage;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAutomaticProperties(DataTransformerRequest $transformation_request)
+    public static function getClassNames()
     {
-        return ['id', 'person', 'category', 'shortcut_code', 'is_draft'];
+        return TextSnippetCategoryEntity::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TextSnippetCategoryEntity $entity
      */
-    public function getCustomProperties(DataTransformerRequest $transformation_request)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var TextSnippet $data */
-        $data = $transformation_request->getDataToBeTransformed();
         /** @var Person $user */
-        $user = $this->token_storage->getToken()->getUser();
+        $user  = $this->tokenStorage->getToken()->getUser();
+        $title = $entity->getObjectPropLanguageTranslationValue('title', $user->getLanguage());
 
-        return [
-            'title' => $data->getObjectPropLanguageTranslationValue('title', $user->getLanguage()),
-        ];
+        return new TextSnippetCategoryModel($entity, $title);
     }
 }

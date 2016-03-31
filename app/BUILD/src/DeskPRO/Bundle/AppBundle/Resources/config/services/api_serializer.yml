@@ -113,6 +113,20 @@ services:
       tags:
         - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.text_snippet:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
+      arguments:
+        - "@security.token_storage"
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet_category:
+        class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetCategoryHandler
+        arguments:
+          - "@security.token_storage"
+        tags:
+          - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
