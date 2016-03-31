@@ -93,8 +93,8 @@ class PersonRegistrationType extends AbstractType
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
+                'label'    => $this->language_manager->phrase('portal.forms.label_email'),
                 'required' => true,
-                'label'    => false,
             ])
             ->add('password', 'repeated', [
                 'first_name'    => 'password',
