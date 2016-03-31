@@ -26,52 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class NotificationClient.
+ * Class NotificationConfiguration.
  */
-class NotificationClient
+class NotificationConfiguration
 {
     /**
-     * Client type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * Client options.
-     *
-     * @JMS\Type("array")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient>")
      *
      * @var array
      */
-    protected $options;
-
-    public function __construct($type, array $options)
-    {
-        $this->type    = $type;
-        $this->options = $options;
-    }
+    protected $clients;
 
     /**
-     * @return string
+     * NotificationConfiguration constructor.
+     *
+     * @param array $clients
      */
-    public function getType()
+    public function __construct(array $clients)
     {
-        return $this->type;
+        $this->clients = $clients;
     }
 
     /**
      * @return array
      */
-    public function getOptions()
+    public function getClients()
     {
-        return $this->options;
+        return $this->clients;
     }
 }

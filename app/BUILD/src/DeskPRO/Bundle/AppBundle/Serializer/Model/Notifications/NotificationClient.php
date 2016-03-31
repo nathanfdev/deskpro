@@ -26,62 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications;
 
 use JMS\Serializer\Annotation as JMS;
-use Orb\Util\Strings;
 
 /**
- * Class NotifyData.
+ * Class NotificationClient.
  */
-class NotifyData
+class NotificationClient
 {
     /**
-     * Notification title.
+     * Client type.
      *
      * @JMS\Type("string")
      *
      * @var string
      */
-    private $title;
-    /**
-     * Notification summary.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $summary;
+    protected $type;
 
     /**
-     * NotifyData constructor.
+     * Client options.
      *
-     * @param string $input
+     * @JMS\Type("array")
+     *
+     * @var array
      */
-    public function __construct($input)
+    protected $options;
+
+    public function __construct($type, array $options)
     {
-        $title       = Strings::extractRegexMatch('#<big>(.*?)</big>#s', $input);
-        $title       = preg_replace('#<span[^>]*>.*?</span>#s', '', $title);
-        $this->title = $this->cleanString($title);
-
-        $summary       = Strings::extractRegexMatch('#<small>(.*?)</small>#s', $input);
-        $this->summary = $this->cleanString($summary);
+        $this->type    = $type;
+        $this->options = $options;
     }
 
     /**
-     * @param string $string
-     *
      * @return string
      */
-    private function cleanString($string)
+    public function getType()
     {
-        $string = Strings::decodeHtmlEntities($string);
-        $string = Strings::removeInvisibleCharacters($string);
-        $string = Strings::removeLineBreaks($string);
-        $string = str_replace("\t", ' ', $string);
-        $string = preg_replace('#\s{,2}#', ' ', $string);
-        $string = trim($string);
+        return $this->type;
+    }
 
-        return $string;
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

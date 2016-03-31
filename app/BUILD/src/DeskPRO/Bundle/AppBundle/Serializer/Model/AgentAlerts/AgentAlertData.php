@@ -26,37 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Notification;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class NotificationConfiguration.
+ * Class AgentAlertData.
  */
-class NotificationConfiguration
+class AgentAlertData
 {
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Notification\NotificationClient>")
+     * Ticket identity.
      *
-     * @var array
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    protected $clients;
+    private $ticket;
 
     /**
-     * NotificationConfiguration constructor.
+     * Additional data about notification.
      *
-     * @param array $clients
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\NotifyData")
+     *
+     * @var NotifyData
      */
-    public function __construct(array $clients)
-    {
-        $this->clients = $clients;
-    }
+    private $notification;
 
     /**
-     * @return array
+     * Who performed this alert. Identity.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    public function getClients()
+    private $performer;
+
+    /**
+     * AgentAlertData constructor.
+     *
+     * @param int        $ticket
+     * @param NotifyData $notification
+     * @param int        $performer
+     */
+    public function __construct($ticket, NotifyData $notification, $performer)
     {
-        return $this->clients;
+        $this->ticket       = $ticket;
+        $this->notification = $notification;
+        $this->performer    = $performer;
     }
 }

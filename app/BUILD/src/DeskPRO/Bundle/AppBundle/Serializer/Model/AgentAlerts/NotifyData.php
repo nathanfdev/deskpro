@@ -26,53 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts;
 
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Strings;
 
 /**
- * Class AgentAlertData.
+ * Class NotifyData.
  */
-class AgentAlertData
+class NotifyData
 {
     /**
-     * Ticket identity.
+     * Notification title.
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
-     * @var int
+     * @var string
      */
-    private $ticket;
+    private $title;
+    /**
+     * Notification summary.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $summary;
 
     /**
-     * Additional data about notification.
+     * NotifyData constructor.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\NotifyData")
-     *
-     * @var NotifyData
+     * @param string $input
      */
-    private $notification;
-
-    /**
-     * Who performed this alert. Identity.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    private $performer;
-
-    /**
-     * AgentAlertData constructor.
-     *
-     * @param int        $ticket
-     * @param NotifyData $notification
-     * @param int        $performer
-     */
-    public function __construct($ticket, NotifyData $notification, $performer)
+    public function __construct($input)
     {
-        $this->ticket       = $ticket;
-        $this->notification = $notification;
-        $this->performer    = $performer;
+        $title       = Strings::extractRegexMatch('#<big>(.*?)</big>#s', $input);
+        $title       = preg_replace('#<span[^>]*>.*?</span>#s', '', $title);
+        $this->title = $this->cleanString($title);
+
+        $summary       = Strings::extractRegexMatch('#<small>(.*?)</small>#s', $input);
+        $this->summary = $this->cleanString($summary);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    private function cleanString($string)
+    {
+        $string = Strings::decodeHtmlEntities($string);
+        $string = Strings::removeInvisibleCharacters($string);
+        $string = Strings::removeLineBreaks($string);
+        $string = str_replace("\t", ' ', $string);
+        $string = preg_replace('#\s{,2}#', ' ', $string);
+        $string = trim($string);
+
+        return $string;
     }
 }

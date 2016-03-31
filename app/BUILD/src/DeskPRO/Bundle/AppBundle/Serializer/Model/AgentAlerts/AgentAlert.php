@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert as AgentAlertEntity;
 use JMS\Serializer\Annotation as JMS;
@@ -57,7 +57,7 @@ class AgentAlert
     /**
      * Alert data.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlertData")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\AgentAlertData")
      *
      * @var AgentAlertData
      */
@@ -82,7 +82,7 @@ class AgentAlert
     private $isDismissed;
 
     /**
-     * AgentAlert constructor.
+     * AgentAlerts constructor.
      *
      * @param AgentAlertEntity $alert
      * @param string           $type

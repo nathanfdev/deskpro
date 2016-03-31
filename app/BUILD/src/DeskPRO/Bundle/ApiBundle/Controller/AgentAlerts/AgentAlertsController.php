@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class AgentAlertsController.
  *
  * @ApiDocSection("Notifications and alerts")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\AgentAlerts")
  * @ApiModes("all")
  * @Annotations\Route("/me/notifications")
  */
