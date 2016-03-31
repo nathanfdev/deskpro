@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -51,7 +50,7 @@ use Orb\Util\Util;
  * but ran out of time because it affects so many things: ticket searching, escalations, filters.
  *
  * The admin interface is built up around the idea of the new system though, it's how it accepts and processes
- * forms for filters and escalations. So we need this transformer to convert new-style into old-style and visaversa.
+ * forms for filters and escalations. So we need this transformer to convert new-style into old-style and vice versa.
  */
 class LegacyTermsTransformer
 {

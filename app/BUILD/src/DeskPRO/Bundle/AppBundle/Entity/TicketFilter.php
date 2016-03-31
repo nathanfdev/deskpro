@@ -53,17 +53,21 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
     use NotifyPropertyChangedTrait;
 
     /**
+     * The unique filter ID.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $id;
 
     /**
-     * @var string
+     * The filter`s title.
      *
      * @ORM\Column(name="title", type="string")
      *
@@ -71,11 +75,13 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $title;
 
     /**
-     * @var TermInterface
+     *  Term object including whole spectre of operations to filter tickets.
      *
      * @ORM\Column(name="term", type="term_engine_term")
      *
@@ -83,10 +89,15 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @Assert\Valid()
      *
      * @JMS\Expose()
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm")
+     *
+     * @var TermInterface
      */
     protected $term;
 
     /**
+     * Filter`s display order.
+     *
      * @var int
      *
      * @ORM\Column(name="display_order", type="integer")
@@ -97,7 +108,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
     protected $display_order = 0;
 
     /**
-     * @var TicketFilterSet
+     * Filter set this filter belongs to.
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
      * @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
@@ -105,46 +116,56 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet>")
      * @JMS\SerializedName("ticket_filter_set")
+     *
+     * @var TicketFilterSet
      */
     protected $filter_set;
 
     /**
-     * @var TicketFilterView[]|ArrayCollection
+     * Views attached this filter.
      *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterView>>")
+     *
+     * @var TicketFilterView[]|ArrayCollection
      */
     protected $filter_views;
 
     /**
-     * @var TicketFilterPreference[]|ArrayCollection
+     * Preferences associated with this filter.
      *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference>>")
+     *
+     * @var TicketFilterPreference[]|ArrayCollection
      */
     protected $filter_preferences;
 
     /**
-     * @var \DateTime
+     * Date when this filter was created.
      *
      * @ORM\Column(name="date_created", type="datetime")
      *
      * @JMS\Expose()
      * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * @var \DateTime
+     * Date when this filter was updated.
      *
      * @ORM\Column(name="date_updated", type="datetime")
      *
      * @JMS\Expose()
      * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
      */
     protected $date_updated;
 

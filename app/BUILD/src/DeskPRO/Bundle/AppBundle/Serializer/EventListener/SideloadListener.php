@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
@@ -108,7 +107,7 @@ class SideloadListener implements EventSubscriberInterface
 
                 if ($sideloads->hasCustom($include)) {
                     foreach ($sideloads->getCustom($include) as $custom) {
-                        $linked[$include][$custom->getId()] = $custom->getData();
+                        $linked[$include][$custom->getId()] = $context->accept($custom->getData());
                     }
                 }
             }

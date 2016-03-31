@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,45 +29,50 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidTermEngineTerm;
-use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ValidTermEngineTerm()
- * @Serializer\ExclusionPolicy("ALL")
+ * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractTerm implements TermInterface
 {
     /**
      * @var TermOptionsResolver[]
-     * @Serializer\Exclude()
      */
     private static $options_resolvers = array();
 
     /**
-     * The op MUST be a supported TermInterface::OP_* constant.
+     * Term operation.
      *
      * @var string the op for this term
-     * @Serializer\Expose()
+     *
+     * The op MUST be a supported TermInterface::OP_* constant.
+     *
      * @Assert\NotNull
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $op;
 
     /**
      * This is where all of the data of a term is stored.
      *
+     * @var array the defined settings
+     *
      * Note that default options are not stored here. We only store options
      * that were explicitly added. The only access to options is via the
      * getOptions() method (which uses OptionsResolver to resolve the options).
      *
-     * @var array the defined settings
-     * @Serializer\Expose()
+     * @JMS\Expose()
+     * @JMS\Type("array")
      */
     protected $options;
 
