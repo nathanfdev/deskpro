@@ -5,8 +5,9 @@ import { RadioOption } from './RadioOption';
 
 import { connect } from 'react-redux';
 @connect()
-export class SingleChoicePanel extends Component {
+export class SingleChoicePanelContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object,
@@ -15,8 +16,6 @@ export class SingleChoicePanel extends Component {
   };
 
   onClick = (param, value, isActive)=> {
-    console.log('Param', param);
-    console.log('Value', value);
     const { dispatch, resetSingleAction, setParams } = this.props;
     if (isActive) {
       dispatch(resetSingleAction(param));
@@ -26,7 +25,7 @@ export class SingleChoicePanel extends Component {
   };
 
   render() {
-    const { item, setParams, currentParams, depth, resetSingleAction } = this.props;
+    const { item, currentParams, depth } = this.props;
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;
@@ -37,7 +36,6 @@ export class SingleChoicePanel extends Component {
           {nested.map((option, index) =>
               <RadioOption key={index}
                            isActive={currentParams && currentParams.get(option.param) === option.value}
-                           resetSingleAction={resetSingleAction}
                            value={option.value}
                            param={option.param}
                            label={option.label}
@@ -48,7 +46,7 @@ export class SingleChoicePanel extends Component {
     };
 
     const classes = classNames('dpw-navigation-dropdown-panel', { 'dpw-navigation-dropdown-panel-corner-left': depth });
-console.log('Item', item);
+
     return (
       <div className={classes} style={{width: '250px'}}>
         <div className="dpw-navigation-dropdown-panel-content">
@@ -64,7 +62,6 @@ console.log('Item', item);
                   {item.options.map((option, index) =>
                       <RadioOption key={index}
                                    isActive={currentParams && currentParams.get(item.param) === option.value}
-                                   resetSingleAction={resetSingleAction}
                                    value={option.value}
                                    label={option.label}
                                    param={item.param}
