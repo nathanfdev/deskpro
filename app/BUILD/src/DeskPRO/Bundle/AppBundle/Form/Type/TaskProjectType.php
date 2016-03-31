@@ -38,7 +38,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class ProjectType.
  */
-class ProjectType extends AbstractType
+class TaskProjectType extends AbstractType
 {
     /**
      * {@inheritdoc}

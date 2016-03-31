@@ -39,6 +39,11 @@ Feature: /projects endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
+  Scenario: I get task lists
+    When I send a GET request to "/api/v2/task_projects/1/lists"
+    Then the response should be in JSON
+    And the response status code should be 200
+
   Scenario: I GET projects
     When I send a GET request to "/api/v2/task_projects"
     Then the response should be in JSON

@@ -38,8 +38,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject as Project;
-use DeskPRO\Bundle\AppBundle\Form\Type\ProjectType;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Form\Type\TaskProjectType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -56,30 +56,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ProjectsController extends CrudController
 {
-    public static $entity    = Project::class;
-    public static $type      = ProjectType::class;
+    public static $entity    = TaskProject::class;
+    public static $type      = TaskProjectType::class;
     public static $listSort  = 'title';
     public static $listOrder = 'asc';
-
-    /**
-     * @todo this should be done with special SelectCriteria, but I'm hurry
-     *
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
-     */
-    public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $project_ids = $request->query->get('ids', []);
-        $project_ids = array_map(function ($value) {
-            return (int) $value;
-        }, $project_ids);
-
-        if (!empty($project_ids)) {
-            $qb->andWhere("{$alias}.id IN (:project_ids)")->setParameter('project_ids', $project_ids);
-        }
-        parent::applyListFilters($qb, $alias, $request);
-    }
 
     /**
      * Fetch task list associated with the project specified by id.
@@ -125,38 +105,31 @@ class ProjectsController extends CrudController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskList>"
      * )
-     * @Rest\Get("/{projectId}/lists", name="api_projects_lists_get")
+     * @Rest\Get("/{project}/lists")
      *
-     * @param $projectId
+     * @param TaskProject $project
      *
      * @return View
      */
-    public function getListsAction($projectId)
+    public function getListsAction(TaskProject $project)
     {
-        $project = $this->getProject($projectId);
-        if (empty($project)) {
-            throw $this->createNotFoundException();
-        }
-
-        $lists = $project->getLists();
-
-        return View::create($this->wrap($lists), Response::HTTP_OK);
+        return View::create($this->wrap($project->getLists()), Response::HTTP_OK);
     }
 
     /**
-     * Retrieve a single project.
-     *
-     * @param int $id
-     *
-     * @return Project
+     * {@inheritdoc}
      */
-    protected function getProject($id)
+    public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $project = $this->getDoctrine()->getManager()->getRepository('App:TaskProject')->find((int) $id);
-        if (!$project) {
-            throw $this->createNotFoundException();
-        }
+        parent::applyListFilters($qb, $alias, $request);
 
-        return $project;
+        $project_ids = $request->query->get('ids', []);
+        $project_ids = array_map(function ($value) {
+            return (int) $value;
+        }, $project_ids);
+
+        if (!empty($project_ids)) {
+            $qb->andWhere("{$alias}.id IN (:project_ids)")->setParameter('project_ids', $project_ids);
+        }
     }
 }
