@@ -32,10 +32,11 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\FeedbackCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,13 +62,13 @@ class FeedbackTypeController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\FeedbackCategory>"
      * )
-     * @Annotations\Get("/feedback_types", name="api_feedback_types")
+     * @Rest\Get("/feedback_types", name="api_feedback_types")
      *
      * @return View
      */
     public function listAction()
     {
-        $types = $this->getRepository('Application\\DeskPRO\\Entity\\FeedbackCategory')->findBy([], ['title' => 'ASC']);
+        $types = $this->getRepository(FeedbackCategory::class)->findBy([], ['title' => 'ASC']);
 
         return View::create(
             $this->wrap($types),

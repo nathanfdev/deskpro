@@ -19,18 +19,11 @@ export class AssignActionContainer extends Component {
 
   onClick(param, value) {
     const { setParams, dispatch, currentParams, resetSingleAction } = this.props;
-    const nextParams = currentParams.get('assign') ? currentParams.get('assign').toJS() : {};
 
-    if (currentParams.get('assign') && currentParams.get('assign').get(param) && value.length < 1) {
-      delete nextParams[param];
-    } else {
-      nextParams[param] = value;
-    }
-
-    if (Object.keys(nextParams).length === 0) {
+    if (currentParams.get('assign') && currentParams.get('assign').get(param) === value) {
       dispatch(resetSingleAction('assign'));
     } else {
-      dispatch(setParams({ assign: nextParams }));
+      dispatch(setParams({ assign: { [param]: value } }));
     }
   }
 
