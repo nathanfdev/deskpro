@@ -56,6 +56,6 @@ class ProjectAgentsController extends AbstractProjectMembersController
      */
     protected function getTaskCriteriaParam()
     {
-        return 'creator';
+        return 'assigned_agent';
     }
 }
