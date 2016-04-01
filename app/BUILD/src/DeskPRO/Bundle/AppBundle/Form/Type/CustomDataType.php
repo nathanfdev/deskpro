@@ -163,8 +163,11 @@ class CustomDataType extends AbstractType
             $data = $event->getData();
         }
 
+        // because child field is not mapped the form tries to get data from the options
+        // so we should to pass stored value via its options
+        $options['data'] = $this->getFormData($data, $custom_def);
+
         $form->add('data', $field->getType(), $options);
-        $form->get('data')->setData($this->getFormData($data, $custom_def));
 
         if ($ownerForm && $eventName === FormEvents::SUBMIT) {
             $form->get('data')->submit($viewData);
