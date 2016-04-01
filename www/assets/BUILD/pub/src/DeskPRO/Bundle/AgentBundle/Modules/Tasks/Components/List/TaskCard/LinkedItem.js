@@ -9,6 +9,7 @@ import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Select from 'react-select-plus';
 import { connect } from 'react-redux';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import invariant from 'invariant';
 
 export class LinkedItem extends CardWidget {
 
@@ -115,12 +116,11 @@ export class LinkedItem extends CardWidget {
     const type = ['ticket', 'article', 'chat_conversation'];
     this.props.dispatch(quickSearchAction({type: type, query: input})).then((res) => {
 
-      let options = [];
-      if (!res.data || !res.data.grouped_results) {
-        return callback(null, {options: options});
-      }
+      invariant(res.data && res.data.data && res.data.data.grouped_results, 'Malformed QuickSearch response');
 
-      for (let group of res.data.grouped_results) {
+      let options = [];
+
+      for (let group of res.data.data.grouped_results) {
         let option = {label: '', options: []};
         options.push(option);
 
