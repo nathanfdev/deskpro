@@ -103,7 +103,7 @@ class TrimExtraLangFilesCommand extends ContainerAwareCommand
                         $output->writeln(sprintf('<info>[%s] File: %-21s -- Removed %d unknown phrases:</info> %s', $langId, $name, $countBefore - $countAfter, implode(', ', $diff)));
 
                         if ($apply) {
-                            file_put_contents($f->getRealPath(), $langFileCompiler->compilePhpCode($langPhrases));
+                            file_put_contents($f->getRealPath(), $langFileCompiler->compilePhpCode($newLangPhrases));
                         }
                     }
                 }
