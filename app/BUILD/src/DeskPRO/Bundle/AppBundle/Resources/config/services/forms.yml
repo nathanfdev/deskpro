@@ -186,19 +186,19 @@ services:
       - { name: form.type, alias: task_label }
 
   form.task_link_article:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedArticleType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedArticleType
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: form.type, alias: task_link_article }
 
   form.task_link_chat:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedChatType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedChatType
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: form.type, alias: task_link_chat }
 
   form.task_link_ticket:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedTicketType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedTicketType
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: form.type, alias: task_link_ticket }

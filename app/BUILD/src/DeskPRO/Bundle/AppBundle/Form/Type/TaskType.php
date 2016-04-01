@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItemsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -55,129 +56,181 @@ class TaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
-                'description' => 'the task title',
-            ])
-            ->add('is_done', 'api_boolean', [
-                'description' => 'the task status',
-                'required'    => false,
-            ])
-            ->add('percent_complete', 'integer', [
-                'required'    => false,
-                'description' => 'the percentage of the task complete',
-            ])
-            ->add('task_type', 'choice', [
-                'description' => 'the type of task',
-                'required'    => false,
-                'empty_data'  => Task::TYPE_TASK,
-                'choices'     => [
-                    Task::TYPE_TASK  => 'Task',
-                    Task::TYPE_EVENT => 'Event',
-                ],
-            ])
-            ->add('date_due', 'datetime', [
-                'required'    => false,
-                'widget'      => 'single_text',
-                'description' => 'the task due date',
-            ])
-            ->add('date_done', 'datetime', [
-                'required'    => false,
-                'widget'      => 'single_text',
-                'description' => 'the task done date',
-            ])
-            ->add('date_event_start', 'datetime', [
-                'required'    => false,
-                'description' => 'the event start datetime',
-            ])
-            ->add('date_event_end', 'datetime', [
-                'required'    => false,
-                'description' => 'the event end datetime',
-            ])
-            ->add('visibility', 'choice', [
-                'required'    => false,
-                'description' => 'the task visibility',
-                'empty_data'  => Task::VISIBILITY_PRIVATE,
-                'choices'     => [
-                    Task::VISIBILITY_PUBLIC  => 'Public',
-                    Task::VISIBILITY_PROJECT => 'Project',
-                    Task::VISIBILITY_PRIVATE => 'Private',
-                ],
-            ])
-            ->add('urgency', 'integer', [
-                'required'    => false,
-                'empty_data'  => '5',
-                'description' => 'the task urgency',
-            ])
-            ->add('display_order', 'integer', [
-                'required'    => false,
-                'description' => 'the task position in a list',
-            ])
-            ->add('project', 'entity', [
-                'class'    => 'App:TaskProject',
-                'property' => 'title',
-            ])
-            ->add('list', 'entity', [
-                'class'    => 'App:TaskList',
-                'property' => 'title',
-            ])
-            ->add('labels', 'api_labels_collection', [
-                'labels_class'   => LabelTask::class,
-                'labels_owner'   => $builder->getData(),
-                'owner_property' => 'task',
-            ])
-            ->add('departments', 'entity', [
-                'class'    => 'DeskPRO:Department',
-                'multiple' => true,
-                'required' => false,
-            ])
-            ->add('teams', 'entity', [
-                'class'    => 'DeskPRO:AgentTeam',
-                'multiple' => true,
-                'required' => false,
-            ])
-            ->add('agents', 'entity', [
-                'class'    => 'DeskPRO:Person',
-                'multiple' => true,
-                'required' => false,
-            ])
-            ->add('linked_tickets', 'collection', [
-                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedTicketType',
-                'allow_add' => true,
-                'allow_delete' => true,
-            ])
-            ->add('linked_articles', 'collection', [
-                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedArticleType',
-                'allow_add' => true,
-                'allow_delete' => true,
-            ])
-            ->add('linked_chats', 'collection', [
-                'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\TaskLinkedChatType',
-                'allow_add' => true,
-                'allow_delete' => true,
-            ])
+            ->add(
+                'title',
+                'text',
+                [
+                    'description' => 'the task title',
+                ]
+            )
+            ->add(
+                'is_done',
+                'api_boolean',
+                [
+                    'description' => 'the task status',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'percent_complete',
+                'integer',
+                [
+                    'required' => false,
+                    'description' => 'the percentage of the task complete',
+                ]
+            )
+            ->add(
+                'task_type',
+                'choice',
+                [
+                    'description' => 'the type of task',
+                    'required' => false,
+                    'empty_data' => Task::TYPE_TASK,
+                    'choices' => [
+                        Task::TYPE_TASK => 'Task',
+                        Task::TYPE_EVENT => 'Event',
+                    ],
+                ]
+            )
+            ->add(
+                'date_due',
+                'datetime',
+                [
+                    'required' => false,
+                    'widget' => 'single_text',
+                    'description' => 'the task due date',
+                ]
+            )
+            ->add(
+                'date_done',
+                'datetime',
+                [
+                    'required' => false,
+                    'widget' => 'single_text',
+                    'description' => 'the task done date',
+                ]
+            )
+            ->add(
+                'date_event_start',
+                'datetime',
+                [
+                    'required' => false,
+                    'description' => 'the event start datetime',
+                ]
+            )
+            ->add(
+                'date_event_end',
+                'datetime',
+                [
+                    'required' => false,
+                    'description' => 'the event end datetime',
+                ]
+            )
+            ->add(
+                'visibility',
+                'choice',
+                [
+                    'required' => false,
+                    'description' => 'the task visibility',
+                    'empty_data' => Task::VISIBILITY_PRIVATE,
+                    'choices' => [
+                        Task::VISIBILITY_PUBLIC => 'Public',
+                        Task::VISIBILITY_PROJECT => 'Project',
+                        Task::VISIBILITY_PRIVATE => 'Private',
+                    ],
+                ]
+            )
+            ->add(
+                'urgency',
+                'integer',
+                [
+                    'required' => false,
+                    'empty_data' => '5',
+                    'description' => 'the task urgency',
+                ]
+            )
+            ->add(
+                'display_order',
+                'integer',
+                [
+                    'required' => false,
+                    'description' => 'the task position in a list',
+                ]
+            )
+            ->add(
+                'project',
+                'entity',
+                [
+                    'class' => 'App:TaskProject',
+                    'property' => 'title',
+                ]
+            )
+            ->add(
+                'list',
+                'entity',
+                [
+                    'class' => 'App:TaskList',
+                    'property' => 'title',
+                ]
+            )
+            ->add(
+                'labels',
+                'api_labels_collection',
+                [
+                    'labels_class' => LabelTask::class,
+                    'labels_owner' => $builder->getData(),
+                    'owner_property' => 'task',
+                ]
+            )
+            ->add(
+                'departments',
+                'entity',
+                [
+                    'class' => 'DeskPRO:Department',
+                    'multiple' => true,
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'teams',
+                'entity',
+                [
+                    'class' => 'DeskPRO:AgentTeam',
+                    'multiple' => true,
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'agents',
+                'entity',
+                [
+                    'class' => 'DeskPRO:Person',
+                    'multiple' => true,
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'linked_tickets',
+                new LinkedItemsType(),
+                [
+                    'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedTicketType',
+                ]
+            )
+            ->add(
+                'linked_articles',
+                new LinkedItemsType(),
+                [
+                    'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedArticleType',
+                ]
+            )
+            ->add(
+                'linked_chats',
+                new LinkedItemsType(),
+                [
+                    'entry_type' => 'DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedChatType',
+                ]
+            )
         ;
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
-    }
-
-    public function onPreSubmit(FormEvent $event)
-    {
-        $data = $event->getData();
-        $task = $event->getForm()->getData();
-
-        $data['linked_tickets'] = array_map(function($id) use ($task) {
-            return ['task' => $task->getId(), 'ticket' => $id];
-        }, $data['linked_tickets']);
-
-        $data['linked_articles'] = array_map(function($id) use ($task) {
-            return ['task' => $task->getId(), 'article' => $id];
-        }, $data['linked_articles']);
-
-        $data['linked_chats'] = array_map(function($id) use ($task) {
-            return ['task' => $task->getId(), 'chat' => $id];
-        }, $data['linked_chats']);
-
-        $event->setData($data);
     }
 
     /**
@@ -185,8 +238,10 @@ class TaskType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
+            ]
+        );
     }
 }

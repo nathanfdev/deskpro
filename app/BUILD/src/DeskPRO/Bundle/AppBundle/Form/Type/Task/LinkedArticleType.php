@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use Doctrine\ORM\EntityManager;
@@ -38,36 +38,23 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskLinkedChatType extends AbstractType
+class LinkedArticleType extends LinkedItemType
 {
-    protected $manager;
-
-    public function __construct(EntityManager $manager)
-    {
-        $this->manager = $manager;
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add(
-                'chat',
-                TextType::class,
-                ['invalid_message' => 'That is not a valid Chat ID']
-            )
-            ->add(
-                'task',
-                TextType::class,
-                ['invalid_message' => 'That is not a valid Task ID']
-            )
-        ;
+        parent::buildForm($builder, $options);
 
-        $builder->get('chat')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('DeskPRO:ChatConversation')));
-        $builder->get('task')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('App:Task')));
+        $rep = $this->manager->getRepository('DeskPRO:Article');
+        $builder->get('item')->addModelTransformer(new EntityToIdTransformer($rep));
+    }
+
+    protected function getPropertyPath()
+    {
+        return 'article';
     }
 
     /**
@@ -76,7 +63,7 @@ class TaskLinkedChatType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat',
+            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle',
         ]);
     }
 
@@ -85,6 +72,6 @@ class TaskLinkedChatType extends AbstractType
      */
     public function getName()
     {
-        return 'task_link_chat';
+        return 'task_link_article';
     }
 }

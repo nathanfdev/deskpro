@@ -59,9 +59,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "chat" = "TaskLinkedChat"
  * })
  */
-class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
+class TaskLinkedItem implements EntityInterface
 {
-    use NotifyPropertyChangedTrait;
 
     /**
      * The unique ID.
@@ -115,7 +114,7 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
      */
     public function setTask(Task $task)
     {
-        $this->setModelField('task', $task);
+        $this->task = $task;
 
         return $this;
     }
