@@ -10,7 +10,7 @@ services:
   user_chat.listener.client_listener:
     class: DeskPRO\Bundle\AppBundle\UserChat\UserChatClientListener
     arguments:
-      - "@data_serializer"
+      - "@jms_serializer.serializer"
     tags:
       - { name: kernel.event_subscriber }
 

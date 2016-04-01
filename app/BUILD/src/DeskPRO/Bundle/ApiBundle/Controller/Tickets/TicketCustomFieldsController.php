@@ -53,7 +53,6 @@ class TicketCustomFieldsController extends CrudController
     public static $entity     = CustomDefTicket::class;
     public static $listOrder  = 'asc';
 
-    public static $serializeMethod = 'wrap';
     /**
      * {@inheritdoc}
      */

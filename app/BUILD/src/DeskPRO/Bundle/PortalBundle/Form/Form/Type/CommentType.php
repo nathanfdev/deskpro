@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -42,6 +44,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class CommentType.
+ */
 class CommentType extends AbstractType
 {
     /**
@@ -54,20 +59,29 @@ class CommentType extends AbstractType
      */
     private $language_manager;
 
+    /**
+     * Constructor.
+     *
+     * @param CaptchaDecider  $captcha_decider
+     * @param LanguageManager $language_manager
+     */
     public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
     {
         $this->captcha_decider  = $captcha_decider;
         $this->language_manager = $language_manager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('content_real', 'textarea', array(
+        $builder->add('content_real', 'textarea', [
             'label'       => $this->language_manager->phrase('portal.forms.label_comment'),
-            'constraints' => array(
-                new NotBlank(['message' => 'portal.forms.error_required']),
-            ),
-        ));
+            'constraints' => [
+                new NotBlank(),
+            ],
+        ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $comment = $event->getData();
@@ -75,19 +89,19 @@ class CommentType extends AbstractType
 
             // if this is a guest, ask for more information
             if ($comment->getPerson() instanceof PersonGuest) {
-                $form->add('name', 'text', array(
+                $form->add('name', 'text', [
                     'label'       => $this->language_manager->phrase('portal.forms.label_full_name'),
-                    'constraints' => array(
-                        new NotBlank(['message' => 'portal.forms.error_required']),
-                    ),
-                ));
-                $form->add('email', 'email', array(
+                    'constraints' => [
+                        new NotBlank(),
+                    ],
+                ]);
+                $form->add('email', 'email', [
                     'label'       => $this->language_manager->phrase('portal.forms.label_email'),
-                    'constraints' => array(
-                        new NotBlank(['message' => 'portal.forms.error_required']),
-                        new Email(['message' => 'portal.forms.error_email_invalid']),
-                    ),
-                ));
+                    'constraints' => [
+                        new NotBlank(),
+                        new Email(),
+                    ],
+                ]);
             }
 
             if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
@@ -96,25 +110,24 @@ class CommentType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
-        ));
-
-        $resolver->setRequired(array(
-            'person',
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'person' => 'Application\\DeskPRO\\Entity\\Person',
-        ));
+        $resolver
+            ->setDefaults([
+                'data_class' => 'Application\\DeskPRO\\Entity\\CommentAbstract',
+            ])
+            ->setRequired(['person'])
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
+        ;
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\Common\Collections\Collection;
@@ -81,7 +82,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
             $defId     = $customDef->getId();
 
             switch ($customDef->getType()) {
-                case 'choice':
+                case CustomDefAbstract::TYPE_CHOICE:
                     $choiceDef = $customData->field;
                     $choiceId  = $choiceDef->getId();
 
@@ -92,8 +93,8 @@ class CustomDataHandler implements SubscribingHandlerInterface
                     ];
                     break;
 
-                case 'date':
-                case 'datetime':
+                case CustomDefAbstract::TYPE_DATE:
+                case CustomDefAbstract::TYPE_DATETIME:
                     $value = $customData->getInput();
 
                     try {

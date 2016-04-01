@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as Serializer;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -65,7 +64,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property int $dim_h
  * @property \DateTime $date_created
  * @property bool $is_temp
- * @Serializer\ExclusionPolicy("ALL")
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -75,7 +73,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var int
-     * @Serializer\Expose()
      */
     protected $id = null;
 
@@ -368,8 +365,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Get the standard download URL for this blob.
-     *
-     * @Serializer\VirtualProperty
      *
      * @param bool $absolute
      *

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ class AssetsController extends AbstractApiController
      */
     public function listEditThemeSetAssetsAction()
     {
-        return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetAssets());
+        return $this->wrap($this->getAssetsManager()->getEditThemeSetAssets());
     }
 
     /**
@@ -60,7 +60,7 @@ class AssetsController extends AbstractApiController
      */
     public function uploadEditThemeSetAssetAction(Request $request)
     {
-        return $this->dataSerialize($this->getAssetsManager()->uploadEditThemeSetAsset($request->files->get('file')));
+        return $this->wrap($this->getAssetsManager()->uploadEditThemeSetAsset($request->files->get('file')));
     }
 
     /**
@@ -70,6 +70,6 @@ class AssetsController extends AbstractApiController
      */
     public function deleteEditThemeSetAssetAction(ThemeSetAsset $asset)
     {
-        return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
+        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
     }
 }

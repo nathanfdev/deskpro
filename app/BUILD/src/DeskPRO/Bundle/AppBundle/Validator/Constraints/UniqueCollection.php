@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -41,4 +42,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueCollection extends Constraint
 {
+    const NOT_UNIQUE = 'not_unique_collection';
+
+    public $message = 'One or more of the given values is not unique.';
 }

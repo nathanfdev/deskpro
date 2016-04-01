@@ -67,6 +67,7 @@ class ChatConversation extends DomainObject
      * The unique id of chat conversation.
      *
      * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -263,7 +264,9 @@ class ChatConversation extends DomainObject
      */
     protected $total_to_ended = 0;
 
-    /** Who ended the chat
+    /**
+     * Who ended the chat.
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
@@ -417,6 +420,30 @@ class ChatConversation extends DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Backward compatibility alias for id.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
+    public function getConversationId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("boolean")
+     *
+     * @return bool
+     */
+    public function getNeedValidateEmail()
+    {
+        return $this->getEmailValidationCode() && !$this->getEmailValidated();
     }
 
     /**
@@ -797,7 +824,6 @@ class ChatConversation extends DomainObject
      * Department identity which chat was assigned.
      *
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("department_id")
      * @JMS\Type("integer")
      *
      * @return int
@@ -809,6 +835,19 @@ class ChatConversation extends DomainObject
         }
 
         return 0;
+    }
+
+    /**
+     * Department name which chat was assigned.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     *
+     * @return string
+     */
+    public function getDepartmentName()
+    {
+        return $this->department ? $this->department->getFullTitle() : '';
     }
 
     public function getCreatedMessages()
@@ -826,7 +865,6 @@ class ChatConversation extends DomainObject
      *
      * @JMS\Type("string")
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("subject_line")
      *
      * @return string
      */

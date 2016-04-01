@@ -10,25 +10,26 @@ import { connect } from 'react-redux';
 
 export class TeamsListContainer extends Component {
   static propTypes = {
-    onChange: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     teams: PropTypes.object.isRequired,
     multiple: PropTypes.bool,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
-    selected: PropTypes.object
+    selected: PropTypes.number
   };
 
   render() {
-    const { selected, teams, onChange, filter, multiple, showOnlySelected } = this.props;
+    const { selected, teams, onClick, filter, multiple, showOnlySelected } = this.props;
 
     return (
       <CollectionField title="Team">
-        <AgentTeamsList values={teams}
+        <AgentTeamsList param="team"
+                        values={teams}
                         filter={filter}
                         selected={selected}
                         multiple={multiple}
                         showOnlySelected={showOnlySelected}
-                        onChange={onChange}/>
+                        onClick={onClick}/>
       </CollectionField>
     );
   }

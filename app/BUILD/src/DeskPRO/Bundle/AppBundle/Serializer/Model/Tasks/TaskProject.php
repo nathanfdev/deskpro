@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject as TaskProjectEntity;
 use JMS\Serializer\Annotation as JMS;
 
@@ -132,7 +131,7 @@ class TaskProject
             }
         }
 
-        /** @var Task[] $tasks */
+        /** @var \DeskPRO\Bundle\AppBundle\Entity\Task[] $tasks */
         $tasks = $entity->getTasks();
 
         $remaining = 0;

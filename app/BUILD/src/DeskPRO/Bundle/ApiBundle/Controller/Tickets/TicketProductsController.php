@@ -53,6 +53,4 @@ class TicketProductsController extends CrudController
     public static $exposeOnly   = ['list'];
     public static $entity       = Product::class;
     public static $listPaginate = false;
-
-    public static $serializeMethod = 'wrap';
 }

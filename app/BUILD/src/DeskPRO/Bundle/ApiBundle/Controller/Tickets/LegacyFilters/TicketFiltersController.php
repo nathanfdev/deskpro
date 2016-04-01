@@ -60,8 +60,6 @@ class TicketFiltersController extends CrudController
     public static $entity     = LegacyTicketFilter::class;
     public static $listOrder  = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @ApiDoc(
      *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",

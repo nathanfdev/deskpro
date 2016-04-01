@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Button } from './Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { SingleChoicePanel } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanel';
+import { SingleChoicePanelContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/SingleChoicePanelContainer';
 import { setMassActionsParams, resetParam } from '../../../../Application/Actions/massActions';
 import { ActionMenuContainer } from './ActionMenuContainer';
 import { MultipleActionChoiceContainer } from './MultipleActionChoiceContainer';
@@ -33,10 +33,10 @@ export class MassActionDropdown extends Component {
     const { currentParams } = this.props;
     if (item.type === 'set_action') {
       return (
-        <SingleChoicePanel item={item}
-                           currentParams={currentParams}
-                           setParams={setMassActionsParams}
-                           resetSingleAction={resetParam}/>
+        <SingleChoicePanelContainer item={item}
+                                    currentParams={currentParams}
+                                    setParams={setMassActionsParams}
+                                    resetSingleAction={resetParam}/>
       );
     } else if (item.type === 'select_action') {
       return (

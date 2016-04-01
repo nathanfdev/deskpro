@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -54,6 +55,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @AppAssert\ProjectMember()
  * @JMS\ExclusionPolicy("all")
+ *
+ * @UniqueEntity(fields={"project", "person"}, errorPath="person")
+ * @UniqueEntity(fields={"project", "team"}, errorPath="team")
+ * @UniqueEntity(fields={"project", "department"}, errorPath="department")
  */
 class ProjectMember implements EntityInterface, NotifyPropertyChanged
 {
@@ -164,8 +169,6 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      */
     public function setPerson(Person $person = null)
     {
-        $this->team       = null;
-        $this->department = null;
         $this->setModelField('person', $person);
     }
 
@@ -182,8 +185,6 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      */
     public function setTeam(Team $team = null)
     {
-        $this->department = null;
-        $this->person     = null;
         $this->setModelField('team', $team);
     }
 
@@ -200,8 +201,6 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
      */
     public function setDepartment(Department $department = null)
     {
-        $this->team   = null;
-        $this->person = null;
         $this->setModelField('department', $department);
     }
 }

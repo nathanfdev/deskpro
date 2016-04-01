@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,10 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
 use Application\DeskPRO\Entity\ClientMessage;
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -47,20 +49,20 @@ class ClientMessageListener implements EventSubscriberInterface
     private $em;
 
     /**
-     * @var DataSerializer
+     * @var Serializer
      */
-    private $data_serializer;
+    private $serializer;
 
     /**
      * Constructor.
      *
-     * @param EntityManager  $em
-     * @param DataSerializer $data_serializer
+     * @param EntityManager $em
+     * @param Serializer    $serializer
      */
-    public function __construct(EntityManager $em, DataSerializer $data_serializer)
+    public function __construct(EntityManager $em, Serializer $serializer)
     {
-        $this->em              = $em;
-        $this->data_serializer = $data_serializer;
+        $this->em         = $em;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -78,15 +80,18 @@ class ClientMessageListener implements EventSubscriberInterface
      */
     public function onSendMessage(ClientMessageEvent $event)
     {
+        //todo refactor
+        $context = new SideloadSerializationContext(new SideloadStore(), []);
+
         $data = $event->getData();
         if (is_object($data)) {
-            $data = $this->data_serializer->serialize($data)['data'];
+            $data = $this->serializer->toArray($data, $context);
         }
 
         $client_message = new ClientMessage();
         $client_message
             ->setChannel($event->getChannel())
-            ->setData($data)
+            ->setData($data ?: [])
             ->setCreatedByClient($event->getCreatedBy())
         ;
 

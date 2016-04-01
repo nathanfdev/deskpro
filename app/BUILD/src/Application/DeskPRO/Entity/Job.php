@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,9 @@
  */
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
@@ -57,8 +59,10 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property Job[]|null $child_jobs
  * @property Job|null $depends_on_job
  * @property $worker_id
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class Job extends \Application\DeskPRO\Domain\DomainObject
+class Job extends DomainObject
 {
     const STATUS_INSERTING  = 'inserting';
     const STATUS_WAITING    = 'waiting';
@@ -77,6 +81,11 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_CODE_INVALID_DATA = 'invalid_data'; // the job data (payload) was invalid in some way, or couldn't be processed
 
     /**
+     * The unique job id.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
@@ -84,12 +93,17 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The job type, used by the Job Router to find the right Job Processor.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $type;
 
     /**
      * The status of the job.
+     *
+     * @var string
      *
      * Should be one of the STATUS_* const's of this class:
      *
@@ -103,29 +117,43 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
      * delegated: The job has been delegated to an external job service.
      * aborted: The job was manually aborted/cancelled by the admin.
      *
-     * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $status;
 
     /**
-     * Any code to further classify the status. For example, 'error' might have a status_code with 'server_error'
+     * Any code to further classify the status.
+     *
+     * @var string
+     *
+     * For example, 'error' might have a status_code with 'server_error'
      * for an exception, or maybe 'expired' to mean that the job can't complete because necessary data is no longer
      * available.
      *
-     * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $status_code;
 
     /**
-     * Date the last time a process "touched" this ticket. We'll use this in processors to prevent supervisors from
-     * considering the job a timeout.
+     * Date the last time a process "touched" this ticket.
      *
      * @var \DateTime
+     *
+     * We'll use this in processors to prevent supervisors from
+     * considering the job a timeout.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_touch;
 
     /**
      * Date this job entered the "jobs" table.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -134,12 +162,18 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Last time we processed this job.
      *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_last_try;
 
     /**
      * If this DateTime is in the future, it won't be selected for execution.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */

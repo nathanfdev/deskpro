@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
@@ -89,7 +91,7 @@ class PersonRegistrationType extends AbstractType
                 'label'       => $this->language_manager->phrase('portal.forms.label_name'),
                 'required'    => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'portal.forms.error_required']),
+                    new NotBlank(),
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
@@ -109,13 +111,13 @@ class PersonRegistrationType extends AbstractType
                 'mapped'      => false,
                 'required'    => true,
                 'constraints' => [
-                    new NotBlank(['message' => 'portal.forms.error_required']),
+                    new NotBlank(),
                     new DpPassword(['person' => new PersonGuest()]),
                 ],
             ])
             ->add('timezone', 'timezone', [
                 'label' => $this->language_manager->phrase('portal.forms.label_timezone'),
-                ])
+            ])
         ;
 
         $field_manager   = $this->field_manager;
@@ -152,11 +154,11 @@ class PersonRegistrationType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => 'Application\DeskPRO\Entity\Person',
+                'data_class' => Person::class,
             ])
             ->setRequired(['settings'])
             ->setAllowedTypes([
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
+                'settings' => SettingsBag::class,
             ])
         ;
     }

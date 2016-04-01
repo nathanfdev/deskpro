@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -79,9 +79,9 @@ class DpAuthValidator extends ConstraintValidator
             $person            = $person_repository->findOneByEmail($email);
 
             if (!$person) {
-                $this->context->addViolationAt('email', 'No such account was found', [], $email, null, ApiErrors::BAD_CREDENTIALS);
+                $this->context->addViolationAt('email', 'No such account was found', [], $email, null, ErrorsCodes::BAD_CREDENTIALS);
             } else {
-                $this->context->addViolationAt('password', 'Looks like this isn\'t the correct password', [], $password, null, ApiErrors::BAD_CREDENTIALS);
+                $this->context->addViolationAt('password', 'Looks like this isn\'t the correct password', [], $password, null, ErrorsCodes::BAD_CREDENTIALS);
             }
         }
     }

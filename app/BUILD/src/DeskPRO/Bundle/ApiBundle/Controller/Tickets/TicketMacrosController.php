@@ -62,7 +62,6 @@ class TicketMacrosController extends CrudController
     public static $entity     = TicketMacro::class;
     public static $listOrder  = 'asc';
 
-    public static $serializeMethod = 'wrap';
     /**
      * Apply macro with given id to the specified ticket.
      *

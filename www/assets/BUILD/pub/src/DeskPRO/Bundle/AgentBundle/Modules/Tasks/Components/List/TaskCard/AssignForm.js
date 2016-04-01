@@ -23,38 +23,48 @@ export class AssignForm extends BaseForm {
     super(props);
 
     const localState = this.state;
-    const emptyObject = Immutable.fromJS({});
     const task = props.task;
-
+    let assign = {};
+    if (task.get('agents')) {
+      assign = { agent: task.get('agents').toArray()[0] };
+    } else if (task.get('teams')) {
+      assign = { team: task.get('teams').toArray()[0] };
+    } else if (task.get('departments')) {
+      assign = { department: task.get('departments').toArray()[0] };
+    }
     this.state = {
       ...localState,
-
-      agents: task.get('agents', emptyObject).toArray(),
-      agentTeams: task.get('teams', emptyObject).toArray(),
-      departments: task.get('departments', emptyObject).toArray()
+      assign: assign
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const task = nextProps.task;
-    const emptyObject = Immutable.fromJS({});
-
-    this.setState({
-      agents: task.get('agents', emptyObject).toArray(),
-      agentTeams: task.get('teams', emptyObject).toArray(),
-      departments: task.get('departments', emptyObject).toArray()
-    });
+    let assign = {};
+    if (task.get('agents')) {
+      assign = { agent: task.get('agents').toArray()[0] };
+    } else if (task.get('teams')) {
+      assign = { team: task.get('teams').toArray()[0] };
+    } else if (task.get('departments')) {
+      assign = { department: task.get('departments').toArray()[0] };
+    }
+    this.state = {
+      assign: assign
+    };
   }
+
+  onClick = (param, value, isActive)=> {
+    if (isActive) {
+      this.setState({ assign: {} });
+    } else {
+      this.setState({ assign: { [param]: value } });
+    }
+  };
 
   onSubmit = event => {
     event.preventDefault();
 
-    const submitData = Immutable.fromJS({
-      agents: this.state.agents,
-      teams: this.state.agentTeams,
-      departments: this.state.departments
-    });
-
+    const submitData = Immutable.fromJS(this.state.assign);
     this.props.onSubmit(submitData);
   };
 
@@ -78,16 +88,16 @@ export class AssignForm extends BaseForm {
             </FieldGroup>
 
             <FieldGroup>
-              <AgentsListContainer selected={this.state.agents}
+              <AgentsListContainer selected={this.state.assign.agent}
                                    filter={this.state.quickFilter}
                                    selfAssign={this.onAssignSelf}
-                                   onChange={this.onChange.bind(this, 'agents')}/>
-              <TeamsListContainer selected={this.state.teams}
+                                   onClick={this.onClick}/>
+              <TeamsListContainer selected={this.state.assign.team}
                                   filter={this.state.quickFilter}
-                                  onChange={this.onChange.bind(this, 'teams')}/>
-              <DepartmentsListContainer selected={this.state.departments}
+                                  onClick={this.onClick}/>
+              <DepartmentsListContainer selected={this.state.assign.department}
                                         filter={this.state.quickFilter}
-                                        onChange={this.onChange.bind(this, 'departments')}/>
+                                        onClick={this.onClick}/>
             </FieldGroup>
 
             <FieldGroup>

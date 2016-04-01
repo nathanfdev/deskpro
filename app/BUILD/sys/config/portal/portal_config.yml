@@ -12,16 +12,6 @@ parameters:
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
 
-app:
-  data_serializer:
-    types:
-        avatar:
-          classes:
-            - DeskPRO\Bundle\AppBundle\Content\Avatar
-        widget_person:
-          classes:
-            - Application\DeskPRO\Entity\Person
-
 framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }

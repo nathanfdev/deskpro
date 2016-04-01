@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -36,8 +35,16 @@ use Symfony\Component\Validator\Constraint;
  */
 class FreeEmail extends Constraint
 {
-    public $message = ApiErrors::DUPE_EMAIL;
+    const DUPE_EMAIL = 'dupe_email';
 
+    /**
+     * @var string
+     */
+    public $message = 'Email "{{ email }}" is already in use by other user.';
+
+    /**
+     * @var string
+     */
     public $property = 'email';
 
     /**

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -189,8 +188,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * Custom data.
+     *
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("custom_data")
+     * @JMS\Type("string")
      *
      * // FIXME: getCustomData is making $this->custom_data return a string from outside, which breaks FieldManager
      * // So I've renamed it 'X' so this can be reviewed.

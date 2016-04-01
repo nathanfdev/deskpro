@@ -57,8 +57,6 @@ class TicketFilterSetsController extends CrudController
     public static $type      = TicketFilterSetType::class;
     public static $listOrder = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @ApiDoc(
      *      description="Get the filters within a filter set",

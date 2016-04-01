@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -83,8 +84,8 @@ abstract class AbstractController extends BaseController
      */
     protected function createFormErrorsData(FormInterface $form)
     {
-        $generator = $this->get('api_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form);
+        $generator = $this->get('form_error.form_errors_generator');
+        $errors    = $generator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
 
         return $errors;
     }

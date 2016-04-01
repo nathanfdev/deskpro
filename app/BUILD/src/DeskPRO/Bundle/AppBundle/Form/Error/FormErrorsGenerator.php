@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Component\Form\FormError;
@@ -62,18 +63,19 @@ class FormErrorsGenerator
     }
 
     /**
+     * @param string        $codePrefix
      * @param FormInterface $form
      *
      * @return array
      */
-    public function generateFormErrors(FormInterface $form)
+    public function generateFormErrors(FormInterface $form, $codePrefix)
     {
         $errors = $list = [];
         foreach ($form->getErrors() as $error) {
             $code   = $this->getFormErrorCode($error);
             $list[] = [
                 'code'    => $code,
-                'message' => $this->error_message_factory->createFormErrorMessage($code, $error),
+                'message' => $this->error_message_factory->createFormErrorMessage($codePrefix, $code, $error),
             ];
         }
 
@@ -84,7 +86,7 @@ class FormErrorsGenerator
         $children = [];
         foreach ($form->all() as $child) {
             if ($child instanceof FormInterface) {
-                $child_errors = $this->generateFormErrors($child);
+                $child_errors = $this->generateFormErrors($child, $codePrefix);
                 if ($child_errors) {
                     $children[$child->getName()] = $child_errors;
                 }

@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormError;
@@ -45,7 +44,7 @@ use Symfony\Component\Validator\ConstraintViolation;
 class ValidatorErrorCodeFactory
 {
     public static $static_replacements = [
-        'This form should not contain extra fields.' => ApiErrors::EXTRA_FIELDS,
+        'This form should not contain extra fields.' => ErrorsCodes::EXTRA_FIELDS,
     ];
 
     /**
@@ -56,56 +55,52 @@ class ValidatorErrorCodeFactory
     public function getConstraintErrorCode(ConstraintViolation $violation)
     {
         if ($violation->getMessage() === 'This form should not contain extra fields.') {
-            return ApiErrors::EXTRA_FIELDS;
+            return ErrorsCodes::EXTRA_FIELDS;
         }
         if ($violation->getCause() instanceof TransformationFailedException) {
             if (preg_match('/The choice ".*" does not exist or is not unique/', $violation->getCause()->getMessage())) {
-                return ApiErrors::BAD_CHOICE;
+                return ErrorsCodes::BAD_CHOICE;
             }
 
-            return ApiErrors::INVALID_DATA_TYPE;
+            return ErrorsCodes::INVALID_DATA_TYPE;
         }
 
         $constraint = $violation->getConstraint();
         if ($constraint) {
             switch (get_class($constraint)) {
                 case Assert\NotNull::class:
-                    return ApiErrors::NOT_NULL;
+                    return ErrorsCodes::NOT_NULL;
                 case Assert\NotBlank::class:
-                    return ApiErrors::NOT_NULL;
+                    return ErrorsCodes::NOT_NULL;
                 case Assert\Type::class:
-                    return ApiErrors::INVALID_DATA_TYPE;
+                    return ErrorsCodes::INVALID_DATA_TYPE;
                 case Assert\Length::class:
                     return $violation->getCode() === Assert\Length::TOO_SHORT_ERROR
-                        ? ApiErrors::LENGTH_TOO_SHORT
-                        : ApiErrors::LENGTH_TOO_LONG;
+                        ? ErrorsCodes::LENGTH_TOO_SHORT
+                        : ErrorsCodes::LENGTH_TOO_LONG;
                 case Assert\Valid::class:
-                    return ApiErrors::INVALID_INPUT;
+                    return ErrorsCodes::INVALID_INPUT;
                 case Assert\Choice::class:
-                    return ApiErrors::BAD_CHOICE;
+                    return ErrorsCodes::BAD_CHOICE;
                 case Assert\Email::class:
-                    return ApiErrors::INVALID_EMAIL;
+                    return ErrorsCodes::INVALID_EMAIL;
                 case Assert\Count::class:
                     return $violation->getCode() === Assert\Count::TOO_FEW_ERROR
-                        ? ApiErrors::TOO_FEW_ELEMENTS
-                        : ApiErrors::TOO_MANY_ELEMENTS;
+                        ? ErrorsCodes::TOO_FEW_ELEMENTS
+                        : ErrorsCodes::TOO_MANY_ELEMENTS;
                 case Assert\Url::class:
-                    return ApiErrors::INVALID_URL;
-                case AppAssert\ProfileUrl::class:
-                    return ApiErrors::PROFILE_URL;
+                    return ErrorsCodes::INVALID_URL;
                 case UniqueEntity::class:
-                    return ApiErrors::UNIQUE_ENTITY;
-                case AppAssert\ProjectMember::class:
-                    return ApiErrors::EXACTLY_ONE_SHOULD_BE_SET;
+                    return ErrorsCodes::UNIQUE_ENTITY;
             }
         }
 
-        $code = $violation->getMessage();
+        $code = $violation->getCode() ?: $violation->getMessage();
         if ($code) {
             return $this->filterCode($code);
         }
 
-        return ApiErrors::CONSTRAINT_FALLBACK;
+        return ErrorsCodes::CONSTRAINT_FALLBACK;
     }
 
     /**
@@ -125,7 +120,7 @@ class ValidatorErrorCodeFactory
             return $this->filterCode($code);
         }
 
-        return ApiErrors::CONSTRAINT_FALLBACK;
+        return ErrorsCodes::CONSTRAINT_FALLBACK;
     }
 
     /**

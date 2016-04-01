@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,18 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
+/**
+ * Class PrimaryKeyExists.
+ */
 class PrimaryKeyExists extends Constraint
 {
+    const RESOURCE_NOT_FOUND = 'resource_not_found';
+
     /**
      * The table name.
      *
@@ -49,11 +55,22 @@ class PrimaryKeyExists extends Constraint
      */
     public $excluded_values;
 
+    /**
+     * @var string
+     */
+    public $message = 'The value was not found.';
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOption()
     {
         return 'table';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validatedBy()
     {
         return 'primary_key_exists_validator';

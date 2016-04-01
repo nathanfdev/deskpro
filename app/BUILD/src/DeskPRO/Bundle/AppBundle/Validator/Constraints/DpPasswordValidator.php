@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,11 +44,19 @@ class DpPasswordValidator extends ConstraintValidator
      */
     private $pw_validator;
 
+    /**
+     * Constructor.
+     *
+     * @param PasswordPolicyValidator $pw_validator
+     */
     public function __construct(PasswordPolicyValidator $pw_validator)
     {
         $this->pw_validator = $pw_validator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof DpPassword) {

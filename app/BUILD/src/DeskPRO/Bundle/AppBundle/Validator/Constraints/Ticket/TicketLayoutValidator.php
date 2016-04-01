@@ -274,9 +274,9 @@ class TicketLayoutValidator extends ConstraintValidator
         if ($custom_def instanceof CustomDefTicket) {
             return $ticket->getCustomData();
         } elseif ($custom_def instanceof CustomDefPerson && $ticket->getPerson()) {
-            return $ticket->getPerson()->getContactData();
+            return $ticket->getPerson()->getCustomData();
         } elseif ($custom_def instanceof CustomDefOrganization && $ticket->getOrganization()) {
-            return $ticket->getOrganization()->getContactData();
+            return $ticket->getOrganization()->getCustomData();
         }
 
         return new ArrayCollection();

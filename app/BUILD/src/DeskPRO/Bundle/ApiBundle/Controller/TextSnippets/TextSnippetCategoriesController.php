@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,18 +29,18 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -49,7 +49,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TextSnippetCategoriesController.
  *
  * @ApiModes("all")
- * @Route("/{context}_snippet_categories", requirements={"context"="(ticket|chat)"})
+ * @ApiDocSection("Text snippets")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory")
+ * @Rest\Route("/{context}_snippet_categories", requirements={"context"="(ticket|chat)"})
  */
 class TextSnippetCategoriesController extends CrudController
 {
@@ -62,8 +64,14 @@ class TextSnippetCategoriesController extends CrudController
 
     /**
      * @ApiDoc(
-     *      description="Get the snippets within a category",
+     *      description="get the snippets within a category",
      *      requirements={
+     *          {
+     *              "name"="snippet",
+     *              "requirement"="ticket|chat",
+     *              "description"="the context of the category",
+     *              "dataType"="string"
+     *          },
      *          {
      *              "name"="id",
      *              "requirement"="\d+",
@@ -73,11 +81,11 @@ class TextSnippetCategoriesController extends CrudController
      *      },
      *      statusCodes={
      *          200="Success",
-     *          404="Not Found"
+     *          404="We can't find such snippet category or context is wrong"
      *      },
-     *      output="Application\DeskPRO\Entity\TextSnippet"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet>"
      * )
-     * @Get("/{id}/snippets")
+     * @Rest\Get("/{id}/snippets")
      *
      * @param Request $request
      * @param int     $id
