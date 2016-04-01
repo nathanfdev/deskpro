@@ -192,7 +192,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'Obecny czas według czasu z twojego profilu',
     'agent.general.date'                                    => 'Data',
     'agent.general.date_archived'                           => 'Data Archiwizacji',
-    'agent.general.date_closed'                             => 'Data Archiwizacji',
     'agent.general.date_completed'                          => 'Data Archiwizacji',
     'agent.general.date_created'                            => 'Data Utworzenia',
     'agent.general.date_created_newestoldest'               => 'Data utworzenia (najnowsze-najstarsze)',

@@ -186,7 +186,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'Aktuálny čas podľa Vášho profilu',
     'agent.general.date'                                    => 'Schôdza',
     'agent.general.date_archived'                           => 'Schôdza uzavretá',
-    'agent.general.date_closed'                             => 'Schôdza uzavretá',
     'agent.general.date_completed'                          => 'Schôdza dokončená',
     'agent.general.date_created'                            => 'Schôdza vytvorená',
     'agent.general.date_created_newestoldest'               => 'Schôdza vytvorená (najnovšia-najstaršia)',

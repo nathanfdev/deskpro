@@ -52,7 +52,6 @@ return array(
     'agent.feedback.status_hidden'               => 'Skryté',
     'agent.feedback.status_new'                  => 'Nové',
     'agent.feedback.status_spam'                 => 'Spam',
-    'agent.feedback.status_validating'           => 'Potvrdzuje sa',
     'agent.feedback.top_voted_on_top'            => 'Najviac hodnotené na vrchu',
     'agent.feedback.update_filter'               => 'Aktualizovať filter',
     'agent.feedback.user_submitted_new_feedback' => '{{name}} potvrdil novú spätnú väzbu',

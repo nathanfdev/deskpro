@@ -190,7 +190,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'L\'heure actuelle selon votre profil',
     'agent.general.date'                                    => 'Date',
     'agent.general.date_archived'                           => 'Date d\'archivage',
-    'agent.general.date_closed'                             => 'Date d\'archivage',
     'agent.general.date_completed'                          => 'Date de résolution',
     'agent.general.date_created'                            => 'Date de création',
     'agent.general.date_created_newestoldest'               => 'Date de création (du plus récent au plus ancien)',

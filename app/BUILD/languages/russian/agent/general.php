@@ -186,7 +186,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'Текущее время, установленное в профиле',
     'agent.general.date'                                    => 'Дата',
     'agent.general.date_archived'                           => 'Дата архивирования',
-    'agent.general.date_closed'                             => 'Дата архивирования',
     'agent.general.date_completed'                          => 'Дата окончания',
     'agent.general.date_created'                            => 'Дата создания',
     'agent.general.date_created_newestoldest'               => 'Дата создания (от новых к старым)',

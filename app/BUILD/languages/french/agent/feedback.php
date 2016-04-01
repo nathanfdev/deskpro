@@ -52,7 +52,6 @@ return array(
     'agent.feedback.status_hidden'               => 'Caché',
     'agent.feedback.status_new'                  => 'Nouveau',
     'agent.feedback.status_spam'                 => 'Spam',
-    'agent.feedback.status_validating'           => 'En cours de validation',
     'agent.feedback.top_voted_on_top'            => 'Les mieux votés d\'abord',
     'agent.feedback.update_filter'               => 'Mettre à jour filtre',
     'agent.feedback.user_submitted_new_feedback' => '{{name}} a déposé un nouveau feedback',

@@ -81,7 +81,6 @@ return array(
     'agent.settings.notif_new_feedback'               => 'Novo podaná spätná väzba',
     'agent.settings.notif_new_feedback_validate'      => 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie',
     'agent.settings.notif_new_user'                   => 'Nový užívateľ registrovaný',
-    'agent.settings.notif_new_user_validate'          => 'Nový užívateľ je registrovaný a čaká na overenie',
     'agent.settings.notif_notes_with_mentions'        => 'Poznámky so @zmienkou',
     'agent.settings.notif_notes_with_mentions_always' => 'Vždy e-mailovať a zasielať správu konverzácie',
     'agent.settings.notif_notes_with_mentions_opt'    => 'Ako chcete byť informovaný keď Vás operátor spomenie v poznámke tiketu?',

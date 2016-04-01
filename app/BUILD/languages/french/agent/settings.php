@@ -81,7 +81,6 @@ return array(
     'agent.settings.notif_new_feedback'               => 'Nouveau feedback soumis',
     'agent.settings.notif_new_feedback_validate'      => 'Nouveau feedback soumis à valider',
     'agent.settings.notif_new_user'                   => 'Un nouvel utilisateur enregistré',
-    'agent.settings.notif_new_user_validate'          => 'Un nouvel utilisateur enregistré et requiert une validation',
     'agent.settings.notif_notes_with_mentions'        => 'Notes avec @mentions',
     'agent.settings.notif_notes_with_mentions_always' => 'Toujours envoyer un email et un message via le chat Agent',
     'agent.settings.notif_notes_with_mentions_opt'    => 'Comment souhaitez-vous être notifié quand un agent vous mentionne dans une note?',

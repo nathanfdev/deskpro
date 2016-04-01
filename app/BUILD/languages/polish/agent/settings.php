@@ -81,7 +81,6 @@ return array(
     'agent.settings.notif_new_feedback'               => 'Dodano nową informację zwrotną',
     'agent.settings.notif_new_feedback_validate'      => 'Dodano nową informację zwrotną wymagającą akceptacji',
     'agent.settings.notif_new_user'                   => 'Nowy użytkownik się zarejestrował',
-    'agent.settings.notif_new_user_validate'          => 'Nowy użytkownik się zarejestrował i wymaga akceptacji',
     'agent.settings.notif_notes_with_mentions'        => 'Notatki z @wzmiankami',
     'agent.settings.notif_notes_with_mentions_always' => 'Zawsze wysyłając email, wyślij wiadomość poprzez IM Agenta',
     'agent.settings.notif_notes_with_mentions_opt'    => 'Jak chcesz być powiadamiany, kiedy agent wspomina o tobie w notatce do zgłoszenia?',

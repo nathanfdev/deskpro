@@ -52,7 +52,6 @@ return array(
     'agent.feedback.status_hidden'               => 'Ukryte',
     'agent.feedback.status_new'                  => 'Nowe',
     'agent.feedback.status_spam'                 => 'Spam',
-    'agent.feedback.status_validating'           => 'Ocenianie',
     'agent.feedback.top_voted_on_top'            => 'Najlepiej ocenione na górze',
     'agent.feedback.update_filter'               => 'Aktualizuj Filtr',
     'agent.feedback.user_submitted_new_feedback' => '{{name}} zamieścił nową informację zwrotną',

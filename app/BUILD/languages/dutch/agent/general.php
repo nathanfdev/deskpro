@@ -112,7 +112,6 @@ return array(
     'agent.general.current_page'               => 'Huidige pagina',
     'agent.general.date'                       => 'Datum',
     'agent.general.date_archived'              => 'Datum gearchiveerd',
-    'agent.general.date_closed'                => 'Datum gearchiveerd',
     'agent.general.date_completed'             => 'Datum voltooid',
     'agent.general.date_created'               => 'Datum aangemaakt',
     'agent.general.date_created_newestoldest'  => 'Datum aangemaakt (nieuwste-oudste)',
