@@ -705,9 +705,9 @@ class Task implements EntityInterface
     /**
      * Remove subtask
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskSubtask $subtask
+     * @param TaskSubtask $subtask
      */
-    public function removeSubtask(\DeskPRO\Bundle\AppBundle\Entity\TaskSubtask $subtask)
+    public function removeSubtask(TaskSubtask $subtask)
     {
         $this->subtasks->removeElement($subtask);
     }
@@ -715,9 +715,9 @@ class Task implements EntityInterface
     /**
      * Remove comment
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskComment $comment
+     * @param TaskComment $comment
      */
-    public function removeComment(\DeskPRO\Bundle\AppBundle\Entity\TaskComment $comment)
+    public function removeComment(TaskComment $comment)
     {
         $this->comments->removeElement($comment);
     }
@@ -725,9 +725,9 @@ class Task implements EntityInterface
     /**
      * Remove attachment
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskAttachment $attachment
+     * @param TaskAttachment $attachment
      */
-    public function removeAttachment(\DeskPRO\Bundle\AppBundle\Entity\TaskAttachment $attachment)
+    public function removeAttachment(TaskAttachment $attachment)
     {
         $this->attachments->removeElement($attachment);
     }
@@ -735,9 +735,9 @@ class Task implements EntityInterface
     /**
      * Remove linkedArticle
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle $linkedArticle
+     * @param TaskLinkedArticle $linkedArticle
      */
-    public function removeLinkedArticle(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle $linkedArticle)
+    public function removeLinkedArticle(TaskLinkedArticle $linkedArticle)
     {
         $this->linked_articles->removeElement($linkedArticle);
     }
@@ -745,9 +745,9 @@ class Task implements EntityInterface
     /**
      * Remove linkedChat
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat $linkedChat
+     * @param TaskLinkedChat $linkedChat
      */
-    public function removeLinkedChat(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat $linkedChat)
+    public function removeLinkedChat(TaskLinkedChat $linkedChat)
     {
         $this->linked_chats->removeElement($linkedChat);
     }
@@ -755,9 +755,9 @@ class Task implements EntityInterface
     /**
      * Remove linkedTicket
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket
+     * @param TaskLinkedTicket $linkedTicket
      */
-    public function removeLinkedTicket(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket)
+    public function removeLinkedTicket(TaskLinkedTicket $linkedTicket)
     {
         $this->linked_tickets->removeElement($linkedTicket);
     }
@@ -905,11 +905,11 @@ class Task implements EntityInterface
     /**
      * Set creator
      *
-     * @param \Application\DeskPRO\Entity\Person $creator
+     * @param Person $creator
      *
      * @return Task
      */
-    public function setCreator(\Application\DeskPRO\Entity\Person $creator = null)
+    public function setCreator(Person $creator = null)
     {
         $this->creator = $creator;
 
@@ -919,11 +919,11 @@ class Task implements EntityInterface
     /**
      * Set project
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskProject $project
+     * @param TaskProject $project
      *
      * @return Task
      */
-    public function setProject(\DeskPRO\Bundle\AppBundle\Entity\TaskProject $project = null)
+    public function setProject(TaskProject $project = null)
     {
         $this->project = $project;
 
@@ -933,11 +933,11 @@ class Task implements EntityInterface
     /**
      * Set list
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskList $list
+     * @param TaskList $list
      *
      * @return Task
      */
-    public function setList(\DeskPRO\Bundle\AppBundle\Entity\TaskList $list = null)
+    public function setList(TaskList $list = null)
     {
         $this->list = $list;
 
@@ -947,11 +947,11 @@ class Task implements EntityInterface
     /**
      * Add subtask
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskSubtask $subtask
+     * @param TaskSubtask $subtask
      *
      * @return Task
      */
-    public function addSubtask(\DeskPRO\Bundle\AppBundle\Entity\TaskSubtask $subtask)
+    public function addSubtask(TaskSubtask $subtask)
     {
         $this->subtasks[] = $subtask;
 
@@ -961,11 +961,11 @@ class Task implements EntityInterface
     /**
      * Add label
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\LabelTask $label
+     * @param LabelTask $label
      *
      * @return Task
      */
-    public function addLabel(\DeskPRO\Bundle\AppBundle\Entity\LabelTask $label)
+    public function addLabel(LabelTask $label)
     {
         $this->labels[] = $label;
 
@@ -975,9 +975,9 @@ class Task implements EntityInterface
     /**
      * Remove label
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\LabelTask $label
+     * @param LabelTask $label
      */
-    public function removeLabel(\DeskPRO\Bundle\AppBundle\Entity\LabelTask $label)
+    public function removeLabel(LabelTask $label)
     {
         $this->labels->removeElement($label);
     }
@@ -985,11 +985,11 @@ class Task implements EntityInterface
     /**
      * Add comment
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskComment $comment
+     * @param TaskComment $comment
      *
      * @return Task
      */
-    public function addComment(\DeskPRO\Bundle\AppBundle\Entity\TaskComment $comment)
+    public function addComment(TaskComment $comment)
     {
         $this->comments[] = $comment;
 
@@ -999,11 +999,11 @@ class Task implements EntityInterface
     /**
      * Add attachment
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskAttachment $attachment
+     * @param TaskAttachment $attachment
      *
      * @return Task
      */
-    public function addAttachment(\DeskPRO\Bundle\AppBundle\Entity\TaskAttachment $attachment)
+    public function addAttachment(TaskAttachment $attachment)
     {
         $this->attachments[] = $attachment;
 
@@ -1013,11 +1013,11 @@ class Task implements EntityInterface
     /**
      * Add linkedArticle
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle $linkedArticle
+     * @param TaskLinkedArticle $linkedArticle
      *
      * @return Task
      */
-    public function addLinkedArticle(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle $linkedArticle)
+    public function addLinkedArticle(TaskLinkedArticle $linkedArticle)
     {
         $this->linked_articles[] = $linkedArticle;
 
@@ -1027,11 +1027,11 @@ class Task implements EntityInterface
     /**
      * Add linkedChat
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat $linkedChat
+     * @param TaskLinkedChat $linkedChat
      *
      * @return Task
      */
-    public function addLinkedChat(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat $linkedChat)
+    public function addLinkedChat(TaskLinkedChat $linkedChat)
     {
         $this->linked_chats[] = $linkedChat;
 
@@ -1041,11 +1041,11 @@ class Task implements EntityInterface
     /**
      * Add linkedTicket
      *
-     * @param \DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket
+     * @param TaskLinkedTicket $linkedTicket
      *
      * @return Task
      */
-    public function addLinkedTicket(\DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket $linkedTicket)
+    public function addLinkedTicket(TaskLinkedTicket $linkedTicket)
     {
         $this->linked_tickets[] = $linkedTicket;
 
