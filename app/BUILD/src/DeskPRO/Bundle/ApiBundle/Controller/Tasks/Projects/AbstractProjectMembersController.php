@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -55,11 +54,10 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractProjectMembersController extends CrudSubController
 {
-    public static $entity          = ProjectMember::class;
-    public static $type            = ProjectMemberType::class;
-    public static $parentProperty  = 'project';
-    public static $exposeOnly      = ['get', 'list', 'post', 'delete'];
-    public static $serializeMethod = 'wrap';
+    public static $entity         = ProjectMember::class;
+    public static $type           = ProjectMemberType::class;
+    public static $parentProperty = 'project';
+    public static $exposeOnly     = ['get', 'list', 'post', 'delete'];
 
     /**
      * Fetch tasks list for project member.

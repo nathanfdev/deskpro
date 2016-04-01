@@ -38,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -47,16 +47,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class NewAgentChatMessageGenerator extends AbstractGenerator
 {
     /**
-     * @var SerializerInterface
+     * @var Serializer
      */
     protected $serializer;
 
     /**
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
-     * @param SerializerInterface   $serializer
+     * @param Serializer            $serializer
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, SerializerInterface $serializer)
+    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, Serializer $serializer)
     {
         parent::__construct($em, $token_storage);
         $this->serializer = $serializer;
@@ -132,7 +132,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     private function extractData(AgentChatMessage $message, NewMessageEvent $event)
     {
         $context = new SideloadSerializationContext(new SideloadStore(), []);
-        $data    = json_decode($this->serializer->serialize($message, 'json', $context), true);
+        $data    = $this->serializer->toArray($message, $context);
 
         return $data;
     }

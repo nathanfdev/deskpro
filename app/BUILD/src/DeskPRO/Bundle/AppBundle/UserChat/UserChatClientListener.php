@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\UserChat;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -43,16 +43,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class UserChatClientListener implements EventSubscriberInterface
 {
     /**
-     * @var SerializerInterface
+     * @var Serializer
      */
     private $serializer;
 
     /**
      * Constructor.
      *
-     * @param SerializerInterface $serializer
+     * @param Serializer $serializer
      */
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(Serializer $serializer)
     {
         $this->serializer = $serializer;
     }
@@ -188,9 +188,8 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     protected function getInfo(UserChatEvent $event)
     {
-        //todo refactor
         $context = new SideloadSerializationContext(new SideloadStore(), []);
-        $data    = json_decode($this->serializer->serialize($event->getConversation(), 'json', $context), true);
+        $data    = $this->serializer->toArray($event->getConversation(), $context);
 
         return $data;
     }

@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -49,17 +49,17 @@ class ClientMessageListener implements EventSubscriberInterface
     private $em;
 
     /**
-     * @var SerializerInterface
+     * @var Serializer
      */
     private $serializer;
 
     /**
      * Constructor.
      *
-     * @param EntityManager       $em
-     * @param SerializerInterface $serializer
+     * @param EntityManager $em
+     * @param Serializer    $serializer
      */
-    public function __construct(EntityManager $em, SerializerInterface $serializer)
+    public function __construct(EntityManager $em, Serializer $serializer)
     {
         $this->em         = $em;
         $this->serializer = $serializer;
@@ -85,7 +85,7 @@ class ClientMessageListener implements EventSubscriberInterface
 
         $data = $event->getData();
         if (is_object($data)) {
-            $data = json_decode($this->serializer->serialize($data, 'json', $context), true);
+            $data = $this->serializer->toArray($data, $context);
         }
 
         $client_message = new ClientMessage();
