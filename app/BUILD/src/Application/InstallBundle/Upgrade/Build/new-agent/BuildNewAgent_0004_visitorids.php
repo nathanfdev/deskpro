@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,6 +52,8 @@ class BuildNewAgent_0004_visitorids extends AbstractBuild
             'sessions',
         ];
 
+        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 0');
+
         foreach ($tables as $t) {
             $instructions = [];
             if ($fk = $sh->findForeignKey($t, 'visitor_id', 'visitors', 'id')) {
@@ -63,10 +65,12 @@ class BuildNewAgent_0004_visitorids extends AbstractBuild
 
             $instructions[] = 'DROP visitor_id, ADD visitor_id VARCHAR(120) NULL DEFAULT NULL';
 
-            $this->execSlowAlterTable($t, implode(', ', $instructions));
+            $sql = "ALTER TABLE $t ".implode(', ', $instructions);
+            $this->execDbQuery('default', $sql);
         }
+
+        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 1');
     }
 }
 
 //[[build:1456790404]]
-

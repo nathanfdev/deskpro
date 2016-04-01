@@ -448,6 +448,10 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
             $output->writeln("<info>$bid -> $new_bid</info>");
 
+            if (!is_dir(dirname($new_file))) {
+                mkdir(dirname($new_file));
+            }
+
             rename($file, $new_file);
             $output->writeln("\tOld Path: $file");
             $output->writeln("\tNew Path: $new_file");

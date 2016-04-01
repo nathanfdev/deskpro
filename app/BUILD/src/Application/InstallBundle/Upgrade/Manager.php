@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 use Orb\Util\Arrays;
@@ -114,6 +116,10 @@ class Manager
     {
         $class = $this->getBuildClass($build_id);
         $build = new $class($this->container, $this->logger);
+        $ts    = microtime(true);
+        if ($this->logger) {
+            $this->logger->info(sprintf('********** #%s :: %s :: Begin **********', $build_id, TypeUtils::getBaseTypeName($build)));
+        }
 
         try {
             $build->run();
@@ -143,6 +149,11 @@ class Manager
             $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', array(
                 'up.'.$build->getBuildId().'.%',
             ));
+        }
+
+        if ($this->logger) {
+            $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $build_id, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
+            $this->logger->info('');
         }
     }
 

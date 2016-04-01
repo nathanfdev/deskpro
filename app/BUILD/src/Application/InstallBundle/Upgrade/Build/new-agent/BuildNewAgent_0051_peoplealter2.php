@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,9 +36,8 @@ class BuildNewAgent_0051_peoplealter2 extends AbstractBuild
 {
     public function run()
     {
-        $this->execSlowAlterTable('people_emails', 'DROP is_own_validated');
+        $this->execDbQuery('default', 'ALTER TABLE people_emails DROP is_own_validated');
     }
 }
 
 //[[build:1456790413]]
-

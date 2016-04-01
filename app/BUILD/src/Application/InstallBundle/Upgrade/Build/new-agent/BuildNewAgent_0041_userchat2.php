@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,9 +36,8 @@ class BuildNewAgent_0041_userchat2 extends AbstractBuild
 {
     public function run()
     {
-        $this->execSlowAlterTable('chat_messages', 'ADD is_user TINYINT(1) NOT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE chat_messages ADD is_user TINYINT(1) NOT NULL DEFAULT 0');
     }
 }
 
 //[[build:1456790411]]
-

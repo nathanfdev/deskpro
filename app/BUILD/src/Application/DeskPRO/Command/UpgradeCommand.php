@@ -178,7 +178,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         chdir(DP_APP_DIR);
 
         while ($next_id = $manager->getNextBuildId()) {
-            $logger->info("Build #$next_id");
+            $logger->debug("Build #$next_id");
 
             $cmd = dp_get_php_command('bin/console', "dp:upgrade --dobuildrun=$next_id");
             $logger->debug("Command: $cmd");

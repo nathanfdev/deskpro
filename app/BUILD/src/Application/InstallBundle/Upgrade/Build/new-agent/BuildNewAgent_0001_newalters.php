@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,9 @@ class BuildNewAgent_0001_newalters extends AbstractBuild
         $this->out('Running alters on new tables');
 
         $this->execMutateSql('ALTER TABLE articles_slug_history ADD CONSTRAINT FK_566C19837294869C FOREIGN KEY (article_id) REFERENCES articles (id) ON DELETE CASCADE');
+        $this->execMutateSql('ALTER TABLE api_keys_actions ADD CONSTRAINT FK_DEAC73078BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
+        $this->execMutateSql('ALTER TABLE api_key_limits ADD CONSTRAINT FK_9A50A5F68BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
+        $this->execMutateSql('ALTER TABLE api_log ADD CONSTRAINT FK_CCBD2EF18BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE brands ADD CONSTRAINT FK_7EA24434C0C33964 FOREIGN KEY (theme_set_id) REFERENCES theme_sets (id), ADD CONSTRAINT FK_7EA24434F1B7F8A2 FOREIGN KEY (edit_theme_set_id) REFERENCES theme_sets (id)');
         $this->execMutateSql('ALTER TABLE settings_brand ADD CONSTRAINT FK_A48BBF1144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE downloads_slug_history ADD CONSTRAINT FK_F670233AC667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id) ON DELETE CASCADE');
@@ -71,8 +74,9 @@ class BuildNewAgent_0001_newalters extends AbstractBuild
         $this->execMutateSql('ALTER TABLE ticket_filter_sets ADD CONSTRAINT FK_902724D7217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE filter_set_agents ADD CONSTRAINT FK_EFBEEBF63DD05366 FOREIGN KEY (filter_set_id) REFERENCES ticket_filter_sets (id) ON DELETE CASCADE, ADD CONSTRAINT FK_EFBEEBF6217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE ticket_filter_views ADD CONSTRAINT FK_F89793D3D395B25E FOREIGN KEY (filter_id) REFERENCES custom_ticket_filters (id), ADD CONSTRAINT FK_F89793D3217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)');
+
+        $this->execDbQuery('system', 'ALTER TABLE system_alerts_incident_events ADD CONSTRAINT FK_AA906E6D59E53FB9 FOREIGN KEY (incident_id) REFERENCES system_alerts_incidents (id) ON DELETE CASCADE, ADD CONSTRAINT FK_AA906E6D71F7E88B FOREIGN KEY (event_id) REFERENCES system_alerts_events (id) ON DELETE CASCADE');
     }
 }
 
 //[[build:1456790401]]
-
