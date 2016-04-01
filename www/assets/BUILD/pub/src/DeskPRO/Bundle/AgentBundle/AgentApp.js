@@ -70,8 +70,8 @@ export class AgentApp {
       ampMiddleware.actionThunkMiddleware,
       ampMiddleware.redispatchDsaPayload,
       ampMiddleware.guidMiddleware,
-      ampMiddleware.promiseMiddleware
-      ,ampMiddleware.loggerMiddleware
+      ampMiddleware.promiseMiddleware,
+      ampMiddleware.loggerMiddleware
     );
     const makeStore = compose(middleware)(createStore);
 
