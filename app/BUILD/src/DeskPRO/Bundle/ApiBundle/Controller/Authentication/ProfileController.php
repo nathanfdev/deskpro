@@ -92,7 +92,8 @@ class ProfileController extends BaseController
     public function putAction(Request $request)
     {
         $person = $this->getUser();
-        $form   = $this->get('form.factory')->createNamedBuilder(null, PersonProfileType::class, $person)->getForm();
+        $form   = $this->createForm(PersonProfileType::class, $person);
+
         $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
