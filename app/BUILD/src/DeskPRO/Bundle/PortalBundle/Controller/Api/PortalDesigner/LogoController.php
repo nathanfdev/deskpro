@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,7 +49,7 @@ class LogoController extends AbstractApiController
      */
     public function uploadLogoAction(Request $request)
     {
-        return $this->dataSerialize($this->getAssetsManager()->uploadLogo($request->files->get('file')));
+        return $this->wrap($this->getAssetsManager()->uploadLogo($request->files->get('file')));
     }
 
     /**
@@ -58,7 +58,7 @@ class LogoController extends AbstractApiController
      */
     public function getCustomLogoUrlAction()
     {
-        return $this->dataSerialize($this->getAssetsManager()->getEditThemeSetLogoAsset());
+        return $this->wrap($this->getAssetsManager()->getEditThemeSetLogoAsset());
     }
 
     /**
@@ -67,7 +67,7 @@ class LogoController extends AbstractApiController
      */
     public function deleteEditThemeSetLogoAssetAction()
     {
-        return $this->dataSerialize($this->getAssetsManager()->deleteEditThemeSetAsset(
+        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset(
             $this->getAssetsManager()->getEditThemeSetLogoAsset()
         ));
     }

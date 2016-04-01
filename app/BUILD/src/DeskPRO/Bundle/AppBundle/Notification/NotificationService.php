@@ -31,8 +31,8 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Notification\NotificationClient;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Notification\NotificationConfiguration;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use Doctrine\ORM\EntityManager;
 
 /**

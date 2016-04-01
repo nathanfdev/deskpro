@@ -64,9 +64,6 @@ abstract class CrudController extends BaseController
      */
     public static $exposeOnly = null;
 
-    // this used only for moving period
-    public static $serializeMethod = 'dataSerialize';
-
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
      */
@@ -112,7 +109,7 @@ abstract class CrudController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->{static::$serializeMethod}($entity), Response::HTTP_OK);
+        return View::create($this->wrap($entity), Response::HTTP_OK);
     }
 
     /**
@@ -187,7 +184,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->{static::$serializeMethod}($result), Response::HTTP_OK);
+        return View::create($this->wrap($result), Response::HTTP_OK);
     }
 
     /**
@@ -329,6 +326,7 @@ abstract class CrudController extends BaseController
         }
 
         $qb->orderBy($alias.'.'.$sort, $order);
+        $qb->orderBy($alias.'.id', $order);
     }
 
     /**
@@ -411,7 +409,7 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        return View::create($this->{static::$serializeMethod}($this->persistModel($model)), $status);
+        return View::create($this->wrap($this->persistModel($model)), $status);
     }
 
     /**

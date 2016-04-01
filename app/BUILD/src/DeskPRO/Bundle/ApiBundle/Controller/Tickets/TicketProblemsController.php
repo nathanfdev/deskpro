@@ -58,7 +58,6 @@ class TicketProblemsController extends CrudController
     public static $type     = ProblemType::class;
     public static $listSort = 'created';
 
-    public static $serializeMethod = 'wrap';
     /**
      * @ApiDoc(
      *     section="Tickets",

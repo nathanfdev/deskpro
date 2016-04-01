@@ -57,8 +57,6 @@ class TicketDepartmentsController extends CrudController
     public static $type      = DepartmentType::class;
     public static $listOrder = 'asc';
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @ApiDoc(
      *     section="Departments",

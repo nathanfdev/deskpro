@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -49,15 +50,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 abstract class AbstractApiController extends FOSRestController
 {
-    /**
-     * @param mixed  $data
-     * @param string $type
-     *
-     * @return array
-     */
-    protected function dataSerialize($data, $type = null)
+    protected function wrap($data)
     {
-        return $this->get('data_serializer')->serialize($data, null, null, $type);
+        return new ApiWrapper($data);
     }
 
     /**

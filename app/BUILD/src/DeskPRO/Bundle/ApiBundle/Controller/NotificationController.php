@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -142,7 +141,7 @@ class NotificationController extends BaseController
         $this->doHeartbeat($request);
 
         return View::create(
-            [],
+            null,
             Response::HTTP_ACCEPTED
         );
     }

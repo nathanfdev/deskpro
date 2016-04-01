@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -49,47 +47,55 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
+     *
+     * @var int
      */
     protected $id = null;
     /**
-     * @var string
      * @ORM\Column(type="string")
+     *
      * @Assert\NotNull()
+     *
+     * @var string
      */
     protected $name;
 
     /**
-     * @var array
      * @ORM\Column(type="simple_array")
+     *
      * @Assert\NotNull()
+     *
+     * @var array
      */
     protected $tags = array();
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSet")
      * @ORM\JoinColumn(name="theme_set_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @var \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
      */
     protected $theme_set;
 
     /**
-     * @var \Application\DeskPRO\Entity\Blob
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", fetch="EAGER")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @var \Application\DeskPRO\Entity\Blob
      */
     protected $blob;
 
     /**
-     * @var \DateTime
      * @ORM\Column(name="date_created", type="datetime")
-     * @Serializer\Expose()
+     *
+     * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * @var \DateTime
      * @ORM\Column(name="date_updated", type="datetime")
-     * @Serializer\Expose()
+     *
+     * @var \DateTime
      */
     protected $date_updated;
 

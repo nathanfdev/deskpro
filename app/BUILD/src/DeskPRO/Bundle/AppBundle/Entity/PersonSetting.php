@@ -75,7 +75,7 @@ class PersonSetting implements EntityInterface, NotifyPropertyChanged
      * Setting value.
      *
      * @JMS\Expose()
-     * @JMS\Type("string")
+     * @JMS\Type("array")
      *
      * @ORM\Column(type="json_array")
      *

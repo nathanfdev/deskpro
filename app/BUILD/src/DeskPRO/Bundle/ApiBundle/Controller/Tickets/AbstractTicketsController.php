@@ -43,8 +43,6 @@ abstract class AbstractTicketsController extends CrudController
 {
     public static $entity = Ticket::class;
 
-    public static $serializeMethod = 'wrap';
-
     /**
      * @return TicketManager
      */

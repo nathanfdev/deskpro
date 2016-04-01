@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterDataSerializerEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
@@ -63,7 +62,6 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new LazyWarmersPass());
         $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
         $container->addCompilerPass(new TermEnginePass());
-        $container->addCompilerPass(new RegisterDataSerializerEventsPass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
         $container->addCompilerPass(new DbalConnectionPass());
 

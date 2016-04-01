@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -355,7 +354,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("choices")
+     * @JMS\Type("array")
      *
      * @return array
      */
@@ -898,7 +897,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("string")
-     * @JMS\SerializedName("widget_type")
      */
     public function getWidgetType()
     {

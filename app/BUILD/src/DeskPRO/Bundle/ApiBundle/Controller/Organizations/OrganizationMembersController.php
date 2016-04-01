@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Annotations\Route("/organizations/{parentId}/members")
  * @ApiDocSection("Organizations")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class OrganizationMembersController extends CrudSubController
 {

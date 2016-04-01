@@ -32,7 +32,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -642,7 +641,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @JMS\VirtualProperty()
      * @JMS\Type("array")
-     * @JMS\SerializedName("vote_stats")
      */
     public function getVoteStats()
     {

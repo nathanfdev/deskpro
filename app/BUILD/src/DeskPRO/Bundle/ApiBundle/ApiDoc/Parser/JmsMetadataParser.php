@@ -85,7 +85,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         }
         try {
             $inner_type = $this->sliceType($type);
-            if ($type['name'] === $config->getSerializerType()) {
+            if ($type && $inner_type && $type['name'] === $config->getSerializerType()) {
                 return new NestedType($inner_type['name'], $nested_type);
             }
 
@@ -112,7 +112,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      */
     protected function sliceType($type)
     {
-        return $type['params'][0];
+        return isset($type['params']) && isset($type['params'][0]) ? $type['params'][0] : false;
     }
 
     /**
