@@ -26,39 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\DevBundle\Language;
 
-namespace DeskPRO\Bundle\DevBundle;
+use DeskPRO\Component\Util\MapUtils;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class DevBundle extends Bundle
+class LangPhpFileCompiler
 {
-    public function registerCommands(Application $application)
+    /**
+     * @param array $phrases
+     *
+     * @return string
+     */
+    public function compilePhpCode(array $phrases)
     {
-        $application->add(new Command\DevTestCommand());
+        $phrases = MapUtils::filterOutValues($phrases, ['', false, null], true);
+        ksort($phrases, \SORT_STRING);
 
-        $application->add(new Command\Gen\GenIntegrityMapCommand());
-        $application->add(new Command\Gen\GenSchemaFileCommand());
-        $application->add(new Command\Gen\GenTemplateMapCommand());
+        $php = array("<?php return array(\n");
+        foreach ($phrases as $phrase_id => $string) {
+            $php[] = sprintf("\t%-70s => %s,\n", "'$phrase_id'", var_export($string, true));
+        }
 
-        $application->add(new Command\Lang\CheckUsesCommand());
-        $application->add(new Command\Lang\OneSkyDownloadCommand());
-        $application->add(new Command\Lang\OneSkyUploadCommand());
-        $application->add(new Command\Lang\RemovePhrasesCommand());
-        $application->add(new Command\Lang\TrimExtraLangFilesCommand());
-    }
+        $php[] = ");\n";
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
+        $php = implode('', $php);
 
-    public function getPath()
-    {
-        return __DIR__;
+        return $php;
     }
 }
