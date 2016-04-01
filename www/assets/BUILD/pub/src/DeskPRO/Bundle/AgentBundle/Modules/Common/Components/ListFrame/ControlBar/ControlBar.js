@@ -76,7 +76,6 @@ export class ControlBar extends Component {
       changed: true,
       params: newParams
     });
-    console.log('HERE WE GO', this.state);
   };
 
   unsetParam(param) {
