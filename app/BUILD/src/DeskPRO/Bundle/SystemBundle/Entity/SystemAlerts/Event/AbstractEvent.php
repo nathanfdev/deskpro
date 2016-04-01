@@ -66,15 +66,15 @@ abstract class AbstractEvent implements Event
     /**
      * @var string
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="subject_unique_id", type="string")
      */
-    protected $subject_unique_id;
+    protected $subjectUniqueId;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
      */
-    protected $date_created;
+    protected $dateCreated;
 
     /**
      * @var bool
@@ -85,12 +85,12 @@ abstract class AbstractEvent implements Event
     /**
      * Event constructor.
      *
-     * @param \DateTime|null $date_created
+     * @param \DateTime|null $dateCreated
      */
-    public function __construct(\DateTime $date_created = null)
+    public function __construct(\DateTime $dateCreated = null)
     {
-        $this->date_created      = $date_created ?: new \DateTime();
-        $this->subject_unique_id = $this->generateSubjectUniqueId();
+        $this->dateCreated     = $dateCreated ?: new \DateTime();
+        $this->subjectUniqueId = $this->generateSubjectUniqueId();
     }
 
     /**
@@ -106,7 +106,7 @@ abstract class AbstractEvent implements Event
      */
     public function getSubjectUniqueId()
     {
-        return $this->subject_unique_id;
+        return $this->subjectUniqueId;
     }
 
     /**
@@ -114,7 +114,7 @@ abstract class AbstractEvent implements Event
      */
     public function getDateCreated()
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
     /**

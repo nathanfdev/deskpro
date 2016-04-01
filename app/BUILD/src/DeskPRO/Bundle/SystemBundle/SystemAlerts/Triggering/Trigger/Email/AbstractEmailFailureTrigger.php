@@ -47,7 +47,7 @@ abstract class AbstractEmailFailureTrigger extends AbstractStatefulIncidentTrigg
      * @var int Trigger will raise an incident only after consistent failures for minutes (the default 0
      *          value means immediate rising)
      */
-    private $silence_time = 0;
+    private $silenceTime = 0;
 
     /**
      * @var EntityManager
@@ -65,11 +65,11 @@ abstract class AbstractEmailFailureTrigger extends AbstractStatefulIncidentTrigg
     }
 
     /**
-     * @param int $silence_time
+     * @param int $silenceTime
      */
-    public function setSilenceTime($silence_time)
+    public function setSilenceTime($silenceTime)
     {
-        $this->silence_time = $silence_time;
+        $this->silenceTime = $silenceTime;
     }
 
     /**
@@ -82,21 +82,21 @@ abstract class AbstractEmailFailureTrigger extends AbstractStatefulIncidentTrigg
             return false;
         }
 
-        $last_failure  = $incident->getLastEvent();
-        $first_failure = $last_failure;
-        $events        = $incident->getEvents();
-        $i             = count($events) - 1;
+        $lastFailure  = $incident->getLastEvent();
+        $firstFailure = $lastFailure;
+        $events       = $incident->getEvents();
+        $i            = count($events) - 1;
         while ($i >= 0) {
             if ($events[$i] instanceof SuccessEvent) {
                 break;
             }
-            $first_failure = $events[$i--];
+            $firstFailure = $events[$i--];
         }
 
         /** @var \DateInterval $diff */
-        $diff    = $last_failure->getDateCreated()->diff($first_failure->getDateCreated());
+        $diff    = $lastFailure->getDateCreated()->diff($firstFailure->getDateCreated());
         $minutes = $diff->days * 24 * 60 + $diff->h * 60 + $diff->i;
 
-        return $minutes >= $this->silence_time;
+        return $minutes >= $this->silenceTime;
     }
 }

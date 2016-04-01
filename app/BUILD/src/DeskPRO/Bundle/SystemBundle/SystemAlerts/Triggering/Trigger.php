@@ -57,7 +57,7 @@ interface Trigger
     public function consume(Event $event);
 
     /**
-     * @param callable $raised_callback
+     * @param callable $raisedCallback
      */
-    public function setRaisedCallback(callable $raised_callback);
+    public function setRaisedCallback(callable $raisedCallback);
 }

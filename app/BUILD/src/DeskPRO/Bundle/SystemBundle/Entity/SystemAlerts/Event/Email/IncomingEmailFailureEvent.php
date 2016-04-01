@@ -49,12 +49,12 @@ class IncomingEmailFailureEvent extends AbstractExceptionEvent
     /**
      * @param EmailAccount     $account
      * @param RuntimeException $exception
-     * @param \DateTime|null   $date_created
+     * @param \DateTime|null   $dateCreated
      */
-    public function __construct(EmailAccount $account, RuntimeException $exception, \DateTime $date_created = null)
+    public function __construct(EmailAccount $account, RuntimeException $exception, \DateTime $dateCreated = null)
     {
-        $this->email_account_id      = $account->getId();
-        $this->email_account_address = $account->getAddress();
-        parent::__construct($exception, $date_created);
+        $this->emailAccountId      = $account->getId();
+        $this->emailAccountAddress = $account->getAddress();
+        parent::__construct($exception, $dateCreated);
     }
 }

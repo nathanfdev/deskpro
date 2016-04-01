@@ -48,19 +48,19 @@ interface StatefulIncidentTrigger extends Trigger
     public function setContinuingIncidents(array $incidents);
 
     /**
-     * @param callable $resolved_callback
+     * @param callable $resolvedCallback
      */
-    public function setResolvedCallback(callable $resolved_callback);
+    public function setResolvedCallback(callable $resolvedCallback);
 
     /**
-     * @param callable $continuing_callback
+     * @param callable $continuingCallback
      */
-    public function setContinuingCallback(callable $continuing_callback);
+    public function setContinuingCallback(callable $continuingCallback);
 
     /**
-     * @param callable $dismissed_callback
+     * @param callable $dismissedCallback
      */
-    public function setDismissedCallback(callable $dismissed_callback);
+    public function setDismissedCallback(callable $dismissedCallback);
 
     /**
      * If trigger dismiss and close callbacks are applicable to an incident.
@@ -76,9 +76,9 @@ interface StatefulIncidentTrigger extends Trigger
     public function dismisses(StatefulIncident $incident);
 
     /**
-     * @param callable $closed_callback
+     * @param callable $closedCallback
      */
-    public function setClosedCallback(callable $closed_callback);
+    public function setClosedCallback(callable $closedCallback);
 
     /**
      * @return callable|null

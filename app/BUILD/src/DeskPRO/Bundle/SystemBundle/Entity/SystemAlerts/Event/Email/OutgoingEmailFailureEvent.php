@@ -46,16 +46,16 @@ class OutgoingEmailFailureEvent extends AbstractExceptionEvent
     use EmailAccountData;
 
     /**
-     * @param int                   $email_account_id
-     * @param string                $email_account_address
+     * @param int                   $emailAccountId
+     * @param string                $emailAccountAddress
      * @param RawTransportException $exception
-     * @param \DateTime|null        $date_created
+     * @param \DateTime|null        $dateCreated
      */
     public function __construct(
-        $email_account_id, $email_account_address, RawTransportException $exception, \DateTime $date_created = null)
+        $emailAccountId, $emailAccountAddress, RawTransportException $exception, \DateTime $dateCreated = null)
     {
-        $this->email_account_id      = $email_account_id;
-        $this->email_account_address = $email_account_address;
-        parent::__construct($exception, $date_created);
+        $this->emailAccountId      = $emailAccountId;
+        $this->emailAccountAddress = $emailAccountAddress;
+        parent::__construct($exception, $dateCreated);
     }
 }

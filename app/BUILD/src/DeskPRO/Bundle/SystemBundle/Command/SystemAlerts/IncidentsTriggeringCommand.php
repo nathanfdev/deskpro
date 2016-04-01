@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Command\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
@@ -54,9 +55,9 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var TriggeringProcess $triggering_process */
-        $triggering_process = $this->getContainer()->get('dp_sys.alerts.triggering_process');
-        $triggering_process->run();
+        /** @var TriggeringProcess $triggeringProcess */
+        $triggeringProcess = $this->getContainer()->get('dp_sys.alerts.triggering_process');
+        $triggeringProcess->run();
 
         return 0;
     }

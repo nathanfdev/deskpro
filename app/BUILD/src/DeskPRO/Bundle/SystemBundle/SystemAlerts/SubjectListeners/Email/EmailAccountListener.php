@@ -106,7 +106,7 @@ class EmailAccountListener
         foreach (self::$targets as $target) {
             $this
                 ->getSystemEntityManager()
-                ->createQuery("DELETE $target t WHERE t.subject_unique_id = ?0")
+                ->createQuery("DELETE $target t WHERE t.subjectUniqueId = ?0")
                 ->execute([$email->getId()]);
         }
     }

@@ -46,7 +46,7 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function getSubjectDescription()
     {
-        return "Exception {$this->exception_class}";
+        return "Exception {$this->exceptionClass}";
     }
 
     /**
@@ -54,6 +54,6 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function generateSubjectUniqueId()
     {
-        return $this->exception_class;
+        return $this->exceptionClass;
     }
 }

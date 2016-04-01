@@ -47,7 +47,7 @@ class IncidentManager
     /**
      * @var TriggeringProcess
      */
-    private $triggering_process;
+    private $triggeringProcess;
 
     /**
      * @var EntityManager
@@ -57,13 +57,13 @@ class IncidentManager
     /**
      * IncidentManager constructor.
      *
-     * @param TriggeringProcess $triggering_process
+     * @param TriggeringProcess $triggeringProcess
      * @param EntityManager     $em
      */
-    public function __construct(TriggeringProcess $triggering_process, EntityManager $em)
+    public function __construct(TriggeringProcess $triggeringProcess, EntityManager $em)
     {
-        $this->triggering_process = $triggering_process;
-        $this->em                 = $em;
+        $this->triggeringProcess = $triggeringProcess;
+        $this->em                = $em;
     }
 
     /**
@@ -75,7 +75,7 @@ class IncidentManager
         $this->em->persist($incident);
         $this->em->flush($incident);
 
-        $triggers = $this->triggering_process->getTriggers();
+        $triggers = $this->triggeringProcess->getTriggers();
         foreach ($triggers as $trigger) {
             if ($trigger instanceof StatefulIncidentTrigger && $trigger->dismisses($incident)) {
                 if ($callable = $trigger->getDismissedCallback()) {

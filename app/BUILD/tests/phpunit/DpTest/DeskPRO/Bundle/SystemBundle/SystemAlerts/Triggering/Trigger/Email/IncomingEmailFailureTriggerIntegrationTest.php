@@ -33,14 +33,13 @@
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger;
 use DpTest\Bundle\SystemBundle\SystemAlerts\BaseIntegrationTest;
 use Zend\Mail\Exception\RuntimeException;
 
-require_once realpath(__DIR__.'/../../BaseIntegrationTest.php');
+require_once realpath(__DIR__.'/../../../BaseIntegrationTest.php');
 
 /**
  * Class IncomingEmailFailureTriggerIntegrationTest.

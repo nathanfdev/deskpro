@@ -47,27 +47,27 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
      *
      * @see \DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event::getSubjectUniqueId()
      */
-    protected $continuing_incidents = [];
+    protected $continuingIncidents = [];
 
     /**
      * @var callable Executed when the trigger criteria stops matching (i.e. the problem goes away)
      */
-    private $resolved_callback;
+    private $resolvedCallback;
 
     /**
      * @var callable Executed after a continuing incident is updated
      */
-    private $continuing_callback;
+    private $continuingCallback;
 
     /**
      * @var callable Executed when an admin manually dismisses an incident
      */
-    private $dismissed_callback;
+    private $dismissedCallback;
 
     /**
      * @var callable Executed when the issue is either dismissed or resolved
      */
-    private $closed_callback;
+    private $closedCallback;
 
     /**
      * {@inheritdoc}
@@ -76,33 +76,33 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
     {
         if ($this->supports($event)) {
             $subject = $event->getSubjectUniqueId();
-            if (!array_key_exists($subject, $this->continuing_incidents)) {
-                $class                                = $this->getIncidentClass();
-                $this->continuing_incidents[$subject] = new $class();
+            if (!array_key_exists($subject, $this->continuingIncidents)) {
+                $class                               = $this->getIncidentClass();
+                $this->continuingIncidents[$subject] = new $class();
             }
 
-            $incident = $this->continuing_incidents[$subject];
+            $incident = $this->continuingIncidents[$subject];
             $incident->addEvent($event);
             if ($this->isIncidentState($incident)) {
                 if (!$incident->isRaised()) {
                     $incident->setRaised(true);
-                    if ($this->raised_callback) {
+                    if ($this->raisedCallback) {
                         call_user_func_array(
-                            $this->raised_callback, array_merge([$incident], $this->raised_callback_params));
+                            $this->raisedCallback, array_merge([$incident], $this->raisedCallbackParams));
                     }
                 } else {
-                    if ($this->continuing_callback) {
-                        call_user_func($this->continuing_callback, $incident);
+                    if ($this->continuingCallback) {
+                        call_user_func($this->continuingCallback, $incident);
                     }
                 }
             } else {
                 if ($incident->isRaised()) {
                     $incident->setResolved(true);
-                    if ($this->resolved_callback) {
-                        call_user_func($this->resolved_callback, $incident);
+                    if ($this->resolvedCallback) {
+                        call_user_func($this->resolvedCallback, $incident);
                     }
-                    if ($this->closed_callback) {
-                        call_user_func($this->closed_callback, $incident);
+                    if ($this->closedCallback) {
+                        call_user_func($this->closedCallback, $incident);
                     }
                 }
             }
@@ -116,34 +116,34 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
      */
     public function setContinuingIncidents(array $incidents)
     {
-        $this->continuing_incidents = [];
+        $this->continuingIncidents = [];
         foreach ($incidents as $incident) {
-            $this->continuing_incidents[$incident->getFirstEvent()->getSubjectUniqueId()] = $incident;
+            $this->continuingIncidents[$incident->getFirstEvent()->getSubjectUniqueId()] = $incident;
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setResolvedCallback(callable $resolved_callback)
+    public function setResolvedCallback(callable $resolvedCallback)
     {
-        $this->resolved_callback = $resolved_callback;
+        $this->resolvedCallback = $resolvedCallback;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setContinuingCallback(callable $continuing_callback)
+    public function setContinuingCallback(callable $continuingCallback)
     {
-        $this->continuing_callback = $continuing_callback;
+        $this->continuingCallback = $continuingCallback;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDismissedCallback(callable $dismissed_callback)
+    public function setDismissedCallback(callable $dismissedCallback)
     {
-        $this->dismissed_callback = $dismissed_callback;
+        $this->dismissedCallback = $dismissedCallback;
     }
 
     /**
@@ -157,9 +157,9 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
     /**
      * {@inheritdoc}
      */
-    public function setClosedCallback(callable $closed_callback)
+    public function setClosedCallback(callable $closedCallback)
     {
-        $this->closed_callback = $closed_callback;
+        $this->closedCallback = $closedCallback;
     }
 
     /**
@@ -167,7 +167,7 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
      */
     public function getDismissedCallback()
     {
-        return $this->dismissed_callback;
+        return $this->dismissedCallback;
     }
 
     /**
@@ -175,6 +175,6 @@ abstract class AbstractStatefulIncidentTrigger extends AbstractTrigger implement
      */
     public function getClosedCallback()
     {
-        return $this->closed_callback;
+        return $this->closedCallback;
     }
 }

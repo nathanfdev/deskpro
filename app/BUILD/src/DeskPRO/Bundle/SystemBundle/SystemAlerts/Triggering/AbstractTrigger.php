@@ -47,25 +47,25 @@ abstract class AbstractTrigger implements Trigger
      *
      * @see \DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event::getSubjectUniqueId()
      */
-    protected $rising_incidents = [];
+    protected $risingIncidents = [];
 
     /**
      * @var callable Executed when the issue is created
      */
-    protected $raised_callback;
+    protected $raisedCallback;
 
     /**
      * @var array Parameters to pass to the, will be prepended with an Incident instance
      */
-    protected $raised_callback_params;
+    protected $raisedCallbackParams;
 
     /**
      * {@inheritdoc}
      */
-    public function setRaisedCallback(callable $raised_callback, array $raised_callback_params = [])
+    public function setRaisedCallback(callable $raisedCallback, array $raisedCallbackParams = [])
     {
-        $this->raised_callback        = $raised_callback;
-        $this->raised_callback_params = $raised_callback_params;
+        $this->raisedCallback       = $raisedCallback;
+        $this->raisedCallbackParams = $raisedCallbackParams;
     }
 
     /**
@@ -75,19 +75,19 @@ abstract class AbstractTrigger implements Trigger
     {
         if ($this->supports($event)) {
             $subject = $event->getSubjectUniqueId();
-            if (!array_key_exists($subject, $this->rising_incidents)) {
-                $class                            = $this->getIncidentClass();
-                $this->rising_incidents[$subject] = new $class();
+            if (!array_key_exists($subject, $this->risingIncidents)) {
+                $class                           = $this->getIncidentClass();
+                $this->risingIncidents[$subject] = new $class();
             }
 
-            $incident = $this->rising_incidents[$subject];
+            $incident = $this->risingIncidents[$subject];
             $incident->addEvent($event);
             if ($this->isIncidentState($incident)) {
                 $incident->setRaised(true);
-                if ($this->raised_callback) {
-                    call_user_func($this->raised_callback, $incident);
+                if ($this->raisedCallback) {
+                    call_user_func($this->raisedCallback, $incident);
                 }
-                unset($this->rising_incidents[$subject]);
+                unset($this->risingIncidents[$subject]);
             }
 
             return $incident;

@@ -73,18 +73,18 @@ abstract class AbstractIncident implements Incident
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(name="subject_unique_id", type="string", nullable=true)
      */
-    protected $subject_unique_id;
+    protected $subjectUniqueId;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
      *
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      */
-    protected $date_created;
+    protected $dateCreated;
 
     /**
      * @var Event[]|ArrayCollection
@@ -94,9 +94,7 @@ abstract class AbstractIncident implements Incident
      *     inversedBy="incidents",
      *     cascade={"all"}
      * )
-     * @ORM\JoinTable(
-     *     name="system_alerts_incident_events"
-     * )
+     * @ORM\JoinTable(name="system_alerts_incident_events")
      */
     protected $events;
 
@@ -132,8 +130,8 @@ abstract class AbstractIncident implements Incident
      */
     public function __construct()
     {
-        $this->date_created = new \DateTime();
-        $this->events       = new ArrayCollection();
+        $this->dateCreated = new \DateTime();
+        $this->events      = new ArrayCollection();
     }
 
     /**
@@ -149,7 +147,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateCreated()
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
     /**
@@ -188,7 +186,7 @@ abstract class AbstractIncident implements Incident
     {
         $this->events = new ArrayCollection($events);
         if (count($this->events)) {
-            $this->subject_unique_id = $this->events[0]->getSubjectUniqueId();
+            $this->subjectUniqueId = $this->events[0]->getSubjectUniqueId();
         }
     }
 
@@ -197,8 +195,8 @@ abstract class AbstractIncident implements Incident
      */
     public function addEvent(Event $event)
     {
-        $this->events[]          = $event;
-        $this->subject_unique_id = $event->getSubjectUniqueId();
+        $this->events[]        = $event;
+        $this->subjectUniqueId = $event->getSubjectUniqueId();
     }
 
     /**

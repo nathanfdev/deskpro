@@ -38,18 +38,17 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class GlossaryController.
+ * Class IncidentController.
  *
  * @ApiDocSection("System")
  * @ApiModes("all")
- * @Annotations\Route("/system/incidents")
+ * @Rest\Route("/system/incidents")
  */
 class IncidentController extends CrudController
 {
@@ -59,7 +58,7 @@ class IncidentController extends CrudController
     public static $listPaginate = false;
 
     /**
-     * @Get("/{id}", requirements={"id"="\d+"})
+     * @Rest\Get("/{id}", requirements={"id"="\d+"})
      */
     public function getAction(Request $request, $id)
     {

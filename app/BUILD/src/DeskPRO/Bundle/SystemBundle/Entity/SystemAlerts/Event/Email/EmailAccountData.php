@@ -42,23 +42,23 @@ trait EmailAccountData
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", options={"unsigned"=true})
+     * @ORM\Column(name="email_account_id", type="integer", options={"unsigned"=true})
      */
-    private $email_account_id;
+    private $emailAccountId;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="email_account_address", type="string")
      */
-    private $email_account_address;
+    private $emailAccountAddress;
 
     /**
      * @return int
      */
     public function getEmailAccountId()
     {
-        return $this->email_account_id;
+        return $this->emailAccountId;
     }
 
     /**
@@ -66,7 +66,7 @@ trait EmailAccountData
      */
     public function getEmailAccountAddress()
     {
-        return $this->email_account_address;
+        return $this->emailAccountAddress;
     }
 
     /**

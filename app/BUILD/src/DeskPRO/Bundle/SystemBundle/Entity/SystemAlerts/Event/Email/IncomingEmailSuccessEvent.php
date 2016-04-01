@@ -48,13 +48,13 @@ class IncomingEmailSuccessEvent extends AbstractEvent implements SuccessEvent
 
     /**
      * @param EmailAccount   $account
-     * @param \DateTime|null $date_created
+     * @param \DateTime|null $dateCreated
      */
-    public function __construct(EmailAccount $account, \DateTime $date_created = null)
+    public function __construct(EmailAccount $account, \DateTime $dateCreated = null)
     {
-        $this->email_account_id      = $account->getId();
-        $this->email_account_address = $account->getAddress();
-        parent::__construct($date_created);
+        $this->emailAccountId      = $account->getId();
+        $this->emailAccountAddress = $account->getAddress();
+        parent::__construct($dateCreated);
     }
 
     /**
