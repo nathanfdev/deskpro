@@ -382,10 +382,6 @@ class ErrorReporter
             $client->setUri($url);
             $client->getRequest()->getPost()->fromArray($data);
             $r = $client->send();
-
-            if (!$r->isSuccess()) {
-                error_log('URL retrned code '.$r->getStatusCode().': '.$url);
-            }
         } catch (\Exception $e) {
         }
     }

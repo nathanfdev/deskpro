@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DpSys\Boot\BootTask;
 
 use DeskPRO\Component\Filesystem\SafeFile;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Debug\Debug;
 
 /**
@@ -39,7 +40,10 @@ class LibBootTask implements BootTaskInterface
     public function run(\DpRun\DpEnv $env, array $resources)
     {
         if ($env->isDebug()) {
-            Debug::enable(true, true);
+            Debug::enable(-1, true);
+        } else {
+            set_error_handler([SystemErrorHandler::class, 'handleError'], E_ALL);
+            set_exception_handler([SystemErrorHandler::class, 'handleException']);
         }
 
         if (!defined('DP_BUILD_TIME')) {

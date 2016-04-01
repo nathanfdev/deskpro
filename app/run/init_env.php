@@ -133,7 +133,7 @@ if (!@ini_get('error_log')) {
 
 // If DeskPRO is not installed yet, always enable display_errors
 // so problems during an install process are not missed
-if (!file_exists($DP_ENV->getUserCacheDir().DIRECTORY_SEPARATOR.'is_installed.dat') && !defined('DPC_IS_CLOUD')) {
+if (!defined('DPC_IS_CLOUD') && !$DP_ENV->getConfig('database.host')) {
     @ini_set('display_errors', '1');
 
 // also show errors on the CLI all the time too
