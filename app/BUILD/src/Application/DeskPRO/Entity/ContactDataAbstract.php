@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\ContactData\ContactData;
@@ -95,6 +96,8 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      *
      * @Assert\NotBlank(groups={"phone", "website", "instant_message", "twitter", "linked_in", "facebook", "address"})
      * @Assert\Url(groups={"website", "facebook", "linked_in"})
+     * @AppAssert\ContactData\FacebookUrl(groups={"facebook"})
+     * @AppAssert\ContactData\LinkedInUrl(groups={"linked_in"})
      */
     protected $field_1 = '';
 
@@ -102,7 +105,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      * @var string
      *
      * @Assert\NotBlank(groups={"address", "phone"})
-     * @AppAssert\ProfileUrl(groups={"facebook", "linked_in"})
      */
     protected $field_2 = '';
 

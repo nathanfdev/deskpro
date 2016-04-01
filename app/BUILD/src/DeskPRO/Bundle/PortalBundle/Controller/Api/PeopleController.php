@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,6 +39,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PeopleController.
+ *
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"
+ * })
  */
 class PeopleController extends AbstractApiController
 {
@@ -56,7 +61,7 @@ class PeopleController extends AbstractApiController
             'id' => $agent_ids,
         ]);
 
-        return new View($this->dataSerialize($agents, 'widget_person'));
+        return new View($this->wrap($agents));
     }
 
     /**
@@ -72,6 +77,6 @@ class PeopleController extends AbstractApiController
         $people_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
         $people            = $people_repository->findBy(['id' => $request->get('ids')]);
 
-        return new View($this->dataSerialize($people, 'widget_person'));
+        return new View($this->wrap($people));
     }
 }

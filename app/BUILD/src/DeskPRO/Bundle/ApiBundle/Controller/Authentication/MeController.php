@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\TmpData;
@@ -73,7 +72,7 @@ class MeController extends BaseController
         $me              = new Me();
         $me->auth_method = $token->getName();
         $me->person_id   = $person->getId();
-        $me->person      = $this->dataSerialize($person)['data'];
+        $me->person      = $person;
 
         if ($token instanceof AgentSessionSecurityToken) {
             $me->app_id = $token->getAppId();

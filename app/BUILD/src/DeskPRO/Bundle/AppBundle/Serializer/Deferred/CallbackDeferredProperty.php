@@ -56,13 +56,11 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\Deferred;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\PropertyTransformer\DeferredPropertyInterface;
-
 /**
  * If a property is transformed to this class, we will run the callback and use its returned data as the
- * proeprty value. We execute the callback after transformation in a later event.
+ * property value. We execute the callback after transformation in a later event.
  */
-class CallbackDeferredProperty implements DeferredPropertyInterface
+class CallbackDeferredProperty
 {
     /**
      * @var callable

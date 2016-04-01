@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Model\PrimitiveArray;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone;
 use FOS\RestBundle\Controller\Annotations;
@@ -65,7 +64,7 @@ class TimezonesController extends BaseController
         }
 
         return View::create(
-            $this->wrap(new PrimitiveArray($timezones)),
+            $this->wrap($timezones),
             Response::HTTP_OK
         );
     }

@@ -161,7 +161,7 @@ class FeedbackCommentController extends BaseController
         $comments = $qb->getQuery()->getResult();
 
         return View::create(
-            $this->dataSerialize($comments),
+            $this->wrap($comments),
             Response::HTTP_OK
         );
     }
@@ -199,7 +199,7 @@ class FeedbackCommentController extends BaseController
         $comment = $this->getFeedbackComment($id);
 
         return View::create(
-            $this->dataSerialize($comment),
+            $this->wrap($comment),
             Response::HTTP_OK
         );
     }
@@ -361,7 +361,7 @@ class FeedbackCommentController extends BaseController
         $em->flush();
 
         return View::create(
-            $this->dataSerialize([]),
+            $this->wrap([]),
             Response::HTTP_ACCEPTED
         );
     }
@@ -398,7 +398,7 @@ class FeedbackCommentController extends BaseController
         $count = $this->get('data.feedback_comments')->countAwaitingValidation();
 
         return View::create(
-            $this->dataSerialize($count),
+            $this->wrap($count),
             Response::HTTP_OK
         );
     }
@@ -438,7 +438,7 @@ class FeedbackCommentController extends BaseController
         $location = $this->generateUrl('api_feedback_comments_get', array('id' => $comment->getId()));
 
         return View::create(
-            $this->dataSerialize($comment),
+            $this->wrap($comment),
             $status,
             array(
                 'Location' => $location,

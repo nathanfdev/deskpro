@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
@@ -83,7 +82,7 @@ class ChatController extends AbstractApiController
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
         }
 
-        return View::create($this->dataSerialize($conversation));
+        return View::create($this->wrap($conversation));
     }
 
     /**
@@ -167,8 +166,8 @@ class ChatController extends AbstractApiController
         ;
 
         return View::create([
-            'chat_info'    => $this->dataSerialize($conversation),
-            'new_messages' => $this->dataSerialize($qb->getQuery()->getResult()),
+            'chat_info'    => $this->wrap($conversation),
+            'new_messages' => $this->wrap($qb->getQuery()->getResult()),
         ]);
     }
 
@@ -241,7 +240,7 @@ class ChatController extends AbstractApiController
                     'is_html'         => true,
                     'type'            => 'file',
                     'blob_id'         => $attachment->getId(),
-                    'blob'            => $this->dataSerialize($attachment)['data'],
+                    'blob'            => $this->wrap($attachment)['data'],
                     'is_user_message' => true,
                 ])
             ;
@@ -257,7 +256,7 @@ class ChatController extends AbstractApiController
             $this->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $chat_message));
         }
 
-        return View::create($this->dataSerialize($chat_messages));
+        return View::create($this->wrap($chat_messages));
     }
 
     /**

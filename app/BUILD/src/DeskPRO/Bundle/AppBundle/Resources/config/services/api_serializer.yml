@@ -58,8 +58,11 @@ services:
 
   api_serializer.handler.task_project:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectHandler
-    arguments:
-      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_project_member:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectMemberHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -109,6 +112,20 @@ services:
       class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
       tags:
         - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
+      arguments:
+        - "@security.token_storage"
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet_category:
+        class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetCategoryHandler
+        arguments:
+          - "@security.token_storage"
+        tags:
+          - { name: "jms_serializer.subscribing_handler" }
 
   # listeners and subscribers
   api_serializer.sideload_listener:

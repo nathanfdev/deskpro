@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
@@ -47,15 +50,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 abstract class AbstractApiController extends FOSRestController
 {
-    /**
-     * @param mixed  $data
-     * @param string $type
-     *
-     * @return array
-     */
-    protected function dataSerialize($data, $type = null)
+    protected function wrap($data)
     {
-        return $this->get('data_serializer')->serialize($data, null, null, $type);
+        return new ApiWrapper($data);
     }
 
     /**
@@ -65,8 +62,8 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function generateFormErrorsResponse(Form $form)
     {
-        $generator = $this->get('api_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form);
+        $generator = $this->get('form_error.form_errors_generator');
+        $errors    = $generator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
 
         return new View($errors, Response::HTTP_BAD_REQUEST);
     }

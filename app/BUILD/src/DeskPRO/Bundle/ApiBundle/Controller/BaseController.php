@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -61,41 +60,6 @@ class BaseController extends FOSRestController
      * @const DATA_TYPE_COUNT_ONLY Standard datatype, but we only want the total results
      */
     const DATA_TYPE_COUNT_ONLY = 3;
-
-    /**
-     * @param array|object $data
-     * @param string       $includes_string
-     * @param int          $type
-     *
-     * @return array
-     */
-    protected function dataSerialize($data, $includes_string = null, $type = self::DATA_TYPE_STANDARD)
-    {
-        // not passing an $includes_string will default to the master request's "include" GET param
-        if (null === $includes_string) {
-            $includes_string = $this->get('request_stack')->getMasterRequest()->query->get('include');
-        }
-
-        if (self::DATA_TYPE_COUNT_ONLY === $type) {
-            if (is_object($data) && method_exists($data, 'count')) {
-                return [
-                    'meta' => [
-                        'count'       => $data->count(),
-                        'total_count' => $data->count(),
-                    ],
-                ];
-            }
-
-            return [
-                'meta' => [
-                    'count'       => $data['count'],
-                    'total_count' => $data['count'],
-                ],
-            ];
-        }
-
-        return $this->get('data_serializer')->serialize($data, $includes_string);
-    }
 
     /**
      * @param mixed $data

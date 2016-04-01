@@ -1721,6 +1721,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * @return CustomDataPerson[]|ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
      * Find an existing data record for a field id.
      *
      * @param int|CustomDefPerson $field_id

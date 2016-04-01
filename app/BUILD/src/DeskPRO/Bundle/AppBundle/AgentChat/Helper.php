@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\AgentChat;
 
-use DeskPRO\Bundle\AppBundle\DataSerializer\DataSerializer;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentChat\MessageCount;
 
 /**
@@ -45,18 +44,11 @@ class Helper
     protected $messenger;
 
     /**
-     * @var DataSerializer
+     * @param Messenger $messenger
      */
-    protected $serializer;
-
-    /**
-     * @param Messenger      $messenger
-     * @param DataSerializer $serializer
-     */
-    public function __construct(Messenger $messenger, DataSerializer $serializer)
+    public function __construct(Messenger $messenger)
     {
-        $this->messenger  = $messenger;
-        $this->serializer = $serializer;
+        $this->messenger = $messenger;
     }
 
     /**

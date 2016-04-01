@@ -49,7 +49,7 @@ Feature: User Profile
     And I am on "/profile/emails"
     When I fill in "Email" with "agent@deskpro.dev"
     And I press "Save"
-    Then I should see a form error with "An account with this email already exists. Please login normally. If you forgot your password, use the forgot password feature."
+    Then I should see a form error with "This value already exists in the system."
 
   @reinstall
   Scenario: A user successfully adds and verifies an email

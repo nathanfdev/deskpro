@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -62,9 +63,6 @@ abstract class CrudController extends BaseController
      * @var array|null Array of exposed action names e.g. ['get', 'list'], if not defined all are exposed
      */
     public static $exposeOnly = null;
-
-    // this used only for moving period
-    public static $serializeMethod = 'dataSerialize';
 
     /**
      * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
@@ -111,7 +109,7 @@ abstract class CrudController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return View::create($this->{static::$serializeMethod}($entity), Response::HTTP_OK);
+        return View::create($this->wrap($entity), Response::HTTP_OK);
     }
 
     /**
@@ -186,7 +184,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->{static::$serializeMethod}($result), Response::HTTP_OK);
+        return View::create($this->wrap($result), Response::HTTP_OK);
     }
 
     /**
@@ -328,6 +326,7 @@ abstract class CrudController extends BaseController
         }
 
         $qb->orderBy($alias.'.'.$sort, $order);
+        $qb->orderBy($alias.'.id', $order);
     }
 
     /**
@@ -393,13 +392,7 @@ abstract class CrudController extends BaseController
         $partial_update = $model && $model->getId();
         $status         = $partial_update ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        /** @var \Symfony\Component\Form\Form $form */
-        $form = $this->createForm(
-            class_exists(static::$type) ? new static::$type() : static::$type,
-            $model,
-            $options
-        );
-
+        $form    = $this->createForm(static::$type, $model, $options);
         $decoded = $this->getRequestContent($request);
 
         // we use POST request for creating and updating entities (including partial updates)
@@ -412,11 +405,11 @@ abstract class CrudController extends BaseController
         // in this case form ViolationMapper should applies entity validation errors on the submitted form
 
         $form->submit($decoded, !$partial_update);
-        if ($form->isValid()) {
-            return View::create($this->{static::$serializeMethod}($this->persistModel($model)), $status);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
 
-        throw new InvalidFormException($form);
+        return View::create($this->wrap($this->persistModel($model)), $status);
     }
 
     /**

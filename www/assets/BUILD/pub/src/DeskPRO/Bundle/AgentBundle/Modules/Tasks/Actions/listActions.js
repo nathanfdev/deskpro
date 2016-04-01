@@ -107,13 +107,14 @@ export const applyFilters = createAction(
 
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
-  (data) => (dispatch, getState) => api.sendPost(`DP_API/tasks`, data).success(response => {
+  (data) => dispatch => api.sendPost(`DP_API/tasks`, data).success(response => {
     const task = Immutable.fromJS(response.data);
     dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
   })
 );
 
-let latestPromise, latestTasks;
+let latestPromise;
+let latestTasks;
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
@@ -121,7 +122,7 @@ export const editTask = createAction(
     let tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
-    let oldTask = tasks.get(taskId);
+    const oldTask = tasks.get(taskId);
     let newTask = tasks.get(taskId);
     const changedProps = Object.keys(data).filter(taskProp => newTask.get(taskProp) !== data[taskProp]);
 
@@ -137,7 +138,7 @@ export const editTask = createAction(
       return;
     }
 
-    let promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
+    const promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
     latestPromise = promise;
     latestTasks = tasks;
 
@@ -156,7 +157,5 @@ export const editTask = createAction(
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
     });
-
-    return promise;
   }
 );

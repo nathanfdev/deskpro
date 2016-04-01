@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -43,6 +44,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
@@ -109,25 +111,25 @@ class CustomDataType extends AbstractType
         if ($options['inline']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
         }
+        if ($options['owner_form']) {
+            $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onGenerateFields'], 100);
+        }
     }
 
     /**
      * Generate form fields.
      *
      * @param FormEvent $event
+     * @param string    $eventName
      */
-    public function onGenerateFields(FormEvent $event)
+    public function onGenerateFields(FormEvent $event, $eventName)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
 
         /** @var CustomDefAbstract $custom_def */
         $custom_def = $config->getOption('custom_def');
-        $field      = $this->field_manager->createCustomField(
-            $custom_def,
-            $config->getOption('agent_interface'),
-            $config->getOption('inline')
-        );
+        $field      = $this->field_manager->createCustomField($custom_def, $config->getOption('inline'));
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -146,25 +148,29 @@ class CustomDataType extends AbstractType
             ]);
         }
 
+        // we need to track and re-generate the form if custom data owner has changed
+        $viewData  = null;
+        $ownerForm = $config->getOption('owner_form');
+        if ($ownerForm && $eventName === FormEvents::SUBMIT) {
+            $owner = $ownerForm->getData();
+            $data  = $owner->custom_data;
+
+            $viewData = $form->get('data')->getViewData();
+
+            $form->setData($data);
+            $form->remove('data');
+        } else {
+            $data = $event->getData();
+        }
+
+        // because child field is not mapped the form tries to get data from the options
+        // so we should to pass stored value via its options
+        $options['data'] = $this->getFormData($data, $custom_def);
+
         $form->add('data', $field->getType(), $options);
 
-        $all_custom_data = $event->getData() ?: new ArrayCollection();
-        $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
-
-        if ($custom_def_data->count()) {
-            $form_field_data = $custom_def_data->first()->getData();
-            if ($custom_def->isChoiceType()) {
-                $form_field_data = $custom_def_data
-                    ->map(function (CustomDataAbstract $custom_data) {
-                        return $custom_data->getFieldId();
-                    })
-                    ->toArray()
-                ;
-
-                $form_field_data = implode(',', $form_field_data);
-            }
-
-            $form->get('data')->setData($form_field_data);
+        if ($ownerForm && $eventName === FormEvents::SUBMIT) {
+            $form->get('data')->submit($viewData);
         }
     }
 
@@ -285,6 +291,7 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'inline'            => false,
+                'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
                 'fully_hidden'      => function (Options $options) {
@@ -296,6 +303,15 @@ class CustomDataType extends AbstractType
 
                     return false;
                 },
+                'constraints' => function (Options $options) {
+                    return [
+                        new AppAssert\CustomField\CustomData([
+                            'context'    => $options['agent_interface'] ? 'agent' : 'user',
+                            'custom_def' => $options['custom_def'],
+                        ]),
+                    ];
+                },
+
             ])
             ->setRequired([
                 'custom_def',
@@ -307,6 +323,35 @@ class CustomDataType extends AbstractType
                 'inline'          => 'bool',
             ])
         ;
+    }
+
+    /**
+     * @param ArrayCollection   $customData
+     * @param CustomDefAbstract $customDef
+     *
+     * @return mixed
+     */
+    protected function getFormData($customData, CustomDefAbstract $customDef)
+    {
+        $all_custom_data = $customData ?: new ArrayCollection();
+        $custom_def_data = $this->filterCustomDefData($all_custom_data, $customDef);
+
+        $formFieldData = null;
+        if ($custom_def_data->count()) {
+            $formFieldData = $custom_def_data->first()->getData();
+            if ($customDef->isChoiceType()) {
+                $formFieldData = $custom_def_data
+                    ->map(function (CustomDataAbstract $custom_data) {
+                        return $custom_data->getFieldId();
+                    })
+                    ->toArray()
+                ;
+
+                $formFieldData = implode(',', $formFieldData);
+            }
+        }
+
+        return $formFieldData;
     }
 
     /**

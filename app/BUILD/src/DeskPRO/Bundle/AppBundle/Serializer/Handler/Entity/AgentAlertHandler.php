@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\AgentAlert as AgentAlertEntity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlert as AgentAlertModel;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\AgentAlertData;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlert\NotifyData;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\AgentAlert as AgentAlertModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\AgentAlertData;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\NotifyData;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use JMS\Serializer\JsonSerializationVisitor;
 

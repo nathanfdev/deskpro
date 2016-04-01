@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,7 +38,9 @@ use Symfony\Component\Validator\Constraint;
  */
 class LeafDepartment extends Constraint
 {
-    public $message = ApiErrors::NOT_ASSIGNABLE_TICKET_DEPARTMENT;
+    const NOT_ASSIGNABLE_TICKET_DEPARTMENT = 'not_assignable_ticket_department';
+
+    public $message = 'Unable to select parent department.';
 
     /**
      * {@inheritdoc}

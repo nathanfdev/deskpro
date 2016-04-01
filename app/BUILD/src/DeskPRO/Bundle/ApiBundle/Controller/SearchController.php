@@ -161,10 +161,10 @@ class SearchController extends BaseController
         foreach ($results->getContexts() as $context) {
             $response['grouped_results'][] = [
                 'type'    => $context->getType(),
-                'results' => $this->dataSerialize($context->getEntities())['data'],
+                'results' => $context->getEntities(),
             ];
         }
 
-        return new View($response);
+        return new View($this->wrap($response));
     }
 }

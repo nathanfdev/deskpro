@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -61,6 +60,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATETIME = 'Application\\DeskPRO\\CustomFields\\Handler\\Datetime';
     const HANDLER_CLASS_DISPLAY  = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
     const HANDLER_CLASS_HIDDEN   = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
+
+    const TYPE_TEXT     = 'text';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_CHOICE   = 'choice';
+    const TYPE_TOGGLE   = 'toggle';
+    const TYPE_DATE     = 'date';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_DISPLAY  = 'display';
+    const TYPE_HIDDEN   = 'hidden';
 
     /**
      * The unique ID.
@@ -346,7 +354,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * @JMS\VirtualProperty()
-     * @JMS\SerializedName("choices")
+     * @JMS\Type("array")
      *
      * @return array
      */
@@ -889,7 +897,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @JMS\VirtualProperty()
      * @JMS\Type("string")
-     * @JMS\SerializedName("widget_type")
      */
     public function getWidgetType()
     {

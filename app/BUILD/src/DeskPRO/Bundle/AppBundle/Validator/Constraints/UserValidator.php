@@ -58,13 +58,26 @@ class UserValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, Person::class);
         }
 
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+
         if ($constraint->type === 'agent') {
             if (!$value->isAgent()) {
-                $this->context->addViolation(User::CODE_NOT_AGENT, ['value' => $value->getEmailAddress()]);
+                $context
+                    ->buildViolation($constraint->notAgentMessage)
+                    ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
+                    ->setCode(User::PERSON_NOT_AGENT)
+                    ->addViolation()
+                ;
             }
         } elseif ($constraint->type === 'user') {
             if (!$value->isUser() || $value->isAgent()) {
-                $this->context->addViolation(User::CODE_NOT_USER, ['value' => $value->getEmailAddress()]);
+                $context
+                    ->buildViolation($constraint->notUserMessage)
+                    ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
+                    ->setCode(User::PERSON_NOT_USER)
+                    ->addViolation()
+                ;
             }
         }
     }

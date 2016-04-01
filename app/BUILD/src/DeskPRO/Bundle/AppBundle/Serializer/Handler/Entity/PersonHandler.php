@@ -29,14 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\Model\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person as SerializedPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as SerializedPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
@@ -82,11 +83,16 @@ class PersonHandler extends AbstractEntityHandler
     protected function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(Person::class);
-        if ($serializerClass === PersonProfile::class) {
-            return $this->createPersonProfile($entity);
-        }
 
-        return $this->createPerson($entity);
+        //oh how I dislike it
+        switch ($serializerClass) {
+            case PersonProfile::class:
+                return $this->createPersonProfile($entity);
+            case WidgetPerson::class:
+                return $this->createWidgetPerson($entity);
+            default:
+                return $this->createPerson($entity);
+        }
     }
 
     /**
@@ -113,13 +119,30 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return PersonProfile
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile
      */
     private function createPersonProfile(Person $entity)
     {
-        $model = new PersonProfile($entity);
-        $model->setAvatar($this->avatarResolver->getAvatarModel($entity));
+        $avatar = null;
+        if ($blob = $entity->getPictureBlob()) {
+            $avatar = new ProfileAvatar(
+                $blob->getAuthId(),
+                $this->avatarResolver->getAvatarModel($entity)->getUrl(200)
+            );
+        }
+
+        $model = new PersonProfile($entity, $avatar);
 
         return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return WidgetPerson
+     */
+    private function createWidgetPerson(Person $entity)
+    {
+        return new WidgetPerson($entity, $this->avatarResolver->getAvatarModel($entity));
     }
 }

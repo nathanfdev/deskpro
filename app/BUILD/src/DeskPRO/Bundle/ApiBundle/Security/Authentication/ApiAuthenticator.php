@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\Person;
@@ -36,14 +37,14 @@ use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
 class ApiAuthenticator implements SimplePreAuthenticatorInterface
 {
@@ -79,7 +80,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $split = preg_split("/[\s,]+/", trim($authorize_header));
 
             if (count($split) !== 2) {
-                $this->throwUnauthorized(ApiErrors::MALFORMED_AUTHORIZATION_HEADER);
+                $this->throwUnauthorized(ErrorsCodes::MALFORMED_AUTHORIZATION_HEADER);
             }
 
             $authorize_type = trim($split[0]);
@@ -91,7 +92,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
                 case 'token':
                     return new ApiTokenSecurityToken('anon.', $authorize_val, $providerKey);
                 default:
-                    $this->throwUnauthorized(ApiErrors::INVALID_AUTHORIZATION_HEADER);
+                    $this->throwUnauthorized(ErrorsCodes::INVALID_AUTHORIZATION_HEADER);
             }
         }
 
@@ -100,11 +101,11 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         // http://stackoverflow.com/questions/17488656/zend-server-windows-authorization-header-is-not-passed-to-php-script
         if (function_exists('apache_get_version') && false !== apache_get_version()) {
             if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
-                $this->throwUnauthorized(ApiErrors::UNAUTHORIZED_CHECK_APACHE);
+                $this->throwUnauthorized(ErrorsCodes::UNAUTHORIZED_CHECK_APACHE);
             }
         }
 
-        $this->throwUnauthorized(ApiErrors::UNAUTHORIZED);
+        $this->throwUnauthorized(ErrorsCodes::UNAUTHORIZED);
     }
 
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
@@ -140,7 +141,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         UserProviderInterface $user_provider,
         $providerKey
     ) {
-        $unauthorized_msg = ApiErrors::INVALID_API_KEY;
+        $unauthorized_msg = ErrorsCodes::INVALID_API_KEY;
 
         /* @var \Application\DeskPRO\Entity\ApiKey $key */
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
@@ -167,7 +168,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         UserProviderInterface $user_provider,
         $providerKey
     ) {
-        $unauthorized_msg = ApiErrors::INVALID_API_TOKEN;
+        $unauthorized_msg = ErrorsCodes::INVALID_API_TOKEN;
 
         /* @var \Application\DeskPRO\Entity\ApiToken $api_token */
         /** @var \Application\DeskPRO\EntityRepository\ApiToken $token_repo */
@@ -194,7 +195,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         UserProviderInterface $user_provider,
         $providerKey
     ) {
-        $unauthorized_msg = ApiErrors::INVALID_SESSION_ID;
+        $unauthorized_msg = ErrorsCodes::INVALID_SESSION_ID;
 
         /* @var \Application\DeskPRO\Entity\Session $session */
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repo */

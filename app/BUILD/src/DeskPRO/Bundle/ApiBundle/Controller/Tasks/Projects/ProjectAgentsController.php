@@ -28,23 +28,20 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class ProjectDepartmentController.
+ * Class ProjectAgentsController.
  *
- * @Annotations\Route("/project_members/{parentId}/agents")
- * @ApiDocSection("TaskProjects")
- * @OutputEntity("Application\DeskPRO\Entity\Person")
  * @ApiModes("all")
+ * @ApiDocSection("TaskProjects")
+ * @Rest\Route("/task_projects/{parentId}/members/agents")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person")
  */
-class ProjectAgentsController extends AbstractProjectCrudSubController
+class ProjectAgentsController extends AbstractProjectMembersController
 {
     /**
      * {@inheritdoc}
@@ -57,50 +54,8 @@ class ProjectAgentsController extends AbstractProjectCrudSubController
     /**
      * {@inheritdoc}
      */
-    protected function findEntity($id, Request $request)
+    protected function getTaskCriteriaParam()
     {
-        $parent = $this->findParentOr404();
-
-        if (!$entity = $this->getDoctrine()->getRepository(self::$entity)->findOneBy(['person' => $id, 'project' => $parent])) {
-            throw $this->createNotFoundException('Not found');
-        }
-
-        $reflectionProperty = new \ReflectionProperty(static::$entity, static::$parentProperty);
-        $reflectionProperty->setAccessible(true);
-        $entityParent = $reflectionProperty->getValue($entity);
-
-        if ($parent !== $entityParent) {
-            throw $this->createNotFoundException('Requested resources does not belong to the specified parent');
-        }
-
-        return $entity;
-    }
-
-    /**
-     * Get agents - members of the project with specified id.
-     *
-     * @ApiDoc(
-     *     section="TaskProjects",
-     *     tags={"CRUD"="#ffa500"},
-     *     resourceDescription="Operations about task projects",
-     *     description="get agents for the project with specified id",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the project", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if everything is OK"
-     *     },
-     *     output="array<Application\DeskPRO\Entity\Person>"
-     * )
-     *
-     * @Annotations\Get("")
-     *
-     * @param Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function listAction(Request $request)
-    {
-        return $this->wrap($this->getProjectMembers($request->get('parentId'), Person::class));
+        return 'assigned_agent';
     }
 }

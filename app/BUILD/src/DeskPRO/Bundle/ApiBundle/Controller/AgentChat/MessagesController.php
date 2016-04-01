@@ -182,7 +182,7 @@ class MessagesController extends AbstractController
             new NewMessageEvent($message->getId())
         );
 
-        return View::create($this->dataSerialize($message), Response::HTTP_CREATED);
+        return View::create($this->wrap($message), Response::HTTP_CREATED);
     }
 
     /**

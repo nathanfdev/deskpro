@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error\Exception;
 
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -58,7 +59,7 @@ class BadCredentialsFormException extends UnauthorizedHttpException implements F
     {
         $this->form = $invalid_form;
 
-        parent::__construct(ApiAuthenticator::HTTP_REALM, ApiErrors::BAD_CREDENTIALS, $previous, $code);
+        parent::__construct(ApiAuthenticator::HTTP_REALM, ErrorsCodes::BAD_CREDENTIALS, $previous, $code);
     }
 
     /**

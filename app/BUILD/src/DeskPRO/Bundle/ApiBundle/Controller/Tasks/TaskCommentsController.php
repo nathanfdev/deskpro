@@ -104,7 +104,7 @@ class TaskCommentsController extends CrudController
         $pager->setCurrentPage($page);
 
         return View::create(
-            $this->dataSerialize($pager),
+            $this->wrap($pager),
             Response::HTTP_OK
         );
     }

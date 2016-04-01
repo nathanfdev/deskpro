@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -136,7 +137,7 @@ class PersonAssignType extends AbstractType
                     $person = new Person();
                     $person->addEmailAddressString($data['email']);
                 } else {
-                    $form->addError(new FormError(ApiErrors::NO_PERSON, null, ['value' => $data['email']]));
+                    $form->addError(new FormError(ErrorsCodes::NO_PERSON, null, ['value' => $data['email']]));
                 }
             }
 
@@ -144,7 +145,7 @@ class PersonAssignType extends AbstractType
         } elseif (!empty($data['id'])) {
             $person = $person_repository->find((int) $data['id']);
             if (!$person) {
-                $form->addError(new FormError(ApiErrors::NO_PERSON, null, ['value' => $data['id']]));
+                $form->addError(new FormError(ErrorsCodes::NO_PERSON, null, ['value' => $data['id']]));
             }
 
             $form->setData($person);

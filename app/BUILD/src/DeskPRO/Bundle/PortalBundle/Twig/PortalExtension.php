@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -199,37 +200,18 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param FormError $form_error
+     * @param FormError $formError
      *
      * @return string
      */
-    public function makeFormError(FormError $form_error)
+    public function makeFormError(FormError $formError)
     {
-        $params = $this->parseErrorParams($form_error->getMessageParameters());
+        $messageFactory = $this->container->get('form_error.message_factory');
+        $codeFactory    = $this->container->get('form_error.code_factory');
 
-        return $this->getLanguageManager()->phrase($form_error->getMessageTemplate(), $params);
-    }
+        $code = $codeFactory->getErrorCodeForFormError($formError);
 
-    /**
-     * @param array $params
-     *
-     * @return array
-     */
-    protected function parseErrorParams(array $params)
-    {
-        $cleaned_params = [];
-
-        foreach ($params as $raw_name => $param) {
-            // strip symfony's curly braces
-            if (substr($raw_name, 0, 2) === '{{') {
-                $raw_name = substr($raw_name, 2);
-                $raw_name = substr($raw_name, 0, -2);
-            }
-            $clean_name                  = trim($raw_name);
-            $cleaned_params[$clean_name] = $param;
-        }
-
-        return $cleaned_params;
+        return $messageFactory->createFormErrorMessage(ErrorMessageFactory::PREFIX_PORTAL_FORMS, $code, $formError);
     }
 
     /**

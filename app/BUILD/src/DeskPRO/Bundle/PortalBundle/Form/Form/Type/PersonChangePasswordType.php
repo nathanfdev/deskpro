@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -43,6 +45,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class PersonChangePasswordType.
+ */
 class PersonChangePasswordType extends AbstractType
 {
     /**
@@ -55,40 +60,49 @@ class PersonChangePasswordType extends AbstractType
      */
     private $translate;
 
+    /**
+     * Constructor.
+     *
+     * @param CaptchaDecider $captcha_decider
+     * @param Translate      $translate
+     */
     public function __construct(CaptchaDecider $captcha_decider, Translate $translate)
     {
         $this->captcha_decider = $captcha_decider;
         $this->translate       = $translate;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['require_current_password']) {
-            $builder->add('current_password', 'password', array(
+            $builder->add('current_password', 'password', [
                 'required'    => true,
-                'constraints' => array(
+                'constraints' => [
                     new UserPassword(['message' => 'portal.forms.error_password_current']),
-                ),
+                ],
                 'mapped' => false, // not mapping this, just using it for validation
-            ));
+            ]);
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $person = $event->getData();
-            $form->add('new_password', 'repeated', array(
+            $form->add('new_password', 'repeated', [
                 'first_name'     => 'password',
-                'first_options'  => array('label' => $this->phrase('portal.forms.label_password')),
+                'first_options'  => ['label' => $this->phrase('portal.forms.label_password')],
                 'second_name'    => 'confirm',
-                'second_options' => array('label' => $this->phrase('portal.forms.label_password_confirm')),
+                'second_options' => ['label' => $this->phrase('portal.forms.label_password_confirm')],
                 'type'           => 'password',
                 'required'       => true,
-                'constraints'    => array(
-                    new NotBlank(['message'  => 'portal.forms.error_required']),
+                'constraints'    => [
+                    new NotBlank(),
                     new DpPassword(['person' => $person]),
-                ),
+                ],
                 'mapped' => false,
-            ));
+            ]);
         });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -96,24 +110,21 @@ class PersonChangePasswordType extends AbstractType
         });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class'               => 'Application\DeskPRO\Entity\Person',
+        $resolver
+            ->setDefaults([
+                'data_class'               => Person::class,
                 'require_current_password' => true,
-            )
-        );
-
-        $resolver->setRequired(
-            array('settings')
-        );
-
-        $resolver->setAllowedTypes(
-            array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag',
-            )
-        );
+            ])
+            ->setRequired(['settings'])
+            ->setAllowedTypes([
+                'settings' => SettingsBag::class,
+            ])
+        ;
     }
 
     public function phrase($phrase, $vars = [])
@@ -122,9 +133,7 @@ class PersonChangePasswordType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
     public function getName()
     {
