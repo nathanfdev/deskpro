@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Templating\WidgetLoader;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +62,7 @@ class WidgetSettingsController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful",
      *     },
-     
+
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
      *)
      * @Rest\Get("/widget/setup")
@@ -71,6 +72,62 @@ class WidgetSettingsController extends BaseController
     public function getWidgetSetupAction()
     {
         return new View($this->wrap($this->getWidgetSettingsResolver()->getWidgetSettings()));
+    }
+
+    /**
+     * Get the HTML code for the widget.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="Get the HTML code for the widget",
+     *     statusCodes={200="Returned if request was successful"},
+     *     input={
+     *         "name"="settings",
+     *         "options"={"method"="POST"},
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Templating\WidgetLaoder"
+     * )
+     *
+     * @Post("/widget/code")
+     * @Get("/widget/code")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function getWidgetCodeAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $settings = $request->request->get('settings');
+        } else {
+            $widget_settings = $this->container->get('widget_settings_resolver');
+            $brand_settings  = array_merge(
+                $widget_settings->getDefaultBrandSettings(),
+                $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
+            );
+
+            $saved_settings = [
+                'global' => [
+                    'chat' => [
+                        'require_login'    => $widget_settings->isPortalRequireLogin(),
+                        'email_validation' => $widget_settings->isPortalEmailValidation(),
+                    ],
+                ],
+                'brand' => $brand_settings,
+            ];
+
+            $settings = array_merge($saved_settings['global']['chat'], $saved_settings['brand']);
+        }
+
+        $loader = WidgetLoader::createLoader(
+            $this->container->get('deskpro.app_env'),
+            $settings,
+            $this->container->get('brand_stack')->getActive()->getSetting('core.deskpro_url'),
+            $this->container->get('assets.packages')
+        );
+
+        return View::create($this->wrap($loader), Response::HTTP_OK);
     }
 
     /**
