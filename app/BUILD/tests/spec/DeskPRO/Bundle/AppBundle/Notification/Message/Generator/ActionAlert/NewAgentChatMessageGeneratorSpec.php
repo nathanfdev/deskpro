@@ -36,7 +36,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\NewAgentChatMessageGenerator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -49,7 +49,7 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
     public function let(
         EntityManager $em,
         TokenStorageInterface $token_storage,
-        SerializerInterface $serializer,
+        Serializer $serializer,
         TokenInterface $token,
         Person $bob,
         Person $alice,
