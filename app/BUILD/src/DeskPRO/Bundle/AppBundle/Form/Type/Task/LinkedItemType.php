@@ -54,19 +54,13 @@ abstract class LinkedItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'item',
-                TextType::class,
-                [
-                    'invalid_message' => 'That is not a valid Ticket ID',
-                    'property_path'   => $this->getPropertyPath(),
-                ]
-            )
-            ->add(
-                'task',
-                TextType::class,
-                ['invalid_message' => 'That is not a valid Task ID']
-            )
+            ->add('item', TextType::class, [
+                'invalid_message' => 'That is not a valid Ticket ID',
+                'property_path'   => $this->getPropertyPath(),
+            ])
+            ->add('task', TextType::class, [
+                'invalid_message' => 'That is not a valid Task ID'
+            ])
         ;
 
         $builder->get('task')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('App:Task')));

@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -63,7 +64,7 @@ class LinkedChatType extends LinkedItemType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat',
+            'data_class' => TaskLinkedChat::class,
         ]);
     }
 

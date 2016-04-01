@@ -34,7 +34,7 @@ class LinkedItemsFormListener implements EventSubscriberInterface
      */
     protected $options;
 
-    public function __construct($type, array $options = array())
+    public function __construct($type, array $options = [])
     {
         $this->type = $type;
         $this->options = $options;
@@ -42,12 +42,12 @@ class LinkedItemsFormListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SET_DATA => 'preSetData',
             FormEvents::PRE_SUBMIT => 'preSubmit',
             // (MergeCollectionListener, MergeDoctrineCollectionListener)
-            FormEvents::SUBMIT => array('onSubmit', 50),
-        );
+            FormEvents::SUBMIT => ['onSubmit', 50],
+        ];
     }
 
     public function preSetData(FormEvent $event)
@@ -56,7 +56,7 @@ class LinkedItemsFormListener implements EventSubscriberInterface
         $data = $event->getData();
 
         if (null === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
@@ -77,9 +77,9 @@ class LinkedItemsFormListener implements EventSubscriberInterface
         // Then add all rows again in the correct order
         foreach ($data as $name => $value) {
             $id = $meta->getReflectionProperty($property)->getValue($value)->getId();
-            $form->add($id, $this->type, array_replace(array(
+            $form->add($id, $this->type, array_replace([
                 'property_path' => '['.$name.']',
-            ), $this->options));
+            ], $this->options));
         }
     }
 
@@ -89,11 +89,11 @@ class LinkedItemsFormListener implements EventSubscriberInterface
         $data = $event->getData();
 
         if (null === $data || '' === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
-            $data = array();
+            $data = [];
         }
 
         /** @var PersistentCollection $collection */
@@ -113,9 +113,9 @@ class LinkedItemsFormListener implements EventSubscriberInterface
             $name = $value;
             if (!$form->has($name)) {
                 $name = 'new' . $value;
-                $form->add($name, $this->type, array_replace(array(
+                $form->add($name, $this->type, array_replace([
                     'property_path' => '['.$name.']',
-                ), $this->options));
+                ], $this->options));
             }
 
             $transformed[$name] = [
@@ -137,7 +137,7 @@ class LinkedItemsFormListener implements EventSubscriberInterface
         // entries, so we need to manually unset removed entries in the collection.
 
         if (null === $data) {
-            $data = array();
+            $data = [];
         }
 
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
@@ -159,7 +159,7 @@ class LinkedItemsFormListener implements EventSubscriberInterface
 
         // The data mapper only adds, but does not remove items, so do this
         // here
-        $toDelete = array();
+        $toDelete = [];
 
         foreach ($data as $name => $child) {
             $id = $meta->getReflectionProperty($property)->getValue($child)->getId();
