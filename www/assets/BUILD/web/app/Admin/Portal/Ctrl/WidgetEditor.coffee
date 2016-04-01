@@ -57,18 +57,15 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       return options
 
-    getCode: (options) ->
-      """
-        <!-- DeskPRO Chat -->
-          <script>
-              window.__DP_APP_SRC__ = '#{@$scope.url.widget_bundle}';
-              window.__DP_URL__ = '#{@$scope.url.helpdesk}';
-              window.__DP_OPTIONS__ = #{JSON.stringify(options)};
-          </script>
-
-          <script type="text/javascript" charset="UTF-8" src="#{@$scope.url.widget_loader}"></script>
-        <!-- /DeskPRO Chat -->
-      """
+    loadCode: (options) ->
+      return @$http({
+        method: 'POST',
+        url: '/api/v2/widget/code',
+        data: { settings: options }
+      }).then(
+        (response) =>
+          return response.data.data.script_html
+      )
 
     getFrameNode: ->
       document.getElementById('live-demo')
@@ -130,8 +127,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       })
       .then(
         () =>
-          @$scope.code = @getCode(@getOptions())
-          @$scope.saving_code = false
+          @loadCode(@getOptions()).then(
+            (code) =>
+              @$scope.code = code
+              @$scope.saving_code = false
+          )
         ,
         (response) =>
           @$scope.formErrors = response.data?.errors?.fields
@@ -144,13 +144,16 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
           @$scope.$apply( => @$scope.widgetLoaded = true)
       , false);
 
-      demoDocument = @getLiveDemoDocument();
-      demoDocument.write('<body>' + @getCode(@getOptions(true)) + '</body>');
-      demoDocument.close();
+      @loadCode(@getOptions()).then(
+        (code) =>
+          demoDocument = @getLiveDemoDocument();
+          demoDocument.write('<body>' + code + '</body>');
+          demoDocument.close();
 
-      @getFrameNode().contentWindow.addEventListener('message', (event) =>
-        parent.window.postMessage(event.data, '*')
-      , false);
+          @getFrameNode().contentWindow.addEventListener('message', (event) =>
+            parent.window.postMessage(event.data, '*')
+          , false);
+      )
 
       return;
 
