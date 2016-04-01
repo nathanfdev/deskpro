@@ -21,7 +21,7 @@ export const repositoriesConfig = {
   Timezone:               {type: 'api', url: '/timezones', allowAll: true},
   FeedbackCategory:       {type: 'api', url: '/feedback_categories'},
   FeedbackCommentCounter: {type: 'api', url: '/feedback_comments_counter'},
-  Project:                {type: 'api', url: '/projects', allowAll: true},
+  Project:                {type: 'api', url: '/task_projects', allowAll: true},
   TaskLabel:              {type: 'api', url: '/task_labels', allowAll: true},
   TaskList:               {type: 'api', url: '/task_lists', allowAll: true},
   PersonSetting:          {type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository},
