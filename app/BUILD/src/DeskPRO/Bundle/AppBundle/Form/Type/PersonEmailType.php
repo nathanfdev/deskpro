@@ -37,7 +37,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -51,9 +50,8 @@ class PersonEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email', EmailType::class, [
-            'label'       => $options['email_label'],
-            'required'    => $options['required'],
-            'constraints' => $options['email_constraints'],
+            'label'    => $options['email_label'],
+            'required' => $options['required'],
         ]);
     }
 
@@ -63,14 +61,14 @@ class PersonEmailType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'                 => PersonEmail::class,
-            'email_label'                => 'Email',
-            'email_exists_error_message' => 'portal.account.registration-email-already-exists',
-            'constraints'                => function (Options $options) {
-                return [
-                    new UniqueEntity(['fields' => 'email', 'message' => $options['email_exists_error_message'], 'errorPath' => 'email']),
-                ];
-            },
+            'data_class'  => PersonEmail::class,
+            'email_label' => 'Email',
+            'constraints' => [
+                new UniqueEntity([
+                    'fields'    => 'email',
+                    'errorPath' => 'email',
+                ]),
+            ],
         ]);
     }
 }

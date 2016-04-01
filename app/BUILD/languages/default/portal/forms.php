@@ -80,6 +80,7 @@ return array(
     'portal.forms.error_accept_server_error'        => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading a file. Please try uploading smaller files.',
+    'portal.forms.error_unique_entity'              => 'This value already exists in the system.',
 
     'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
     'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',
