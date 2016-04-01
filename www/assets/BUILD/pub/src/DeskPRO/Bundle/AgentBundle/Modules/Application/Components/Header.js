@@ -30,7 +30,7 @@ export class Header extends React.Component {
             </a>
 
             <a href="#" className="user-options-button" onClick={togglePreferences}>
-              <PersonAvatar person={user} size="28" />
+              <PersonAvatar person={user} size={28} />
               <span className="title">Settings <i className="fa fa-angle-down"></i></span>
             </a>
           </div>

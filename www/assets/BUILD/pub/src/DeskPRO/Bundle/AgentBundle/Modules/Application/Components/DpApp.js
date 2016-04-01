@@ -67,8 +67,8 @@ export class DpApp extends React.Component {
 
     return (
       <div className="dp-window">
-        <Header user={user} toggleWorkspace={toggleWorkspace} togglePreferences={togglePreferences}/>
-        <AppSwitcher switchApp={this.switchApp.bind(this)} currentApp={dpWindow.get('activeAppId')}/>
+        <Header user={user} toggleWorkspace={this.toggleWorkspace} togglePreferences={this.togglePreferences}/>
+        <AppSwitcher switchApp={this.switchApp} currentApp={dpWindow.get('activeAppId')}/>
 
         <div className="dp-panes-middle">
           {children}
