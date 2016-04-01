@@ -26,21 +26,25 @@ Feature: /ticket_layouts endpoint
     And the response should be in JSON
     And the JSON node "[0].department" should be equal to 0
     And the JSON node "[0].context" should be equal to agent
-    And the JSON node "[0].fields" should have 2 elements
-    And the JSON node "[0].fields[0].field_type" should be equal to "department"
+    And the JSON node "[0].fields" should have 4 elements
+    And the JSON node "[0].fields[0].field_type" should be equal to "person"
     And the JSON node "[0].fields[0].options.on_newticket" should be equal to 1
     And the JSON node "[0].fields[0].options.on_viewticket" should be equal to 1
-    And the JSON node "[0].fields[0].options.on_viewticket_mode" should be equal to "always"
+    And the JSON node "[0].fields[0].options.on_viewticket_mode" should be equal to "value"
     And the JSON node "[0].fields[0].options.on_editticket" should be equal to 1
-    And the JSON node "[0].fields[1].field_type" should be equal to "message"
+    And the JSON node "[0].fields[1].field_type" should be equal to "department"
+    And the JSON node "[0].fields[2].field_type" should be equal to "subject"
+    And the JSON node "[0].fields[3].field_type" should be equal to "message"
 
     And the JSON node "[1].department" should be equal to 2
     And the JSON node "[1].context" should be equal to agent
-    And the JSON node "[1].fields" should have 30 elements
+    And the JSON node "[1].fields" should have 31 elements
     And the JSON node "[1].fields[0].field_type" should be equal to "person"
     And the JSON node "[1].fields[1].field_type" should be equal to "department"
-    And the JSON node "[1].fields[2].field_type" should be equal to "message"
-    And the JSON node "[1].fields[3].field_type" should be equal to "attachments"
+    And the JSON node "[1].fields[2].field_type" should be equal to "user_field"
+    And the JSON node "[1].fields[28].field_type" should be equal to "subject"
+    And the JSON node "[1].fields[29].field_type" should be equal to "message"
+    And the JSON node "[1].fields[30].field_type" should be equal to "attachments"
 
   Scenario Outline: I want to see ticket layout with unknown context or wrong department id
     When I send a GET request to "/api/v2/ticket_layouts/<context>/<department_id>"
@@ -64,12 +68,12 @@ Feature: /ticket_layouts endpoint
 
     Examples:
       | context | department_id | expected_department_id | expected_fields_count |
-      | agent   |  1            | 1                      | 2                     |
-      | agent   |  2            | 2                      | 30                    |
-      | agent   |  default      | 0                      | 2                     |
-      | user    |  1            | 1                      | 0                     |
-      | user    |  2            | 2                      | 0                     |
-      | user    |  default      | 0                      | 0                     |
+      | agent   |  1            | 1                      | 4                     |
+      | agent   |  2            | 2                      | 31                    |
+      | agent   |  default      | 0                      | 4                     |
+      | user    |  1            | 1                      | 4                     |
+      | user    |  2            | 2                      | 4                     |
+      | user    |  default      | 0                      | 4                     |
 
   Scenario: I want to see ticket layout with disabled product, priority, category and workflow settings
     Given the setting "core.use_product" is set to 0
@@ -79,4 +83,4 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/agent/2"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields" should have 26 elements
+    And the JSON node "fields" should have 27 elements

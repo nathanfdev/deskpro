@@ -26,56 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
-use Application\DeskPRO\Entity\Department as DepartmentEntity;
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class TicketLayoutItem.
- *
- * @JMS\ExclusionPolicy("none")
+ * Class LayoutFieldHandler.
  */
-class TicketLayoutItem
+class LayoutFieldHandler extends AbstractEntityHandler
 {
     /**
-     * Department uses this layout.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
-     *
-     * @var DepartmentEntity
+     * {@inheritdoc}
      */
-    private $department;
-
-    /**
-     * An array of fields describing layout.
-     *
-     * @JMS\Type("array")
-     *
-     * @var array
-     */
-    private $fields;
-
-    /**
-     * Agent or user context.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $context;
-
-    /**
-     * TikcetLayout constructor.
-     *
-     * @param $department
-     * @param $fields
-     * @param $context
-     */
-    public function __construct($department, $fields, $context)
+    public static function getClassNames()
     {
-        $this->department = $department;
-        $this->fields     = $fields;
-        $this->context    = $context;
+        return LayoutField::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param LayoutField $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        return $entity->exportToArray();
     }
 }

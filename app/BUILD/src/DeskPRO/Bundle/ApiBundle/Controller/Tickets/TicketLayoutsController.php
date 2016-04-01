@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -38,10 +39,9 @@ use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem;
-use FOS\RestBundle\Controller\Annotations;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout as TicketLayoutModel;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketLayoutsController.
@@ -67,7 +67,7 @@ class TicketLayoutsController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem>"
      * )
-     * @Annotations\Get("/ticket_layouts/{context}",
+     * @Rest\Get("/ticket_layouts/{context}",
      *      name="api_ticket_layouts",
      *      requirements={"context"="(agent|user)"}
      * )
@@ -96,7 +96,7 @@ class TicketLayoutsController extends BaseController
      *     section="Tickets",
      *     description="Get ticket department layout for given context",
      *     requirements={
-     *         {"name"="departmentId", "requirement"="\d+", "dataType"="integer", "description"="department id for which you wan to get layout"},
+     *         {"name"="departmentId", "requirement"="\d+", "dataType"="integer", "description"="department id for which you want to get layout"},
      *         {"name"="context", "requirement"="agent|user", "dataType"="string", "description"="context of layout"},
      *     },
      *     statusCodes={
@@ -105,7 +105,7 @@ class TicketLayoutsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem"
      * )
-     * @Annotations\Get("/ticket_layouts/{context}/{departmentId}",
+     * @Rest\Get("/ticket_layouts/{context}/{departmentId}",
      *      name="api_ticket_layout",
      *      requirements={"context"="(agent|user)", "departmentId"="(\d+|default)"}
      * )
@@ -119,9 +119,9 @@ class TicketLayoutsController extends BaseController
     {
         $department = null;
         if ($departmentId !== 'default') {
-            $department = $this->getRepository('DeskPRO:Department')->find((int) $departmentId);
+            $department = $this->getRepository(Department::class)->find((int) $departmentId);
             if (!$department) {
-                throw new NotFoundHttpException();
+                throw $this->createNotFoundException();
             }
         }
 
@@ -145,17 +145,13 @@ class TicketLayoutsController extends BaseController
      */
     protected function getContextLayoutResponse(TicketLayout $ticketLayout, $context, Department $department = null)
     {
-        $context_layout = $context === 'agent' ? $ticketLayout->agent_layout : $ticketLayout->user_layout;
-        $department     = $department ?: $ticketLayout->department;
+        $contextLayout = $context === 'agent' ? $ticketLayout->agent_layout : $ticketLayout->user_layout;
+        $department    = $department ?: $ticketLayout->department;
 
-        $this->getLayoutFieldFilter()->filterInvalid($context_layout);
+        $this->getLayoutFieldFilter()->filterInvalid($contextLayout);
+        $this->get('ticket_layout_factory')->verifyRequiredFields($contextLayout);
 
-        $fields = [];
-        foreach ($context_layout->all() as $field) {
-            $fields[] = $field->exportToArray();
-        }
-
-        return new TicketLayoutItem($department, $fields, $context);
+        return new TicketLayoutModel($contextLayout, $context, $department);
     }
 
     /**
@@ -178,6 +174,6 @@ class TicketLayoutsController extends BaseController
      */
     protected function getTicketLayoutRepository()
     {
-        return $this->getRepository('DeskPRO:TicketLayout');
+        return $this->getRepository(TicketLayout::class);
     }
 }
