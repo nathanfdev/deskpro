@@ -7,7 +7,7 @@ import classNames from 'classnames';
 export class AppSwitcher extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    switchApp: PropTypes.func.isRequired,
     currentApp: PropTypes.string.isRequired
   };
 
@@ -38,13 +38,15 @@ export class AppSwitcher extends React.Component {
   };
 
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
-    const { dispatch } = this.props;
-    const clickHandler = () => dispatch(AppActions.setActiveApp(appId));
+    const { switchApp } = this.props;
+    const clickHandler = () => switchApp(appId);
     const iconClassNames = 'icon ' + iconClass;
 
     return (
       <li>
-        <Link className={linkClass} activeClassName="active" to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
+        <Link className={linkClass}
+              activeClassName="active"
+              to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
               onClick={clickHandler}>
           {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">
