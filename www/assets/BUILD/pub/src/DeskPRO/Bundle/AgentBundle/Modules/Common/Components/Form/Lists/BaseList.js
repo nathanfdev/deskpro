@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { CheckboxList } from './CheckboxList';
+import { RadioList } from './RadioList';
 
 export class BaseList extends React.Component {
 
@@ -17,7 +17,8 @@ export class BaseList extends React.Component {
 
   render() {
     return (
-      <CheckboxList {...this.props} renderLabel={this.renderLabel} getKeyword={this.getKeyword}/>
+      <RadioList {...this.props} renderLabel={this.renderLabel}
+                                 getKeyword={this.getKeyword}/>
     );
   }
 }

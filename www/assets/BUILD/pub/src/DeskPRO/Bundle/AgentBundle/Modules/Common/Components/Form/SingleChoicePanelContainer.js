@@ -3,8 +3,11 @@ import classNames from 'classnames';
 import {QuickFilter} from './QuickFilter';
 import { RadioOption } from './RadioOption';
 
-export class SingleChoicePanel extends Component {
+import { connect } from 'react-redux';
+@connect()
+export class SingleChoicePanelContainer extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
     currentParams: PropTypes.object,
@@ -12,8 +15,17 @@ export class SingleChoicePanel extends Component {
     depth: PropTypes.bool
   };
 
+  onClick = (param, value, isActive)=> {
+    const { dispatch, resetSingleAction, setParams } = this.props;
+    if (isActive) {
+      dispatch(resetSingleAction(param));
+    } else {
+      dispatch(setParams({ [param]: value }));
+    }
+  };
+
   render() {
-    const { item, setParams, currentParams, depth, resetSingleAction } = this.props;
+    const { item, currentParams, depth } = this.props;
     const renderNested = (nested) => {
       if (!nested || !nested.length) {
         return <span />;
@@ -24,11 +36,10 @@ export class SingleChoicePanel extends Component {
           {nested.map((option, index) =>
               <RadioOption key={index}
                            isActive={currentParams && currentParams.get(option.param) === option.value}
-                           resetSingleAction={resetSingleAction}
                            value={option.value}
                            param={option.param}
                            label={option.label}
-                           setParams={setParams.bind(this)}/>
+                           onClick={this.onClick.bind(this)}/>
           )}
         </ul>
       );
@@ -51,11 +62,10 @@ export class SingleChoicePanel extends Component {
                   {item.options.map((option, index) =>
                       <RadioOption key={index}
                                    isActive={currentParams && currentParams.get(item.param) === option.value}
-                                   resetSingleAction={resetSingleAction}
                                    value={option.value}
                                    label={option.label}
                                    param={item.param}
-                                   setParams={setParams.bind(this)}>
+                                   onClick={this.onClick.bind(this)}>
                         {renderNested(option.nested)}
                       </RadioOption>
                   )}

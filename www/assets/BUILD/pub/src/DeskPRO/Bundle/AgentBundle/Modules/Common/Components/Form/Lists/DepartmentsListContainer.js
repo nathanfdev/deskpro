@@ -10,25 +10,26 @@ import { connect } from 'react-redux';
 
 export class DepartmentsListContainer extends Component {
   static propTypes = {
-    onChange: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     departments: PropTypes.object.isRequired,
     multiple: PropTypes.bool,
     showOnlySelected: PropTypes.bool,
     filter: PropTypes.string,
-    selected: PropTypes.object
+    selected: PropTypes.number
   };
 
   render() {
-    const { selected, departments, onChange, filter, multiple, showOnlySelected } = this.props;
+    const { selected, departments, onClick, filter, multiple, showOnlySelected } = this.props;
 
     return (
       <CollectionField title="Department">
-        <DepartmentsList values={departments}
+        <DepartmentsList param="department"
+                         values={departments}
                          selected={selected}
                          multiple={multiple}
                          showOnlySelected={showOnlySelected}
                          filter={filter}
-                         onChange={onChange}/>
+                         onClick={onClick}/>
       </CollectionField>
     );
   }

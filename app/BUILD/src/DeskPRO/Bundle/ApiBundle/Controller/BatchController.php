@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -90,8 +90,11 @@ class BatchController extends BaseController
         }
 
         $responses = [];
+        $baseUrl   = $request->getScheme().'://'.$request->getHost();
+        $port      = $request->getPort();
+        $baseUrl .= $port === 80 ?: ':'.$port;
         foreach ($requests as $identifier => $sub_request_info) {
-            $responses[$identifier] = $this->performSubRequest($sub_request_info);
+            $responses[$identifier] = $this->performSubRequest($baseUrl.$sub_request_info);
         }
 
         return View::create(

@@ -11,9 +11,7 @@ export class BaseForm extends React.Component {
 
     this.state = {
       quickFilter: '',
-      agents: [],
-      agentTeams: [],
-      departments: [],
+      assign: {},
       errors: {},
       submit: false
     };
@@ -27,23 +25,19 @@ export class BaseForm extends React.Component {
 
   onAssignSelf = () => {
     const id = this.props.me.get('id');
-    const selected = this.state.agents;
+    const selected = this.state.agent;
     if (id && selected.indexOf(id) === -1) {
       selected.push(id);
     }
 
     this.setState({
-      agents: selected
+      assign: { agent: selected }
     });
   };
 
   onUnassignAll = (event) => {
     event.preventDefault();
-    this.setState({
-      agents: [],
-      agentTeams: [],
-      departments: []
-    });
+    this.setState({ assign: {} });
   };
 
   onChange(prop, value) {

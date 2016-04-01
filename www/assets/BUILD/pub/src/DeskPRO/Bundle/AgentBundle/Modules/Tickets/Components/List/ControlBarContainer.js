@@ -6,9 +6,8 @@ import {
   tableVisibleFieldsSelector, cardVisibleFieldsSelector,
   viewModeSelector, listParamsSelector
 } from '../../Selectors/list';
-import {
-  toggleAll, setViewMode, toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams
-} from '../../Actions/listActions';
+import { setViewMode, toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams }
+  from '../../Actions/listActions';
 import { labelsSelector } from '../../Selectors/nav';
 
 @connect(state => ({
