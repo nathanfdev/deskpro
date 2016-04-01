@@ -26,27 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotBlankValidator;
+use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class ProfileUrl.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class TaskProjectMemberHandler.
  */
-class ProfileUrl extends NotBlank
+class TaskProjectMemberHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public static function getClassNames()
     {
-        return NotBlankValidator::class;
+        return ProjectMember::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param ProjectMember $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        if ($entity->getPerson()) {
+            return $entity->getPerson();
+        } elseif ($entity->getTeam()) {
+            return $entity->getTeam();
+        } elseif ($entity->getDepartment()) {
+            return $entity->getDepartment();
+        } else {
+            throw new \RuntimeException('Unable to get project member');
+        }
     }
 }

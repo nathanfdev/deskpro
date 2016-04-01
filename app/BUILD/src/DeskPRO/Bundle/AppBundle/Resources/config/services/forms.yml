@@ -213,11 +213,6 @@ services:
     tags:
       - { name: form.type, alias: project }
 
-  form.projectmember:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType
-    tags:
-      - { name: form.type, alias: projectmember }
-
   form.term_engine.term:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
     arguments:

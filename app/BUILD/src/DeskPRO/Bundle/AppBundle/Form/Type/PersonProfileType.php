@@ -114,6 +114,11 @@ class PersonProfileType extends AbstractType
             'error_mapping'   => [
                 'emails' => 'emails',
             ],
+            'constraints' => [
+                new AppConstraints\FreeEmail([
+                    'property' => 'emailAddresses',
+                ]),
+            ],
         ]);
     }
 }

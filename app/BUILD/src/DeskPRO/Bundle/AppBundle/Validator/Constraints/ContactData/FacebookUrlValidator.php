@@ -26,59 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
-
-use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class UserValidator.
+ * Class FacebookUrlValidator.
  */
-class UserValidator extends ConstraintValidator
+class FacebookUrlValidator extends ConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof User) {
-            throw new UnexpectedTypeException($constraint, User::class);
+        if (!$constraint instanceof FacebookUrl) {
+            throw new UnexpectedTypeException($constraint, FacebookUrl::class);
         }
 
         if (!$value) {
             return;
         }
-        if (!$value instanceof Person) {
-            throw new UnexpectedTypeException($value, Person::class);
+        if (!is_scalar($value)) {
+            throw new UnexpectedTypeException($value, 'string');
+        }
+
+        $patterns = [
+            '#/profile\.php?id=([0-9]+)#',
+            '#facebook\.com/([a-zA-Z0-9\.\-_]+)#',
+            '#facebook\.com/people/([a-zA-Z0-9\.\-_]+)#',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $value)) {
+                return;
+            }
         }
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
         $context = $this->context;
-
-        if ($constraint->type === 'agent') {
-            if (!$value->isAgent()) {
-                $context
-                    ->buildViolation($constraint->notAgentMessage)
-                    ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
-                    ->setCode(User::PERSON_NOT_AGENT)
-                    ->addViolation()
-                ;
-            }
-        } elseif ($constraint->type === 'user') {
-            if (!$value->isUser() || $value->isAgent()) {
-                $context
-                    ->buildViolation($constraint->notUserMessage)
-                    ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
-                    ->setCode(User::PERSON_NOT_USER)
-                    ->addViolation()
-                ;
-            }
-        }
+        $context
+            ->buildViolation($constraint->message)
+            ->setCode(FacebookUrl::NOT_PROFILE_URL)
+            ->addViolation()
+        ;
     }
 }

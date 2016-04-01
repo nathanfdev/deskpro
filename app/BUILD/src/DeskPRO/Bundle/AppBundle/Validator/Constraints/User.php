@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -41,8 +42,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class User extends Constraint
 {
-    const CODE_NOT_USER  = 'person_not_user';
-    const CODE_NOT_AGENT = 'person_not_agent';
+    const PERSON_NOT_USER  = 'person_not_user';
+    const PERSON_NOT_AGENT = 'person_not_agent';
 
     /**
      * Could be agent or user.
@@ -50,4 +51,14 @@ class User extends Constraint
      * @var string
      */
     public $type;
+
+    /**
+     * @var string
+     */
+    public $notUserMessage = 'Person with identifier "{{ value }}" is not agent.';
+
+    /**
+     * @var string
+     */
+    public $notAgentMessage = 'Person with identifier "{{ value }}" is not user.';
 }

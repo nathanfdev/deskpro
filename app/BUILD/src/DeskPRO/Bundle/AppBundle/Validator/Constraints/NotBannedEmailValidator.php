@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,7 +59,7 @@ class NotBannedEmailValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof NotBannedEmail) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\NotBannedEmail');
+            throw new UnexpectedTypeException($constraint, NotBannedEmail::class);
         }
 
         $emails        = (array) $value;
@@ -68,9 +68,14 @@ class NotBannedEmailValidator extends ConstraintValidator
         });
 
         foreach ($banned_emails as $email) {
-            $this->context->addViolation($constraint->message, [
-                'email' => $email,
-            ]);
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setParameter('{{ email }}', $this->formatValue($email))
+                ->setCode(NotBannedEmail::BANNED_EMAIL)
+                ->addViolation()
+            ;
         }
     }
 }

@@ -64,22 +64,22 @@ class CustomDataValidator extends ConstraintValidator
             'context'    => $constraint->context,
         ];
 
-        switch ($custom_def->getHandlerClass()) {
-            case CustomDefAbstract::HANDLER_CLASS_TEXT:
-            case CustomDefAbstract::HANDLER_CLASS_TEXTAREA:
-            case CustomDefAbstract::HANDLER_CLASS_HIDDEN:
+        switch ($custom_def->getType()) {
+            case CustomDefAbstract::TYPE_TEXT:
+            case CustomDefAbstract::TYPE_TEXTAREA:
+            case CustomDefAbstract::TYPE_HIDDEN:
                 $validators[] = new AppAssert\CustomField\Text($handler_options);
                 break;
-            case CustomDefAbstract::HANDLER_CLASS_TOGGLE:
+            case CustomDefAbstract::TYPE_TOGGLE:
                 $validators[] = new AppAssert\CustomField\Toggle($handler_options);
                 break;
-            case CustomDefAbstract::HANDLER_CLASS_DATE:
+            case CustomDefAbstract::TYPE_DATE:
                 $validators[] = new AppAssert\CustomField\Date($handler_options);
                 break;
-            case CustomDefAbstract::HANDLER_CLASS_DATETIME:
+            case CustomDefAbstract::TYPE_DATETIME:
                 $validators[] = new AppAssert\CustomField\DateTime($handler_options);
                 break;
-            case CustomDefAbstract::HANDLER_CLASS_CHOICE:
+            case CustomDefAbstract::TYPE_CHOICE:
                 $validators[] = new AppAssert\CustomField\Choice($handler_options);
                 break;
         }

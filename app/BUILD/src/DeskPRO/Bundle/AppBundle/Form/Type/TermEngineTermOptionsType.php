@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\TermEngine\Exception\TermTypeDoesNotExistException;
 use DeskPRO\Bundle\AppBundle\TermEngine\Util\TermTypeCodes;
 use Symfony\Component\Form\AbstractType;
@@ -88,7 +89,7 @@ class TermEngineTermOptionsType extends AbstractType
         try {
             $term_class = TermTypeCodes::getTermClassForTypeCode($term_type);
         } catch (TermTypeDoesNotExistException $e) {
-            $form->addError(new FormError(ApiErrors::TERM_TYPE_DOES_NOT_EXIST, null, ['type' => $term_type]));
+            $form->addError(new FormError(ErrorsCodes::TERM_TYPE_DOES_NOT_EXIST, null, ['type' => $term_type]));
 
             return;
         }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
@@ -37,16 +38,16 @@ namespace DeskPRO\Bundle\AppBundle\Form\Error;
 class ExceptionErrorCodeFactory
 {
     public static $exceptions_to_error_codes_map = [
-        'DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException' => ApiErrors::BAD_REQUEST,
-        'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'     => ApiErrors::BAD_REQUEST,
-        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'   => ApiErrors::UNAUTHORIZED,
-        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'       => ApiErrors::NOT_FOUND,
-        'Symfony\Component\Security\Core\Exception\BadCredentialsException'  => ApiErrors::BAD_CREDENTIALS,
+        'DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException' => ErrorsCodes::BAD_REQUEST,
+        'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'     => ErrorsCodes::BAD_REQUEST,
+        'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'   => ErrorsCodes::UNAUTHORIZED,
+        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'       => ErrorsCodes::NOT_FOUND,
+        'Symfony\Component\Security\Core\Exception\BadCredentialsException'  => ErrorsCodes::BAD_CREDENTIALS,
     ];
 
     public static $exception_messages_to_error_codes_map = [
-        'Invalid JSONP callback value'  => ApiErrors::INVALID_JSONP_CALLBACK,
-        'Invalid json message received' => ApiErrors::INVALID_JSON_BODY,
+        'Invalid JSONP callback value'  => ErrorsCodes::INVALID_JSONP_CALLBACK,
+        'Invalid json message received' => ErrorsCodes::INVALID_JSON_BODY,
     ];
 
     /**
@@ -71,7 +72,7 @@ class ExceptionErrorCodeFactory
             return $error_code;
         }
 
-        return ApiErrors::EXCEPTION_FALLBACK;
+        return ErrorsCodes::EXCEPTION_FALLBACK;
     }
 
     /**

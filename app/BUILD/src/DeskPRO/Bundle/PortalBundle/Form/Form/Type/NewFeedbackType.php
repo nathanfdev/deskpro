@@ -89,20 +89,20 @@ class NewFeedbackType extends AbstractType
             ->add('title', 'text', [
                 'label'       => $this->phrase('portal.forms.label_title'),
                 'constraints' => [
-                    new NotBlank(['message' => 'portal.forms.error_required']),
+                    new NotBlank(),
                 ],
             ])
             ->add('content', 'textarea', [
                 'label'       => 'portal.forms.label_content',
                 'constraints' => [
-                    new NotBlank(['message' => 'portal.forms.error_required']),
+                    new NotBlank(),
                 ],
             ])
             ->add('category', 'feedback_category', [
                 'person'      => $options['person'],
                 'empty_value' => $this->phrase('portal.forms.label_select'),
                 'constraints' => [
-                    new NotNull(['message' => 'portal.forms.error_required']),
+                    new NotNull(),
                 ],
             ])
             ->add('custom_data', 'deskpro_combined_type', [
@@ -120,7 +120,7 @@ class NewFeedbackType extends AbstractType
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder
                 ->add('name', 'text', [
-                    'constraints'   => new Length(['minMessage' => 'portal.forms.error_length_min', 'min' => 2]),
+                    'constraints'   => new Length(['min' => 2]),
                     'property_path' => 'person.name',
                     'label'         => $this->phrase('portal.forms.label_name'),
                 ])

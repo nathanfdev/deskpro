@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -52,10 +53,16 @@ class UniqueCollectionValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'array or \Traversable');
         }
 
-        $unique = [];
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+        $unique  = [];
         foreach ($value as $item) {
             if (in_array($item, $unique)) {
-                $this->context->addViolation('not_unique_collection');
+                $context
+                    ->buildViolation($constraint->message)
+                    ->setCode(UniqueCollection::NOT_UNIQUE)
+                    ->addViolation()
+                ;
 
                 return;
             }

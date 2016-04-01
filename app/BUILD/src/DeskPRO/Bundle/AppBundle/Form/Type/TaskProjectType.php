@@ -31,14 +31,17 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class ProjectType.
  */
-class ProjectType extends AbstractType
+class TaskProjectType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -54,20 +57,20 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
+            ->add('title', TextType::class, [
                 'description' => 'the project title',
             ])
-            ->add('departments', 'entity', [
+            ->add('departments', EntityType::class, [
                 'class'    => Department::class,
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('teams', 'entity', [
+            ->add('teams', EntityType::class, [
                 'class'    => AgentTeam::class,
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('agents', 'entity', [
+            ->add('agents', EntityType::class, [
                 'class'    => Person::class,
                 'multiple' => true,
                 'required' => false,
@@ -81,7 +84,7 @@ class ProjectType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskProject',
+            'data_class' => TaskProject::class,
         ]);
     }
 }

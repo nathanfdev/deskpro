@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,20 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraint;
 
 /**
+ * Class FacebookUrl.
+ *
  * @Annotation
+ * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class ValidRegex extends Regex
+class FacebookUrl extends Constraint
 {
-    public function validatedBy()
-    {
-        return get_class($this).'Validator';
-    }
+    const NOT_PROFILE_URL = 'facebook_url';
+
+    public $message = 'This value is not a valid profile URL.';
 }

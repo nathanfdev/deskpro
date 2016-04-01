@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Form\Error;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Debug\Exception\FlattenException;
@@ -55,19 +56,19 @@ class ExceptionErrorCodeFactorySpec extends ObjectBehavior
 
     public function it_gets_default_exception_error_code_if_none_defined()
     {
-        $this->getExceptionErrorCode(new NewException())->shouldReturn(ApiErrors::EXCEPTION_FALLBACK);
+        $this->getExceptionErrorCode(new NewException())->shouldReturn(ErrorsCodes::EXCEPTION_FALLBACK);
     }
 
     public function it_uses_the_map_for_blank_message_http_kernel_exceptions(
         FlattenException $e
     ) {
-        $this->getExceptionErrorCode(new BadRequestHttpException())->shouldReturn(ApiErrors::BAD_REQUEST);
+        $this->getExceptionErrorCode(new BadRequestHttpException())->shouldReturn(ErrorsCodes::BAD_REQUEST);
     }
 
     public function it_uses_the_map_for_non_kernel_exceptions(
         FormInterface $form
     ) {
-        $this->getExceptionErrorCode(new InvalidFormException($form->getWrappedObject()))->shouldReturn(ApiErrors::INVALID_INPUT);
+        $this->getExceptionErrorCode(new InvalidFormException($form->getWrappedObject()))->shouldReturn(ErrorsCodes::INVALID_INPUT);
     }
 }
 

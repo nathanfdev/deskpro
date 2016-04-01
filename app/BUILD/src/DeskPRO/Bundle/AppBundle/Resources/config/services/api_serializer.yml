@@ -58,8 +58,11 @@ services:
 
   api_serializer.handler.task_project:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectHandler
-    arguments:
-      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_project_member:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectMemberHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

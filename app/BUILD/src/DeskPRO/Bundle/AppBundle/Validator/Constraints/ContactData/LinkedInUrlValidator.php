@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\ContactData;
 
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class ValidRegexValidator extends ConstraintValidator
+/**
+ * Class LinkedInValidator.
+ */
+class LinkedInUrlValidator extends ConstraintValidator
 {
+    /**
+     * {@inheritdoc}
+     */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof ValidRegex) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\ValidRegex');
+        if (!$constraint instanceof LinkedInUrl) {
+            throw new UnexpectedTypeException($constraint, LinkedInUrl::class);
         }
 
-        if ($value === null) {
-            $value = '';
+        if (!$value) {
+            return;
         }
-
-        if (!is_scalar($value) && !(is_object($value) && method_exists($value, '__toString'))) {
+        if (!is_scalar($value)) {
             throw new UnexpectedTypeException($value, 'string');
         }
 
-        $value = (string) $value;
-
-        if ($constraint->match xor preg_match($constraint->pattern, $value)) {
-            $this->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $this->formatValue($value))
-                ->addViolation();
+        if (!preg_match('#/in/(.*?)$#', $value)) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setCode(LinkedInUrl::NOT_PROFILE_URL)
+                ->addViolation()
+            ;
         }
     }
 }

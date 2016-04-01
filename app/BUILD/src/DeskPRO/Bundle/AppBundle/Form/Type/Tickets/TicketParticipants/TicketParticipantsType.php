@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -175,11 +176,11 @@ class TicketParticipantsType extends AbstractType
             $person     = $participant->getPerson();
 
             if (!$person) {
-                $error_code = ApiErrors::NO_PERSON;
+                $error_code = ErrorsCodes::NO_PERSON;
             } elseif ($is_agent && !$person->isAgent()) {
-                $error_code = ApiErrors::NOT_AGENT;
+                $error_code = ErrorsCodes::NOT_AGENT;
             } elseif (!$is_agent && $person->isAgent()) {
-                $error_code = ApiErrors::NOT_USER;
+                $error_code = ErrorsCodes::NOT_USER;
             }
 
             if ($error_code) {

@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ApiErrors;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -39,7 +38,9 @@ use Symfony\Component\Validator\Constraint;
  */
 class NotSystemEmail extends Constraint
 {
-    public $message = ApiErrors::SYSTEM_EMAIL;
+    const SYSTEM_EMAIL = 'system_email';
+
+    public $message = 'Email "{{ email }}" is already being used as email account.';
 
     /**
      * {@inheritdoc}

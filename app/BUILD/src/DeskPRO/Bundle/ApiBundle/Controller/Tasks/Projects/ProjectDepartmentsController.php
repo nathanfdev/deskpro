@@ -26,27 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class NotBannedEmail.
+ * Class ProjectDepartmentsController.
  *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * @ApiModes("all")
+ * @ApiDocSection("TaskProjects")
+ * @Rest\Route("/task_projects/{parentId}/members/departments")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
  */
-class NotBannedEmail extends Constraint
+class ProjectDepartmentsController extends AbstractProjectMembersController
 {
-    const BANNED_EMAIL = 'banned_email';
-
-    public $message = 'Email "{{ email }}" is banned.';
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return 'department';
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    protected function getTaskCriteriaParam()
     {
-        return 'not_banned_email_validator';
+        return 'assigned_department';
     }
 }

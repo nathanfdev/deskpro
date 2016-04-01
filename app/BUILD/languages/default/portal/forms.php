@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,7 +58,7 @@ return array(
     'portal.forms.error_ticket_msg_length'          => 'Your message must be at least {{ limit }} characters in length',
     'portal.forms.error_ticket_msg_required'        => 'You must provide a message',
     'portal.forms.error_email_required'             => 'You must provide your email address',
-    'portal.forms.error_email_invalid'              => 'This email adddress is not valid',
+    'portal.forms.error_invalid_email'              => 'This email adddress is not valid',
     'portal.forms.error_required'                   => 'This value is required',
     'portal.forms.error_regex'                      => 'This value does not match the expected format',
     'portal.forms.error_length_min'                 => 'This value should have {{ limit }} characters or more',
@@ -80,6 +80,7 @@ return array(
     'portal.forms.error_accept_server_error'        => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading a file. Please try uploading smaller files.',
+    'portal.forms.error_unique_entity'              => 'This value already exists in the system.',
 
     'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
     'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',

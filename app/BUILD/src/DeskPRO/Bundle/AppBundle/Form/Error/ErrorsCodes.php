@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
- * Class ApiErrors.
+ * Class ErrorsCodes.
  */
-class ApiErrors
+final class ErrorsCodes
 {
     /** The absolute last fallback error code for thrown exceptions */
     const EXCEPTION_FALLBACK = 'error';
@@ -76,21 +77,12 @@ class ApiErrors
     const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
     const INVALID_URL                 = 'invalid_url';
-    const PROFILE_URL                 = 'profile_url';
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
-    const RESOURCE_NOT_FOUND          = 'resource_not_found';
-    const INVALID_PHONE_NUMBER        = 'invalid_phone_number_format';
-    const DUPE_EMAIL                  = 'dupe_email';
-    const SYSTEM_EMAIL                = 'system_email';
-    const BANNED_EMAIL                = 'banned_email';
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
     const EXACTLY_ONE_SHOULD_BE_SET   = 'exactly_one_value_should_be_set';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
-
-    /** Ticket specific */
-    const NOT_ASSIGNABLE_TICKET_DEPARTMENT = 'not_assignable_ticket_department';
 }
