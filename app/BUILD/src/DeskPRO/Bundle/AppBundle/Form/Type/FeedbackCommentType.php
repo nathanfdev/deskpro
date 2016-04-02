@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,53 +29,54 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\FeedbackComment;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class FeedbackCommentType.
+ */
 class FeedbackCommentType extends AbstractType
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
         return 'feedback_comment';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'status',
-                'text',
-                ['description' => 'text representation of comment status', 'required' => false]
-            )
-            ->add(
-                'is_reviewed',
-                'api_boolean',
-                ['required' => false, 'description' => 'is comment was reviewed']
-            )->add(
-                'content',
-                'text',
-                ['required' => false, 'description' => 'comment message']
-            );
+            ->add('status', TextType::class, [
+                'description' => 'text representation of comment status',
+                'required'    => false,
+            ])
+            ->add('is_reviewed', ApiBooleanType::class, [
+                'required'    => false,
+                'description' => 'is comment was reviewed',
+            ])->add('content', TextType::class, [
+                'required'    => false,
+                'description' => 'comment message',
+            ]);
     }
 
     /**
-     * @param OptionsResolver $resolver
-     *
-     * @throws AccessException
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\FeedbackComment',
-            )
-        );
+        $resolver->setDefaults([
+            'data_class' => FeedbackComment::class,
+        ]);
     }
 }

@@ -133,11 +133,6 @@ services:
     tags:
       - { name: form.type, alias: organization_member }
 
-  form.api_boolean:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
-    tags:
-      - { name: form.type, alias: api_boolean }
-
   form.auth_blob:
     class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
     arguments: ["@doctrine.orm.default_entity_manager"]
