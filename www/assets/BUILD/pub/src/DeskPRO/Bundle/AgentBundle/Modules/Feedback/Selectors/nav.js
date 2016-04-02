@@ -3,7 +3,7 @@ import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 
 const stateSelector = state => state.Feedback.nav;
 
-export const isDoneSelector = createSelector(
+export const isLoadedSelector = createSelector(
   stateSelector,
     state => state.getIn(['async', 'done'])
 );
@@ -26,4 +26,14 @@ export const statusCountersSelector = createSelector(
 export const feedbackLabelsSelector = createSelector(
   stateSelector,
     state => reduceImmutableToProperty('label', state.get('labels'))
+);
+
+export const feedbackToReviewCountSelector = createSelector(
+  stateSelector,
+    state => state.get('feedbackToReviewCount')
+);
+
+export const commentsToReviewCountSelector = createSelector(
+  stateSelector,
+    state => state.get('commentsToReviewCount')
 );

@@ -18,8 +18,7 @@ export class MassActionsCheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     elements: PropTypes.array,
-    action: PropTypes.func.isRequired,
-    selected: PropTypes.array
+    selected: PropTypes.object
   };
 
   constructor(props) {

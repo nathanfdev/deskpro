@@ -6,30 +6,24 @@ import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
 import { CategoryTab } from './CategoryTab';
 import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
-import { applyParams } from '../../Actions/FeedbackListActions';
 
 @injectIntl
 export class Nav extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isLoaded: PropTypes.bool.isRequired,
+    onLabelClick: PropTypes.func.isRequired,
+    isLoaded: PropTypes.bool,
     intl: intlShape.isRequired,
     statuses: PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired,
     types: PropTypes.object,
     categories: PropTypes.object,
-    toValidateCount: PropTypes.object.isRequired,
+    feedbackToReviewCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired
   };
 
-  // @todo move this callback to the NavContainer
-  onLabelClick = (params) => {
-    this.props.dispatch(applyParams({ navItem: { [params.name]: params.value } }));
-  };
-
   render() {
-    const { labels, isLoaded, types, toValidateCount, commentsToReviewCount, statuses, categories } = this.props;
+    const { labels, isLoaded, onLabelClick, types, feedbackToReviewCount, commentsToReviewCount, statuses, categories } = this.props;
 
     return (
       <NavFrame>
@@ -37,22 +31,22 @@ export class Nav extends Component {
           <FormattedMessage id="feedback.nav.title"/>
         </NavFrameHeaderContainer>
         <NavFrameBody isLoaded={isLoaded}>
-          <Pending toValidateCount={toValidateCount}
+          <Pending feedbackToReviewCount={feedbackToReviewCount}
                    commentsToReviewCount={commentsToReviewCount}/>
 
           <TabsPaneStatefulContainer id="tab">
             <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
-              <StatusTab statuses={statuses} />
+              <StatusTab statuses={statuses}/>
             </Tab>
 
             <Tab title="Labels">
-              <LabelsDictionary labels={labels} onClick={this.onLabelClick}/>
+              <LabelsDictionary labels={labels} onClick={onLabelClick}/>
             </Tab>
             <Tab title="Type">
-              <TypeTab types={types} />
+              <TypeTab types={types}/>
             </Tab>
             <Tab title="Category">
-              <CategoryTab categories={categories} />
+              <CategoryTab categories={categories}/>
             </Tab>
           </TabsPaneStatefulContainer>
         </NavFrameBody>

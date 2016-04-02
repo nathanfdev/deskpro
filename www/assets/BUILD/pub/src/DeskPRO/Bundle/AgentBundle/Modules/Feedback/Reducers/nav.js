@@ -8,7 +8,9 @@ const initialState = {
   async: {
     done: false
   },
-  toValidateCount: { count: 0 },
+  types: {},
+  categories: {},
+  feedbackToReviewCount: { count: 0 },
   commentsToReviewCount: { count: 0 },
   labels: [/* string */],
   statuses: {
