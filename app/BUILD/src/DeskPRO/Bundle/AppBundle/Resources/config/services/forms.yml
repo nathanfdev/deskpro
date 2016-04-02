@@ -159,11 +159,6 @@ services:
     tags:
       - { name: form.type, alias: dp_auth }
 
-  form.task:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskType
-    tags:
-      - { name: form.type, alias: task }
-
   form.task_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType
     tags:

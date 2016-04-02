@@ -28,10 +28,20 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -43,29 +53,21 @@ class TaskType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'task';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
+            ->add('title', TextType::class, [
                 'description' => 'the task title',
             ])
-            ->add('is_done', 'api_boolean', [
+            ->add('is_done', ApiBooleanType::class, [
                 'description' => 'the task status',
                 'required'    => false,
             ])
-            ->add('percent_complete', 'integer', [
+            ->add('percent_complete', IntegerType::class, [
                 'required'    => false,
                 'description' => 'the percentage of the task complete',
             ])
-            ->add('task_type', 'choice', [
+            ->add('task_type', ChoiceType::class, [
                 'description' => 'the type of task',
                 'required'    => false,
                 'empty_data'  => Task::TYPE_TASK,
@@ -74,25 +76,25 @@ class TaskType extends AbstractType
                     Task::TYPE_EVENT => 'Event',
                 ],
             ])
-            ->add('date_due', 'datetime', [
+            ->add('date_due', DateTimeType::class, [
                 'required'    => false,
                 'widget'      => 'single_text',
                 'description' => 'the task due date',
             ])
-            ->add('date_done', 'datetime', [
+            ->add('date_done', DateTimeType::class, [
                 'required'    => false,
                 'widget'      => 'single_text',
                 'description' => 'the task done date',
             ])
-            ->add('date_event_start', 'datetime', [
+            ->add('date_event_start', DateTimeType::class, [
                 'required'    => false,
                 'description' => 'the event start datetime',
             ])
-            ->add('date_event_end', 'datetime', [
+            ->add('date_event_end', DateTimeType::class, [
                 'required'    => false,
                 'description' => 'the event end datetime',
             ])
-            ->add('visibility', 'choice', [
+            ->add('visibility', ChoiceType::class, [
                 'required'    => false,
                 'description' => 'the task visibility',
                 'empty_data'  => Task::VISIBILITY_PRIVATE,
@@ -102,21 +104,21 @@ class TaskType extends AbstractType
                     Task::VISIBILITY_PRIVATE => 'Private',
                 ],
             ])
-            ->add('urgency', 'integer', [
+            ->add('urgency', IntegerType::class, [
                 'required'    => false,
                 'empty_data'  => '5',
                 'description' => 'the task urgency',
             ])
-            ->add('display_order', 'integer', [
+            ->add('display_order', IntegerType::class, [
                 'required'    => false,
                 'description' => 'the task position in a list',
             ])
-            ->add('project', 'entity', [
-                'class'    => 'App:TaskProject',
+            ->add('project', EntityType::class, [
+                'class'    => TaskProject::class,
                 'property' => 'title',
             ])
-            ->add('list', 'entity', [
-                'class'    => 'App:TaskList',
+            ->add('list', EntityType::class, [
+                'class'    => TaskList::class,
                 'property' => 'title',
             ])
             ->add('labels', LabelsCollectionType::class, [
@@ -124,18 +126,18 @@ class TaskType extends AbstractType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'task',
             ])
-            ->add('departments', 'entity', [
-                'class'    => 'DeskPRO:Department',
+            ->add('departments', EntityType::class, [
+                'class'    => Department::class,
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('teams', 'entity', [
-                'class'    => 'DeskPRO:AgentTeam',
+            ->add('teams', EntityType::class, [
+                'class'    => AgentTeam::class,
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('agents', 'entity', [
-                'class'    => 'DeskPRO:Person',
+            ->add('agents', EntityType::class, [
+                'class'    => Person::class,
                 'multiple' => true,
                 'required' => false,
             ])
@@ -148,7 +150,7 @@ class TaskType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\Task',
+            'data_class' => Task::class,
         ]);
     }
 }
