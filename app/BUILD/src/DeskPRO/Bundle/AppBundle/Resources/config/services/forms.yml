@@ -10,6 +10,11 @@ services:
     tags:
       - { name: form.type_extension, alias: text }
 
+  form.choice_transformer_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\CheckboxExtension
+    tags:
+      - { name: form.type_extension, alias: choice }
+
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager"]
