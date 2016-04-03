@@ -60,28 +60,6 @@ export const loadFeedbackList = createAction(
       return { ids: ids, pagination: res.meta.pagination };
     }
   ));
-export const loadList = createAction(
-  'FEEDBACK_LIST',
-  (listParams) => dispatch => {
-    let params = listParams;
-
-    const { navItem } = params;
-    if (navItem) {
-      delete params.navItem;
-      params = { ...params, ...navItem };
-    }
-
-    const isComments = params.isComments;
-    delete params.isComments;
-    if (isComments) {
-      dispatch(loadFeedbackCommentsList(params));
-    } else {
-      dispatch(loadFeedbackList(params));
-    }
-    dispatch(toggleMassAction());
-    return params;
-  }
-);
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
@@ -109,6 +87,28 @@ export const updateDisplayFieldsToPersonSetting = createAction(
     const displayFields = visibleFieldsSelector(getState());
     repository('PersonSetting').update({ name: 'feedback_display_fields', value: displayFields });
     return displayFields;
+  }
+);
+export const loadList = createAction(
+  'FEEDBACK_LIST',
+  (listParams) => dispatch => {
+    let params = listParams;
+
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+
+    const isComments = params.isComments;
+    delete params.isComments;
+    if (isComments) {
+      dispatch(loadFeedbackCommentsList(params));
+    } else {
+      dispatch(loadFeedbackList(params));
+    }
+    dispatch(toggleMassAction());
+    return params;
   }
 );
 
