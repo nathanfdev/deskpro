@@ -10,7 +10,6 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
   comments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   selected: selectedSelector(state),
   people: collectionSelectorFactory('Person', 'feedback')(state),
-  massAction: state.Feedback.list.get('massAction'),
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state)
 }))
 export class FeedbackCommentsCardsContainer extends Component {
@@ -21,12 +20,11 @@ export class FeedbackCommentsCardsContainer extends Component {
     toggleSelected: PropTypes.func.isRequired,
     people: PropTypes.object.isRequired,
     feedback: PropTypes.object.isRequired,
-    massAction: PropTypes.bool.isRequired,
     selected: PropTypes.object.isRequired
   };
 
   renderComment(id) {
-    const { dispatch, comments, selected, toggleSelected, massAction, people, feedback } = this.props;
+    const { dispatch, comments, selected, toggleSelected, people, feedback } = this.props;
     const element = comments.get(id);
     return (
       <FeedbackCommentCard key={id}
@@ -35,7 +33,6 @@ export class FeedbackCommentsCardsContainer extends Component {
                            feedback={feedback.get(element.get('feedback'))}
                            selected={selected.includes(id)}
                            toggleSelected={toggleSelected}
-                           massAction={massAction}
                            author={people.get(element.get('person'))}/>
     );
   }
