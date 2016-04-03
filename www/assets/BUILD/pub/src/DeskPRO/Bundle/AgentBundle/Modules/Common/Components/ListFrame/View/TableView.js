@@ -44,27 +44,27 @@ export class Th extends Component {
   static propTypes = {
     title: PropTypes.string,
     sort: PropTypes.string,
-    currentSort: PropTypes.string,
-    currentOrder: PropTypes.string,
+    orderBy: PropTypes.string,
+    orderDir: PropTypes.string,
     onChange: PropTypes.func,
     visible: PropTypes.bool
   };
 
   onChange = () => {
-    const { sort, currentSort, currentOrder, onChange } = this.props;
+    const { sort, orderBy, orderDir, onChange } = this.props;
     if (!onChange) {
       return;
     }
 
-    const newOrder = sort === currentSort && currentOrder === constants.ORDER_DESC
+    const newOrderDir = sort === orderBy && orderDir === constants.ORDER_DESC
       ? constants.ORDER_ASC
       : constants.ORDER_DESC;
 
-    onChange(sort, newOrder);
+    onChange(sort, newOrderDir);
   };
 
   render() {
-    const { sort, currentSort, currentOrder, title, visible = true, onChange } = this.props;
+    const { sort, orderBy, orderDir, title, visible = true, onChange } = this.props;
 
     return (
       <th onClick={this.onChange}
@@ -74,11 +74,11 @@ export class Th extends Component {
           )}>
 
         {title}
-        {sort && currentSort === sort &&
+        {sort && orderBy === sort &&
           <span>
             <i className={classNames('fa', {
-              'fa-caret-down': currentOrder === constants.ORDER_DESC,
-              'fa-caret-up': currentOrder === constants.ORDER_ASC
+              'fa-caret-down': orderDir === constants.ORDER_DESC,
+              'fa-caret-up': orderDir === constants.ORDER_ASC
             })}/>
           </span>
         }
