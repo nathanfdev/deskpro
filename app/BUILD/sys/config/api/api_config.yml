@@ -151,3 +151,10 @@ doctrine:
              string_functions:
                  field: DoctrineExtensions\Query\Mysql\Field
                  group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
+
+#rms_push_notifications:
+#  ios:
+#    timeout: 60 # Seconds to wait for connection timeout, default is 60
+#    sandbox: true
+#    pem: %kernel.root_dir%/../sys/config/DevelopmentPrivateKey.pem
+#    passphrase: null

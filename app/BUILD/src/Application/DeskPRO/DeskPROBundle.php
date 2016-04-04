@@ -103,7 +103,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',
-            'Application\\DeskPRO\\Command\\PushTestCommand',
         );
 
         foreach ($commands as $cmd) {

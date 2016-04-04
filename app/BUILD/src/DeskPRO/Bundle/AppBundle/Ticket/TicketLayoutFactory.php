@@ -180,7 +180,7 @@ class TicketLayoutFactory
     /**
      * @param Layout $layout
      */
-    protected function verifyRequiredFields(Layout $layout)
+    public function verifyRequiredFields(Layout $layout)
     {
         $required_fields = [
             FormFields::DEPARTMENT => 0,

@@ -163,8 +163,8 @@ class CustomDataType extends AbstractType
             $data = $event->getData();
         }
 
-        // because child field is not mapped the form tries to get data from the options
-        // so we should to pass stored value via its options
+        // child field is not mapped so the form tries to get data from the options
+        // so we should pass stored value via its options
         $options['data'] = $this->getFormData($data, $custom_def);
 
         $form->add('data', $field->getType(), $options);

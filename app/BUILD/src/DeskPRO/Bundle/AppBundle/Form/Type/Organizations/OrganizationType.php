@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -77,7 +79,7 @@ class OrganizationType extends AbstractType
             ->add('importance', 'integer', [
                 'empty_data' => '0',
             ])
-            ->add('labels', 'api_labels_collection', [
+            ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelOrganization::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',

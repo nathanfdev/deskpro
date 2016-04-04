@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use Application\DeskPRO\Entity\Person;
@@ -94,20 +95,21 @@ class TermEngineContext
     /**
      * Adds group by from a string.
      *
-     * @param string $group_by_string is a string of comma-separated columns to group the tickets by.
+     * @param string $groupByString is a string of comma-separated columns to group the tickets by.
      *
      * @return $this
      */
-    public function addGroupByFromString($group_by_string)
+    public function addGroupByFromString($groupByString)
     {
-        $group_bys = explode(',', $group_by_string);
-        foreach ($group_bys as $group_by) {
+        $groupBys = explode(',', $groupByString);
+        foreach ($groupBys as $groupBy) {
             $grouping = null;
             try {
-                $grouping = TicketGrouping::fromString($group_by);
+                $grouping = TicketGrouping::fromString($groupBy);
             } catch (UnknownTicketGroupingColumnException $e) {
                 continue;
             }
+
             $this->addGroupBy($grouping);
         }
 

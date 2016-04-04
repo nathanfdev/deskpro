@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,42 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class LabelsCollectionType.
  */
-class LabelsCollectionType extends ApiType
+class LabelsCollectionType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var PropertyAccessor
-     */
-    private $property_accessor;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager    $em
-     * @param PropertyAccessor $property_accessor
-     */
-    public function __construct(EntityManager $em, PropertyAccessor $property_accessor)
-    {
-        $this->em                = $em;
-        $this->property_accessor = $property_accessor;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -72,8 +50,6 @@ class LabelsCollectionType extends ApiType
     {
         $builder
             ->addViewTransformer(new LabelsCollectionTransformer(
-                $this->em,
-                $this->property_accessor,
                 $options['labels_owner'],
                 $options['labels_class'],
                 $options['labels_property'],
@@ -88,15 +64,7 @@ class LabelsCollectionType extends ApiType
      */
     public function getParent()
     {
-        return 'collection';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'api_labels_collection';
+        return CollectionType::class;
     }
 
     /**
@@ -111,6 +79,12 @@ class LabelsCollectionType extends ApiType
                 'allow_add'       => true,
                 'allow_delete'    => true,
                 'by_reference'    => true,
+            ])
+            ->setAllowedTypes([
+                'labels_class'    => 'string',
+                'labels_owner'    => 'object',
+                'labels_property' => 'string',
+                'owner_property'  => 'string',
             ])
         ;
     }

@@ -47,7 +47,7 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
     private $dataService;
 
     /**
-     * LegacyTicketFilterHandler constructor.
+     * Constructor.
      *
      * @param LegacyTicketFilterSetDataService $dataService
      */
@@ -57,7 +57,7 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
     public static function getClassNames()
     {
@@ -65,10 +65,9 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
     }
 
     /**
-     * @param LegacyTicketFilterEntity     $entity
-     * @param SideloadSerializationContext $context
+     * {@inheritdoc}
      *
-     * @return LegacyTicketFilterModel
+     * @param LegacyTicketFilterEntity $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
