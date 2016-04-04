@@ -123,7 +123,7 @@ class LogsController extends BaseController
      *         },
      *         {
      *             "name"="modes",
-     *             "requirement"="[\w]",
+     *             "requirement"="(\w,)+",
      *             "dataType"="array",
      *             "description"="strings array, values are session, key, token"
      *         },
