@@ -35,7 +35,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -45,7 +44,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketCountsController.
  *
  * @ApiDocSection("Ticket filters (legacy)")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\CountBadge\Count")
  * @ApiModes("all")
  */
 class TicketCountsController extends AbstractLegacyFiltersController
@@ -73,6 +71,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          200="Success",
      *          404="Not Found"
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/ticket_filter_sets/{id}/count")
      *
@@ -103,6 +102,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *              "dataType"="array"
      *          }
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/ticket_filter_sets/all/counts")
      *
@@ -144,6 +144,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *         200="Success",
      *         404="Not Found"
      *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/ticket_filters/{id}/count")
      *
@@ -176,6 +177,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          200="Success",
      *          404="Not Found"
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/ticket_filters_counts")
      *

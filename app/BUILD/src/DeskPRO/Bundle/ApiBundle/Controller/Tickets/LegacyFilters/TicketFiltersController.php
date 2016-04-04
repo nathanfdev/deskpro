@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,6 +51,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketFiltersController.
  *
  * @ApiDocSection("Ticket filters (legacy)")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LegacyTicketFilter")
  * @ApiModes("all")
  * @Rest\Route("/ticket_filters")
  */
