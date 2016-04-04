@@ -263,7 +263,9 @@ class QueueRunner
             $batch       = $this->reserveBatch();
             $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
-            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
+            // FIXME
+            // dp_sys.alerts.event_logger should be injected
+            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger, \Application\DeskPRO\App::$container->get('dp_sys.alerts.event_logger'));
 
             if ($batch) {
                 while ($r = array_shift($batch)) {

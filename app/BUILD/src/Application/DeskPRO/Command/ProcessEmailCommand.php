@@ -289,7 +289,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             /* @var \DpRun\DpEnv $DP_ENV */
             global $DP_ENV;
 
-            if (!$DP_ENV->getConfig('adv_email_process')) {
+            if ($DP_ENV->getConfig('adv_email_process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 $proc->enqueueNewEmail($source);
