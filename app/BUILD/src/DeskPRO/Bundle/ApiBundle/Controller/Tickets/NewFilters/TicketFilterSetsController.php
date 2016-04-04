@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -38,8 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterSetType;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDocSection("Ticket filters")
  * @OutputEntity(TicketFilterSet::class)
- * @Route("/new/ticket_filter_sets")
+ * @Rest\Route("/new/ticket_filter_sets")
  */
 class TicketFilterSetsController extends CrudController
 {
@@ -74,7 +74,7 @@ class TicketFilterSetsController extends CrudController
      *      },
      *      output="array<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>"
      * )
-     * @Get("/{set}/filters")
+     * @Rest\Get("/{set}/filters")
      *
      * @param Request         $request
      * @param TicketFilterSet $set

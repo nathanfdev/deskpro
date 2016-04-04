@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
@@ -56,14 +57,11 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     output="array<DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet>"
      * )
      *
-     * @Get("/ticket_filter_sets")
+     * @Rest\Get("/ticket_filter_sets")
      */
     public function listAction()
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-        $filter_sets  = $data_service->getAllFilterSets();
-
-        return View::create($this->wrap($filter_sets));
+        return View::create($this->wrap($this->getLegacyFilterSetService()->getAllFilterSets()));
     }
 
     /**
@@ -87,7 +85,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     output="DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSet"
      * )
      *
-     * @Get("/ticket_filter_sets/{id}")
+     * @Rest\Get("/ticket_filter_sets/{id}")
      *
      * @param int $id
      *
@@ -95,9 +93,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      */
     public function getAction($id)
     {
-        $set = $this->getFilterSetOr404($id);
-
-        return View::create($this->wrap($set));
+        return View::create($this->wrap($this->getFilterSetOr404($id)));
     }
 
     /**
@@ -121,7 +117,7 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      *     },
      *     output="array<Application\DeskPRO\Entity\TicketFilter>"
      * )
-     * @Get("/ticket_filter_sets/{id}/filters")
+     * @Rest\Get("/ticket_filter_sets/{id}/filters")
      *
      * @param int $id
      *
@@ -129,8 +125,6 @@ class TicketFilterSetsController extends AbstractLegacyFiltersController
      */
     public function getSetFiltersAction($id)
     {
-        $set = $this->getFilterSetOr404($id);
-
-        return View::create($this->wrap($set->getFilters()));
+        return View::create($this->wrap($this->getFilterSetOr404($id)->getFilters()));
     }
 }

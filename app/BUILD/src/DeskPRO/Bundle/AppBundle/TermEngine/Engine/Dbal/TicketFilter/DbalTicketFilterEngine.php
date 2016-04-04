@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -43,6 +44,9 @@ use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class DbalTicketFilterEngine.
+ */
 class DbalTicketFilterEngine extends DbalEngine
 {
     /**
@@ -65,11 +69,19 @@ class DbalTicketFilterEngine extends DbalEngine
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param DbalTicketFilterEngineCompiler $compiler
+     * @param EventDispatcherInterface       $event_dispatcher
+     * @param Connection                     $connection
+     * @param LoggerInterface                $logger
+     */
     public function __construct(
         DbalTicketFilterEngineCompiler $compiler,
-        EventDispatcherInterface $event_dispatcher,
-        Connection $connection,
-        LoggerInterface $logger
+        EventDispatcherInterface       $event_dispatcher,
+        Connection                     $connection,
+        LoggerInterface                $logger
     ) {
         $this->compiler         = $compiler;
         $this->event_dispatcher = $event_dispatcher;
@@ -77,24 +89,30 @@ class DbalTicketFilterEngine extends DbalEngine
         $this->logger           = $logger;
     }
 
+    /**
+     * @param TicketFilter      $filter
+     * @param TermEngineContext $context
+     *
+     * @return DbalExecutableQuery
+     */
     public function evaluate(TicketFilter $filter, TermEngineContext $context)
     {
         $timer = new SimpleTimer();
-
-        $this->logger->info('START EVALUATE FILTER', array(
+        $this->logger->info('START EVALUATE FILTER', [
             'filter_id'    => $filter->getId(),
             'filter_title' => $filter->getTitle(),
-        ));
+        ]);
+
         $compiled_query = $this->compiler->compile($filter);
 
         $event = new DbalEngineEvent($compiled_query, $context);
         $this->event_dispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
 
-        $this->logger->info('END EVALUATE FILTER', array(
+        $this->logger->info('END EVALUATE FILTER', [
             'filter_id'    => $filter->getId(),
             'filter_title' => $filter->getTitle(),
             'time'         => $timer->getElapsedTime(),
-        ));
+        ]);
 
         $query = new DbalExecutableQuery($compiled_query, $this->connection, $this->logger);
 
