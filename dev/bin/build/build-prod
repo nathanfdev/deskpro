@@ -56,7 +56,7 @@ dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --verbose --ba
 ########################################################################################################################
 
 echo "Legacy assets\n";
-dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose');
 
 ####################################################################################################################php####
 # Schema file
