@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,13 +32,13 @@ class UrlHostChecker
 {
     public function isMatch($check_url, $verified_host, $verified_port)
     {
-        $check_host = parse_url($check_url, PHP_URL_HOST);
-        $check_port = parse_url($check_url, PHP_URL_PORT);
-
         // no schemaless urls
         if (substr($check_url, 0, 2) == '//') {
             return false;
         }
+
+        $check_host = parse_url($check_url, PHP_URL_HOST);
+        $check_port = parse_url($check_url, PHP_URL_PORT);
 
         if (
             null === $check_host
@@ -60,12 +60,16 @@ class UrlHostChecker
 
     public function isMatchUrl($check_url, $verified_url)
     {
+        if ($check_url === $verified_url) {
+            //return true;
+        }
+
         if (!$host = parse_url($verified_url, PHP_URL_HOST)) {
             return false;
         }
 
         $port = parse_url($verified_url, PHP_URL_PORT);
 
-        return $this->isMatch($check_url, $host, $port);
+        return $this->isMatch($check_url, $host, $port ?: 80);
     }
 }
