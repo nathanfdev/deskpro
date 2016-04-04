@@ -76,7 +76,7 @@ class Boot
 
     /**
      * Runs /__serverinfo/xyz requests.
-     * 
+     *
      * @param \DpRun\DpEnv $env
      * @param string       $action
      */
@@ -142,6 +142,13 @@ class Boot
         $path = '/'.ltrim($request->getPathInfo(), '/');
         if (substr($path, 0, 14) === '/__serverinfo/') {
             self::bootServerInfoChecks($env, substr($path, 14));
+
+            return;
+        }
+
+        if (substr($path, 0, 30) === '/web/javascripts/DeskPRO/User/') {
+            header('Content-Type: application/javascript');
+            echo "/* This URL is no longer active. Please update your website to use the latest DeskPRO website widget code. */\n";
 
             return;
         }
