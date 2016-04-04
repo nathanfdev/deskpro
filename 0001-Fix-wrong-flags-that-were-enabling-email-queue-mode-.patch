@@ -1,0 +1,65 @@
+From fb10f62dce39b9ae31b8026c713977f13d27a8c0 Mon Sep 17 00:00:00 2001
+From: Christopher Nadeau <chris.nadeau@deskpro.com>
+Date: Mon, 4 Apr 2016 14:33:55 +0100
+Subject: [PATCH] Fix wrong flags that were enabling email queue mode when not
+ using it
+
+---
+ app/BUILD/src/Application/DeskPRO/Command/ProcessEmailCommand.php | 2 +-
+ app/BUILD/src/Application/DeskPRO/EmailGateway/Runner.php         | 4 ++--
+ app/BUILD/src/Application/EmailBundle/Queue/QueueRunner.php       | 4 +++-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/app/BUILD/src/Application/DeskPRO/Command/ProcessEmailCommand.php b/app/BUILD/src/Application/DeskPRO/Command/ProcessEmailCommand.php
+index 8b6d2b7..8aec914 100644
+--- a/app/BUILD/src/Application/DeskPRO/Command/ProcessEmailCommand.php
++++ b/app/BUILD/src/Application/DeskPRO/Command/ProcessEmailCommand.php
+@@ -289,7 +289,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
+             /* @var \DpRun\DpEnv $DP_ENV */
+             global $DP_ENV;
+ 
+-            if (!$DP_ENV->getConfig('adv_email_process')) {
++            if ($DP_ENV->getConfig('adv_email_process')) {
+                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                 $proc = App::getContainer()->get('in_email.proc_queue');
+                 $proc->enqueueNewEmail($source);
+diff --git a/app/BUILD/src/Application/DeskPRO/EmailGateway/Runner.php b/app/BUILD/src/Application/DeskPRO/EmailGateway/Runner.php
+index 5c9ed12..36ab0af 100644
+--- a/app/BUILD/src/Application/DeskPRO/EmailGateway/Runner.php
++++ b/app/BUILD/src/Application/DeskPRO/EmailGateway/Runner.php
+@@ -694,7 +694,7 @@ class Runner
+ 
+         $inserted_source_ids = array();
+ 
+-        $only_collect = $only_collect || !$DP_ENV->getConfig('adv_email_process');
++        $only_collect = $only_collect || $DP_ENV->getConfig('adv_email_process');
+ 
+         if (!$only_collect) {
+             $inserted_source_ids = App::getDb()->fetchAllCol("
+@@ -807,7 +807,7 @@ class Runner
+                 continue;
+             }
+ 
+-            if ($only_collect && $source->status !== 'error' && !$DP_ENV->getConfig('adv_email_process')) {
++            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('adv_email_process')) {
+                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
+                 $proc = App::getContainer()->get('in_email.proc_queue');
+                 try {
+diff --git a/app/BUILD/src/Application/EmailBundle/Queue/QueueRunner.php b/app/BUILD/src/Application/EmailBundle/Queue/QueueRunner.php
+index 470579e..9fb857f 100644
+--- a/app/BUILD/src/Application/EmailBundle/Queue/QueueRunner.php
++++ b/app/BUILD/src/Application/EmailBundle/Queue/QueueRunner.php
+@@ -263,7 +263,9 @@ class QueueRunner
+             $batch       = $this->reserveBatch();
+             $this->logger->info(sprintf('Reserved %d records', count($batch)));
+ 
+-            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
++            // FIXME
++            // dp_sys.alerts.event_logger should be injected
++            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger, \Application\DeskPRO\App::$container->get('dp_sys.alerts.event_logger'));
+ 
+             if ($batch) {
+                 while ($r = array_shift($batch)) {
+-- 
+2.8.0
+

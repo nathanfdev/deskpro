@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Server;
 
 use Application\DeskPRO\App;
 use Orb\Util\Util;
 
+// TODO: This is old, check to see if it can be completely removed.
 class ApcStatus
 {
     /**
@@ -196,7 +198,7 @@ class ApcStatus
      */
     public function getHitMissChartUrl()
     {
-        $config_hash = md5_file(DP_CONFIG_FILE);
+        $config_hash = '';
         $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;
@@ -211,7 +213,7 @@ class ApcStatus
      */
     public function getMemChartUrl()
     {
-        $config_hash = md5_file(DP_CONFIG_FILE);
+        $config_hash = '';
         $url         = App::getSetting('core.deskpro_url').'?_sys=apc&_='.Util::generateStaticSecurityToken($config_hash.'apc', 86400).'&IMG=1&'.time();
 
         return $url;

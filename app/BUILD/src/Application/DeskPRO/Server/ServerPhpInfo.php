@@ -76,8 +76,6 @@ class ServerPhpInfo
      */
     protected function _getInfo($noencode = false)
     {
-        $config_hash = md5_file(DP_CONFIG_FILE);
-
         #------------------------------
         # Binary paths
         #------------------------------
@@ -172,7 +170,6 @@ class ServerPhpInfo
             'binary_paths'   => $binary_paths,
             'web_php'        => $web_php,
             'cli_php'        => $cli_php,
-            'config_hash'    => $config_hash,
             'has_apc'        => $has_apc,
             'has_wincache'   => $has_wincache,
             'debug_settings' => $debug_settings,
