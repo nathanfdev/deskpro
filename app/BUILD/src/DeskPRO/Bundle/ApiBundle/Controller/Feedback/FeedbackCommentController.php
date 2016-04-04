@@ -40,10 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Exception\AlreadySubmittedException;
 use Symfony\Component\Form\Form;
@@ -86,12 +83,10 @@ class FeedbackCommentController extends BaseController
      *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
      *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
      *      },
-     *      output={
-     *        "class"="<Application\DeskPRO\Entity\FeedbackComment>"
-     *      }
+     *      output="array<Application\DeskPRO\Entity\FeedbackComment>"
      * )
-     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
-     * @Get("/feedback_comments_list", name="api_feedback_comments_list")
+     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
+     * @Rest\Get("/feedback_comments_list", name="api_feedback_comments_list")
      *
      * @param Request $request
      *
@@ -122,6 +117,7 @@ class FeedbackCommentController extends BaseController
 
     /**
      * Count overall feedback comments or count for given feedbacks.
+     * Proper docs for output coming soon.
      *
      * @ApiDoc(
      *      section="Feedback",
@@ -134,8 +130,8 @@ class FeedbackCommentController extends BaseController
      *          {"name"="ids", "dataType"="string", "description"="a comma separated list of feedback ids"}
      *     }
      * )
-     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
-     * @Get("/feedback_comments_counter", name="api_feedback_comments_counter")
+     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
+     * @Rest\Get("/feedback_comments_counter", name="api_feedback_comments_counter")
      *
      * @param Request $request
      *
@@ -189,8 +185,8 @@ class FeedbackCommentController extends BaseController
      *      },
      *      output="Application\DeskPRO\Entity\FeedbackComment"
      * )
-     * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
-     * @Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
+     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
+     * @Rest\Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
      *
      * @param int $id
      *
@@ -209,7 +205,7 @@ class FeedbackCommentController extends BaseController
     /**
      * The endpoint gives you an ability to modify comments status, content and  'status',.
      *
-     * @APIDoc(
+     * @ApiDoc(
      *      section="Feedback",
      *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="update a comment",
@@ -246,7 +242,7 @@ class FeedbackCommentController extends BaseController
      *          404="Not Found"
      *      }
      * )
-     * @Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
+     * @Rest\Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int     $id
@@ -267,7 +263,7 @@ class FeedbackCommentController extends BaseController
     /**
      * This endpoint gives you an ability do delete exactly one feedback comment.
      *
-     * @APIDoc(
+     * @ApiDoc(
      *      section="Feedback",
      *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
      *      description="delete feedback comment",
@@ -284,7 +280,7 @@ class FeedbackCommentController extends BaseController
      *          404="Returned if comment with specified id was not found"
      *      }
      * )
-     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete", requirements={"id": "\d+"})
+     * @Rest\Delete("/feedback_comments", name="api_feedback_comments_delete", requirements={"id": "\d+"})
      *
      * @param $id
      *
@@ -307,6 +303,7 @@ class FeedbackCommentController extends BaseController
 
     /**
      * Fetch a list of feedback comments awaiting validation.
+     * Proper docs for output coming soon.
      *
      * @ApiDoc(
      *      section="Feedback",
@@ -326,7 +323,7 @@ class FeedbackCommentController extends BaseController
      *      }
      * )
      *
-     * @Get("/feedback_comments/counts", name="api_feedback_comment_count")
+     * @Rest\Get("/feedback_comments/counts", name="api_feedback_comment_count")
      *
      * @throws \LogicException
      *

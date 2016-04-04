@@ -83,7 +83,8 @@ class FeedbackController extends BaseController
      *     statusCodes={
      *         200="Returned if successful request",
      *         400="Returned if you filter set was malformed",
-     *     }
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Feedback>"
      * )
      * @Get("/feedback", name="api_feedback")
      *
