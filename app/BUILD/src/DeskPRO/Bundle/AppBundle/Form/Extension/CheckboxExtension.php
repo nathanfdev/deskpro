@@ -26,37 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Extension;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
- * Class WidgetChatSetupType.
+ * Class CheckboxExtension.
  */
-class WidgetChatSetupType extends AbstractType
+class CheckboxExtension extends AbstractTypeExtension
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_global_chat_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('email_validation', ApiBooleanType::class)
-            ->add('require_login', ApiBooleanType::class)
-        ;
+        if ($options['expanded'] && $options['multiple']) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onUnsetChoices'], -1);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtendedType()
+    {
+        return 'choice';
+    }
+
+    /**
+     * We use PATCH request for all updates so it does not allow to remove not already selected values.
+     * It's because they are not submitted in the PATCH request. So submit them as well.
+     *
+     * @param FormEvent $event
+     */
+    public function onUnsetChoices(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        foreach ($form->all() as $name => $child) {
+            if (!array_key_exists($name, $data)) {
+                $data[$name] = false;
+            }
+        }
+
+        $event->setData($data);
     }
 }

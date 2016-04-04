@@ -63,8 +63,8 @@ class BatchController extends BaseController
         }
 
         $responses = [];
-        foreach ($requests as $identifier => $sub_request_info) {
-            $responses[$identifier] = $this->performSubRequest($sub_request_info);
+        foreach ($requests as $identifier => $subRequestInfo) {
+            $responses[$identifier] = $this->performSubRequest($subRequestInfo, $request);
         }
 
         return View::create(
@@ -90,11 +90,8 @@ class BatchController extends BaseController
         }
 
         $responses = [];
-        $baseUrl   = $request->getScheme().'://'.$request->getHost();
-        $port      = $request->getPort();
-        $baseUrl .= $port === 80 ?: ':'.$port;
-        foreach ($requests as $identifier => $sub_request_info) {
-            $responses[$identifier] = $this->performSubRequest($baseUrl.$sub_request_info);
+        foreach ($requests as $identifier => $subRequestInfo) {
+            $responses[$identifier] = $this->performSubRequest($subRequestInfo, $request);
         }
 
         return View::create(
@@ -104,11 +101,12 @@ class BatchController extends BaseController
     }
 
     /**
-     * @param array $sub_request_info
+     * @param array   $subRequestInfo
+     * @param Request $request
      *
      * @return string
      */
-    protected function performSubRequest($sub_request_info)
+    protected function performSubRequest($subRequestInfo, Request $request)
     {
         $info = [
             'method'  => 'GET',
@@ -118,10 +116,10 @@ class BatchController extends BaseController
             'params'  => [],
         ];
 
-        if (is_array($sub_request_info)) {
-            $info = array_merge($info, $sub_request_info);
+        if (is_array($subRequestInfo)) {
+            $info = array_merge($info, $subRequestInfo);
         } else {
-            $info = array_merge($info, ['url' => $sub_request_info]);
+            $info = array_merge($info, ['url' => $subRequestInfo]);
         }
 
         $json_serialized = null;
@@ -130,8 +128,8 @@ class BatchController extends BaseController
             $json_serialized = $this->get('serializer')->serialize($json, 'json');
         }
 
-        $sub_request = Request::create(
-            $info['url'],
+        $subRequest = Request::create(
+            $request->getSchemeAndHttpHost().$info['url'],
             $info['method'],
             $info['params'],
             [],
@@ -140,16 +138,16 @@ class BatchController extends BaseController
             $json_serialized
         );
 
-        $sub_request->headers->set('Content-Type', 'json');
-        $sub_request->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
+        $subRequest->headers->set('Content-Type', 'json');
+        $subRequest->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
 
         if ($info['headers']) {
             foreach ($info['headers'] as $k => $v) {
-                $sub_request->headers->set($k, $v);
+                $subRequest->headers->set($k, $v);
             }
         }
 
-        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
     }

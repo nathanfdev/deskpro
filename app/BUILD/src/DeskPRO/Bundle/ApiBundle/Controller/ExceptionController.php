@@ -64,7 +64,7 @@ class ExceptionController extends BaseController
         if ($exception instanceof FormExceptionInterface) {
             $errors_array = $this->get('form_error.form_errors_generator')->generateFormErrors($exception->getForm(), ErrorMessageFactory::PREFIX_API);
         } elseif ($exception instanceof ValidatorErrorsException) {
-            $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors($exception->getErrors());
+            $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors(ErrorMessageFactory::PREFIX_API, $exception->getErrors());
         }
 
         if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {

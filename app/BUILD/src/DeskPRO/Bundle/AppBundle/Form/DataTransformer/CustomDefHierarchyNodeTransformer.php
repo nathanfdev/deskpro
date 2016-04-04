@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\ChoiceList\LegacyChoiceListAdapter;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
@@ -65,12 +67,12 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
         }
 
         if (!is_array($value)) {
-            return $this->findChoiceForValue($value);
+            return $value instanceof HierarchyNode ? $value : $this->findChoiceForValue($value);
         }
 
         $items = [];
         foreach ($value as $item) {
-            $items[] = $this->findChoiceForValue($item);
+            $items[] = $item instanceof HierarchyNode ? $item : $this->findChoiceForValue($item);
         }
 
         return $items;
@@ -86,13 +88,15 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
         }
 
         if (!is_array($value)) {
-            return $value->getData()->getId();
+            /* @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode $value */
+            return (string) $value->getData()->getId();
         }
 
         $items = [];
 
+        /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode[] $value */
         foreach ($value as $item) {
-            $items[] = $item->getData()->getId();
+            $items[] = (string) $item->getData()->getId();
         }
 
         return $items;
@@ -111,5 +115,7 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
                 return $choice;
             }
         }
+
+        return false;
     }
 }

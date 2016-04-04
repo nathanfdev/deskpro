@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\LabelPerson;
@@ -36,6 +37,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Doctrine\ORM\EntityManager;
@@ -98,7 +100,7 @@ class PersonType extends ApiType
             ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
             ->add('organization_position', 'text')
             ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
-            ->add('labels', 'api_labels_collection', [
+            ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelPerson::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,28 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
 use Application\DeskPRO\Entity\Labels\Label;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class LabelsCollectionTransformer.
  */
 class LabelsCollectionTransformer implements DataTransformerInterface
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var PropertyAccessor
-     */
-    private $property_accessor;
-
     /**
      * @var object
      */
@@ -74,25 +65,23 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     /**
      * LabelsCollectionTransformer constructor.
      *
-     * @param EntityManager    $em
-     * @param PropertyAccessor $property_accessor
-     * @param object           $labelsOwner
-     * @param string           $labelsClass
-     * @param string           $labelsProperty
-     * @param string           $ownerProperty
+     * @param object $labelsOwner
+     * @param string $labelsClass
+     * @param string $labelsProperty
+     * @param string $ownerProperty
      */
-    public function __construct(EntityManager $em, PropertyAccessor $property_accessor, $labelsOwner, $labelsClass, $labelsProperty, $ownerProperty)
+    public function __construct($labelsOwner, $labelsClass, $labelsProperty, $ownerProperty)
     {
-        $this->em                = $em;
-        $this->property_accessor = $property_accessor;
-        $this->labelsOwner       = $labelsOwner;
-        $this->labelsClass       = $labelsClass;
-        $this->labelsProperty    = $labelsProperty;
-        $this->ownerProperty     = $ownerProperty;
+        $this->labelsOwner    = $labelsOwner;
+        $this->labelsClass    = $labelsClass;
+        $this->labelsProperty = $labelsProperty;
+        $this->ownerProperty  = $ownerProperty;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param Label[] $labels
      */
     public function transform($labels)
     {
@@ -102,9 +91,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
 
         $result = [];
         foreach ($labels as $label) {
-            if (is_string($label)) {
-                $result[] = $label;
-            }
+            $result[] = $label ? $label->getLabel() : '';
         }
 
         return $result;
@@ -119,14 +106,19 @@ class LabelsCollectionTransformer implements DataTransformerInterface
             throw new \InvalidArgumentException('Labels owner is not defined.');
         }
 
-        $repository = $this->em->getRepository($this->labelsClass);
-        $result     = [];
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        /** @var ArrayCollection $entities */
+        $entities = $propertyAccessor->getValue($this->labelsOwner, $this->labelsProperty);
+        $result   = [];
 
         foreach ($labels as $label) {
-            $entity = $repository->findOneBy([
-                $this->ownerProperty => $this->labelsOwner,
-                'label'              => $label,
-            ]);
+            $entity = $entities
+                ->filter(function (Label $entity) use ($label) {
+                    return $entity->getLabel() === $label;
+                })
+                ->first()
+            ;
 
             if (!$entity) {
                 $entity = new $this->labelsClass();
@@ -135,7 +127,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
                 }
 
                 $entity->setLabel($label);
-                $this->property_accessor->setValue($entity, $this->ownerProperty, $this->labelsOwner);
+                $propertyAccessor->setValue($entity, $this->ownerProperty, $this->labelsOwner);
             }
 
             $result[] = $entity;

@@ -29,21 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\TaskType;
 use Doctrine\ORM\Query;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
@@ -60,12 +58,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @ApiDocSection("Tasks")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
  * @ApiModes("all")
- * @Route("/tasks")
+ * @Rest\Route("/tasks")
  */
 class TasksController extends CrudController
 {
     public static $entity = Task::class;
-    public static $type   = 'task';
+    public static $type   = TaskType::class;
 
     /**
      * You can provide additionaly "me" as value for creator, team, agent or department to fetch list of task related to
@@ -105,7 +103,7 @@ class TasksController extends CrudController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task>"
      * )
-     * @Get("", name="api_tasks")
+     * @Rest\Get("", name="api_tasks")
      *
      * @param Request $request
      *
@@ -149,66 +147,6 @@ class TasksController extends CrudController
     }
 
     /**
-     * Perform a mass tasks update.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="update multiple tasks",
-     *     requirements={
-     *         {"name"="ids", "requirement"="\d+", "description"="task ids to perform an update", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         204="Returned if update was succesful",
-     *         400="Request was malformed",
-     *     }
-     * )
-     * @Put("/mass", name="api_tasks_mass_put")
-     *
-     * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     *
-     * @return View
-     */
-    public function massActionAction(Request $request)
-    {
-        $submitted = $request->request->all();
-        if (empty($submitted['ids'])) {
-            throw $this->createBadRequestException('You have to provide ids list to update');
-        }
-
-        // We only need to validate the data for one task
-        $taskIds = $submitted['ids'];
-        unset($submitted['ids']);
-
-        $task = $this->findEntity($taskIds[0], $request);
-
-        $this->validateForm($request, $task, $submitted);
-
-        if (count($submitted)) {
-            $dql = "UPDATE DeskPRO\Bundle\AppBundle\Entity\Task t SET";
-
-            foreach ($submitted as $field => $value) {
-                $dql .= ' t.'.$field.' = :'.$field;
-            }
-
-            $dql .= ' WHERE t.id IN (:ids)';
-
-            /** @var \Doctrine\ORM\Query $query */
-            $query = $this->getDoctrine()->getManager()->createQuery($dql);
-
-            foreach ($submitted as $field => $value) {
-                $query = $query->setParameter($field, $value);
-            }
-
-            $query = $query->setParameter('ids', $taskIds);
-            $query->execute();
-        }
-
-        return View::create($this->wrap($task), Response::HTTP_NO_CONTENT);
-    }
-
-    /**
      * Get subtasks for task with given id.
      *
      * @ApiDoc(
@@ -224,7 +162,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskSubtask>"
      * )
      *
-     * @Get("/{id}/subtasks", name="api_tasks_subtasks_get")
+     * @Rest\Get("/{id}/subtasks", name="api_tasks_subtasks_get")
      *
      * @param int     $id
      * @param Request $request
@@ -263,7 +201,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskComment>"
      * )
      *
-     * @Get("/{id}/comments", name="api_tasks_comments_get")
+     * @Rest\Get("/{id}/comments", name="api_tasks_comments_get")
      *
      * @param Request $request
      * @param int     $id
@@ -309,7 +247,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskAttachment>"
      * )
      *
-     * @Get("/{id}/attachments", name="api_tasks_attachments_get")
+     * @Rest\Get("/{id}/attachments", name="api_tasks_attachments_get")
      *
      * @param Request $request
      * @param int     $id
@@ -351,7 +289,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket>"
      * )
      *
-     * @Get("/{id}/linked_items/tickets", name="api_tasks_linked_tickets_get")
+     * @Rest\Get("/{id}/linked_items/tickets", name="api_tasks_linked_tickets_get")
      *
      * @param Request $request
      * @param int     $id
@@ -380,7 +318,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat>"
      * )
      *
-     * @Get("/{id}/linked_items/chats", name="api_tasks_linked_chats_get")
+     * @Rest\Get("/{id}/linked_items/chats", name="api_tasks_linked_chats_get")
      *
      * @param Request $request
      * @param int     $id
@@ -410,7 +348,7 @@ class TasksController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle>"
      * )
      *
-     * @Get("/{id}/linked_items/articles", name="api_tasks_linked_articles_get")
+     * @Rest\Get("/{id}/linked_items/articles", name="api_tasks_linked_articles_get")
      *
      * @param Request $request
      * @param int     $id
@@ -422,6 +360,13 @@ class TasksController extends CrudController
         return $this->getLinked($request, $id, 'articles');
     }
 
+    /**
+     * @param Request $request
+     * @param int     $id
+     * @param string  $type
+     *
+     * @return View
+     */
     protected function getLinked(Request $request, $id, $type)
     {
         $task = $this->findEntity($id, $request);
@@ -432,25 +377,6 @@ class TasksController extends CrudController
         $links  = $task->$method();
 
         return View::create($this->wrap($links), Response::HTTP_OK);
-    }
-
-    /**
-     * Validate the form.
-     *
-     * @param Request $request   The request object
-     * @param Task    $task      The task to update
-     * @param array   $submitted The submitted data
-     *
-     * @throws InvalidFormException If form is invalid
-     */
-    private function validateForm(Request $request, Task $task, $submitted)
-    {
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'task', $task)->getForm();
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
     }
 
     /**

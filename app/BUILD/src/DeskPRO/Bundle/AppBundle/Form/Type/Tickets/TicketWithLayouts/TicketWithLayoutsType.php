@@ -47,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
@@ -663,7 +664,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createLabelsField(TicketWithLayoutsContext $context)
     {
-        return new FormField('api_labels_collection', [
+        return new FormField(LabelsCollectionType::class, [
             'labels_class'   => LabelTicket::class,
             'labels_owner'   => $context->getTicket(),
             'owner_property' => 'ticket',
