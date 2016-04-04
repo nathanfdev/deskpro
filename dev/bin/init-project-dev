@@ -40,6 +40,6 @@ echo ".. done"
 echo
 
 echo ">> Building new web assets"
-npm run-script gulp
+npm run-script gulp bundle
 echo ".. done"
 echo
