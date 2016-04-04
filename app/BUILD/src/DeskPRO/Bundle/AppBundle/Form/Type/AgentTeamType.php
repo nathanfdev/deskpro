@@ -26,64 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+/**
+ * DeskPRO.
+ */
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
-use DeskPRO\Bundle\AppBundle\Content\Avatar;
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class AgentTeam.
+ * Class AgentTeamType.
  */
-class AgentTeam
+class AgentTeamType extends AbstractType
 {
     /**
-     * The unique team ID.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int
+     * {@inheritdoc}
      */
-    protected $id;
-
-    /**
-     * Team name.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * Team`s avatar.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
-     *
-     * @var Avatar
-     */
-    protected $avatar;
-
-    /**
-     * AgentTeam constructor.
-     *
-     * @param AgentTeamEntity $agent_team
-     */
-    public function __construct(AgentTeamEntity $agent_team)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->id   = $agent_team->getId();
-        $this->name = $agent_team->getName();
+        $builder
+            ->add('name', TextType::class, ['required' => true])
+            ->add('avatar', BlobAuthType::class, ['required' => false])
+            ->add('members', EntityType::class, array(
+                'class'    => Person::class,
+                'property' => 'id',
+                'multiple' => true,
+            ));
     }
 
     /**
-     * @param Avatar $avatar
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setAvatar(Avatar $avatar)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $this->avatar = $avatar;
-
-        return $this;
+        $resolver->setDefaults(['data_class' => AgentTeam::class]);
     }
 }
