@@ -40,83 +40,127 @@ use JMS\Serializer\Annotation as JMS;
 class Organization
 {
     /**
+     * The unique organization ID.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * The organization name.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $name;
 
     /**
+     * Short organization description.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $summary;
 
     /**
+     * Organization importance.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $importance;
 
     /**
+     * Custom organization fields.
+     *
      * @var CustomDataAbstract[]
      *
-     * @JMS\Type("custom_data<array>")
+     * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataAbstract>>")
      */
     protected $fields;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * Usergroups associated with this organization.
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
 
     /**
-     * @var \Application\DeskPRO\Entity\Labels\Label[]
+     * Labels associated with this organization.
      *
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelOrganization>>")
+     *
+     * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
     protected $labels;
 
     /**
-     * @var \Application\DeskPRO\Entity\OrganizationContactData[]
+     * Organization contacts.
      *
      * @JMS\Type("collection")
+     *
+     * @var \Application\DeskPRO\Entity\OrganizationContactData[]
      */
     protected $contact_data;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * Organization email domains.
      *
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\OrganizationEmailDomain>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $email_domains;
 
     /**
+     * Date when this organization was created.
+     *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * @var \Application\DeskPRO\Entity\Organization|null
+     * Organization parent (this is organization too).
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
+     *
+     * @var \Application\DeskPRO\Entity\Organization|null
      */
     protected $parent;
 
     /**
+     * How many chats organization participating.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $chats_count;
 
     /**
+     * How many tickets organization participating.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $tickets_count;
 
     /**
+     * How many employees organization has.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $employees_count;

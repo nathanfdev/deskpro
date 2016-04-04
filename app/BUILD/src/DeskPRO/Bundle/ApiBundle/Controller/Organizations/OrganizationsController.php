@@ -40,7 +40,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,7 +48,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class OrganizationsController.
  *
  * @ApiModes("all")
- * @Annotations\Route("/organizations")
+ * @Rest\Route("/organizations")
  * @ApiDocSection("Organizations")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
  */
@@ -77,7 +77,7 @@ class OrganizationsController extends CrudController
      *     },
      *     output="array<DeskPRO\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
-     * @Annotations\Get("/{id}/tickets")
+     * @Rest\Get("/{id}/tickets")
      *
      * @param Request $request
      * @param int     $id

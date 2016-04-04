@@ -43,9 +43,11 @@ use JMS\Serializer\Annotation as JMS;
 class CustomDefOrganization extends CustomDefAbstract
 {
     /**
-     * @var CustomDefOrganization
+     * Field`s parent.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefOrganization>")
+     *
+     * @var CustomDefOrganization
      */
     protected $parent = null;
 
