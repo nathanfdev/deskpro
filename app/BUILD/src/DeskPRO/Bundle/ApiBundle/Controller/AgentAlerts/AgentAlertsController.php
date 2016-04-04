@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations as Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDocSection("Notifications and alerts")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentAlerts\AgentAlert")
  * @ApiModes("all")
- * @Annotations\Route("/me/notifications")
+ * @Rest\Route("/me/notifications")
  */
 class AgentAlertsController extends CrudController
 {
@@ -68,7 +68,7 @@ class AgentAlertsController extends CrudController
      *         200="Returned if everything is ok",
      *     }
      * )
-     * @Annotations\Post("/dismiss")
+     * @Rest\Post("/dismiss")
      *
      * @param Request $request
      *
@@ -106,7 +106,7 @@ class AgentAlertsController extends CrudController
      *         200="Returned if everything is ok",
      *     }
      * )
-     * @Annotations\Post("/dismiss/all")
+     * @Rest\Post("/dismiss/all")
      *
      * @return View
      */

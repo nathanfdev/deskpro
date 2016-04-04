@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,7 +73,7 @@ class TicketLinkController extends BaseController
      
      * @return View
      *
-     * @Annotations\Post("/tickets/{ticketId}/link", name="api_tickets_link")
+     * @Rest\Post("/tickets/{ticketId}/link", name="api_tickets_link")
      */
     public function postAction(Request $request, $ticketId)
     {
@@ -123,7 +123,7 @@ class TicketLinkController extends BaseController
      *
      * @param int $ticketId
      *
-     * @Annotations\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
+     * @Rest\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
      *
      * @return View
      */
@@ -173,7 +173,7 @@ class TicketLinkController extends BaseController
      * @param int     $unlinkTicketId
      * @param Request $request
      *
-     * @Annotations\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
+     * @Rest\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
      *
      * @return View
      */

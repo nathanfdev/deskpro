@@ -36,7 +36,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class OrganizationContactDataController.
@@ -44,7 +44,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiModes("all")
  * @ApiDocSection("Organizations")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ContactData\AbstractContactData")
- * @Annotations\Route("/organizations/{parentId}/contact_data")
+ * @Rest\Route("/organizations/{parentId}/contact_data")
  */
 class OrganizationContactDataController extends CrudSubController
 {

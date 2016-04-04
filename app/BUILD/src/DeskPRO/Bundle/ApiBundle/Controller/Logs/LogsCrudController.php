@@ -62,7 +62,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -72,7 +72,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDocSection("Logs")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ApiLog")
  * @ApiModes("all")
- * @Annotations\Route("/api_logs")
+ * @Rest\Route("/api_logs")
  */
 class LogsCrudController extends CrudController
 {
@@ -95,8 +95,8 @@ class LogsCrudController extends CrudController
      * )
      *
      * @param Request $request
-     * @Annotations\Get("", name="api_logs_list")
-     * @Annotations\View(serializerGroups={"list"})
+     * @Rest\Get("", name="api_logs_list")
+     * @Rest\View(serializerGroups={"list"})
      *
      * @return View
      */
@@ -118,8 +118,8 @@ class LogsCrudController extends CrudController
      * )
      *
      * @param int $id
-     * @Annotations\Get("/{id}", name="api_logs_view", requirements={"page": "\d+"})
-     * @Annotations\View(serializerGroups={"list", "details"})
+     * @Rest\Get("/{id}", name="api_logs_view", requirements={"page": "\d+"})
+     * @Rest\View(serializerGroups={"list", "details"})
      *
      * @return View
      */

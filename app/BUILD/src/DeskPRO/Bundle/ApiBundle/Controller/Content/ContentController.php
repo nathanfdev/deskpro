@@ -39,7 +39,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -90,7 +90,7 @@ class ContentController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get(
+     * @Rest\Get(
      *     "/{type}/counts",
      *     name="api_content_counts",
      *     requirements={
@@ -156,7 +156,7 @@ class ContentController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\Article>"
      * )
-     * @Get("/articles", name="api_content_articles")
+     * @Rest\Get("/articles", name="api_content_articles")
      *
      * @param Request $request
      *
@@ -195,7 +195,7 @@ class ContentController extends BaseController
      *     output="array<Application\DeskPRO\Entity\News>"
      * )
      *
-     * @Get("/news", name="api_content_news")
+     * @Rest\Get("/news", name="api_content_news")
      *
      * @param Request $request
      *
@@ -234,7 +234,7 @@ class ContentController extends BaseController
      *     output="array<Application\DeskPRO\Entity\Download>"
      * )
      *
-     * @Get("/downloads", name="api_content_downloads")
+     * @Rest\Get("/downloads", name="api_content_downloads")
      *
      * @param Request $request
      *

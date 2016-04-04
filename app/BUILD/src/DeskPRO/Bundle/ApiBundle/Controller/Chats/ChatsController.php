@@ -36,8 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,8 +70,8 @@ class ChatsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Annotations\Get("/user_chats/counts", name="api_chats_count")
-     * @FOS\View(serializerEnableMaxDepthChecks=true)
+     * @Rest\Get("/user_chats/counts", name="api_chats_count")
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      *
      * @param Request $request
      *
@@ -118,7 +117,7 @@ class ChatsController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\ChatConversation>"
      * )
-     * @Annotations\Get("/user_chats", name="api_chats")
+     * @Rest\Get("/user_chats", name="api_chats")
      *
      * @param Request $request
      *

@@ -33,13 +33,13 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha\CaptchaAntiAbuseType;
 use DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class CaptchaAntiAbuseSetupController.
  *
  * @ApiModes("all")
- * @Route("/settings/anti_abuse/captcha")
+ * @Rest\Route("/settings/anti_abuse/captcha")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings")
  */
 class CaptchaAntiAbuseSetupController extends AbstractAntiAbuseSetupController

@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +58,7 @@ class TicketStatusesController extends BaseController
      *     output="array<string>"
      * )
      *
-     * @Annotations\Get("/ticket_statuses", name="api_ticket_statuses")
+     * @Rest\Get("/ticket_statuses", name="api_ticket_statuses")
      */
     public function listAction()
     {
@@ -82,7 +82,7 @@ class TicketStatusesController extends BaseController
      *     },
      *     output="Application\DeskPRO\Entity\Ticket"
      * )
-     * @Annotations\Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
+     * @Rest\Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
      *
      * @param Request $request
      * @param string  $status

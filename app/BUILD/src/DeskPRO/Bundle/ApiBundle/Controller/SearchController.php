@@ -35,7 +35,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchRequest;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -71,7 +71,7 @@ class SearchController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Get("/search", name="api_quick_search")
+     * @Rest\Get("/search", name="api_quick_search")
      *
      * @param Request $request
      *
@@ -112,7 +112,7 @@ class SearchController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Get("/search/people_and_orgs", name="api_quick_search_people_and_orgs")
+     * @Rest\Get("/search/people_and_orgs", name="api_quick_search_people_and_orgs")
      *
      * @param Request $request
      *

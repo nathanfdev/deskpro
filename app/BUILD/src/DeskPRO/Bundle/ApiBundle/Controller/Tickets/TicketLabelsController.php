@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -63,7 +63,7 @@ class TicketLabelsController extends BaseController
      *
      * @return View
      *
-     * @Annotations\Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
+     * @Rest\Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
      */
     public function getTicketsAction(Request $request, $label)
     {

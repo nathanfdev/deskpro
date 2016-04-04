@@ -38,13 +38,13 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Form\Type\TaskLabelType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TaskLabelsController.
  *
- * @Annotations\Route("/task_labels")
+ * @Rest\Route("/task_labels")
  * @ApiModes("all")
  * @ApiDocSection("Tasks")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\LabelTask")

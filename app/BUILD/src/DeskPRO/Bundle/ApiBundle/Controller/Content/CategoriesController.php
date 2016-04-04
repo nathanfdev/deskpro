@@ -38,8 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList;
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,8 +59,8 @@ class CategoriesController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList",
      * )
-     * @FOS\View(serializerGroups={"list"})
-     * @Annotations\Get("/content_categories", name="api_content_categories")
+     * @Rest\View(serializerGroups={"list"})
+     * @Rest\Get("/content_categories", name="api_content_categories")
      */
     public function getCategoriesGroupedByContentTypeAction()
     {

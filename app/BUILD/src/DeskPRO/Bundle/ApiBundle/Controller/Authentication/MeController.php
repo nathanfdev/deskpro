@@ -37,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,7 +61,7 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
-     * @Get("/me", name="api_me")
+     * @Rest\Get("/me", name="api_me")
      */
     public function meAction()
     {
@@ -92,7 +92,7 @@ class MeController extends BaseController
      *     }
      * )
      *
-     * @Get("/me/device-setup-token")
+     * @Rest\Get("/me/device-setup-token")
      */
     public function getDeviceSetupTokenAction()
     {
