@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDocSection("Tickets")
  * @OutputEntity("Application\DeskPRO\Entity\Problem")
- * @Route("/ticket_problems")
+ * @Rest\Route("/ticket_problems")
  */
 class TicketProblemsController extends CrudController
 {
