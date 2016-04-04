@@ -178,7 +178,16 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
                 return Strings::smartWordWrap($string, $len, $break);
             }),
+
+            // Copied from legacy templating, used to render notification rows
+            new \Twig_SimpleFilter('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
         ];
+    }
+
+    // legacy
+    public function hasPhrase($phrase_name)
+    {
+        return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
     }
 
     /**
