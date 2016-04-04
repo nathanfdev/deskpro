@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use DpSys\License;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Inits the license loader for lic check that is done on every request. Removing/disabling this
@@ -59,39 +62,62 @@ class LicenseListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onPreRequest', 0),
+            KernelEvents::REQUEST  => ['onPreRequest', 0],
+            ConsoleEvents::COMMAND => ['onCommand', 0],
         );
     }
 
     public function onPreRequest(GetResponseEvent $event)
     {
         $container = $this->container;
-        License::setLoaderFunction(function () use ($container) {
-            $settings = $container->get('settings_resolver')->getGlobalSettings();
-
-            if (defined('DP_LIC_FILE')) {
-                $license_code = file_get_contents(DP_LIC_FILE);
-            } elseif (defined('DP_LIC_STR')) {
-                $license_code = DP_LIC_STR;
-            } else {
-                $license_code = $settings->get('core.license');
-            }
-
-            if (defined('DP_INSTALL_KEY')) {
-                $install_key = DP_INSTALL_KEY;
-            } else {
-                $install_key = $settings->get('core.install_key');
-            }
-
-            $licopt = $settings->get('core.licenseopt');
-            if ($licopt) {
-                $license_code .= '#'.$licopt;
-            }
-
-            return [
-                'license_code' => $license_code,
-                'install_key'  => $install_key,
-            ];
+        $me        = $this;
+        License::setLoaderFunction(function () use ($me, $container) {
+            return $me->licenseLoader($container);
         });
+    }
+
+    public function onCommand(ConsoleCommandEvent $event)
+    {
+        $container = $this->container;
+        $me        = $this;
+        License::setLoaderFunction(function () use ($me, $container) {
+            return $me->licenseLoader($container);
+        });
+    }
+
+    /**
+     * @internal
+     *
+     * @param ContainerInterface $container
+     *
+     * @return array
+     */
+    public function licenseLoader(ContainerInterface $container)
+    {
+        $settings = $container->get('settings_resolver')->getGlobalSettings();
+
+        if (defined('DP_LIC_FILE')) {
+            $license_code = file_get_contents(DP_LIC_FILE);
+        } elseif (defined('DP_LIC_STR')) {
+            $license_code = DP_LIC_STR;
+        } else {
+            $license_code = $settings->get('core.license');
+        }
+
+        if (defined('DP_INSTALL_KEY')) {
+            $install_key = DP_INSTALL_KEY;
+        } else {
+            $install_key = $settings->get('core.install_key');
+        }
+
+        $licopt = $settings->get('core.licenseopt');
+        if ($licopt) {
+            $license_code .= '#'.$licopt;
+        }
+
+        return [
+            'license_code' => $license_code,
+            'install_key'  => $install_key,
+        ];
     }
 }
