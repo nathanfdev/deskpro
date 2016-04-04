@@ -214,7 +214,7 @@ class TicketStarsController extends BaseController
      *     requirements={
      *         {"name" = "star", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to filter by"},
      *     },
-     *     output="array<Application\DeskPRO\Entity\Ticket>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @param Request $request

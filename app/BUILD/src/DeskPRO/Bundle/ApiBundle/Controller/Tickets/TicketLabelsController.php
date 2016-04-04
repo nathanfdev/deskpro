@@ -55,7 +55,7 @@ class TicketLabelsController extends BaseController
      *     statusCodes={
      *         200="Will be returned in case of success",
      *     },
-     *     output="array<Application\DeskPRO\Entity\Ticket>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @param Request $request

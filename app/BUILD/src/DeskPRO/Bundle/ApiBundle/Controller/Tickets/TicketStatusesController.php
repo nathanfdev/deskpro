@@ -80,7 +80,7 @@ class TicketStatusesController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="Application\DeskPRO\Entity\Ticket"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      * @Rest\Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
      *

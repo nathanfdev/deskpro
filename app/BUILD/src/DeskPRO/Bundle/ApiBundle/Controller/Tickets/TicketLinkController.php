@@ -56,7 +56,8 @@ class TicketLinkController extends BaseController
      *             "name"="parent",
      *             "requirement"="true|false",
      *             "dataType"="boolean",
-     *             "description"="set true if you want to make link ticket as parent for ticket"},
+     *             "description"="set true if you want to make link ticket as parent for ticket"
+     *         },
      *     },
      *     statusCodes={
      *         201="Tickets was linked successfully",
@@ -119,6 +120,7 @@ class TicketLinkController extends BaseController
      *         200="Returned in case of successful request",
      *         404="Ticket with specified id wasn't found",
      *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @param int $ticketId

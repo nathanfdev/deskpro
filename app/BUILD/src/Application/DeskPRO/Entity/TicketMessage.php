@@ -212,6 +212,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $email = '';
 
     /**
+     * An unique hash of message.
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
