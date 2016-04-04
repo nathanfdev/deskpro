@@ -36,6 +36,8 @@ use JMS\Serializer\Annotation as JMS;
 trait EnabledOptionTrait
 {
     /**
+     * True of enabled.
+     *
      * @var bool
      *
      * @JMS\Type("boolean")

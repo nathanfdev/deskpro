@@ -40,6 +40,8 @@ class CaptchaAntiAbuseSettings
     const TYPE_EVERYONE          = 'everyone';
 
     /**
+     * True if set to use Google`s recaptcha.
+     *
      * @var bool
      *
      * @JMS\Type("integer")
@@ -47,6 +49,8 @@ class CaptchaAntiAbuseSettings
     private $useRecaptcha2 = false;
 
     /**
+     * Recaptcha key.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -54,6 +58,8 @@ class CaptchaAntiAbuseSettings
     private $recaptcha2SiteKey = '';
 
     /**
+     * Use it for tickets.
+     *
      * @var bool|string
      *
      * @JMS\Type("string")
@@ -61,6 +67,8 @@ class CaptchaAntiAbuseSettings
     private $tickets = self::TYPE_BASED_RATE_LIMITS;
 
     /**
+     * Use it for comments.
+     *
      * @var bool|string
      *
      * @JMS\Type("string")
@@ -68,6 +76,8 @@ class CaptchaAntiAbuseSettings
     private $comments = self::TYPE_BASED_RATE_LIMITS;
 
     /**
+     * Use it for feedback.
+     *
      * @var bool|string
      *
      * @JMS\Type("string")
@@ -75,6 +85,8 @@ class CaptchaAntiAbuseSettings
     private $feedback = self::TYPE_BASED_RATE_LIMITS;
 
     /**
+     * Use it for registration.
+     *
      * @var bool|string
      *
      * @JMS\Type("string")

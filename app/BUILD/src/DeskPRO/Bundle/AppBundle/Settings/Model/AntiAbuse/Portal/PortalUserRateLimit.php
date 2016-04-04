@@ -37,6 +37,8 @@ use JMS\Serializer\Annotation as JMS;
 class PortalUserRateLimit
 {
     /**
+     * Limits for ticket submitting.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
@@ -44,6 +46,8 @@ class PortalUserRateLimit
     private $submitTicket;
 
     /**
+     * Limits for feedback submitting.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
@@ -51,6 +55,8 @@ class PortalUserRateLimit
     private $submitFeedback;
 
     /**
+     * Limits for comments submitting.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
@@ -58,6 +64,8 @@ class PortalUserRateLimit
     private $submitComment;
 
     /**
+     * Limits for attachment submitting.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")

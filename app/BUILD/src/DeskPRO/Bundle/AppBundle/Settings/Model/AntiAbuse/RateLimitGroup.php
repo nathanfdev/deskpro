@@ -42,6 +42,8 @@ class RateLimitGroup
     const RESPONSE_CAPTCHA = 'captcha';
 
     /**
+     * The limit itself.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -49,6 +51,8 @@ class RateLimitGroup
     private $limit = 0;
 
     /**
+     * Time period for limit.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -56,6 +60,8 @@ class RateLimitGroup
     private $time = 0;
 
     /**
+     * How to respond when limit was hit.
+     *
      * @var string
      *
      * @JMS\Type("string")
