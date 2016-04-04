@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -38,8 +39,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
@@ -51,7 +51,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiDocSection("Ticket filters (legacy)")
  * @ApiModes("all")
- * @Route("/ticket_filters")
+ * @Rest\Route("/ticket_filters")
  */
 class TicketFiltersController extends CrudController
 {
@@ -67,7 +67,7 @@ class TicketFiltersController extends CrudController
      *      }
      * )
      *
-     * @Get("/{filter}/tickets")
+     * @Rest\Get("/{filter}/tickets")
      *
      * @param Request            $request
      * @param LegacyTicketFilter $filter
@@ -76,29 +76,29 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        $order_dir = $request->get('order') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
-        $order_by  = $request->get('sort') ? 'ticket.'.$request->get('sort') : '';
+        $orderDir = $request->get('order') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
+        $orderBy  = $request->get('sort') ? 'ticket.'.$request->get('sort') : '';
 
         $searcher = $this->get('data.ticket_legacy_filter_sets')->getFilterSearcher($filter);
         $searcher->setPersonContext($this->getUser());
 
-        if ($order_by) {
-            $searcher->setOrderBy($order_by, $order_dir);
+        if ($orderBy) {
+            $searcher->setOrderBy($orderBy, $orderDir);
         }
 
-        $current_page = $request->query->getInt('page', 1);
-        $max_per_page = $request->query->getInt('count', self::$listPerPage);
+        $currentPage = $request->query->getInt('page', 1);
+        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
-        $ticket_ids = $searcher->getMatches([
-            'limit'  => $max_per_page,
-            'offset' => $max_per_page * ($current_page - 1),
+        $ticketIds = $searcher->getMatches([
+            'limit'  => $maxPerPage,
+            'offset' => $maxPerPage * ($currentPage - 1),
         ]);
 
-        $tickets = $this->getRepository(Ticket::class)->findBy(['id' => $ticket_ids]);
+        $tickets = $this->getRepository(Ticket::class)->findBy(['id' => $ticketIds]);
         $pager   = new Pagerfanta(new FixedAdapter($searcher->getCount(), $tickets));
 
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($current_page);
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($currentPage);
 
         return View::create($this->wrap($pager));
     }

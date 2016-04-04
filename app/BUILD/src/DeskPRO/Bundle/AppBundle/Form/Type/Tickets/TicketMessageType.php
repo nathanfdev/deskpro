@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -91,7 +93,7 @@ class TicketMessageType extends AbstractType
         }
 
         if ($options['render_is_note']) {
-            $builder->add('is_note', 'api_boolean', [
+            $builder->add('is_note', ApiBooleanType::class, [
                 'property_path' => 'is_agent_note',
             ]);
         }

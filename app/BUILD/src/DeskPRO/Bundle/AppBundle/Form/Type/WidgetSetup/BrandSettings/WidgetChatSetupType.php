@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,9 +56,9 @@ class WidgetChatSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabled', 'api_boolean')
-            ->add('request_user_info', 'api_boolean')
-            ->add('proactive', 'api_boolean')
+            ->add('enabled', ApiBooleanType::class)
+            ->add('request_user_info', ApiBooleanType::class)
+            ->add('proactive', ApiBooleanType::class)
             ->add('begin_mode', 'choice', [
                 'choices' => [
                     'conversation' => 'Conversation',

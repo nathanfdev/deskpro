@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,44 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
-use RMS\PushNotificationsBundle\Message\iOSMessage;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class PushTestCommand.
+ * Class LayoutFieldHandler.
  */
-class PushTestCommand extends ContainerAwareCommand
+class LayoutFieldHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public static function getClassNames()
     {
-        $this
-            ->setName('dp:push-test')
-            ->setDescription('Test push notification')
-            ->addOption('uuid', null, InputOption::VALUE_REQUIRED)
-            ->addOption('message', null, InputOption::VALUE_REQUIRED)
-        ;
+        return LayoutField::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param LayoutField $entity
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $message = new iOSMessage();
-        $message->setMessage($input->getOption('message'));
-        $message->setDeviceIdentifier($input->getOption('uuid'));
-
-        $this->getContainer()->get('rms_push_notifications')->send($message);
+        return $entity->exportToArray();
     }
 }

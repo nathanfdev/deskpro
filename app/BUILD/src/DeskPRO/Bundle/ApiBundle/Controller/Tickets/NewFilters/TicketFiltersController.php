@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -40,8 +41,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @ApiDocSection("Ticket filters")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\TicketFilter")
- * @Route("/new/ticket_filters")
+ * @Rest\Route("/new/ticket_filters")
  */
 class TicketFiltersController extends CrudController
 {
@@ -89,7 +89,7 @@ class TicketFiltersController extends CrudController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
-     * @Get("/{filter}/tickets")
+     * @Rest\Get("/{filter}/tickets")
      *
      * @param Request      $request
      * @param TicketFilter $filter
@@ -108,11 +108,11 @@ class TicketFiltersController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $filter_set = $request->query->getInt('filter_set');
-        if ($filter_set) {
+        $set = $request->query->getInt('filter_set');
+        if ($set) {
             $qb
                 ->andWhere('e.filter_set = :filter_set')
-                ->setParameter('filter_set', $filter_set)
+                ->setParameter('filter_set', $set)
             ;
         }
     }

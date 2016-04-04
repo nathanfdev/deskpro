@@ -1,7 +1,6 @@
 services:
 
   # common
-
   api_serializer.handler.entity:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\EntityHandler
     tags:
@@ -21,7 +20,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\DeferredHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
-
 
   # entities
   api_serializer.handler.custom_data:
@@ -107,6 +105,11 @@ services:
       - "@data.ticket_legacy_filter_sets"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.layout_field:
+      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
+      tags:
+        - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.blob:
       class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler

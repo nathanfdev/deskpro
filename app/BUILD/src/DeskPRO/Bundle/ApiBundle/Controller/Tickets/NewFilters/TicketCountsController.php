@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -40,7 +41,7 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -77,7 +78,7 @@ class TicketCountsController extends BaseController
      *          404="Returned if set was not found"
      *      },
      * )
-     * @Get("/new/ticket_filter_sets/{set}/count")
+     * @Rest\Get("/new/ticket_filter_sets/{set}/count")
      *
      * @param Request         $request
      * @param TicketFilterSet $set
@@ -110,7 +111,7 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *      },
      * )
-     * @Get("/new/ticket_filter_sets/all/counts")
+     * @Rest\Get("/new/ticket_filter_sets/all/counts")
      *
      * @param Request $request
      *
@@ -119,7 +120,7 @@ class TicketCountsController extends BaseController
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
         /** @var TicketFilterSet[] $sets */
-        $sets   = $this->getRepository('App:TicketFilterSet')->findAll();
+        $sets   = $this->getRepository(TicketFilterSet::class)->findAll();
         $counts = [];
 
         foreach ($sets as $set) {
@@ -153,7 +154,7 @@ class TicketCountsController extends BaseController
      *          404="Returned if filter was not found"
      *      },
      * )
-     * @Get("/new/ticket_filters/{filter}/count")
+     * @Rest\Get("/new/ticket_filters/{filter}/count")
      *
      * @param Request      $request
      * @param TicketFilter $filter
@@ -183,7 +184,7 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *      },
      * )
-     * @Get("/new/ticket_filters_counts")
+     * @Rest\Get("/new/ticket_filters_counts")
      *
      * @param Request $request
      *
@@ -191,18 +192,18 @@ class TicketCountsController extends BaseController
      */
     public function getAllTicketFilterCountsAction(Request $request)
     {
-        $count    = Count::fromValue(0);
-        $group_by = $request->get('group_by');
+        $count   = Count::fromValue(0);
+        $groupBy = $request->get('group_by');
 
         /** @var TicketFilter[] $filters */
         $filters = $this->getRepository(TicketFilter::class)->findAll();
         foreach ($filters as $filter) {
-            $filter_count = $this->getCountsService()->getFilterCount(
+            $filterCount = $this->getCountsService()->getFilterCount(
                 $filter,
-                isset($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null
+                isset($groupBy[$filter->getId()]) ? $groupBy[$filter->getId()] : null
             );
 
-            $count->addNestedInstance($filter_count, true);
+            $count->addNestedInstance($filterCount, true);
         }
 
         return View::create($this->wrap($count));

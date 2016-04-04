@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -81,13 +82,13 @@ class TicketCountsDataService
 
     /**
      * @param TicketFilterSet $set
-     * @param array|null      $group_by
+     * @param array|null      $groupBy
      *
      * @return Count
      */
-    public function getFilterSetCount(TicketFilterSet $set, $group_by = null)
+    public function getFilterSetCount(TicketFilterSet $set, $groupBy = null)
     {
-        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
+        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $groupBy);
     }
 
     /**
@@ -95,17 +96,17 @@ class TicketCountsDataService
      * @param string         $type
      * @param string         $title
      * @param TicketFilter[] $filters
-     * @param array|null     $group_by
+     * @param array|null     $groupBy
      *
      * @return Count
      */
-    public function getFiltersCount($id, $type, $title, $filters, $group_by = null)
+    public function getFiltersCount($id, $type, $title, $filters, $groupBy = null)
     {
-        $count    = Count::create(0, $id, $type, $title);
-        $group_by = $group_by ?: [];
+        $count   = Count::create(0, $id, $type, $title);
+        $groupBy = $groupBy ?: [];
 
         foreach ($filters as $filter) {
-            $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
+            $filter_group_by = !empty($groupBy[$filter->getId()]) ? $groupBy[$filter->getId()] : null;
             $count->addNestedInstance($this->getFilterCount($filter,  $filter_group_by), true);
         }
 
@@ -114,27 +115,27 @@ class TicketCountsDataService
 
     /**
      * @param TicketFilter $filter
-     * @param string       $group_by
+     * @param string       $groupBy
      *
      * @return Count
      */
-    public function getFilterCount(TicketFilter $filter, $group_by = null)
+    public function getFilterCount(TicketFilter $filter, $groupBy = null)
     {
         $context = new TermEngineContext($this->getUser());
-        if ($group_by) {
-            $context->addGroupByFromString($group_by);
+        if ($groupBy) {
+            $context->addGroupByFromString($groupBy);
         }
 
         /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
         $tickets_query = $this->engine->evaluate($filter, $context);
 
-        if ($group_by) {
+        if ($groupBy) {
             $filter_count = Count::create(0, $filter->getId(), 'filter', $filter->getTitle());
 
             // If grouping by a custom field, then additionally query for total count (w/o grouping)
             // to determine count of tickets where no value set on the custom field
             $total     = 0;
-            $is_custom = TicketGrouping::isCustom($group_by);
+            $is_custom = TicketGrouping::isCustom($groupBy);
             if ($is_custom) {
                 $total = $this->engine->evaluate($filter, new TermEngineContext($this->getUser()))->fetchCount();
             }
@@ -147,7 +148,7 @@ class TicketCountsDataService
                 $group = ctype_digit($group) ? (int) $group : $group;
 
                 $filter_count->addNestedInstance(
-                    Count::create($value, $group, $group_by, $this->getTitle($group, $group_by), null, []),
+                    Count::create($value, $group, $groupBy, $this->getTitle($group, $groupBy), null, []),
                     true
                 );
 
@@ -158,7 +159,7 @@ class TicketCountsDataService
 
             if ($is_custom) {
                 $filter_count->addNestedInstance(
-                    Count::create($total, null, $group_by, null, null, []),
+                    Count::create($total, null, $groupBy, null, null, []),
                     true
                 );
             }
@@ -194,21 +195,22 @@ class TicketCountsDataService
         }
 
         switch ($type) {
-            case 'department':
+            case TicketGrouping::DEPARTMENT:
                 return $this->em->find(Department::class, $id)->getTitle();
-            case 'language':
+            case TicketGrouping::LANGUAGE:
                 return $this->em->find(Language::class, $id)->getTitle();
-            case 'organization':
+            case TicketGrouping::ORGANIZATION:
                 return $this->em->find(Organization::class, $id)->getName();
-            case 'agent':
-            case 'person':
+            case TicketGrouping::AGENT:
+            case TicketGrouping::PERSON:
                 return $this->em->find(Person::class, $id)->getName();
-            case 'agent_team':
+            case TicketGrouping::AGENT_TEAM:
                 return $this->em->find(AgentTeam::class, $id)->getName();
-            case 'open_time':
-            case 'waiting_time':
-            case 'all_waiting_time':
-            case 'urgency':
+            case TicketGrouping::OPEN_TIME:
+            case TicketGrouping::WAITING_TIME:
+            case TicketGrouping::ALL_WAITING_TIME:
+            case TicketGrouping::URGENCY:
+            case TicketGrouping::DATE_CREATED:
                 return $id;
             default:
                 throw new \Exception("Unknown type '$type'");

@@ -10,6 +10,11 @@ services:
     tags:
       - { name: form.type_extension, alias: text }
 
+  form.choice_transformer_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\CheckboxExtension
+    tags:
+      - { name: form.type_extension, alias: choice }
+
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager"]
@@ -109,12 +114,6 @@ services:
     tags:
       - { name: form.type, alias: api_date }
 
-  form.api_labels_collection:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType
-    arguments: ["@doctrine.orm.default_entity_manager", "@property_accessor"]
-    tags:
-      - { name: form.type, alias: api_labels_collection }
-
   form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
     arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
@@ -139,11 +138,6 @@ services:
     tags:
       - { name: form.type, alias: organization_member }
 
-  form.api_boolean:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType
-    tags:
-      - { name: form.type, alias: api_boolean }
-
   form.auth_blob:
     class: DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType
     arguments: ["@doctrine.orm.default_entity_manager"]
@@ -164,11 +158,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType
     tags:
       - { name: form.type, alias: dp_auth }
-
-  form.task:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TaskType
-    tags:
-      - { name: form.type, alias: task }
 
   form.task_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType
