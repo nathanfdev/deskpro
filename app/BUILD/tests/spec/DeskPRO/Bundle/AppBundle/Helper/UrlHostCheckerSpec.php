@@ -78,6 +78,10 @@ class UrlHostCheckerSpec extends ObjectBehavior
 
         $this->isMatchUrl('http://site.com:443', 'http://site.com:443')->shouldReturn(true);
         $this->isMatchUrl('http://samesite.com/', 'http://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com/', 'https://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com:8043/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://samesite.com/', 'https://samesite.com/')->shouldReturn(false);
         $this->isMatchUrl('http://site.com:443/', 'http://site.com:443/')->shouldReturn(true);
         $this->isMatchUrl('/news', 'http://site.com:443')->shouldReturn(true);
     }
