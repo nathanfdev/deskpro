@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -36,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -73,7 +74,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          404="Not Found"
      *      },
      * )
-     * @Annotations\Get("/ticket_filter_sets/{id}/count")
+     * @Rest\Get("/ticket_filter_sets/{id}/count")
      *
      * @param Request $request
      * @param int     $id
@@ -82,10 +83,8 @@ class TicketCountsController extends AbstractLegacyFiltersController
      */
     public function getTicketFilterSetCountAction(Request $request, $id)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-
         $set   = $this->getFilterSetOr404($id);
-        $count = $data_service->getFilterSetCount($set, $request->get('group_by'));
+        $count = $this->getLegacyFilterSetService()->getFilterSetCount($set, $request->get('group_by'));
 
         return View::create($this->wrap($count));
     }
@@ -105,7 +104,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          }
      *      },
      * )
-     * @Annotations\Get("/ticket_filter_sets/all/counts")
+     * @Rest\Get("/ticket_filter_sets/all/counts")
      *
      * @param Request $request
      *
@@ -113,13 +112,11 @@ class TicketCountsController extends AbstractLegacyFiltersController
      */
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-
-        $sets   = $data_service->getAllFilterSets();
+        $sets   = $this->getLegacyFilterSetService()->getAllFilterSets();
         $counts = [];
 
         foreach ($sets as $set) {
-            $counts[] = $data_service->getFilterSetCount($set, $request->get('group_by'));
+            $counts[] = $this->getLegacyFilterSetService()->getFilterSetCount($set, $request->get('group_by'));
         }
 
         return View::create($this->wrap($counts));
@@ -148,19 +145,17 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *         404="Not Found"
      *     },
      * )
-     * @Annotations\Get("/ticket_filters/{id}/count")
+     * @Rest\Get("/ticket_filters/{id}/count")
      *
      * @param Request            $request
-     * @param LegacyTicketFilter $ticket_filter
+     * @param LegacyTicketFilter $filter
      *
      * @return View
      */
-    public function getTicketFilterCountAction(Request $request, LegacyTicketFilter $ticket_filter)
+    public function getTicketFilterCountAction(Request $request, LegacyTicketFilter $filter)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-
-        $group_by = $request->get('group_by');
-        $count    = $data_service->getFilterCount($ticket_filter, $group_by);
+        $groupBy = $request->get('group_by');
+        $count   = $this->getLegacyFilterSetService()->getFilterCount($filter, $groupBy);
 
         return View::create($this->wrap($count));
     }
@@ -182,7 +177,7 @@ class TicketCountsController extends AbstractLegacyFiltersController
      *          404="Not Found"
      *      },
      * )
-     * @Annotations\Get("/ticket_filters_counts")
+     * @Rest\Get("/ticket_filters_counts")
      *
      * @param Request $request
      *
@@ -190,8 +185,8 @@ class TicketCountsController extends AbstractLegacyFiltersController
      */
     public function getAllTicketFilterCountsAction(Request $request)
     {
-        $data_service = $this->get('data.ticket_legacy_filter_sets');
-        $count        = $data_service->getFiltersCount(null, null, null, $data_service->getAllFilters(), $request->get('group_by'));
+        $filters = $this->getLegacyFilterSetService()->getAllFilters();
+        $count   = $this->getLegacyFilterSetService()->getFiltersCount(null, null, null, $filters, $request->get('group_by'));
 
         return View::create($this->wrap($count));
     }

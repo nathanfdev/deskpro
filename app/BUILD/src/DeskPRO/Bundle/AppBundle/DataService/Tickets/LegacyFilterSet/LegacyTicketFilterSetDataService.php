@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\Filters;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -52,18 +55,34 @@ class LegacyTicketFilterSetDataService
     /**
      * @var TokenStorageInterface
      */
-    private $token_storage;
+    private $tokenStorage;
+
+    /**
+     * @var array
+     */
+    private static $termMapping = [
+        TicketGrouping::DEPARTMENT       => TicketSearch::TERM_DEPARTMENT,
+        TicketGrouping::ORGANIZATION     => TicketSearch::TERM_ORGANIZATION,
+        TicketGrouping::PERSON           => TicketSearch::TERM_PERSON,
+        TicketGrouping::LANGUAGE         => TicketSearch::TERM_LANGUAGE,
+        TicketGrouping::URGENCY          => TicketSearch::TERM_URGENCY,
+        TicketGrouping::AGENT            => TicketSearch::TERM_AGENT,
+        TicketGrouping::AGENT_TEAM       => TicketSearch::TERM_AGENT_TEAM,
+        TicketGrouping::WAITING_TIME     => TicketSearch::TERM_USER_WAITING,
+        TicketGrouping::ALL_WAITING_TIME => TicketSearch::TERM_TOTAL_USER_WAITING,
+        TicketGrouping::DATE_CREATED     => TicketSearch::TERM_DATE_CREATED,
+    ];
 
     /**
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
+    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage)
     {
-        $this->em            = $em;
-        $this->token_storage = $token_storage;
+        $this->em           = $em;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -122,13 +141,13 @@ class LegacyTicketFilterSetDataService
 
     /**
      * @param LegacyTicketFilterSet $set
-     * @param array|null            $group_by
+     * @param array|null            $groupBy
      *
      * @return Count
      */
-    public function getFilterSetCount(LegacyTicketFilterSet $set, $group_by = null)
+    public function getFilterSetCount(LegacyTicketFilterSet $set, $groupBy = null)
     {
-        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $group_by);
+        return $this->getFiltersCount($set->getId(), 'ticket_filter_set', $set->getTitle(), $set->getFilters(), $groupBy);
     }
 
     /**
@@ -136,18 +155,18 @@ class LegacyTicketFilterSetDataService
      * @param string               $type
      * @param string               $title
      * @param LegacyTicketFilter[] $filters
-     * @param array|null           $group_by
+     * @param array|null           $groupBy
      *
      * @return Count
      */
-    public function getFiltersCount($id, $type, $title, array $filters, $group_by = null)
+    public function getFiltersCount($id, $type, $title, array $filters, $groupBy = null)
     {
-        $count    = Count::create(0, $id, $type, $title);
-        $group_by = $group_by ?: [];
+        $count   = Count::create(0, $id, $type, $title);
+        $groupBy = $groupBy ?: [];
 
         foreach ($filters as $filter) {
-            $filter_group_by = !empty($group_by[$filter->getId()]) ? $group_by[$filter->getId()] : null;
-            $count->addNestedInstance($this->getFilterCount($filter,  $filter_group_by), true);
+            $filterGroupBy = !empty($groupBy[$filter->getId()]) ? $groupBy[$filter->getId()] : null;
+            $count->addNestedInstance($this->getFilterCount($filter,  $filterGroupBy), true);
         }
 
         return $count;
@@ -155,27 +174,28 @@ class LegacyTicketFilterSetDataService
 
     /**
      * @param LegacyTicketFilter $filter
-     * @param string|null        $group_by
+     * @param string|null        $groupBy
      *
      * @return Count
      */
-    public function getFilterCount(LegacyTicketFilter $filter, $group_by = null)
+    public function getFilterCount(LegacyTicketFilter $filter, $groupBy = null)
     {
-        $searcher = $this->getFilterSearcher($filter);
+        $searcher      = $this->getFilterSearcher($filter);
+        $legacyGroupBy = isset(self::$termMapping[$groupBy]) ? self::$termMapping[$groupBy] : null;
 
-        if ($group_by) {
-            $ticket_ids = $searcher->getMatches();
+        if ($legacyGroupBy) {
+            $ticketIds = $searcher->getMatches();
 
             $grouper = new GroupingCounter();
-            $grouper->setGrouping($group_by);
-            $grouper->setMode('specify', $ticket_ids);
+            $grouper->setGrouping($legacyGroupBy);
+            $grouper->setMode('specify', $ticketIds);
 
-            $grouped_info = $grouper->getDisplayArray();
-            $total_info   = array_shift($grouped_info['items']);
+            $groupedInfo = $grouper->getDisplayArray();
+            $totalInfo   = array_shift($groupedInfo['items']);
 
-            $count = Count::create($total_info['total'], $filter->getId(), 'filter', $filter->getRawTitle(), $group_by);
-            foreach ($grouped_info['items'] as $nested_item) {
-                $count->addNested($nested_item['total'], $nested_item['id'], $group_by, isset($nested_item['title']) ? $nested_item['title'] : null);
+            $count = Count::create($totalInfo['total'], $filter->getId(), 'filter', $filter->getRawTitle(), $groupBy);
+            foreach ($groupedInfo['items'] as $nestedItem) {
+                $count->addNested($nestedItem['total'], $nestedItem['id'], $groupBy, isset($nestedItem['title']) ? $nestedItem['title'] : null);
             }
         } else {
             $count = Count::create($searcher->getCount(), $filter->getId(), 'filter', $filter->getRawTitle(), 'filter');
@@ -243,7 +263,7 @@ class LegacyTicketFilterSetDataService
      */
     private function getUser()
     {
-        $user = $this->token_storage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken()->getUser();
         $user->loadHelper('AgentTeam');
         $user->loadHelper('AgentPermissions');
 

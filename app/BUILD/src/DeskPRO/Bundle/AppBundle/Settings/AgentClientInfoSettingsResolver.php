@@ -171,11 +171,11 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setDefaultId($this->getSetting('core.default_ticket_pri'))
         ;
 
-        /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $custom_def_repo */
-        $custom_def_repo = $this->em->getRepository(CustomDefTicket::class);
+        /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
+        $customDefRepo = $this->em->getRepository(CustomDefTicket::class);
 
         $custom = $fields->getCustom();
-        $custom->setHasAny(count($custom_def_repo->getEnabledFields()) > 0);
+        $custom->setHasAny(count($customDefRepo->getEnabledFields()) > 0);
 
         // set billing info
         $billing = $model->getBilling();
@@ -216,8 +216,11 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             TicketGrouping::AGENT_TEAM,
             TicketGrouping::WAITING_TIME,
             TicketGrouping::ALL_WAITING_TIME,
-            TicketGrouping::OPEN_TIME,
             TicketGrouping::DATE_CREATED,
+
+            // not supported by legacy ticket grouping counter
+            // temporary disabled until we are using legacy filters
+            // TicketGrouping::OPEN_TIME,
         ];
 
         foreach ($groupFields as $groupField) {
@@ -225,7 +228,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             $model->addGroupByField(new TicketGroupFieldSettings($groupField, $groupField, null));
         }
 
-        foreach ($custom_def_repo->getEnabledTopFields() as $customDef) {
+        foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
             $model->addGroupByField(new TicketGroupFieldSettings(
                 'ticket_field.'.$customDef->getId(),
                 'ticket_field',
