@@ -32,12 +32,16 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
+use Application\DeskPRO\Email\EmailSource\Finder;
+use Application\DeskPRO\Languages\LangPackInfo;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+// WIP
 class RemovePhrasesCommand extends ContainerAwareCommand
 {
     /**
@@ -50,7 +54,7 @@ class RemovePhrasesCommand extends ContainerAwareCommand
             ->addOption('only', 's', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Comma-seperated list of /regex/ patterns that must match')
             ->addOption('except', 'k', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Comma-seperated list of /regex/ patterns that must not match')
             ->addOption('apply', 'x', InputOption::VALUE_NONE, 'Write changes to disk. Without this, it is just a preview mode')
-            ->addArgument('phrases', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'A comma-seperated list of phrases or /regex/ patterns, or a @/path/to/file which includes phrases one per line.');
+            ->addArgument('deletePhrases', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'A comma-seperated list of phrases or /regex/ patterns, or a @/path/to/file which includes phrases one per line.');
     }
 
     /**
@@ -58,6 +62,45 @@ class RemovePhrasesCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //TODO
+        $deletePhrases = array_map(function ($v) {
+            $v = trim($v);
+            if ($v[0] === '@') {
+                $file = substr($v, 1);
+                if (!file_exists($file)) {
+                    echo "Could not read file: $file\n";
+                    exit(1);
+                }
+                $v = file($file);
+                $v = array_map('trim', $v);
+            }
+
+            return $v;
+        }, $input->getArgument('deletePhrases'));
+
+        $deletePhrases = ListUtils::flatten($deletePhrases);
+        $deletePhrases = array_map(function ($v) {
+            if ($v[0] === '/' && substr($v, -1) === '/') {
+                $v = ['regex', $v];
+            } else {
+                $v = ['pattern', $v];
+            }
+
+            return $v;
+        }, $deletePhrases);
+
+        $apply = $input->getOption('apply');
+
+        $langPacks = new LangPackInfo();
+        $engDir    = $langPacks->getLangDir().DIRECTORY_SEPARATOR.'default';
+
+        /** @var \SplFileInfo[] $engFiles */
+        $engFiles = Finder::create()->in($engDir)->files()->name('*.php');
+
+        foreach ($engFiles as $f) {
+            $phrases = require $f->getRealPath();
+            foreach ($phrases as $phraseId => $p) {
+                // TODO
+            }
+        }
     }
 }
