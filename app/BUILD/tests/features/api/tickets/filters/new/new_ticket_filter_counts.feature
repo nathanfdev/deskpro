@@ -215,3 +215,67 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].nested[0].title" should be equal to "1"
     And the JSON node "data.nested[0].nested[0].count" should be equal to 3
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+
+  Scenario: I group by waiting time
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=waiting_time"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "waiting_time"
+    And the JSON node "data.nested[0].nested" should have 1 elements
+
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "waiting_time"
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+
+  Scenario: I group by all waiting time
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=all_waiting_time"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "all_waiting_time"
+    And the JSON node "data.nested[0].nested" should have 1 elements
+
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "all_waiting_time"
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+
+  Scenario: I group by open time
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=open_time"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "open_time"
+    And the JSON node "data.nested[0].nested" should have 1 elements
+
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "open_time"
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements
+
+  Scenario: I group by date created
+    When I send a GET request to "/api/v2/new/ticket_filters_counts?group_by[1]=date_created"
+    Then the response status code should be 200
+    And the response should be in JSON
+
+    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].title" should be equal to "Filter 1"
+    And the JSON node "data.nested[0].type" should be equal to "filter"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].grouped_by" should be equal to "date_created"
+    And the JSON node "data.nested[0].nested" should have 1 elements
+
+    And the JSON node "data.nested[0].nested[0].type" should be equal to "date_created"
+    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
+    And the JSON node "data.nested[0].nested[0].nested" should have 0 elements

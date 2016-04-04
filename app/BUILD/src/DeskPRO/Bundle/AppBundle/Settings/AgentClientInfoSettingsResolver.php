@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings;
@@ -206,16 +207,17 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         // set group fields
         $groupFields = [
-            'department',
-            'organization',
-            'person',
-            'language',
-            'urgency',
-            'agent',
-            'agent_team',
-            'waiting_time',
-            'all_waiting_time',
-            'open_time',
+            TicketGrouping::DEPARTMENT,
+            TicketGrouping::ORGANIZATION,
+            TicketGrouping::PERSON,
+            TicketGrouping::LANGUAGE,
+            TicketGrouping::URGENCY,
+            TicketGrouping::AGENT,
+            TicketGrouping::AGENT_TEAM,
+            TicketGrouping::WAITING_TIME,
+            TicketGrouping::ALL_WAITING_TIME,
+            TicketGrouping::OPEN_TIME,
+            TicketGrouping::DATE_CREATED,
         ];
 
         foreach ($groupFields as $groupField) {

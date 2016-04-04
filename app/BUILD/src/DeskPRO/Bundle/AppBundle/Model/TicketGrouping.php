@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -47,14 +48,14 @@ class TicketGrouping
     const CUSTOM_FIELD_COLUMN_PREFIX = 'ticket_field';
 
     const DEPARTMENT       = 'department';
-    const ORGANIZATION     = 'organization_id';
+    const ORGANIZATION     = 'organization';
     const PERSON           = 'person';
-    const LANGUAGE         = 'language_id';
+    const LANGUAGE         = 'language';
     const URGENCY          = 'urgency';
     const AGENT            = 'agent';
-    const AGENT_TEAM       = 'agent_team_id';
-    const WAITING_TIME     = 'date_user_waiting';
-    const ALL_WAITING_TIME = 'total_user_waiting';
+    const AGENT_TEAM       = 'agent_team';
+    const WAITING_TIME     = 'waiting_time';
+    const ALL_WAITING_TIME = 'all_waiting_time';
     const OPEN_TIME        = 'open_time';
     const DATE_CREATED     = 'date_created';
 
@@ -80,6 +81,15 @@ class TicketGrouping
     protected $order_by = null;
 
     /**
+     * @var array
+     */
+    protected static $fieldsMapping = [
+        self::AGENT_TEAM   => 'agent_team_id',
+        self::ORGANIZATION => 'organization_id',
+        self::LANGUAGE     => 'language_id',
+    ];
+
+    /**
      * Constructor.
      *
      * This class must either be instantiated with ::fromString() or ::fromConst().
@@ -89,12 +99,26 @@ class TicketGrouping
     protected function __construct($column)
     {
         $this->column = $column;
+        if (isset(self::$fieldsMapping[$column])) {
+            $this->column = self::$fieldsMapping[$column];
+        }
 
         switch ($column) {
             case self::ALL_WAITING_TIME:
                 $this->select = [
-                    'alias' => 'all_waiting_time',
-                    'sql'   => "case when ticket.total_user_waiting between 0 and 30 then '30s' when ticket.total_user_waiting between 30 and 300 then '5min' when ticket.total_user_waiting between 300 and 3600 then '1h' when ticket.total_user_waiting between 3600 and 10800 then '3h' when ticket.total_user_waiting between 10800 and 86400 then '24h' when ticket.total_user_waiting between 86400 and 259200 then '3d' when ticket.total_user_waiting between 259200 and 604800 then '1w' when ticket.total_user_waiting between 604800 and 2419200 then '1m' else '>1m' end",
+                    'alias' => $column,
+                    'sql'   => "
+                        case
+                            when ticket.total_user_waiting between 0 and 30 then '30s'
+                            when ticket.total_user_waiting between 30 and 300 then '5min'
+                            when ticket.total_user_waiting between 300 and 3600 then '1h'
+                            when ticket.total_user_waiting between 3600 and 10800 then '3h'
+                            when ticket.total_user_waiting between 10800 and 86400 then '24h'
+                            when ticket.total_user_waiting between 86400 and 259200 then '3d'
+                            when ticket.total_user_waiting between 259200 and 604800 then '1w'
+                            when ticket.total_user_waiting between 604800 and 2419200 then '1m'
+                            else '>1m'
+                        end",
                 ];
                 $this->order_by = [
                     'ticket.total_user_waiting' => 'ASC',
@@ -102,8 +126,19 @@ class TicketGrouping
                 break;
             case self::WAITING_TIME:
                 $this->select = [
-                    'alias' => 'waiting_time',
-                    'sql'   => "case when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 604800 and 2419200 then '1m' else '>1m' end",
+                    'alias' => $column,
+                    'sql'   => "
+                        case
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 0 and 30 then '30s'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 30 and 300 then '5min'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 300 and 3600 then '1h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 3600 and 10800 then '3h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 10800 and 86400 then '24h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 86400 and 259200 then '3d'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 259200 and 604800 then '1w'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_user_waiting, NOW()) between 604800 and 2419200 then '1m'
+                            else '>1m'
+                        end",
                 ];
                 $this->order_by = [
                     'ticket.date_user_waiting' => 'DESC',
@@ -111,8 +146,19 @@ class TicketGrouping
                 break;
             case self::OPEN_TIME:
                 $this->select = [
-                    'alias' => 'open_time',
-                    'sql'   => "case when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 0 and 30 then '30s' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 30 and 300 then '5min' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 300 and 3600 then '1h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 3600 and 10800 then '3h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 10800 and 86400 then '24h' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 86400 and 259200 then '3d' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 259200 and 604800 then '1w' when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 604800 and 2419200 then '1m' else '>1m' end",
+                    'alias' => $column,
+                    'sql'   => "
+                        case
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 0 and 30 then '30s'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 30 and 300 then '5min'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 300 and 3600 then '1h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 3600 and 10800 then '3h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 10800 and 86400 then '24h'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 86400 and 259200 then '3d'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 259200 and 604800 then '1w'
+                            when TIMESTAMPDIFF(SECOND, ticket.date_created, IF(ticket.date_archived IS NOT NULL, ticket.date_archived, NOW())) between 604800 and 2419200 then '1m'
+                            else '>1m'
+                        end",
                 ];
                 $this->order_by = [
                     'ticket.date_archived' => 'DESC',

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -119,7 +120,7 @@ class TicketCountsController extends BaseController
     public function getAllTicketFilterSetCountsAction(Request $request)
     {
         /** @var TicketFilterSet[] $sets */
-        $sets   = $this->getRepository('App:TicketFilterSet')->findAll();
+        $sets   = $this->getRepository(TicketFilterSet::class)->findAll();
         $counts = [];
 
         foreach ($sets as $set) {
