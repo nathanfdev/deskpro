@@ -30,35 +30,40 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
+namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
-class LinkedArticleType extends LinkedItemType
+class SetTransformer implements DataTransformerInterface
 {
-    protected function getProperty()
-    {
-        return 'article';
-    }
-
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * {@inheritdoc}
      */
-    protected function getRepository()
+    public function transform($value)
     {
-        return $this->manager->getRepository('DeskPRO:Article');
+        if (!is_array($value) && !($value instanceof \Traversable && $value instanceof \ArrayAccess)) {
+            throw new UnexpectedTypeException($value, 'array or (\Traversable and \ArrayAccess)');
+        }
+
+        return array_values($value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function reverseTransform($value)
     {
-        parent::setDefaultOptions($resolver);
+        if (!is_array($value)) {
+            throw new TransformationFailedException('Expected array');
+        }
 
-        $resolver->setDefaults([
-            'data_class' => TaskLinkedArticle::class,
-        ]);
+        $ret = [];
+        foreach ($value as $v) {
+            $ret[$v] = $v;
+        }
+
+        return $value;
     }
 }

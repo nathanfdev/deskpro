@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,13 +29,17 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class LinkedItemType extends AbstractType
@@ -55,16 +59,42 @@ abstract class LinkedItemType extends AbstractType
     {
         $builder
             ->add('item', TextType::class, [
-                'invalid_message' => 'That is not a valid Ticket ID',
-                'property_path'   => $this->getPropertyPath(),
-            ])
-            ->add('task', TextType::class, [
-                'invalid_message' => 'That is not a valid Task ID'
+                'invalid_message' => 'That is not a valid ID',
+                'property_path'   => $this->getProperty(),
             ])
         ;
 
-        $builder->get('task')->addModelTransformer(new EntityToIdTransformer($this->manager->getRepository('App:Task')));
+        $builder->get('item')->addModelTransformer(
+            new EntityToIdTransformer($this->getRepository())
+        );
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
-    abstract protected function getPropertyPath();
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        $event->setData(['item' => $data]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setRequired(['empty_data']);
+
+        $resolver->setDefaults([
+            'data_class' => TaskLinkedTicket::class,
+        ]);
+    }
+
+    public function getName()
+    {
+        return 'task_linked_'.$this->getProperty();
+    }
+
+    abstract protected function getRepository();
+
+    abstract protected function getProperty();
 }
