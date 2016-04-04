@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -36,9 +37,11 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransfor
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -50,7 +53,7 @@ class CustomFieldChoiceType extends AbstractType
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
      */
-    private $hierarchy_generator;
+    private $hierarchyGenerator;
 
     /**
      * Constructor.
@@ -59,7 +62,7 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function __construct(HierarchyGenerator $hierarchy)
     {
-        $this->hierarchy_generator = $hierarchy;
+        $this->hierarchyGenerator = $hierarchy;
     }
 
     /**
@@ -71,9 +74,16 @@ class CustomFieldChoiceType extends AbstractType
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
         } else {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
+
+            if ($options['expanded']) {
+                // for radio boxes ChoiceType uses PRE_SET_DATA callback,
+                // so we need to transform our choice to HierarchyNode before it called
+                $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
+                $builder->addViewTransformer(new ReversedTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'])));
+            }
         }
 
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list']), true);
     }
 
     /**
@@ -89,7 +99,7 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 
     /**
@@ -97,13 +107,11 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $hierarchy_generator = $this->hierarchy_generator;
-
         $resolver
             ->setDefaults([
                 'empty_data'  => null,
-                'choice_list' => function (Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
+                'choice_list' => function (Options $options) {
+                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceList();
                 },
                 'placeholder' => '',
                 'help'        => '',
@@ -128,5 +136,17 @@ class CustomFieldChoiceType extends AbstractType
         }
 
         $event->setData($data);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onTransformRadioData(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        $transformer = new CustomDefHierarchyNodeTransformer($config->getOption('choice_list'));
+        $event->setData($transformer->transform($event->getData()));
     }
 }
