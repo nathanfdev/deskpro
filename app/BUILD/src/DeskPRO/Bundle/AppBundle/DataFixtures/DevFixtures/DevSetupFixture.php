@@ -56,8 +56,12 @@ class DevSetupFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     {
         if (file_exists(DP_ROOT.'/sys/config/installer-type')) {
             $f = trim(@file_get_contents(DP_ROOT.'/sys/config/installer-type'));
+            // buildserver has its own config
             if ($f === 'buildserver') {
-                // buildserver has its own config
+                // but we still need the license
+                $ins = [['name' => 'core.license', 'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')]];
+                $this->db->batchInsert('settings', $ins);
+
                 return;
             }
         }
