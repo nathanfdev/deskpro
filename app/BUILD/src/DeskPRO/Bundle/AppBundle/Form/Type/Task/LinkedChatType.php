@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -47,7 +48,7 @@ class LinkedChatType extends LinkedItemType
      */
     protected function getRepository()
     {
-        return $this->manager->getRepository('DeskPRO:ChatConversation');
+        return $this->manager->getRepository(ChatConversation::class);
     }
 
     /**

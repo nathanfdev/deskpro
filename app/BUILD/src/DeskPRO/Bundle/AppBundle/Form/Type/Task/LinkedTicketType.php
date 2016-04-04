@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -47,7 +48,7 @@ class LinkedTicketType extends LinkedItemType
      */
     protected function getRepository()
     {
-        return $this->manager->getRepository('DeskPRO:Ticket');
+        return $this->manager->getRepository(Ticket::class);
     }
 
     /**
