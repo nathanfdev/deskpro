@@ -274,6 +274,25 @@ class ListUtils
     }
 
     /**
+     * @param \Traversable|array $array
+     *
+     * @return array
+     */
+    public static function flatten($array)
+    {
+        $ret = [];
+        foreach ($array as $a) {
+            if (is_array($a) || $a instanceof \Traversable) {
+                $ret = array_merge($ret, self::flatten($a));
+            } else {
+                $ret[] = $a;
+            }
+        }
+
+        return $a;
+    }
+
+    /**
      * Sorts a list using the return value of $fn(item).
      *
      * The return value of an item is typically an integer. If it is not,
