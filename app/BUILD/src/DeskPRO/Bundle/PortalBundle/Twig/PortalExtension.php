@@ -159,6 +159,9 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
+
+            // Copied from legacy templating, used to render notification rows
+            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -178,9 +181,6 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
                 return Strings::smartWordWrap($string, $len, $break);
             }),
-
-            // Copied from legacy templating, used to render notification rows
-            new \Twig_SimpleFilter('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
         ];
     }
 
