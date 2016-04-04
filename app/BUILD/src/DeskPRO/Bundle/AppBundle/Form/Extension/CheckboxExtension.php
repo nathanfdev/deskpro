@@ -68,10 +68,11 @@ class CheckboxExtension extends AbstractTypeExtension
         $data = $event->getData();
 
         foreach ($form->all() as $name => $child) {
-            $isSubmitted = array_key_exists($name, $data);
-            if (!$isSubmitted) {
-                $child->submit(false);
+            if (!array_key_exists($name, $data)) {
+                $data[$name] = false;
             }
         }
+
+        $event->setData($data);
     }
 }
