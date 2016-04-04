@@ -46,7 +46,8 @@
     "zendesk/zendesk_api_client_php": "1.2.*",
     "defuse/php-encryption": "^1.2",
     "fabpot/php-cs-fixer": "^1.10",
-    "react/promise": "^2.2"
+    "react/promise": "^2.2",
+    "guzzlehttp/guzzle": "^6.2"
   },
   "preferred-install": "dist"
 }

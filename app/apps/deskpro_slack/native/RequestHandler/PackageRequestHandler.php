@@ -35,6 +35,7 @@ namespace deskpro_slack\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use Guzzle\Http\Client as GuzzleClient;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -70,35 +71,23 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $token = $context->getIn()->getString('webhook_url');
+        $webhook_url = $context->getIn()->getString('webhook_url');
 
         $error  = false;
         $client = null;
 
         $log   = array();
-        $log[] = 'token: '.$token;
+        $log[] = 'webhook url: '.$webhook_url;
 
-        $tests   = array();
-        $tests[] = function () use (&$log, $token) {
-            $log[] = 'Verifying Slack API is accessible...';
-
-            $api = new \HipChatApi($token);
-            try {
-                $api->get_rooms();
-                $log[] = 'Everything is ok';
-            } catch (\Exception $e) {
-                $log[] = $e->getMessage();
-
-                return array((string) $e->getCode(), 'API Exception');
-            }
-        };
-
-        foreach ($tests as $t) {
-            $error = $t();
-            if ($error) {
-                break;
-            }
-        }
+        //TODO need to figure out how to test url
+//        $tests   = array();
+//        
+//        foreach ($tests as $t) {
+//            $error = $t();
+//            if ($error) {
+//                break;
+//            }
+//        }
 
         $result_data = array(
             'log'        => implode("\n", $log),
@@ -107,5 +96,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         );
 
         return $context->createJsonResponse($result_data);
+    }
+
+    private function sendToSlack()
+    {
+        $client = new GuzzleClient();
     }
 }

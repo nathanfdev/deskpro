@@ -62,7 +62,7 @@ class SlackActionDef extends AbstractActionDef
     }
 
     /**
-     * Makes sure 'room' key is set, and adds 'app_id'.
+     * Makes sure 'channel' key is set, and adds 'app_id'.
      *
      * @param array $options
      *
@@ -70,8 +70,8 @@ class SlackActionDef extends AbstractActionDef
      */
     public function processActionBuilderOptions(array $options)
     {
-        if (!isset($options['room'])) {
-            $options['room'] = '';
+        if (!isset($options['channel'])) {
+            $options['channel'] = '';
         }
 
         $options['app_id'] = $this->getActionDef()->app->id;

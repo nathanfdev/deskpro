@@ -42,7 +42,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			});
 
 			return $scope.has_errors;
-		};
+		}
 
 		$scope.setPresaveCallback(function() {
 			var deferred = $q.defer();
@@ -98,7 +98,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			});
 
 			return deferred.promise;
-		};
+		}
 
 		$scope.openTestModal = function(existing_results) {
 			if (updateFormErrors()) {
@@ -115,7 +115,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 						$scope.log         = results.log;
 						$scope.error       = results.error || false;
 						$scope.error_code  = results.error_code;
-					};
+					}
 
 					$scope.test = {
 						username: '',
@@ -131,7 +131,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 						$scope.error_code  = null;
 					};
 
-					$scope.dismiss = function() { $modalInstance.dismiss(); }
+					$scope.dismiss = function() { $modalInstance.dismiss(); };
 					$scope.doTest = function() {
 						$scope.loading = true;
 						runTest().then(function(results) {

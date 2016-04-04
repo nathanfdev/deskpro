@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use GuzzleHttp\Client as GuzzleClient;
 
 class SlackAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
 {
@@ -82,32 +83,24 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         }
 
         $message = $this->renderMessage($ticket, $context);
-        $room_id = $this->getActionOption('room');
+        $channel = $this->getActionOption('channel');
 
-        $context->getLogger()->debug("[SlackAction] Sending message to room: $room_id");
+        $context->getLogger()->debug("[SlackAction] Sending message to channel: $channel");
 
         try {
-            $api = new \HipChatApi($app->getSetting('webhook_url'));
-            $api->message_room(
-                $room_id,
-                'DeskPRO',
-                $message,
-                $app->getSetting('notify')
-            );
+            $client = new GuzzleClient(['base_uri' => $app->getSetting('webhook_url')]);
 
-            $ticket->getStateChangeRecorder()->recordData('app_message', array(
-                'app_id'        => $app->id,
-                'app_title'     => $app->title,
-                'package_name'  => $app->package->name,
-                'package_title' => $app->package->title,
-                'message'       => "Send message to room \"$room_id\"",
-            ));
+            $client->request(
+                'POST',
+                $app->getSetting('webhook_url'),
+                ['form_params' => ['payload' => $this->generatePayload($message)]]
+            );
         } catch (\Exception $e) {
             $context->getLogger()->notice("[SlackAction] Error sending Slack message: {$e->getMessage()}");
 
             $ticket->getStateChangeRecorder()->recordData('app_message',
             array('app_id'         => $app->id, 'app_title' => $app->title, 'package_name' => $app->package->name,
-                   'package_title' => $app->package->title, 'message' => "Failed sending message to room \"$room_id\"", ));
+                   'package_title' => $app->package->title, 'message' => "Failed sending message to channel \"$channel\"", ));
         }
     }
 
@@ -121,33 +114,66 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
     {
         $statechange = $ticket->getStateChangeRecorder();
 
-        $message = '#'.$ticket->id.' <a href="'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'">';
-        $message .= htmlspecialchars($ticket->subject);
-        $message .= '</a><br/>';
+        $fallback = '#'.$ticket->id.' ';
+        $fallback .= '<'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
+
+        $message = array_pop($ticket->getDisplayableMessages());
+
+        $attachment = [
+            'color' => '#1D7AB2',
+            'text' => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
+            'author_name' => htmlspecialchars($context->getPersonContext()->getDisplayName()),
+            'author_icon' => $context->getPersonContext()->getPictureUrl(),
+            'title' => '#' . $ticket->id . ' ' . htmlspecialchars($ticket->subject),
+            'title_link' => $this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
+        ];
 
         if ($context->getEventType() == 'newticket') {
-            $message .= 'New ticket';
+            $pretext = 'New ticket';
         } elseif ($context->getEventType() == 'newreply') {
             if ($statechange->hasNewAgentNote()) {
-                $message .= 'New agent note';
+                $pretext = 'New agent note';
             } elseif ($statechange->hasNewAgentReply()) {
-                $message .= 'New agent reply';
+                $pretext = 'New agent reply';
             } else {
-                $message .= 'New user reply';
+                $pretext = 'New user reply';
             }
         } else {
-            $message .= 'Ticket updated';
+            $pretext = 'Ticket updated';
         }
+        $attachment['pretext'] = $pretext;
+        $fallback .= $pretext;
         if ($context->getPersonContext()) {
-            $message .= ' by '.htmlspecialchars($context->getPersonContext()->getDisplayContact());
+            $fallback .= ' by '.htmlspecialchars($context->getPersonContext()->getDisplayContact());
+            $attachment['author_name'] = htmlspecialchars($context->getPersonContext()->getDisplayName());
+            $attachment['author_icon'] = $context->getPersonContext()->getPictureUrl();
+            $attachment['author_link'] = 'mailto:' . $context->getPersonContext()->getPrimaryEmailAddress();
         } else {
-            $message .= ' by system';
+            $fallback .= ' by system';
         }
 
         // slack wants entities for unicode characters so convert them
-        $message = Strings::htmlEntityEncodeUtf8($message);
+        $fallback = Strings::htmlEntityEncodeUtf8($fallback);
 
-        return $message;
+        $attachment['fallback'] = $fallback;
+
+        return $attachment;
+    }
+
+    /**
+     * @param $message
+     * @return array
+     */
+    private function generatePayload($message)
+    {
+        $payload = [
+            'attachments' => [$message],
+            'username' => 'DeskPro',
+        ];
+        if ($this->getActionOption('channel')) {
+            $payload['channel'] = $this->getActionOption('channel');
+        }
+        return json_encode($payload);
     }
 
     /**
