@@ -29,28 +29,41 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class TicketFollowersController.
- *
- * @ApiModes("all")
- * @ApiDocSection("Ticket participants")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
- * @Rest\Route("/tickets/{parentId}/followers")
+ * Class AgentTeamType.
  */
-class TicketFollowersController extends AbstractTicketParticipantsController
+class AgentTeamType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    protected function isAgent()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return true;
+        $builder
+            ->add('name', TextType::class, ['required' => true])
+            ->add('avatar', BlobAuthType::class, ['required' => false])
+            ->add('members', EntityType::class, array(
+                'class'    => Person::class,
+                'property' => 'id',
+                'multiple' => true,
+            ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(['data_class' => AgentTeam::class]);
     }
 }

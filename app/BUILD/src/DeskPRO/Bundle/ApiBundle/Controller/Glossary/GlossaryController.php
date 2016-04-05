@@ -37,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordDefinitionType;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class GlossaryController.
@@ -45,7 +45,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiDocSection("Glossary")
  * @OutputEntity("Application\DeskPRO\Entity\GlossaryWordDefinition")
  * @ApiModes("all")
- * @Annotations\Route("/glossary")
+ * @Rest\Route("/glossary")
  */
 class GlossaryController extends CrudController
 {

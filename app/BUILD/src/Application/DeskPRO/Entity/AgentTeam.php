@@ -39,10 +39,12 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -74,6 +76,10 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
     protected $name;
 
     /**
+     * @Assert\All({
+     *     @AppAssert\User(type="agent")
+     * })
+     *
      * @var ArrayCollection
      */
     protected $members = null;
@@ -83,6 +89,9 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
      */
     protected $avatar;
 
+    /**
+     * @var ArrayCollection
+     */
     protected $project_members;
 
     /**

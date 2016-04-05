@@ -35,7 +35,7 @@ use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * API access to languages.
@@ -43,7 +43,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiDocSection("Languages")
  * @OutputEntity("Application\DeskPRO\Entity\Language")
  * @ApiModes("all")
- * @Annotations\Route("/languages")
+ * @Rest\Route("/languages")
  */
 class LanguagesController extends CrudController
 {

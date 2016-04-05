@@ -189,6 +189,8 @@ class Sla extends DomainObject
     protected $apply_terms = null;
 
     /**
+     * Warn time integer.
+     *
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
@@ -197,6 +199,8 @@ class Sla extends DomainObject
     protected $warn_time = 1;
 
     /**
+     * And it's unit (see warn time).
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
@@ -215,6 +219,8 @@ class Sla extends DomainObject
     protected $warn_actions = null;
 
     /**
+     * Fail time integer.
+     *
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
@@ -223,6 +229,8 @@ class Sla extends DomainObject
     protected $fail_time = 1;
 
     /**
+     * And it's measuring unit (see fail_time).
+     * 
      * @JMS\Expose()
      * @JMS\Type("string")
      *

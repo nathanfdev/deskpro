@@ -33,7 +33,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -58,7 +58,7 @@ class AgentGroupsController extends BaseController
      *      output="array<Application\DeskPRO\Entity\Usergroup>"
      * )
      *
-     * @Annotations\Get("/agent_groups", name="api_agent_groups")
+     * @Rest\Get("/agent_groups", name="api_agent_groups")
      */
     public function listAction()
     {
@@ -89,20 +89,20 @@ class AgentGroupsController extends BaseController
      *          200="Returned if request was successful",
      *          404="Returned if we can't find agent group with specified id"
      *      },
-     *      output="array<Application\DeskPRO\Entity>"
+     *      output="Application\DeskPRO\Entity\Usergroup"
      * )
-     * @Annotations\Get("/agent_groups/{id}", name="api_single_agent_group")
+     * @Rest\Get("/agent_groups/{id}", name="api_single_agent_group")
      */
     public function getAgentGroupAction($id)
     {
         $service = $this->get('data.user_groups');
 
-        if (!$agent_group = $service->loadSingleAgentGroupEnabled($id)) {
+        if (!$agentGroup = $service->loadSingleAgentGroupEnabled($id)) {
             throw new NotFoundHttpException(sprintf('Agent group with specified [ %d ] id was not found', $id));
         }
 
         return View::create(
-            $this->wrap($agent_group),
+            $this->wrap($agentGroup),
             Response::HTTP_OK
         );
     }

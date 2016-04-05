@@ -40,7 +40,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\TaskStarType;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar as TicketStarModel;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,7 +66,7 @@ class TicketStarsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar>")
      * )
      *
-     * @Annotations\Get("/ticket_stars", name="api_ticket_flags")
+     * @Rest\Get("/ticket_stars", name="api_ticket_flags")
      */
     public function listAction()
     {
@@ -119,7 +119,7 @@ class TicketStarsController extends BaseController
      *
      * @return Response
      *
-     * @Annotations\Put("/ticket_stars/{id}", requirements={"id"="\d+"})
+     * @Rest\Put("/ticket_stars/{id}", requirements={"id"="\d+"})
      */
     public function putAction($id, Request $request)
     {
@@ -155,7 +155,7 @@ class TicketStarsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      *
-     * @Annotations\Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
+     * @Rest\Get("/ticket_stars_counts", name="api_ticket_flag_all_counts")
      */
     public function getTicketFlagsCountsAction()
     {
@@ -191,7 +191,7 @@ class TicketStarsController extends BaseController
      *
      * @return View
      *
-     * @Annotations\Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
+     * @Rest\Get("/ticket_stars/{star}/count", name="api_ticket_flag_count")
      */
     public function getTicketFlagCountAction($star)
     {
@@ -214,7 +214,7 @@ class TicketStarsController extends BaseController
      *     requirements={
      *         {"name" = "star", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to filter by"},
      *     },
-     *     output="array<Application\DeskPRO\Entity\Ticket>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @param Request $request
@@ -222,7 +222,7 @@ class TicketStarsController extends BaseController
      *
      * @return View
      *
-     * @Annotations\Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
+     * @Rest\Get("/ticket_stars/{star}/tickets", name="api_ticket_flag_tickets")
      */
     public function getTicketsAction(Request $request, $star)
     {

@@ -31,15 +31,14 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
  * Class UsersourceSettingsController.
  *
  * @ApiModes("all")
- * @Route("/settings/user_source")
+ * @Rest\Route("/settings/user_source")
  */
 class UsersourceSettingsController extends BaseController
 {
@@ -55,7 +54,7 @@ class UsersourceSettingsController extends BaseController
      *      }
      * )
      *
-     * @Get("")
+     * @Rest\Get("")
      *
      * @return View
      */

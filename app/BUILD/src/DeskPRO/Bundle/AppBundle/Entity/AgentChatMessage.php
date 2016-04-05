@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -58,88 +57,128 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     const STATUS_READ      = 2;
 
     /**
-     * @var int
+     * The unique message ID.
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
-     * @JMS\Type("integer")
-     * @JMS\Expose()
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $id;
 
     /**
-     * @var string
+     * A UUID of this message.
+     *
      * @ORM\Column(type="string", length=36)
-     * @JMS\Type("string")
+     *
      * @Assert\NotNull()
-     * @JMS\Expose()
      * @Assert\Uuid()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $uuid;
 
     /**
-     * @var AgentChat
+     * The chat this message was sent.
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChat", inversedBy="messages")
      * @ORM\JoinColumn(name="agent_chat_id", referencedColumnName="id", onDelete="CASCADE")
-     * @JMS\Type("entity")
+     *
      * @JMS\Expose()
-     * @JMS\MaxDepth(1);
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AgentChat>")
+     *
+     * @var AgentChat
      */
     protected $chat;
 
     /**
-     * @var Person
+     * Person that sent this message.
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
-     * @JMS\Type("entity")
+     *
      * @JMS\Expose()
-     * @JMS\MaxDepth(1);
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
-     * @var string
+     * Person`s name (will never change, even Person changed they name).
+     *
      * @ORM\Column(type="string", nullable=false)
-     * @JMS\Type("string")
-     * @JMS\Expose()
+     *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $person_name;
 
     /**
-     * @var string
+     * The message itself. Note: this is HTML.
+     *
      * @ORM\Column(type="text", nullable=false)
-     * @JMS\Type("string")
-     * @JMS\Expose()
+     *
      * @Assert\NotNull()
      * @Assert\NotBlank()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $message;
 
     /**
-     * @var array
+     * Additional data attached to message (not implemented).
+     *
      * @ORM\Column(type="json_array", nullable=false)
-     * @JMS\Type("array")
-     * @JMS\Expose()
+     *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
      */
     protected $metadata = [];
 
     /**
-     * @var \DateTime
+     * The date message was originally sent.
+     *
      * @ORM\Column(type="datetime", nullable=false)
-     * @JMS\Type("DateTime")
-     * @JMS\Expose()
+     *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
      */
     protected $date_created;
 
     /**
-     * @var int
+     * Message status (0 - brand new, 1 - delivered, 2 - read).
+     *
      * @ORM\Column(type="integer", nullable=false)
-     * @JMS\Type("integer")
-     * @JMS\Expose()
+     *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $status = 0;
 

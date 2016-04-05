@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
@@ -73,8 +73,8 @@ class MessagesController extends AbstractController
      *      output="array<DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage>"
      * )
      *
-     * @Annotations\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
-     * @Annotations\View(serializerEnableMaxDepthChecks=true)
+     * @Rest\Get("/agent_chats/{id}/messages", name="agent_chats_get_messages")
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * @ApiModes("all")
      *
      * @param $id
@@ -149,7 +149,7 @@ class MessagesController extends AbstractController
      * @param Request   $request
      *
      * @return View
-     * @Annotations\Post("/agent_chats/{chat}/messages", name="agent_chats_add_chat_message")
+     * @Rest\Post("/agent_chats/{chat}/messages", name="agent_chats_add_chat_message")
      */
     public function postMessagesAction(AgentChat $chat, Request $request)
     {
@@ -198,8 +198,8 @@ class MessagesController extends AbstractController
      *      output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\AgentChat\MessageCount>"
      * )
      
-     * @Annotations\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
-     * @Annotations\View(serializerEnableMaxDepthChecks=true)
+     * @Rest\Get("/agent_chats/messages/count", name="agent_chats_messages_count")
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
      */
@@ -246,7 +246,7 @@ class MessagesController extends AbstractController
      * @param Request $request
      *
      * @return View
-     * @Annotations\Put("/agent_chats/messages/mark", name="agent_chats_messages_mark")
+     * @Rest\Put("/agent_chats/messages/mark", name="agent_chats_messages_mark")
      */
     public function markAction(Request $request)
     {

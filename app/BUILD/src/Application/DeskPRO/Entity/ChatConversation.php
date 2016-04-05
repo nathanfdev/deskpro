@@ -436,6 +436,8 @@ class ChatConversation extends DomainObject
     }
 
     /**
+     * Is there need to validate email?
+     *
      * @JMS\VirtualProperty()
      * @JMS\Type("boolean")
      *

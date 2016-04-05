@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use Doctrine\DBAL\DBALException;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,7 +67,7 @@ class TaskLinkedItemsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Annotations\Get("/task_links", name="api_task_links")
+     * @Rest\Get("/task_links", name="api_task_links")
      *
      * @param Request $request
      *
@@ -103,7 +103,7 @@ class TaskLinkedItemsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Annotations\Get("/task_links/{id}", name="api_task_links_get")
+     * @Rest\Get("/task_links/{id}", name="api_task_links_get")
      *
      * @param int $id
      *
@@ -130,7 +130,7 @@ class TaskLinkedItemsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem"
      * )
-     * @Annotations\Post("/task_links/{type}", name="api_task_links_post")
+     * @Rest\Post("/task_links/{type}", name="api_task_links_post")
      *
      * @param Request $request
      * @param string  $type
@@ -163,7 +163,7 @@ class TaskLinkedItemsController extends BaseController
      *         404="This is not the task link you are looking for"
      *     }
      * )
-     * @Annotations\Put("/task_links/{type}/{id}", name="api_task_links_put")
+     * @Rest\Put("/task_links/{type}/{id}", name="api_task_links_put")
      *
      * @param Request $request
      * @param         $id
@@ -190,7 +190,7 @@ class TaskLinkedItemsController extends BaseController
      *         404="This is not the task link you are looking for"
      *     }
      * )
-     * @Annotations\Delete("/task_links/{id}", name="api_task_links_delete")
+     * @Rest\Delete("/task_links/{id}", name="api_task_links_delete")
      *
      * @param $id
      *

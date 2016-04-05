@@ -32,8 +32,7 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +55,7 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *     }
      * )
      *
-     * @Get("")
+     * @Rest\Get("")
      *
      * @return View
      */
@@ -76,7 +75,7 @@ abstract class AbstractAntiAbuseSetupController extends BaseController
      *     }
      * )
      *
-     * @Put("")
+     * @Rest\Put("")
      *
      * @param Request $request
      *

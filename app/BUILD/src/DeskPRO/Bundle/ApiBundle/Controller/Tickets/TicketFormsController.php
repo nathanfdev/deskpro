@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketFormsController.
  *
  * @ApiModes("all")
- * @Annotations\Route("/ticket_forms")
+ * @Rest\Route("/ticket_forms")
  */
 class TicketFormsController extends AbstractTicketsController
 {
@@ -68,7 +68,7 @@ class TicketFormsController extends AbstractTicketsController
      *     },
      *     output="Application\DeskPRO\Entity\Ticket"
      * )
-     * @Annotations\Post("/{context}", requirements={"context"="(agent|user)"})
+     * @Rest\Post("/{context}", requirements={"context"="(agent|user)"})
      *
      * @param string  $context
      * @param Request $request
@@ -106,7 +106,7 @@ class TicketFormsController extends AbstractTicketsController
      *         403="You are not allowed to edit this layout"
      *     }
      * )
-     * @Annotations\Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
+     * @Rest\Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
      *
      * @param string  $context
      * @param Ticket  $ticket

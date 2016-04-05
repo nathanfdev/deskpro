@@ -36,6 +36,8 @@ use JMS\Serializer\Annotation as JMS;
 class PortalAntiAbuseSettings
 {
     /**
+     * Account rate limit object.
+     *
      * @var PortalAccountRateLimit
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAccountRateLimit")
@@ -43,6 +45,8 @@ class PortalAntiAbuseSettings
     private $accountRateLimit;
 
     /**
+     * Rate limits for user.
+     *
      * @var PortalUserRateLimit
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")
@@ -50,6 +54,8 @@ class PortalAntiAbuseSettings
     private $userRateLimit;
 
     /**
+     * Rate limits for guests.
+     *
      * @var PortalUserRateLimit
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")

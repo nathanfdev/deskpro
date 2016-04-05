@@ -37,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationNoteType;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDocSection("Organizations")
  * @OutputEntity("Application\DeskPRO\Entity\OrganizationNote")
- * @Route("/organizations/{parentId}/notes")
+ * @Rest\Route("/organizations/{parentId}/notes")
  */
 class OrganizationNotesController extends CrudSubController
 {

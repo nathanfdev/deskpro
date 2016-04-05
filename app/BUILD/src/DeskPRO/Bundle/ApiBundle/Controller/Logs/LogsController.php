@@ -62,7 +62,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,7 +88,7 @@ class LogsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel"
      * )
-     * @Annotations\Get("/api_logs_options", name="api_logs_options")
+     * @Rest\Get("/api_logs_options", name="api_logs_options")
      *
      * @return View
      */
@@ -123,7 +123,7 @@ class LogsController extends BaseController
      *         },
      *         {
      *             "name"="modes",
-     *             "requirement"="[\w]",
+     *             "requirement"="(\w,)+",
      *             "dataType"="array",
      *             "description"="strings array, values are session, key, token"
      *         },
@@ -133,7 +133,7 @@ class LogsController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Put("/api_logs_options", name="api_logs_options_update")
+     * @Rest\Put("/api_logs_options", name="api_logs_options_update")
      *
      * @return View
      */
@@ -207,8 +207,8 @@ class LogsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Entity\ApiLog"
      * )
      *
-     * @Annotations\Post("/api_logs/{id}/replay", name="api_logs_replay", requirements={"id": "\d+"})
-     * @Annotations\View(serializerGroups={"list", "details"})
+     * @Rest\Post("/api_logs/{id}/replay", name="api_logs_replay", requirements={"id": "\d+"})
+     * @Rest\View(serializerGroups={"list", "details"})
      *
      * @param Request $request
      * @param int     $id

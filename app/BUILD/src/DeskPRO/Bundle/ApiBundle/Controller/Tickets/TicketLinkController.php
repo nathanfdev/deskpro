@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,7 +56,8 @@ class TicketLinkController extends BaseController
      *             "name"="parent",
      *             "requirement"="true|false",
      *             "dataType"="boolean",
-     *             "description"="set true if you want to make link ticket as parent for ticket"},
+     *             "description"="set true if you want to make link ticket as parent for ticket"
+     *         },
      *     },
      *     statusCodes={
      *         201="Tickets was linked successfully",
@@ -73,7 +74,7 @@ class TicketLinkController extends BaseController
      
      * @return View
      *
-     * @Annotations\Post("/tickets/{ticketId}/link", name="api_tickets_link")
+     * @Rest\Post("/tickets/{ticketId}/link", name="api_tickets_link")
      */
     public function postAction(Request $request, $ticketId)
     {
@@ -119,11 +120,12 @@ class TicketLinkController extends BaseController
      *         200="Returned in case of successful request",
      *         404="Ticket with specified id wasn't found",
      *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @param int $ticketId
      *
-     * @Annotations\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
+     * @Rest\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
      *
      * @return View
      */
@@ -173,7 +175,7 @@ class TicketLinkController extends BaseController
      * @param int     $unlinkTicketId
      * @param Request $request
      *
-     * @Annotations\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
+     * @Rest\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
      *
      * @return View
      */

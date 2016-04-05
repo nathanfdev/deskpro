@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
@@ -49,7 +48,6 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketCountsController.
  *
  * @ApiDocSection("Ticket filters")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\CountBadge\Count")
  * @ApiModes("all")
  */
 class TicketCountsController extends BaseController
@@ -77,6 +75,7 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *          404="Returned if set was not found"
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/new/ticket_filter_sets/{set}/count")
      *
@@ -110,6 +109,7 @@ class TicketCountsController extends BaseController
      *      statusCodes={
      *          200="Success",
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/new/ticket_filter_sets/all/counts")
      *
@@ -153,6 +153,7 @@ class TicketCountsController extends BaseController
      *          200="Success",
      *          404="Returned if filter was not found"
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/new/ticket_filters/{filter}/count")
      *
@@ -183,6 +184,7 @@ class TicketCountsController extends BaseController
      *      statusCodes={
      *          200="Success",
      *      },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/new/ticket_filters_counts")
      *

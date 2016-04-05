@@ -37,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,7 +59,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Annotations\Post("/person_setting", name="api_person_setting_post")
+     * @Rest\Post("/person_setting", name="api_person_setting_post")
      *
      * @param Request $request
      *
@@ -104,7 +104,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Annotations\Put("/person_setting", name="api_person_setting_put")
+     * @Rest\Put("/person_setting", name="api_person_setting_put")
      *
      * @param Request $request
      *
@@ -147,7 +147,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Annotations\Get("/person_setting", name="api_person_setting_cget")
+     * @Rest\Get("/person_setting", name="api_person_setting_cget")
      *
      * @return View
      */
@@ -185,7 +185,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Annotations\Get("/person_setting/{name}", name="api_person_setting_get")
+     * @Rest\Get("/person_setting/{name}", name="api_person_setting_get")
      *
      * @param string $name
      *

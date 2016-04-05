@@ -39,8 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
@@ -54,7 +53,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @ApiDocSection("Tickets")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
- * @Route("/tickets")
+ * @Rest\Route("/tickets")
  */
 class TicketsController extends AbstractTicketsController
 {
@@ -117,7 +116,7 @@ class TicketsController extends AbstractTicketsController
      *      },
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
-     * @Get("", name="api_tickets")
+     * @Rest\Get("", name="api_tickets")
      *
      * @param Request $request
      *

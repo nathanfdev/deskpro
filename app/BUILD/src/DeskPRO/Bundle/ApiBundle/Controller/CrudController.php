@@ -29,17 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -94,7 +90,7 @@ abstract class CrudController extends BaseController
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
-     * @Get("/{id}", requirements={"id"="\d+"})
+     * @Rest\Get("/{id}", requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param int     $id
@@ -131,7 +127,7 @@ abstract class CrudController extends BaseController
      *          400="An error will occur if you provide wrong filters set",
      *      }
      * )
-     * @Get("")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -201,7 +197,7 @@ abstract class CrudController extends BaseController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Post("")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
@@ -234,7 +230,7 @@ abstract class CrudController extends BaseController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Put("/{id}", requirements={"id"="\d+"})
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
      *
      * @param int     $id
      * @param Request $request
@@ -268,7 +264,7 @@ abstract class CrudController extends BaseController
      *          404="Well, looks like either resource already deleted either it doesn't exists at all"
      *      }
      * )
-     * @Delete("/{id}", requirements={"id"="\d+"})
+     * @Rest\Delete("/{id}", requirements={"id"="\d+"})
      *
      * @param int     $id
      * @param Request $request

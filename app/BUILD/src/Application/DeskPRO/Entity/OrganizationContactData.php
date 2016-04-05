@@ -37,19 +37,21 @@ use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TwitterListener;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contact data for an organization.
  *
  * @Assert\GroupSequenceProvider
+ * @JMS\ExclusionPolicy("all")
  */
 class OrganizationContactData extends ContactDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\Organization
-     *
      * @Assert\NotNull()
+     *
+     * @var \Application\DeskPRO\Entity\Organization
      */
     protected $organization;
 

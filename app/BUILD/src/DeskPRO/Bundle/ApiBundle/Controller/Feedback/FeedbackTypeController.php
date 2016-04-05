@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
@@ -50,7 +49,7 @@ class FeedbackTypeController extends BaseController
     /**
      * Fetch all feedback types.
      *
-     * **Note that current model called as Category, so don't be fulled with this - it's type**
+     * **Note that current model called as Category, so don't be fooled with this - it's type**
      *
      * @ApiDoc(
      *     section="Feedback",

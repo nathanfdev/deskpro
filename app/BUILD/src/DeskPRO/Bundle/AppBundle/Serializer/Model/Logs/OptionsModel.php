@@ -28,17 +28,27 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Logs;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class OptionsModel.
  */
 class OptionsModel
 {
     /**
+     * Is log enabled.
+     *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $enabled;
 
     /**
+     * Which modes to log (if enabled).
+     *
+     * @JMS\Type("array<string>")
+     *
      * @var array
      */
     protected $modes = [];

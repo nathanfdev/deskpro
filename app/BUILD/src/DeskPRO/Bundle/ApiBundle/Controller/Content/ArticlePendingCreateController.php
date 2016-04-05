@@ -39,7 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateCriteria;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +70,7 @@ class ArticlePendingCreateController extends BaseController
      *    },
      *    output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get("/article_pending_create/counts", name="api_article_pending_create_counts")
+     * @Rest\Get("/article_pending_create/counts", name="api_article_pending_create_counts")
      *
      * @param Request $request
      *
@@ -109,7 +109,7 @@ class ArticlePendingCreateController extends BaseController
      *        {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
      *    },
      * )
-     * @Get("/article_pending_creates", name="api_article_pending_creates")
+     * @Rest\Get("/article_pending_creates", name="api_article_pending_creates")
      *
      * @param Request $request
      *

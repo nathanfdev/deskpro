@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -65,7 +64,7 @@ class TicketLayoutsController extends BaseController
      *     statusCodes={
      *         200="Returned with list of layouts"
      *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout>"
      * )
      * @Rest\Get("/ticket_layouts/{context}",
      *      name="api_ticket_layouts",
@@ -103,7 +102,7 @@ class TicketLayoutsController extends BaseController
      *         200="Returned if everything is ok",
      *         400="Returned if department wasn't found",
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayoutItem"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout"
      * )
      * @Rest\Get("/ticket_layouts/{context}/{departmentId}",
      *      name="api_ticket_layout",

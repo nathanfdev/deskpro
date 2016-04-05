@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
@@ -41,8 +40,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,7 +66,7 @@ class WidgetSetupController extends BaseController
      
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
      *)
-     * @Get("/widget/setup", name="api_widget_setup_get")
+     * @Rest\Get("/widget/setup", name="api_widget_setup_get")
      *
      * @return View
      */
@@ -125,7 +123,7 @@ class WidgetSetupController extends BaseController
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Post("/widget/setup", name="api_widget_setup_post")
+     * @Rest\Post("/widget/setup", name="api_widget_setup_post")
      *
      * @param Request $request
      *
@@ -156,7 +154,7 @@ class WidgetSetupController extends BaseController
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Post("/widget/portal/apply", name="api_widget_portal_apply")
+     * @Rest\Post("/widget/portal/apply", name="api_widget_portal_apply")
      *
      * @param Request $request
      *
@@ -194,7 +192,7 @@ class WidgetSetupController extends BaseController
      *     },
      *)
      *
-     * @Post("/widget/portal/remove", name="api_widget_portal_remove")
+     * @Rest\Post("/widget/portal/remove", name="api_widget_portal_remove")
      *
      * @return View
      */
