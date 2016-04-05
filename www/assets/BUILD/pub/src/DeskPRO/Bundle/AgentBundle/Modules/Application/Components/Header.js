@@ -2,27 +2,17 @@ import React, { PropTypes } from 'react';
 import { HeaderWidget } from '../../IM/Components/HeaderWidget';
 import { WorkspaceContainer } from './Workspace/WorkspaceContainer';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
-import * as AppActions from '../Actions/appActions';
 
 export class Header extends React.Component {
 
   static propTypes = {
     user: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
-  };
-
-  toggleWorkspace = event => {
-    event.preventDefault();
-    this.props.dispatch(AppActions.toggleWorkspace());
-  };
-
-  togglePreferences = event => {
-    event.preventDefault();
-    this.props.dispatch(AppActions.togglePreferences());
+    toggleWorkspace: PropTypes.func.isRequired,
+    togglePreferences: PropTypes.func.isRequired
   };
 
   render() {
-    const { user } = this.props;
+    const { user, togglePreferences, toggleWorkspace } = this.props;
 
     return (
         <header className="dp-window-header top-bar">
@@ -30,7 +20,7 @@ export class Header extends React.Component {
           <HeaderWidget/>
 
           <div className="user-options">
-            <a href="#" className="notification-button" ref="workspaceButton" onClick={this.toggleWorkspace}>
+            <a href="#" className="notification-button" ref="workspaceButton" onClick={toggleWorkspace}>
               <span className="title" ><i className="fa fa-columns"></i><i className="fa fa-angle-down"></i></span>
             </a>
 
@@ -39,8 +29,8 @@ export class Header extends React.Component {
               <span className="title"><i className="fa fa-cog"></i> Admin <i className="fa fa-angle-down"></i></span>
             </a>
 
-            <a href="#" className="user-options-button" onClick={this.togglePreferences}>
-              <PersonAvatar person={user} size="28" />
+            <a href="#" className="user-options-button" onClick={togglePreferences}>
+              <PersonAvatar person={user} size={28} />
               <span className="title">Settings <i className="fa fa-angle-down"></i></span>
             </a>
           </div>

@@ -113,14 +113,14 @@ export class FeedbackTableContainer extends Component {
           <Th sort="id"
               title="ID"
               visible={this.isVisible('id')}
-              currentOrder={orderDir}
-              currentSort={orderBy}
+              orderDir={orderDir}
+              orderBy={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="title"
               title="Title"
               visible={this.isVisible('title')}
-              currentOrder={orderDir}
-              currentSort={orderBy}
+              orderDir={orderDir}
+              orderBy={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="content"
               title="Content"
@@ -132,8 +132,8 @@ export class FeedbackTableContainer extends Component {
           <Th sort="person"
               title="Author"
               visible={this.isVisible('person')}
-              currentOrder={orderDir}
-              currentSort={orderBy}
+              orderDir={orderDir}
+              orderBy={orderBy}
               onChange={this.sortTable.bind(this)}/>
           <Th sort="type" title="Type"
               visible={this.isVisible('type')}/>
@@ -141,15 +141,15 @@ export class FeedbackTableContainer extends Component {
               visible={this.isVisible('category')}/>
           <Th sort="num_ratings"
               title="Votes"
-              currentOrder={orderDir}
-              currentSort={orderBy}
+              orderDir={orderDir}
+              orderBy={orderBy}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
               visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
-              currentOrder={orderDir}
-              currentSort={orderBy}
+              orderDir={orderDir}
+              orderBy={orderBy}
               onChange={this.sortTable.bind(this)}
               visible={this.isVisible('date_created')}/>
         </tr>

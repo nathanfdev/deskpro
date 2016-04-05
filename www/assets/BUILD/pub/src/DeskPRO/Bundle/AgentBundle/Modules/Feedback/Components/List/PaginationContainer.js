@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
 import { applyParams } from '../../Actions/FeedbackListActions';
+import { paginationSelector } from '../../Selectors/list';
 
 import { connect } from 'react-redux';
 @connect(state => {
   return ({
-    pagination: state.Feedback.list.get('pagination')
+    pagination: paginationSelector(state)
   });
 })
 
@@ -24,8 +25,8 @@ export class PaginationContainer extends Component {
     const {pagination} = this.props;
     return (
       <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
-                         pageNum={pagination.total_pages}
-                         currentPage={pagination.current_page}
+                         pageNum={pagination.get('total_pages')}
+                         currentPage={pagination.get('current_page')}
                          clickCallback={this.handlePageClick.bind(this)}/>
     );
   }

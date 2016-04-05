@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Workspace } from './Workspace';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
+import { closeWorkspace, setColumnDimensions, setColumnMode, setSidebarMode } from '../../Actions/appActions';
 
 @connect(state => ({
   dpWindow: state.Application.dpWindow
@@ -14,8 +15,66 @@ export class WorkspaceContainer extends React.Component {
     positionTarget: PropTypes.any.isRequired
   };
 
+  constructor(props) {
+    super(props);
+    const { dpWindow } = props;
+
+    this.state = {
+      columnMode: dpWindow.get('columnMode'),
+      sidebarMode: dpWindow.get('sidebarMode'),
+      columnDimensions: dpWindow.get('columnDimensions')
+    };
+  }
+
+  setColumnMode = (mode) => {
+    this.props.dispatch(setColumnMode(mode));
+  };
+
+  setColumnDimensions = percent => {
+    this.props.dispatch(setColumnDimensions(percent));
+  };
+
+  setSidebarMode = mode => {
+    this.props.dispatch(setSidebarMode(mode));
+  };
+
+  close = event => {
+    event.preventDefault();
+
+    this.resetAll(event);
+    this.closeWorkspace();
+  };
+
+  closeWorkspace = () => {
+    this.props.dispatch(closeWorkspace());
+  };
+
+  resetAll = event => {
+    event.preventDefault();
+    const { dispatch } = this.props;
+
+    dispatch(setColumnMode(this.state.columnMode));
+    dispatch(setColumnDimensions(this.state.columnDimensions));
+    dispatch(setSidebarMode(this.state.sidebarMode));
+
+    this.closeWorkspace();
+  };
+
+  saveWorkspace = event => {
+    event.preventDefault();
+    const { dpWindow } = this.props;
+
+    this.setState({
+      columnMode: dpWindow.get('columnMode'),
+      sidebarMode: dpWindow.get('sidebarMode'),
+      columnDimensions: dpWindow.get('columnDimensions')
+    });
+
+    this.closeWorkspace();
+  };
+
   render() {
-    const { dpWindow, dispatch, positionTarget } = this.props;
+    const { dpWindow, positionTarget } = this.props;
 
     return (
       <Simple isOpen={dpWindow.get('isWorkspaceOpen')}
@@ -23,7 +82,14 @@ export class WorkspaceContainer extends React.Component {
               positionAt="right bottom"
               postionMy="right top">
 
-        <Workspace dispatch={dispatch} dpWindow={dpWindow} />
+        <Workspace dpWindow={dpWindow}
+                   close={this.close}
+                   saveWorkspace={this.saveWorkspace}
+                   closeWorkspace={this.closeWorkspace}
+                   setColumnMode={this.setColumnMode}
+                   setColumnDimensions={this.setColumnDimensions}
+                   setSidebarMode={this.setSidebarMode}
+                   resetAll={this.resetAll}/>
       </Simple>
     );
   }

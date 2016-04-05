@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
+import debounce from 'lodash/function/debounce';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
 import { TabBodyPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
@@ -9,8 +10,7 @@ import { TabFrame } from './TabFrame';
 import { NotificationsContainer } from './Notifications/notifications';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { workspaceDimsSelector } from '../Selectors/workspace';
-import * as appActions from '../Actions/appActions';
-import debounce from 'lodash/function/debounce';
+import { setActiveApp, togglePreferences, toggleWorkspace, windowResize } from '../Actions/appActions';
 import $ from 'jquery';
 
 @connect(state => ({
@@ -25,7 +25,6 @@ export class DpApp extends React.Component {
     user: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired,
-    workspace: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
@@ -46,16 +45,30 @@ export class DpApp extends React.Component {
   }
 
   _resetWinSize() {
-    this.props.dispatch(appActions.windowResize($(window).width(), $(window).height()));
+    this.props.dispatch(windowResize($(window).width(), $(window).height()));
   }
 
+  switchApp = appId => {
+    this.props.dispatch(setActiveApp(appId));
+  };
+
+  toggleWorkspace = event => {
+    event.preventDefault();
+    this.props.dispatch(toggleWorkspace());
+  };
+
+  togglePreferences = event => {
+    event.preventDefault();
+    this.props.dispatch(togglePreferences());
+  };
+
   render() {
-    const { user, dpWindow, dispatch, children } = this.props;
+    const { user, dpWindow, children } = this.props;
 
     return (
       <div className="dp-window">
-        <Header user={user} dispatch={dispatch}/>
-        <AppSwitcher dispatch={dispatch} currentApp={dpWindow.get('activeAppId')}/>
+        <Header user={user} toggleWorkspace={this.toggleWorkspace} togglePreferences={this.togglePreferences}/>
+        <AppSwitcher switchApp={this.switchApp} currentApp={dpWindow.get('activeAppId')}/>
 
         <div className="dp-panes-middle">
           {children}

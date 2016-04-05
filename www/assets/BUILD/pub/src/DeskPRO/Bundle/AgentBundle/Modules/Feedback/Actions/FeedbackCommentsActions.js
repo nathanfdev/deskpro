@@ -26,23 +26,11 @@ export const commentsToReviewCounter = createAction(
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
-  (ids) => dispatch => {
-    repository('FeedbackComment').removeBatch(ids).then(()=> {
+  (id) => dispatch => {
+    repository('FeedbackComment').remove(id).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
-    return ids;
-  }
-);
-
-export const approveComment = createAction(
-  'FEEDBACK_COMMENTS_APPROVE',
-  (ids) => dispatch => {
-    repository('FeedbackComment').approveFeedbackComment(ids).then(()=> {
-      dispatch(commentsToReviewCounter());
-      dispatch(applyParams({ isComments: true }));
-    });
-    return ids;
   }
 );
 

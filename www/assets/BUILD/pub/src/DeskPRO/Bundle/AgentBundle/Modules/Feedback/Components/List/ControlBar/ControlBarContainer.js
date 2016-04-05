@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { currentListParamsSelector, currentViewModeSelector, visibleFieldsSelector } from '../../../Selectors/list';
+import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector } from '../../../Selectors/list';
 import { listFiltersSelector} from '../../../Selectors/filters';
 import { applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
@@ -12,6 +12,7 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 @connect(state => ({
   currentParams: currentListParamsSelector(state),
   filters: listFiltersSelector(state),
+  isComments: isCommentsSelector(state),
   viewMode: currentViewModeSelector(state),
   visibleFields: visibleFieldsSelector(state)
 }))
@@ -19,19 +20,21 @@ export class ControlBarContainer extends Component {
   static propTypes = {
     currentParams: PropTypes.object.isRequired,
     filters: PropTypes.array.isRequired,
+    isComments: PropTypes.bool,
     viewMode: PropTypes.string.isRequired,
     visibleFields: PropTypes.object
   };
 
   render() {
+    const sorting = { date_created: { label: 'Date', icon: 'calendar' } };
+    if (!this.props.isComments) {
+      sorting.total_rating = { label: 'Rating', icon: 'calendar-o' };
+      sorting.num_ratings = { label: 'Votes', icon: 'calendar' };
+    }
     const config = {
       applyParams: applyParams,
       currentParams: this.props.currentParams,
-      sorting: {
-        date_created: { label: 'Date', icon: 'calendar' },
-        total_rating: { label: 'Rating', icon: 'calendar-o' },
-        num_ratings: { label: 'Votes', icon: 'calendar' }
-      },
+      sorting: sorting,
       filters: this.props.filters,
       view: {
         options: {

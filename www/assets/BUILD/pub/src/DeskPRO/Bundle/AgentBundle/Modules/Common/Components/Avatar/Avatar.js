@@ -5,13 +5,14 @@ import { UserPhoto } from './UserPhoto';
 export class Avatar extends React.Component {
 
   static propTypes = {
+    size: PropTypes.number,
     url: PropTypes.string,
     urlPattern: PropTypes.string,
     gravatar: PropTypes.string
   };
 
   render() {
-    const { url, urlPattern, gravatar } = this.props;
+    const { url, urlPattern, gravatar, size } = this.props;
 
     if (url || urlPattern) {
       return (
@@ -24,8 +25,8 @@ export class Avatar extends React.Component {
       return (
         <TextAvatar {...this.props}>
           <UserPhoto type="text">
-            <Gravatar {...this.props}>
-              <UserPhoto type="gravatar" />
+            <Gravatar gravatar={gravatar} size={size}>
+              <UserPhoto type="gravatar"/>
             </Gravatar>
           </UserPhoto>
         </TextAvatar>
@@ -34,7 +35,7 @@ export class Avatar extends React.Component {
 
     return (
       <TextAvatar {...this.props}>
-        <UserPhoto type="text" />
+        <UserPhoto type="text"/>
       </TextAvatar>
     );
   }

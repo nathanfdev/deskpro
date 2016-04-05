@@ -181,20 +181,12 @@ export class CardReset extends Component {
     this.prev = false;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    this.prev = prevState.isChanged;
+  componentDidUpdate() {
+    this.props.isChanged && this.props.isChanged(this.state.isChanged);
   }
 
-  reset = () => {
-    if (!this.state.isChanged) {
-      return;
-    }
-    this.setState({isChanged: false});
-    this.props.onReset && this.props.onReset();
-  };
-
   onSetEditing = (isEditing) => {
-    this.setState({isChanged: isEditing || this.prev});
+    this.setState({ isChanged: isEditing || this.prev });
   };
 
   onChange = () => {
@@ -202,13 +194,17 @@ export class CardReset extends Component {
     if (wasChanged) {
       this.prev = true;
     } else {
-      this.setState({isChanged: true});
+      this.setState({ isChanged: true });
     }
   };
 
-  componentDidUpdate() {
-    this.props.isChanged && this.props.isChanged(this.state.isChanged);
-  }
+  reset = () => {
+    if (!this.state.isChanged) {
+      return;
+    }
+    this.setState({ isChanged: false });
+    this.props.onReset && this.props.onReset();
+  };
 
   render() {
     const classes = classNames('fa fa-trash', { 'active': this.state.isChanged });

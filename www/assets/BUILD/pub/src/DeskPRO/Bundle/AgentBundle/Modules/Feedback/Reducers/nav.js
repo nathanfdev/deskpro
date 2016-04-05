@@ -4,11 +4,13 @@ import * as actions from '../Actions/feedbackNavActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import Immutable from 'immutable';
 
-const initialState = {
+export const feedbackNavInitialState = {
   async: {
     done: false
   },
-  toValidateCount: { count: 0 },
+  types: {},
+  categories: {},
+  feedbackToReviewCount: { count: 0 },
   commentsToReviewCount: { count: 0 },
   labels: [/* string */],
   statuses: {
@@ -31,7 +33,7 @@ const initialState = {
   }
 };
 
-export default createReducer(initialState, {
+export default createReducer(feedbackNavInitialState, {
   [actions.feedbackToValidateCounter]: async({
     success: (state, payload) =>
       state.setIn(['toValidateCount'], payload.data.count)

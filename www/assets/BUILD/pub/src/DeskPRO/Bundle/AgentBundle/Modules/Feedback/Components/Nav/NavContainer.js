@@ -1,16 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../Actions/feedbackNavActions';
+import { initialLoad } from '../../Actions/feedbackNavActions';
+import { applyParams } from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { typeCountersSelector, categoryCountersSelector, statusCountersSelector, feedbackLabelsSelector }
+import { categoryCountersSelector, commentsToReviewCountSelector, isLoadedSelector, feedbackToReviewCountSelector,
+  typeCountersSelector, statusCountersSelector, feedbackLabelsSelector }
   from '../../Selectors/nav';
-
 
 @connect(state => {
   return ({
-    isLoaded: state.Feedback.nav.getIn(['async', 'done']),
-    toValidateCount: state.Feedback.nav.get('toValidateCount'),
-    commentsToReviewCount: state.Feedback.nav.get('commentsToReviewCount'),
+    isLoaded: isLoadedSelector(state),
+    feedbackToReviewCount: feedbackToReviewCountSelector(state),
+    commentsToReviewCount: commentsToReviewCountSelector(state),
     statuses: statusCountersSelector(state),
     types: typeCountersSelector(state),
     labels: feedbackLabelsSelector(state),
@@ -24,12 +25,17 @@ export class NavContainer extends Component {
   };
 
   componentDidMount() {
-    this.props.dispatch(actions.initialLoad());
+    this.props.dispatch(initialLoad());
   }
+
+  onLabelClick = (params) => {
+    this.props.dispatch(applyParams({ isComments: false, navItem: { [params.name]: params.value } }));
+  };
 
   render() {
     return (
-      <Nav {...this.props} />
+      <Nav {...this.props}
+        onLabelClick={this.onLabelClick}/>
     );
   }
 }

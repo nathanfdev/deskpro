@@ -14,7 +14,7 @@ export class FeedbackCommentCard extends Component {
     feedback: PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     author: PropTypes.object.isRequired,
-    selected: PropTypes.array.isRequired
+    selected: PropTypes.bool
   };
 
   constructor(props) {
@@ -27,10 +27,10 @@ export class FeedbackCommentCard extends Component {
   toggleEditMode(event) {
     event.preventDefault();
     const { comment, dispatch } = this.props;
-    this.setState({isEditingNow: !this.state.isEditingNow});
+    this.setState({ isEditingNow: !this.state.isEditingNow });
     if (this.state.isEditingNow) {
       const newValues = {
-        commentId: comment.get('id'),
+        id: comment.get('id'),
         content: this.refs.commentContent.value.trim()
       };
       dispatch(editComment(newValues));
@@ -60,12 +60,10 @@ export class FeedbackCommentCard extends Component {
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
-        <ValidationLine
-          comment={comment}
-          isEditingNow={this.state.isEditingNow}
-          dispatch={dispatch}
-          toggleEditMode={this.toggleEditMode.bind(this)}
-          />
+        <ValidationLine comment={comment}
+                        isEditingNow={this.state.isEditingNow}
+                        dispatch={dispatch}
+                        toggleEditMode={this.toggleEditMode.bind(this)}/>
 
         <CardCheckbox selected={selected} onClick={toggleSelected(comment.get('id'))}/>
 
@@ -108,10 +106,10 @@ export class ValidationLine extends Component {
     isEditingNow: PropTypes.bool.isRequired
   };
 
-  approveComment(commentId, event) {
+  approveComment(id, event) {
     event.preventDefault();
     const newValues = {
-      commentId: commentId,
+      id: id,
       status: constants.STATUS_VISIBLE,
       is_reviewed: true
     };
@@ -119,11 +117,11 @@ export class ValidationLine extends Component {
     dispatch(editComment(newValues));
   }
 
-  deleteComment(id, event) {
+  deleteComment = (event) => {
     event.preventDefault();
-    const {dispatch} = this.props;
-    dispatch(deleteComment([id]));
-  }
+    const {dispatch, comment} = this.props;
+    dispatch(deleteComment(comment.get('id')));
+  };
 
   render() {
     const { comment, isEditingNow, toggleEditMode } = this.props;
@@ -147,7 +145,7 @@ export class ValidationLine extends Component {
             </a>
           </li>
           <li>
-            <a href="#" onClick={this.deleteComment.bind(this, comment.get('id'))}>
+            <a href="#" onClick={this.deleteComment}>
               <span className="validation-line-icon trash"><i className="fa fa-trash"></i></span> <span
               className="validation-line-title">Delete</span>
             </a>
