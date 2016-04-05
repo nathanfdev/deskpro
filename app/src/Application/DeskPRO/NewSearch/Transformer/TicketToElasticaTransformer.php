@@ -29,9 +29,11 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
+use Vaites\ApacheTika\Client as ApacheTikaClient;
 
 /**
  * Ticket To Elastica Transformer.
@@ -42,6 +44,26 @@ use Orb\Util\Arrays;
  */
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
+    private $container;
+
+    /**
+     * @return mixed
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param mixed $container
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    }
+
+
+
     /**
      * Transform.
      *
@@ -78,9 +100,10 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         if ($object->labels) {
             $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
             $document->set('labels', $labels);
+        } else {
+            $document->set('labels', array());
         }
 
-        $document->set('labels', $labels);
 
         $messages = array();
         foreach ($object->getMessages() as $message) {
@@ -95,6 +118,22 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $dates = Arrays::removeFalsey($dates);
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
+
+        $attachments = [];
+        if ($object->has_attachments) {
+            $pika = $this->getContainer()->get('apache_tika.client');
+            /** @var TicketAttachment $attachment */
+            foreach ($object->getAttachments() as $attachment) {
+                $blob = $attachment->getBlob();
+                if (!$blob->isImage()) {
+                    $attachments[] = array(
+                        'filename' => $blob->getFilenameSafe(),
+                        'content'  => $pika->getText($blob->getDownloadUrl(true)),
+                    );
+                }
+            }
+        }
+        $document->set('attachment', $attachments);
 
         return $document;
     }
