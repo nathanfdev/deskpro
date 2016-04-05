@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
@@ -57,22 +58,22 @@ class EventLogger
     }
 
     /**
-     * @param \Exception|Event $event_or_exception
-     * @param bool             $aloud              Whether to print the event description
-     * @param bool|null        $halt               Whether to halt execution
+     * @param \Exception|Event $eventOrException
+     * @param bool             $aloud            Whether to print the event description
+     * @param bool|null        $halt             Whether to halt execution
      */
-    public function log($event_or_exception, $aloud = false, $halt = null)
+    public function log($eventOrException, $aloud = false, $halt = null)
     {
-        if ($event_or_exception instanceof SuccessEvent) {
-            return $this->logSuccess($event_or_exception);
+        if ($eventOrException instanceof SuccessEvent) {
+            return $this->logSuccess($eventOrException);
         }
 
-        $event = $this->ensureEvent($event_or_exception);
+        $event = $this->ensureEvent($eventOrException);
         $this->em->persist($event);
         $this->em->flush($event);
 
         if ($aloud) {
-            echo (string) $event, "\n";
+            echo 'The following subject has failed: ', (string) $event, "\n";
         }
 
         !is_null($halt) or $halt = $aloud;
@@ -82,19 +83,19 @@ class EventLogger
     }
 
     /**
-     * @param \Exception|Event $event_or_exception
+     * @param \Exception|Event $eventOrException
      */
-    public function logAloud($event_or_exception)
+    public function logAloud($eventOrException)
     {
-        $this->log($event_or_exception, true, false);
+        $this->log($eventOrException, true, false);
     }
 
     /**
-     * @param \Exception|Event $event_or_exception
+     * @param \Exception|Event $eventOrException
      */
-    public function halt($event_or_exception)
+    public function halt($eventOrException)
     {
-        $this->log($event_or_exception, true, true);
+        $this->log($eventOrException, true, true);
     }
 
     /**
@@ -126,10 +127,11 @@ class EventLogger
      */
     private function logSuccess(SuccessEvent $event)
     {
-        $success_type = get_class($event);
-        $failure_type = $event->getFailureType();
-        $success      = $this->em->getRepository($success_type)->findOneBy([], ['id' => 'desc']);
-        $failure      = $this->em->getRepository($failure_type)->findOneBy([], ['id' => 'desc']);
+        $successType = get_class($event);
+        $failureType = $event->getFailureType();
+        $criteria    = ['subjectUniqueId' => $event->getSubjectUniqueId()];
+        $success     = $this->em->getRepository($successType)->findOneBy($criteria, ['id' => 'desc']);
+        $failure     = $this->em->getRepository($failureType)->findOneBy($criteria, ['id' => 'desc']);
 
         if (($failure && !$success) || ($failure && $success && ($failure->getId() > $success->getId()))) {
             $this->em->persist($event);
@@ -138,21 +140,21 @@ class EventLogger
     }
 
     /**
-     * @param \Exception|Event $event_or_exception
+     * @param \Exception|Event $eventOrException
      *
      * @throws \Exception
      *
      * @return Event
      */
-    private function ensureEvent($event_or_exception)
+    private function ensureEvent($eventOrException)
     {
-        if ($event_or_exception instanceof \Exception) {
-            $event = new ExceptionEvent($event_or_exception);
-        } elseif ($event_or_exception instanceof Event) {
-            $event = $event_or_exception;
+        if ($eventOrException instanceof \Exception) {
+            $event = new ExceptionEvent($eventOrException);
+        } elseif ($eventOrException instanceof Event) {
+            $event = $eventOrException;
         } else {
-            if ($type = gettype($event_or_exception) === 'object') {
-                $type = get_class($event_or_exception);
+            if ($type = gettype($eventOrException) === 'object') {
+                $type = get_class($eventOrException);
             }
             throw new \Exception(
                 'EventLogger::log() can accept either an Exception or Event instance, got '.$type);

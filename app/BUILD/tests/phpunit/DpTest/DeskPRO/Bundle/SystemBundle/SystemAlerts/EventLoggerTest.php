@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;
-
-include_once '_mocks.php';
 
 /**
  * Class EventLoggerTest.

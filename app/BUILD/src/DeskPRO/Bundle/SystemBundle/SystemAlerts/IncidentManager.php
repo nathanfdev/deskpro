@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\StatefulIncidentTrigger;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Doctrine\ORM\EntityManager;
@@ -45,7 +47,7 @@ class IncidentManager
     /**
      * @var TriggeringProcess
      */
-    private $triggering_process;
+    private $triggeringProcess;
 
     /**
      * @var EntityManager
@@ -55,25 +57,25 @@ class IncidentManager
     /**
      * IncidentManager constructor.
      *
-     * @param TriggeringProcess $triggering_process
+     * @param TriggeringProcess $triggeringProcess
      * @param EntityManager     $em
      */
-    public function __construct(TriggeringProcess $triggering_process, EntityManager $em)
+    public function __construct(TriggeringProcess $triggeringProcess, EntityManager $em)
     {
-        $this->triggering_process = $triggering_process;
-        $this->em                 = $em;
+        $this->triggeringProcess = $triggeringProcess;
+        $this->em                = $em;
     }
 
     /**
-     * @param Incident $incident
+     * @param StatefulIncident $incident
      */
-    public function dismiss(Incident $incident)
+    public function dismiss(StatefulIncident $incident)
     {
         $incident->setDismissed(true);
         $this->em->persist($incident);
         $this->em->flush($incident);
 
-        $triggers = $this->triggering_process->getTriggers();
+        $triggers = $this->triggeringProcess->getTriggers();
         foreach ($triggers as $trigger) {
             if ($trigger instanceof StatefulIncidentTrigger && $trigger->dismisses($incident)) {
                 if ($callable = $trigger->getDismissedCallback()) {
@@ -91,12 +93,16 @@ class IncidentManager
      */
     public function remove(Incident $incident)
     {
+        $this->em->beginTransaction();
+
         $this
             ->em
-            ->createQuery('DELETE FROM '.Event::class.' e WHERE e.id IN(:ids)')
+            ->createQuery('DELETE FROM '.AbstractEvent::class.' e WHERE e.id IN(:ids)')
             ->execute(['ids' => $incident->getEventIds()]);
 
         $this->em->remove($incident);
         $this->em->flush($incident);
+
+        $this->em->commit();
     }
 }

@@ -29,74 +29,42 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\Storage;
 
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
+
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class KeyValueEntry.
+ * Class AbstractStatefulIncident.
  *
- * @ORM\Entity
- * @ORM\Table(name="system_storage_key_value")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\MappedSuperclass
+ * @JMS\ExclusionPolicy("all")
  */
-class KeyValueEntry
+abstract class AbstractStatefulIncident extends AbstractIncident implements StatefulIncident
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * @var string
-     * @ORM\Column(type="string", name="key_name", nullable=false)
-     * @ORM\Id()
-     */
-    private $key;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="text", nullable=false)
-     */
-    private $value;
-
-    /**
-     * KeyValueEntry constructor.
+     * @var bool
+     * @ORM\Column(type="boolean")
      *
-     * @param string $key
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
-    public function __construct($key)
+    protected $resolved = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isResolved()
     {
-        $this->key = $key;
+        return $this->resolved;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getKey()
+    public function setResolved($resolved)
     {
-        return $this->key;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param \DateTime $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
+        $this->resolved = $resolved;
     }
 }

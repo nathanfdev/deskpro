@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\BlobStorage\BlobStorageException;
@@ -37,6 +38,7 @@ use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Doctrine\Common\Util\Debug;
 use Psr\Log\LoggerInterface;
 
 class QueueProc
@@ -133,9 +135,9 @@ class QueueProc
                 $this->source_mapper->markSourceError($r, 'no_send');
             }
 
-            $this->event_logger->log(new OutgoingEmailSuccessEvent());
+            $this->event_logger->log(new OutgoingEmailSuccessEvent($r['email_account_id'], $r['from_email']));
         } catch (RawTransportException $e) {
-            $this->event_logger->log(new OutgoingEmailFailureEvent($e));
+            $this->event_logger->log(new OutgoingEmailFailureEvent($r['email_account_id'], $r['from_email'], $e));
 
             $this->logger->notice('Send failed');
             $next = $this->getNextRetry($r);

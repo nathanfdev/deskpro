@@ -1,0 +1,25 @@
+<p>
+    This incident is shown because of {{ incident.getFailureEventsCount() }} incoming email failures between
+    {{ incident.getDateFirstFailure()|date }} and {{ incident.getDateLastFailure()|date }}
+</p>
+
+<p>
+    To solve the issue navigate to the
+    <a href="/admin/#/tickets/ticket_accounts/{{ incident.getEmailAccountId() }}" target="_blank">
+        Tickets &rarr; Email Accounts (will be opened in a new tab)
+    </a>
+    and check account settings.
+</p>
+
+<p>
+    Make sure credentials are correct by pressing the Test Account Settings button and verifying its' success report.
+</p>
+
+<p>
+    If your credentials are correct and you still see this incident, check network between your DeskPRO
+    instance host and email server and make sure the email server is up and available.
+</p>
+
+<p>
+    Once incoming email process succeeds, this incident will get resolved automatically.
+</p>

@@ -29,58 +29,25 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Storage;
 
-use DeskPRO\Bundle\SystemBundle\Entity\Storage\KeyValueEntry;
-use Doctrine\ORM\EntityManager;
+namespace DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class KeyValueStorage.
+ * Class ProblemType.
  */
-class KeyValueStorage implements KeyValueStorageInterface
+class IncidentType extends ApiType
 {
     /**
-     * @var EntityManager
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      */
-    private $em;
-
-    /**
-     * EventLogger constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->em = $em;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function save($key, $value)
-    {
-        $entry = $this->em->find(KeyValueEntry::class, $key) ?: new KeyValueEntry($key);
-        $entry->setValue($value);
-        $this->em->persist($entry);
-        $this->em->flush($entry);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key)
-    {
-        return ($entry = $this->em->find(KeyValueEntry::class, $key)) ? $entry->getValue() : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($key)
-    {
-        if ($entry = $this->em->find(KeyValueEntry::class, $key)) {
-            $this->em->remove($entry);
-            $this->em->flush($entry);
-        }
+        $builder
+            ->add('dismissed', 'api_boolean')
+        ;
     }
 }

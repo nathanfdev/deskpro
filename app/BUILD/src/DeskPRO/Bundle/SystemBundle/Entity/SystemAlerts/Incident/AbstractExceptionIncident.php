@@ -29,26 +29,19 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Storage;
+
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 /**
- * Interface KeyValueStorageInterface.
+ * Class AbstractExceptionIncident.
  */
-interface KeyValueStorageInterface
+abstract class AbstractExceptionIncident extends AbstractIncident
 {
     /**
-     * @param string $key
-     * @param mixed  $value
+     * {@inheritdoc}
      */
-    public function save($key, $value);
-
-    /**
-     * @param string $key
-     */
-    public function get($key);
-
-    /**
-     * @param string $key
-     */
-    public function remove($key);
+    public function getTitle()
+    {
+        return $this->getFirstEvent()->getSubjectDescription();
+    }
 }

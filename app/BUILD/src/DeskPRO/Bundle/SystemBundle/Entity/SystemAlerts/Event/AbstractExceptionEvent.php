@@ -29,58 +29,49 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
+
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class AbstractContinuingFailureIncident.
+ * Class AbstractExceptionEvent.
  *
- * Base class representing incidents which are raised based on sequence of failing events.
+ * @ORM\MappedSuperclass
  */
-abstract class AbstractContinuingFailureIncident extends Incident
+abstract class AbstractExceptionEvent extends AbstractEvent
 {
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @var string
+     *
+     * @ORM\Column(name="exception_class", type="string")
      */
-    private $date_first_failure;
+    protected $exceptionClass;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @var int
+     * @ORM\Column(name="exception_code", type="integer", options={"unsigned"=true})
      */
-    private $date_last_failure;
+    protected $exceptionCode = 0;
 
     /**
-     * @return \DateTime
+     * ExceptionEvent constructor.
+     *
+     * @param \Exception     $exception
+     * @param \DateTime|null $dateCreated
      */
-    public function getDateFirstFailure()
+    public function __construct(\Exception $exception, \DateTime $dateCreated = null)
     {
-        return $this->date_first_failure;
+        $this->exceptionCode  = $exception->getCode();
+        $this->exceptionClass = get_class($exception);
+        parent::__construct($dateCreated);
     }
 
     /**
-     * @param \DateTime $date_first_failure
+     * @return int
      */
-    public function setDateFirstFailure(\DateTime $date_first_failure)
+    public function getExceptionCode()
     {
-        $this->date_first_failure = $date_first_failure;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastFailure()
-    {
-        return $this->date_last_failure;
-    }
-
-    /**
-     * @param \DateTime $date_last_failure
-     */
-    public function setDateLastFailure(\DateTime $date_last_failure)
-    {
-        $this->date_last_failure = $date_last_failure;
+        return $this->exceptionCode;
     }
 }
