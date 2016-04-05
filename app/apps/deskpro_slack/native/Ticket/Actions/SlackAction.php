@@ -35,6 +35,7 @@ namespace deskpro_slack\Ticket\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
@@ -93,7 +94,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
             $client->request(
                 'POST',
                 $app->getSetting('webhook_url'),
-                ['form_params' => ['payload' => $this->generatePayload($message)]]
+                array('form_params' => array('payload' => $this->generatePayload($message)))
             );
         } catch (\Exception $e) {
             $context->getLogger()->notice("[SlackAction] Error sending Slack message: {$e->getMessage()}");
@@ -117,14 +118,15 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $fallback = '#'.$ticket->id.' ';
         $fallback .= '<'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
 
+        /** @var TicketMessage $message */
         $message = array_pop($ticket->getDisplayableMessages());
 
-        $attachment = [
+        $attachment = array(
             'color' => '#1D7AB2',
             'text' => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
             'title' => '#' . $ticket->id . ' ' . htmlspecialchars($ticket->subject),
             'title_link' => $this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
-        ];
+        );
 
         if ($context->getEventType() == 'newticket') {
             $pretext = 'New ticket';
@@ -164,10 +166,10 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
      */
     private function generatePayload($message)
     {
-        $payload = [
-            'attachments' => [$message],
+        $payload = array(
+            'attachments' => array($message),
             'username' => 'DeskPro',
-        ];
+        );
         if ($this->getActionOption('channel')) {
             $payload['channel'] = $this->getActionOption('channel');
         }
