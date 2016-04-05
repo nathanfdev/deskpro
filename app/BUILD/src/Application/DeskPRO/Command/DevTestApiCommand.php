@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
+use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -61,42 +61,35 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $req_type = 'GET';
-
-        if ($input->getOption('v2')) {
-            $v2 = '/v2/';
-        } else {
-            $v2 = '';
-        }
-
-        $as_form = $input->getOption('as-form');
-
-        $curl = ['curl'];
+        $reqType = 'GET';
+        $v2      = $input->getOption('v2') ? '/v2/' : '';
+        $asForm  = $input->getOption('as-form');
+        $curl    = ['curl'];
 
         #------------------------------
         # Get the data to post
         #------------------------------
 
-        $data_arg = $input->getArgument('data');
-        $data     = null;
-        if ($data_arg) {
-            $req_type = 'POST';
-            if ($data_arg[0] === '@') {
-                $data_arg = substr($data_arg, 1);
-                if (!file_exists($data_arg)) {
-                    $output->writeln("<error>No such file exists: $data_arg</error>");
+        $dataArg = $input->getArgument('data');
+        $data    = null;
+        if ($dataArg) {
+            $reqType = 'POST';
+            if ($dataArg[0] === '@') {
+                $dataArg = substr($dataArg, 1);
+                if (!file_exists($dataArg)) {
+                    $output->writeln("<error>No such file exists: $dataArg</error>");
 
                     return 1;
                 }
 
-                $data = require $data_arg;
+                $data = require $dataArg;
                 if (!is_array($data)) {
-                    $output->writeln("<error>Data file did not return array: $data_arg</error>");
+                    $output->writeln("<error>Data file did not return array: $dataArg</error>");
 
                     return 1;
                 }
             } else {
-                $data = json_decode($data_arg, true);
+                $data = json_decode($dataArg, true);
 
                 if (!is_array($data)) {
                     $output->writeln('<error>Data did not decode into an array. Make sure you specified a JSON string.</error>');
@@ -107,13 +100,13 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         if ($input->getOption('get')) {
-            $req_type = 'GET';
+            $reqType = 'GET';
         } elseif ($input->getOption('post')) {
-            $req_type = 'POST';
+            $reqType = 'POST';
         } elseif ($input->getOption('put')) {
-            $req_type = 'PUT';
+            $reqType = 'PUT';
         } elseif ($input->getOption('delete')) {
-            $req_type = 'DELETE';
+            $reqType = 'DELETE';
         }
 
         #------------------------------
@@ -121,39 +114,44 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         #------------------------------
 
         if ($input->getOption('url')) {
-            $base_url = trim($input->getOption('url'), '/').'/';
-            if (strpos($base_url, '/api/') === false) {
-                if (strpos($base_url, '/index.php/') === false) {
-                    $base_url .= 'index.php/';
+            $baseUrl = trim($input->getOption('url'), '/').'/';
+            if (strpos($baseUrl, '/api/') === false) {
+                if (strpos($baseUrl, '/index.php/') === false) {
+                    $baseUrl .= 'index.php/';
                 }
-                $base_url .= "api$v2";
+                $baseUrl .= "api$v2";
             }
-            if (!preg_match('#^https?://#', $base_url)) {
-                $base_url = 'http://'.$base_url;
+            if (!preg_match('#^https?://#', $baseUrl)) {
+                $baseUrl = 'http://'.$baseUrl;
             }
         } else {
-            $base_url = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api$v2";
+            $baseUrl = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api$v2";
         }
         $path = trim($input->getArgument('path'), '/');
 
-        $api_key = $input->getOption('api-key');
-        if (!$api_key) {
-            $key = App::getOrm()->getRepository('DeskPRO:ApiKey')->findOneBy(array('note' => '[dpdev:test-api]'));
+        $apiKey = $input->getOption('api-key');
+        if (!$apiKey) {
+            $key = App::getOrm()->getRepository(ApiKey::class)->findOneBy(['note' => '[dpdev:test-api]']);
 
             if (!$key) {
-                $first_admin = App::getOrm()->createQuery('
+                $firstAdmin = App::getOrm()->createQuery(
+                    '
                     SELECT p
                     FROM DeskPRO:Person p
-                    WHERE p.is_agent = true and p.can_admin = true
+                    WHERE p.is_agent = TRUE AND p.can_admin = TRUE
                     ORDER BY p.id ASC
-                ')->setMaxResults(1)->getOneOrNullResult();
+                '
+                )->setMaxResults(1)->getOneOrNullResult();
 
-                if ($first_admin) {
+                if ($firstAdmin) {
                     $key         = new ApiKey();
-                    $key->person = $first_admin;
+                    $key->person = $firstAdmin;
                     $key->note   = '[dpdev:test-api]';
+                    $keyAction   = new ApiKeyAction();
+                    $keyAction->setKey($key)->setAction('*');
                     App::getOrm()->persist($key);
-                    App::getOrm()->flush();
+                    App::getOrm()->persist($keyAction);
+                    App::getOrm()->flush($key);
                 }
             }
 
@@ -163,10 +161,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 return 1;
             }
 
-            $api_key = $key->getKeyString();
+            $apiKey = $key->getKeyString();
 
             if ($v2) {
-                $api_key = 'key '.$api_key;
+                $apiKey = 'key '.$apiKey;
             }
         }
 
@@ -177,67 +175,67 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $headers = array();
 
         if ($v2) {
-            $headers['Authorization'] = $api_key;
-            $curl[]                   = '-H \'Authorization: '.$api_key.'\'';
+            $headers['Authorization'] = $apiKey;
+            $curl[]                   = '-H \'Authorization: '.$apiKey.'\'';
         } else {
-            $headers['X-DeskPRO-API-Key'] = $api_key;
-            $curl[]                       = '-H \''.$api_key.'\'';
+            $headers['X-DeskPRO-API-Key'] = $apiKey;
+            $curl[]                       = '-H \''.$apiKey.'\'';
         }
 
-        $http_client = new \Guzzle\Http\Client($base_url, array(
+        $httpClient = new \Guzzle\Http\Client($baseUrl, array(
             'ssl.certificate_authority' => false,
             'request.options'           => array('headers' => $headers),
         ));
-        if ($api_key !== 'NONE') {
-            $http_client->setDefaultHeaders(array(
-                'X-DeskPRO-API-Key' => $api_key,
+        if ($apiKey !== 'NONE') {
+            $httpClient->setDefaultHeaders(array(
+                'X-DeskPRO-API-Key' => $apiKey,
             ));
         }
 
-        switch ($req_type) {
+        switch ($reqType) {
             case 'GET':
                 if ($data) {
-                    $data_url = http_build_query($data);
+                    $dataUrl = http_build_query($data);
                     if (strpos($path, '?')) {
-                        $path .= "&$data_url";
+                        $path .= "&$dataUrl";
                     } else {
-                        $path .= "?$data_url";
+                        $path .= "?$dataUrl";
                     }
                 }
-                $request = $http_client->get($path);
+                $request = $httpClient->get($path);
                 $curl[]  = '-XGET';
-                $curl[]  = escapeshellarg($base_url.$path);
+                $curl[]  = escapeshellarg($baseUrl.$path);
                 break;
 
             case 'POST':
                 $curl[] = '-XPOST';
-                if ($as_form) {
-                    $request = $http_client->post($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
+                if ($asForm) {
+                    $request = $httpClient->post($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
                 } else {
-                    $request = $http_client->post($path, array('Content-Type' => 'application/json'), json_encode($data));
+                    $request = $httpClient->post($path, array('Content-Type' => 'application/json'), json_encode($data));
                 }
                 break;
 
             case 'PUT':
                 $curl[] = '-XPUT';
-                if ($as_form) {
-                    $request = $http_client->put($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
+                if ($asForm) {
+                    $request = $httpClient->put($path, array('Content-Type' => 'application/x-www-form-urlencoded'), $data);
                 } else {
-                    $request = $http_client->put($path, array('Content-Type' => 'application/json'), json_encode($data));
+                    $request = $httpClient->put($path, array('Content-Type' => 'application/json'), json_encode($data));
                 }
                 break;
 
             case 'DELETE':
                 $curl[] = '-XDELETE';
                 if ($data) {
-                    $data_url = http_build_query($data);
+                    $dataUrl = http_build_query($data);
                     if (strpos($path, '?')) {
-                        $path .= "&$data_url";
+                        $path .= "&$dataUrl";
                     } else {
-                        $path .= "?$data_url";
+                        $path .= "?$dataUrl";
                     }
                 }
-                $request = $http_client->delete($path);
+                $request = $httpClient->delete($path);
                 break;
 
             default:
@@ -245,16 +243,16 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         if ($input->getOption('curl')) {
-            if ($req_type == 'POST' || $req_type === 'PUT') {
-                if ($as_form) {
-                    $tmp_name = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
-                    file_put_contents($tmp_name, http_build_query($data));
-                    $curl[] = '-d \'@'.$tmp_name.'\'';
+            if ($reqType == 'POST' || $reqType === 'PUT') {
+                if ($asForm) {
+                    $tmpName = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
+                    file_put_contents($tmpName, http_build_query($data));
+                    $curl[] = '-d \'@'.$tmpName.'\'';
                     $curl[] = '-H \'Content-Type: application/x-www-form-urlencoded\'';
                 } else {
-                    $tmp_name = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
-                    file_put_contents($tmp_name, json_encode($data));
-                    $curl[] = '-d \'@'.$tmp_name.'\'';
+                    $tmpName = sys_get_temp_dir().DIRECTORY_SEPARATOR.date('YmdHis').'-'.uniqid('');
+                    file_put_contents($tmpName, json_encode($data));
+                    $curl[] = '-d \'@'.$tmpName.'\'';
                     $curl[] = '-H \'Content-Type: application/json\'';
                 }
             }
