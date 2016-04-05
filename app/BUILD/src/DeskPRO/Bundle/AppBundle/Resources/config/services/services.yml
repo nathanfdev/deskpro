@@ -69,3 +69,7 @@ services:
   twig_template_renderer:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
     arguments: ["@twig"]
+
+  widget_loader_code_renderer:
+    class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
+    arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]

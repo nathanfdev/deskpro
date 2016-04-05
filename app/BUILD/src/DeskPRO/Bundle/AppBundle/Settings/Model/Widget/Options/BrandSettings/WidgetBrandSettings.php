@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetBrandSettings.
@@ -39,6 +40,7 @@ class WidgetBrandSettings
      * @var WidgetBrandCommonSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandCommonSettings")
+     * @Assert\Valid()
      */
     private $widget;
 
@@ -46,6 +48,7 @@ class WidgetBrandSettings
      * @var ButtonSettings\WidgetBrandButtonSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings")
+     * @Assert\Valid()
      */
     private $button;
 
@@ -53,6 +56,7 @@ class WidgetBrandSettings
      * @var ChatSettings\WidgetBrandChatSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings")
+     * @Assert\Valid()
      */
     private $chat;
 
@@ -60,6 +64,7 @@ class WidgetBrandSettings
      * @var WidgetBrandTicketSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings")
+     * @Assert\Valid()
      */
     private $ticket;
 

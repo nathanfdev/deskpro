@@ -30,94 +30,53 @@ namespace DeskPRO\Bundle\AppBundle\Templating;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Asset\Packages;
-use Symfony\Component\HttpFoundation\Request;
+use JMS\Serializer\Serializer;
 
 /**
  * Class WidgetLoader.
- *
- * @JMS\ExclusionPolicy("all")
  */
 class WidgetLoader
 {
-    private $assetDir;
-    private $widgetSettings;
-    private $deskproUrl;
-    private $widgetJsUrl;
-
     /**
-     * WidgetLoaderGenerator constructor.
-     *
-     * @param string $assetDir
-     * @param array  $widgetSettings
-     * @param string $deskproUrl
-     * @param string $widgetJsUrl
+     * @var AppEnvInterface
      */
-    public function __construct($assetDir, array $widgetSettings, $deskproUrl, $widgetJsUrl)
-    {
-        $this->assetDir       = $assetDir;
-        $this->widgetSettings = $widgetSettings;
-        $this->deskproUrl     = $deskproUrl;
-        $this->widgetJsUrl    = $widgetJsUrl;
-    }
+    private $appEnv;
 
     /**
+     * @var WidgetSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
+     * Constructor.
+     *
      * @param AppEnvInterface        $appEnv
-     * @param WidgetSettingsResolver $widgetSettingsResolver
-     * @param Request                $request
-     * @param Packages               $assetPackages
-     *
-     * @return WidgetLoader
+     * @param WidgetSettingsResolver $settingsResolver
+     * @param Serializer             $serializer
      */
-    public static function createPortalLoader(AppEnvInterface $appEnv, WidgetSettingsResolver $widgetSettingsResolver, Request $request, Packages $assetPackages)
+    public function __construct(AppEnvInterface $appEnv, WidgetSettingsResolver $settingsResolver, Serializer $serializer)
     {
-        $widgetSettings = array_merge(
-            $widgetSettingsResolver->getPortalBrandSettings(),
-            ['company' => $widgetSettingsResolver->getCompanySettings()]
-        );
-
-        return new self(
-            $appEnv->getAppWwwAssetDir(),
-            $widgetSettings,
-            $request->getUriForPath(''),
-            $assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets')
-        );
+        $this->appEnv           = $appEnv;
+        $this->settingsResolver = $settingsResolver;
+        $this->serializer       = $serializer;
     }
 
     /**
-     * @param AppEnvInterface $appEnv
-     * @param array           $widgetSettings
-     * @param string          $deskproUrl
-     * @param Packages        $assetPackages
-     *
-     * @return WidgetLoader
-     */
-    public static function createLoader(AppEnvInterface $appEnv, array $widgetSettings, $deskproUrl, Packages $assetPackages)
-    {
-        $widgetJsUrl = $assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
-        if (!preg_match('#^https?://#i', $widgetJsUrl)) {
-            $widgetJsUrl = $deskproUrl.'/'.$widgetJsUrl;
-        }
-
-        return new self(
-            $appEnv->getAppWwwAssetDir(),
-            $widgetSettings,
-            $deskproUrl,
-            $widgetJsUrl
-        );
-    }
-
-    /**
-     * Get just the raw JS for the loader.
-     *
      * @return string
      */
-    public function getJs()
+    public function getWidgetCode()
     {
-        $loaderPath = $this->assetDir.'/pub/build/widget_loader.min.js';
+        $assetDir    = $this->appEnv->getAppWwwAssetDir();
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
+        $loaderPath  = $assetDir.'/pub/build/widget_loader.min.js';
+
         if (!file_exists($loaderPath)) {
-            $loaderPath = $this->assetDir.'/pub/build/widget_loader.js';
+            $loaderPath = $assetDir.'/pub/build/widget_loader.js';
         }
         if (!file_exists($loaderPath)) {
             throw new \RuntimeException('widget_loader.js does not exist');
@@ -126,25 +85,10 @@ class WidgetLoader
         $script = file_get_contents($loaderPath);
 
         // override options
-        $script = str_replace('__DP_APP_SRC__', '"'.$this->widgetJsUrl.'"', $script);
-        $script = str_replace('__DP_URL__', '"'.$this->deskproUrl.'"', $script);
-        $script = str_replace('__DP_OPTIONS__', json_encode($this->widgetSettings), $script);
+        $script = str_replace('__DP_APP_SRC__', '"'.$urlSettings->getWidgetBundle().'"', $script);
+        $script = str_replace('__DP_URL__', '"'.$urlSettings->getHelpdesk().'"', $script);
+        $script = str_replace('__DP_OPTIONS__', $this->serializer->serialize($this->settingsResolver->getWidgetBrandOptions(), 'json'), $script);
 
-        return $script;
-    }
-
-    /**
-     * Get the script tag.
-     *
-     * @JMS\VirtualProperty
-     * @JMS\SerializedName("script_html")
-     *
-     * @return string
-     */
-    public function getScriptHtml()
-    {
-        $js = $this->getJs();
-
-        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">$js</script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
+        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">$script</script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
     }
 }

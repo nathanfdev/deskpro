@@ -64,6 +64,7 @@ class WidgetBrandChatSettings
      * @var WidgetBrandChatPopupSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings")
+     * @Assert\Valid()
      */
     private $popup;
 

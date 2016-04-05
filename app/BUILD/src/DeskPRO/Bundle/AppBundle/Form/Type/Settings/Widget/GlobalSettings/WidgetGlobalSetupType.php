@@ -56,7 +56,8 @@ class WidgetGlobalSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetGlobalSettings::class,
+            'data_class'         => WidgetGlobalSettings::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }

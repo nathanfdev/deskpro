@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,30 +44,27 @@ use Symfony\Component\HttpFoundation\Request;
  * @SerializerView(mapping={
  *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson"
  * })
+ * @Rest\Route("/portal/api/people")
  */
 class PeopleController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/people/online_agents", name="portal_api_people_online_agents")
-     * @Method({"GET"})
+     * @Rest\Get("/online_agents")
      *
      * @return View
      */
     public function getOnlineAgentsAction()
     {
-        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-        $agent_ids  = $repository->getActiveAgentIdsForUserChat();
-        $agents     = $repository->findBy([
-            'id' => $agent_ids,
+        $ids    = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $agents = $this->getPersonRepository()->findBy([
+            'id' => $ids,
         ]);
 
         return new View($this->wrap($agents));
     }
 
     /**
-     * @Route("/portal/api/people", name="portal_api_people")
-     * @Method({"GET"})
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -74,9 +72,16 @@ class PeopleController extends AbstractApiController
      */
     public function getPeopleAction(Request $request)
     {
-        $people_repository = $this->getDoctrine()->getRepository('DeskPRO:Person');
-        $people            = $people_repository->findBy(['id' => $request->get('ids')]);
+        $people = $this->getPersonRepository()->findBy(['id' => $request->get('ids')]);
 
         return new View($this->wrap($people));
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Person
+     */
+    protected function getPersonRepository()
+    {
+        return $this->getDoctrine()->getRepository(Person::class);
     }
 }

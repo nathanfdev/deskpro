@@ -55,7 +55,7 @@ export const loadSettings = createAction(
   () => dispatch =>
     widgetApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
-      .success(response => dispatch(setSettings(response)))
+      .success(response => dispatch(setSettings(response.data)))
 );
 
 export const loadPortalPhraseTranslations = createAction(

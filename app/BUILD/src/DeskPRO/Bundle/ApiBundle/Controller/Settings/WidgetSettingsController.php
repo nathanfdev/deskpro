@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\AppBundle\Templating\WidgetLoader;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,7 +62,7 @@ class WidgetSettingsController extends BaseController
      *         200="Returned if request was successful",
      *     },
      *
-     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings"
      *)
      * @Rest\Get("/widget/setup")
      *
@@ -71,7 +70,7 @@ class WidgetSettingsController extends BaseController
      */
     public function getWidgetSetupAction()
     {
-        return new View($this->wrap($this->getWidgetSettingsResolver()->getWidgetSettings()));
+        return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetSettings()));
     }
 
     /**
@@ -81,53 +80,19 @@ class WidgetSettingsController extends BaseController
      *     section="Widget setup",
      *     resourceDescription="Operations about widget setup",
      *     description="Get the HTML code for the widget",
-     *     statusCodes={200="Returned if request was successful"},
-     *     input={
-     *         "name"="settings",
-     *         "options"={"method"="POST"},
+     *     statusCodes={
+     *         200="Returned if request was successful"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Templating\WidgetLaoder"
+     *     output="string"
      * )
      *
-     * @Rest\Post("/widget/code")
      * @Rest\Get("/widget/code")
      *
-     * @param Request $request
-     *
-     * @return View
+     * @return string
      */
-    public function getWidgetCodeAction(Request $request)
+    public function getWidgetCodeAction()
     {
-        if ($request->isMethod('POST')) {
-            $settings = $request->request->get('settings');
-        } else {
-            $widget_settings = $this->container->get('widget_settings_resolver');
-            $brand_settings  = array_merge(
-                $widget_settings->getDefaultBrandSettings(),
-                $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
-            );
-
-            $saved_settings = [
-                'global' => [
-                    'chat' => [
-                        'require_login'    => $widget_settings->isPortalRequireLogin(),
-                        'email_validation' => $widget_settings->isPortalEmailValidation(),
-                    ],
-                ],
-                'brand' => $brand_settings,
-            ];
-
-            $settings = array_merge($saved_settings['global']['chat'], $saved_settings['brand']);
-        }
-
-        $loader = WidgetLoader::createLoader(
-            $this->container->get('deskpro.app_env'),
-            $settings,
-            $this->container->get('brand_stack')->getActive()->getSetting('core.deskpro_url'),
-            $this->container->get('assets.packages')
-        );
-
-        return View::create($this->wrap($loader), Response::HTTP_OK);
+        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode());
     }
 
     /**
@@ -143,7 +108,7 @@ class WidgetSettingsController extends BaseController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\GlobalSettings\WidgetGlobalSetupType",
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
      *         "name"="",
      *         "options"={"method"="POST"},
      *     }
@@ -174,7 +139,7 @@ class WidgetSettingsController extends BaseController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\GlobalSettings\WidgetGlobalSetupType",
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
      *         "name"="",
      *         "options"={"method"="POST"},
      *     }
@@ -236,10 +201,10 @@ class WidgetSettingsController extends BaseController
      */
     protected function handleForm(Request $request)
     {
-        $model = $this->getWidgetSettingsResolver()->getWidgetOptions();
+        $model = $this->container->get('widget_settings_resolver')->getWidgetOptions();
 
         $form = $this->createForm(WidgetSetupType::class, $model);
-        $form->submit($request->request->all());
+        $form->submit($request->request->all(), false);
 
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
@@ -298,13 +263,5 @@ class WidgetSettingsController extends BaseController
         }
 
         return $dataStore;
-    }
-
-    /**
-     * @return WidgetSettingsResolver
-     */
-    protected function getWidgetSettingsResolver()
-    {
-        return $this->container->get('widget_settings_resolver');
     }
 }

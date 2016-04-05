@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetOptions.
@@ -38,11 +40,17 @@ class WidgetOptions
 {
     /**
      * @var WidgetGlobalSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings")
+     * @Assert\Valid()
      */
     private $global;
 
     /**
      * @var WidgetBrandSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings")
+     * @Assert\Valid()
      */
     private $brand;
 

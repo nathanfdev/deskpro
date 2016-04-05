@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { closeWidget } from '../../../../Actions/dpWindowActions';
 import { unsetChatId } from '../../../../../Chat/Actions/chatActions';
-import { companyNameSelector, companyLogoSelector } from '../../../../Selectors/dpWindow';
+import { companyNameSelector, companyLogoSelector } from '../../../../Selectors/bootstrap';
 import { isEndedSelector } from '../../../../../Chat/Selectors/chat';
 import { WidgetHeader } from './WidgetHeader';
 

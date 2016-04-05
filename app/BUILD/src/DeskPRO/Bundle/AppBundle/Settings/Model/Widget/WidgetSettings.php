@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetSettings.
@@ -40,6 +41,7 @@ class WidgetSettings
      * A bunch of configuration described in urls.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings")
+     * @Assert\Valid()
      *
      * @var WidgetUrlSettings
      */
@@ -49,6 +51,7 @@ class WidgetSettings
      * Widget settings itself.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions")
+     * @Assert\Valid()
      *
      * @var WidgetOptions
      */

@@ -60,7 +60,7 @@ class WidgetBrandButtonSettings
      * @var WidgetBrandButtonColorsSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings")
-     * @Assert\NotBlank()
+     * @Assert\Valid()
      */
     private $colors;
 

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetGlobalSettings.
@@ -39,6 +40,7 @@ class WidgetGlobalSettings
      * Company settings.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalCompanySettings")
+     * @Assert\Valid()
      *
      * @var WidgetGlobalCompanySettings
      */
@@ -50,6 +52,7 @@ class WidgetGlobalSettings
      * @var WidgetGlobalChatSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalChatSettings")
+     * @Assert\Valid()
      */
     private $chat;
 

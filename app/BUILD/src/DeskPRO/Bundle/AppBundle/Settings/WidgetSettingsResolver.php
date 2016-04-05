@@ -38,10 +38,11 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
+use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class WidgetSettingsResolver.
@@ -60,10 +61,10 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @var Packages
      */
-    private $assets;
+    private $assetPackages;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
     private $router;
 
@@ -72,16 +73,24 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
-     * @param Packages                   $assets
-     * @param Router                     $router
+     * @param Packages                   $assetPackages
+     * @param RouterInterface            $router
      */
-    public function __construct(BrandAwareSettingsResolver $settingsResolver, EntityManager $em, Packages $assets, Router $router)
-    {
+    public function __construct(
+        BrandAwareSettingsResolver $settingsResolver,
+        EntityManager              $em,
+        Packages                   $assetPackages,
+        RouterInterface            $router
+    ) {
         parent::__construct($settingsResolver);
 
-        $this->em     = $em;
-        $this->assets = $assets;
-        $this->router = $router;
+        if ($router instanceof PortalRouter) {
+            $router = $router->getBaseRouter();
+        }
+
+        $this->em            = $em;
+        $this->assetPackages = $assetPackages;
+        $this->router        = $router;
     }
 
     /**
@@ -130,8 +139,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new WidgetUrlSettings();
         $model
-            ->setWidgetLoader($this->assets->getUrl('widget_loader.js', 'app_assets'))
-            ->setWidgetBundle($this->assets->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'))
+            ->setWidgetLoader($this->assetPackages->getUrl('widget_loader.js', 'app_assets'))
+            ->setWidgetBundle($this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'))
             ->setHelpdesk($this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL))
         ;
 
@@ -187,74 +196,5 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         return $model;
-    }
-
-    /**
-     * @return array
-     *
-     * @deprecated BC
-     */
-    public function getDefaultBrandSettings()
-    {
-        return [
-            'widget' => [
-                'type'                  => 'column',
-                'position'              => 'right',
-                'agent_polling_timeout' => 10,
-            ],
-            'button' => [
-                'size'   => 'medium',
-                'name'   => 'Help',
-                'colors' => [
-                    'background' => '#62ad8c',
-                    'text'       => '#ffffff',
-                    'border'     => '#4e9576',
-                ],
-            ],
-            'chat' => [
-                'enabled'           => true,
-                'request_user_info' => true,
-                'proactive'         => true,
-                'popup'             => [
-                    'title'      => 'DeskPRO Customer Support',
-                    'message'    => 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.',
-                    'reply_type' => 'buttons',
-                ],
-                'begin_mode'      => 'form',
-                'waiting_timeout' => 30,
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     *
-     * @deprecated BC
-     */
-    public function getPortalBrandSettings()
-    {
-        $brand_settings = $this->getDefaultBrandSettings();
-        $data_store     = $this->em->getRepository(DataStore::class)->findOneBy([
-            'name' => 'widget.portal_brand_settings',
-        ]);
-
-        if ($data_store) {
-            $brand_settings = array_merge($brand_settings, $data_store->getData('brand_settings') ?: []);
-        }
-
-        return $brand_settings;
-    }
-
-    /**
-     * @return array
-     *
-     * @deprecated BC
-     */
-    public function getCompanySettings()
-    {
-        return [
-            'name' => $this->getSetting('core.site_name'),
-            'logo' => '',
-        ];
     }
 }

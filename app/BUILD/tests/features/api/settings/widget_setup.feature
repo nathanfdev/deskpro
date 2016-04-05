@@ -24,6 +24,20 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button" should exist
     And the JSON node "data.settings.brand.chat" should exist
 
+  Scenario: I check tickets validation
+    When I send a POST request to "/api/v2/widget/setup" with body:
+    """
+    {
+      "brand": {
+        "ticket": {
+          "select_department": "default"
+        }
+      }
+    }
+    """
+    And print last JSON response
+    Then the response status code should be 400
+
   @basic
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
@@ -142,3 +156,11 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.enabled_on_portal" should be equal to 0
+
+  Scenario: I get widget code
+    When I send a GET request to "/api/v2/widget/code"
+    And the response status code should be 200
+    And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
+    And the response should contain "DESKPRO_WIDGET_LOADER::END"
+    And the response should contain "DP_HELPDESK_URL"
+    And the response should contain "agent_polling_timeout"
