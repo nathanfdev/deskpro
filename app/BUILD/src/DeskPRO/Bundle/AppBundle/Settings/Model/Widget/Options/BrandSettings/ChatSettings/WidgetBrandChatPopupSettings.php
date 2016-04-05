@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class WidgetBrandChatPopupSettings.
@@ -56,6 +57,7 @@ class WidgetBrandChatPopupSettings
      * @var string
      *
      * @JMS\Type("string")
+     * @Assert\NotBlank()
      */
     private $replyType = self::REPLY_TYPE_BUTTONS;
 

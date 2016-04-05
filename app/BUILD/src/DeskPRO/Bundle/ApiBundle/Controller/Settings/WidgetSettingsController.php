@@ -204,7 +204,7 @@ class WidgetSettingsController extends BaseController
         $model = $this->container->get('widget_settings_resolver')->getWidgetOptions();
 
         $form = $this->createForm(WidgetSetupType::class, $model);
-        $form->submit($request->request->all(), false);
+        $form->submit($request->request->all());
 
         if (!$form->isValid()) {
             throw new InvalidFormException($form);

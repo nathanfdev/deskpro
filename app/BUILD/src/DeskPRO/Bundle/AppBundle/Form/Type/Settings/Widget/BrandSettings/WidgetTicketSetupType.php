@@ -34,10 +34,13 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -46,12 +49,28 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class WidgetTicketSetupType extends AbstractType
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('select_department', ChoiceType::class, [
+                'property_path'     => 'selectDepartment',
                 'choices_as_values' => true,
                 'choices'           => [
                     WidgetBrandTicketSettings::SELECT_DEFAULT,
@@ -59,8 +78,15 @@ class WidgetTicketSetupType extends AbstractType
                 ],
             ])
             ->add('default_department', EntityType::class, [
-                'class' => Department::class,
+                'property_path' => 'defaultDepartment',
+                'class'         => Department::class,
             ])
+        ;
+
+        $departmentRepo = $this->em->getRepository(Department::class);
+        $builder
+            ->get('default_department')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($departmentRepo)))
         ;
     }
 

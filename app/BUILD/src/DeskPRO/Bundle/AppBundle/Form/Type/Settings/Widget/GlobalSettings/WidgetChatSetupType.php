@@ -49,8 +49,12 @@ class WidgetChatSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email_validation', ApiBooleanType::class)
-            ->add('require_login', ApiBooleanType::class)
+            ->add('email_validation', ApiBooleanType::class, [
+                'property_path' => 'emailValidation',
+            ])
+            ->add('require_login', ApiBooleanType::class, [
+                'property_path' => 'requireLogin',
+            ])
         ;
     }
 

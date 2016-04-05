@@ -46,15 +46,15 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
      * @var string
      *
      * @JMS\Type("string")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"Common"})
      */
-    private $selectDepartment = self::SELECT_DEFAULT;
+    private $selectDepartment = self::SELECT_CUSTOM;
 
     /**
      * @var int
      *
      * @JMS\Type("integer")
-     * @Assert\NotBlank(groups={"default_department"})
+     * @Assert\NotNull(groups={"DefaultDepartment"})
      */
     private $defaultDepartment;
 
@@ -103,9 +103,9 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
      */
     public function getGroupSequence()
     {
-        $groups = ['common'];
+        $groups = ['Common'];
         if ($this->selectDepartment === self::SELECT_DEFAULT) {
-            $groups[] = 'default_department';
+            $groups[] = 'DefaultDepartment';
         }
 
         return $groups;

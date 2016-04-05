@@ -64,7 +64,9 @@ class WidgetCommonSettingsType extends AbstractType
                     WidgetBrandCommonSettings::POSITION_RIGHT,
                 ],
             ])
-            ->add('agent_polling_timeout', IntegerType::class)
+            ->add('agent_polling_timeout', IntegerType::class, [
+                'property_path' => 'agentPollingTimeout',
+            ])
         ;
     }
 

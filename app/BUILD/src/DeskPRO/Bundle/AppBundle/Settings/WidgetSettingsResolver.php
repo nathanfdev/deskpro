@@ -126,7 +126,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setUrl($this->getWidgetUrlSettings())
             ->setSettings($this->getWidgetOptions())
-            ->setEnabledOnPortal($this->getSetting(self::ENABLED_ON_PORTAL))
+            ->setEnabledOnPortal($this->isEnabledOnPortal())
         ;
 
         return $model;

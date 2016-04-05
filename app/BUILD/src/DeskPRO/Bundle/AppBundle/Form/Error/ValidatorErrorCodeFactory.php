@@ -43,8 +43,27 @@ use Symfony\Component\Validator\ConstraintViolation;
  */
 class ValidatorErrorCodeFactory
 {
-    public static $static_replacements = [
+    /**
+     * @var array
+     */
+    public static $staticReplacements = [
         'This form should not contain extra fields.' => ErrorsCodes::EXTRA_FIELDS,
+    ];
+
+    /**
+     * @var array
+     */
+    private static $errorCodeMapping = [
+        Assert\NotNull::IS_NULL_ERROR            => ErrorsCodes::NOT_NULL,
+        Assert\NotBlank::IS_BLANK_ERROR          => ErrorsCodes::NOT_NULL,
+        Assert\Type::INVALID_TYPE_ERROR          => ErrorsCodes::INVALID_DATA_TYPE,
+        Assert\Length::TOO_SHORT_ERROR           => ErrorsCodes::LENGTH_TOO_SHORT,
+        Assert\Length::TOO_LONG_ERROR            => ErrorsCodes::LENGTH_TOO_LONG,
+        Assert\Choice::NO_SUCH_CHOICE_ERROR      => ErrorsCodes::BAD_CHOICE,
+        Assert\Count::TOO_FEW_ERROR              => ErrorsCodes::TOO_FEW_ELEMENTS,
+        Assert\Count::TOO_MANY_ERROR             => ErrorsCodes::TOO_MANY_ELEMENTS,
+        Assert\Url::INVALID_URL_ERROR            => ErrorsCodes::INVALID_URL,
+        Assert\GreaterThanOrEqual::TOO_LOW_ERROR => ErrorsCodes::TOO_LOW,
     ];
 
     /**
@@ -68,28 +87,10 @@ class ValidatorErrorCodeFactory
         $constraint = $violation->getConstraint();
         if ($constraint) {
             switch (get_class($constraint)) {
-                case Assert\NotNull::class:
-                    return ErrorsCodes::NOT_NULL;
-                case Assert\NotBlank::class:
-                    return ErrorsCodes::NOT_NULL;
-                case Assert\Type::class:
-                    return ErrorsCodes::INVALID_DATA_TYPE;
-                case Assert\Length::class:
-                    return $violation->getCode() === Assert\Length::TOO_SHORT_ERROR
-                        ? ErrorsCodes::LENGTH_TOO_SHORT
-                        : ErrorsCodes::LENGTH_TOO_LONG;
                 case Assert\Valid::class:
                     return ErrorsCodes::INVALID_INPUT;
-                case Assert\Choice::class:
-                    return ErrorsCodes::BAD_CHOICE;
                 case Assert\Email::class:
                     return ErrorsCodes::INVALID_EMAIL;
-                case Assert\Count::class:
-                    return $violation->getCode() === Assert\Count::TOO_FEW_ERROR
-                        ? ErrorsCodes::TOO_FEW_ELEMENTS
-                        : ErrorsCodes::TOO_MANY_ELEMENTS;
-                case Assert\Url::class:
-                    return ErrorsCodes::INVALID_URL;
                 case UniqueEntity::class:
                     return ErrorsCodes::UNIQUE_ENTITY;
             }
@@ -130,8 +131,11 @@ class ValidatorErrorCodeFactory
      */
     private function filterCode($code)
     {
-        if (array_key_exists($code, self::$static_replacements)) {
-            $code = self::$static_replacements[$code];
+        if (array_key_exists($code, self::$staticReplacements)) {
+            $code = self::$staticReplacements[$code];
+        }
+        if (array_key_exists($code, self::$errorCodeMapping)) {
+            $code = self::$errorCodeMapping[$code];
         }
 
         return $code;

@@ -52,16 +52,21 @@ class WidgetChatSetupType extends AbstractType
     {
         $builder
             ->add('enabled', ApiBooleanType::class)
-            ->add('request_user_info', ApiBooleanType::class)
+            ->add('request_user_info', ApiBooleanType::class, [
+                'property_path' => 'requestUserInfo',
+            ])
             ->add('proactive', ApiBooleanType::class)
             ->add('begin_mode', ChoiceType::class, [
+                'property_path'     => 'beginMode',
                 'choices_as_values' => true,
                 'choices'           => [
                     WidgetBrandChatSettings::BEGIN_MODE_CONVERSATION,
                     WidgetBrandChatSettings::BEGIN_MODE_FORM,
                 ],
             ])
-            ->add('waiting_timeout', IntegerType::class)
+            ->add('waiting_timeout', IntegerType::class, [
+                'property_path' => 'waitingTimeout',
+            ])
             ->add('popup', WidgetChatPopupSetupType::class)
         ;
     }

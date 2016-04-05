@@ -5,7 +5,7 @@ Feature: Widget Setup
     And my request is authenticated
 
   @reinstall
-  Scenario: I get widget configuration
+  Scenario: I get initial widget configuration
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
@@ -19,24 +19,33 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
-    And the JSON node "data.settings.brand" should exist
-    And the JSON node "data.settings.brand.widget" should exist
-    And the JSON node "data.settings.brand.button" should exist
-    And the JSON node "data.settings.brand.chat" should exist
+    And the JSON node "data.settings.brand.widget.type" should be equal to "column"
+    And the JSON node "data.settings.brand.widget.position" should be equal to "right"
+    And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 0
+    And the JSON node "data.settings.brand.button.size" should be equal to "medium"
+    And the JSON node "data.settings.brand.button.name" should be equal to "Help"
+    And the JSON node "data.settings.brand.button.name" should be equal to "Help"
+    And the JSON node "data.settings.brand.button.colors.background" should be equal to "#62ad8c"
+    And the JSON node "data.settings.brand.button.colors.text" should be equal to "#ffffff"
+    And the JSON node "data.settings.brand.button.colors.border" should be equal to "#4e9576"
+    And the JSON node "data.settings.brand.chat.enabled" should be equal to 1
+    And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
+    And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
+    And the JSON node "data.settings.brand.chat.popup.title" should be equal to "DeskPRO Customer Support"
+    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order."
+    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
+    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
+    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 30
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"
+    And the JSON node "data.settings.brand.ticket.default_department" should be equal to 0
 
-  Scenario: I check tickets validation
-    When I send a POST request to "/api/v2/widget/setup" with body:
-    """
-    {
-      "brand": {
-        "ticket": {
-          "select_department": "default"
-        }
-      }
-    }
-    """
-    And print last JSON response
-    Then the response status code should be 400
+  Scenario: I get initial widget code
+    When I send a GET request to "/api/v2/widget/code"
+    And the response status code should be 200
+    And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
+    And the response should contain "DESKPRO_WIDGET_LOADER::END"
+    And the response should contain "DP_HELPDESK_URL"
+    And the response should contain "request_user_info"
 
   @basic
   Scenario: I update global widget configuration
@@ -53,7 +62,7 @@ Feature: Widget Setup
         "widget": {
           "type": "bubble",
           "position": "left",
-          "agent_polling_timeout": 20
+          "agent_polling_timeout": 400
         },
         "button": {
           "name": "Help",
@@ -62,7 +71,7 @@ Feature: Widget Setup
         "chat": {
           "enabled": true,
           "begin_mode": "form",
-          "waiting_timeout": 10,
+          "waiting_timeout": 40,
           "popup": {
             "reply_type": "buttons"
           }
@@ -85,12 +94,12 @@ Feature: Widget Setup
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"
     And the JSON node "data.settings.brand.widget.position" should be equal to "left"
-    And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 20
+    And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.name" should be equal to "Help"
     And the JSON node "data.settings.brand.button.size" should be equal to "medium"
     And the JSON node "data.settings.brand.chat.enabled" should be equal to "1"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
-    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 10
+    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"
 
@@ -108,7 +117,7 @@ Feature: Widget Setup
         "widget": {
           "type": "column",
           "position": "right",
-          "agent_polling_timeout": 10
+          "agent_polling_timeout": 400
         },
         "button": {
           "name": "Edited Help",
@@ -117,13 +126,14 @@ Feature: Widget Setup
         "chat": {
           "enabled": false,
           "begin_mode": "conversation",
-          "waiting_timeout": 20,
+          "waiting_timeout": 40,
           "popup": {
             "reply_type": "buttons"
           }
         },
         "ticket": {
-          "select_department": "custom"
+          "select_department": "default",
+          "default_department": 2
         }
       }
     }
@@ -139,14 +149,15 @@ Feature: Widget Setup
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "column"
     And the JSON node "data.settings.brand.widget.position" should be equal to "right"
-    And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 10
+    And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.name" should be equal to "Edited Help"
     And the JSON node "data.settings.brand.button.size" should be equal to "large"
     And the JSON node "data.settings.brand.chat.enabled" should be equal to 0
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "conversation"
-    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 20
+    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
-    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "default"
+    And the JSON node "data.settings.brand.ticket.default_department" should be equal to 2
 
   Scenario: I apply chat widget to the portal
     When I send a POST request to "/api/v2/widget/portal/remove"
@@ -157,7 +168,7 @@ Feature: Widget Setup
     And the response status code should be 200
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
-  Scenario: I get widget code
+  Scenario: I check the widget code after changes
     When I send a GET request to "/api/v2/widget/code"
     And the response status code should be 200
     And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"

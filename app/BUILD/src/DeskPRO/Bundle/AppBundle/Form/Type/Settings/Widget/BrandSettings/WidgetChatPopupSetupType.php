@@ -53,6 +53,7 @@ class WidgetChatPopupSetupType extends AbstractType
             ->add('title', TextType::class)
             ->add('message', TextType::class)
             ->add('reply_type', ChoiceType::class, [
+                'property_path'     => 'replyType',
                 'choices_as_values' => true,
                 'choices'           => [
                     WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
