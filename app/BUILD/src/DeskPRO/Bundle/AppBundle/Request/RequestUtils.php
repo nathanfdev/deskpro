@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Request;
 
+use DeskPRO\Bundle\AppBundle\EventListener\RequestTypeClassifierListener;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequestUtils
@@ -42,6 +43,8 @@ class RequestUtils
      *
      * The framework reaches the controller without a database connection.
      *
+     * @see RequestTypeClassifierListener
+     *
      * @param Request $request
      *
      * @return bool
@@ -49,5 +52,20 @@ class RequestUtils
     public static function isLowRequest(Request $request)
     {
         return $request->attributes->has('_dp_is_low');
+    }
+
+    /**
+     * Checks if the request is marked as an 'api' request. These types of requests
+     * are often excluded from things like language prefix redirects.
+     *
+     * @see RequestTypeClassifierListener
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public static function isPortalApiRequest(Request $request)
+    {
+        return $request->attributes->has('_dp_is_portal_api');
     }
 }
