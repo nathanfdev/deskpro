@@ -36,3 +36,9 @@ services:
     arguments: ["@service_container"]
     tags:
       - { name: 'kernel.cache_warmer' }
+
+  iface_url_corrector.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\InterfaceUrlCorrectorEventListener
+    arguments: ["@deskpro.interface_info", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }
