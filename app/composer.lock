@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "97a1da21638f2d06ae65e667d8b7911a",
-    "content-hash": "7a38aef06f76b0a841fa9744ddf17ee4",
+    "hash": "a08a26b5f9a84c84c405c61aa7291dcb",
+    "content-hash": "94ea8c7dc0b90d5b39a179c79d9597fe",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2176,70 +2176,6 @@
                 "sql"
             ],
             "time": "2014-01-12 16:20:24"
-        },
-        {
-            "name": "jolicode/apache-tika-bundle",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jolicode/ApacheTikaBundle.git",
-                "reference": "cff49b576336862860be0a0ddc174714c00b1630"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jolicode/ApacheTikaBundle/zipball/cff49b576336862860be0a0ddc174714c00b1630",
-                "reference": "cff49b576336862860be0a0ddc174714c00b1630",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~5.4|^7.0",
-                "symfony/framework-bundle": "~2.3|~3.0",
-                "symfony/http-kernel": "~2.3|~3.0",
-                "vaites/php-apache-tika": "~0.3"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "^1.11",
-                "phpunit/phpunit": "~4.8|~5.1",
-                "symfony/config": "~2.3|~3.0",
-                "symfony/dependency-injection": "~2.3|~3.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Joli\\ApacheTikaBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "welcomattic",
-                    "email": "mathieu.santostefano@gmail.com"
-                }
-            ],
-            "description": "Symfony Bundle for https://github.com/vaites/php-apache-tika",
-            "homepage": "https://github.com/jolicode/ApacheTikaBundle",
-            "keywords": [
-                "OCR",
-                "apache",
-                "bundle",
-                "doc",
-                "documents",
-                "docx",
-                "odt",
-                "office",
-                "pdf",
-                "ppt",
-                "pptx",
-                "symfony",
-                "tika"
-            ],
-            "time": "2016-02-26 13:46:05"
         },
         {
             "name": "kriswallsmith/assetic",

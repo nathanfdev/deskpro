@@ -58,6 +58,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             'enabled'        => (bool) $this->settings->get('elastica.enabled'),
             'requires_reset' => (bool) $this->settings->get('elastica.requires_reset'),
             'url'            => $this->settings->get('elastica.clients.default.url'),
+            'tika_enabled'   => $this->settings->get('elastica.tika.enabled'),
+            'tika_ip'        => $this->settings->get('elastica.tika.ip_address'),
+            'tika_port'      => $this->settings->get('elastic_settings.tika_port'),
         );
 
         return $this->createApiResponse(array('elastic_settings' => $values));
@@ -73,6 +76,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
         $this->settings->setSetting('elastica.enabled', $this->in->getBoolInt('elastic_settings.enabled'));
         $this->settings->setSetting('elastica.clients.default.url', $this->in->getString('elastic_settings.url') ?: '');
+        $this->settings->setSetting('elastica.tika.enabled', $this->in->getBoolInt('elastic_settings.tika_enabled') ?: '');
+        $this->settings->setSetting('elastica.tika.ip_address', $this->in->getString('elastic_settings.tika_ip') ?: '');
+        $this->settings->setSetting('elastica.tika.port', $this->in->getInt('elastic_settings.tika_port') ?: '9998');
 
         if ($this->in->getBoolInt('elastic_settings.enabled')) {
             try {

@@ -339,7 +339,6 @@ class DpKernel extends AbstractKernel
             new \Application\UserBundle\UserBundle(),
             new \Application\ApiBundle\ApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
-            new \Joli\ApacheTikaBundle\ApacheTikaBundle(),
         );
 
         if (defined('DPC_IS_CLOUD')) {

@@ -33,7 +33,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
-use Vaites\ApacheTika\Client as ApacheTikaClient;
+use Vaites\ApacheTika\Clients\WebClient as ApacheTikaClient;
 
 /**
  * Ticket To Elastica Transformer.
@@ -119,21 +119,31 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
 
-        $attachments = [];
-        if ($object->has_attachments) {
-            $pika = $this->getContainer()->get('apache_tika.client');
-            /** @var TicketAttachment $attachment */
-            foreach ($object->getAttachments() as $attachment) {
-                $blob = $attachment->getBlob();
-                if (!$blob->isImage()) {
-                    $attachments[] = array(
-                        'filename' => $blob->getFilenameSafe(),
-                        'content'  => $pika->getText($blob->getDownloadUrl(true)),
+        if ($this->getContainer()->getSetting('elastica.tika.enabled')) {
+            $attachments = [];
+            if ($object->has_attachments) {
+                try {
+                    $tika = new ApacheTikaClient(
+                        $this->getContainer()->getSetting('elastica.tika.ip_address'),
+                        $this->getContainer()->getSetting('elastica.tika.port')
                     );
+                    /** @var TicketAttachment $attachment */
+                    foreach ($object->getAttachments() as $attachment) {
+                        $blob = $attachment->getBlob();
+                        if (!$blob->isImage()) {
+                            $attachments[] = array(
+                                'filename' => $blob->getFilenameSafe(),
+                                'content'  => $tika->getText($blob->getDownloadUrl(true)),
+                            );
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // TODO log error
+                    $error = $e->getMessage();
                 }
             }
+            $document->set('attachment', $attachments);
         }
-        $document->set('attachment', $attachments);
 
         return $document;
     }

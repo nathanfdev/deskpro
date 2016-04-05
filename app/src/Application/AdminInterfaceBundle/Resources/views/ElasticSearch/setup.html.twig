@@ -49,6 +49,34 @@
 					</div>
 				</div>
 			</div>
+			<div class="panel panel-innertable" style="margin-top: 0;">
+				<div class="labels-group">
+					<label>
+						<input type="checkbox" ng-model="settings.tika_enabled" />
+						<h4>Enable Apache Tika</h4>
+					</label>
+				</div>
+				<div ng-show="settings.tika_enabled">
+					<div class="inner-group">
+						<label>
+							<h4>Apache Tika IP Address:</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.tika_ip" />
+						<span class="help-block">
+							Enter the IP address of your Apache Tika service.
+						</span>
+					</div>
+					<div class="inner-group">
+						<label>
+							<h4>Apache Tika port:</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.tika_port" />
+						<span class="help-block">
+							Enter the port of your Apache Tika service. By default 9998.
+						</span>
+					</div>
+				</div>
+			</div>
 			<footer>
 				<div class="dp-content">
 					<div class="dp-btn-controls">
