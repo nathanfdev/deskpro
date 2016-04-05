@@ -137,11 +137,22 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getWidgetUrlSettings()
     {
+        $dpUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $loaderUrl = $this->assetPackages->getUrl('widget_loader.js', 'app_assets');
+        $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
+
+        if (!preg_match('#^https?://#i', $loaderUrl)) {
+            $loaderUrl = rtrim($dpUrl, '/').$loaderUrl;
+        }
+        if (!preg_match('#^https?://#i', $widgetUrl)) {
+            $widgetUrl = rtrim($dpUrl, '/').$widgetUrl;
+        }
+
         $model = new WidgetUrlSettings();
         $model
-            ->setWidgetLoader($this->assetPackages->getUrl('widget_loader.js', 'app_assets'))
-            ->setWidgetBundle($this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'))
-            ->setHelpdesk($this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL))
+            ->setWidgetLoader($loaderUrl)
+            ->setWidgetBundle($widgetUrl)
+            ->setHelpdesk($dpUrl)
         ;
 
         return $model;
