@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import { FeedbackCommentCard } from './FeedbackCommentCard';
+import { CommentCard } from './CommentCard';
 import { idsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -12,7 +12,7 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
   people: collectionSelectorFactory('Person', 'feedback')(state),
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state)
 }))
-export class FeedbackCommentsCardsContainer extends Component {
+export class CommentCardsContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     ids: PropTypes.array.isRequired,
@@ -27,13 +27,13 @@ export class FeedbackCommentsCardsContainer extends Component {
     const { dispatch, comments, selected, toggleSelected, people, feedback } = this.props;
     const element = comments.get(id);
     return (
-      <FeedbackCommentCard key={id}
-                           comment={element}
-                           dispatch={dispatch}
-                           feedback={feedback.get(element.get('feedback'))}
-                           selected={selected.includes(id)}
-                           toggleSelected={toggleSelected}
-                           author={people.get(element.get('person'))}/>
+      <CommentCard key={id}
+                   comment={element}
+                   dispatch={dispatch}
+                   feedback={feedback.get(element.get('feedback'))}
+                   selected={selected.includes(id)}
+                   toggleSelected={toggleSelected}
+                   author={people.get(element.get('person'))}/>
     );
   }
 

@@ -19,7 +19,7 @@ import { applyParams } from '../../../../Actions/FeedbackListActions';
   orderDir: currentListOrderDirSelector(state)
 }))
 @injectIntl
-export class FeedbackCommentTableContainer extends Component {
+export class CommentTableContainer extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ids: PropTypes.array.isRequired,

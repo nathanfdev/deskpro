@@ -36,8 +36,8 @@ export const deleteComment = createAction(
 
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
-  (data) => dispatch => {
-    repository('FeedbackComment').update(data).then(()=> {
+  (data, id) => dispatch => {
+    repository('FeedbackComment').update(data, id).then(()=> {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
