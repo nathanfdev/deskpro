@@ -1,17 +1,17 @@
-// #define ~components DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components
+// #define ~components DeskPRO/Bundle/AgentBundle/Modules/Feedback/Components
 
-jest.dontMock('~components/TicketsApp');
+jest.dontMock('~components/FeedbackApp');
 
 import React from 'react';
 import { renderInRedux, fakeState } from 'Helpers';
 
-describe('Ticket: TicketsApp component', () => {
-  const TicketsApp = require('~components/TicketsApp').TicketsApp;
+describe('Feedback: FeedbackApp component', () => {
+  const FeedbackApp = require('~components/FeedbackApp').FeedbackApp;
   const NavContainer = require('~components/Nav/NavContainer').NavContainer;
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {
-    return renderInRedux(fakeState({}), <TicketsApp />);
+    return renderInRedux(fakeState({}), <FeedbackApp />);
   }
 
   it('should render NavContainer', () => {

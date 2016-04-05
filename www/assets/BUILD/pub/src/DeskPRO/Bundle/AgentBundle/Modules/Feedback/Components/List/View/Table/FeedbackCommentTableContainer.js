@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { idsSelector, currentListOrderBySelector, currentListOrderDirSelector } from '../../../../Selectors/list';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   ids: idsSelector(state),

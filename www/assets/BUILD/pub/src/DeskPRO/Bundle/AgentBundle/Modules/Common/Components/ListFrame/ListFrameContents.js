@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Scrollable } from './Scrollable';
+import { Scrollable } from '../Scrollable';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 
 export class ListFrameContents extends React.Component {
