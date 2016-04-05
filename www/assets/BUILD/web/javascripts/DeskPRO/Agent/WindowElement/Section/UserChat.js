@@ -230,18 +230,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				this.onlineUsersRefreshTimer = null;
 			}
 		}, this);
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
-			var count = parseInt(info.online_count) || 0;
-
-			Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
-			DeskPRO_Window.util.modCountEl($('.userchat-online-users-count'), '=', count);
-
-			if (count != self.lastOnlineUserCount) {
-				self.lastOnlineUserLoad = null;
-			}
-			self.lastOnlineUserCount = count;
-		});
 	},
 
 	_initTemplates: function() {
