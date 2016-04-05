@@ -58,6 +58,7 @@ class HitTrackJavascriptListener implements EventSubscriberInterface
         if ($response->isRedirection()
             || ($response->headers->has('Content-Type') && false === strpos($response->headers->get('Content-Type'), 'html'))
             || 'html' !== $request->getRequestFormat()
+            || !$response->isSuccessful()
         ) {
             return;
         }

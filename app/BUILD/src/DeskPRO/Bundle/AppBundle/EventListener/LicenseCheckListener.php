@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
@@ -38,7 +39,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -76,18 +77,19 @@ final class LicenseCheckListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onRequest', -100),
+            KernelEvents::RESPONSE => array('onResponse', -100),
         );
     }
 
     /**
-     * @param GetResponseEvent $event
+     * @param FilterResponseEvent $event
      */
-    public function onRequest(GetResponseEvent $event)
+    public function onResponse(FilterResponseEvent $event)
     {
         // - We run through license errors on user/agent interface (admin has warning at top)
         // - And only when its an HTML page of course (e.g., cant render an HTML page when the client expects json)
         // - And we dont show on login pages, because we might be mid-login to admin interface now
+        // - And we dont care about error pages
         if (!(
             $event->isMasterRequest()
             && !RequestUtils::isLowRequest($event->getRequest())
@@ -96,6 +98,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
             && $this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_USER, InterfaceInfo::ID_AGENT])
             && in_array('text/html', $event->getRequest()->getAcceptableContentTypes())
             && strpos($event->getRequest()->getPathInfo(), '/login') === false
+            && $event->getResponse()->isSuccessful()
         )) {
             return;
         }
@@ -112,9 +115,9 @@ final class LicenseCheckListener implements EventSubscriberInterface
     /**
      * Performs checks for an on-site license.
      *
-     * @param GetResponseEvent $event
+     * @param FilterResponseEvent $event
      */
-    private function doOnsiteChecks(GetResponseEvent $event)
+    private function doOnsiteChecks(FilterResponseEvent $event)
     {
         $lic     = License::getLicense();
         $request = $event->getRequest();
@@ -174,9 +177,9 @@ final class LicenseCheckListener implements EventSubscriberInterface
     /**
      * Performs checks for a cloud license.
      *
-     * @param GetResponseEvent $event
+     * @param FilterResponseEvent $event
      */
-    private function doCloudChecks(GetResponseEvent $event)
+    private function doCloudChecks(FilterResponseEvent $event)
     {
         $lic     = License::getLicense();
         $request = $event->getRequest();
