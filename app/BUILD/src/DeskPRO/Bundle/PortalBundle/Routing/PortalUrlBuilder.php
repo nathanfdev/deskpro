@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
@@ -57,17 +58,19 @@ class PortalUrlBuilder
     {
         $parts = array();
 
-        if ($this->mode) {
-            $mode_path = trim($this->mode->getModePath(), '/');
-            if (strlen($mode_path) > 0) {
-                $parts[] = $mode_path;
+        if (!preg_match('#^/?(?:agent|admin|reports)(/|$)#', $this->path)) {
+            if ($this->mode) {
+                $mode_path = trim($this->mode->getModePath(), '/');
+                if (strlen($mode_path) > 0) {
+                    $parts[] = $mode_path;
+                }
             }
-        }
 
-        if ($this->language) {
-            $lang_part = trim($this->language->getUrlCode(), '/');
-            if (strlen($lang_part) > 0) {
-                $parts[] = $lang_part;
+            if ($this->language) {
+                $lang_part = trim($this->language->getUrlCode(), '/');
+                if (strlen($lang_part) > 0) {
+                    $parts[] = $lang_part;
+                }
             }
         }
 
