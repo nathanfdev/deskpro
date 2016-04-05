@@ -88,7 +88,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $context->getLogger()->debug("[SlackAction] Sending message to channel: $channel");
 
         try {
-            $client = new GuzzleClient(['base_uri' => $app->getSetting('webhook_url')]);
+            $client = new GuzzleClient();
 
             $client->request(
                 'POST',
@@ -122,8 +122,6 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $attachment = [
             'color' => '#1D7AB2',
             'text' => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
-            'author_name' => htmlspecialchars($context->getPersonContext()->getDisplayName()),
-            'author_icon' => $context->getPersonContext()->getPictureUrl(),
             'title' => '#' . $ticket->id . ' ' . htmlspecialchars($ticket->subject),
             'title_link' => $this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
         ];

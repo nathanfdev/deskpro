@@ -35,7 +35,8 @@ namespace deskpro_slack\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use Guzzle\Http\Client as GuzzleClient;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -79,15 +80,17 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $log   = array();
         $log[] = 'webhook url: '.$webhook_url;
 
-        //TODO need to figure out how to test url
-//        $tests   = array();
-//        
-//        foreach ($tests as $t) {
-//            $error = $t();
-//            if ($error) {
-//                break;
-//            }
-//        }
+        try {
+            $client = new GuzzleClient();
+            $res = $client->request(
+                'POST',
+                $webhook_url,
+                ['form_params' => ['payload' => json_encode(['text' => 'Link successful'])]]
+            );
+            $log[] = $res->getStatusCode() . ' ' . $res->getBody();
+        } catch (\Exception $e) {
+            $error = [$e->getCode(), $e->getMessage()];
+        }
 
         $result_data = array(
             'log'        => implode("\n", $log),
@@ -96,10 +99,5 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         );
 
         return $context->createJsonResponse($result_data);
-    }
-
-    private function sendToSlack()
-    {
-        $client = new GuzzleClient();
     }
 }

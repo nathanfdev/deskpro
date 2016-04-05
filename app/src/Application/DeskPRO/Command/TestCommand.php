@@ -34,7 +34,6 @@ namespace Application\DeskPRO\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use GuzzleHttp\Client as GuzzleClient;
 
 class TestCommand extends ContainerAwareCommand
 {
@@ -59,25 +58,7 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $payload = [
-            'text' => '#13 <http://localhost:8080/agent/#app.tickets|Test Slack> New ticket by Admin Admin &lt;julien.ducro@deskpro.com&gt;',
-            'channel' => '#general',
-            'username' => 'DeskPro',
-        ];
-//        $ch = curl_init('https://hooks.slack.com/services/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');
-//
-//        $payload = curl_escape($ch, json_encode($payload));
-//        curl_setopt($ch,CURLOPT_POSTFIELDS, 'payload='.$payload);
-//        
-//        curl_exec($ch);
-
-            
-        $client = new GuzzleClient(['base_uri' => 'https://hooks.slack.com/services/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']);
-
-        $request = $client->request('POST', 'https://hooks.slack.com/services/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', ['form_params' => ['payload' => json_encode($payload)]]);
-
-        echo $request->getStatusCode() . "\n";
-//        echo $request->getBody();
+        echo __FILE__;
         echo "\n";
 
         return 0;
