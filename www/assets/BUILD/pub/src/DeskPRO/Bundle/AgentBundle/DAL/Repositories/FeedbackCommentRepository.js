@@ -10,7 +10,7 @@ export class FeedbackCommentRepository extends ApiRepository {
    * @return Promise
    */
   commentsToReviewList(params) {
-    return this.api.sendGet('DP_API/feedback_comments_list?include=person,feedback&' + this.compileParams(params));
+    return this.api.sendGet('DP_API/feedback_comments/?include=person,feedback&' + this.compileParams(params));
   }
 
   /**
