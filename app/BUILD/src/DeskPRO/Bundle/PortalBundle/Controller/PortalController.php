@@ -38,8 +38,10 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -120,6 +122,20 @@ class PortalController extends AbstractController
     {
         if ($this->getUser() instanceof Person) {
             return $this->redirectToRoute('portal_user_profile');
+        }
+
+        if (($token = $request->query->get('tok')) && strpos($token, '-')) {
+            list($person_id, $login_token) = explode('-', $token, 2);
+
+            /** @var \Application\DeskPRO\Entity\Person $person */
+            $person = $this->getEm()->find('DeskPRO:Person', $person_id);
+
+            if ($person && $person->checkPassword($login_token)) {
+                $token = new DpTransferSessionAuthToken($person, 'token_login_'.RandUtils::randomString(20));
+                $this->get('security.token_storage')->setToken($token);
+
+                return $this->redirectToRoute('portal_home');
+            }
         }
 
         $saved_form_message = null;
