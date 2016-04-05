@@ -41,10 +41,12 @@ const openChatBeginStage = chatBeginMode => {
 export const widgetResize = createAction(
   'WIDGET_RESIZE',
   () => {
+    const widgetFrameWindow = parent.window;
     const $window = $(window.widgetFrame);
+
     return {
       width: $window.width(),
-      height: $window.height()
+      height: widgetFrameWindow.innerHeight > $window.height() ? widgetFrameWindow.innerHeight : $window.height()
     };
   }
 );
@@ -53,11 +55,13 @@ export const windowResize = createAction(
   'WINDOW_RESIZE',
   () => dispatch => {
     dispatch(widgetResize());
-    const $window = $(parent.window);
+
+    const parentWindow = parent.window;
+    const $window = $(parentWindow);
 
     return {
       width: $window.width(),
-      height: $window.height()
+      height: parentWindow.innerHeight > $window.height() ? parentWindow.innerHeight : $window.height()
     };
   }
 );
