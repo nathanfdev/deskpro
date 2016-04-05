@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
 
 class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInterface
@@ -52,7 +53,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getLicense()
     {
-        return \DpSys\License::getLicense();
+        return License::getLicense();
     }
 
     public function getVariable($name)
@@ -60,37 +61,14 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return isset($this->variables[$name]) ? $this->variables[$name] : null;
     }
 
-    public function getSetting($name, $default = null)
-    {
-        // be caerful, not all kernels have a brand stack (only portal)
-        if ($this->container->has('brand_stack')) {
-            if ($brand = $this->container->get('brand_stack')->getActive()) {
-                return $brand->getSetting($name, $default);
-            }
-        }
-
-        // default to globals for others
-        return $this->container->get('settings_resolver')->getGlobalSettings()->get($name, $default);
-    }
-
     public function getUser()
     {
-        $u = parent::getUser();
-        if (!$u) {
-            $u = App::getCurrentPerson();
-        }
-
-        return $u;
+        return App::getCurrentPerson();
     }
 
-    public function getSession()
+    public function getSetting($name)
     {
-        $s = parent::getSession();
-        if (!$s) {
-            $s = App::getSession();
-        }
-
-        return $s;
+        return App::getSetting($name);
     }
 
     public function getSettingDefaultGroup($id)
@@ -115,12 +93,45 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getSettingGroup($group)
     {
-        return [];
+        $group_vars = App::get('deskpro.core.settings')->getGroup($group);
+
+        if ($group == 'user_style') {
+            if (defined('DPC_IS_CLOUD')) {
+                // Always use https cloud.deskpro.com for css,
+                // it'll always work regardless of how you mess with URLs and ssl certs
+                $group_vars['static_path'] = 'https://cloud.deskpro.com/web'.DPC_SITE_BUILD_NUM;
+            } else {
+                // External blob storage means we need ot use a full URL for assets
+                if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
+                    $url = App::getSetting('core.deskpro_url');
+                    $url = str_replace('index.php', '', $url);
+                    $url = trim($url, '/');
+
+                    $group_vars['static_path'] = $url.'/web';
+                } else {
+                    // A custom defined static URL
+                    if (App::getConfig('static_path')) {
+                        $group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
+
+                        // Default static path relative to current
+                    } else {
+                        $group_vars['static_path'] = rtrim('../..'.(App::getConfig('static_path') ?: '/web/'), '/');
+                    }
+                }
+            }
+        }
+
+        return $group_vars;
     }
 
     public function getConfig($name, $default = null)
     {
         return App::getConfig($name, $default);
+    }
+
+    public function getSession()
+    {
+        return App::getSession();
     }
 
     public function getLanguage()
@@ -130,7 +141,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isDebug()
     {
-        return $this->getDebug();
+        return $this->container->isDebug();
     }
 
     public function isTesting()
@@ -153,7 +164,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getLogoBlob()
     {
-        return;
+        return App::getSystemService('logo_blob');
     }
 
     public function getUsersourceManager()
@@ -196,7 +207,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
                     'outgoing_account_type' => $a->getOutgoingAccountType(),
                 );
             }, App::$container->getEmailAccountManager()
-                ->getAllAccounts());
+                              ->getAllAccounts());
         }
 
         return $accounts;
@@ -286,7 +297,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
             return $this->{"get$name"};
         }
 
-        if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
+        if ($ent = Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
             return App::getContainer()->getSystemService(ucfirst($ent).'Data');
         }
 
@@ -295,7 +306,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function __call($method, $args)
     {
-        if ($var = \Orb\Util\Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
+        if ($var = Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
             return $this->__get(ucfirst($method));
         }
 
@@ -342,7 +353,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isAppAllowed($name)
     {
-        $person = $this->getUser();
+        $person = App::getSession()->getPerson();
         $k      = sha1($name.'|'.$person['id']);
 
         if (isset($this->app_allowed_checks[$k])) {
