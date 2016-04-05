@@ -78,8 +78,8 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        $orderDir = $request->get('order') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
-        $orderBy  = $request->get('sort') ? 'ticket.'.$request->get('sort') : '';
+        $orderDir = $request->get('order_dir') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
+        $orderBy  = $request->get('order_by') ? 'ticket.'.$request->get('order_by') : '';
 
         $searcher = $this->get('data.ticket_legacy_filter_sets')->getFilterSearcher($filter);
         $searcher->setPersonContext($this->getUser());
