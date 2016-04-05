@@ -29,23 +29,48 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractStatefulIncident;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
-use DeskPRO\Bundle\SystemBundle\Storage\KeyValueStorageInterface;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\StatefulIncidentTrigger;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\AbstractStatefulIncidentTrigger;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\AbstractTrigger;
 
 /**
  * Class MockEvent.
  */
-class MockEvent extends Event
+class MockEvent extends AbstractEvent
 {
-    public function __construct($processed = false)
+    public function __construct($processed = false, $id = null)
     {
         parent::__construct();
         $this->setProcessed($processed);
+        $this->id = $id ?: uniqid();
+    }
+
+    public function getSubjectDescription()
+    {
+        return 'Mock event subject';
+    }
+
+    public function generateSubjectUniqueId()
+    {
+        return 'mock_event_subject_'.$this->id;
+    }
+}
+
+/**
+ * Class MockSuccessEvent.
+ */
+class MockSuccessEvent extends MockEvent implements SuccessEvent
+{
+    public function getFailureType()
+    {
+        return MockEvent::class;
     }
 }
 
@@ -57,49 +82,23 @@ class MockEvent2 extends MockEvent
 }
 
 /**
- * Class DummyTrigger.
+ * Class MockTrigger.
  */
-trait DummyTrigger
+class MockTrigger extends AbstractTrigger
 {
     protected function supports(Event $event)
     {
         return $event instanceof MockEvent;
     }
 
-    protected function initState()
+    protected function isIncidentState(Incident $incident)
     {
-        $this->state = ['events_counter' => 0];
+        return count($incident->getEvents()) >= 5;
     }
 
-    protected function isIncidentState()
+    public function getIncidentClass()
     {
-        return $this->state['events_counter'] >= 5;
-    }
-
-    protected function process(Event $event)
-    {
-        ++$this->state['events_counter'];
-    }
-
-    protected function createIncident()
-    {
-        return new MockIncident();
-    }
-}
-
-/**
- * Class MockTrigger.
- */
-class MockTrigger extends Trigger
-{
-    use DummyTrigger;
-
-    public function __construct($state = null)
-    {
-        parent::__construct();
-        if ($state) {
-            $this->state = $state;
-        }
+        return MockIncident::class;
     }
 }
 
@@ -120,23 +119,24 @@ class MockTrigger3 extends MockTrigger
 /**
  * Class MockStatefulIncidentTrigger.
  */
-class MockStatefulIncidentTrigger extends StatefulIncidentTrigger
+class MockStatefulIncidentTrigger extends AbstractStatefulIncidentTrigger
 {
-    use DummyTrigger;
-
-    public function __construct($state = null, $continuing_incident = null)
+    protected function supports(Event $event)
     {
-        parent::__construct();
-        if ($state) {
-            $this->state = $state;
-        }
-        if ($continuing_incident) {
-            $this->continuing_incident = $continuing_incident;
-        }
+        return $event instanceof MockEvent;
     }
 
-    protected function updateContinuingIncident()
+    protected function isIncidentState(Incident $incident)
     {
+        $events = $incident->getEvents();
+        $count  = count($events);
+
+        return $count >= 5 && !$events[$count - 1] instanceof SuccessEvent;
+    }
+
+    public function getIncidentClass()
+    {
+        return MockIncident::class;
     }
 }
 
@@ -150,7 +150,7 @@ class MockStatefulIncidentTrigger2 extends MockStatefulIncidentTrigger
 /**
  * Class MockIncident.
  */
-class MockIncident extends Incident
+class MockIncident extends AbstractStatefulIncident
 {
     public function __construct($id = null)
     {
@@ -160,33 +160,8 @@ class MockIncident extends Incident
         }
     }
 
-    public function getInstructions()
+    public function getTitle()
     {
         return "Relax, it's not a real incident";
-    }
-}
-
-/**
- * Class MockKeyValueStorage.
- */
-class MockKeyValueStorage implements KeyValueStorageInterface
-{
-    private $storage = [];
-
-    public function save($key, $value)
-    {
-        $this->storage[$key] = $value;
-    }
-
-    public function get($key)
-    {
-        return array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
-    }
-
-    public function remove($key)
-    {
-        if (array_key_exists($key, $this->storage)) {
-            unset($this->storage[$key]);
-        }
     }
 }

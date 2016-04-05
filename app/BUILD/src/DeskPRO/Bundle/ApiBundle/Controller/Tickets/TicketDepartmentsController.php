@@ -40,7 +40,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,8 +49,8 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @ApiDocSection("Departments")
- * @OutputEntity("Application\DeskPRO\Entity\Department")
- * @Annotations\Route("/ticket_departments")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
+ * @Rest\Route("/ticket_departments")
  */
 class TicketDepartmentsController extends CrudController
 {
@@ -74,9 +74,9 @@ class TicketDepartmentsController extends CrudController
      *         200="Returned if everything is OK",
      *         404="Returned if department wasn't found"
      *     },
-     *     output="Application\DeskPRO\Entity\Person"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person>"
      * )
-     * @Annotations\Get("/{id}/agents")
+     * @Rest\Get("/{id}/agents")
      *
      * @param int     $id
      * @param Request $request

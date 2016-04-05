@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,7 +47,7 @@ class TicketSlasController extends BaseController
     /**
      * Retrieve the list of custom fields available for tickets.
      *
-     * @Get("/tickets/{ticket_id}/slas", name="api_ticket_sla")
+     * @Rest\Get("/tickets/{ticket_id}/slas", name="api_ticket_sla")
      */
     public function getForTicketAction($ticket_id)
     {
@@ -59,7 +60,7 @@ class TicketSlasController extends BaseController
     }
 
     /**
-     * @Get("/tickets/{ticket_id}/slas/{sla_id}", name="api_ticket_sla_single")
+     * @Rest\Get("/tickets/{ticket_id}/slas/{sla_id}", name="api_ticket_sla_single")
      */
     public function getSingleAction($ticket_id, $sla_id)
     {

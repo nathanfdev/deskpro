@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,16 +41,21 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class OutgoingEmailFailureEvent extends ExceptionEvent
+class OutgoingEmailFailureEvent extends AbstractExceptionEvent
 {
+    use EmailAccountData;
+
     /**
-     * AbstractZendMailExceptionEvent constructor.
-     *
+     * @param int                   $emailAccountId
+     * @param string                $emailAccountAddress
      * @param RawTransportException $exception
-     * @param \DateTime|null        $date_created
+     * @param \DateTime|null        $dateCreated
      */
-    public function __construct(RawTransportException $exception, \DateTime $date_created = null)
+    public function __construct(
+        $emailAccountId, $emailAccountAddress, RawTransportException $exception, \DateTime $dateCreated = null)
     {
-        parent::__construct($exception, $date_created);
+        $this->emailAccountId      = $emailAccountId;
+        $this->emailAccountAddress = $emailAccountAddress;
+        parent::__construct($exception, $dateCreated);
     }
 }

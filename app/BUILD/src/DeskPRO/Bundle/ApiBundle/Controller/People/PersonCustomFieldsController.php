@@ -37,14 +37,14 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PersonCustomFieldsController.
  *
  * @ApiModes("all")
- * @Annotations\Route("/person_custom_fields")
+ * @Rest\Route("/person_custom_fields")
  * @ApiDocSection("People")
  */
 class PersonCustomFieldsController extends CrudController

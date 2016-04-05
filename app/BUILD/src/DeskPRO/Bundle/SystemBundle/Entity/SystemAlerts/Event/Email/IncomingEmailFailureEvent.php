@@ -32,7 +32,8 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Mail\Exception\RuntimeException;
 
@@ -41,16 +42,19 @@ use Zend\Mail\Exception\RuntimeException;
  *
  * @ORM\Entity
  */
-class IncomingEmailFailureEvent extends ExceptionEvent
+class IncomingEmailFailureEvent extends AbstractExceptionEvent
 {
+    use EmailAccountData;
+
     /**
-     * AbstractZendMailExceptionEvent constructor.
-     *
+     * @param EmailAccount     $account
      * @param RuntimeException $exception
-     * @param \DateTime|null   $date_created
+     * @param \DateTime|null   $dateCreated
      */
-    public function __construct(RuntimeException $exception, \DateTime $date_created = null)
+    public function __construct(EmailAccount $account, RuntimeException $exception, \DateTime $dateCreated = null)
     {
-        parent::__construct($exception, $date_created);
+        $this->emailAccountId      = $account->getId();
+        $this->emailAccountAddress = $account->getAddress();
+        parent::__construct($exception, $dateCreated);
     }
 }

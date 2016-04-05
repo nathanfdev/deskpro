@@ -34,8 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +49,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class BatchController extends BaseController
 {
     /**
-     * @Post("/batch", name="api_batch_post")
+     * @Rest\Post("/batch", name="api_batch_post")
      *
      * @param Request $request
      *
@@ -74,7 +73,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * @Get("/batch", name="api_batch_get")
+     * @Rest\Get("/batch", name="api_batch_get")
      *
      * @param Request $request
      *

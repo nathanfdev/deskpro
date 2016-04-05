@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,6 +51,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketFiltersController.
  *
  * @ApiDocSection("Ticket filters (legacy)")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LegacyTicketFilter")
  * @ApiModes("all")
  * @Rest\Route("/ticket_filters")
  */
@@ -76,8 +78,8 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        $orderDir = $request->get('order') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
-        $orderBy  = $request->get('sort') ? 'ticket.'.$request->get('sort') : '';
+        $orderDir = $request->get('order_dir') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
+        $orderBy  = $request->get('order_by') ? 'ticket.'.$request->get('order_by') : '';
 
         $searcher = $this->get('data.ticket_legacy_filter_sets')->getFilterSearcher($filter);
         $searcher->setPersonContext($this->getUser());

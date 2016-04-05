@@ -32,56 +32,16 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * Class AbstractContinuingFailureIncident.
- *
- * Base class representing incidents which are raised based on sequence of failing events.
+ * Class AbstractExceptionIncident.
  */
-abstract class AbstractContinuingFailureIncident extends Incident
+abstract class AbstractExceptionIncident extends AbstractIncident
 {
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * {@inheritdoc}
      */
-    private $date_first_failure;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $date_last_failure;
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateFirstFailure()
+    public function getTitle()
     {
-        return $this->date_first_failure;
-    }
-
-    /**
-     * @param \DateTime $date_first_failure
-     */
-    public function setDateFirstFailure(\DateTime $date_first_failure)
-    {
-        $this->date_first_failure = $date_first_failure;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastFailure()
-    {
-        return $this->date_last_failure;
-    }
-
-    /**
-     * @param \DateTime $date_last_failure
-     */
-    public function setDateLastFailure(\DateTime $date_last_failure)
-    {
-        $this->date_last_failure = $date_last_failure;
+        return $this->getFirstEvent()->getSubjectDescription();
     }
 }

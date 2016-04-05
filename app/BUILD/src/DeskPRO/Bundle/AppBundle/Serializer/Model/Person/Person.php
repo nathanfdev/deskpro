@@ -59,6 +59,8 @@ class Person
     /**
      * True if user`s picture disabled.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $disable_picture;
@@ -66,12 +68,16 @@ class Person
     /**
      * The URL to the users gravatar if any.
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $gravatar_url;
 
     /**
      * Is this person a contact?
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -87,12 +93,16 @@ class Person
     /**
      * Is this person an agent?
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_agent;
 
     /**
      * Was this person an agent?
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -101,12 +111,16 @@ class Person
     /**
      * Is person allowed to use agent interface.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $can_agent;
 
     /**
      * Is person allowed to use admin interface.
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -115,12 +129,16 @@ class Person
     /**
      * Is person allowed to use billing interface.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $can_billing;
 
     /**
      * Are autoresponses disabled?
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -129,12 +147,16 @@ class Person
     /**
      * Disabled autoresponses log.
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $disable_autoresponses_log;
 
     /**
-     * Does person has confirmed their email?
+     * Has person confirmed their email?
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -143,12 +165,16 @@ class Person
     /**
      * Is the user deleted?
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_deleted;
 
     /**
      * Is the user disabled?
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -157,12 +183,16 @@ class Person
     /**
      * The way person was created.
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $creation_system;
 
     /**
      * The users name (best guess from other sources etc).
+     *
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -171,12 +201,16 @@ class Person
     /**
      * The users name (best guess from other sources etc).
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $first_name;
 
     /**
      * The users name (best guess from other sources etc).
+     *
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -185,6 +219,8 @@ class Person
     /**
      * The users title prefix (Mr., Mrs., etc).
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $title_prefix;
@@ -192,12 +228,16 @@ class Person
     /**
      * Overrides the display name of an person in the user interface (agents only).
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $override_display_name;
 
     /**
      * The summary field as filled in by agents.
+     *
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -224,12 +264,16 @@ class Person
     /**
      * The persons position at the organization.
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $organization_position;
 
     /**
      * True if the person is a manager of their organization.
+     *
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -238,12 +282,16 @@ class Person
     /**
      * The timezone associated with this user.
      *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $timezone;
 
     /**
      * The date the user was inserted into the system.
+     *
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -252,12 +300,16 @@ class Person
     /**
      * The date the user was logged in last time.
      *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_last_login;
 
     /**
      * The browser person was used last time.
+     *
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -280,35 +332,53 @@ class Person
     protected $labels;
 
     /**
-     * @var string
+     * Main user`s email.
      *
      * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
+     *
+     * @var string
      */
     protected $primary_email;
 
     /**
-     * @var array
+     * Emails belong to user.
      *
      * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
+     *
+     * @var array
      */
     protected $emails;
 
     /**
+     * Users avatar.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
+     *
      * @var Avatar
      */
     protected $avatar;
 
     /**
+     * Is user online?
+     *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $online;
 
     /**
+     * Date when user was last seen online.
+     *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $last_seen;
 
     /**
+     * Phone numbers belong to user.
+     *
      * @JMS\Type("array<array<string>>")
      *
      * @var array
@@ -316,26 +386,38 @@ class Person
     protected $phone_numbers;
 
     /**
+     * Overall tickets count assigned to user.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $tickets_count;
 
     /**
+     * Overall count of chats user participating.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $chats_count;
 
     /**
-     * @var CustomDataPerson[]
+     * Custom persons data.
      *
      * @JMS\Type("custom_data<array>")
+     *
+     * @var CustomDataPerson[]
      */
     protected $fields;
 
     /**
-     * @var \Application\DeskPRO\Entity\PersonContactData[]
+     * Contacts for this user.
      *
      * @JMS\Type("collection")
+     *
+     * @var \Application\DeskPRO\Entity\PersonContactData[]
      */
     protected $contact_data;
 

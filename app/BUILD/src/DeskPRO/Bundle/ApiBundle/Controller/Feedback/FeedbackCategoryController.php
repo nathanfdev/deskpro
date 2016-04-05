@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -47,6 +48,7 @@ class FeedbackCategoryController extends BaseController
 {
     /**
      * Fetch feedback categories list.
+     * Proper output coming soon.
      *
      * @ApiDoc(
      *     section="Feedback",
@@ -55,17 +57,16 @@ class FeedbackCategoryController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="Application\DeskPRO\Entity\CustomDataFeedback"
      * )
      *
-     * @Annotations\Get("/feedback_categories", name="api_feedback_categories")
-     * @Annotations\View("list")
+     * @Rest\Get("/feedback_categories", name="api_feedback_categories")
+     * @Rest\View("list")
      *
      * @return View
      *
      * @internal param Request $request
      */
-    public function cgetAction()
+    public function listAction()
     {
         /* @ToDo move below functionality into repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();

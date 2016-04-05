@@ -61,7 +61,7 @@ class PersonProfile
     private $name;
 
     /**
-     * Person overriden name.
+     * Person overridden name.
      *
      * @JMS\Type("string")
      *

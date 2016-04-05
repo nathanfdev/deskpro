@@ -39,7 +39,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class AgentsController.
  *
  * @ApiModes("all")
- * @Annotations\Route("/agents")
+ * @Rest\Route("/agents")
  * @ApiDocSection("Agents")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
  */
@@ -72,7 +72,7 @@ class AgentsController extends CrudController
      *     },
      *     output="array<integer>"
      * )
-     * @Annotations\Get("/online", name="api_agents_online")
+     * @Rest\Get("/online", name="api_agents_online")
      *
      * @return View
      */

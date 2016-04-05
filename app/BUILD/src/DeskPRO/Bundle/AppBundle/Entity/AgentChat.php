@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -234,53 +235,42 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * Collection of departments participating in this chat.
+     *
      * @JMS\VirtualProperty()
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Department>>")
-     * @JMS\SerializedName("departments")
      *
-     * @return array
+     * @return Department[]
      */
-    public function getDepartmentsIds()
+    public function getDepartments()
     {
         return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getDepartment(); });
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     * @JMS\SerializedName("agent_teams")
+     * Collection of agent teams participating in this chat.
      *
-     * @return array
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\AgentTeam>>")
+     *
+     * @return AgentTeam[]
      */
-    public function getAgentTeamsIds()
+    public function getAgentTeams()
     {
-        $ids = [];
-        foreach ($this->participants as $participant) {
-            if ($participant->getTeamId()) {
-                $ids[] = $participant->getTeamId();
-            }
-        }
-
-        return $ids;
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getTeam(); });
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     * @JMS\SerializedName("agents")
+     * Collection of agents participating (directly added) in this chat.
      *
-     * @return array
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     *
+     * @return Person[]
      */
-    public function getAgentsIds()
+    public function getAgents()
     {
-        $ids = [];
-        foreach ($this->participants as $participant) {
-            if ($participant->getPersonId()) {
-                $ids[] = $participant->getPersonId();
-            }
-        }
-
-        return $ids;
+        return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getPerson(); });
     }
 
     public function getPersonList()

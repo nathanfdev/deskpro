@@ -756,10 +756,10 @@ class Runner
 
                         break;
                     }
-                    App::getEventLogger()->log(new IncomingEmailSuccessEvent());
+                    App::getEventLogger()->log(new IncomingEmailSuccessEvent($account));
                 } catch (\Exception $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($e));
+                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($account, $e));
                     break;
                 }
             }

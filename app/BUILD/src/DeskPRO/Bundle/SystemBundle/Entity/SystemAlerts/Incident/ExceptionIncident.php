@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -38,13 +39,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class ExceptionIncident extends Incident
+class ExceptionIncident extends AbstractExceptionIncident
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getInstructions()
-    {
-        return 'Google to solve this. Good luck!';
-    }
 }

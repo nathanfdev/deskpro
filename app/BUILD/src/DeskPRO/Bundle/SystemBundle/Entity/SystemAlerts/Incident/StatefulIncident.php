@@ -29,26 +29,21 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Storage;
+
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 /**
- * Interface KeyValueStorageInterface.
+ * Interface StatefulIncident.
  */
-interface KeyValueStorageInterface
+interface StatefulIncident extends Incident
 {
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @return bool
      */
-    public function save($key, $value);
+    public function isResolved();
 
     /**
-     * @param string $key
+     * @param bool $resolved
      */
-    public function get($key);
-
-    /**
-     * @param string $key
-     */
-    public function remove($key);
+    public function setResolved($resolved);
 }

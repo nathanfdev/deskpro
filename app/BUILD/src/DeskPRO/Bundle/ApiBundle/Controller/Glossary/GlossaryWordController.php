@@ -39,7 +39,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDocSection("Glossary")
  * @OutputEntity("Application\DeskPRO\Entity\GlossaryWord")
  * @ApiModes("all")
- * @Annotations\Route("/glossary/words")
+ * @Rest\Route("/glossary/words")
  */
 class GlossaryWordController extends CrudController
 {
@@ -61,22 +61,23 @@ class GlossaryWordController extends CrudController
      * You can try to search the word and it's definition.
      *
      * @ApiDoc(
-     *      description="Get a definition of the word",
-     *      requirements={
-     *          {
-     *              "name"="word",
-     *              "requirement"="\w+",
-     *              "description"="The word",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="All looks good, we found what you want",
-     *          404="Sorry we can find nothing with given parameters"
-     *      }
+     *     description="Get a definition of the word",
+     *     requirements={
+     *         {
+     *             "name"="word",
+     *             "requirement"="\w+",
+     *             "description"="The word",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="All looks good, we found what you want",
+     *         404="Sorry we can find nothing with given parameters"
+     *     },
+     *     output="Application\DeskPRO\Entity\GlossaryWord"
      * )
      *
-     * @Annotations\Get("/{word}")
+     * @Rest\Get("/{word}")
      *
      * @param string $word
      *

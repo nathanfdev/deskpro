@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
@@ -59,7 +59,7 @@ class DiscoveryController extends BaseController
      *         "class"="DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings"
      *     }
      * )
-     * @Get("/helpdesk/discover")
+     * @Rest\Get("/helpdesk/discover")
      */
     public function discoverAction()
     {
@@ -80,7 +80,7 @@ class DiscoveryController extends BaseController
      *         "class"="DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings"
      *     }
      * )
-     * @Get("/helpdesk/agent-client/info")
+     * @Rest\Get("/helpdesk/agent-client/info")
      */
     public function agentClientInfoAction()
     {

@@ -35,7 +35,7 @@ npm install
 echo ".. done"
 
 echo ">> Building documentation"
-npm run-script gulp-slate
+npm run-script gulp-docs
 echo ".. done"
 echo
 

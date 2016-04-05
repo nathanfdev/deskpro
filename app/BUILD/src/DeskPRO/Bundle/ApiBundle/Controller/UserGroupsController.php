@@ -29,11 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,7 +57,7 @@ class UserGroupsController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\Usergroup>"
      * )
-     * @Get("/user_groups", name="api_user_groups_list")
+     * @Rest\Get("/user_groups", name="api_user_groups_list")
      *
      * @return View
      */
@@ -92,7 +93,7 @@ class UserGroupsController extends BaseController
      *      },
      *     output="Application\DeskPRO\Entity\Usergroup"
      * )
-     * @Get("/user_groups/{id}", name="api_user_group", requirements={"id" = "\d+"})
+     * @Rest\Get("/user_groups/{id}", name="api_user_group", requirements={"id" = "\d+"})
      *
      * @param int $id
      *

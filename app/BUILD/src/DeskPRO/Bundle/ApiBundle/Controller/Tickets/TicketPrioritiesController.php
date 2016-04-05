@@ -37,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class TicketPrioritiesController.
@@ -45,7 +45,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiModes("all")
  * @ApiDocSection("Tickets")
  * @OutputEntity("Application\DeskPRO\Entity\TicketPriority")
- * @Annotations\Route("/ticket_priorities")
+ * @Rest\Route("/ticket_priorities")
  */
 class TicketPrioritiesController extends CrudController
 {

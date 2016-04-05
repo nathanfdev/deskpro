@@ -32,7 +32,8 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,8 +42,21 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class IncomingEmailSuccessEvent extends Event implements SuccessEvent
+class IncomingEmailSuccessEvent extends AbstractEvent implements SuccessEvent
 {
+    use EmailAccountData;
+
+    /**
+     * @param EmailAccount   $account
+     * @param \DateTime|null $dateCreated
+     */
+    public function __construct(EmailAccount $account, \DateTime $dateCreated = null)
+    {
+        $this->emailAccountId      = $account->getId();
+        $this->emailAccountAddress = $account->getAddress();
+        parent::__construct($dateCreated);
+    }
+
     /**
      * {@inheritdoc}
      */

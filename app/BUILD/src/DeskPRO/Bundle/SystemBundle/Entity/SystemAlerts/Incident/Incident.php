@@ -33,165 +33,110 @@
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Incident.
+ * Interface Incident.
  *
- * @ORM\Entity
- * @ORM\Table(name="system_alerts_incidents")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
- * @ORM\DiscriminatorMap({
- *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\ExceptionIncident",
- *     "incoming_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident",
- *     "outgoing_email_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\OutgoingEmailFailureIncident"
- * })
+ * Incident is a system problem which is based on some set of system events.
  */
-abstract class Incident implements EntityInterface, NotifyPropertyChanged
+interface Incident extends EntityInterface, NotifyPropertyChanged
 {
-    use NotifyPropertyChangedTrait;
-
-    /**
-     * @var int
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    protected $id;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    protected $date_created;
-
-    /**
-     * @var Event[]
-     *
-     * @ORM\ManyToMany(targetEntity="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event")
-     * @ORM\JoinTable(
-     *     name="system_alerts_incident_events",
-     *     joinColumns={@ORM\JoinColumn(name="incident_id", referencedColumnName="id", onDelete="CASCADE")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="event_id", referencedColumnName="id", onDelete="CASCADE", unique=true)}
-     * )
-     */
-    protected $events;
-
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean")
-     */
-    protected $resolved = false;
-
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean")
-     */
-    protected $dismissed = false;
-
     /**
      * Incident constructor.
      */
-    public function __construct()
-    {
-        $this->date_created = new \DateTime();
-    }
+    public function __construct();
 
     /**
-     * @return int
+     * If incident is raised.
+     *
+     * As incident is based on set of events, there can be situation when events set is not significant enough to raise
+     * an incident so we refer to this set as not raised incident.
+     *
+     * @return bool
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    public function isRaised();
+
+    /**
+     * @param bool $raised
+     */
+    public function setRaised($raised);
+
+    /**
+     * Get human readable incident title.
+     *
+     * @return string
+     */
+    public function getTitle();
 
     /**
      * @return \DateTime
      */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
+    public function getDateCreated();
 
     /**
      * @return Event[]
      */
-    public function getEvents()
-    {
-        return $this->events;
-    }
+    public function getEvents();
 
     /**
-     * @return array
+     * @return int[]
      */
-    public function getEventIds()
-    {
-        $ids = [];
-        foreach ($this->events as $event) {
-            $ids[] = $event->getId();
-        }
+    public function getEventIds();
 
-        return $ids;
-    }
+    /**
+     * @return int
+     */
+    public function getEventsCount();
 
     /**
      * @param array $events
      */
-    public function setEvents(array $events)
-    {
-        $this->events = new ArrayCollection($events);
-    }
+    public function setEvents(array $events);
 
     /**
      * @param Event $event
      */
-    public function addEvent(Event $event)
-    {
-        $this->events[] = $event;
-    }
+    public function addEvent(Event $event);
+
+    /**
+     * @return Event
+     */
+    public function getFirstEvent();
+
+    /**
+     * @return Event
+     */
+    public function getLastEvent();
+
+    /**
+     * @return Event
+     */
+    public function getLastFailureEvent();
+
+    /**
+     * @return int
+     */
+    public function getFailureEventsCount();
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateFirstFailure();
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateLastFailure();
 
     /**
      * @return bool
      */
-    public function isResolved()
-    {
-        return $this->resolved;
-    }
-
-    /**
-     * @param bool $resolved
-     */
-    public function setResolved($resolved)
-    {
-        $this->resolved = $resolved;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDismissed()
-    {
-        return $this->dismissed;
-    }
+    public function isDismissed();
 
     /**
      * @param bool $dismissed
      */
-    public function setDismissed($dismissed)
-    {
-        $this->dismissed = $dismissed;
-    }
-
-    /**
-     * Get user instructions to handle the incident.
-     *
-     * @return string
-     */
-    abstract public function getInstructions();
+    public function setDismissed($dismissed);
 }

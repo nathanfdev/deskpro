@@ -36,6 +36,8 @@ use JMS\Serializer\Annotation as JMS;
 class NotificationConfiguration
 {
     /**
+     * Clients array.
+     *
      * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient>")
      *
      * @var array

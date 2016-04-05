@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\ImportBundle\Generator\Exporter\DeskPRO;
@@ -37,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,9 +84,10 @@ class FeedbackController extends BaseController
      *     statusCodes={
      *         200="Returned if successful request",
      *         400="Returned if you filter set was malformed",
-     *     }
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Feedback>"
      * )
-     * @Get("/feedback", name="api_feedback")
+     * @Rest\Get("/feedback", name="api_feedback")
      *
      * @param Request $request
      *
@@ -142,7 +144,7 @@ class FeedbackController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Get("/feedback/counts", name="api_feedback_count")
+     * @Rest\Get("/feedback/counts", name="api_feedback_count")
      *
      * @param Request $request
      *

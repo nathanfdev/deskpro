@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -69,6 +70,11 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     protected $definition;
 
     /**
+     * An array of words belongs this definition.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\GlossaryWord>>")
+     *
      * @var ArrayCollection
      */
     protected $words;
@@ -81,9 +87,20 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * GlossaryWordDefinition constructor.
+     */
     public function __construct()
     {
         $this->words = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->definition;
     }
 
     /**
@@ -168,10 +185,6 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     }
     /**
      * An array of words belongs this definition.
-     *
-     * @JMS\Type("array<string>")
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("words");
      *
      * @return array
      */

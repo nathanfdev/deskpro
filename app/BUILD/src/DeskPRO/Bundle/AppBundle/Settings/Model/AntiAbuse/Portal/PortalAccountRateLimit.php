@@ -37,6 +37,8 @@ use JMS\Serializer\Annotation as JMS;
 class PortalAccountRateLimit
 {
     /**
+     * Settings for login.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
@@ -44,6 +46,8 @@ class PortalAccountRateLimit
     private $loginSettings;
 
     /**
+     * Limits for registration.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
@@ -51,6 +55,8 @@ class PortalAccountRateLimit
     private $registrationSettings;
 
     /**
+     * Limits for password resetting.
+     *
      * @var RateLimitGroup
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")

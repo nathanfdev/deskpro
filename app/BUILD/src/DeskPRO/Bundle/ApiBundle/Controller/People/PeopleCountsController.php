@@ -36,7 +36,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -64,7 +64,7 @@ class PeopleCountsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Annotations\Get("/people/counts", name="api_people_counts")
+     * @Rest\Get("/people/counts", name="api_people_counts")
      *
      * @param Request $request
      *

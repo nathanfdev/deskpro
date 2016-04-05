@@ -29,74 +29,49 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\SystemBundle\Entity\Storage;
 
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class KeyValueEntry.
+ * Class AbstractExceptionEvent.
  *
- * @ORM\Entity
- * @ORM\Table(name="system_storage_key_value")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\MappedSuperclass
  */
-class KeyValueEntry
+abstract class AbstractExceptionEvent extends AbstractEvent
 {
-    use NotifyPropertyChangedTrait;
-
     /**
      * @var string
-     * @ORM\Column(type="string", name="key_name", nullable=false)
-     * @ORM\Id()
-     */
-    private $key;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="text", nullable=false)
-     */
-    private $value;
-
-    /**
-     * KeyValueEntry constructor.
      *
-     * @param string $key
+     * @ORM\Column(name="exception_class", type="string")
      */
-    public function __construct($key)
+    protected $exceptionClass;
+
+    /**
+     * @var int
+     * @ORM\Column(name="exception_code", type="integer", options={"unsigned"=true})
+     */
+    protected $exceptionCode = 0;
+
+    /**
+     * ExceptionEvent constructor.
+     *
+     * @param \Exception     $exception
+     * @param \DateTime|null $dateCreated
+     */
+    public function __construct(\Exception $exception, \DateTime $dateCreated = null)
     {
-        $this->key = $key;
+        $this->exceptionCode  = $exception->getCode();
+        $this->exceptionClass = get_class($exception);
+        parent::__construct($dateCreated);
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getKey()
+    public function getExceptionCode()
     {
-        return $this->key;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param \DateTime $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
+        return $this->exceptionCode;
     }
 }

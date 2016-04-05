@@ -33,185 +33,52 @@
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Event.
- *
- * @ORM\Entity
- * @ORM\Table(name="system_alerts_events")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
- * @ORM\DiscriminatorMap({
- *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent",
- *     "email_incoming_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent",
- *     "email_incoming_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent",
- *     "email_outgoing_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent",
- *     "email_outgoing_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent"
- * })
+ * Interface Event.
  */
-abstract class Event implements EntityInterface, NotifyPropertyChanged
+interface Event extends EntityInterface, NotifyPropertyChanged
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * @var int
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", name="group_name", nullable=false)
-     */
-    private $group = '';
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $date_created;
-
-    /**
-     * @var array
-     * @ORM\Column(type="json_array", nullable=false)
-     */
-    private $data = [];
-
-    /**
-     * @var string
-     * @ORM\Column(type="text")
-     */
-    private $description = '';
-
-    /**
-     * @var string
-     * @ORM\Column(type="text")
-     */
-    private $log = '';
-
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean")
-     */
-    private $processed = false;
-
-    /**
-     * Event constructor.
+     * Get short human readable event subject description.
      *
-     * @param \DateTime|null $date_created
-     */
-    public function __construct(\DateTime $date_created = null)
-    {
-        $this->date_created = $date_created ?: new \DateTime();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
+     * Events happen with regards to various data which are called event subject. For example email failure event may
+     * have a specific email address or Email entity as its' subject, Exception event subject may be concrete exception
+     * class etc.
+     *
      * @return string
      */
-    public function getGroup()
-    {
-        return $this->group;
-    }
+    public function getSubjectDescription();
 
     /**
-     * @param string $group
+     * Get event subject unique ID.
+     *
+     * We need subject unique ID to effectively process events, particularly to easily establish correspondence
+     * between processed events and continuing incidents by having a map instead of iterating all incidents
+     * to compare their subjects with the processed event subject.
+     *
+     * @return string
      */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-    }
+    public function getSubjectUniqueId();
 
     /**
      * @return \DateTime
      */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLog()
-    {
-        return $this->log;
-    }
-
-    /**
-     * @param string $log
-     */
-    public function setLog($log)
-    {
-        $this->log = $log;
-    }
+    public function getDateCreated();
 
     /**
      * @return bool
      */
-    public function isProcessed()
-    {
-        return $this->processed;
-    }
+    public function isProcessed();
 
     /**
      * @param bool $processed
      */
-    public function setProcessed($processed)
-    {
-        $this->processed = $processed;
-    }
+    public function setProcessed($processed);
 
     /**
      * {@inheritdoc}
      */
-    public function __toString()
-    {
-        return sprintf('%s<%s>: %s', (new \ReflectionClass($this))->getShortName(), $this->group, $this->description);
-    }
+    public function __toString();
 }

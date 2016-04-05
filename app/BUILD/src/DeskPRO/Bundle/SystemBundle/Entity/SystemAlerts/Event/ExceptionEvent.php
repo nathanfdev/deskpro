@@ -39,34 +39,21 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class ExceptionEvent extends Event
+class ExceptionEvent extends AbstractExceptionEvent
 {
     /**
-     * @var int
-     * @ORM\Column(type="integer", options={"unsigned"=true})
+     * {@inheritdoc}
      */
-    private $code = 0;
-
-    /**
-     * ExceptionEvent constructor.
-     *
-     * @param \Exception     $exception
-     * @param \DateTime|null $date_created
-     */
-    public function __construct(\Exception $exception, \DateTime $date_created = null)
+    public function getSubjectDescription()
     {
-        parent::__construct($date_created);
-        $this->setGroup(get_class($exception));
-        $this->setDescription($exception->getMessage());
-        $this->setLog($exception->getTraceAsString());
-        $this->code = $exception->getCode();
+        return "Exception {$this->exceptionClass}";
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    public function getCode()
+    public function generateSubjectUniqueId()
     {
-        return $this->code;
+        return $this->exceptionClass;
     }
 }

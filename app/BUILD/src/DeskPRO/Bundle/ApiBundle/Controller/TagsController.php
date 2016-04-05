@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,7 +61,7 @@ class TagsController extends BaseController
      *         200="Returned if everything is OK",
      *     }
      * )
-     * @Annotations\Get("/api_tags/{id}", name="api_tags_list_for_key")
+     * @Rest\Get("/api_tags/{id}", name="api_tags_list_for_key")
      *
      * @param int $id
      *
@@ -107,7 +107,7 @@ class TagsController extends BaseController
      *         204="Returned if everything is OK",
      *     }
      * )
-     * @Annotations\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
+     * @Rest\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int     $id

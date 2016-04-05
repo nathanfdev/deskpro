@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TempController extends BaseController
 {
     /**
-     * @Post("/blobs/temp", name="api_post_blobs_temp")
+     * @Rest\Post("/blobs/temp", name="api_post_blobs_temp")
      *
      * @param Request $request
      *
