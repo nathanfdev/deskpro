@@ -32,6 +32,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -284,6 +285,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Check if this content is publicly visible (i.e. not spam, not a draft, etc).
+     * 
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->status === self::STATUS_PUBLISHED || $this->status === self::STATUS_ARCHIVED;
     }
 
     /**

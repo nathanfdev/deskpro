@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -155,6 +156,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isPublic()
+    {
+        return $this->status !== self::STATUS_HIDDEN;
     }
 
     /**
