@@ -62,7 +62,7 @@ class WidgetSettingsController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful",
      *     },
-
+     *
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
      *)
      * @Rest\Get("/widget/setup")
@@ -89,8 +89,8 @@ class WidgetSettingsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Templating\WidgetLaoder"
      * )
      *
-     * @Post("/widget/code")
-     * @Get("/widget/code")
+     * @Rest\Post("/widget/code")
+     * @Rest\Get("/widget/code")
      *
      * @param Request $request
      *
