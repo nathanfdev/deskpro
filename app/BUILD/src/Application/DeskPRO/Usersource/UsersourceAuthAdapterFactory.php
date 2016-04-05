@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
@@ -39,7 +40,6 @@ use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\StateHandler\SessionWrapper;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -69,18 +69,12 @@ class UsersourceAuthAdapterFactory
      */
     private $interface;
 
-    /**
-     * @var Request
-     */
-    private $request;
-
-    public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
+    public function __construct(DeskproContainer $container, RouterInterface $router, Session $session, $interface)
     {
         $this->container = $container;
         $this->router    = $router;
         $this->session   = $session;
         $this->interface = $interface;
-        $this->request   = $request;
     }
 
     /**
