@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,8 @@
 /**
  * DeskPRO.
  */
-namespace Application\DeskPRO\Controller;
+
+namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -53,12 +54,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:DownloadCategory', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_downloads', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_downloads', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_downloads_home', array(), 301);
+        return $this->redirectToRoute('user_downloads_home', array(), 301);
     }
 
     /**
@@ -73,12 +74,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:Download', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_downloads_file', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_downloads_file', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_downloads_home', array(), 301);
+        return $this->redirectToRoute('user_downloads_home', array(), 301);
     }
 
     ############################################################################
@@ -104,12 +105,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:Feedback', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_feedback_view', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_feedback_view', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_feedback', array(), 301);
+        return $this->redirectToRoute('user_feedback', array(), 301);
     }
 
     ############################################################################
@@ -128,12 +129,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:Article', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_articles_article', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_articles_article', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', array(), 301);
     }
 
     /**
@@ -148,12 +149,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:ArticleCategory', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_articles', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_articles', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', array(), 301);
     }
 
     /**
@@ -161,7 +162,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function articlesHomeAction()
     {
-        return $this->redirectRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', array(), 301);
     }
 
     ############################################################################
@@ -181,12 +182,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:News', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_news_view', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_news_view', array('slug' => $obj->getUrlSlug()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('user_news_home', array(), 301);
+        return $this->redirectToRoute('user_news_home', array(), 301);
     }
 
     /**
@@ -194,7 +195,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newsArchiveAction()
     {
-        return $this->redirectRoute('user_news_home', array(), 301);
+        return $this->redirectToRoute('user_news_home', array(), 301);
     }
 
     ############################################################################
@@ -206,7 +207,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newTicketAction()
     {
-        return $this->redirectRoute('portal_new_ticket', array(), 301);
+        return $this->redirectToRoute('portal_new_ticket', array(), 301);
     }
 
     /**
@@ -216,7 +217,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function ticketListAction()
     {
-        return $this->redirectRoute('portal_tickets', array(), 301);
+        return $this->redirectToRoute('portal_tickets', array(), 301);
     }
 
     /**
@@ -232,12 +233,12 @@ class Deskpro3RedirectController extends AbstractController
                 $new_id = $new_id['new_id'];
                 $obj    = $this->em->find('DeskPRO:Ticket', $new_id);
                 if ($obj) {
-                    return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
+                    return $this->redirectToRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
                 }
             }
         }
 
-        return $this->redirectRoute('portal_tickets', array(), 301);
+        return $this->redirectToRoute('portal_tickets', array(), 301);
     }
 
     ############################################################################
@@ -249,7 +250,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function loginAction()
     {
-        return $this->redirectRoute('portal_login', array(), 301);
+        return $this->redirectToRoute('portal_login', array(), 301);
     }
 
     /**
@@ -257,7 +258,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function registerAction()
     {
-        return $this->redirectRoute('portal_user_registration', array(), 301);
+        return $this->redirectToRoute('portal_user_registration', array(), 301);
     }
 
     /**
@@ -267,7 +268,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function profileAction()
     {
-        return $this->redirectRoute('portal_user_profile', array(), 301);
+        return $this->redirectToRoute('portal_user_profile', array(), 301);
     }
 
     ############################################################################
@@ -280,13 +281,13 @@ class Deskpro3RedirectController extends AbstractController
         $page_id   = Strings::extractRegexMatch('#^(\d+)#', $page_bit);
 
         if (!$manual_id && !$page_id) {
-            return $this->redirectRoute('user', array(), 301);
+            return $this->redirectToRoute('user', array(), 301);
         }
 
         if ($page_id) {
-            return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id, 'p' => $page_id));
+            return $this->redirectToRoute('dp3_redirect_manual_php', array('m' => $manual_id, 'p' => $page_id));
         } else {
-            return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
+            return $this->redirectToRoute('dp3_redirect_manual_php', array('m' => $manual_id));
         }
     }
 
@@ -300,7 +301,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function manualsAction()
     {
-        return $this->redirectRoute('user', array(), 301);
+        return $this->redirectToRoute('user', array(), 301);
     }
 
     /**
@@ -309,7 +310,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function troublesAction()
     {
-        return $this->redirectRoute('user', array(), 301);
+        return $this->redirectToRoute('user', array(), 301);
     }
 
     ############################################################################
@@ -321,7 +322,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function getNewId($lookup_id)
     {
-        $data = $this->db->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array($lookup_id));
+        $data = $this->getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array($lookup_id));
 
         if (preg_match('#^a:[0-9]+:\{#', $data)) {
             $data = unserialize($data);

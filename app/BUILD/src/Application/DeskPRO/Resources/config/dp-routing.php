@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -155,123 +155,123 @@ $collection->create('data_interface_data', array(
 
 $collection->create('dp3_redirect_files_php', array(
     'path'       => '/files.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:downloadCat',
+    'controller' => 'PortalBundle:Deskpro3Redirect:downloadCat',
 ));
 
 $collection->create('dp3_redirect_attachment_files_php', array(
     'path'       => '/attachment_files.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:downloadView',
+    'controller' => 'PortalBundle:Deskpro3Redirect:downloadView',
 ));
 
 $collection->create('dp3_redirect_ideas_php', array(
     'path'       => '/ideas.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:feedback',
+    'controller' => 'PortalBundle:Deskpro3Redirect:feedback',
 ));
 
 $collection->create('dp3_redirect_kb_article_php', array(
     'path'       => '/kb_article.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:articleView',
+    'controller' => 'PortalBundle:Deskpro3Redirect:articleView',
 ));
 
 $collection->create('dp3_redirect_kb_cat_php', array(
     'path'       => '/kb_cat.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:articleCat',
+    'controller' => 'PortalBundle:Deskpro3Redirect:articleCat',
 ));
 
 $collection->create('dp3_redirect_kb_php', array(
     'path'       => '/kb.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:articlesHome',
+    'controller' => 'PortalBundle:Deskpro3Redirect:articlesHome',
 ));
 
 $collection->create('dp3_redirect_login_php', array(
     'path'       => '/login.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:login',
+    'controller' => 'PortalBundle:Deskpro3Redirect:login',
 ));
 
 $collection->create('dp3_redirect_manual_php', array(
     'path'       => '/manual.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:manuals',
+    'controller' => 'PortalBundle:Deskpro3Redirect:manuals',
 ));
 
 $collection->create('dp3_redirect_manual_rewritten', array(
     'path'       => '/manual/{manual_bit}/{page_bit}',
-    'controller' => 'DeskPRO:Deskpro3Redirect:rewrittenManuals',
+    'controller' => 'PortalBundle:Deskpro3Redirect:rewrittenManuals',
     'defaults'   => array('page_bit' => ''),
 ));
 
 $collection->create('dp3_redirect_manual_download_php', array(
     'path'       => '/manual_download.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:manuals',
+    'controller' => 'PortalBundle:Deskpro3Redirect:manuals',
 ));
 
 $collection->create('dp3_redirect_news_archive_php', array(
     'path'       => '/news_archive.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:newsArchive',
+    'controller' => 'PortalBundle:Deskpro3Redirect:newsArchive',
 ));
 
 $collection->create('dp3_redirect_news_full_php', array(
     'path'       => '/news_full.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:newsView',
+    'controller' => 'PortalBundle:Deskpro3Redirect:newsView',
 ));
 
 $collection->create('dp3_redirect_news_php', array(
     'path'       => '/news.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:newsView',
+    'controller' => 'PortalBundle:Deskpro3Redirect:newsView',
 ));
 
 $collection->create('dp3_redirect_newticket_php', array(
     'path'       => '/newticket.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:newTicket',
+    'controller' => 'PortalBundle:Deskpro3Redirect:newTicket',
 ));
 
 $collection->create('dp3_redirect_profile_email_php', array(
     'path'       => '/profile_email.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:profile',
+    'controller' => 'PortalBundle:Deskpro3Redirect:profile',
 ));
 
 $collection->create('dp3_redirect_profile_password_php', array(
     'path'       => '/profile_password.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:profile',
+    'controller' => 'PortalBundle:Deskpro3Redirect:profile',
 ));
 
 $collection->create('dp3_redirect_profile_php', array(
     'path'       => '/profile.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:profile',
+    'controller' => 'PortalBundle:Deskpro3Redirect:profile',
 ));
 
 $collection->create('dp3_redirect_register_php', array(
     'path'       => '/register.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:register',
+    'controller' => 'PortalBundle:Deskpro3Redirect:register',
 ));
 
 $collection->create('dp3_redirect_reset_php', array(
     'path'       => '/reset.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:login',
+    'controller' => 'PortalBundle:Deskpro3Redirect:login',
 ));
 
 $collection->create('dp3_redirect_ticketlist_php', array(
     'path'       => '/ticketlist.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:ticketList',
+    'controller' => 'PortalBundle:Deskpro3Redirect:ticketList',
 ));
 
 $collection->create('dp3_redirect_ticketlist_company_php', array(
     'path'       => '/ticketlist_company.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:ticketList',
+    'controller' => 'PortalBundle:Deskpro3Redirect:ticketList',
 ));
 
 $collection->create('dp3_redirect_ticketlist_participate_php', array(
     'path'       => '/ticketlist_participate.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:ticketList',
+    'controller' => 'PortalBundle:Deskpro3Redirect:ticketList',
 ));
 
 $collection->create('dp3_redirect_troubleshooter_php', array(
     'path'       => '/troubleshooter.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:troubles',
+    'controller' => 'PortalBundle:Deskpro3Redirect:troubles',
 ));
 
 $collection->create('dp3_redirect_view_php', array(
     'path'       => '/view.php',
-    'controller' => 'DeskPRO:Deskpro3Redirect:ticketView',
+    'controller' => 'PortalBundle:Deskpro3Redirect:ticketView',
 ));
 
 ########################################################################################################################
