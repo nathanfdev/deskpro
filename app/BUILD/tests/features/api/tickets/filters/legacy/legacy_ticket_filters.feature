@@ -17,6 +17,7 @@ Feature: /ticket_filters endpoint
     And the JSON node "data" should have 10 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "My Tickets"
+    And the JSON node "data[0].sys_name" should be equal to "agent"
     And the JSON node "data[0].display_order" should be equal to 1
     And the JSON node "data[0].ticket_filter_set" should be equal to 1
     And the JSON node "data[0].filter_views" should exist
@@ -26,11 +27,13 @@ Feature: /ticket_filters endpoint
 
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "My Team's Tickets"
+    And the JSON node "data[1].sys_name" should be equal to "agent_team"
     And the JSON node "data[1].display_order" should be equal to 2
     And the JSON node "data[1].ticket_filter_set" should be equal to 1
 
     And the JSON node "data[2].id" should be equal to 3
     And the JSON node "data[2].title" should be equal to "Tickets I Follow"
+    And the JSON node "data[2].sys_name" should be equal to "participant"
     And the JSON node "data[2].display_order" should be equal to 3
     And the JSON node "data[2].ticket_filter_set" should be equal to 1
     And the JSON node "linked" should have 0 elements

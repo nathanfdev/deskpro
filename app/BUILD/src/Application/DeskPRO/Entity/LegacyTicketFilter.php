@@ -54,7 +54,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property string    $order_by
  * @property int   $display_order
  *
- * @JMS\ExclusionPolicy("ALL")
+ * @JMS\ExclusionPolicy("all")
  */
 class LegacyTicketFilter extends DomainObject
 {
@@ -87,10 +87,10 @@ class LegacyTicketFilter extends DomainObject
     protected $is_global = false;
 
     /**
-     * @var string
-     *
      * @JMS\Expose()
      * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $title;
 
@@ -100,7 +100,9 @@ class LegacyTicketFilter extends DomainObject
     protected $is_enabled = true;
 
     /**
-     * @var bool
+     * System name for this filter.
+     *
+     * @var string
      */
     protected $sys_name = null;
 
@@ -371,6 +373,14 @@ class LegacyTicketFilter extends DomainObject
     public function getRawTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
     }
 
     /**
