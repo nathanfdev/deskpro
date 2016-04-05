@@ -3,8 +3,8 @@
 jest.dontMock('~Card/CommentCardsContainer');
 
 import React from 'react';
-import { renderInFeedbackApp } from '../../../feedback.test-helper';
 import { toImmutable } from 'Helpers';
+import { renderInFeedbackApp } from '../../../feedback.test-helper';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 describe('Feedback: CommentCardsContainer', () => {
