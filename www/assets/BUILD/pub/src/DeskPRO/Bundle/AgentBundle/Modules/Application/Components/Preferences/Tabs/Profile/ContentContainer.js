@@ -17,11 +17,11 @@ export class ContentContainer extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentWillMount() {
+    const {dispatch} = this.props;
 
-    props.dispatch(loadAll('Timezone'));
-    props.dispatch(loadMyProfile());
+    dispatch(loadAll('Timezone'));
+    dispatch(loadMyProfile());
   }
 
   render() {

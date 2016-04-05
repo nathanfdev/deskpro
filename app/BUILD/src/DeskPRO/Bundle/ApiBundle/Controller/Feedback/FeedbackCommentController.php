@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -38,10 +39,10 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Patch;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\Exception\AlreadySubmittedException;
@@ -146,6 +147,7 @@ class FeedbackCommentController extends BaseController
     {
         /* @ToDo move below functionality into FeedbackComment repository after removing old code */
         $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        /* @var QueryBuilder $qb */
         $qb
             ->select('f.id', 'count(c.id) as counter')
             ->from('DeskPRO:FeedbackComment', 'c')
@@ -185,7 +187,7 @@ class FeedbackCommentController extends BaseController
      *          200="Returned if comment was found",
      *          404="Returned if comment with specified id wasn't found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\FeedbackComment"
+     *      output="Application\DeskPRO\Entity\FeedbackComment"
      * )
      * @FOS\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
      * @Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
@@ -282,88 +284,25 @@ class FeedbackCommentController extends BaseController
      *          404="Returned if comment with specified id was not found"
      *      }
      * )
-     * @Delete("/feedback_comments", name="api_feedback_comments_delete", requirements={"id": "\d+"})
+     * @Delete("/feedback_comments/{id}", name="api_feedback_comments_delete", requirements={"id": "\d+"})
      *
-     * @param Request $request
+     * @param $id
      *
      * @throws \LogicException
      *
      * @return View
      */
-    public function deleteAction(Request $request)
+    public function deleteAction($id)
     {
-        $em  = $this->getDoctrine()->getManager();
-        $ids = $request->get('id');
-        $qb  = $em->createQueryBuilder();
-        $qb
-            ->select('c')
-            ->from('DeskPRO:FeedbackComment', 'c')
-            ->andWhere('c.id IN (:ids)')
-            ->setParameter('ids', $ids);
-
-        $comments = $qb->getQuery()->getResult();
-        if (!$comments) {
+        $em      = $this->getManager();
+        $comment = $this->getRepository(FeedbackComment::class)->find($id);
+        if (!$comment) {
             throw $this->createNotFoundException();
         }
-        foreach ($comments as $comment) {
-            $em->remove($comment);
-        }
-
+        $em->remove($comment);
         $em->flush();
 
-        return View::create(
-            array(),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * This endpoint gives you an ability to approve comments with given ids.
-     *
-     * @APIDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="approve comments",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="[\d+]",
-     *              "array"=true,
-     *              "description"="an array of comment ids",
-     *              "dataType"="[integer]"
-     *          }
-     *      },
-     *      statusCodes={
-     *          204="Returned if everything was OK",
-     *      }
-     * )
-     *
-     * @param Request $request
-     * @Patch("/feedback_comments/approve", name="feedback_comments_approve_mass_action")
-     *
-     * @return View
-     */
-    public function massApproveAction(Request $request)
-    {
-        $em  = $this->getDoctrine()->getManager();
-        $ids = $request->get('id');
-        $qb  = $em->createQueryBuilder();
-        $qb
-            ->select('c')
-            ->from('DeskPRO:FeedbackComment', 'c')
-            ->andWhere('c.id IN (:ids)')
-            ->setParameter('ids', $ids);
-        $comments = $qb->getQuery()->getResult();
-
-        foreach ($comments as $comment) {
-            $comment->setStatus(FeedbackComment::STATUS_VISIBLE);
-        }
-        $em->flush();
-
-        return View::create(
-            $this->wrap([]),
-            Response::HTTP_ACCEPTED
-        );
+        return View::create([], Response::HTTP_OK);
     }
 
     /**

@@ -27,13 +27,13 @@ Feature: /feedback_comments/counts endpoint
     And the JSON node "data.count" should be equal to 4
     And the JSON node "data.nested" should have 0 elements
 
-  Scenario: I DELETE feedback comment with id=1 and id=2
-    When I send a DELETE request to "/api/v2/feedback_comments?id[]=1&id[]=2"
+  Scenario: I DELETE feedback comment with id=1
+    When I send a DELETE request to "/api/v2/feedback_comments/1"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I DELETE feedback comment with id=10000 (non-existent)
-    When I send a DELETE request to "/api/v2/feedback_comments?id[]=1000"
+    When I send a DELETE request to "/api/v2/feedback_comments/1000"
     Then the response should be in JSON
     And the response status code should be 404
     And the JSON node "status" should exist

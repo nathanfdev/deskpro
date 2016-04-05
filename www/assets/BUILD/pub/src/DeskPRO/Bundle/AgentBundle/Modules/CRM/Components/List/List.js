@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
-import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
 import { CrmCardContainer } from './View/List/CrmCardContainer';
 import { CrmTableContainer } from './View/Table/CrmTableContainer';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';

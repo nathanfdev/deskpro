@@ -1,20 +1,19 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
-import { FeedbackCardsContainer } from './View/List/FeedbackCardsContainer';
-import { FeedbackCommentsCardsContainer } from './View/List/FeedbackCommentsCardsContainer';
+import { FeedbackCardsContainer } from './View/Card/FeedbackCardsContainer';
+import { FeedbackCommentsCardsContainer } from './View/Card/FeedbackCommentsCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
 import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
-import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
 import { PaginationContainer } from './PaginationContainer';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    isLoaded: PropTypes.bool.isRequired,
-    currentApp: PropTypes.string.isRequired,
+    isLoaded: PropTypes.bool,
     isComments: PropTypes.bool,
     selected: PropTypes.object.isRequired,
     pagination: PropTypes.object,
@@ -75,7 +74,7 @@ export class List extends Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           {this.contentChoice()}
-          {pagination && pagination.total_pages > 1 && <PaginationContainer/>}
+          {pagination && pagination.get('total_pages') > 1 && <PaginationContainer/>}
         </ListFrameContents>
       </ListFrameContainer>
     );

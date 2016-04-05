@@ -5,12 +5,12 @@ import { ListItemContainer } from './ListItemContainer';
 export class Pending extends Component {
 
   static propTypes = {
-    toValidateCount: PropTypes.object.isRequired,
+    feedbackToReviewCount: PropTypes.object.isRequired,
     commentsToReviewCount: PropTypes.object.isRequired
   };
 
   render() {
-    const { toValidateCount, commentsToReviewCount } = this.props;
+    const { feedbackToReviewCount, commentsToReviewCount } = this.props;
 
     return (
       <Section>
@@ -19,7 +19,7 @@ export class Pending extends Component {
           <ListItemContainer label="Feedback to Review"
                              listOptions={{isComments: false, navItem: {awaiting_validation: 1}}}>
 
-            <ListItem count={toValidateCount}
+            <ListItem count={feedbackToReviewCount}
                       label="Feedback to Review"/>
           </ListItemContainer>
 

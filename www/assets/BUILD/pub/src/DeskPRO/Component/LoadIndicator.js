@@ -11,13 +11,13 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class LoadIndicator extends Component {
   static propTypes = {
     activeAppId: PropTypes.string,
-    top: PropTypes.number,
-    left: PropTypes.number
+    top: PropTypes.string,
+    left: PropTypes.string
   };
 
   render() {
     const { activeAppId } = this.props;
-    const top  = this.props.top  || '50%';
+    const top = this.props.top || '50%';
     const left = this.props.left || '50%';
 
     return (

@@ -4,17 +4,6 @@ import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
  * FeedbackCommentRepository
  */
 export class FeedbackCommentRepository extends ApiRepository {
-  /**
-   * @param ids
-   * @returns {*}
-   */
-  approveFeedbackComment(ids) {
-    const params = [];
-    ids.forEach((id) => {
-      params.push('id[]=' + id);
-    });
-    return this.api.sendPatch(`DP_API/${this.url}/approve?` + params.join('&'));
-  }
 
   /*
    * Feedback comments to review list

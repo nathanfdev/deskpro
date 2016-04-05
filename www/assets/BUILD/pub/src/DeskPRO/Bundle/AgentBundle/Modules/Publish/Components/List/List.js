@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
-import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrameContents';
+import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { TableContainer } from './View/Table/TableContainer';
