@@ -6,7 +6,7 @@ services:
 
   widget_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver
-    arguments: ["@settings_resolver", "@doctrine.orm.entity_manager"]
+    arguments: ["@brand_aware_settings_resolver", "@doctrine.orm.entity_manager", "@assets.packages", "@router"]
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver

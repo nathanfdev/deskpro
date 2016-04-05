@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class WidgetBrandSetupType.
+ * Class WidgetGlobalChatSettings.
  */
-class WidgetBrandSetupType extends AbstractType
+class WidgetGlobalChatSettings
 {
     /**
-     * {@inheritdoc}
+     * @var bool
+     *
+     * @JMS\Type("boolean")
      */
-    public function getName()
+    private $requireLogin = false;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $emailValidation = false;
+
+    /**
+     * @return bool
+     */
+    public function isRequireLogin()
     {
-        return 'widget_brand_setup';
+        return $this->requireLogin;
     }
 
     /**
-     * {@inheritdoc}
+     * @param bool $requireLogin
+     *
+     * @return $this
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function setRequireLogin($requireLogin)
     {
-        $builder
-            ->add('widget', new WidgetBaseSetupType())
-            ->add('button', new WidgetButtonSetupType())
-            ->add('chat', new WidgetChatSetupType())
-            ->add('ticket', new WidgetTicketSetupType())
-        ;
+        $this->requireLogin = $requireLogin;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailValidation()
+    {
+        return $this->emailValidation;
+    }
+
+    /**
+     * @param bool $emailValidation
+     *
+     * @return $this
+     */
+    public function setEmailValidation($emailValidation)
+    {
+        $this->emailValidation = $emailValidation;
+
+        return $this;
     }
 }

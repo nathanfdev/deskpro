@@ -30,51 +30,38 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatSetupType.
+ * Class WidgetBrandSetupType.
  */
-class WidgetChatSetupType extends AbstractType
+class WidgetBrandSetupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_chat_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabled', ApiBooleanType::class)
-            ->add('request_user_info', ApiBooleanType::class)
-            ->add('proactive', ApiBooleanType::class)
-            ->add('begin_mode', 'choice', [
-                'choices' => [
-                    'conversation' => 'Conversation',
-                    'form'         => 'Form',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('waiting_timeout', 'number', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\GreaterThan(9),
-                ],
-            ])
-            ->add('popup', new WidgetChatPopupSetupType())
+            ->add('widget', WidgetCommonSettingsType::class)
+            ->add('button', WidgetButtonSetupType::class)
+            ->add('chat', WidgetChatSetupType::class)
+            ->add('ticket', WidgetTicketSetupType::class)
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandSettings::class,
+        ]);
     }
 }

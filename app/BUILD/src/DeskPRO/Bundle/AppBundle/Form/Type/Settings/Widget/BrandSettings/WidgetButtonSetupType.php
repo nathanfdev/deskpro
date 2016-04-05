@@ -30,33 +30,46 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatSetupType.
+ * Class WidgetButtonSetupType.
  */
-class WidgetChatSetupType extends AbstractType
+class WidgetButtonSetupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_global_chat_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email_validation', ApiBooleanType::class)
-            ->add('require_login', ApiBooleanType::class)
+            ->add('size', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandButtonSettings::SIZE_SMALL,
+                    WidgetBrandButtonSettings::SIZE_MEDIUM,
+                    WidgetBrandButtonSettings::SIZE_LARGE,
+                ],
+            ])
+            ->add('name', TextType::class)
+            ->add('colors', WidgetButtonColorsSetupType::class)
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandButtonSettings::class,
+        ]);
     }
 }

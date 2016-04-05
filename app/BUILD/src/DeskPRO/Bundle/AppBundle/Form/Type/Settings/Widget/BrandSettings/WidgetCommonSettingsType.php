@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,47 +29,52 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandCommonSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetButtonSetupType.
+ * Class WidgetCommonSettingsType.
  */
-class WidgetButtonSetupType extends AbstractType
+class WidgetCommonSettingsType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_button_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('size', 'choice', [
-                'choices' => [
-                    'small'  => 'S',
-                    'medium' => 'M',
-                    'large'  => 'L',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
+            ->add('type', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandCommonSettings::TYPE_COLUMN,
+                    WidgetBrandCommonSettings::TYPE_BUBBLE,
                 ],
             ])
-            ->add('name', 'text', [
-                'constraints' => [
-                    new Assert\NotBlank(),
+            ->add('position', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandCommonSettings::POSITION_LEFT,
+                    WidgetBrandCommonSettings::POSITION_RIGHT,
                 ],
             ])
-            ->add('colors', new WidgetButtonColorsSetupType())
+            ->add('agent_polling_timeout', IntegerType::class)
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandCommonSettings::class,
+        ]);
     }
 }

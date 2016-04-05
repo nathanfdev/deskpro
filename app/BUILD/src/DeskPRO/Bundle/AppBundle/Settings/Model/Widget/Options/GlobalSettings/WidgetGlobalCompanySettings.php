@@ -26,30 +26,58 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class WidgetSetupType.
+ * Class WidgetGlobalCompanySettings.
  */
-class WidgetSetupType extends AbstractType
+class WidgetGlobalCompanySettings
 {
     /**
-     * {@inheritdoc}
+     * @var string
+     *
+     * @JMS\Type("string")
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $logo;
+
+    /**
+     * @return string
+     */
+    public function getName()
     {
-        $builder
-            ->add('global', new WidgetGlobalSetupType())
-            ->add('brand', new WidgetBrandSetupType())
-        ;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    /**
+     * @param string $logo
+     */
+    public function setLogo($logo)
+    {
+        $this->logo = $logo;
     }
 }

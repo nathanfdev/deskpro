@@ -12,9 +12,10 @@ Feature: Widget Setup
     And the JSON node "data.url.widget_loader" should exist
     And the JSON node "data.url.widget_bundle" should exist
     And the JSON node "data.url.helpdesk" should exist
-    And the JSON node "data.company.name" should exist
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
+    And the JSON node "data.settings.global.company.name" should exist
+    And the JSON node "data.settings.global.company.logo" should exist
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 

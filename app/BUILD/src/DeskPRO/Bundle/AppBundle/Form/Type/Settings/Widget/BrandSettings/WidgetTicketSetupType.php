@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,55 +29,48 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+
+use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBaseSetupType.
+ * Class WidgetTicketSetupType.
  */
-class WidgetBaseSetupType extends AbstractType
+class WidgetTicketSetupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_base_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', 'choice', [
-                'choices' => [
-                    'column' => 'Column',
-                    'bubble' => 'Corner',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
+            ->add('select_department', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandTicketSettings::SELECT_DEFAULT,
+                    WidgetBrandTicketSettings::SELECT_CUSTOM,
                 ],
             ])
-            ->add('position', 'choice', [
-                'choices' => [
-                    'left'  => 'Left',
-                    'right' => 'Right',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('agent_polling_timeout', 'number', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\GreaterThan(9),
-                ],
+            ->add('default_department', EntityType::class, [
+                'class' => Department::class,
             ])
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandTicketSettings::class,
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class WidgetChatPopupSetupType.
@@ -43,28 +47,28 @@ class WidgetChatPopupSetupType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'widget_chat_popup_setup';
+        $builder
+            ->add('title', TextType::class)
+            ->add('message', TextType::class)
+            ->add('reply_type', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
+                ],
+            ])
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $builder
-            ->add('title', 'text')
-            ->add('message', 'text')
-            ->add('reply_type', 'choice', [
-                'choices' => [
-                    'buttons' => 'Reply Button',
-                    'reply'   => 'Reply Form',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-        ;
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandChatPopupSettings::class,
+        ]);
     }
 }

@@ -30,35 +30,38 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSetupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSetupType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetController.
- *
- * @Rest\Route("/portal/api/widget")
+ * Class WidgetSetupType.
  */
-class WidgetController extends AbstractApiController
+class WidgetSetupType extends AbstractType
 {
     /**
-     * @ApiDoc(
-     *     section="Portal widget",
-     *     description="Widget settings",
-     *     statusCodes={
-     *         200="Success"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings"
-     *)
-     *
-     * @Rest\Get("/settings")
-     *
-     * @return WidgetGlobalSettings
+     * {@inheritdoc}
      */
-    public function getWidgetSettingsAction()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->wrap($this->container->get('widget_settings_resolver')->getWidgetGlobalOptions());
+        $builder
+            ->add('global', WidgetGlobalSetupType::class)
+            ->add('brand', WidgetBrandSetupType::class)
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetOptions::class,
+        ]);
     }
 }

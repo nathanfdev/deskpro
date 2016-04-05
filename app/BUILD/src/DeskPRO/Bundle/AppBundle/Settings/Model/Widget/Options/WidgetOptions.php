@@ -26,39 +26,72 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options;
 
-namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
-
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
-use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class WidgetController.
- *
- * @Rest\Route("/portal/api/widget")
+ * Class WidgetOptions.
  */
-class WidgetController extends AbstractApiController
+class WidgetOptions
 {
     /**
-     * @ApiDoc(
-     *     section="Portal widget",
-     *     description="Widget settings",
-     *     statusCodes={
-     *         200="Success"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings"
-     *)
-     *
-     * @Rest\Get("/settings")
-     *
+     * @var WidgetGlobalSettings
+     */
+    private $global;
+
+    /**
+     * @var WidgetBrandSettings
+     */
+    private $brand;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->global = new WidgetGlobalSettings();
+        $this->brand  = new WidgetBrandSettings();
+    }
+
+    /**
      * @return WidgetGlobalSettings
      */
-    public function getWidgetSettingsAction()
+    public function getGlobal()
     {
-        return $this->wrap($this->container->get('widget_settings_resolver')->getWidgetGlobalOptions());
+        return $this->global;
+    }
+
+    /**
+     * @param WidgetGlobalSettings $global
+     *
+     * @return $this
+     */
+    public function setGlobal(WidgetGlobalSettings $global)
+    {
+        $this->global = $global;
+
+        return $this;
+    }
+
+    /**
+     * @return WidgetBrandSettings
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param WidgetBrandSettings $brand
+     *
+     * @return $this
+     */
+    public function setBrand(WidgetBrandSettings $brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
     }
 }
