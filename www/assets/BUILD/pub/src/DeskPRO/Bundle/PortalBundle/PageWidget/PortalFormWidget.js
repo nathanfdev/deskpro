@@ -30,7 +30,7 @@ export class PortalFormWidget extends PageWidget {
 
   initForms($forms) {
     // Disable pressing enter from submitting forms by accident
-    $forms.on('keyup keypress', function(ev) {
+    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', function(ev) {
       const keyCode = ev.keyCode || ev.which;
       if (keyCode === 13) {
         ev.preventDefault();
