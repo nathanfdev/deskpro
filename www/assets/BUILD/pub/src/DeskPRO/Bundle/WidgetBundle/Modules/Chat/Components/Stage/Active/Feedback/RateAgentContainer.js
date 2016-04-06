@@ -4,16 +4,18 @@ import { RateAgentDialog } from './RateAgentDialog';
 import { RateAgentComplete } from './RateAgentComplete';
 import { RateAgentForm } from './RateAgentForm';
 import { sendFeedback, showNotHelpfulForm } from '../../../../Actions/chatActions';
-import { chatIdSelector, isEndedSelector, feedbackStageSelector } from '../../../../Selectors/chat';
+import { chatIdSelector, isEndedSelector, feedbackStageSelector, agentNameSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
   chatId: chatIdSelector(state),
   isEnded: isEndedSelector(state),
-  stage: feedbackStageSelector(state)
+  stage: feedbackStageSelector(state),
+  agentName: agentNameSelector(state)
 }))
 export class RateAgentContainer extends React.Component {
 
   static propTypes = {
+    agentName: PropTypes.string,
     chatId: PropTypes.number,
     isEnded: PropTypes.bool,
     stage: PropTypes.string,
@@ -36,7 +38,7 @@ export class RateAgentContainer extends React.Component {
   };
 
   render() {
-    const { stage, isEnded } = this.props;
+    const { stage, isEnded, agentName } = this.props;
     if (!isEnded) {
       return null;
     }
@@ -45,10 +47,12 @@ export class RateAgentContainer extends React.Component {
       case 'finished':
         return <RateAgentComplete />;
       case 'form':
-        return <RateAgentForm onSubmit={this.onSubmitForm} />;
+        return <RateAgentForm agentName={agentName}
+                              onSubmit={this.onSubmitForm} />;
       case 'dialog':
         return (
-          <RateAgentDialog onClickHelpful={this.onClickHelpful}
+          <RateAgentDialog agentName={agentName}
+                           onClickHelpful={this.onClickHelpful}
                            onClickNotHelpful={this.onClickNotHelpful} />
         );
       default:
