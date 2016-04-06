@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -47,8 +48,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
  * Class CrudController.
  *
  * Base REST CRUD controller
- *
- * @todo Location header
  */
 abstract class CrudController extends BaseController
 {
@@ -169,9 +168,9 @@ abstract class CrudController extends BaseController
             $page  = $request->query->get('page', 1);
             $count = $request->query->get('count', static::$listPerPage);
             if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException(
-                    'You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
             }
+
             $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
@@ -207,7 +206,17 @@ abstract class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm($this->instantiateEntity($request), $request);
+        $entity = $this->instantiateEntity($request);
+        $view   = $this->handleForm($entity, $request);
+
+        if ($this->isExposed('get')) {
+            $view->setLocation($this->generateUrl(
+                preg_replace('/_post$/', '_get', $request->get('_route')),
+                ['id' => $entity->getId()]
+            ));
+        }
+
+        return $view;
     }
 
     /**
@@ -311,6 +320,7 @@ abstract class CrudController extends BaseController
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
                 throw $this->createBadRequestException('Unknown sort field');
             }
+
             $sort = isset(static::$sortOptions[$sortParam])
                   ? static::$sortOptions[$sortParam]
                   : static::$listSort;
@@ -425,18 +435,25 @@ abstract class CrudController extends BaseController
 
     /**
      * @param string $actionMethodName
+     *
+     * @return bool
+     */
+    private function isExposed($actionMethodName)
+    {
+        if (!is_array(static::$exposeOnly)) {
+            return true;
+        }
+
+        return in_array(TypeUtils::cleanAction($actionMethodName), static::$exposeOnly);
+    }
+
+    /**
+     * @param string $actionMethodName
      */
     private function checkExposed($actionMethodName)
     {
-        // return of $exposeOnly config is not used
-        if (!is_array(static::$exposeOnly)) {
-            return;
-        }
-
-        $action = TypeUtils::cleanAction($actionMethodName);
-
-        if (!in_array($action, static::$exposeOnly)) {
-            throw new MethodNotAllowedHttpException(static::$exposeOnly, sprintf('Action [ %s ] is not allowed', strtoupper($action)));
+        if (!$this->isExposed($actionMethodName)) {
+            throw new MethodNotAllowedHttpException(static::$exposeOnly);
         }
     }
 }

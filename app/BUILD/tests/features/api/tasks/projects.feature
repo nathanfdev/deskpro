@@ -18,19 +18,16 @@ Feature: /projects endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    # And the header "Location" should be equal to "/api/v2/task_projects/1"
-    # should be returned when https://trello.com/c/0q0iVrS9/599-gathered-from-code-add-location-header-in-crud-post is done
+    And the header "Location" should be equal to "/api/v2/task_projects/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
   Scenario: I try to make a broken POST request without a title
-    When I send a POST request to "/api/v2/task_projects" with body:
-    """
-{
-}
-    """
+    When I send a POST request to "/api/v2/task_projects"
     Then the response should be in JSON
     And the response status code should be 400
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I GET a single project
     When I send a GET request to "/api/v2/task_projects/1"
