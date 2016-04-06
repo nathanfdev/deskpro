@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\Kernel;
 
 use Application\AgentBundle\AgentBundle;
@@ -99,7 +100,28 @@ abstract class BaseKernel extends Kernel
      */
     public function boot()
     {
+        // Configure Symfony error handler to throw exceptions on PHP errors depending on the current environment
+        // (setting it here right before container is compiled)
+        $this->getContainerBuilder()->setParameter('debug.error_handler.throw_at', $this->dpEnv->isDebug() ? -1 : 0);
+
+        // Boot kernel, compile the container
         parent::boot();
+
+        // Enable Symfony error handler to instantly display errors if we're in the debug mode
+        // or use Monolog to log errors if in production.
+        // (doing this here as it's the earliest place we can access logger service from the compiled container)
+        if ($this->dpEnv->isDebug()) {
+            \Symfony\Component\Debug\Debug::enable(true, true);
+        } else {
+            \Monolog\ErrorHandler::register($this->container->get('logger'));
+
+            // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
+            // the current mode to catch all errors in the prod mode too.
+            error_reporting(E_ALL);
+
+            // But don't show this errors
+            ini_set('display_errors', 0);
+        }
 
         if ($this->container instanceof DeskproContainer) {
             $this->container->kernel = $this;

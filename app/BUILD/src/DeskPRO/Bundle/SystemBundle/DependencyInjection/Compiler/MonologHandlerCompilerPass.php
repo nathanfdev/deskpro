@@ -30,25 +30,36 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle;
+namespace DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler;
 
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\MonologHandlerCompilerPass;
-use DeskPRO\Bundle\SystemBundle\DependencyInjection\Compiler\TriggersCollectorCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class SystemBundle.
+ * Class MonologHandlerCompilerPass.
+ *
+ * Adds the system alerts logging handler to monolog
  */
-class SystemBundle extends Bundle
+class MonologHandlerCompilerPass implements CompilerPassInterface
 {
+    /**
+     * @var string
+     */
+    private static $loggerServiceName = 'dp_sys.alerts.monolog_handler';
+
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
-        parent::build($container);
-        $container->addCompilerPass(new MonologHandlerCompilerPass());
-        $container->addCompilerPass(new TriggersCollectorCompilerPass());
+        if (!$container->has(self::$loggerServiceName)) {
+            throw new \Exception('System alerts Monolog handler service not found');
+        }
+        if (!$logger = $container->findDefinition('monolog.logger')) {
+            throw new \Exception('monolog.logger service not found');
+        }
+
+        $logger->addMethodCall('pushHandler', [new Reference(self::$loggerServiceName)]);
     }
 }
