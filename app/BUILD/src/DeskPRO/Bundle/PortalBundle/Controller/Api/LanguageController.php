@@ -62,6 +62,7 @@ class LanguageController extends AbstractApiController
             'portal.general.prop_popularity',
             'portal.general.prop_comments',
             'portal.general.select_placeholder',
+            'portal.account.login-email',
             'portal.account.login-invalid',
             'portal.account.login-password',
             'portal.account.login-password-reminder',
@@ -71,7 +72,11 @@ class LanguageController extends AbstractApiController
             'portal.general.delete',
             'portal.tickets.thank_you',
             'portal.tickets.thank_you_desc',
+            'portal.tickets.new-title',
+            'portal.tickets.new-intro',
             'portal.general.start-chat',
+            'portal.forms.label_drag',
+            'portal.forms.label_choose',
         ];
 
         return $this->getResponse($request, $phrases);
@@ -159,9 +164,10 @@ class LanguageController extends AbstractApiController
     protected function getResponse(Request $request, array $phrases)
     {
         $tr = $this->container->get('deskpro.core.translate');
+        $language = $this->container->get('language_stack')->getActiveOrDefault();
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($tr) {
-            return [$id, $tr->getPhraseText($id)];
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($tr, $language) {
+            return [$id, $tr->phrase($id, [], $language)];
         });
 
         $res = new JsonResponse($output);

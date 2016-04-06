@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,6 +55,7 @@ return array(
     'portal.tickets.list_no_tickets'                   => 'There are no tickets to display in this tab. <a href="{{ open_ticket_url }}">Click here to open a new ticket</a>.',
     'portal.tickets.new-section-title'                 => 'Contact Us',
     'portal.tickets.guest-thanks-section-title'        => 'Thank You',
+    'portal.tickets.new-title'                         => 'Open a new ticket',
     'portal.tickets.new-intro'                         => 'Please complete this form and one of our agents will reply to you by email as soon as possible.',
     'portal.tickets.form-changed-notice'               => 'New relevant fields have been added to the form. Please review these new fields and then re-submit the form.',
     'portal.tickets.section-title'                     => 'Tickets',

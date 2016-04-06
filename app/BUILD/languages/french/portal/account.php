@@ -29,6 +29,8 @@
 return array(
     'portal.account.section-title-reset-password' => 'Générer un nouveau mot de passe',
     'portal.account.section-title-register'       => 'S\'inscrire',
+    'portal.account.login-email'                  => 'Votre email',
+    'portal.account.login-password'               => 'Votre mot de passe',
     'portal.account.login-register-header'        => 'S\'inscrire',
     'portal.account.login-register-btn'           => 'S\'inscrire',
     'portal.account.section-title-profile'        => 'Profil',

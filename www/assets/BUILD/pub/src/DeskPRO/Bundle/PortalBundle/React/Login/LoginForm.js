@@ -82,7 +82,7 @@ export class LoginForm extends React.Component {
           value={failurePath}
           />
         <label className={classNames({'error': this.state.failed})}>
-          <span>Your email</span>
+          <span>{portalPhrases.get('portal.account.login-email')}</span>
           <input
             ref="username"
             type="text"
@@ -94,7 +94,7 @@ export class LoginForm extends React.Component {
 
         <label className={classNames({'error': this.state.failed})}>
           {this.state.failed && <div className="message">{portalPhrases.get('portal.account.login-invalid')}</div>}
-          <span>Your password</span>
+          <span>{portalPhrases.get('portal.account.login-password')}</span>
           <input
             ref="password"
             type="password"
