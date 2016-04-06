@@ -37,8 +37,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Model\NotificationCounts;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -86,15 +86,16 @@ class AgentAlertsController extends CrudController
             ->groupBy('a.is_dismissed')
         ;
 
-        $counts = [0, 0];
+        $count  = Count::fromGroupedBy('is_dismissed');
         $result = $qb->getQuery()->getResult();
         if (is_array($result)) {
             foreach ($result as $item) {
-                $counts[$item['is_dismissed']] = $item['group_count'];
+                $type = $item['is_dismissed'] ? 'dismissed' : 'non_dismissed';
+                $count->addNested($item['group_count'], null, $type, null, true);
             }
         }
 
-        return new View($this->wrap(new NotificationCounts($counts[0], $counts[1])));
+        return new View($this->wrap($count));
     }
 
     /**
