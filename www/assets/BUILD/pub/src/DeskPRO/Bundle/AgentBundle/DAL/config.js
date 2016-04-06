@@ -20,7 +20,7 @@ export const repositoriesConfig = {
   Person:                 {type: 'api', url: '/people'},
   Timezone:               {type: 'api', url: '/timezones', allowAll: true},
   FeedbackCategory:       {type: 'api', url: '/feedback_categories'},
-  FeedbackCommentCounter: {type: 'api', url: '/feedback_comments_counter'},
+  FeedbackCommentCounter: {type: 'api', url: '/feedback_comments/counter'},
   Project:                {type: 'api', url: '/projects', allowAll: true},
   TaskLabel:              {type: 'api', url: '/task_labels', allowAll: true},
   TaskList:               {type: 'api', url: '/task_lists', allowAll: true},

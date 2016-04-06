@@ -5,9 +5,9 @@ import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
 import { FeedbackCardsContainer } from './View/Card/FeedbackCardsContainer';
-import { FeedbackCommentsCardsContainer } from './View/Card/FeedbackCommentsCardsContainer';
+import { CommentCardsContainer } from './View/Card/CommentCardsContainer';
 import { FeedbackTableContainer } from './View/Table/FeedbackTableContainer';
-import { FeedbackCommentTableContainer } from './View/Table/FeedbackCommentTableContainer';
+import { CommentTableContainer } from './View/Table/CommentTableContainer';
 import { PaginationContainer } from './PaginationContainer';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
@@ -54,12 +54,12 @@ export class List extends Component {
     const { currentViewMode, selected, toggleSelected } = this.props;
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCommentsCardsContainer selected={selected}
-                                        toggleSelected={toggleSelected}/>
+        <CommentCardsContainer selected={selected}
+                               toggleSelected={toggleSelected}/>
       );
     }
     return (
-      <FeedbackCommentTableContainer/>
+      <CommentTableContainer/>
     );
   }
 
