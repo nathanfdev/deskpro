@@ -129,7 +129,7 @@ export class ChatEmailValidationContainer extends React.Component {
             :
               <span>
                 <a href="#" className="email-code-submit" onClick={this.onSubmit}>
-                  Start Chat <i className="fa fa-chevron-right"></i>
+                  Start Chat <i className="fa fa-chevron-right"/>
                 </a>
                 <a href="#" className="email-code-resend" onClick={this.onRegenerateCode}>Send me another email</a>
                 {this.state.anotherEmailSent && <span className="another-email-sent">Another email was successfully sent.</span>}
