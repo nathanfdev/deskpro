@@ -80,5 +80,15 @@ Feature: /me/notifications endpoint
   "alert_ids": [1,2,3]
 }
     """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/me/notifications"
     Then the response status code should be 200
     And the response should be in JSON
+    And the JSON node "data" should have 4 elements
+
+    And the JSON node "data[0].is_dismissed" should be equal to 0
+    And the JSON node "data[1].is_dismissed" should be equal to 1
+    And the JSON node "data[2].is_dismissed" should be equal to 1
+    And the JSON node "data[3].is_dismissed" should be equal to 1
+

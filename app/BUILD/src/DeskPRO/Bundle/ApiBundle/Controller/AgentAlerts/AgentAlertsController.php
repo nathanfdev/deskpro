@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
@@ -65,7 +66,7 @@ class AgentAlertsController extends CrudController
      *     resourceDescription="Operations about agent alerts",
      *     description="Dismiss set of alerts",
      *     statusCodes={
-     *         200="Returned if everything is ok",
+     *         204="Returned if everything is ok",
      *     }
      * )
      * @Rest\Post("/dismiss")
@@ -76,23 +77,19 @@ class AgentAlertsController extends CrudController
      */
     public function dismissAction(Request $request)
     {
-        $em  = $this->getManager();
         $ids = $request->get('alert_ids');
         if ($ids) {
-            $qb = $em->createQueryBuilder();
+            $qb = $this->getManager()->createQueryBuilder();
             $qb
-                ->select('alert')
-                ->from('DeskPRO:AgentAlert', 'alert')
-                ->where('alert.id IN (:ids)')
-                ->setParameter('ids', $ids);
-            $alerts = $qb->getQuery()->getResult();
-            foreach ($alerts as $alert) {
-                $alert->is_dismissed = true;
-            }
-            $em->flush();
+                ->update(AgentAlert::class, 'a')
+                ->set('a.is_dismissed', 1)
+                ->where('a.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()->execute()
+            ;
         }
 
-        return View::create([], Response::HTTP_OK);
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -112,22 +109,17 @@ class AgentAlertsController extends CrudController
      */
     public function dismissAllAction()
     {
-        $em = $this->getManager();
-        $qb = $em->createQueryBuilder();
+        $qb = $this->getManager()->createQueryBuilder();
         $qb
-            ->select('alert')
-            ->from('DeskPRO:AgentAlert', 'alert')
-            ->where('alert.is_dismissed = :false')
-            ->setParameter('false', false)
-            ->andWhere('alert.person = :user')
-            ->setParameter('user', $this->getUser());
-        $alerts = $qb->getQuery()->getResult();
-        foreach ($alerts as $alert) {
-            $alert->is_dismissed = true;
-        }
-        $em->flush();
+            ->update(AgentAlert::class, 'a')
+            ->where(
+                'a.is_dismissed = 0',
+                'a.person = :user'
+            )
+            ->setParameter('user', $this->getUser())
+        ;
 
-        return View::create([], Response::HTTP_OK);
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
