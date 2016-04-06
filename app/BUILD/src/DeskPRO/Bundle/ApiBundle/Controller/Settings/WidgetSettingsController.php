@@ -37,21 +37,19 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\WidgetSetupType;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class WidgetSetupController.
+ * Class WidgetSettingsController.
  *
  * @ApiModes("all")
  */
-class WidgetSetupController extends BaseController
+class WidgetSettingsController extends BaseController
 {
     /**
      * Gather widget setup information.
@@ -63,46 +61,38 @@ class WidgetSetupController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful",
      *     },
-     
-     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetSetup"
+     *
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings"
      *)
-     * @Rest\Get("/widget/setup", name="api_widget_setup_get")
+     * @Rest\Get("/widget/setup")
      *
      * @return View
      */
     public function getWidgetSetupAction()
     {
-        /** @var \Symfony\Component\Asset\Packages $asset_package */
-        $asset_package = $this->container->get('assets.packages');
-        $base_router   = $this->container->get('router');
+        return new View($this->wrap($this->container->get('widget_settings_resolver')->getWidgetSettings()));
+    }
 
-        $widget_settings = $this->container->get('widget_settings_resolver');
-        $brand_settings  = array_merge(
-            $widget_settings->getDefaultBrandSettings(),
-            $this->getOrCreateWidgetBrandSettings()->getData('brand_settings') ?: []
-        );
-
-        $setup = new WidgetSetup(
-            $widget_settings->getCompanySettings(),
-            $widget_settings->isEnabledOnPortal(),
-            [
-                'widget_loader' => $asset_package->getUrl('widget_loader.js', 'app_assets'),
-                'widget_bundle' => $asset_package->getUrl('DeskPRO_WidgetBundle.js', 'app_assets'),
-                'helpdesk'      => $base_router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
-
-            ],
-            [
-                'global' => [
-                    'chat' => [
-                        'require_login'    => $widget_settings->isPortalRequireLogin(),
-                        'email_validation' => $widget_settings->isPortalEmailValidation(),
-                    ],
-                ],
-                'brand' => $brand_settings,
-            ]
-        );
-
-        return View::create($this->wrap($setup), Response::HTTP_OK);
+    /**
+     * Get the HTML code for the widget.
+     *
+     * @ApiDoc(
+     *     section="Widget setup",
+     *     resourceDescription="Operations about widget setup",
+     *     description="Get the HTML code for the widget",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     *     output="string"
+     * )
+     *
+     * @Rest\Get("/widget/code")
+     *
+     * @return string
+     */
+    public function getWidgetCodeAction()
+    {
+        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode());
     }
 
     /**
@@ -118,12 +108,12 @@ class WidgetSetupController extends BaseController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType",
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
      *         "name"="",
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Rest\Post("/widget/setup", name="api_widget_setup_post")
+     * @Rest\Post("/widget/setup")
      *
      * @param Request $request
      *
@@ -149,12 +139,12 @@ class WidgetSetupController extends BaseController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\GlobalSettings\WidgetGlobalSetupType",
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType",
      *         "name"="",
      *         "options"={"method"="POST"},
      *     }
      *)
-     * @Rest\Post("/widget/portal/apply", name="api_widget_portal_apply")
+     * @Rest\Post("/widget/portal/apply")
      *
      * @param Request $request
      *
@@ -166,16 +156,16 @@ class WidgetSetupController extends BaseController
         $this->handleForm($request);
 
         // update portal widget brand settings as well
-        $data_store = $this->getOrCreatePortalWidgetBrandSettings();
-        $data_store->setData('brand_settings', $this->getOrCreateWidgetBrandSettings()->getData('brand_settings'));
+        $dataStore = $this->getOrCreatePortalWidgetBrandSettings();
+        $dataStore->setData('brand_settings', $this->getOrCreateWidgetBrandSettings()->getData('brand_settings'));
 
         $em = $this->getManager();
-        $em->persist($data_store);
+        $em->persist($dataStore);
         $em->flush();
 
         // enable widget on the portal
-        $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true);
+        $settingRepo = $this->getSettingsRepository();
+        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, true);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -192,14 +182,14 @@ class WidgetSetupController extends BaseController
      *     },
      *)
      *
-     * @Rest\Post("/widget/portal/remove", name="api_widget_portal_remove")
+     * @Rest\Post("/widget/portal/remove")
      *
      * @return View
      */
     public function removePortalWidgetAction()
     {
-        $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false);
+        $settingRepo = $this->getSettingsRepository();
+        $settingRepo->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, false);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -211,7 +201,9 @@ class WidgetSetupController extends BaseController
      */
     protected function handleForm(Request $request)
     {
-        $form = $this->get('form.factory')->createNamedBuilder(null, WidgetSetupType::class)->getForm();
+        $model = $this->container->get('widget_settings_resolver')->getWidgetOptions();
+
+        $form = $this->createForm(WidgetSetupType::class, $model);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -219,17 +211,17 @@ class WidgetSetupController extends BaseController
         }
 
         // Save global settings
-        $new_global_chat_settings = $form->getData()['global']['chat'];
+        $chatSettings = $model->getGlobal()->getChat();
 
-        $setting_repo = $this->getSettingsRepository();
-        $setting_repo->updateSetting(WidgetSettingsResolver::EMAIL_VALIDATION, $new_global_chat_settings['email_validation']);
-        $setting_repo->updateSetting(WidgetSettingsResolver::REQUIRE_LOGIN, $new_global_chat_settings['require_login']);
+        $settingRepo = $this->getSettingsRepository();
+        $settingRepo->updateSetting(WidgetSettingsResolver::EMAIL_VALIDATION, $chatSettings->isEmailValidation());
+        $settingRepo->updateSetting(WidgetSettingsResolver::REQUIRE_LOGIN, $chatSettings->isRequireLogin());
 
-        $data_store = $this->getOrCreateWidgetBrandSettings();
-        $data_store->setData('brand_settings', $form->getData()['brand']);
+        $dataStore = $this->getOrCreateWidgetBrandSettings();
+        $dataStore->setData('brand_settings', $model->getBrand());
 
         $em = $this->getManager();
-        $em->persist($data_store);
+        $em->persist($dataStore);
         $em->flush();
     }
 
@@ -264,12 +256,12 @@ class WidgetSetupController extends BaseController
      */
     protected function getOrCreateDataStore($name)
     {
-        $data_store = $this->getRepository('DeskPRO:DataStore')->findOneBy(['name' => $name]);
-        if (!$data_store) {
-            $data_store = new DataStore();
-            $data_store->setName($name);
+        $dataStore = $this->getRepository(DataStore::class)->findOneBy(['name' => $name]);
+        if (!$dataStore) {
+            $dataStore = new DataStore();
+            $dataStore->setName($name);
         }
 
-        return $data_store;
+        return $dataStore;
     }
 }

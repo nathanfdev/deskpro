@@ -26,48 +26,81 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
-
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\DataTransformerInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class EntityToIdTransformer.
+ * Class WidgetBrandButtonColorsSettings.
  */
-class EntityToIdTransformer implements DataTransformerInterface
+class WidgetBrandButtonColorsSettings
 {
     /**
-     * @var \Doctrine\ORM\EntityRepository
-     */
-    private $repo;
-
-    /**
-     * Constructor.
+     * @var string
      *
-     * @param EntityRepository $repo
+     * @JMS\Type("string")
      */
-    public function __construct(EntityRepository $repo)
+    private $background = '#62ad8c';
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $text = '#ffffff';
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $border = '#4e9576';
+
+    /**
+     * @return string
+     */
+    public function getBorder()
     {
-        $this->repo = $repo;
+        return $this->border;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $border
      */
-    public function transform($value)
+    public function setBorder($border)
     {
-        return is_object($value) ? $value->getId() : null;
+        $this->border = $border;
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function reverseTransform($value)
+    public function getBackground()
     {
-        return $value ? $this->repo->find($value) : null;
+        return $this->background;
+    }
+
+    /**
+     * @param string $background
+     */
+    public function setBackground($background)
+    {
+        $this->background = $background;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
     }
 }

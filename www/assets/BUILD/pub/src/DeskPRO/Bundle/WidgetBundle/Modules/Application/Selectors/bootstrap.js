@@ -43,3 +43,19 @@ export const requireChatLoginSelector = createSelector(
   widgetChatSettingsSelector,
   settings => settings.get('require_login')
 );
+
+// Company options selectors
+export const companyOptionsSelector = createSelector(
+  widgetSettingsSelector,
+  settings => settings.get('company')
+);
+
+export const companyNameSelector = createSelector(
+  companyOptionsSelector,
+  settings => settings.get('name')
+);
+
+export const companyLogoSelector = createSelector(
+  companyOptionsSelector,
+  settings => settings.get('logo')
+);
