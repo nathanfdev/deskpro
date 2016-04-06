@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -47,7 +48,7 @@ class IncidentType extends ApiType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('dismissed', 'api_boolean')
+            ->add('dismissed', ApiBooleanType::class)
         ;
     }
 }

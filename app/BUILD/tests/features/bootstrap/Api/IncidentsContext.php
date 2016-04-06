@@ -36,8 +36,8 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
 use Zend\Mail\Exception\RuntimeException;
@@ -53,7 +53,7 @@ class IncidentsContext extends BaseContext
     private $rest_context;
 
     /**
-     * @var Incident[]
+     * @var AbstractIncident[]
      */
     private $incidents = [];
 
@@ -72,11 +72,11 @@ class IncidentsContext extends BaseContext
      */
     public function thereAreNoRegisteredUsersInTheDb()
     {
-        $incidents = $this->em()->getRepository(Incident::class)->findAll();
+        $incidents = $this->sysEm()->getRepository(AbstractIncident::class)->findAll();
         foreach ($incidents as $incident) {
-            $this->em()->remove($incident);
+            $this->sysEm()->remove($incident);
         }
-        $this->em()->flush();
+        $this->sysEm()->flush();
     }
 
     /**
@@ -85,6 +85,7 @@ class IncidentsContext extends BaseContext
     public function iAddAnIncident($status, $number)
     {
         $incident = new IncomingEmailFailureIncident();
+        $incident->setRaised(true);
         switch ($status) {
             case 'continuing':
                 $incident->setResolved(false);
@@ -96,14 +97,14 @@ class IncidentsContext extends BaseContext
                 throw new \Exception("Unknown '$status' incident status");
         }
         $email          = new EmailAccount(EmailAccount::TYPE_TICKETS);
-        $email->address = uniqid().'@email.lo';
-        $this->em()->persist($email);
-        $this->em()->persist($event1 = new IncomingEmailFailureEvent($email, new RuntimeException()));
-        $this->em()->persist($event2 = new IncomingEmailFailureEvent($email, new RuntimeException()));
+        $email->id      = uniqid();
+        $email->address = $email->id.'@email.lo';
+        $this->sysEm()->persist($event1 = new IncomingEmailFailureEvent($email, new RuntimeException()));
+        $this->sysEm()->persist($event2 = new IncomingEmailFailureEvent($email, new RuntimeException()));
         $incident->addEvent($event1);
         $incident->addEvent($event2);
-        $this->em()->persist($incident);
-        $this->em()->flush();
+        $this->sysEm()->persist($incident);
+        $this->sysEm()->flush();
 
         $this->incidents[$number] = $incident;
     }
@@ -138,7 +139,7 @@ class IncidentsContext extends BaseContext
     /**
      * @return EntityManager
      */
-    protected function em()
+    protected function sysEm()
     {
         return $this->get('doctrine.orm.system_entity_manager');
     }
