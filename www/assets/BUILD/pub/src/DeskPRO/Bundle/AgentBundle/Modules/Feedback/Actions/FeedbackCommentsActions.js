@@ -27,7 +27,7 @@ export const commentsToReviewCounter = createAction(
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
   (id) => dispatch => {
-    repository('FeedbackComment').remove(id).then(()=> {
+    repository('FeedbackComment').remove(id).then(() => {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -37,7 +37,7 @@ export const deleteComment = createAction(
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
   (data, id) => dispatch => {
-    repository('FeedbackComment').update(data, id).then(()=> {
+    repository('FeedbackComment').update(data, id).then(() => {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -48,12 +48,12 @@ export const loadFeedbackCommentsList = createAction(
   'FEEDBACK_LIST_OF_COMMENTS',
     params => (dispatch) => repository('FeedbackComment').commentsToReviewList(params).then(promise => {
       const res = promise.getData();
-      const ids = res.data.map(item=>item.id);
+      const ids = res.data.map(item => item.id);
 
       dispatch(setCollection('FeedbackComment', recordStoresId, res.data));
       dispatch(setCollection('Feedback', recordStoresId, prepareLinkedData(res.linked.feedback)));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
 
-      return { ids: ids, pagination: res.meta.pagination };
+      return { ids, pagination: res.meta.pagination };
     }
   ));

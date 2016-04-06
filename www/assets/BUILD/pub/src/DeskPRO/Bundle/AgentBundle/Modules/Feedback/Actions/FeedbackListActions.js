@@ -50,14 +50,14 @@ export const loadFeedbackList = createAction(
   'FEEDBACK_LIST_OF_FEEDBACK',
     params => (dispatch) => repository('Feedback').search(params).then(promise => {
       const res = promise.getData();
-      const ids = res.data.map(item=>item.id);
+      const ids = res.data.map(item => item.id);
 
       dispatch(setCollection('Feedback', recordStoresId, res.data));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
       dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
       dispatch(getCommentsCounter(ids));
 
-      return { ids: ids, pagination: res.meta.pagination };
+      return { ids, pagination: res.meta.pagination };
     }
   ));
 
@@ -115,17 +115,18 @@ export const loadList = createAction(
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (params = {}) => (dispatch, getState) => {
-    if (params.hasOwnProperty('navItem')) {
+    let newParams = params;
+    if (newParams.hasOwnProperty('navItem')) {
       const typesOfStatus = ['status', 'status_category', 'hidden_status'];
-      typesOfStatus.forEach((type)=> {
-        if (params.navItem.hasOwnProperty(type)) {
+      typesOfStatus.forEach((type) => {
+        if (newParams.navItem.hasOwnProperty(type)) {
           typesOfStatus.splice(typesOfStatus.indexOf(type), 1);
-          typesOfStatus.forEach((item) => delete params[item]);
+          typesOfStatus.forEach((item) => delete newParams[item]);
         }
       });
     }
     const current = currentListParamsSelector(getState()).toJS();
-    const newParams = { ...current, ...params };
+    newParams = { ...current, ...newParams };
     dispatch(setParams(newParams));
     dispatch(loadList(newParams));
   }
@@ -133,11 +134,11 @@ export const applyParams = createAction(
 
 export const setOrderBy = createAction(
   'FEEDBACK_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy }))
+    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
 export const setOrderDir = createAction(
   'FEEDBACK_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir }))
+    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');

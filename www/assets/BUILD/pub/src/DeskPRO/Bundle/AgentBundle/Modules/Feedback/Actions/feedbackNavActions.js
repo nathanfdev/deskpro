@@ -31,7 +31,7 @@ export const initialLoad = createAction(
           + '&get[rsCategories]=DP_API/feedback_categories'
         ;
       api.sendGet(batch)
-        .success(({responses}) => {
+        .success(({ responses }) => {
           const payload = flattenBatchResponses(responses);
           payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
           if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {

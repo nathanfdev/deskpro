@@ -1,7 +1,10 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import jQuery from 'jquery';
-import { Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox, CardDisc, CardContentText, CardDate, CardUser }
+import {
+  Card, CardLine, CardLineLeft, CardLineFull, CardLineItem, CardCheckbox,
+  CardDisc, CardContentText, CardDate, CardUser
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { CommentReviewBarContainer } from './CommentReviewBarContainer';
 
@@ -27,13 +30,14 @@ export class CommentCard extends Component {
     if (this.state.isEditingNow) {
       return this.refs.commentContent.value.trim();
     }
+    return null;
   };
 
   renderContent() {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
       return (
-        <textarea defaultValue={comment.get('content')} style={{width: '100%'}} ref="commentContent"/>
+        <textarea defaultValue={comment.get('content')} style={{ width: '100%' }} ref="commentContent"/>
       );
     }
     return (

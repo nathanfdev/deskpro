@@ -5,12 +5,9 @@ import { ListContainer } from './List/ListContainer';
 
 export class FeedbackApp extends React.Component {
 
-  render() {
-    return (
-      <AppPane>
-        <NavPane><NavContainer/></NavPane>
-        <ListPane><ListContainer/></ListPane>
-      </AppPane>
-    );
-  }
+  render = () =>
+    <AppPane>
+      <NavPane><NavContainer/></NavPane>
+      <ListPane><ListContainer/></ListPane>
+    </AppPane>;
 }
