@@ -182,8 +182,7 @@ class ErrorReporter
     }
 
     /**
-     * Submits a PHP error. $errinfo is a standard error info array, see SystemErrorHandler::getExceptionInfo
-     * and SystemErrorHandler::getErrorInfo.
+     * Submits a PHP error. $errinfo is a standard error info array, see SystemErrorHandler::getExceptionInfo.
      *
      * @static
      *
