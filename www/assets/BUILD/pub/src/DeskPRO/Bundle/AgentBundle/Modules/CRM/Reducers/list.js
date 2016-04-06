@@ -3,7 +3,7 @@ import { async, setFullPayload, setValue } from 'Ampliflux/reducers/handlers';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import * as actions from '../Actions/crmListActions';
 
-const initialState = {
+export const crmListInitialState = {
   async: {
     done: true
   },
@@ -18,7 +18,7 @@ const initialState = {
   }
 };
 
-export default createReducer(initialState, {
+export default createReducer(crmListInitialState, {
   [actions.load]: async(
     {
       success: (state, payload) =>

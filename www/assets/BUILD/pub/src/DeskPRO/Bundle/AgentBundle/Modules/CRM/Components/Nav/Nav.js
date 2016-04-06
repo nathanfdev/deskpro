@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionHeader, TabsPaneStatefulContainer, Tab, ListItem,
-  LabelsDictionary } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { NestedList } from './NestedList';
-import { ListItemContainer } from './ListItemContainer';
+import { NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionHeader }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { People } from './TabPanes/People';
+import { Organizations } from './TabPanes/Organizations';
+import { Agents } from './TabPanes/Agents';
 
 export class Nav extends Component {
 
@@ -23,42 +23,13 @@ export class Nav extends Component {
         <NavFrameHeaderContainer icon="icon-dp-streamline-connection-2">CRM</NavFrameHeaderContainer>
         <NavFrameBody isLoaded={isLoaded}>
           <SectionHeader>People</SectionHeader>
-          <TabsPaneStatefulContainer id="peopleTab">
-            <Tab title="Groups">
-              <NestedList items={[users.toJS()]}
-                          isAgent={0}
-                          group="people"
-                          alwaysExpanded />
-            </Tab>
-            <Tab title="Filters">Filters tab content</Tab>
-            <Tab title="Labels">
-              {labels && <LabelsDictionary labels={labels.get('person')} onClick={()=>{}}/>}
-            </Tab>
-          </TabsPaneStatefulContainer>
+          <People users={users} labels={labels}/>
 
           <SectionHeader>Organizations</SectionHeader>
-          <TabsPaneStatefulContainer id="orgTab">
-            <Tab title="All">
-              <ul>
-                <ListItemContainer group="organizations"
-                                   label="all"
-                                   listOptions={{content: 'organizations', orderBy: 'name', orderDir: constants.ORDER_ASC}}>
-                  <ListItem count={organizations.get('count')} label="All Organizations"/>
-                </ListItemContainer>
-              </ul>
-            </Tab>
-            <Tab title="Labels">
-              {labels && <LabelsDictionary labels={labels.get('organization')} onClick={()=>{}}/>}
-            </Tab>
-          </TabsPaneStatefulContainer>
+          <Organizations organizations={organizations} labels={labels}/>
 
           <SectionHeader>Agents</SectionHeader>
-            <div className="sidebar-list">
-              <NestedList items={[agents.toJS()]}
-                          isAgent={1}
-                          group="agents"
-                          alwaysExpanded />
-            </div>
+          <Agents agents={agents}/>
         </NavFrameBody>
       </NavFrame>
     );

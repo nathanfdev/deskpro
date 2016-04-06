@@ -1,17 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { isLoadedSelector, usersSelector, organizationsSelector, agentsSelector, labelsSelector }
+  from '../../Selectors/nav';
 import * as actions from '../../Actions/crmNavActions';
 import { Nav } from './Nav';
 
-@connect(state => {
-  return {
-    isLoaded: state.CRM.nav.getIn(['async', 'done']),
-    users: state.CRM.nav.get('users'),
-    organizations: state.CRM.nav.get('organizations'),
-    agents: state.CRM.nav.get('agents'),
-    labels: state.CRM.nav.get('labels')
-  };
-})
+@connect(state => ({
+  isLoaded: isLoadedSelector(state),
+  users: usersSelector(state),
+  organizations: organizationsSelector(state),
+  agents: agentsSelector(state),
+  labels: labelsSelector(state)
+}))
+
 export class NavContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
@@ -22,6 +23,6 @@ export class NavContainer extends Component {
   }
 
   render() {
-    return <Nav {...this.props} />;
+    return <Nav {...this.props}/>;
   }
 }

@@ -2,7 +2,7 @@ import { createReducer } from 'Ampliflux';
 import { async, setValue, mergeFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/crmNavActions';
 
-const initialState = {
+export const crmNavInitialState = {
   async: {
     done: false
   },
@@ -23,7 +23,7 @@ const initialState = {
   }
 };
 
-export default createReducer(initialState, {
+export default createReducer(crmNavInitialState, {
   [actions.initialLoad]: async({
     success: mergeFullPayload(),
     start: setValue('async.done', false),

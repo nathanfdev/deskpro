@@ -1,19 +1,19 @@
-// #define ~root DeskPRO/Bundle/AgentBundle/Modules/Feedback
-// #define ~nav DeskPRO/Bundle/AgentBundle/Modules/Feedback/Components/Nav
+// #define ~root DeskPRO/Bundle/AgentBundle/Modules/CRM
+// #define ~nav DeskPRO/Bundle/AgentBundle/Modules/CRM/Components/Nav
 
 jest.dontMock('~nav/NavContainer');
 
 import React from 'react';
-import { renderInFeedbackApp } from '../../feedback.test-helper';
+import { renderInCrmApp } from '../../crm.test-helper';
 
-describe('Feedback Navigation: NavContainer component', () => {
+describe('CRM Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
   const Nav = require('~nav/Nav').Nav;
-  const actions = require('~root/Actions/feedbackNavActions');
+  const actions = require('~root/Actions/crmNavActions');
   const dispatch = jasmine.createSpy('dispatch');
 
   function render() {
-    return renderInFeedbackApp({}, <NavContainer/>, dispatch);
+    return renderInCrmApp({}, <NavContainer/>, dispatch);
   }
 
   it('should render Nav', () => {
