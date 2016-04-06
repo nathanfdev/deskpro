@@ -8,17 +8,14 @@ export class CategoryTab extends Component {
     categories: PropTypes.object.isRequired
   };
 
-  renderCategory = (item, index)=> {
-    return (
-      <ListItemContainer key={index}
-                         label={item.get('title')}
-                         listOptions={{isComments: false, navItem: {custom_category: item.get('title')}}}>
+  renderCategory = (item, index) =>
+    <ListItemContainer key={index}
+                       label={item.get('title')}
+                       listOptions={{ isComments: false, navItem: { custom_category: item.get('title') } }}>
 
-        <ListItem count={item.get('count')}
-                  label={item.get('title')}/>
-      </ListItemContainer>
-    );
-  };
+      <ListItem count={item.get('count')}
+                label={item.get('title')}/>
+    </ListItemContainer>;
 
   render() {
     const { categories } = this.props;

@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { FeedbackCard } from './FeedbackCard';
 import { connect } from 'react-redux';
 import { idsSelector, cardVisibleFieldsSelector } from '../../../../Selectors/list';
@@ -27,7 +27,8 @@ export class FeedbackCardsContainer extends Component {
   };
 
   renderCard(id) {
-    const { feedback, viewFields, selected, toggleSelected, people, feedbackTypes, feedbackStatusCategories } = this.props;
+    const { feedback, viewFields, selected, toggleSelected } = this.props;
+    const { people, feedbackTypes, feedbackStatusCategories } = this.props;
     const element = feedback.get(id);
 
     return (
@@ -48,7 +49,7 @@ export class FeedbackCardsContainer extends Component {
 
     return (
       <div>
-        {ids.map(id =>this.renderCard(id))}
+        {ids.map(id => this.renderCard(id))}
       </div>
     );
   }

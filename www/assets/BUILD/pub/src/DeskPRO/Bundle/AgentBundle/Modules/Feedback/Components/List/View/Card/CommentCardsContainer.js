@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { CommentCard } from './CommentCard';
 import { idsSelector } from '../../../../Selectors/list';
@@ -38,7 +38,7 @@ export class CommentCardsContainer extends Component {
   }
 
   render() {
-    const {ids} = this.props;
+    const { ids } = this.props;
 
     return (
       <div>

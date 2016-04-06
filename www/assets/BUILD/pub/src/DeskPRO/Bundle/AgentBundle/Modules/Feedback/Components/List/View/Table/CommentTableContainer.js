@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -36,19 +36,20 @@ export class CommentTableContainer extends Component {
   };
 
   isVisible(field) {
-    const {viewFields} = this.props;
+    const { viewFields } = this.props;
     return viewFields && viewFields.includes(field);
   }
 
-  sortTable(param, orderDir) {
+  sortTable = (param, orderDir) => {
     this.props.dispatch(applyParams({ order_by: param, order_dir: orderDir }));
-  }
+  };
 
   renderStatus(id) {
     const { feedbackStatuses } = this.props;
     if (feedbackStatuses) {
       return feedbackStatuses.get(id) ? feedbackStatuses.get(id).get('title') : null;
     }
+    return null;
   }
 
   renderCategory(id) {
@@ -56,6 +57,7 @@ export class CommentTableContainer extends Component {
     if (feedbackCategories) {
       return feedbackCategories.get(id) ? feedbackCategories.get(id).get('input') : null;
     }
+    return null;
   }
 
   renderRow(id) {
@@ -126,7 +128,7 @@ export class CommentTableContainer extends Component {
               title="ID"
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}/>
+              onChange={this.sortTable}/>
           <Th sort="author"
               title="Author"
               visible={this.isVisible('comment_author')}/>
@@ -167,7 +169,7 @@ export class CommentTableContainer extends Component {
               title="Created"
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}/>
+              onChange={this.sortTable}/>
         </tr>
         </thead>
         <tbody>

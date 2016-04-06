@@ -1,5 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab, LabelsDictionary }
+import {
+  LabelsDictionary,
+  NavFrame,
+  NavFrameHeaderContainer,
+  NavFrameBody,
+  TabsPaneStatefulContainer,
+  Tab
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
@@ -23,7 +30,8 @@ export class Nav extends Component {
   };
 
   render() {
-    const { labels, isLoaded, onLabelClick, types, feedbackToReviewCount, commentsToReviewCount, statuses, categories } = this.props;
+    const { labels, isLoaded, onLabelClick, types, statuses, categories } = this.props;
+    const { feedbackToReviewCount, commentsToReviewCount } = this.props;
 
     return (
       <NavFrame>
@@ -35,7 +43,7 @@ export class Nav extends Component {
                    commentsToReviewCount={commentsToReviewCount}/>
 
           <TabsPaneStatefulContainer id="tab">
-            <Tab title={this.props.intl.formatMessage({id: 'feedback.nav.tabs.status'})}>
+            <Tab title={this.props.intl.formatMessage({ id: 'feedback.nav.tabs.status' })}>
               <StatusTab statuses={statuses}/>
             </Tab>
 

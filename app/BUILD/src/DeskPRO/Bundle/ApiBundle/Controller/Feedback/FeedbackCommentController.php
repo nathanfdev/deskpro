@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations as Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,7 +50,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * API access to feedback comments.
  *
  * @ApiModes("all")
- * @Annotations\Route("/feedback_comments")
+ * @Rest\Route("/feedback_comments")
  */
 class FeedbackCommentController extends CrudController
 {
@@ -84,12 +84,10 @@ class FeedbackCommentController extends CrudController
      *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
      *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
      *      },
-     *      output={
-     *        "class"="<Application\DeskPRO\Entity\FeedbackComment>"
-     *      }
+     *      output="<Application\DeskPRO\Entity\FeedbackComment>"
      * )
-     * @Annotations\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
-     * @Annotations\Get("/", name="api_feedback_comments_list")
+     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
+     * @Rest\Get("/", name="api_feedback_comments_list")
      *
      * @param Request $request
      *
@@ -132,8 +130,8 @@ class FeedbackCommentController extends CrudController
      *          {"name"="ids", "dataType"="string", "description"="a comma separated list of feedback ids"}
      *     }
      * )
-     * @Annotations\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
-     * @Annotations\Get("/counter", name="api_feedback_comments_counter")
+     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
+     * @Rest\Get("/counter", name="api_feedback_comments_counter")
      *
      * @param Request $request
      *
@@ -187,7 +185,7 @@ class FeedbackCommentController extends CrudController
      *      }
      * )
      *
-     * @Annotations\Get("/counts", name="api_feedback_comment_count")
+     * @Rest\Get("/counts", name="api_feedback_comment_count")
      *
      * @throws \LogicException
      *
