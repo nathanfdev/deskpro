@@ -37,6 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Model\NotificationCounts;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -57,6 +58,44 @@ class AgentAlertsController extends CrudController
     public static $entity    = AgentAlert::class;
     public static $listSort  = 'date_created';
     public static $listOrder = 'desc';
+
+    /**
+     * Get user's notification counts.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts counts",
+     *     resourceDescription="Operations about agent alerts",
+     *     description="Get notifications counts",
+     *     statusCodes={
+     *         204="Returned if everything is ok",
+     *     }
+     * )
+     *
+     * @Rest\Get("/counts")
+     *
+     * @return View
+     */
+    public function getCountsAction()
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('count(a.id) as group_count, a.is_dismissed')
+            ->from(AgentAlert::class, 'a')
+            ->where('a.person = :user')
+            ->setParameter('user', $this->getUser())
+            ->groupBy('a.is_dismissed')
+        ;
+
+        $counts = [0, 0];
+        $result = $qb->getQuery()->getResult();
+        if (is_array($result)) {
+            foreach ($result as $item) {
+                $counts[$item['is_dismissed']] = $item['group_count'];
+            }
+        }
+
+        return new View($this->wrap(new NotificationCounts($counts[0], $counts[1])));
+    }
 
     /**
      * Dismiss alerts with given ids array.
@@ -85,7 +124,8 @@ class AgentAlertsController extends CrudController
                 ->set('a.is_dismissed', 1)
                 ->where('a.id IN (:ids)')
                 ->setParameter('ids', $ids)
-                ->getQuery()->execute()
+                ->getQuery()
+                ->execute()
             ;
         }
 
@@ -112,11 +152,14 @@ class AgentAlertsController extends CrudController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->update(AgentAlert::class, 'a')
+            ->set('a.is_dismissed', 1)
             ->where(
                 'a.is_dismissed = 0',
                 'a.person = :user'
             )
             ->setParameter('user', $this->getUser())
+            ->getQuery()
+            ->execute()
         ;
 
         return View::create(null, Response::HTTP_NO_CONTENT);
