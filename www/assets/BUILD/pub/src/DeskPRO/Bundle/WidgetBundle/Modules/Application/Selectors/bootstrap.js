@@ -18,9 +18,14 @@ export const widgetSessionCodeSelector = createSelector(
   session => session.get('session_code')
 );
 
-export const widgetSessionIsLoginSelector = createSelector(
+export const widgetSessionPersonSelector = createSelector(
   widgetSessionSelector,
-  session => session.get('is_login')
+  session => session.get('person')
+);
+
+export const widgetSessionIsLoginSelector = createSelector(
+  widgetSessionPersonSelector,
+  person => !!person
 );
 
 // Widget settings selectors

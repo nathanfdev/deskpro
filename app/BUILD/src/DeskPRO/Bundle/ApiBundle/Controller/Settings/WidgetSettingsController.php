@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
@@ -217,6 +218,7 @@ class WidgetSettingsController extends BaseController
         $settingRepo->updateSetting(WidgetSettingsResolver::EMAIL_VALIDATION, $chatSettings->isEmailValidation());
         $settingRepo->updateSetting(WidgetSettingsResolver::REQUIRE_LOGIN, $chatSettings->isRequireLogin());
 
+        // Save brand settings
         $dataStore = $this->getOrCreateWidgetBrandSettings();
         $dataStore->setData('brand_settings', $model->getBrand());
 
