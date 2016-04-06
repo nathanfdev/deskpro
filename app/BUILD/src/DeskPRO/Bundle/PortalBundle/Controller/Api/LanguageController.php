@@ -75,6 +75,7 @@ class LanguageController extends AbstractApiController
             'portal.tickets.new-title',
             'portal.tickets.new-intro',
             'portal.general.start-chat',
+            'portal.forms.label_reset',
             'portal.forms.label_drag',
             'portal.forms.label_choose',
         ];
