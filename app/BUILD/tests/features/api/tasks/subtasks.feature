@@ -18,7 +18,7 @@ Feature: /subtasks endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    # And the header "Location" should be equal to "/api/v2/subtasks/1"
+    And the header "Location" should be equal to "/api/v2/subtasks/1"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test subtask"
 
