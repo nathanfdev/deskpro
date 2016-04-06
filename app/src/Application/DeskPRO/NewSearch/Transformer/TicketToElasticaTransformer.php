@@ -33,7 +33,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
-use Vaites\ApacheTika\Clients\WebClient as ApacheTikaClient;
+use Application\DeskPRO\ApacheTika\ClientFactory as ApacheTikaFactory;
 
 /**
  * Ticket To Elastica Transformer.
@@ -44,27 +44,28 @@ use Vaites\ApacheTika\Clients\WebClient as ApacheTikaClient;
  */
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
-    private $container;
+    /**
+     * @var ApacheTikaFactory $apache_tika
+     */
+    private $apache_tika;
 
     /**
-     * @return mixed
+     * @return ApacheTikaFactory
      */
-    public function getContainer()
+    public function getApacheTika()
     {
-        return $this->container;
+        return $this->apache_tika;
     }
 
     /**
-     * @param mixed $container
+     * @param ApacheTikaFactory $apache_tika
      */
-    public function setContainer($container)
+    public function setApacheTika($apache_tika)
     {
-        $this->container = $container;
+        $this->apache_tika = $apache_tika;
     }
 
-
-
-    /**
+        /**
      * Transform.
      *
      * @param Ticket $object
@@ -119,21 +120,19 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
 
-        if ($this->getContainer()->getSetting('elastica.tika.enabled')) {
+        if ($this->getApacheTika()->isEnabled()) {
             $attachments = [];
             if ($object->has_attachments) {
                 try {
-                    $tika = new ApacheTikaClient(
-                        $this->getContainer()->getSetting('elastica.tika.ip_address'),
-                        $this->getContainer()->getSetting('elastica.tika.port')
-                    );
+                    /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
+                    $client         = $this->getApacheTika()->createClient();
                     /** @var TicketAttachment $attachment */
                     foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();
                         if (!$blob->isImage()) {
                             $attachments[] = array(
                                 'filename' => $blob->getFilenameSafe(),
-                                'content'  => $tika->getText($blob->getDownloadUrl(true)),
+                                'content'  => $client->getText($blob->getDownloadUrl(true)),
                             );
                         }
                     }
