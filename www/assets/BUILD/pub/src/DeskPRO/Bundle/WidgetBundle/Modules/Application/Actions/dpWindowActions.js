@@ -37,15 +37,15 @@ const openChatBeginStage = createAction(
     }
 
     switch (chatBeginMode) {
-      case 'simple':
-      default:
-        history.replace('/chat/begin/simple');
-        break;
       case 'conversation':
         history.replace('/chat/begin/conversation');
         break;
       case 'form':
         history.replace('/chat/begin/form');
+        break;
+      case 'simple':
+      default:
+        history.replace('/chat/begin/simple');
         break;
     }
   }
