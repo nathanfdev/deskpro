@@ -9,37 +9,37 @@ export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view']
 
 export const paginationSelector = createSelector(
   stateSelector,
-    list => list.get('pagination')
+  list => list.get('pagination')
 );
 
 export const isLoadedSelector = createSelector(
   stateSelector,
-    list => list.getIn(['async', 'done'])
+  list => list.getIn(['async', 'done'])
 );
 
 export const currentListParamsSelector = createSelector(
   stateSelector,
-    state => state.get('currentListParams')
+  state => state.get('currentListParams')
 );
 
 export const elementsSelector = createSelector(
   stateSelector,
-    state => state.get('elements')
+  state => state.get('elements')
 );
 
 export const currentListOrderBySelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order_by')
+  params => params.get('order_by')
 );
 
 export const currentListOrderDirSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order_dir')
+  params => params.get('order_dir')
 );
 
 export const currentContentSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('content')
+  params => params.get('content')
 );
 
 export const listFiltersSelector = createSelector(
@@ -61,9 +61,9 @@ export const listFiltersSelector = createSelector(
     if (currentContent === 'people') {
       const userGroupsOptions = userGroups.toArray()
         .map(group => ({
-          label: group.get('title'),
-          value: group.get('id')
-        })
+               label: group.get('title'),
+               value: group.get('id')
+             })
       );
 
       filterSelector.push({
@@ -76,9 +76,9 @@ export const listFiltersSelector = createSelector(
 
       const organizationsOptions = organizations.toArray()
         .map(org => ({
-          label: org.get('name'),
-          value: org.get('id')
-        }));
+               label: org.get('name'),
+               value: org.get('id')
+             }));
 
       const compare = (a, b) => {
         if (a.label < b.label) {
