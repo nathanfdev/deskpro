@@ -80,6 +80,11 @@ class LanguageController extends AbstractApiController
             'portal.forms.label_choose',
             'portal.chat.dismiss_message',
             'portal.chat.reply_to',
+            'portal.chat.start',
+            'portal.chat.starting',
+            'portal.chat.label-details',
+            'portal.chat.details-placeholder',
+            'portal.chat.label-email',
         ];
 
         return $this->getResponse($request, $phrases);
