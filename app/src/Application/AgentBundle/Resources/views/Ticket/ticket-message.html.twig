@@ -118,6 +118,22 @@
 							</td>
 						</tr>
 					{% endif %}
+					{% if message.email_source %}
+						<tr>
+							<th>{{ phrase('agent.general.to') }}:</th>
+							<td>
+								{{ message.email_source.header_to }}
+							</td>
+						</tr>
+						{% if message.email_source.parsed_headers.cc %}
+						<tr>
+							<th>{{ phrase('agent.general.ccs') }}:</th>
+							<td>
+								{{ message.email_source.parsed_headers.cc }}
+							</td>
+						</tr>
+						{% endif %}
+					{% endif %}
 					{% if message.ip_address %}
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>

@@ -139,12 +139,12 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $raw_source = Strings::standardEol($raw_source);
 
-            $header_end = strpos($raw_source, "\n\n");
+            $header_end = strpos($raw_source, "\r\n\r\n");
             if ($header_end === false) {
                 // Means an empty body (eg message with only subject)
                 // But we trimmed above so the \n\n sep would be trimmed off
-                $raw_source .= "\n\n";
-                $header_end = strpos($raw_source, "\n\n");
+                $raw_source .= "\r\n\r\n";
+                $header_end = strpos($raw_source, "\r\n\r\n");
             }
 
             $raw_headers = trim(substr($raw_source, 0, $header_end));

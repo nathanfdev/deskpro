@@ -51,6 +51,7 @@ class EmailBundle extends Bundle
             'Application\\EmailBundle\\Command\\GenTestEmailCommand',
             'Application\\EmailBundle\\Command\\ProcessQueueCommand',
             'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
+            'Application\\EmailBundle\\Command\\GenTestIncomingEmailCommand',
         );
 
         foreach ($commands as $cmd) {
