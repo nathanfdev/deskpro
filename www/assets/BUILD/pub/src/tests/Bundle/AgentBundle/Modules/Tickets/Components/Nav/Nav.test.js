@@ -8,19 +8,17 @@ import ReactDOM from 'react-dom';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: Nav component', () => {
-  const Nav = require('~nav/Nav').Nav;
+  const Nav                 = require('~nav/Nav').Nav;
   const FiltersTabContainer = require('~nav/Tabs/FiltersTab/FiltersTabContainer').FiltersTabContainer;
-  const LabelsTabContainer = require('~nav/Tabs/LabelsTabContainer').LabelsTabContainer;
-  const StarsTabContainer = require('~nav/Tabs/StarsTabContainer').StarsTabContainer;
-  const LoadIndicator = require('DeskPRO/Component/LoadIndicator').LoadIndicator;
-  const Tab = require('DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/tabs').Tab;
+  const LabelsTabContainer  = require('~nav/Tabs/LabelsTabContainer').LabelsTabContainer;
+  const StarsTabContainer   = require('~nav/Tabs/StarsTabContainer').StarsTabContainer;
+  const LoadIndicator       = require('DeskPRO/Component/LoadIndicator').LoadIndicator;
+  const Tab                 = require('DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame/tabs').Tab;
 
-  let component;
   let node;
 
   function render(isLoaded = true) {
-    component = renderInTicketsApp({}, <Nav isLoaded={isLoaded}/>);
-    node = ReactDOM.findDOMNode(component);
+    node = ReactDOM.findDOMNode(renderInTicketsApp({}, <Nav isLoaded={isLoaded} />));
   }
 
   it("should render a spinner while data aren't loaded", () => {

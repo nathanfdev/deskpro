@@ -1,32 +1,31 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
 import { applyParams } from '../../Actions/crmListActions';
+import { paginationSelector } from '../../Selectors/list';
 
-import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    pagination: state.CRM.list.get('pagination')
-  });
-})
+@connect(state => ({
+  pagination: paginationSelector(state)
+}))
 
 export class PaginationContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:   PropTypes.func.isRequired,
     pagination: PropTypes.object.isRequired
   };
 
-  handlePageClick(page) {
-    this.props.dispatch(applyParams({ page: page }));
-  }
+  handlePageClick = (page) => {
+    this.props.dispatch(applyParams({ page }));
+  };
 
   render() {
-    const {pagination} = this.props;
+    const { pagination } = this.props;
     return (
       <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
-                         pageNum={pagination.total_pages}
-                         currentPage={pagination.current_page}
-                         clickCallback={this.handlePageClick.bind(this)}/>
+                         pageNum={pagination.get('total_pages')}
+                         currentPage={pagination.get('current_page')}
+                         clickCallback={this.handlePageClick} />
     );
   }
 }

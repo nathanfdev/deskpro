@@ -34,6 +34,7 @@ export const getCategories = createAction(
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
+
 export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
@@ -54,7 +55,11 @@ export const loadFeedbackList = createAction(
 
       dispatch(setCollection('Feedback', recordStoresId, res.data));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
-      dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
+      dispatch(setCollection(
+          'FeedbackStatusCategory',
+          recordStoresId,
+          prepareLinkedData(res.linked.feedback_status_category))
+      );
       dispatch(getCommentsCounter(ids));
 
       return { ids, pagination: res.meta.pagination };
@@ -89,6 +94,7 @@ export const updateDisplayFieldsToPersonSetting = createAction(
     return displayFields;
   }
 );
+
 export const loadList = createAction(
   'FEEDBACK_LIST',
   (listParams) => dispatch => {
@@ -126,6 +132,7 @@ export const applyParams = createAction(
       });
     }
     const current = currentListParamsSelector(getState()).toJS();
+
     newParams = { ...current, ...newParams };
     dispatch(setParams(newParams));
     dispatch(loadList(newParams));
@@ -136,10 +143,12 @@ export const setOrderBy = createAction(
   'FEEDBACK_LIST_SET_ORDER_BY',
     orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
+
 export const setOrderDir = createAction(
   'FEEDBACK_LIST_SET_ORDER_DIR',
     orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');

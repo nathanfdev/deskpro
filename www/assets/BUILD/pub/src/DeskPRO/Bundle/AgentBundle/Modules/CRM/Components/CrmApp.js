@@ -7,13 +7,11 @@ import { ListContainer } from './List/ListContainer';
 @connect(state => ({
   dpWindow: state.Application.dpWindow
 }))
+
 export class CrmApp extends React.Component {
-  render() {
-    return (
-      <AppPane>
-        <NavPane><NavContainer/></NavPane>
-        <ListPane><ListContainer/></ListPane>
-      </AppPane>
-    );
-  }
+  render = () =>
+    <AppPane>
+      <NavPane><NavContainer/></NavPane>
+      <ListPane><ListContainer/></ListPane>
+    </AppPane>
 }

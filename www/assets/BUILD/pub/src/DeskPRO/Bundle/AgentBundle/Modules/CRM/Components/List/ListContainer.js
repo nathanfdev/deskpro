@@ -5,15 +5,14 @@ import { currentViewModeSelector, currentContentSelector, isLoadedSelector, pagi
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 
 import { connect } from 'react-redux';
-@connect(state => {
-  return ({
-    isLoaded: isLoadedSelector(state),
-    pagination: paginationSelector(state),
-    selected: selectedSelector(state),
-    currentViewMode: currentViewModeSelector(state),
-    content: currentContentSelector(state)
-  });
-})
+@connect(state => ({
+  isLoaded:        isLoadedSelector(state),
+  pagination:      paginationSelector(state),
+  selected:        selectedSelector(state),
+  currentViewMode: currentViewModeSelector(state),
+  content:         currentContentSelector(state)
+}))
+
 export class ListContainer extends Component {
   render() {
     return (

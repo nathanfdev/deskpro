@@ -8,17 +8,17 @@ import { renderInFeedbackApp } from '../../../feedback.test-helper';
 import { toImmutable } from 'Helpers';
 
 describe('Feedback: MassActionContainer', () => {
-  const MassActionContainer = require('~ControlBar/MassActionContainer').MassActionContainer;
+  const MassActionContainer    = require('~ControlBar/MassActionContainer').MassActionContainer;
   const MassActionBarContainer = require('~MassActionBar/MassActionBarContainer').MassActionBarContainer;
-  const fakeState = {
+  const fakeState              = {
     Feedback: {
       list: toImmutable({ currentListParams: { navItem: { awaiting_validation: 1 } } }),
-      nav: toImmutable({ labels: [], statuses: { active: {}, closed: {}, hidden: {} } })
+      nav:  toImmutable({ labels: [], statuses: { active: {}, closed: {}, hidden: {} } })
     }
   };
 
   const render = () => {
-    renderInFeedbackApp(fakeState, <MassActionContainer/>);
+    renderInFeedbackApp(fakeState, <MassActionContainer />);
   };
 
   it('should render MassActionBarContainer', () => {

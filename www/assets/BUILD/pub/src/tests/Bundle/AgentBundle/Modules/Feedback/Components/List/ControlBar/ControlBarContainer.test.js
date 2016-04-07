@@ -8,11 +8,11 @@ import { renderInFeedbackApp } from '../../../feedback.test-helper';
 
 describe('Feedback: ControlBarContainer', () => {
   const ControlBarContainer = require('~ControlBar/ControlBarContainer').ControlBarContainer;
-  const ControlBar = require('~CommonControlBar/ControlBar').ControlBar;
-  const fakeState = {};
+  const ControlBar          = require('~CommonControlBar/ControlBar').ControlBar;
+  const fakeState           = {};
 
   const render = () => {
-    renderInFeedbackApp(fakeState, <ControlBarContainer/>);
+    renderInFeedbackApp(fakeState, <ControlBarContainer />);
   };
 
   it('should render ControlBar', () => {

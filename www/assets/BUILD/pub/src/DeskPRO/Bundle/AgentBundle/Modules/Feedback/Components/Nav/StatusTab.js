@@ -22,7 +22,7 @@ export class StatusTab extends Component {
 
     return (
       <ul>
-        <NestedList items={items} alwaysExpanded/>
+        <NestedList items={items} alwaysExpanded />
       </ul>
     );
   }

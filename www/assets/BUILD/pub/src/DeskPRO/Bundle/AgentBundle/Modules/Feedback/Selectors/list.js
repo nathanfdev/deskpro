@@ -29,7 +29,7 @@ export const tableVisibleFieldsSelector = createSelector(
     params => params.get('table')
 );
 
-export const currentListOrderBySelector = createSelector(
+export const currentListOrderBySelector  = createSelector(
   currentListParamsSelector,
     params => params.get('order_by')
 );

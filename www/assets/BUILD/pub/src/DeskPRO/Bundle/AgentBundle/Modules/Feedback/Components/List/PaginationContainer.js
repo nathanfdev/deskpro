@@ -9,7 +9,7 @@ import { paginationSelector } from '../../Selectors/list';
 export class PaginationContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:   PropTypes.func.isRequired,
     pagination: PropTypes.object.isRequired
   };
 
@@ -23,7 +23,7 @@ export class PaginationContainer extends Component {
       <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
                          pageNum={pagination.get('total_pages')}
                          currentPage={pagination.get('current_page')}
-                         clickCallback={this.handlePageClick}/>
+                         clickCallback={this.handlePageClick} />
     );
   }
 }

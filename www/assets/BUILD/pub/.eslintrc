@@ -20,16 +20,34 @@
       2,
       "prefer-double"
     ],
+    "key-spacing": [
+      2,
+      {
+        "singleLine": {
+          "beforeColon": false,
+          "afterColon": true
+        },
+        "multiLine": {
+          "beforeColon": false,
+          "afterColon": true,
+          "align": "value"
+        }
+      }
+    ],
+    "no-multi-spaces": [
+      2,
+      {
+        "exceptions": {
+          "VariableDeclarator": true
+        }
+      }
+    ],
     "react/jsx-closing-bracket-location": [
       2,
       "after-props"
     ],
     "react/jsx-indent-props": 0,
     "react/prefer-stateless-function": 0,
-    "react/jsx-space-before-closing": [
-      2,
-      "never"
-    ],
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
     "react/react-in-jsx-scope": 2,

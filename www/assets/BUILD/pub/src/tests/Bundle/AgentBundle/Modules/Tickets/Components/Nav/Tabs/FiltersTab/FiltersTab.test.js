@@ -13,7 +13,7 @@ describe('Tickets Navigation: FiltersTab component', () => {
 
   function render() {
     const props = {
-      filterSetsCount: toImmutable([{count: 0, title: 'Test Filter Set'}])
+      filterSetsCount: toImmutable([{ count: 0, title: 'Test Filter Set' }])
     };
 
     return renderInTicketsApp({}, <FiltersTab {...props} />);
@@ -21,7 +21,7 @@ describe('Tickets Navigation: FiltersTab component', () => {
 
   it('should render section title', () => {
     const component = render();
-    const title = TestUtils.findRenderedDOMComponentWithClass(component, 'list-sidebar-title');
+    const title     = TestUtils.findRenderedDOMComponentWithClass(component, 'list-sidebar-title');
     expect(title.textContent).toEqual('Test Filter Set');
   });
 
