@@ -1,9 +1,15 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { agentNameSelector } from '../../../../Selectors/chat';
 
+@connect(state => ({
+  agentName: agentNameSelector(state)
+}))
 export class RateAgentDialog extends React.Component {
 
   static propTypes = {
+    agentName: PropTypes.string,
     onClickHelpful: PropTypes.func,
     onClickNotHelpful: PropTypes.func
   };
@@ -19,11 +25,12 @@ export class RateAgentDialog extends React.Component {
   };
 
   render() {
+    const { agentName } = this.props;
     // portal.chat.rate_agent_title
     return (
       <div className="dpdesignportal-agent-rating">
         <div></div>
-        <h1><span>You just completed a chat with</span> Noelle Gray</h1>
+        <h1><span>You just completed a chat with</span> {agentName}</h1>
         <p>{portalPhrases.get('portal.chat.rate_agent_desc')}</p>
 
         <div className="dpdesignportal-agent-rating-buttons">
