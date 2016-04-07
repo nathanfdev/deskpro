@@ -7,12 +7,12 @@ import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/
 export class RteEditor extends React.Component {
 
   static propTypes = {
-    tag: PropTypes.string,
-    value: PropTypes.string,
-    inline: PropTypes.bool,
-    options: PropTypes.object,
-    onChange: PropTypes.func,
-    onSubmit: PropTypes.func,
+    tag:          PropTypes.string,
+    value:        PropTypes.string,
+    inline:       PropTypes.bool,
+    options:      PropTypes.object,
+    onChange:     PropTypes.func,
+    onSubmit:     PropTypes.func,
     onPasteImage: PropTypes.func
   };
 

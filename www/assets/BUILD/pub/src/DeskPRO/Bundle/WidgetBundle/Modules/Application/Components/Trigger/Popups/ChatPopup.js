@@ -5,9 +5,9 @@ export class ChatPopup extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
-    small: PropTypes.bool,
-    widgetPosition: PropTypes.string,
-    children: PropTypes.any
+    small:           PropTypes.bool,
+    widgetPosition:  PropTypes.string,
+    children:        PropTypes.any
   };
 
   render() {
@@ -19,19 +19,11 @@ export class ChatPopup extends React.Component {
         'dpdesignportal-online-agents': small
       })}>
         <div
-          className={classNames('preemtive-chat', {
-            'small': small,
-            'position-left': widgetPosition === 'bottom.left'
-          })}
-          style={{
-            borderColor: backgroundColor
-          }}>
+          className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}
+          style={{ borderColor: backgroundColor }}>
+
           {children}
-          <div
-            className="pointer"
-            style={{
-              borderTopColor: backgroundColor
-            }} />
+          <div className="pointer" style={{ borderTopColor: backgroundColor }}></div>
         </div>
       </div>
     );

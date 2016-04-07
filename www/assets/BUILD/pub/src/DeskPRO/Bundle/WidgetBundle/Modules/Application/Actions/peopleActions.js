@@ -9,7 +9,7 @@ import Immutable from 'immutable';
 export const loadOnlineAgents = createAction(
   'WIDGET_LOAD_ONLINE_AGENTS',
   () => (dispatch, getState) =>
-    widgetApi.sendGet('DP_API/people/online_agents', {...ajaxOptions})
+    widgetApi.sendGet('DP_API/people/online_agents', { ...ajaxOptions })
       .success(response => {
         const state = getState();
         const oldAgents = Immutable.fromJS(Object.values(onlineAgentsSelector(state).toJS()));

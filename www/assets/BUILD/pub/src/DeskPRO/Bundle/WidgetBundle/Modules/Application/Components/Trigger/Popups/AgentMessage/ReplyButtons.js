@@ -4,10 +4,10 @@ export class ReplyButtons extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    primaryAgent: PropTypes.object,
-    onClick: PropTypes.func,
-    onClose: PropTypes.func
+    textColor:       PropTypes.string,
+    primaryAgent:    PropTypes.object,
+    onClick:         PropTypes.func,
+    onClose:         PropTypes.func
   };
 
   onClick = event => {
@@ -31,13 +31,15 @@ export class ReplyButtons extends React.Component {
           <a href="#"
              onClick={this.onClick}
              style={{
-               backgroundColor: backgroundColor,
+               backgroundColor,
                color: textColor
              }}>
 
-            <i className="fa fa-mail-reply-all"></i> Reply to {firstName}
+            <i className="fa fa-mail-reply-all" /> Reply to {firstName}
           </a>
-          <a href="#" className="blank" onClick={this.onClose}><i className="fa fa-times"></i> Dismiss message</a>
+          <a href="#" className="blank" onClick={this.onClose}>
+            <i className="fa fa-times" /> Dismiss message
+          </a>
         </div>
       </div>
     );

@@ -13,20 +13,20 @@ import { store } from '../../../../Services/store';
 
 @connect(state => ({
   windowDimensions: windowDimensionsSelector(state),
-  widgetOpened: widgetOpenedSelector(state),
-  widgetLoaded: widgetLoadedSelector(state),
-  widgetPosition: widgetPositionSelector(state),
-  isBubble: isBubbleSelector(state)
+  widgetOpened:     widgetOpenedSelector(state),
+  widgetLoaded:     widgetLoadedSelector(state),
+  widgetPosition:   widgetPositionSelector(state),
+  isBubble:         isBubbleSelector(state)
 }))
 export class WidgetFrameContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    widgetOpened: PropTypes.bool,
-    widgetLoaded: PropTypes.bool,
+    dispatch:       PropTypes.func,
+    widgetOpened:   PropTypes.bool,
+    widgetLoaded:   PropTypes.bool,
     widgetPosition: PropTypes.string,
-    isBubble: PropTypes.bool,
-    children: PropTypes.any
+    isBubble:       PropTypes.bool,
+    children:       PropTypes.any
   };
 
   componentDidMount() {

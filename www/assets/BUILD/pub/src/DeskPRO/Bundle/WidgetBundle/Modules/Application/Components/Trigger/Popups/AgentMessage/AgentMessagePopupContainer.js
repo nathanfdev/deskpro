@@ -4,7 +4,7 @@ import { helpPopupTitleSelector, helpPopupMessageSelector } from '../../../../Se
 import { AgentMessagePopup } from './AgentMessagePopup';
 
 @connect(state => ({
-  helpPopupTitle: helpPopupTitleSelector(state),
+  helpPopupTitle:   helpPopupTitleSelector(state),
   helpPopupMessage: helpPopupMessageSelector(state)
 }))
 export class AgentMessagePopupContainer extends React.Component {

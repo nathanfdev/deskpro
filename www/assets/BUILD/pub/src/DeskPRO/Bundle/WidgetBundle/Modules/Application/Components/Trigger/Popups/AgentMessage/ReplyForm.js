@@ -4,8 +4,8 @@ export class ReplyForm extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    onClick: PropTypes.func
+    textColor:       PropTypes.string,
+    onClick:         PropTypes.func
   };
 
   render() {
@@ -15,7 +15,7 @@ export class ReplyForm extends React.Component {
       <form onClick={this.props.onClick}>
         <input type="text" placeholder="Reply" />
         <button style={{
-          backgroundColor: backgroundColor,
+          backgroundColor,
           color: textColor
         }}>
           <i className="fa fa-angle-double-right" />

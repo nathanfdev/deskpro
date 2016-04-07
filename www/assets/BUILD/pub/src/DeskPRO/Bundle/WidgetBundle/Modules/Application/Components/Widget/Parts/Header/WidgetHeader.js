@@ -3,8 +3,8 @@ import React, { PropTypes } from 'react';
 export class WidgetHeader extends React.Component {
 
   static propTypes = {
-    onOpenMenu: PropTypes.func,
-    onClose: PropTypes.func,
+    onOpenMenu:  PropTypes.func,
+    onClose:     PropTypes.func,
     companyName: PropTypes.string,
     companyLogo: PropTypes.string
   };
@@ -26,12 +26,15 @@ export class WidgetHeader extends React.Component {
       <div className="dpdesignportal-header">
         {false /* disabled for now */ &&
         <a href="#" className="dpdesignportal-header-controls left" onClick={this.onOpenMenu}>
-          <i className="fa fa-navicon"></i>
+          <i className="fa fa-navicon" />
         </a>
         }
 
-        <a href="#" className="dpdesignportal-header-controls dpdesignportal-mobile-nav-control right" onClick={this.onClose}>
-          <span className="dpdesignportal-control-hide"><i className="fa fa-times"></i></span>
+        <a href="#" className="dpdesignportal-header-controls dpdesignportal-mobile-nav-control right"
+           onClick={this.onClose}>
+          <span className="dpdesignportal-control-hide">
+            <i className="fa fa-times" />
+          </span>
         </a>
 
         <div className="dpdesignportal-header-mark">
