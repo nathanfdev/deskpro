@@ -20,16 +20,18 @@ export class RteEditor extends React.Component {
     const { inline, value = '', options = {} } = this.props;
     const { onChange = () => {}, onSubmit = () => {} } = this.props;
 
-    const node = ReactDOM.findDOMNode(this);
+    const node = this.getNode();
     const onChangeContent = () => {
       onChange(node.innerHTML);
     };
 
     // Override default paste listener to upload images
     $(node).on('paste', this.onPaste);
-    const overrideOptions = {paste: {cleanPastedHTML: true}};
+    const overrideOptions = {
+      paste: { cleanPastedHTML: true }
+    };
 
-    this.medium = new MediumEditor(node, {...options, ...overrideOptions});
+    this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
@@ -38,20 +40,13 @@ export class RteEditor extends React.Component {
         onSubmit(event, node.innerHTML);
       }
     });
-    this.medium.subscribe('initialFocus', () => {
-      this.medium.selectElement(node);
-    });
-    this.medium.subscribe('clearEmptyContent', () => {
-      if (node.innerHTML === '<p><br></p>') {
-        node.innerHTML = '';
-      }
+    this.medium.subscribe('editableClick', () => {
+      setTimeout(() => this.medium.startSelectionUpdates(), 1);
     });
   }
 
   componentWillReceiveProps(newProps) {
-    const node = ReactDOM.findDOMNode(this);
-
-    if (newProps.value !== node.innerHTML) {
+    if (newProps.value !== this.getNode().innerHTML) {
       let content = newProps.value;
       if (!content) {
         content = '<p><br></p>';
@@ -62,9 +57,7 @@ export class RteEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    const node = ReactDOM.findDOMNode(this);
-    $(node).off('paste', this.onPaste);
-
+    $(this.getNode()).off('paste', this.onPaste);
     this.medium.destroy();
   }
 
@@ -92,27 +85,52 @@ export class RteEditor extends React.Component {
     return this.medium;
   }
 
+  getNode() {
+    return ReactDOM.findDOMNode(this);
+  }
+
   getContent() {
-    return ReactDOM.findDOMNode(this).innerHTML;
+    return this.getNode().innerHTML;
   }
 
   setContent(html) {
     this.medium.setContent(html);
   }
 
-  pasteHtml(html) {
-    this.medium.pasteHTML(html);
+  pasteHtml(html, options) {
+    this.medium.pasteHTML(html, options);
   }
 
   focus() {
+    const doc = this.medium.options.ownerDocument;
+    const node = this.getNode();
+
     this.medium.restoreSelection();
+    if (this.medium.checkSelection().selectionState) {
+      // has stored selection
+      if (doc.getSelection) {
+        const sel = doc.getSelection();
+        const range = sel.getRangeAt(0);
+        range.collapse(false);
 
-    if (!this.medium.checkSelection().selectionState) {
-      this.medium.trigger('initialFocus');
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    } else {
+      if (doc.getSelection) {
+        let $p = $('p', node);
+        if (!$p.length || node.innerHTML === '<p><br></p>') {
+          node.innerHTML = '<p></p>';
+          $p = $('p', node);
+        }
 
-      const contentWindow = this.medium.options.contentWindow;
-      if (contentWindow.getSelection) {
-        contentWindow.getSelection().collapseToEnd();
+        const range = doc.createRange();
+        range.selectNodeContents($p.last().get(0));
+        range.collapse(false);
+
+        const sel = doc.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
       }
     }
   }

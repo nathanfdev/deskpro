@@ -11,7 +11,7 @@ export class EmotionsPopup extends React.Component {
   renderItem(code) {
     return (
       <a onClick={() => this.props.onClick(code)} className="emoticon-link" title={code}>
-        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${spriteMap[code]}`)} />
+        <span className={classNames('emoticon', 'sprite', `sprite-emoticon-${spriteMap[code]}`)}/>
       </a>
     );
   }
