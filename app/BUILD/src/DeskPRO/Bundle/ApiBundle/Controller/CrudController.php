@@ -174,6 +174,7 @@ abstract class CrudController extends BaseController
             $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
+
             $result = $pager;
         } else {
             $result = $qb->getQuery()->getResult();
@@ -405,7 +406,7 @@ abstract class CrudController extends BaseController
         // https://github.com/symfony/symfony/pull/10567
         // https://github.com/symfony/symfony/issues/11493
 
-        // in this case form ViolationMapper should applies entity validation errors on the submitted form
+        // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
         $form->submit($decoded, !$partial_update);
         if (!$form->isValid()) {
