@@ -6,24 +6,25 @@ import { selectedSelector } from '../../../../../Application/Selectors/massActio
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  ids: idsSelector(state),
-  feedback: collectionSelectorFactory('Feedback', 'feedback')(state),
-  viewFields: cardVisibleFieldsSelector(state),
-  selected: selectedSelector(state),
-  people: collectionSelectorFactory('Person', 'feedback')(state),
-  feedbackTypes: collectionSelectorFactory('FeedbackType', 'feedback')(state),
+  ids:                      idsSelector(state),
+  viewFields:               cardVisibleFieldsSelector(state),
+  selected:                 selectedSelector(state),
+  feedback:                 collectionSelectorFactory('Feedback', 'feedback')(state),
+  people:                   collectionSelectorFactory('Person', 'feedback')(state),
+  feedbackTypes:            collectionSelectorFactory('FeedbackType', 'feedback')(state),
   feedbackStatusCategories: collectionSelectorFactory('FeedbackStatusCategory', 'feedback')(state)
 }))
+
 export class FeedbackCardsContainer extends Component {
   static propTypes = {
-    ids: PropTypes.array.isRequired,
-    feedback: PropTypes.object.isRequired,
-    viewFields: PropTypes.object,
-    selected: PropTypes.object.isRequired,
-    people: PropTypes.object.isRequired,
-    feedbackTypes: PropTypes.object.isRequired,
+    ids:                      PropTypes.array.isRequired,
+    feedback:                 PropTypes.object.isRequired,
+    viewFields:               PropTypes.object,
+    selected:                 PropTypes.object.isRequired,
+    people:                   PropTypes.object.isRequired,
+    feedbackTypes:            PropTypes.object.isRequired,
     feedbackStatusCategories: PropTypes.object,
-    toggleSelected: PropTypes.func.isRequired
+    toggleSelected:           PropTypes.func.isRequired
   };
 
   renderCard(id) {
@@ -40,7 +41,7 @@ export class FeedbackCardsContainer extends Component {
                     author={people.get(element.get('person'))}
                     feedbackStatusCategory={feedbackStatusCategories.get(element.get('status_category'))}
                     feedbackLabels={element.get('labels')}
-                    type={feedbackTypes.get(element.get('category'))}/>
+                    type={feedbackTypes.get(element.get('category'))} />
     );
   }
 

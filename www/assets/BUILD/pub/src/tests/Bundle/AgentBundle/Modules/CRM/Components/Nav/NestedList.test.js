@@ -6,12 +6,12 @@ import React from 'react';
 import { renderInCrmApp } from '../../crm.test-helper';
 
 describe('CRM Navigation: ListItemContainer component', () => {
-  const NestedList = require('~nav/NestedList').NestedList;
+  const NestedList        = require('~nav/NestedList').NestedList;
   const ListItemContainer = require('~nav/ListItemContainer').ListItemContainer;
-  const fakeRecords = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  const fakeRecords       = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
   function render() {
-    return renderInCrmApp({}, <NestedList items={fakeRecords}/>);
+    return renderInCrmApp({}, <NestedList items={fakeRecords} />);
   }
 
   it('should render a ListItemContainer', () => {

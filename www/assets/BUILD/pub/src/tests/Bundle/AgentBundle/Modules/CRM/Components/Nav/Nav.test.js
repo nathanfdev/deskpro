@@ -7,18 +7,16 @@ import ReactDOM from 'react-dom';
 import { renderInCrmApp } from '../../crm.test-helper';
 
 describe('CRM Navigation: Nav component', () => {
-  const Nav = require('~nav/Nav').Nav;
+  const Nav           = require('~nav/Nav').Nav;
   const LoadIndicator = require('DeskPRO/Component/LoadIndicator').LoadIndicator;
-  const People = require('~nav/TabPanes/People').People;
+  const People        = require('~nav/TabPanes/People').People;
   const Organizations = require('~nav/TabPanes/Organizations').Organizations;
-  const Agents = require('~nav/TabPanes/Agents').Agents;
+  const Agents        = require('~nav/TabPanes/Agents').Agents;
 
-  let component;
   let node;
 
   function render(isLoaded = true) {
-    component = renderInCrmApp({}, <Nav isLoaded={isLoaded}/>);
-    node = ReactDOM.findDOMNode(component);
+    node = ReactDOM.findDOMNode(renderInCrmApp({}, <Nav isLoaded={isLoaded} />));
   }
 
   it("should render a spinner while data aren't loaded", () => {

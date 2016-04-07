@@ -13,8 +13,7 @@ export class CategoryTab extends Component {
                        label={item.get('title')}
                        listOptions={{ isComments: false, navItem: { custom_category: item.get('title') } }}>
 
-      <ListItem count={item.get('count')}
-                label={item.get('title')}/>
+      <ListItem count={item.get('count')} label={item.get('title')} />
     </ListItemContainer>;
 
   render() {

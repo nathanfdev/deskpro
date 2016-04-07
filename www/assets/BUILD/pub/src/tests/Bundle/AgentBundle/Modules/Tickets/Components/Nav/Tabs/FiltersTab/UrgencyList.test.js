@@ -7,10 +7,10 @@ import { toImmutable } from 'Helpers';
 
 describe('Tickets Navigation: UrgencyList component', () => {
   const UrgencyList =
-    require('DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/Tabs/FiltersTab/UrgencyList').UrgencyList;
+          require('DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/Tabs/FiltersTab/UrgencyList').UrgencyList;
 
   const items = toImmutable([
-    {id: 1, count: 1}, {id: 3, count: 42}
+    { id: 1, count: 1 }, { id: 3, count: 42 }
   ]);
 
   it('should render urgency  sliders', () => {
@@ -18,6 +18,6 @@ describe('Tickets Navigation: UrgencyList component', () => {
 
     expect(TestUtilAdditions.find(component, '.slider.level-1').length).toEqual(1);
     expect(TestUtilAdditions.find(component, '.slider.level-3').length).toEqual(1);
-    expect(TestUtilAdditions.find(component, '.slider')        .length).toEqual(2);
+    expect(TestUtilAdditions.find(component, '.slider').length).toEqual(2);
   });
 });

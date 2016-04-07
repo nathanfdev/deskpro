@@ -6,12 +6,12 @@ import React from 'react';
 import { renderInRedux, fakeState } from 'Helpers';
 
 describe('Feedback: FeedbackApp component', () => {
-  const FeedbackApp = require('~components/FeedbackApp').FeedbackApp;
-  const NavContainer = require('~components/Nav/NavContainer').NavContainer;
+  const FeedbackApp   = require('~components/FeedbackApp').FeedbackApp;
+  const NavContainer  = require('~components/Nav/NavContainer').NavContainer;
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {
-    return renderInRedux(fakeState({}), <FeedbackApp/>);
+    return renderInRedux(fakeState({}), <FeedbackApp />);
   }
 
   it('should render NavContainer', () => {

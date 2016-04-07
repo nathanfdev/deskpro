@@ -15,7 +15,7 @@ export class Agents extends Component {
         <NestedList items={[agents.toJS()]}
                     isAgent={1}
                     group="agents"
-                    alwaysExpanded/>
+                    alwaysExpanded />
       </div>
     );
   }

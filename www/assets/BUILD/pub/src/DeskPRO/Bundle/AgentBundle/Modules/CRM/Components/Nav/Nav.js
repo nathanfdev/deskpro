@@ -8,11 +8,11 @@ import { Agents } from './TabPanes/Agents';
 export class Nav extends Component {
 
   static propTypes = {
-    isLoaded: PropTypes.bool.isRequired,
-    users: PropTypes.object.isRequired,
+    isLoaded:      PropTypes.bool.isRequired,
+    users:         PropTypes.object.isRequired,
     organizations: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired
+    agents:        PropTypes.object.isRequired,
+    labels:        PropTypes.object.isRequired
   };
 
   render() {
@@ -23,13 +23,13 @@ export class Nav extends Component {
         <NavFrameHeaderContainer icon="icon-dp-streamline-connection-2">CRM</NavFrameHeaderContainer>
         <NavFrameBody isLoaded={isLoaded}>
           <SectionHeader>People</SectionHeader>
-          <People users={users} labels={labels}/>
+          <People users={users} labels={labels} />
 
           <SectionHeader>Organizations</SectionHeader>
-          <Organizations organizations={organizations} labels={labels}/>
+          <Organizations organizations={organizations} labels={labels} />
 
           <SectionHeader>Agents</SectionHeader>
-          <Agents agents={agents}/>
+          <Agents agents={agents} />
         </NavFrameBody>
       </NavFrame>
     );

@@ -6,11 +6,11 @@ import * as actions from '../../Actions/crmNavActions';
 import { Nav } from './Nav';
 
 @connect(state => ({
-  isLoaded: isLoadedSelector(state),
-  users: usersSelector(state),
+  isLoaded:      isLoadedSelector(state),
+  users:         usersSelector(state),
   organizations: organizationsSelector(state),
-  agents: agentsSelector(state),
-  labels: labelsSelector(state)
+  agents:        agentsSelector(state),
+  labels:        labelsSelector(state)
 }))
 
 export class NavContainer extends Component {
@@ -23,6 +23,6 @@ export class NavContainer extends Component {
   }
 
   render() {
-    return <Nav {...this.props}/>;
+    return <Nav {...this.props} />;
   }
 }

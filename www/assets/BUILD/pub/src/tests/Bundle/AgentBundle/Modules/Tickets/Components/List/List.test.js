@@ -7,16 +7,16 @@ import React from 'react';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('List', () => {
-  const ListFrameContainer = require('~ListFrame/frame').ListFrameContainer;
-  const List = require('~List/List').List;
-  const ControlBarContainer = require('~List/ControlBarContainer').ControlBarContainer;
-  const ListCardViewContainer = require('~List/View/Card/ListCardViewContainer').ListCardViewContainer;
+  const ListFrameContainer     = require('~ListFrame/frame').ListFrameContainer;
+  const List                   = require('~List/List').List;
+  const ControlBarContainer    = require('~List/ControlBarContainer').ControlBarContainer;
+  const ListCardViewContainer  = require('~List/View/Card/ListCardViewContainer').ListCardViewContainer;
   const ListTableViewContainer = require('~List/View/Table/ListTableViewContainer').ListTableViewContainer;
 
   const fakeState = {};
 
   const renderList = (viewMode = 'card') => {
-    renderInTicketsApp(fakeState, <List elements={[]} selected={[]} viewMode={viewMode} loaded/>);
+    renderInTicketsApp(fakeState, <List elements={[]} selected={[]} viewMode={viewMode} loaded />);
   };
 
   it('should render ListFrameContainer', () => {

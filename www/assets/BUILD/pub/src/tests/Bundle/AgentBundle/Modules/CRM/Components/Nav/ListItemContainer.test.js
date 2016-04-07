@@ -7,14 +7,14 @@ import React from 'react';
 import { renderInCrmApp } from '../../crm.test-helper';
 
 describe('CRM Navigation: ListItemContainer component', () => {
-  const ListItemContainer = require('~nav/ListItemContainer').ListItemContainer;
+  const ListItemContainer         = require('~nav/ListItemContainer').ListItemContainer;
   const ListItemStatefulContainer = require('~lists/ListItemStatefulContainer').ListItemStatefulContainer;
 
   function render() {
     return renderInCrmApp(
       {},
       <ListItemContainer>
-        <div/>
+        <div />
       </ListItemContainer>
     );
   }

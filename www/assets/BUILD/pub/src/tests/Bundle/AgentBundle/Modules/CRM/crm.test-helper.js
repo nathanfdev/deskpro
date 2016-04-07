@@ -6,8 +6,8 @@ import { massActionsInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Appl
 function fakeCrmState(state) {
   return fakeState({
     Application: { massActions: massActionsInitialState },
-    CRM: {
-      nav: toImmutable(crmNavInitialState),
+    CRM:         {
+      nav:  toImmutable(crmNavInitialState),
       list: toImmutable(crmListInitialState)
     },
     ...state

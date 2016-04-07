@@ -11,11 +11,11 @@ import { CommentReviewBarContainer } from './CommentReviewBarContainer';
 export class CommentCard extends Component {
 
   static propTypes = {
-    comment: PropTypes.object.isRequired,
-    feedback: PropTypes.object.isRequired,
+    comment:        PropTypes.object.isRequired,
+    feedback:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    author: PropTypes.object.isRequired,
-    selected: PropTypes.bool
+    author:         PropTypes.object.isRequired,
+    selected:       PropTypes.bool
   };
 
   constructor(props) {
@@ -37,7 +37,7 @@ export class CommentCard extends Component {
     const { comment } = this.props;
     if (this.state.isEditingNow) {
       return (
-        <textarea defaultValue={comment.get('content')} style={{ width: '100%' }} ref="commentContent"/>
+        <textarea defaultValue={comment.get('content')} style={{ width: '100%' }} ref="commentContent" />
       );
     }
     return (
@@ -49,23 +49,24 @@ export class CommentCard extends Component {
 
   render() {
     const { comment, author, selected, toggleSelected } = this.props;
-    const feedback = this.props.feedback || Immutable.fromJS({});
+
+    const feedback       = this.props.feedback || Immutable.fromJS({});
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
-    const cardWidth = containerWidth - 15;
+    const cardWidth      = containerWidth - 15;
 
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
         <CommentReviewBarContainer comment={comment}
                                    toggleEditMode={this.toggleEditMode}
-                                   isEditingNow={this.state.isEditingNow}/>
+                                   isEditingNow={this.state.isEditingNow} />
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(comment.get('id'))}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(comment.get('id'))} />
 
         <CardLine>
           <CardLineLeft>
             <CardLineItem>
-              <CardUser user={author}/>
+              <CardUser user={author} />
             </CardLineItem>
           </CardLineLeft>
         </CardLine>
@@ -79,9 +80,9 @@ export class CommentCard extends Component {
         <CardLine>
           <CardLineLeft>
             <CardLineItem icon="fa-comments-o">
-              <CardDate date={comment.get('date_created')} label="Posted"/>
+              <CardDate date={comment.get('date_created')} label="Posted" />
             </CardLineItem>
-            <CardDisc/>
+            <CardDisc />
             <CardLineItem icon="fa-link">
               <a href="#">{feedback.get('title')}</a>
             </CardLineItem>

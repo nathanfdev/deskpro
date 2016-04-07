@@ -9,15 +9,14 @@ import { toImmutable } from 'Helpers';
 
 describe('Feedback: PaginationContainer', () => {
   const PaginationContainer = require('~List/PaginationContainer').PaginationContainer;
-  const PaginationBoxView = require('~Pagination/PaginationBoxView').PaginationBoxView;
+  const PaginationBoxView   = require('~Pagination/PaginationBoxView').PaginationBoxView;
+
   const fakeState = {
-    Feedback: {
-      list: toImmutable({ pagination: { total_pages: 2, current_page: 1 } })
-    }
+    Feedback: { list: toImmutable({ pagination: { total_pages: 2, current_page: 1 } }) }
   };
 
   const render = () => {
-    renderInFeedbackApp(fakeState, <PaginationContainer/>);
+    renderInFeedbackApp(fakeState, <PaginationContainer />);
   };
 
   it('should render PaginationBoxView', () => {

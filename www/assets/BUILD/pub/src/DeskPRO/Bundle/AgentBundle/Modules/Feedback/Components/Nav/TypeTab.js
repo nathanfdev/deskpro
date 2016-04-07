@@ -12,8 +12,7 @@ export class TypeTab extends Component {
                        label={item.get('title')}
                        listOptions={{ isComments: false, navItem: { category: item.get('title') } }}>
 
-      <ListItem count={item.get('count')}
-                label={item.get('title')}/>
+      <ListItem count={item.get('count')} label={item.get('title')} />
     </ListItemContainer>;
 
   render() {

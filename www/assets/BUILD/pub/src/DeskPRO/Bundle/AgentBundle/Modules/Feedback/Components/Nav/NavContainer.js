@@ -8,13 +8,13 @@ import { categoryCountersSelector, commentsToReviewCountSelector, isLoadedSelect
   from '../../Selectors/nav';
 
 @connect(state => ({
-  isLoaded: isLoadedSelector(state),
+  isLoaded:              isLoadedSelector(state),
   feedbackToReviewCount: feedbackToReviewCountSelector(state),
   commentsToReviewCount: commentsToReviewCountSelector(state),
-  statuses: statusCountersSelector(state),
-  types: typeCountersSelector(state),
-  labels: feedbackLabelsSelector(state),
-  categories: categoryCountersSelector(state)
+  statuses:              statusCountersSelector(state),
+  types:                 typeCountersSelector(state),
+  labels:                feedbackLabelsSelector(state),
+  categories:            categoryCountersSelector(state)
 }))
 
 export class NavContainer extends Component {
@@ -34,7 +34,7 @@ export class NavContainer extends Component {
   render() {
     return (
       <Nav {...this.props}
-        onLabelClick={this.onLabelClick}/>
+        onLabelClick={this.onLabelClick} />
     );
   }
 }

@@ -6,7 +6,7 @@ import { NestedList } from '../NestedList';
 export class People extends Component {
 
   static propTypes = {
-    users: PropTypes.object.isRequired,
+    users:  PropTypes.object.isRequired,
     labels: PropTypes.object.isRequired
   };
 
@@ -19,11 +19,11 @@ export class People extends Component {
           <NestedList items={[users.toJS()]}
                       isAgent={0}
                       group="people"
-                      alwaysExpanded/>
+                      alwaysExpanded />
         </Tab>
         <Tab title="Filters">Filters tab content</Tab>
         <Tab title="Labels">
-          {labels && <LabelsDictionary labels={labels.get('person')} onClick={() => {}}/>}
+          {labels && <LabelsDictionary labels={labels.get('person')} onClick={() => {}} />}
         </Tab>
       </TabsPaneStatefulContainer>
     );

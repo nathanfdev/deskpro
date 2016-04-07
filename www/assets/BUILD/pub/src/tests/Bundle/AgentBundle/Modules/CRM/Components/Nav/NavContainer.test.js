@@ -8,12 +8,12 @@ import { renderInCrmApp } from '../../crm.test-helper';
 
 describe('CRM Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
-  const Nav = require('~nav/Nav').Nav;
-  const actions = require('~root/Actions/crmNavActions');
-  const dispatch = jasmine.createSpy('dispatch');
+  const Nav          = require('~nav/Nav').Nav;
+  const actions      = require('~root/Actions/crmNavActions');
+  const dispatch     = jasmine.createSpy('dispatch');
 
   function render() {
-    return renderInCrmApp({}, <NavContainer/>, dispatch);
+    return renderInCrmApp({}, <NavContainer />, dispatch);
   }
 
   it('should render Nav', () => {

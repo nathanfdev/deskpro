@@ -7,7 +7,7 @@ export class FeedbackApp extends React.Component {
 
   render = () =>
     <AppPane>
-      <NavPane><NavContainer/></NavPane>
-      <ListPane><ListContainer/></ListPane>
+      <NavPane><NavContainer /></NavPane>
+      <ListPane><ListContainer /></ListPane>
     </AppPane>;
 }
