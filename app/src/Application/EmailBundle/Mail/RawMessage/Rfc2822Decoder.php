@@ -260,11 +260,11 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                 // missing content-type means we assume content-type of text-plain,
                 // so if its missing, its as good as being text/plain
                 if (!$type || (strtok($type->getFieldValue(), ';') == $body_type)) {
-                    return $message->getContent();
+                    return $this->decodeMessage($message);
                 }
             } else {
                 if ($type && (strtok($type->getFieldValue(), ';') == $body_type)) {
-                    return $message->getContent();
+                    return $this->decodeMessage($message);
                 }
             }
         }
@@ -331,19 +331,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                     $filename = $disposition_split['filename'];
                 }
 
-                $enc      = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
-                $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
-
                 $content_id_header = $this->_getHeaderOrNull($message, 'Content-ID');
                 $content_id        = $content_id_header ? Decode::splitHeaderField($content_id_header->getFieldValue(), 0) : null;
 
-                $data = $message->getContent();
-                switch (strtolower($enc_type)) {
-                    case 'quoted-printable':
-                    case 'base64':
-                        $data = self::decodeString($data, $enc_type);
-                        break;
-                }
+                $data = $this->decodeMessage($message);
 
                 $a = array(
                     'filename' => $filename,
@@ -360,6 +351,22 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         return $attachments;
     }
 
+    protected function decodeMessage(Part $message)
+    {
+        $enc      = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
+        $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
+
+        $data = $message->getContent();
+        switch (strtolower($enc_type)) {
+            case 'quoted-printable':
+            case 'base64':
+                $data = self::decodeString($data, $enc_type);
+                break;
+        }
+
+        return $data;
+    }
+
     /**
      * @param string $string
      * @param string $enc_type The way the string is encoded: quoted-printable, base64, 7bit, 8bit
@@ -370,7 +377,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
     {
         switch (strtolower($enc_type)) {
             case 'quoted-printable':
-                $string = Decode::decodeQuotedPrintable($string);
+                $string = quoted_printable_decode($string);
                 break;
             case 'base64':
                 $string = base64_decode($string);
