@@ -31,6 +31,7 @@ return array(
     'portal.forms.label_submit'           => 'Submit',
     'portal.forms.label_reset'            => 'Reset',
     'portal.forms.label_drag'             => 'Drag a file in here or',
+    'portal.forms.label_drag_overlay'     => 'Drag your file in here.',
     'portal.forms.label_choose'           => 'Choose a file',
     'portal.forms.label_email'            => 'Email',
     'portal.forms.label_name'             => 'Name',

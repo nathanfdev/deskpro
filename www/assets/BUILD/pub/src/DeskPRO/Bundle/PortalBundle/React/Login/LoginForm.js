@@ -119,11 +119,11 @@ export class LoginForm extends React.Component {
               type="checkbox"
               name="remember_me"
               />
-            Stay Logged In?
+            {portalPhrases.get('portal.account.login-stay-logged-in')}
           </label>
         </div>
 
-        <button type="submit" tabIndex="2">Login</button>
+        <button type="submit" tabIndex="2">{portalPhrases.get('portal.account.login-btn')}</button>
 
         <div className="secondary-action">
           <a href={portalUrlGenerator.path('/login/reset-password')}>

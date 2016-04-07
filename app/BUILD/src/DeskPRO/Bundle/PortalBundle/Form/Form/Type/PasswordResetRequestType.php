@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,14 +45,27 @@ class PasswordResetRequestType extends AbstractType
      */
     private $captcha_decider;
 
-    public function __construct(CaptchaDecider $captcha_decider)
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
+     */
+    private $language_manager;
+
+    /**
+     * PasswordResetRequestType constructor.
+     * @param CaptchaDecider $captcha_decider
+     * @param LanguageManager $language_manager
+     */
+    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
     {
         $this->captcha_decider = $captcha_decider;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', 'email', array());
+        $builder->add('email', 'email', [
+            'label' => $this->phrase('portal.forms.label_email'),
+        ]);
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
@@ -73,5 +87,16 @@ class PasswordResetRequestType extends AbstractType
     public function getName()
     {
         return 'request_password_reset';
+    }
+
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string
+     */
+    private function phrase($name, array $vars = [])
+    {
+        return $this->language_manager->phrase($name, $vars);
     }
 }

@@ -44,6 +44,7 @@ return array(
     'portal.account.login-lockout'                     => 'You have failed login too many times. For a small period of time your account is locked. Please try again later.',
     'portal.account.login-captcha-failed'              => 'You have entered an invalid captcha code. Please try again.',
     'portal.account.login-saved-form'                  => 'Your {{ type }} has not been submitted yet. Please login to continue.',
+    'portal.account.login-stay-logged-in'              => 'Stay Logged In?',
     'portal.account.submit-saved-form'                 => 'Your {{ type }} has not been submitted yet but we have saved it for you.',
     'portal.account.submit-saved-form-go'              => 'Click here to automatically re-submit the form.',
     'portal.account.login-external'                    => 'Login with an external service',
