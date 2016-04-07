@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
+use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
@@ -135,25 +136,19 @@ class TicketHandler extends AbstractEntityHandler
     public function getExcerpt(TicketEntity $entity)
     {
         /** @var \Application\DeskPRO\EntityRepository\TicketMessage $repo */
-        $repo = $this->em->getRepository('DeskPRO:TicketMessage');
-
-        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+        $repo    = $this->em->getRepository(TicketMessage::class);
         $message = $repo->getLastReply($entity);
 
-        if ($message && $excerpt = $message->getMessagePreviewText(200)) {
-            return [
-                'message_id' => $message->getId(),
-                'excerpt'    => $excerpt,
-            ];
-        } else {
-            $excerpt = preg_replace('#[^a-zA-Z0-9\' \.]#', '', \Faker\Factory::create()->realText());
-            $excerpt = preg_replace('#-{2}#', '-', $excerpt);
-
-            return [
-                'message_id' => $entity->getId() + 1000,
-                'excerpt'    => $excerpt,
-            ];
+        if (!$message) {
+            return;
         }
+
+        $excerpt = $message->getMessagePreviewText(200);
+
+        return [
+            'message_id' => $message->getId(),
+            'excerpt'    => $excerpt,
+        ];
     }
 
     /**
