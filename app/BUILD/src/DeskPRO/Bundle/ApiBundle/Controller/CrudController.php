@@ -210,10 +210,7 @@ abstract class CrudController extends BaseController
         $view   = $this->handleForm($entity, $request);
 
         if ($this->isExposed('get')) {
-            $view->setLocation($this->generateUrl(
-                preg_replace('/_post$/', '_get', $request->get('_route')),
-                ['id' => $entity->getId()]
-            ));
+            $view->setLocation($this->getLocationUrl($entity, $request));
         }
 
         return $view;
@@ -431,6 +428,20 @@ abstract class CrudController extends BaseController
             $request->getContent(),
             true // convert to assoc arrays instead of stdClass instances
         );
+    }
+
+    /**
+     * @param object  $entity
+     * @param Request $request
+     * @param array   $params
+     *
+     * @return string
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
+
+        return $this->generateUrl($route, array_merge(['id' => $entity->getId()], $params));
     }
 
     /**
