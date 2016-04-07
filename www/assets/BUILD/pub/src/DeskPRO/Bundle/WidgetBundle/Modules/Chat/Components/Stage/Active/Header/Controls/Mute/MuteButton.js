@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ControlItem } from '../ControlItem';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class MuteButton extends React.Component {
 
@@ -14,7 +15,7 @@ export class MuteButton extends React.Component {
 
     return (
       <ControlItem className="dpdesignportal-chat-header-control-mute" onClick={onClick}>
-        <i className={classNames('fa', {'fa-volume-up': !mute, 'fa-volume-off': mute})}></i>Mute
+        <i className={classNames('fa', {'fa-volume-up': !mute, 'fa-volume-off': mute})}></i>{portalPhrases.get('portal.chat.mute_button')}
       </ControlItem>
     );
   }

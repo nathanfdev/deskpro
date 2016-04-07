@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ControlItem } from '../ControlItem';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class TranscriptButton extends React.Component {
 
@@ -15,7 +16,7 @@ export class TranscriptButton extends React.Component {
           <span className={classNames('dpdesignportal-checkbox', {'active': this.props.active})}>
             <i className="fa fa-check"></i>
           </span>
-          Chat Transcript <i className="fa fa-exclamation-circle"></i>
+          {portalPhrases.get('portal.chat.chat_transcript')} <i className="fa fa-exclamation-circle"></i>
         </span>
       </ControlItem>
     );

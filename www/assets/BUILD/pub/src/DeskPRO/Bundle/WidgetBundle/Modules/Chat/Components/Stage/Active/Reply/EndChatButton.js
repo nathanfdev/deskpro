@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class EndChatButton extends React.Component {
 
@@ -10,7 +11,7 @@ export class EndChatButton extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-button-row-end-chat">
         <a href="#" className="dpdesignportal-chat-form-button" onClick={this.props.onOpenPopup}>
-          <i className="fa fa-upload"></i>End Chat
+          <i className="fa fa-upload"></i>{portalPhrases.get('portal.chat.end_chat')}
         </a>
       </div>
     );

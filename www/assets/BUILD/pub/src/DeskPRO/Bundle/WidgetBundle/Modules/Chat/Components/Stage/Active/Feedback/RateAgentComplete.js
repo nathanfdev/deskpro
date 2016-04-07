@@ -1,4 +1,5 @@
 import React from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class RateAgentComplete extends React.Component {
 
@@ -6,8 +7,8 @@ export class RateAgentComplete extends React.Component {
     return (
       <div className="dpdesignportal-agent-rating dpdesignportal-agent-rating-complete">
         <i className="fa fa-check-circle-o"></i>
-        <h1>Thank you for your feedback!</h1>
-        <p className="grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+        <h1>{portalPhrases.get('portal.chat.feedback_title')}</h1>
+        <p className="grey">{portalPhrases.get('portal.chat.feedback_desc')}</p>
       </div>
     );
   }
