@@ -17,7 +17,6 @@ Feature: Discover settings
     When I send a GET request to "/api/v2/helpdesk/agent-client/info"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
 
     And the JSON node "data.settings.multi_lang" should be equal to 1
     And the JSON node "data.settings.helpdesk_name" should be equal to "DeskPRO"
@@ -75,8 +74,8 @@ Feature: Discover settings
     And the JSON node "data.tickets.group_fields[8].id" should be equal to "all_waiting_time"
     And the JSON node "data.tickets.group_fields[8].type" should be equal to "all_waiting_time"
 
-    And the JSON node "data.tickets.group_fields[9].id" should be equal to "open_time"
-    And the JSON node "data.tickets.group_fields[9].type" should be equal to "open_time"
+    And the JSON node "data.tickets.group_fields[9].id" should be equal to "date_created"
+    And the JSON node "data.tickets.group_fields[9].type" should be equal to "date_created"
 
     And the JSON node "data.tickets.group_fields[10].id" should be equal to "ticket_field.6"
     And the JSON node "data.tickets.group_fields[10].type" should be equal to "ticket_field"
