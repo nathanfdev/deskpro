@@ -79,7 +79,7 @@ class TicketParticipantsTransformer implements DataTransformerInterface
 
         $result = [];
         foreach ($value as $participant) {
-            $result[] = $participant->getPersonEmail() ? $participant->getPersonEmail()->getEmail() : '';
+            $result[] = $this->getParticipantEmail($participant);
         }
 
         return $result;
@@ -94,8 +94,8 @@ class TicketParticipantsTransformer implements DataTransformerInterface
             throw new \InvalidArgumentException('Ticket is not defined.');
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
-        $person_repo  = $this->em->getRepository(Person::class);
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo   = $this->em->getRepository(Person::class);
         $participants = $this->ticket->getParticipants();
         $result       = [];
 
@@ -106,7 +106,7 @@ class TicketParticipantsTransformer implements DataTransformerInterface
 
         foreach ($value as $email) {
             $filtered = $participants->filter(function (TicketParticipant $participant) use ($email) {
-                return $participant->getPersonEmail()->getEmail() === $email;
+                return $this->getParticipantEmail($participant) === $email;
             });
 
             if (count($filtered) > 0) {
@@ -117,22 +117,22 @@ class TicketParticipantsTransformer implements DataTransformerInterface
                 }
 
                 $entity = new TicketParticipant();
-                $person = $person_repo->findOneByEmail($email);
+                $person = $personRepo->findOneByEmail($email);
 
                 if ($person) {
-                    $person_email = $person->getEmails()->filter(function (PersonEmail $person_email) use ($email) {
-                        return $person_email->getEmail() === $email;
+                    $personEmail = $person->getEmails()->filter(function (PersonEmail $personEmail) use ($email) {
+                        return $personEmail->getEmail() === $email;
                     })->first();
 
                     $entity->setPerson($person);
                 } else {
-                    $person_email = new PersonEmail();
-                    $person_email->setEmail($email);
+                    $personEmail = new PersonEmail();
+                    $personEmail->setEmail($email);
                 }
 
                 $entity
                     ->setTicket($this->ticket)
-                    ->setPersonEmail($person_email)
+                    ->setPersonEmail($personEmail)
                 ;
             }
 
@@ -140,5 +140,22 @@ class TicketParticipantsTransformer implements DataTransformerInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param TicketParticipant $participant
+     *
+     * @return string
+     */
+    private function getParticipantEmail(TicketParticipant $participant)
+    {
+        if ($participant->getPersonEmail()) {
+            return $participant->getPersonEmail()->getEmail();
+        }
+        if ($participant->getPerson()) {
+            return $participant->getPerson()->getPrimaryEmailAddress();
+        }
+
+        return '';
     }
 }
