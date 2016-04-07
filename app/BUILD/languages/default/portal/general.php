@@ -29,8 +29,13 @@
 return array(
     'portal.general.rating_x_of_y_found_helpful' => '{{vote_up}} of {{vote_count}} people found this page helpful',
     'portal.general.get-in-touch'                => 'Get in touch',
+    'portal.general.get-in-touch-desc'           => 'With this excellent form',
     'portal.general.submit-feedback'             => 'Submit Feedback',
+    'portal.general.submit-feedback-desc'        => 'An excellent feedback system',
+    'portal.general.find-us'                     => 'Find us on the map',
     'portal.general.start-chat'                  => 'Start a chat session',
+    'portal.general.agents-available'            => 'Agents Available',
+    'portal.general.no-agents-available'            => 'No agents available',
     'portal.general.label-sort'                  => 'Sort',
     'portal.general.comments-count'              => '1 Comment|{{count}} Comments',
     'portal.general.comments-title'              => 'Comments (1)|Comments ({{count}})',

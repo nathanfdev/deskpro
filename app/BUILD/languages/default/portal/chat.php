@@ -99,6 +99,8 @@ return array(
     'portal.chat.online_agent'           => 'You are chatting with {{agentName}}',
     'portal.chat.rate_agent_desc'        => 'Lorem Ipsum dolor rate Agent',
     'portal.chat.rate_agent_title'       => 'You just completed a chat with {{agent}}',
+    'portal.chat.reopen_chat'            => 'Reopen this chat',
+    'portal.chat.reopen_chat_action'     => 'Reopen chat',
     'portal.chat.reply_to'               => 'Reply to {{firstName}}',
     'portal.chat.start'                  => 'Start a new chat',
     'portal.chat.starting'               => 'Your chat is starting...',

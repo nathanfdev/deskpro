@@ -72,14 +72,14 @@ export class WidgetButton extends React.Component {
           <span className="online-disc" />
           {onlineAgents.size
             ? <span>
-                {onlineAgents.size} Agents Available
+                {onlineAgents.size} {portalPhrases.get('portal.general.agents-available')}
                 {onlineAgents.map((agent, index) =>
                   <AvatarResolver key={index} avatar={agent.get('avatar')} size={10}>
                     <AgentAvatar />
                   </AvatarResolver>
                 )}
               </span>
-            : <span>No agents available</span>
+            : <span>{portalPhrases.get('portal.general.no-agents-available')}</span>
           }
         </p>
       </a>
