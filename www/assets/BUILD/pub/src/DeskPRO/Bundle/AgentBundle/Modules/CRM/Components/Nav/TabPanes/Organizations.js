@@ -13,7 +13,7 @@ export class Organizations extends Component {
 
   render() {
     const { labels, organizations } = this.props;
-    const listOptions = { content: 'organizations', orderBy: 'name', orderDir: constants.ORDER_ASC };
+    const listOptions = { content: 'organizations', order_by: 'name', order_dir: constants.ORDER_ASC };
 
     return (
       <TabsPaneStatefulContainer id="orgTab">

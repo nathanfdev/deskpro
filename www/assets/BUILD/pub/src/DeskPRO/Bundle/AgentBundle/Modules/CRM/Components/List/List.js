@@ -3,7 +3,7 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
-import { CrmCardContainer } from './View/List/CrmCardContainer';
+import { CrmCardContainer } from './View/Card/CrmCardContainer';
 import { CrmTableContainer } from './View/Table/CrmTableContainer';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
@@ -31,7 +31,7 @@ export class List extends Component {
           {currentViewMode === constants.VIEW_MODE_CARD ?
             <CrmCardContainer content={content} /> :
             <CrmTableContainer content={content} />}
-          {pagination && pagination.total_pages > 1 && <PaginationContainer />}
+          {pagination && pagination.get('total_pages') > 1 && <PaginationContainer />}
         </ListFrameContents>
       </ListFrameContainer>
     );

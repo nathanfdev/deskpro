@@ -48,14 +48,14 @@ export const listFiltersSelector = createSelector(
     const datePeriodsOptions = () => {
       const periods = DatePeriods.all;
       const options = [];
-      for (var property in periods) {
+      for (const property in periods) {
         if (periods.hasOwnProperty(property)) {
           options.push({ value: property, label: periods[property] });
         }
       }
       return options;
     };
-    const filterSelector = [
+    const filterSelector     = [
       { label: 'Created', type: 'select', param: 'period_created', options: datePeriodsOptions() }
     ];
     if (currentContent === 'people') {
@@ -65,11 +65,20 @@ export const listFiltersSelector = createSelector(
           value: group.get('id')
         })
       );
+
       filterSelector.push({
-        label: 'User group', type: 'select', param: 'user_group', quickFilter: true,
-        options: userGroupsOptions
+        label:       'User group',
+        type:        'select',
+        param:       'user_group',
+        quickFilter: true,
+        options:     userGroupsOptions
       });
-      const organizationsOptions = organizations.toArray().map(org=>({ label: org.get('name'), value: org.get('id') }));
+
+      const organizationsOptions = organizations.toArray()
+        .map(org => ({
+          label: org.get('name'),
+          value: org.get('id')
+        }));
 
       const compare = (a, b) => {
         if (a.label < b.label) {
@@ -79,11 +88,14 @@ export const listFiltersSelector = createSelector(
         }
         return 0;
       };
-
       organizationsOptions.sort(compare);
+
       filterSelector.push({
-        label: 'Organization', type: 'select', param: 'organization', quickFilter: true,
-        options: organizationsOptions
+        label:       'Organization',
+        type:        'select',
+        param:       'organization',
+        quickFilter: true,
+        options:     organizationsOptions
       });
     }
 
@@ -91,9 +103,8 @@ export const listFiltersSelector = createSelector(
   }
 );
 
+/** Just stub **/
 export const massActionsSelector = createSelector(
   [],
-  () => {
-    return [];
-  }
+  () => []
 );
