@@ -26,11 +26,10 @@ export class RateAgentDialog extends React.Component {
 
   render() {
     const { agentName } = this.props;
-    // portal.chat.rate_agent_title
     return (
       <div className="dpdesignportal-agent-rating">
         <div></div>
-        <h1><span>You just completed a chat with</span> {agentName}</h1>
+        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', {'{agentName}': agentName})}</span></h1>
         <p>{portalPhrases.get('portal.chat.rate_agent_desc')}</p>
 
         <div className="dpdesignportal-agent-rating-buttons">
