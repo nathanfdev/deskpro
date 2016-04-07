@@ -32,8 +32,11 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Command\SystemAlerts;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,11 +46,57 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IncidentsTriggeringCommand extends ContainerAwareCommand
 {
     /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
+     * @param int        $iterationNum
+     * @param float      $time
+     * @param Event[]    $events
+     * @param Incident[] $newIncidents
+     * @param Incident[] $updatedIncidents
+     */
+    public function batchReport($iterationNum, $time, array $events, array $newIncidents, array $updatedIncidents)
+    {
+        $this->output->writeln(sprintf('Iteration #%d: %d events processed', $iterationNum, count($events)));
+        $this->output->writeln('');
+
+        if ($count = count($newIncidents)) {
+            $this->output->writeln(sprintf('Created %d new incidents:', $count));
+            foreach ($newIncidents as $incident) {
+                $this->output->writeln($incident->getTitle());
+            }
+        } else {
+            $this->output->writeln('No new incidents');
+        }
+        $this->output->writeln('');
+
+        if ($count = count($updatedIncidents)) {
+            $this->output->writeln(sprintf('Updated %d incidents:', $count));
+            foreach ($updatedIncidents as $incident) {
+                $this->output->writeln($incident->getTitle());
+            }
+        } else {
+            $this->output->writeln('No incidents were updated');
+        }
+        $this->output->writeln(sprintf('Batch took %s seconds', $time));
+        $this->output->writeln('');
+        $this->output->writeln('----------');
+        $this->output->writeln('');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dp:sys:trigger-incidents');
+        $this
+            ->setName('dp:sys:trigger-incidents')
+            ->setDescription('Process system alerts events log')
+            ->addArgument('batch_size', InputArgument::REQUIRED, 'Number of events processed within an iteration')
+            ->addArgument('iterations_limit', InputArgument::REQUIRED, 'Iteration limit per single command run')
+        ;
     }
 
     /**
@@ -55,9 +104,26 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
+
         /** @var TriggeringProcess $triggeringProcess */
         $triggeringProcess = $this->getContainer()->get('dp_sys.alerts.triggering_process');
-        $triggeringProcess->run();
+
+        $batchSize       = $input->getArgument('batch_size');
+        $iterationsLimit = $input->getArgument('iterations_limit');
+        $totalTime       = 0;
+        $i               = 1;
+        while ($i <= $iterationsLimit) {
+            $start  = microtime(true);
+            $result = $triggeringProcess->run($batchSize);
+            $time   = microtime(true) - $start;
+            $totalTime += $time;
+            $this->batchReport($i, $time, $result['events'], $result['new_incidents'], $result['updated_incidents']);
+            ++$i;
+        }
+
+        $output->writeln(
+            sprintf('Processing of %s bunches of %s events took %s seconds', $iterationsLimit, $batchSize, $totalTime));
 
         return 0;
     }

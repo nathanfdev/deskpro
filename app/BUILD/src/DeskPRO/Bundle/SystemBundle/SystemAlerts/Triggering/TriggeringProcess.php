@@ -77,24 +77,43 @@ class TriggeringProcess
 
     /**
      * Run Triggers over non processed events.
+     *
+     * @param int $batchSize
+     *
+     * @return bool If some events were processed
      */
-    public function run()
+    public function run($batchSize = 100)
     {
-        $this->em->beginTransaction();
-
         $this->provideContinuingIncidents();
-        $events = $this->selectEvents();
+
+        $newIncidents     = [];
+        $updatedIncidents = [];
+
+        $this->em->beginTransaction();
+        $events = $this->selectEvents($batchSize);
         foreach ($events as $event) {
             foreach ($this->triggers as $trigger) {
                 if ($incident = $trigger->consume($event)) {
+                    if ($incident->getId()) {
+                        if (!in_array($incident, $updatedIncidents)) {
+                            $updatedIncidents[] = $incident;
+                        }
+                    } else {
+                        $newIncidents[] = $incident;
+                    }
                     $this->em->persist($incident);
                 }
             }
         }
         $this->em->flush();
         $this->setProcessed($events);
-
         $this->em->commit();
+
+        return [
+            'events'            => $events,
+            'new_incidents'     => $newIncidents,
+            'updated_incidents' => $updatedIncidents,
+        ];
     }
 
     /**
@@ -111,11 +130,13 @@ class TriggeringProcess
     }
 
     /**
+     * @param int $limit
+     *
      * @return Event[]
      */
-    private function selectEvents()
+    private function selectEvents($limit)
     {
-        return $this->em->getRepository(AbstractEvent::class)->findBy(['processed' => false], ['id' => 'asc']);
+        return $this->em->getRepository(AbstractEvent::class)->findBy(['processed' => false], ['id' => 'asc'], $limit);
     }
 
     /**
