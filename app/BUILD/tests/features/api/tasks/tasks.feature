@@ -22,13 +22,11 @@ Feature: /tasks endpoint
     And the JSON node "data.title" should be equal to "My test task"
 
   Scenario: I try to POST a broken task with no title
-    When I send a POST request to "/api/v2/tasks" with body:
-    """
-{
-}
-    """
+    When I send a POST request to "/api/v2/tasks"
     Then the response should be in JSON
     And the response status code should be 400
+    And the JSON node "errors.fields.title.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I GET a single task
     When I send a GET request to "/api/v2/tasks/3"
@@ -69,9 +67,9 @@ Feature: /tasks endpoint
   Scenario: I add labels to a task
     When I send a PUT request to "/api/v2/tasks/3" with body:
     """
-    {
-      "labels": ["test", "labels"]
-    }
+{
+  "labels": ["test", "test", "labels"]
+}
     """
     Then the response status code should be 204
     And the response should be empty
