@@ -8,8 +8,23 @@
   <article class="news main-news">
 
     <header class="large-title">
-        <h1>{{ phrase('portal.chat.chat_logs_header') }}</h1>
-        <p>{{ phrase('portal.chat.chat_logs_desc') }}</p>
+        {% if type == 'own' and person.organization and person.organization_manager %}
+            <a class="button right" href="{{ path('portal_chats', { type: 'organization' }) }}">
+                {{ phrase('portal.chat.list_switch_to_organization') }}
+            </a>
+        {% endif %}
+        {% if type == 'organization' %}
+            <a class="button right" href="{{ path('portal_chats') }}">
+                {{ phrase('portal.chat.list_switch_to_my_chats') }}
+            </a>
+        {% endif %}
+        {% if type == 'organization' %}
+            <h1>{{ phrase('portal.chat.chat_logs_header_org') }}</h1>
+            <p>{{ phrase('portal.chat.chat_logs_desc_org') }}</p>
+        {% else %}
+            <h1>{{ phrase('portal.chat.chat_logs_header') }}</h1>
+            <p>{{ phrase('portal.chat.chat_logs_desc') }}</p>
+        {% endif %}
     </header>
 
     <table class="chat-list">
@@ -20,6 +35,11 @@
             <td class="table-header">
                 {{ phrase('portal.chat.list_agent') }}
             </td>
+            {% if type == 'organization' %}
+                <td class="table-header">
+                    {{ phrase('portal.chat.list_user') }}
+                </td>
+            {% endif %}
             <td class="table-header">
                 {{ phrase('portal.chat.list_chat') }}
             </td>
@@ -36,6 +56,13 @@
                         </a>
                     {% endif %}
                 </td>
+                {% if type == 'organization' %}
+                    <td>
+                        <a class="overflow" href="{{ portal_path(chat) }}">
+                            <span style="background: url({{ avatar_url(chat.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ chat.person.name }}
+                        </a>
+                    </td>
+                {% endif %}
                 <td>
                     <a class="overflow" href="{{ portal_path(chat) }}">{{ chat.subject_preview }}</a>
                 </td>
