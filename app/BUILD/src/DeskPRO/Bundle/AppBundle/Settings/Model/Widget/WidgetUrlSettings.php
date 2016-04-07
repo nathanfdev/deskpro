@@ -26,64 +26,93 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class WidgetSetup.
+ * Class WidgetUrlSettings.
  */
-class WidgetSetup
+class WidgetUrlSettings
 {
     /**
-     * A bunch of configuration described in urls.
+     * @var string
      *
-     * @JMS\Type("array<string, string>")
-     *
-     * @var array
+     * @JMS\Type("string")
      */
-    protected $url;
+    private $widgetLoader;
 
     /**
-     * Company settings.
+     * @var string
      *
-     * @JMS\Type("array")
-     *
-     * @var array
+     * @JMS\Type("string")
      */
-    protected $company;
+    private $widgetBundle;
 
     /**
-     * Widget settings itself.
+     * @var string
      *
-     * @JMS\Type("array")
-     *
-     * @var array
+     * @JMS\Type("string")
      */
-    protected $settings;
+    private $helpdesk;
 
     /**
-     * If widget enabled on portal.
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
+     * @return string
      */
-    protected $enabled_on_portal;
-
-    /**
-     * Constructor.
-     *
-     * @param array $company
-     * @param bool  $enabled_on_portal
-     * @param array $url
-     * @param array $settings
-     */
-    public function __construct($company, $enabled_on_portal, $url, $settings)
+    public function getWidgetLoader()
     {
-        $this->company           = $company;
-        $this->enabled_on_portal = $enabled_on_portal;
-        $this->url               = $url;
-        $this->settings          = $settings;
+        return $this->widgetLoader;
+    }
+
+    /**
+     * @param string $widgetLoader
+     *
+     * @return $this
+     */
+    public function setWidgetLoader($widgetLoader)
+    {
+        $this->widgetLoader = $widgetLoader;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetBundle()
+    {
+        return $this->widgetBundle;
+    }
+
+    /**
+     * @param string $widgetBundle
+     *
+     * @return $this
+     */
+    public function setWidgetBundle($widgetBundle)
+    {
+        $this->widgetBundle = $widgetBundle;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelpdesk()
+    {
+        return $this->helpdesk;
+    }
+
+    /**
+     * @param string $helpdesk
+     *
+     * @return $this
+     */
+    public function setHelpdesk($helpdesk)
+    {
+        $this->helpdesk = $helpdesk;
+
+        return $this;
     }
 }

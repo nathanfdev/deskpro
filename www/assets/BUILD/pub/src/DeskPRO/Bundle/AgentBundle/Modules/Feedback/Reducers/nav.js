@@ -42,10 +42,6 @@ export default createReducer(feedbackNavInitialState, {
     success: (state, payload) =>
       state.setIn(['commentsToReviewCount'], payload.data.count)
   }),
-  [actions.feedbackLabels]: async({
-    success: (state, payload) =>
-      state.setIn(['labels'], Immutable.fromJS(payload.data))
-  }),
   [actions.feedbackTypes]: async({
     success: (state, payload) => state.set('types', Immutable.fromJS(payload.data))
   }),

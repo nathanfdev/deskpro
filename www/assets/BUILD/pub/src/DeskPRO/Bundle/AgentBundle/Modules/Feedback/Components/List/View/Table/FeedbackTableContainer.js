@@ -1,10 +1,12 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
-import { Table, Th, Td, TdId, PersonInTable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { Table, Th, Td, TdId, PersonInTable }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { applyParams } from '../../../../Actions/FeedbackListActions';
-import { idsSelector, currentListOrderBySelector, currentListOrderDirSelector } from '../../../../Selectors/list';
+import { idsSelector, currentListOrderBySelector, currentListOrderDirSelector }
+  from '../../../../Selectors/list';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
@@ -37,12 +39,12 @@ export class FeedbackTableContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  sortTable(orderBy, orderDir) {
+  sortTable = (orderBy, orderDir) => {
     this.props.dispatch(applyParams({ order_by: orderBy, order_dir: orderDir }));
-  }
+  };
 
   isVisible(field) {
-    const {viewFields} = this.props;
+    const { viewFields } = this.props;
     return viewFields && viewFields.includes(field);
   }
 
@@ -51,6 +53,7 @@ export class FeedbackTableContainer extends Component {
     if (feedbackStatusCategories.get(statusCategory)) {
       return feedbackStatusCategories.get(statusCategory).get('title');
     }
+    return null;
   }
 
   renderCategory(id) {
@@ -58,6 +61,7 @@ export class FeedbackTableContainer extends Component {
     if (feedbackCategories) {
       return feedbackCategories.get(id) ? feedbackCategories.get(id).get('input') : null;
     }
+    return null;
   }
 
   renderRow(id) {
@@ -115,13 +119,13 @@ export class FeedbackTableContainer extends Component {
               visible={this.isVisible('id')}
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}/>
+              onChange={this.sortTable}/>
           <Th sort="title"
               title="Title"
               visible={this.isVisible('title')}
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}/>
+              onChange={this.sortTable}/>
           <Th sort="content"
               title="Content"
               visible={this.isVisible('content')}/>
@@ -134,7 +138,7 @@ export class FeedbackTableContainer extends Component {
               visible={this.isVisible('person')}
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}/>
+              onChange={this.sortTable}/>
           <Th sort="type" title="Type"
               visible={this.isVisible('type')}/>
           <Th sort="custom_category" title="Category"
@@ -143,14 +147,14 @@ export class FeedbackTableContainer extends Component {
               title="Votes"
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}
+              onChange={this.sortTable}
               visible={this.isVisible('num_ratings')}/>
           <Th sort="num_comments" title="Comments"
               visible={this.isVisible('num_comments')}/>
           <Th sort="date_created" title="Created"
               orderDir={orderDir}
               orderBy={orderBy}
-              onChange={this.sortTable.bind(this)}
+              onChange={this.sortTable}
               visible={this.isVisible('date_created')}/>
         </tr>
         </thead>

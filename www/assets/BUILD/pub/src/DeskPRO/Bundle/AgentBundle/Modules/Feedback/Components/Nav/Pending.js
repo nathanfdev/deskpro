@@ -17,18 +17,17 @@ export class Pending extends Component {
         <SectionHeader>Pending</SectionHeader>
         <ul>
           <ListItemContainer label="Feedback to Review"
-                             listOptions={{isComments: false, navItem: {awaiting_validation: 1}}}>
+                             listOptions={{ isComments: false, navItem: { awaiting_validation: 1 } }}>
 
             <ListItem count={feedbackToReviewCount}
                       label="Feedback to Review"/>
           </ListItemContainer>
 
           <ListItemContainer label="Comments to Review"
-                             listOptions={{isComments: true, navItem: {awaiting_validation: 1}}}>
+                             listOptions={{ isComments: true, navItem: { awaiting_validation: 1 } }}>
 
             <ListItem count={commentsToReviewCount}
-                      label="Comments to Review"
-              />
+                      label="Comments to Review"/>
 
           </ListItemContainer>
         </ul>

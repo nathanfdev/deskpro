@@ -30,12 +30,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class WidgetChatSetupType.
@@ -45,36 +48,36 @@ class WidgetChatSetupType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'widget_chat_setup';
+        $builder
+            ->add('enabled', ApiBooleanType::class)
+            ->add('request_user_info', ApiBooleanType::class, [
+                'property_path' => 'requestUserInfo',
+            ])
+            ->add('proactive', ApiBooleanType::class)
+            ->add('begin_mode', ChoiceType::class, [
+                'property_path'     => 'beginMode',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandChatSettings::BEGIN_MODE_CONVERSATION,
+                    WidgetBrandChatSettings::BEGIN_MODE_FORM,
+                ],
+            ])
+            ->add('waiting_timeout', IntegerType::class, [
+                'property_path' => 'waitingTimeout',
+            ])
+            ->add('popup', WidgetChatPopupSetupType::class)
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $builder
-            ->add('enabled', ApiBooleanType::class)
-            ->add('request_user_info', ApiBooleanType::class)
-            ->add('proactive', ApiBooleanType::class)
-            ->add('begin_mode', 'choice', [
-                'choices' => [
-                    'conversation' => 'Conversation',
-                    'form'         => 'Form',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('waiting_timeout', 'number', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\GreaterThan(9),
-                ],
-            ])
-            ->add('popup', new WidgetChatPopupSetupType())
-        ;
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandChatSettings::class,
+        ]);
     }
 }

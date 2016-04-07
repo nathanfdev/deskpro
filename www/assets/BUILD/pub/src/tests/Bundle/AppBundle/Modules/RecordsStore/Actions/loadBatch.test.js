@@ -1,9 +1,11 @@
 import { dispatchInAgent, getReduxState, fakeRecordsStore } from 'Helpers';
 
 describe('RecordsStore loadBatch() action', () => {
-
   const loadBatch = require('DeskPRO/Bundle/AppBundle/Modules/RecordsStore').loadBatch;
-  const DAL       = require('DeskPRO/Bundle/AppBundle/DAL/DAL');
+  const DAL = require('DeskPRO/Bundle/AppBundle/DAL/DAL');
+  const api = require('DeskPRO/Bundle/AppBundle/DAL').api;
+
+  DAL.setApi(api);
 
   it('should create Flux Standard Action', () => {
     const action = loadBatch();

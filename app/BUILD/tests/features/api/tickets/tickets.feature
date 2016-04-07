@@ -82,6 +82,8 @@ Feature: /tickets endpoint
 }
     """
     Then the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/tickets/6"
+    And the JSON node "data.id" should be equal to 6
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.is_hold" should be equal to 1
     And the JSON node "data.person" should be equal to 3

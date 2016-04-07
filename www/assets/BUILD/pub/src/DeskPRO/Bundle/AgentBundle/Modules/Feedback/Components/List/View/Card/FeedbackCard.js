@@ -1,10 +1,14 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import createFragment from 'react-addons-create-fragment';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import Immutable from 'immutable';
+import {
+  Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem,
+  CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel, CardComments
+}
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
+import { FeedbackCardMark } from './FeedbackCardMark';
 
 @injectIntl
 export class FeedbackCard extends Component {
@@ -22,21 +26,22 @@ export class FeedbackCard extends Component {
   };
 
   renderLabels(labels) {
-    const {viewFields} = this.props;
+    const { viewFields } = this.props;
     if (labels.size && viewFields && viewFields.includes('labels')) {
       return (
         <CardLineItem>
           <CardDisc/>
-          <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+          <i className="fa fa-tags"></i> {labels.map((label, index) => <CardLabel key={index} label={label}/>)}
           <CardDisc/>
         </CardLineItem>
       );
     }
+    return null;
   }
 
   renderStatus() {
     const { feedback, feedbackStatusCategory } = this.props;
-    var realStatus = '';
+    let realStatus = '';
     if (feedback.get('status') === 'new') {
       realStatus = 'New';
     } else if (feedback.get('status') === 'hidden') {
@@ -49,19 +54,11 @@ export class FeedbackCard extends Component {
     );
   }
 
-  renderId(id) {
-    return (
-      <CardLineItem>ID: { id }</CardLineItem>
-    );
-  }
+  renderId = (id) => <CardLineItem>ID: { id }</CardLineItem>;
 
-  renderDate(date) {
-    return (
-      <CardLineItem><CardDisc/><FormattedRelative value={date}/></CardLineItem>
-    );
-  }
+  renderDate = (date) => <CardLineItem><CardDisc/><FormattedRelative value={date}/></CardLineItem>;
 
-  renderCategory() {
+  renderCategory = () => {
     const { feedback } = this.props;
     const category = feedback.get('custom_data');
     if (category) {
@@ -69,23 +66,24 @@ export class FeedbackCard extends Component {
         <CardLineItem><CardDisc/>{ category }</CardLineItem>
       );
     }
-  }
+    return null;
+  };
 
-  renderOptionalFields() {
+  renderOptionalFields = () => {
     const { feedback, viewFields } = this.props;
     const output = {};
     let index = 0;
     if (undefined !== viewFields) {
       if (viewFields.includes('id')) {
-        output['key' + index] = this.renderId(feedback.get('id'));
+        output[`key${index}`] = this.renderId(feedback.get('id'));
         index++;
       }
       if (viewFields.includes('date_created')) {
-        output['key' + index] = this.renderDate(feedback.get('date_created'));
+        output[`key${index}`] = this.renderDate(feedback.get('date_created'));
         index++;
       }
       if (viewFields.includes('category')) {
-        output['key' + index] = this.renderCategory();
+        output[`key${index}`] = this.renderCategory();
       }
     }
     return (
@@ -95,7 +93,7 @@ export class FeedbackCard extends Component {
         </CardLineLeft>
       </CardLine>
     );
-  }
+  };
 
   render() {
     const { feedback, author, selected, toggleSelected } = this.props;
@@ -147,27 +145,4 @@ export class FeedbackCard extends Component {
     );
   }
 
-}
-
-export class FeedbackCardMark extends Component {
-
-  static propTypes = {
-    numRatings: PropTypes.number.isRequired
-  };
-
-  render() {
-    const {numRatings} = this.props;
-
-    return (
-      <div className="dpw--feedback-card-mark">
-        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-thumbs">
-          <i className="fa fa-thumbs-up"></i> <span className="feedback-card-mark-count">{numRatings}</span>
-        </div>
-        <hr/>
-        <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-stars">
-          <i className="fa fa-star"></i> <span className="feedback-card-mark-count">0</span>
-        </div>
-      </div>
-    );
-  }
 }

@@ -6,7 +6,7 @@ services:
 
   widget_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver
-    arguments: ["@settings_resolver", "@doctrine.orm.entity_manager"]
+    arguments: ["@brand_aware_settings_resolver", "@doctrine.orm.entity_manager", "@assets.packages", "@router"]
 
   captcha_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver
@@ -69,3 +69,7 @@ services:
   twig_template_renderer:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
     arguments: ["@twig"]
+
+  widget_loader_code_renderer:
+    class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
+    arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]

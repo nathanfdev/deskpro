@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { MassActionBarContainer }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
 import { submitMassActions } from '../../../../Application/Actions/massActions';
@@ -27,37 +27,35 @@ export class MassActionContainer extends Component {
   };
 
   choiceActions() {
-    const { dispatch, navItem, actions, isComments, selected} = this.props;
+    const { dispatch, navItem, actions, isComments, selected } = this.props;
     const content = isComments ? 'feedback_comments' : 'feedback';
     if (navItem && navItem.get('awaiting_validation')) {
-      const deleteAction = () => {
-        return dispatch(submitMassActions(
-          {
-            jobType: 'publish_mass',
-            params: {
-              ids: selected,
-              content: content,
-              actions: { delete: [] }
-            },
-            loadIndicatorAction: loadIndicator,
-            reloadNavAction: initialLoad
-          }
-        ));
-      };
-      const approveAction = () => {
-        return dispatch(submitMassActions(
-          {
-            jobType: 'publish_mass',
-            params: {
-              ids: selected,
-              content: content,
-              actions: { approve: [] }
-            },
-            loadIndicatorAction: loadIndicator,
-            reloadNavAction: initialLoad
-          }
-        ));
-      };
+      const deleteAction = () => dispatch(submitMassActions(
+        {
+          jobType: 'publish_mass',
+          params: {
+            ids: selected,
+            content,
+            actions: { delete: [] }
+          },
+          loadIndicatorAction: loadIndicator,
+          reloadNavAction: initialLoad
+        }
+      ));
+
+      const approveAction = () => dispatch(submitMassActions(
+        {
+          jobType: 'publish_mass',
+          params: {
+            ids: selected,
+            content,
+            actions: { approve: [] }
+          },
+          loadIndicatorAction: loadIndicator,
+          reloadNavAction: initialLoad
+        }
+      ));
+
       return [
         { label: 'Approve', type: 'button', onClick: approveAction },
         { label: 'Delete', type: 'button', onClick: deleteAction }
@@ -79,7 +77,7 @@ export class MassActionContainer extends Component {
 
 
     return (
-      <MassActionBarContainer {...config} />
+      <MassActionBarContainer {...config}/>
     );
   }
 }

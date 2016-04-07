@@ -39,9 +39,11 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -89,7 +91,29 @@ class OrganizationsController extends CrudController
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
     }
+    /**
+     * @ApiDoc(
+     *     section="Organizations",
+     *     description="Count Organizations",
+     *     statusCodes={
+     *         200="Returned in case of successful response"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     * @Rest\Get("/counts", name="api_organizations_counts")
+     */
+    public function getCountAction()
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->select('count(o)')
+            ->from('DeskPRO:Organization', 'o');
+        $count = $qb->getQuery()->getSingleScalarResult();
 
+        return View::create(
+            $this->wrap(Count::fromValue($count)),
+            Response::HTTP_OK
+        );
+    }
     /**
      * {@inheritdoc}
      */

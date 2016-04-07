@@ -5,7 +5,10 @@ import { feedbackLabelsSelector } from './nav';
 const navStateSelector = state => state.Feedback.nav;
 
 export const massActionsSelector = createSelector(
-  [navStateSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector],
+  [
+    navStateSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'),
+    collectionSelectorFactory('FeedbackType', 'feedback'), feedbackLabelsSelector
+  ],
   (navState, categories, types, labels) => {
     const massActions = [];
     // Type options
@@ -23,7 +26,7 @@ export const massActionsSelector = createSelector(
     const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
       value: opt.id,
       label: opt.title,
-      param: param
+      param
     }));
     const statusOptions = [
       { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'set_status_category') },
@@ -47,8 +50,8 @@ export const massActionsSelector = createSelector(
 
     // Other options
     const otherOptions = [
-      { label: 'Add label', icon: 'plus-square', labels: labels, param: 'add_labels' },
-      { label: 'Remove label', icon: 'minus-square', labels: labels, param: 'remove_labels' }
+      { label: 'Add label', icon: 'plus-square', labels, param: 'add_labels' },
+      { label: 'Remove label', icon: 'minus-square', labels, param: 'remove_labels' }
     ];
     massActions.push({ icon: 'fa-asterisk', type: 'menu', param: 'other', options: otherOptions });
 

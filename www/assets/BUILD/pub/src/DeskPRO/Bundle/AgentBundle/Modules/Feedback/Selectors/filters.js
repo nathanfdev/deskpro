@@ -6,9 +6,12 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
 const navStateSelector = state => state.Feedback.nav;
 
 export const listFiltersSelector = createSelector(
-  [navStateSelector, currentListParamsSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'), feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')],
+  [
+    navStateSelector, currentListParamsSelector, collectionSelectorFactory('FeedbackCategory', 'feedback'),
+    feedbackLabelsSelector, collectionSelectorFactory('FeedbackType', 'feedback')
+  ],
   (navState, currentListParams, categories, labels, types) => {
-    const checkIfShowStatus = ()=> {
+    const checkIfShowStatus = () => {
       const navItem = currentListParams.get('navItem');
       return !navItem || (!navItem.get('status') && !navItem.get('status_category') && !navItem.get('hidden_status'));
     };
@@ -34,7 +37,7 @@ export const listFiltersSelector = createSelector(
       const toStatusOptions = (nested, param) => (nested || []).map(opt => ({
         value: opt.id,
         label: opt.title,
-        param: param
+        param
       }));
       const statusOptions = [
         { label: 'Active', value: 'active', nested: toStatusOptions(statuses.active.nested, 'status_category') },
@@ -66,7 +69,7 @@ export const listFiltersSelector = createSelector(
         type: 'labels',
         param: 'label',
         modeParam: 'labels_mode',
-        labels: labels
+        labels
       });
     }
     return filterSelector;

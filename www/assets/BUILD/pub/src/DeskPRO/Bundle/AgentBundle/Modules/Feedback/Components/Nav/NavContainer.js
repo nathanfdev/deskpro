@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { initialLoad } from '../../Actions/feedbackNavActions';
 import { applyParams } from '../../Actions/FeedbackListActions';
@@ -7,17 +7,16 @@ import { categoryCountersSelector, commentsToReviewCountSelector, isLoadedSelect
   typeCountersSelector, statusCountersSelector, feedbackLabelsSelector }
   from '../../Selectors/nav';
 
-@connect(state => {
-  return ({
-    isLoaded: isLoadedSelector(state),
-    feedbackToReviewCount: feedbackToReviewCountSelector(state),
-    commentsToReviewCount: commentsToReviewCountSelector(state),
-    statuses: statusCountersSelector(state),
-    types: typeCountersSelector(state),
-    labels: feedbackLabelsSelector(state),
-    categories: categoryCountersSelector(state)
-  });
-})
+@connect(state => ({
+  isLoaded: isLoadedSelector(state),
+  feedbackToReviewCount: feedbackToReviewCountSelector(state),
+  commentsToReviewCount: commentsToReviewCountSelector(state),
+  statuses: statusCountersSelector(state),
+  types: typeCountersSelector(state),
+  labels: feedbackLabelsSelector(state),
+  categories: categoryCountersSelector(state)
+}))
+
 export class NavContainer extends Component {
 
   static propTypes = {

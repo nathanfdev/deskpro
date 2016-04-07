@@ -29,7 +29,7 @@ Feature: /glossary endpoint
 }
     """
     Then the response status code should be 201
-#    And the header "Location" should match "\/api\/v2\/glossary\/word_definitions\/\d+"
+    And the header "Location" should contain "/api/v2/glossary/2"
     And the JSON node "data.definition" should be equal to "Sample Definition"
 
   Scenario: I create a definition with nested words
@@ -55,7 +55,8 @@ Feature: /glossary endpoint
     """
     Then the response should be in JSON
     And the response status code should be 400
-#    And the JSON node "data.errors.definition" should exist
+    And the JSON node "errors.fields.definition.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.definition.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I modify a definition
     When I send a PUT request to "/api/v2/glossary/1" with body:

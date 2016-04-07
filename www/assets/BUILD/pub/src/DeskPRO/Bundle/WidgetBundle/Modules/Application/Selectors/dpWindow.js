@@ -76,22 +76,6 @@ export const agentPollingTimeoutSelector = createSelector(
   options => options.get('agent_polling_timeout') || 'off'
 );
 
-// Company options selectors
-export const companyOptionsSelector = createSelector(
-  widgetOptionsSelector,
-  options => options.get('company')
-);
-
-export const companyNameSelector = createSelector(
-  companyOptionsSelector,
-  options => options.get('name')
-);
-
-export const companyLogoSelector = createSelector(
-  companyOptionsSelector,
-  options => options.get('logo')
-);
-
 // Help button options selectors
 export const helpButtonSelector = createSelector(
   widgetOptionsSelector,

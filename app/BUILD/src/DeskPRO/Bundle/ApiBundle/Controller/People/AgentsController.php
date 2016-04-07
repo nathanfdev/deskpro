@@ -57,12 +57,6 @@ class AgentsController extends CrudController
     public static $exposeOnly   = ['list'];
     public static $listPaginate = false;
 
-    public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $qb->andWhere("$alias.is_agent = 1");
-        parent::applyListFilters($qb, $alias, $request);
-    }
-
     /**
      * @ApiDoc(
      *     section="Agents",
@@ -81,5 +75,14 @@ class AgentsController extends CrudController
         $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
 
         return View::create($this->wrap($agent_ids));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb->andWhere("$alias.is_agent = 1");
+        parent::applyListFilters($qb, $alias, $request);
     }
 }

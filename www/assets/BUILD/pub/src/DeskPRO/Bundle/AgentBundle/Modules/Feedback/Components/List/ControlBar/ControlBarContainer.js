@@ -1,7 +1,8 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector } from '../../../Selectors/list';
-import { listFiltersSelector} from '../../../Selectors/filters';
+import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector }
+  from '../../../Selectors/list';
+import { listFiltersSelector } from '../../../Selectors/filters';
 import { applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
   storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from '../../../Actions/FeedbackListActions';
@@ -32,9 +33,9 @@ export class ControlBarContainer extends Component {
       sorting.num_ratings = { label: 'Votes', icon: 'calendar' };
     }
     const config = {
-      applyParams: applyParams,
+      applyParams,
       currentParams: this.props.currentParams,
-      sorting: sorting,
+      sorting,
       filters: this.props.filters,
       view: {
         options: {
@@ -73,12 +74,13 @@ export class ControlBarContainer extends Component {
 
         viewMode: this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
-        onViewFieldsMenuUnmount: this.props.visibleFields.get('fromDb') ? updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
+        onViewFieldsMenuUnmount: this.props.visibleFields.get('fromDb') ?
+          updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
       }
     };
 
     return (
-      <ControlBar {...config} />
+      <ControlBar {...config}/>
     );
   }
 }

@@ -47,13 +47,13 @@ export class RateAgentContainer extends React.Component {
       case 'finished':
         return <RateAgentComplete />;
       case 'form':
-        return <RateAgentForm onSubmit={this.onSubmitForm}
-                              agentName={agentName} />;
+        return <RateAgentForm agentName={agentName}
+                              onSubmit={this.onSubmitForm} />;
       case 'dialog':
         return (
-          <RateAgentDialog onClickHelpful={this.onClickHelpful}
-                           onClickNotHelpful={this.onClickNotHelpful}
-                           agentName={agentName} />
+          <RateAgentDialog agentName={agentName}
+                           onClickHelpful={this.onClickHelpful}
+                           onClickNotHelpful={this.onClickNotHelpful} />
         );
       default:
         return null;

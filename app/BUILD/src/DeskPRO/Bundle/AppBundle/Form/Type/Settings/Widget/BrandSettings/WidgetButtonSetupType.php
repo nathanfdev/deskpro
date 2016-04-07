@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,15 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class WidgetButtonSetupType.
@@ -43,33 +47,29 @@ class WidgetButtonSetupType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'widget_button_setup';
+        $builder
+            ->add('size', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandButtonSettings::SIZE_SMALL,
+                    WidgetBrandButtonSettings::SIZE_MEDIUM,
+                    WidgetBrandButtonSettings::SIZE_LARGE,
+                ],
+            ])
+            ->add('name', TextType::class)
+            ->add('colors', WidgetButtonColorsSetupType::class)
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $builder
-            ->add('size', 'choice', [
-                'choices' => [
-                    'small'  => 'S',
-                    'medium' => 'M',
-                    'large'  => 'L',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('name', 'text', [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('colors', new WidgetButtonColorsSetupType())
-        ;
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandButtonSettings::class,
+        ]);
     }
 }

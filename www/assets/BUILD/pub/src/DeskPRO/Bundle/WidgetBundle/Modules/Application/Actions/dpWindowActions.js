@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { requireChatLoginSelector } from '../Selectors/bootstrap';
+import { requireChatLoginSelector, widgetSessionIsLoginSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
   chatBeginModeSelector,
@@ -23,20 +23,33 @@ import { history } from '../../../Services/history';
 import $ from 'jquery';
 import Immutable from 'immutable';
 
-const openChatBeginStage = chatBeginMode => {
-  switch (chatBeginMode) {
-    case 'simple':
-    default:
+const openChatBeginStage = createAction(
+  'WIDGET_OPEN_CHAT_BEGIN_STAGE',
+  () => (dispatch, getState) => {
+    const state = getState();
+
+    const chatBeginMode = chatBeginModeSelector(state);
+    const isLogin = widgetSessionIsLoginSelector(state);
+
+    if (isLogin) {
       history.replace('/chat/begin/simple');
-      break;
-    case 'conversation':
-      history.replace('/chat/begin/conversation');
-      break;
-    case 'form':
-      history.replace('/chat/begin/form');
-      break;
+      return;
+    }
+
+    switch (chatBeginMode) {
+      case 'conversation':
+        history.replace('/chat/begin/conversation');
+        break;
+      case 'form':
+        history.replace('/chat/begin/form');
+        break;
+      case 'simple':
+      default:
+        history.replace('/chat/begin/simple');
+        break;
+    }
   }
-};
+);
 
 export const widgetResize = createAction(
   'WIDGET_RESIZE',
@@ -77,7 +90,6 @@ export const openWidget = createAction(
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
     const chatId = chatIdSelector(state);
-    const chatBeginMode = chatBeginModeSelector(state);
     const agentId = agentIdSelector(state);
     const dateEnded = dateEndedSelector(state);
     const needValidateEmail = needValidateEmailSelector(state);
@@ -94,7 +106,7 @@ export const openWidget = createAction(
       } else if (requireChatLogin) {
         history.replace('/chat/validation/login');
       } else {
-        openChatBeginStage(chatBeginMode);
+        dispatch(openChatBeginStage());
       }
     } else {
       history.replace('/ticket/form');

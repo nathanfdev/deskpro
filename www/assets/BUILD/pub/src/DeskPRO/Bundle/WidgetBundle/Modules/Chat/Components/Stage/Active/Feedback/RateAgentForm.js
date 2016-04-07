@@ -32,7 +32,6 @@ export class RateAgentForm extends React.Component {
     return (
       <div className="dpdesignportal-agent-rating">
         <h1>You have rated <div></div> {agentName} as <span className="negative">Not Helpful</span></h1>
-        <p className="grey">{portalPhrases.get('portal.chat.feedback_not_helpful_desc')}</p>
 
         <div className="dpdesignportal-agent-rating-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>

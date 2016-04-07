@@ -32,30 +32,33 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class WidgetController.
+ *
+ * @Rest\Route("/portal/api/widget")
  */
 class WidgetController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/widget/settings")
-     * @Method({"GET"})
+     * @ApiDoc(
+     *     section="Portal widget",
+     *     description="Widget settings",
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings"
+     *)
      *
-     * @return View
+     * @Rest\Get("/settings")
+     *
+     * @return WidgetGlobalSettings
      */
     public function getWidgetSettingsAction()
     {
-        $user_chat_settings = $this->container->get('widget_settings_resolver');
-
-        return new View([
-            'chat' => [
-                'email_validation' => $user_chat_settings->isPortalEmailValidation(),
-                'require_login'    => $user_chat_settings->isPortalRequireLogin(),
-            ],
-        ]);
+        return $this->wrap($this->container->get('widget_settings_resolver')->getWidgetGlobalOptions());
     }
 }
