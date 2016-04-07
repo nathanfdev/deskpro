@@ -35,7 +35,7 @@ return array(
     'portal.general.find-us'                     => 'Find us on the map',
     'portal.general.start-chat'                  => 'Start a chat session',
     'portal.general.agents-available'            => 'Agents Available',
-    'portal.general.no-agents-available'            => 'No agents available',
+    'portal.general.no-agents-available'         => 'No agents available',
     'portal.general.label-sort'                  => 'Sort',
     'portal.general.comments-count'              => '1 Comment|{{count}} Comments',
     'portal.general.comments-title'              => 'Comments (1)|Comments ({{count}})',
