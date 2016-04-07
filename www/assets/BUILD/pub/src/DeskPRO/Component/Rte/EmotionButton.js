@@ -44,16 +44,17 @@ export class EmotionButton extends React.Component {
   };
 
   onSelectEmotion = code => {
+    this.onCloseEmotionsPopup();
+
     const editor = this.props.getEditor();
     const medium = editor.getMediumEditor();
+    medium.stopSelectionUpdates();
 
+    // focus the rte field
     editor.focus();
 
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
-
-    // Clears default empty content to avoid new lines
-    medium.trigger('clearEmptyContent');
 
     const html = ` ${createEmotionImage(code)} `;
 
@@ -85,16 +86,11 @@ export class EmotionButton extends React.Component {
 
         // Preserve the selection
         if (lastNode) {
-          range = range.cloneRange();
-          range.setStartAfter(lastNode);
-          range.collapse(true);
+          range = ownerDocument.createRange();
+          range.selectNodeContents(lastNode);
+          range.collapse(false);
 
-          if (selection.empty) {  // Chrome
-            selection.empty();
-          } else if (selection.removeAllRanges) {  // Firefox
-            selection.removeAllRanges();
-          }
-
+          selection.removeAllRanges();
           selection.addRange(range);
         }
       }
@@ -106,7 +102,8 @@ export class EmotionButton extends React.Component {
     medium.saveSelection();
     medium.trigger('onChange');
 
-    this.onCloseEmotionsPopup();
+    // focus the rte again to correct display caret position
+    editor.focus();
   };
 
   render() {
@@ -119,7 +116,7 @@ export class EmotionButton extends React.Component {
            title="Chat Emoticons"
            onClick={this.onSelectEmoticon}>
 
-          <span className={buttonClassName} ref="emotionsButton" />
+          <span className={buttonClassName} ref="emotionsButton"/>
         </a>
 
         <Simple
@@ -134,7 +131,7 @@ export class EmotionButton extends React.Component {
             context={context}
             additionalNodes={['.dpdesignportal-chat-form-button-row-emoticons']}>
 
-            <EmotionsPopup onClick={this.onSelectEmotion} />
+            <EmotionsPopup onClick={this.onSelectEmotion}/>
           </ClickOut>
         </Simple>
       </span>

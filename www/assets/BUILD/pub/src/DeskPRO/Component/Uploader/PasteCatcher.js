@@ -13,7 +13,7 @@ export const getBlobsFromItems = (items, onPasteImage) => {
     return;
   }
 
-  for (var i = 0; i < items.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     const item = items[i];
 
     if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
