@@ -284,6 +284,18 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.labels.fields.labels_0.errors[0].code" should be equal to "invalid_data_type"
     And the JSON node "errors.fields.labels.fields.labels_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
+  Scenario: I sent empty label:
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2,
+  "labels": ["", "label1"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.labels.fields.labels_0.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.labels.fields.labels_0.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I sent not valid cc email data
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
