@@ -1,13 +1,20 @@
 import { ApiRepository } from './Repository/ApiRepository';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-let repositoriesConfig;
+let api;
+let repositoriesConfig = {};
 
 /**
  * Map of record name to its' repository object
  * @type {{}}
  */
-let repositories = {};
+const repositories = {};
+
+/**
+ * @param http
+ */
+export function setApi(http) {
+  api = http;
+}
 
 /**
  * Loads repositories configuration object
@@ -25,16 +32,16 @@ export function loadRepositoriesConfig(config) {
  */
 export function repository(record) {
   if (!repositoriesConfig.hasOwnProperty(record)) {
-    throw `No repository defined for the ${record} record`;
+    throw new Error(`No repository defined for the ${record} record`);
   }
 
   if (!repositories.hasOwnProperty(record)) {
     const config = normalizeConfig(repositoriesConfig[record]);
     if (config.hasOwnProperty('repository')) {
-      repositories[record] = config['repository'];
+      repositories[record] = config.repository;
     } else {
       if (!config.hasOwnProperty('type')) {
-        throw `${record} repository config must have either "repository" or "type" property`;
+        throw new Error(`${record} repository config must have either "repository" or "type" property`);
       }
 
       switch (config['type']) {
@@ -45,7 +52,7 @@ export function repository(record) {
           repositories[record] = createRepositoryFromFactory(config, record);
           break;
         default:
-          throw new Error(`Unknown repository type ${config['type']} in the ${record} record definition`);
+          throw new Error(`Unknown repository type ${config.type} in the ${record} record definition`);
       }
     }
   }
@@ -63,9 +70,9 @@ function createApiRepository(config, record) {
     throw new Error(`${record} repository config must have "url" option`);
   }
 
-  const url = config['url'];
-  const allowAll = config.hasOwnProperty('allowAll') ? config['allowAll'] : false;
-  const repositoryClass = config.hasOwnProperty('repositoryClass') ? config['repositoryClass'] : ApiRepository;
+  const url = config.url;
+  const allowAll = config.hasOwnProperty('allowAll') ? config.allowAll : false;
+  const repositoryClass = config.hasOwnProperty('repositoryClass') ? config.repositoryClass : ApiRepository;
 
   return new repositoryClass(api, url, allowAll);
 }
@@ -94,9 +101,5 @@ function createRepositoryFromFactory(config, record) {
  * @returns {{}}
  */
 function normalizeConfig(config) {
-  if (typeof config === 'string') {
-    return {type: config};
-  } else {
-    return config;
-  }
+  return typeof config === 'string' ? {type: config} : config;
 }

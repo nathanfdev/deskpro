@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,58 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class WidgetBrandSetupType.
+ * Class WidgetGlobalCompanySettings.
  */
-class WidgetBrandSetupType extends AbstractType
+class WidgetGlobalCompanySettings
 {
     /**
-     * {@inheritdoc}
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $logo;
+
+    /**
+     * @return string
      */
     public function getName()
     {
-        return 'widget_brand_setup';
+        return $this->name;
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $name
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function setName($name)
     {
-        $builder
-            ->add('widget', new WidgetBaseSetupType())
-            ->add('button', new WidgetButtonSetupType())
-            ->add('chat', new WidgetChatSetupType())
-            ->add('ticket', new WidgetTicketSetupType())
-        ;
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    /**
+     * @param string $logo
+     */
+    public function setLogo($logo)
+    {
+        $this->logo = $logo;
     }
 }

@@ -1,4 +1,5 @@
 import { createAction } from 'Ampliflux';
+import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
 import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
@@ -19,12 +20,17 @@ export const addSessionCode = (state, params = {}) => {
 // Api actions
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
-  () => new Promise(resolve =>
+  () => dispatch => new Promise(resolve =>
     widgetApi
       .sendPost('DP_API/auth/get_session', {session_code: localStorage.getItem('dpWidget.sessionCode')}, {...ajaxOptions})
       .success(response => {
-        localStorage.setItem('dpWidget.sessionCode', response.session_code);
-        resolve(response);
+        const data = response.data;
+        localStorage.setItem('dpWidget.sessionCode', data.session_code);
+        if (data.person) {
+          dispatch(loadBatch('Person', [data.person], 'all'));
+        }
+
+        resolve(data);
       })
   )
 );
@@ -55,7 +61,7 @@ export const loadSettings = createAction(
   () => dispatch =>
     widgetApi
       .sendGet('DP_API/widget/settings', {...ajaxOptions})
-      .success(response => dispatch(setSettings(response)))
+      .success(response => dispatch(setSettings(response.data)))
 );
 
 export const loadPortalPhraseTranslations = createAction(

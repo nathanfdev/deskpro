@@ -30,60 +30,38 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetTicketSetupType.
+ * Class WidgetButtonColorsSetupType.
  */
-class WidgetTicketSetupType extends AbstractType
+class WidgetButtonColorsSetupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_ticket_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('select_department', 'choice', [
-                'choices' => [
-                    'default' => 'Default department',
-                    'custom'  => 'User selects department',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
-            ->add('default_department', 'number')
+            ->add('background', TextType::class)
+            ->add('text', TextType::class)
+            ->add('border', TextType::class)
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onDefaultDepartment']);
     }
 
     /**
-     * @param FormEvent $event
+     * {@inheritdoc}
      */
-    public function onDefaultDepartment(FormEvent $event)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        if ($data['select_department'] === 'default' && !$data['default_department']) {
-            $form->get('default_department')->addError(new FormError(ErrorsCodes::NOT_BLANK));
-        }
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandButtonColorsSettings::class,
+        ]);
     }
 }

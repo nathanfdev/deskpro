@@ -10,7 +10,7 @@ Feature: /feedback_comments/counts endpoint
 
   @reinstall
   Scenario: I GET feedback comments list with hidden_status set to validating and side-loaded author info
-    When I send a GET request to "/api/v2/feedback_comments_list?include=person&awaiting_validation=1"
+    When I send a GET request to "/api/v2/feedback_comments/?include=person&awaiting_validation=1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -39,5 +39,5 @@ Feature: /feedback_comments/counts endpoint
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 404
     And the JSON node "code" should exist
-    And the JSON node "code" should be equal to "Not Found"
+    And the JSON node "code" should be equal to "Not found"
 

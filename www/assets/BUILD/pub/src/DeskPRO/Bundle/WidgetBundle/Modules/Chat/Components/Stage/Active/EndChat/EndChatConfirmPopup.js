@@ -16,14 +16,13 @@ export class EndChatConfirmPopup extends React.Component {
     return (
       <div className={classNames('dpdesignportal-popover', 'dpdesignportal-popover-end-chat', positionAt)}>
         <h1>Are you sure you want to end this chat?</h1>
-        <p className="grey">Lorel ipsum dolor closing the chat</p>
 
         <div className="popover-buttons">
           <a href="#" className={classNames('dpdesignportal-button', {'locked': locked})} onClick={onConfirm}>
-            <i className="fa fa-power-off"></i> End Chat
+            <i className="fa fa-power-off" /> End Chat
           </a>
           <a href="#" className="dpdesignportal-button grey" onClick={onCancel}>
-            <i className="fa fa-reply"></i> Cancel and return to chat
+            <i className="fa fa-reply" /> Cancel and return to chat
           </a>
         </div>
       </div>

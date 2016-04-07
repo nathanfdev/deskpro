@@ -23,7 +23,7 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount() {
-    const {activeItemId, listOptions, dispatch} = this.props;
+    const { activeItemId, listOptions, dispatch } = this.props;
     if (activeItemId === this.itemId) {
       dispatch(applyParams(listOptions));
     }
@@ -44,7 +44,7 @@ export class ListItemContainer extends Component {
     };
 
     return (
-      <ListItemStatefulContainer {...props} />
+      <ListItemStatefulContainer {...props}/>
     );
   }
 

@@ -38,12 +38,18 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PeopleController.
@@ -55,7 +61,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PeopleController extends CrudController
 {
-    use \DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
+    use LabelsHelper;
 
     public static $entity      = Person::class;
     public static $type        = 'api_person';
@@ -96,6 +102,44 @@ class PeopleController extends CrudController
     public function getTickets20151231Action()
     {
         die('v 20151231');
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="People",
+     *     description="Get people count",
+     *     filters={
+     *         {"name"="is_agent", "requirement"="0|1", "description"="Agents filter", "dataType"="integer"},
+     *         {"name"="is_deleted", "requirement"="0|1", "description"="Soft-deleted filter", "dataType"="integer"}
+     *     },
+     *     statusCodes={
+     *         200="Returned in case of success",
+     *         400="Your request was malformed",
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     * @Rest\Get("/counts", name="api_people_counts")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function countAction(Request $request)
+    {
+        /** @var \DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService $dataService */
+        $dataService = $this->get('data.people_counts');
+
+        $params = $this->removeAdditionalParameters($request);
+        try {
+            /** @var PeopleCountCriteria $criteria */
+            $criteria = PeopleCountCriteria::fromParameters($params, new OptionsResolver());
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        $count = $dataService->countPeople($criteria);
+
+        return View::create($this->wrap($count));
     }
 
     // #################################################################################################################

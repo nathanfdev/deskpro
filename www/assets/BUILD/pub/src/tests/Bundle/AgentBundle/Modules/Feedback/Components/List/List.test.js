@@ -16,9 +16,9 @@ describe('Feedback: List', () => {
   const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
   const MassActionContainer = require('~List/ControlBar/MassActionContainer').MassActionContainer;
   const FeedbackCardsContainer = require('~List/View/Card/FeedbackCardsContainer').FeedbackCardsContainer;
-  const FeedbackCommentsCardsContainer = require('~List/View/Card/FeedbackCommentsCardsContainer').FeedbackCommentsCardsContainer;
+  const CommentCardsContainer = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
   const FeedbackTableContainer = require('~List/View/Table/FeedbackTableContainer').FeedbackTableContainer;
-  const FeedbackCommentTableContainer = require('~List/View/Table/FeedbackCommentTableContainer').FeedbackCommentTableContainer;
+  const CommentTableContainer = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
   const fakeState = {};
 
 
@@ -89,23 +89,23 @@ describe('Feedback: List', () => {
   });
 
   it('should render FeedbackCommentsCardsContainer when the passed viewMode is "card" and isComments is true', () => {
-    spyOn(FeedbackCommentsCardsContainer.prototype, 'render').and.callThrough();
+    spyOn(CommentCardsContainer.prototype, 'render').and.callThrough();
     spyOn(FeedbackTableContainer.prototype, 'render').and.callThrough();
 
     renderList('card', toImmutable([]), true);
 
-    expect(FeedbackCommentsCardsContainer.prototype.render).toHaveBeenCalled();
+    expect(CommentCardsContainer.prototype.render).toHaveBeenCalled();
     expect(FeedbackTableContainer.prototype.render).not.toHaveBeenCalled();
   });
 
   it('should render FeedbackCommentTableContainer when the passed viewMode is "table"  and isComments is true', () => {
-    spyOn(FeedbackCommentsCardsContainer.prototype, 'render').and.callThrough();
-    spyOn(FeedbackCommentTableContainer.prototype, 'render').and.callThrough();
+    spyOn(CommentCardsContainer.prototype, 'render').and.callThrough();
+    spyOn(CommentTableContainer.prototype, 'render').and.callThrough();
 
     renderList('table', toImmutable([]), true);
 
-    expect(FeedbackCommentTableContainer.prototype.render).toHaveBeenCalled();
-    expect(FeedbackCommentsCardsContainer.prototype.render).not.toHaveBeenCalled();
+    expect(CommentTableContainer.prototype.render).toHaveBeenCalled();
+    expect(CommentCardsContainer.prototype.render).not.toHaveBeenCalled();
   });
 
   it('shouldn\'t render PaginationContainer when the pagination not passed', () => {

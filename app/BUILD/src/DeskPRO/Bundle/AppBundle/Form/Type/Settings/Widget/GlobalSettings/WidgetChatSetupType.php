@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,42 +29,42 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type\WidgetSetup\BrandSettings;
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalChatSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatPopupSetupType.
+ * Class WidgetChatSetupType.
  */
-class WidgetChatPopupSetupType extends AbstractType
+class WidgetChatSetupType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'widget_chat_popup_setup';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text')
-            ->add('message', 'text')
-            ->add('reply_type', 'choice', [
-                'choices' => [
-                    'buttons' => 'Reply Button',
-                    'reply'   => 'Reply Form',
-                ],
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
+            ->add('email_validation', ApiBooleanType::class, [
+                'property_path' => 'emailValidation',
+            ])
+            ->add('require_login', ApiBooleanType::class, [
+                'property_path' => 'requireLogin',
             ])
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => WidgetGlobalChatSettings::class,
+        ]);
     }
 }

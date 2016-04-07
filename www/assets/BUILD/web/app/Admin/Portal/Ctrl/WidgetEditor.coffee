@@ -22,9 +22,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.formErrors = {}
 
     initialLoad: ->
-      setupPromise = @$http.get('/api/v2/widget/setup')
-      setupPromise.success((response) =>
-        data = response.data
+      setupPromise = @Api2.sendGet('/widget/setup').then (response) =>
+        data = response.data.data
 
         @$scope.url = data.url;
         @$scope.company = data.company;
@@ -33,12 +32,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()
-      );
 
-      departmentsPromise = @$http.get('/api/v2/ticket_departments')
-      departmentsPromise.success((response) =>
-        @$scope.departments = response.data;
-      );
+      departmentsPromise = @Api2.sendGet('/ticket_departments').then (response) =>
+        @$scope.departments = response.data.data
 
       updateLiveDemoDebounce = Functions.debounce( =>
         @$scope.formErrors = {}
@@ -57,15 +53,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       return options
 
-    loadCode: (options) ->
-      return @$http({
-        method: 'POST',
-        url: '/api/v2/widget/code',
-        data: { settings: options }
-      }).then(
-        (response) =>
-          return response.data.data.script_html
-      )
+    loadCode: ->
+      @Api2.sendGet('widget/code').then (response) =>
+        @$scope.code = response.data
 
     getFrameNode: ->
       document.getElementById('live-demo')
@@ -73,20 +63,16 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     getLiveDemoDocument: ->
       @getFrameNode().contentDocument
 
+    getSaveData: -> {
+      global: @$scope.global_settings,
+      brand: @$scope.brand_settings
+    }
+
     applyPortalWidgetSettings: ->
       @$scope.applying_to_portal = true
-      @$http({
-        method: 'POST',
-        url: '/api/v2/widget/portal/apply',
-        data: {
-          global: @$scope.global_settings,
-          brand: @$scope.brand_settings
-        }
-        headers: {
-          'X-Agent-Request': 'true'
-        }
-      })
-      .then(
+      @Api2.sendPostJson('widget/portal/apply', @getSaveData(), null, headers: {
+        'X-Agent-Request': 'true'
+      }).then(
         () =>
           @$scope.applying_to_portal = false
           @$scope.enabled_on_portal = true
@@ -98,11 +84,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     removeFromPortal: ->
       @$scope.applying_to_portal = true
-      @$http({
-        method: 'POST',
-        url: '/api/v2/widget/portal/remove'
-      })
-      .then(
+      @Api2.sendPost('widget/portal/remove').then(
         () =>
           @$scope.applying_to_portal = false
           @$scope.enabled_on_portal = false
@@ -114,24 +96,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     updateChatCode: ->
       @$scope.code = ''
       @$scope.saving_code = true
-      @$http({
-        method: 'POST',
-        url: '/api/v2/widget/setup',
-        data: {
-          global: @$scope.global_settings,
-          brand: @$scope.brand_settings
-        }
-        headers: {
-          'X-Agent-Request': 'true'
-        }
-      })
-      .then(
-        () =>
-          @loadCode(@getOptions()).then(
-            (code) =>
-              @$scope.code = code
-              @$scope.saving_code = false
-          )
+
+      @Api2.sendPostJson('/widget/setup', @getSaveData(), null, headers: {
+        'X-Agent-Request': 'true'
+      }).then(
+        () => @loadCode().then =>
+          @$scope.saving_code = false
         ,
         (response) =>
           @$scope.formErrors = response.data?.errors?.fields
@@ -144,10 +114,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
           @$scope.$apply( => @$scope.widgetLoaded = true)
       , false);
 
-      @loadCode(@getOptions()).then(
-        (code) =>
+      @loadCode().then(() =>
           demoDocument = @getLiveDemoDocument();
-          demoDocument.write('<body>' + code + '</body>');
+          demoDocument.write('<body>' + @$scope.code + '</body>');
           demoDocument.close();
 
           @getFrameNode().contentWindow.addEventListener('message', (event) =>

@@ -34,16 +34,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\Form\Exception\AlreadySubmittedException;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -54,9 +50,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * API access to feedback comments.
  *
  * @ApiModes("all")
+ * @Rest\Route("/feedback_comments")
  */
-class FeedbackCommentController extends BaseController
+class FeedbackCommentController extends CrudController
 {
+    public static $entity    = FeedbackComment::class;
+    public static $listOrder = 'asc';
+    public static $type      = 'feedback_comment';
+
     /**
      * Fetch all feedback comments list.
      *
@@ -83,10 +84,10 @@ class FeedbackCommentController extends BaseController
      *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
      *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
      *      },
-     *      output="array<Application\DeskPRO\Entity\FeedbackComment>"
+     *      output="<Application\DeskPRO\Entity\FeedbackComment>"
      * )
      * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"details"})
-     * @Rest\Get("/feedback_comments_list", name="api_feedback_comments_list")
+     * @Rest\Get("/", name="api_feedback_comments_list")
      *
      * @param Request $request
      *
@@ -117,7 +118,6 @@ class FeedbackCommentController extends BaseController
 
     /**
      * Count overall feedback comments or count for given feedbacks.
-     * Proper docs for output coming soon.
      *
      * @ApiDoc(
      *      section="Feedback",
@@ -131,7 +131,7 @@ class FeedbackCommentController extends BaseController
      *     }
      * )
      * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
-     * @Rest\Get("/feedback_comments_counter", name="api_feedback_comments_counter")
+     * @Rest\Get("/counter", name="api_feedback_comments_counter")
      *
      * @param Request $request
      *
@@ -165,145 +165,7 @@ class FeedbackCommentController extends BaseController
     }
 
     /**
-     * Get a specific comment.
-     *
-     * @ApiDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="get a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the comment",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Returned if comment was found",
-     *          404="Returned if comment with specified id wasn't found"
-     *      },
-     *      output="Application\DeskPRO\Entity\FeedbackComment"
-     * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true, serializerGroups={"feedback"})
-     * @Rest\Get("/feedback_comments/{id}", name="api_feedback_comments_get", requirements={"id": "\d+"})
-     *
-     * @param int $id
-     *
-     * @return View
-     */
-    public function getAction($id)
-    {
-        $comment = $this->getFeedbackComment($id);
-
-        return View::create(
-            $this->wrap($comment),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * The endpoint gives you an ability to modify comments status, content and  'status',.
-     *
-     * @ApiDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="update a comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of the comment",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="status",
-     *              "requirement"="hidden|visible",
-     *              "description"="text representation of comment status",
-     *              "dataType"="string"
-     *          },
-     *          {
-     *              "name"="is_reviewed",
-     *              "requirement"="0|1|true|false",
-     *              "description"="is comment was reviewed",
-     *              "dataType"="integer|boolean"
-     *          },
-     *          {
-     *              "name"="content",
-     *              "requirement"=".*",
-     *              "description"="comment message",
-     *              "dataType"="string"
-     *          },
-     *      },
-     *      input={"class"="DeskPRO\Bundle\ApiBundle\Form\Type\FeedbackCommentType", "name"=""},
-     *      statusCodes={
-     *          204="Updated",
-     *          400="Bad Request",
-     *          404="Not Found"
-     *      }
-     * )
-     * @Rest\Put("/feedback_comments/{id}", name="api_feedback_comments_put", requirements={"id": "\d+"})
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @throws WrappedApiErrorException
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     *
-     * @return View
-     */
-    public function putAction(Request $request, $id)
-    {
-        $comment = $this->getFeedbackComment($id);
-
-        return $this->handleFormSubmission($request, $comment);
-    }
-
-    /**
-     * This endpoint gives you an ability do delete exactly one feedback comment.
-     *
-     * @ApiDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="delete feedback comment",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "description"="the id of comment to delete",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Returned if comment was successfuly deleted",
-     *          404="Returned if comment with specified id was not found"
-     *      }
-     * )
-     * @Rest\Delete("/feedback_comments", name="api_feedback_comments_delete", requirements={"id": "\d+"})
-     *
-     * @param $id
-     *
-     * @throws \LogicException
-     *
-     * @return View
-     */
-    public function deleteAction($id)
-    {
-        $em      = $this->getManager();
-        $comment = $this->getRepository(FeedbackComment::class)->find($id);
-        if (!$comment) {
-            throw $this->createNotFoundException();
-        }
-        $em->remove($comment);
-        $em->flush();
-
-        return View::create([], Response::HTTP_OK);
-    }
-
-    /**
      * Fetch a list of feedback comments awaiting validation.
-     * Proper docs for output coming soon.
      *
      * @ApiDoc(
      *      section="Feedback",
@@ -323,7 +185,7 @@ class FeedbackCommentController extends BaseController
      *      }
      * )
      *
-     * @Rest\Get("/feedback_comments/counts", name="api_feedback_comment_count")
+     * @Rest\Get("/counts", name="api_feedback_comment_count")
      *
      * @throws \LogicException
      *
@@ -337,64 +199,5 @@ class FeedbackCommentController extends BaseController
             $this->wrap($count),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * Will be abstracted for use by other controllers.
-     *
-     * @param Request         $request
-     * @param FeedbackComment $comment
-     *
-     * @throws AlreadySubmittedException
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws InvalidFormException
-     *
-     * @return View
-     */
-    private function handleFormSubmission(Request $request, FeedbackComment $comment)
-    {
-        $status = $comment->getId() ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
-
-        /** @var Form $form */
-        $form = $this->get('form.factory')->createNamedBuilder(null, 'feedback_comment', $comment)->getForm();
-
-        $submitted = $request->request->all();
-
-        $form->submit($submitted, $request->getMethod() !== 'PUT');
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($comment);
-        $em->flush();
-
-        $location = $this->generateUrl('api_feedback_comments_get', array('id' => $comment->getId()));
-
-        return View::create(
-            $this->wrap($comment),
-            $status,
-            array(
-                'Location' => $location,
-            )
-        );
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return FeedbackComment
-     */
-    private function getFeedbackComment($id)
-    {
-        $comment = $this->getDoctrine()->getManager()->getRepository('DeskPRO:FeedbackComment')->find($id);
-
-        if (!$comment) {
-            throw $this->createNotFoundException();
-        }
-
-        return $comment;
     }
 }

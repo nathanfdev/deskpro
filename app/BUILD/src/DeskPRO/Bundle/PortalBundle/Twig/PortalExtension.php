@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
-use DeskPRO\Bundle\AppBundle\Templating\WidgetLoader;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -533,14 +532,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getWidgetLoader()
     {
-        $loader = WidgetLoader::createPortalLoader(
-            $this->container->get('deskpro.app_env'),
-            $this->container->get('widget_settings_resolver'),
-            $this->container->get('request_stack')->getMasterRequest(),
-            $this->container->get('assets.packages')
-        );
-
-        return $loader->getScriptHtml();
+        return $this->container->get('widget_loader_code_renderer')->getWidgetCode();
     }
 
     /**

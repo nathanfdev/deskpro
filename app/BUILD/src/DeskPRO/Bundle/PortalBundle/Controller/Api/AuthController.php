@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,25 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\PortalBundle\Model\WidgetSession;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AuthController.
+ *
+ * @Rest\Route("/portal/api/auth")
  */
 class AuthController extends AbstractApiController
 {
     /**
-     * @Route("/portal/api/auth/get_session", name="portal_api_auth_get_session")
-     * @Method({"POST"})
+     * @ApiDoc(
+     *     section="Portal widget",
+     *     description="Widget session",
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output="DeskPRO\Bundle\PortalBundle\Model\WidgetSession"
+     *)
+     *
+     * @Rest\Post("/get_session")
      *
      * @param Request $request
      *
@@ -52,23 +60,28 @@ class AuthController extends AbstractApiController
      */
     public function getSessionAction(Request $request)
     {
-        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        /** @var \Application\DeskPRO\EntityRepository\Session $repository */
+        $repository = $this->getDoctrine()->getRepository(Session::class);
 
-        $session_code = $request->request->get('session_code');
-        $session      = $session_repository->getSessionFromCode($session_code);
+        $sessionCode = $request->request->get('session_code');
+        $session     = $repository->getSessionFromCode($sessionCode);
 
+        $changed = false;
         if (!$session) {
             $session = new Session();
+            $changed = true;
+        }
+        if (!$session->getPerson() && $this->getUser()) {
+            $session->setPerson($this->getUser());
+            $changed = true;
+        }
 
+        if ($changed) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($session);
             $em->flush();
         }
 
-        return new View([
-            'session_code' => $session->getSessionCode(),
-            'is_login'     => (bool) $session->getPersonId(),
-        ]);
+        return new View($this->wrap(new WidgetSession($session)));
     }
 }

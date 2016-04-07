@@ -19,6 +19,15 @@ Feature: /glossary/word endpoint
     And the JSON node "data" should exist
     And the JSON node "data[0].word" should be equal to "Word 1"
 
+  Scenario: I try to create a word providing empty data
+    When I send a POST request to "/api/v2/glossary/words"
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "errors.fields.word.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.word.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.definition.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.definition.errors[0].message" should be equal to "This value should not be blank."
+
   Scenario: I create a word
     When I send a POST request to "/api/v2/glossary/words" with body:
     """
@@ -28,18 +37,9 @@ Feature: /glossary/word endpoint
 }
     """
     Then the response status code should be 201
-#    And the header "Location" should match "\/api\/v2\/glossary\/words\/\d+"
+    And the header "Location" should be equal to "/api/v2/glossary/words/3"
+    And the JSON node "data.id" should be equal to 3
     And the JSON node "data.word" should be equal to "Sample Word"
-
-  Scenario: I try to create a word providing empty data
-    When I send a POST request to "/api/v2/glossary/words" with body:
-    """
-{
-}
-    """
-    Then the response should be in JSON
-    And the response status code should be 400
-    And the JSON node "errors.fields.word" should exist
 
   Scenario: I modify a word
     When I send a PUT request to "/api/v2/glossary/words/1" with body:
@@ -49,7 +49,6 @@ Feature: /glossary/word endpoint
   "definition": 1
 }
     """
-    Then print last response
     And the response status code should be 204
     And the response should be empty
 

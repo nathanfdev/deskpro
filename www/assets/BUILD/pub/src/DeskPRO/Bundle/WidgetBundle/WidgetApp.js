@@ -5,6 +5,9 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from './Modules/Application/Components/AppContainer';
 import { store } from './Services/store';
 import { bootstrapWidget } from './Modules/Application/Actions/bootstrapActions';
+import { setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { widgetApi } from './Services/DpApi';
+import { repositoriesConfig } from './Modules/Application/DAL/config';
 import $ from 'jquery';
 import './Services/WindowApi';
 
@@ -45,6 +48,8 @@ export class WidgetApp {
       }
     });
 
+    setApi(widgetApi);
+    loadRepositoriesConfig(repositoriesConfig);
     store.dispatch(bootstrapWidget());
 
     const content = (

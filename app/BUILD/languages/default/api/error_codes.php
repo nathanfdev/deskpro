@@ -77,6 +77,7 @@ return array(
     'api.error_codes.not_unique_collection'           => 'One or more of the given values is not unique.',
     'api.error_codes.too_few_elements'                => 'This collection should contain {{ limit }} elements or more.',
     'api.error_codes.too_many_elements'               => 'This collection should contain {{ limit }} elements or less.',
+    'api.error_codes.too_low'                         => 'This value should be greater than or equal to {{ compared_value }}.',
     'api.error_codes.exactly_one_value_should_be_set' => 'You should set exactly only one of {{ values }}',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
