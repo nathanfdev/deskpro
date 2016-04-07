@@ -61,7 +61,7 @@ class ChatVoter extends AbstractVoter
 
         switch ($attribute) {
             case static::CHAT_VIEW:
-                $decision = $chat->isParticipating($user);
+                $decision = $chat->isParticipating($user) || $chat->isPersonOrganizationManager($user);
                 break;
         }
 
