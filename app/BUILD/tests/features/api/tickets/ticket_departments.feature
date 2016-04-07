@@ -19,7 +19,6 @@ Feature: /ticket_departments endpoint
     And the JSON node "data[1].id" should be equal to 2
     And the JSON node "data[1].title" should be equal to "support"
 
-
   Scenario: I get ticket department
     When I send a GET request to "/api/v2/ticket_departments/1"
     Then the response status code should be 200
