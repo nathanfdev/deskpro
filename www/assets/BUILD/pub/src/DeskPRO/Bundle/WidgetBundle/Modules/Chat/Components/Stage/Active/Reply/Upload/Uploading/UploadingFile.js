@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class UploadingFile extends React.Component {
 
@@ -34,7 +35,7 @@ export class UploadingFile extends React.Component {
         </div>
         <div className="attached-file-title">
           {filenameMaxLength(file.name, isFailed ? 20 : 30)}
-          {isFailed && <span className="failed-status">(failed)</span>}
+          {isFailed && <span className="failed-status">({portalPhrases.get('portal.chat.asset_failed')})</span>}
           {isFailed
             ? <div>
                 <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>

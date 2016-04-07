@@ -51,6 +51,7 @@ export class ChatWaitingContainer extends React.Component {
   };
 
   render() {
+    // portal.chat.message_wait-ticket
     return (
       <div>
         <WaitingPreview />

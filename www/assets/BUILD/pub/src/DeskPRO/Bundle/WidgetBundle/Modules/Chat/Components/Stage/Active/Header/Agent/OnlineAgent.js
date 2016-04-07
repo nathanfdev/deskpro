@@ -13,7 +13,7 @@ export class OnlineAgent extends React.Component {
 
   render() {
     const { agentAvatar, agentName, departmentName } = this.props;
-
+    // portal.chat.online_agent
     return (
       <div className="dpdesignportal-chat-header">
         <div className="dpdesignportal-chat-header-avatar-container">
