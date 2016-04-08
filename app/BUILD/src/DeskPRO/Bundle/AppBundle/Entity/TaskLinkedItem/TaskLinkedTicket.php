@@ -44,8 +44,6 @@ use JMS\Serializer\Annotation as JMS;
  */
 class TaskLinkedTicket extends TaskLinkedItem
 {
-    use NotifyPropertyChangedTrait;
-
     /**
      * The ticket attached to the task.
      *
@@ -74,7 +72,7 @@ class TaskLinkedTicket extends TaskLinkedItem
      */
     public function setTicket(Ticket $ticket)
     {
-        $this->setModelField('ticket', $ticket);
+        $this->ticket = $ticket;
 
         return $this;
     }

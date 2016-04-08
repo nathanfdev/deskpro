@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -140,6 +141,10 @@ class SearchController extends BaseController
             (string) $request->query->get('q'),
             (string) $request->query->get('sort')
         );
+
+        if ($limit = (int) $request->get('limit')) {
+            $search_request->setLimit(min($search_request->getLimit(), $limit));
+        }
 
         return $search_request;
     }

@@ -6,12 +6,13 @@ import { currentViewModeSelector, listParamsNavSelector, isLoadedSelector }
   from '../../Selectors/list';
 import { unload } from '../../Actions/listActions';
 
-@connect(state => ({
+@connect(state => {
+  return ({
   isLoaded: isLoadedSelector(state),
   currentView: currentViewModeSelector(state),
   selected: selectedSelector(state),
   currentNav: listParamsNavSelector(state)
-}))
+})})
 export class ListContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired

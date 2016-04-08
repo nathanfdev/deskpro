@@ -54,6 +54,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Logs;
 
 use Application\DeskPRO\Entity\Setting;

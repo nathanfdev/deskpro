@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;

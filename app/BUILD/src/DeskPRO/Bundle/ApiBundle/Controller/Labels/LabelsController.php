@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 use Application\DeskPRO\Entity\LabelDef;

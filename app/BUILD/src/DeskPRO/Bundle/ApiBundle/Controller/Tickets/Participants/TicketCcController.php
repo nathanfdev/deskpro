@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;

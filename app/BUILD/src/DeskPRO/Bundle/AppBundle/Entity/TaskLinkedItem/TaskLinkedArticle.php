@@ -74,7 +74,7 @@ class TaskLinkedArticle extends TaskLinkedItem
      */
     public function setArticle(Article $article)
     {
-        $this->setModelField('article', $article);
+        $this->article = $article;
 
         return $this;
     }

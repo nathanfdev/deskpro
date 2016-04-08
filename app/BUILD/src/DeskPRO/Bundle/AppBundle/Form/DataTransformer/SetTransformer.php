@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,47 +29,41 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
-class TaskToIdTransformer implements DataTransformerInterface
+class SetTransformer implements DataTransformerInterface
 {
-    private $manager;
-
-    public function __construct(ObjectManager $manager)
+    /**
+     * {@inheritdoc}
+     */
+    public function transform($value)
     {
-        $this->manager = $manager;
+        if (!is_array($value) && !($value instanceof \Traversable && $value instanceof \ArrayAccess)) {
+            throw new UnexpectedTypeException($value, 'array or (\Traversable and \ArrayAccess)');
+        }
+
+        return array_values($value);
     }
 
-    public function transform($task)
+    /**
+     * {@inheritdoc}
+     */
+    public function reverseTransform($value)
     {
-        if (null === $task) {
-            return '';
+        if (!is_array($value)) {
+            throw new TransformationFailedException('Expected array');
         }
 
-        return $task->getId();
-    }
-
-    public function reverseTransform($taskId)
-    {
-        if (!$taskId) {
-            return;
+        $ret = [];
+        foreach ($value as $v) {
+            $ret[$v] = $v;
         }
 
-        $task = $this->manager->getRepository('App:Task')->find($taskId);
-
-        if (null === $task) {
-            throw new TransformationFailedException(
-                sprintf(
-                    'A task with number "%s" does not exist!',
-                    $taskId
-                )
-            );
-        }
-
-        return $task;
+        return $value;
     }
 }

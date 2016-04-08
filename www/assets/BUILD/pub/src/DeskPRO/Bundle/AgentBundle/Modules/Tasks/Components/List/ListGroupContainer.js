@@ -9,7 +9,7 @@ import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
   ids: elementsSelector(state),
-  tasks: collectionSelectorFactory('Task', 'tasks')(state),
+  tasks: allSelectorFactory('Task')(state),
   orderBy: currentOrderBySelector(state),
   lists: allSelectorFactory('TaskList')(state),
   projects: allSelectorFactory('Project')(state),

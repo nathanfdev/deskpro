@@ -3,17 +3,43 @@ import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
-@connect(state => {
-  return ({
-    activeAppId: state.Application.dpWindow.get('activeAppId')
-  });
+@connect((state, props) => {
+  let loaded = props.selector
+    ? !props.selector(state)
+    : props.loaded;
+  return {
+    activeAppId: state.Application.dpWindow.get('activeAppId'),
+    loaded: loaded
+  };
 })
 export class LoadIndicator extends Component {
+
   static propTypes = {
     activeAppId: PropTypes.string,
     top: PropTypes.string,
-    left: PropTypes.string
+    left: PropTypes.string,
+
+    onStartLoading: PropTypes.func,
+    onStopLoading: PropTypes.func
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: props.loaded
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      loaded: props.loaded
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    !this.state.loaded && this.props.onStartLoading && this.props.onStartLoading();
+    this.state.loaded && this.props.onStopLoading && this.props.onStopLoading();
+  }
 
   render() {
     const { activeAppId } = this.props;

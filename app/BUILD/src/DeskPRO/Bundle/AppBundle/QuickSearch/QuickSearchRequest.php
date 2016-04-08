@@ -74,6 +74,11 @@ class QuickSearchRequest
     private $enable_sideloads = true;
 
     /**
+     * @var int
+     */
+    private $limit = 100;
+
+    /**
      * Constructor.
      *
      * @param Person $person
@@ -241,5 +246,21 @@ class QuickSearchRequest
         }
 
         return $types;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param int $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
     }
 }

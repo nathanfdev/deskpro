@@ -626,4 +626,266 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
             )
         );
     }
+
+    /**
+     * Set isCompleted
+     *
+     * @param boolean $isCompleted
+     *
+     * @return Task
+     */
+    public function setIsCompleted($isCompleted)
+    {
+        $this->is_completed = $isCompleted;
+
+        return $this;
+    }
+
+    /**
+     * Get isCompleted
+     *
+     * @return boolean
+     */
+    public function getIsCompleted()
+    {
+        return $this->is_completed;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Get visibility
+     *
+     * @return integer
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * Set dateDue
+     *
+     * @param \DateTime $dateDue
+     *
+     * @return Task
+     */
+    public function setDateDue($dateDue)
+    {
+        $this->date_due = $dateDue;
+
+        return $this;
+    }
+
+    /**
+     * Get dateDue
+     *
+     * @return \DateTime
+     */
+    public function getDateDue()
+    {
+        return $this->date_due;
+    }
+
+    /**
+     * Set dateCreated
+     *
+     * @param \DateTime $dateCreated
+     *
+     * @return Task
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->date_created = $dateCreated;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCreated
+     *
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * Set dateCompleted
+     *
+     * @param \DateTime $dateCompleted
+     *
+     * @return Task
+     */
+    public function setDateCompleted($dateCompleted)
+    {
+        $this->date_completed = $dateCompleted;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCompleted
+     *
+     * @return \DateTime
+     */
+    public function getDateCompleted()
+    {
+        return $this->date_completed;
+    }
+
+    /**
+     * Set person
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
+     * @return Task
+     */
+    public function setPerson(\Application\DeskPRO\Entity\Person $person = null)
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    /**
+     * Get person
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * Set assignedAgent
+     *
+     * @param \Application\DeskPRO\Entity\Person $assignedAgent
+     *
+     * @return Task
+     */
+    public function setAssignedAgent(\Application\DeskPRO\Entity\Person $assignedAgent = null)
+    {
+        $this->assigned_agent = $assignedAgent;
+
+        return $this;
+    }
+
+    /**
+     * Get assignedAgent
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function getAssignedAgent()
+    {
+        return $this->assigned_agent;
+    }
+
+    /**
+     * Set assignedAgentTeam
+     *
+     * @param \Application\DeskPRO\Entity\AgentTeam $assignedAgentTeam
+     *
+     * @return Task
+     */
+    public function setAssignedAgentTeam(\Application\DeskPRO\Entity\AgentTeam $assignedAgentTeam = null)
+    {
+        $this->assigned_agent_team = $assignedAgentTeam;
+
+        return $this;
+    }
+
+    /**
+     * Get assignedAgentTeam
+     *
+     * @return \Application\DeskPRO\Entity\AgentTeam
+     */
+    public function getAssignedAgentTeam()
+    {
+        return $this->assigned_agent_team;
+    }
+
+    /**
+     * Remove label
+     *
+     * @param \Application\DeskPRO\Entity\LabelTask $label
+     */
+    public function removeLabel(\Application\DeskPRO\Entity\LabelTask $label)
+    {
+        $this->labels->removeElement($label);
+    }
+
+    /**
+     * Get labels
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param \Application\DeskPRO\Entity\TaskComment $comment
+     */
+    public function removeComment(\Application\DeskPRO\Entity\TaskComment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Add taskAssociation
+     *
+     * @param \Application\DeskPRO\Entity\TaskAssociation $taskAssociation
+     *
+     * @return Task
+     */
+    public function addTaskAssociation(\Application\DeskPRO\Entity\TaskAssociation $taskAssociation)
+    {
+        $this->task_associations[] = $taskAssociation;
+
+        return $this;
+    }
+
+    /**
+     * Remove taskAssociation
+     *
+     * @param \Application\DeskPRO\Entity\TaskAssociation $taskAssociation
+     */
+    public function removeTaskAssociation(\Application\DeskPRO\Entity\TaskAssociation $taskAssociation)
+    {
+        $this->task_associations->removeElement($taskAssociation);
+    }
+
+    /**
+     * Get taskAssociations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTaskAssociations()
+    {
+        return $this->task_associations;
+    }
 }

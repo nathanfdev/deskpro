@@ -11,6 +11,7 @@ import {
   Header,
   FullField,
   FloatField,
+  CollectionField,
   ShowOnlySelected,
   Unassign
 } from '../../../Form';
