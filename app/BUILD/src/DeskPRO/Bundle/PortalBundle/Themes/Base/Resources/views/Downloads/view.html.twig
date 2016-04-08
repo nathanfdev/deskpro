@@ -32,6 +32,8 @@
                 {{ content_icon(file) }}
                 <a href="{{ portal_path(file, 'save') }}" id="file-download-link">{{ file.filename }}</a>
                 ({{ file.readableFileSize }})
+            {% elseif file.fileurl %}
+                <a href="{{ file.fileurl }}" id="file-download-link">{{ file.filename }}</a><br>
             {% endif %}
         </div>
 
