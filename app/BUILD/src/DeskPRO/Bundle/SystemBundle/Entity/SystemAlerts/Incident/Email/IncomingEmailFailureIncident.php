@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractContinuingFailureIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractStatefulIncident;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,13 +40,21 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  */
-class IncomingEmailFailureIncident extends AbstractContinuingFailureIncident
+class IncomingEmailFailureIncident extends AbstractStatefulIncident
 {
     /**
      * {@inheritdoc}
      */
-    public function getInstructions()
+    public function getTitle()
     {
-        return 'Check the email stuff. Good luck!';
+        return "Continuing {$this->getFirstEvent()->getSubjectDescription()} incoming email failures";
+    }
+
+    /**
+     * @return int
+     */
+    public function getEmailAccountId()
+    {
+        return $this->getFirstEvent()->getEmailAccountId();
     }
 }

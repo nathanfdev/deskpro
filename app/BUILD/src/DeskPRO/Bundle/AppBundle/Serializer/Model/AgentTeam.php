@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AgentTeam.
@@ -37,17 +38,29 @@ use DeskPRO\Bundle\AppBundle\Content\Avatar;
 class AgentTeam
 {
     /**
+     * The unique team ID.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * Team name.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $name;
 
     /**
-     * @var
+     * Team`s avatar.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
+     *
+     * @var Avatar
      */
     protected $avatar;
 

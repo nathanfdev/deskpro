@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -38,11 +39,13 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @PortalLinkRoute("portal_kb_view", route_param_map={"slug":"slug"})
@@ -99,6 +102,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      *
      * @JMS\Expose()
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\ArticleLabel>>")
+     *
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection()
      *
      * \Doctrine\Common\Collections\ArrayCollection.
      */

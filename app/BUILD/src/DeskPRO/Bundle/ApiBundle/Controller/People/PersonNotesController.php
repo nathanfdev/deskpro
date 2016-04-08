@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\PersonNote;
@@ -37,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonNoteType;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class PersonNotesController.
@@ -45,7 +46,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiDocSection("People")
  * @OutputEntity("Application\DeskPRO\Entity\PersonNote")
  * @ApiModes("all")
- * @Annotations\Route("/people/{parentId}/notes")
+ * @Rest\Route("/people/{parentId}/notes")
  */
 class PersonNotesController extends CrudSubController
 {

@@ -41,6 +41,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table("api_log", uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class ApiLog implements EntityInterface, NotifyPropertyChanged
 {
@@ -53,6 +55,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      * @JMS\Groups({"list"})
      *
@@ -65,6 +68,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\Column(type="integer")
      *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      * @JMS\Groups({"list"})
      *
@@ -75,10 +79,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Timestamp when request was ended.
      *
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="integer", nullable=true)
      *
      * @var int timestamp
      */
@@ -95,10 +100,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Credentials with which request was made.
      *
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
@@ -107,10 +113,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Request api mode.
      *
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="string", nullable=false)
      *
      * @var string
      */
@@ -119,11 +126,13 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Uri that was requested.
      *
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @Assert\NotNull()
+     *
+     * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotNull()
      *
      * @var string
      */
@@ -132,11 +141,13 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Request method.
      *
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @Assert\NotNull()
+     *
+     * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotNull()
      *
      * @var string
      */
@@ -145,10 +156,11 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * HTTP status.
      *
+     * @ORM\Column(type="integer", nullable=true)
+     *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      * @JMS\Groups({"list"})
-     *
-     * @ORM\Column(type="integer", nullable=true)
      *
      * @var string
      */
@@ -157,25 +169,35 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * Data which was attached to request.
      *
-     * @JMS\Type("array")
-     * @JMS\Groups({"details"})
      *
      * @ORM\Column(type="json_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     * @JMS\Groups({"details"})
      *
      * @var array
      */
     protected $request_data;
 
     /**
-     * @var array
      * @ORM\Column(type="json_array", nullable=true)
+     *
+     * @var array
      */
     protected $response_data;
 
     /**
-     * @var string
+     * Unique request identity (could be provided by client, see docs).
+     *
      * @ORM\Column(type="string", nullable=false)
+     *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
      */
     protected $request_id;
 
@@ -394,6 +416,8 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * Get already decoded response data as array.
+     *
      * @JMS\VirtualProperty()
      * @JMS\Groups({"details"})
      * @JMS\Type("array")

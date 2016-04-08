@@ -27,5 +27,7 @@ const defaultTableFields = [
 const defaultCommentTableFields = ['comment_id', 'comment_content', 'comment_author'];
 
 module.exports.defaultCardFields = defaultCardFields;
+
 module.exports.defaultTableFields = defaultTableFields;
+
 module.exports.defaultCommentTableFields = defaultCommentTableFields;

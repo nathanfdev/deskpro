@@ -34,13 +34,13 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal\PortalAntiAbuse
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class PortalAntiAbuseSetupController.
  *
  * @ApiModes("all")
- * @Route("/settings/anti_abuse/portal")
+ * @Rest\Route("/settings/anti_abuse/portal")
  * @OutputEntity("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings")
  */
 class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController

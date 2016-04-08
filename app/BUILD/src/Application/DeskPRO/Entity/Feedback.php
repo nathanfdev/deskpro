@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -80,6 +81,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $status_category = null;
 
     /**
+     * Hidden status code.
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
@@ -121,10 +124,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $custom_data;
 
     /**
+     * Popularity.
+     *
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * Popularity (see recalculatePopularity).
+     * (see recalculatePopularity)
      *
      * @var string
      */

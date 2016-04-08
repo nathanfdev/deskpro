@@ -43,7 +43,7 @@ export class LoadIndicator extends Component {
 
   render() {
     const { activeAppId } = this.props;
-    const top  = this.props.top  || '50%';
+    const top = this.props.top || '50%';
     const left = this.props.left || '50%';
 
     return (

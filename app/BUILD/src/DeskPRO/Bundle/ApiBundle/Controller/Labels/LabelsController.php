@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -77,7 +78,7 @@ class LabelsController extends BaseController
      *     output="Application\DeskPRO\Entity\LabelDef"
      *
      * )
-     * @Get(
+     * @Rest\Get(
      *     "/{type}_labels",
      *     name="api_person_labels_list",
      *     requirements={

@@ -10,11 +10,11 @@ import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Serv
 }))
 export class ListItemContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:     PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    children: PropTypes.node,
-    listOptions: PropTypes.object.isRequired
+    label:        PropTypes.string.isRequired,
+    children:     PropTypes.node,
+    listOptions:  PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -23,7 +23,7 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount() {
-    const {activeItemId, listOptions, dispatch} = this.props;
+    const { activeItemId, listOptions, dispatch } = this.props;
     if (activeItemId === this.itemId) {
       dispatch(applyParams(listOptions));
     }
@@ -36,10 +36,10 @@ export class ListItemContainer extends Component {
 
   render() {
     const props = {
-      groupId: 'nav',
-      onClick: this.loadList,
-      itemId: this.itemId,
-      label: this.props.label,
+      groupId:  'nav',
+      onClick:  this.loadList,
+      itemId:   this.itemId,
+      label:    this.props.label,
       children: this.props.children
     };
 

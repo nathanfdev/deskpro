@@ -34,6 +34,7 @@ export const getCategories = createAction(
 );
 
 export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
+
 export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
 export const getCommentsCounter = createAction(
@@ -50,38 +51,20 @@ export const loadFeedbackList = createAction(
   'FEEDBACK_LIST_OF_FEEDBACK',
     params => (dispatch) => repository('Feedback').search(params).then(promise => {
       const res = promise.getData();
-      const ids = res.data.map(item=>item.id);
+      const ids = res.data.map(item => item.id);
 
       dispatch(setCollection('Feedback', recordStoresId, res.data));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
-      dispatch(setCollection('FeedbackStatusCategory', recordStoresId, prepareLinkedData(res.linked.feedback_status_category)));
+      dispatch(setCollection(
+          'FeedbackStatusCategory',
+          recordStoresId,
+          prepareLinkedData(res.linked.feedback_status_category))
+      );
       dispatch(getCommentsCounter(ids));
 
-      return { ids: ids, pagination: res.meta.pagination };
+      return { ids, pagination: res.meta.pagination };
     }
   ));
-export const loadList = createAction(
-  'FEEDBACK_LIST',
-  (listParams) => dispatch => {
-    let params = listParams;
-
-    const { navItem } = params;
-    if (navItem) {
-      delete params.navItem;
-      params = { ...params, ...navItem };
-    }
-
-    const isComments = params.isComments;
-    delete params.isComments;
-    if (isComments) {
-      dispatch(loadFeedbackCommentsList(params));
-    } else {
-      dispatch(loadFeedbackList(params));
-    }
-    dispatch(toggleMassAction());
-    return params;
-  }
-);
 
 export const getDisplayFieldsFromPersonSetting = createAction(
   'FEEDBACK_GET_DISPLAY_FIELD_FROM_PERSON_SETTING',
@@ -112,20 +95,45 @@ export const updateDisplayFieldsToPersonSetting = createAction(
   }
 );
 
+export const loadList = createAction(
+  'FEEDBACK_LIST',
+  (listParams) => dispatch => {
+    let params = listParams;
+
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+
+    const isComments = params.isComments;
+    delete params.isComments;
+    if (isComments) {
+      dispatch(loadFeedbackCommentsList(params));
+    } else {
+      dispatch(loadFeedbackList(params));
+    }
+    dispatch(toggleMassAction());
+    return params;
+  }
+);
+
 export const applyParams = createAction(
   'FEEDBACK_APPLY_LIST_PARAMS',
   (params = {}) => (dispatch, getState) => {
-    if (params.hasOwnProperty('navItem')) {
+    let newParams = params;
+    if (newParams.hasOwnProperty('navItem')) {
       const typesOfStatus = ['status', 'status_category', 'hidden_status'];
-      typesOfStatus.forEach((type)=> {
-        if (params.navItem.hasOwnProperty(type)) {
+      typesOfStatus.forEach((type) => {
+        if (newParams.navItem.hasOwnProperty(type)) {
           typesOfStatus.splice(typesOfStatus.indexOf(type), 1);
-          typesOfStatus.forEach((item) => delete params[item]);
+          typesOfStatus.forEach((item) => delete newParams[item]);
         }
       });
     }
     const current = currentListParamsSelector(getState()).toJS();
-    const newParams = { ...current, ...params };
+
+    newParams = { ...current, ...newParams };
     dispatch(setParams(newParams));
     dispatch(loadList(newParams));
   }
@@ -133,12 +141,14 @@ export const applyParams = createAction(
 
 export const setOrderBy = createAction(
   'FEEDBACK_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy }))
+    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
+
 export const setOrderDir = createAction(
   'FEEDBACK_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir }))
+    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
 
 export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+
 export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');

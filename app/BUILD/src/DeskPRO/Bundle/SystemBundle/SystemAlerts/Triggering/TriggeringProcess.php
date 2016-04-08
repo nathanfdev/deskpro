@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use Doctrine\ORM\EntityManager;
 
@@ -45,25 +47,16 @@ class TriggeringProcess
     private $triggers = [];
 
     /**
-     * @var TriggeringProcessStateManager
-     */
-    private $state_manager;
-
-    /**
      * @var EntityManager
      */
     private $em;
 
     /**
-     * TriggeringProcess constructor.
-     *
-     * @param TriggeringProcessStateManager $state_manager
-     * @param EntityManager                 $em
+     * @param EntityManager $em
      */
-    public function __construct(TriggeringProcessStateManager $state_manager, EntityManager $em)
+    public function __construct(EntityManager $em)
     {
-        $this->state_manager = $state_manager;
-        $this->em            = $em;
+        $this->em = $em;
     }
 
     /**
@@ -89,9 +82,8 @@ class TriggeringProcess
     {
         $this->em->beginTransaction();
 
+        $this->provideContinuingIncidents();
         $events = $this->selectEvents();
-        $this->state_manager->provideState($this->triggers);
-
         foreach ($events as $event) {
             foreach ($this->triggers as $trigger) {
                 if ($incident = $trigger->consume($event)) {
@@ -100,11 +92,22 @@ class TriggeringProcess
             }
         }
         $this->em->flush();
-
-        $this->state_manager->saveState($this->triggers);
         $this->setProcessed($events);
 
         $this->em->commit();
+    }
+
+    /**
+     * Provides triggers with continuing incidents from DB.
+     */
+    private function provideContinuingIncidents()
+    {
+        foreach ($this->triggers as $trigger) {
+            if ($trigger instanceof StatefulIncidentTrigger) {
+                $repository = $this->em->getRepository($trigger->getIncidentClass());
+                $trigger->setContinuingIncidents($repository->findBy(['resolved' => false]));
+            }
+        }
     }
 
     /**
@@ -112,7 +115,7 @@ class TriggeringProcess
      */
     private function selectEvents()
     {
-        return $this->em->getRepository(Event::class)->findBy(['processed' => false], ['id' => 'asc']);
+        return $this->em->getRepository(AbstractEvent::class)->findBy(['processed' => false], ['id' => 'asc']);
     }
 
     /**
@@ -124,7 +127,7 @@ class TriggeringProcess
     {
         $qb    = $this->em->createQueryBuilder();
         $query = $qb
-            ->update(Event::class, 'e')
+            ->update(AbstractEvent::class, 'e')
             ->set('e.processed', true)
             ->where('e IN (:events)')
             ->setParameters(compact('events'))

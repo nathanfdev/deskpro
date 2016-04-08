@@ -42,6 +42,7 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -401,6 +402,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection()
      */
     protected $labels;
 

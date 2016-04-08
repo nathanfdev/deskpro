@@ -10,7 +10,7 @@ import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   const { FilterEditPopupContainer } = require('~nav/FilterEditPopupContainer');
-  const actions = require('~root/Actions/navActions');
+  const actions  = require('~root/Actions/navActions');
   const dispatch = jasmine.createSpy('dispatch');
 
   function render() {
@@ -18,7 +18,7 @@ describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   }
 
   it('should render select box with grouping options', () => {
-    const component = render();
+    const component       = render();
     const selectComponent = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
     expect(selectComponent).not.toBeNull();
   });
@@ -26,7 +26,7 @@ describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   it('should dispatch the applyFilterEditing() event when changing select value', () => {
     dispatch.calls.reset();
     spyOn(actions, 'applyFilterEditing').and.callThrough();
-    const component = render();
+    const component       = render();
     const selectComponent = TestUtils.findRenderedDOMComponentWithTag(component, 'select');
 
     selectComponent.value = 'urgency';

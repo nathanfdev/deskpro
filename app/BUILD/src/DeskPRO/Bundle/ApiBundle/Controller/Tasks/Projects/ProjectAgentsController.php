@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @ApiDocSection("TaskProjects")
  * @Rest\Route("/task_projects/{parentId}/members/agents")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class ProjectAgentsController extends AbstractProjectMembersController
 {

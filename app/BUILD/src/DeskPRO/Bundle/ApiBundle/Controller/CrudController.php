@@ -36,10 +36,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -51,8 +48,6 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
  * Class CrudController.
  *
  * Base REST CRUD controller
- *
- * @todo Location header
  */
 abstract class CrudController extends BaseController
 {
@@ -94,7 +89,7 @@ abstract class CrudController extends BaseController
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
-     * @Get("/{id}", requirements={"id"="\d+"})
+     * @Rest\Get("/{id}", requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param int     $id
@@ -131,7 +126,7 @@ abstract class CrudController extends BaseController
      *          400="An error will occur if you provide wrong filters set",
      *      }
      * )
-     * @Get("")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -173,12 +168,13 @@ abstract class CrudController extends BaseController
             $page  = $request->query->get('page', 1);
             $count = $request->query->get('count', static::$listPerPage);
             if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException(
-                    'You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
             }
+
             $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
+
             $result = $pager;
         } else {
             $result = $qb->getQuery()->getResult();
@@ -201,7 +197,7 @@ abstract class CrudController extends BaseController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Post("")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
@@ -211,7 +207,14 @@ abstract class CrudController extends BaseController
     {
         $this->checkExposed(__METHOD__);
 
-        return $this->handleForm($this->instantiateEntity($request), $request);
+        $entity = $this->instantiateEntity($request);
+        $view   = $this->handleForm($entity, $request);
+
+        if ($this->isExposed('get')) {
+            $view->setLocation($this->getLocationUrl($entity, $request));
+        }
+
+        return $view;
     }
 
     /**
@@ -234,7 +237,7 @@ abstract class CrudController extends BaseController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Put("/{id}", requirements={"id"="\d+"})
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
      *
      * @param int     $id
      * @param Request $request
@@ -268,7 +271,7 @@ abstract class CrudController extends BaseController
      *          404="Well, looks like either resource already deleted either it doesn't exists at all"
      *      }
      * )
-     * @Delete("/{id}", requirements={"id"="\d+"})
+     * @Rest\Delete("/{id}", requirements={"id"="\d+"})
      *
      * @param int     $id
      * @param Request $request
@@ -315,6 +318,7 @@ abstract class CrudController extends BaseController
             if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
                 throw $this->createBadRequestException('Unknown sort field');
             }
+
             $sort = isset(static::$sortOptions[$sortParam])
                   ? static::$sortOptions[$sortParam]
                   : static::$listSort;
@@ -361,7 +365,7 @@ abstract class CrudController extends BaseController
      */
     protected function persistModel($model)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->getManager();
         $em->persist($model);
         $em->flush();
 
@@ -402,7 +406,7 @@ abstract class CrudController extends BaseController
         // https://github.com/symfony/symfony/pull/10567
         // https://github.com/symfony/symfony/issues/11493
 
-        // in this case form ViolationMapper should applies entity validation errors on the submitted form
+        // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
         $form->submit($decoded, !$partial_update);
         if (!$form->isValid()) {
@@ -428,19 +432,40 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * @param object  $entity
+     * @param Request $request
+     * @param array   $params
+     *
+     * @return string
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
+
+        return $this->generateUrl($route, array_merge(['id' => $entity->getId()], $params));
+    }
+
+    /**
+     * @param string $actionMethodName
+     *
+     * @return bool
+     */
+    private function isExposed($actionMethodName)
+    {
+        if (!is_array(static::$exposeOnly)) {
+            return true;
+        }
+
+        return in_array(TypeUtils::cleanAction($actionMethodName), static::$exposeOnly);
+    }
+
+    /**
      * @param string $actionMethodName
      */
     private function checkExposed($actionMethodName)
     {
-        // return of $exposeOnly config is not used
-        if (!is_array(static::$exposeOnly)) {
-            return;
-        }
-
-        $action = TypeUtils::cleanAction($actionMethodName);
-
-        if (!in_array($action, static::$exposeOnly)) {
-            throw new MethodNotAllowedHttpException(static::$exposeOnly, sprintf('Action [ %s ] is not allowed', strtoupper($action)));
+        if (!$this->isExposed($actionMethodName)) {
+            throw new MethodNotAllowedHttpException(static::$exposeOnly);
         }
     }
 }

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -37,7 +38,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\AgentGrouped;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\Grouped;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\ProjectGrouped;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,7 +62,7 @@ class TaskCountsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\Grouped"
      * )
      *
-     * @Annotations\Get("/tasks/group_counts", name="api_task_group_counts")
+     * @Rest\Get("/tasks/group_counts", name="api_task_group_counts")
      */
     public function getGroupCountsAction()
     {
@@ -92,7 +93,7 @@ class TaskCountsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\AgentGrouped>"
      * )
      *
-     * @Annotations\Get("/tasks/agent_counts", name="api_task_agent_counts")
+     * @Rest\Get("/tasks/agent_counts", name="api_task_agent_counts")
      */
     public function getAgentCountsAction()
     {
@@ -118,7 +119,7 @@ class TaskCountsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\ProjectGrouped>"
      * )
      *
-     * @Annotations\Get("/tasks/project_counts", name="api_task_project_counts")
+     * @Rest\Get("/tasks/project_counts", name="api_task_project_counts")
      */
     public function getProjectCountsAction()
     {

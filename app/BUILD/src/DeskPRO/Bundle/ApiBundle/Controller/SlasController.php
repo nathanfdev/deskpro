@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * API access to languages.
@@ -43,7 +44,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiModes("all")
  * @ApiDocSection("Slas")
  * @OutputEntity("Application\DeskPRO\Entity\Sla")
- * @Annotations\Route("/slas")
+ * @Rest\Route("/slas")
  */
 class SlasController extends CrudController
 {

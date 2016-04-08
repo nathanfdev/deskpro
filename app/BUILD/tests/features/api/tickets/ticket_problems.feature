@@ -54,17 +54,17 @@ Feature: /ticket_problems endpoint
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 3
     And the JSON node "data.title" should be equal to "Problem 3"
-    And the JSON node "data.is_open" should be equal to 0
+    And the JSON node "data.is_open" should be equal to 1
 
   Scenario: I retrieve a list of opened ticket problems
     When I send a GET request to "/api/v2/ticket_problems?is_open=1"
     Then the response status code should be 200
-    And the JSON node "data" should have 1 element
-    And the JSON node "data[0].title" should be equal to "Problem 1"
+    And the JSON node "data" should have 2 element
+    And the JSON node "data[0].title" should be equal to "Problem 3"
+    And the JSON node "data[1].title" should be equal to "Problem 1"
 
   Scenario: I retrieve a list of opened ticket problems
     When I send a GET request to "/api/v2/ticket_problems?is_open=0"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
-    And the JSON node "data[0].title" should be equal to "Problem 3"
-    And the JSON node "data[1].title" should be equal to "Problem 2"
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].title" should be equal to "Problem 2"

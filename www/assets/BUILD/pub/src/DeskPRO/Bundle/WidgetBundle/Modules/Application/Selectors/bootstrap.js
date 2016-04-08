@@ -18,9 +18,14 @@ export const widgetSessionCodeSelector = createSelector(
   session => session.get('session_code')
 );
 
-export const widgetSessionIsLoginSelector = createSelector(
+export const widgetSessionPersonSelector = createSelector(
   widgetSessionSelector,
-  session => session.get('is_login')
+  session => session.get('person')
+);
+
+export const widgetSessionIsLoginSelector = createSelector(
+  widgetSessionPersonSelector,
+  person => !!person
 );
 
 // Widget settings selectors
@@ -42,4 +47,20 @@ export const requireChatEmailValidationSelector = createSelector(
 export const requireChatLoginSelector = createSelector(
   widgetChatSettingsSelector,
   settings => settings.get('require_login')
+);
+
+// Company options selectors
+export const companyOptionsSelector = createSelector(
+  widgetSettingsSelector,
+  settings => settings.get('company')
+);
+
+export const companyNameSelector = createSelector(
+  companyOptionsSelector,
+  settings => settings.get('name')
+);
+
+export const companyLogoSelector = createSelector(
+  companyOptionsSelector,
+  settings => settings.get('logo')
 );

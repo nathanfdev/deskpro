@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -78,33 +79,39 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
     /**
      * Is subtask is done?
      *
+     * @ORM\Column(type="boolean", nullable=true)
+     *
      * @JMS\Expose()
      * @JMS\Type("boolean")
      *
      * @var bool
-     * @ORM\Column(type="boolean", nullable=true)
      */
     protected $is_done = false;
 
     /**
      * Task entity with which this subtask is associated.
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\Entity\TaskSubtask>")
-     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     *
      * @Assert\NotNull()
      * @Assert\Valid()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\Entity\TaskSubtask>")
      *
      * @var Task
      */
     protected $task;
 
     /**
-     * @var \DateTime
+     * Date when subtask was originally created.
+     *
      * @Orm\Column(type="datetime", nullable=true)
+     *
      * @Assert\NotNull()
+     *
+     * @var \DateTime
      */
     protected $date_created;
 

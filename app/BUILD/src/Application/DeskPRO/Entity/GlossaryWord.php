@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -67,8 +68,14 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     protected $word;
 
     /**
-     * @var GlossaryWordDefinition
+     * This word definition string representation.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("to_string<Application\DeskPRO\Entity\GlossaryWordDefinition>")
+     *
      * @Assert\NotNull()
+     *
+     * @var GlossaryWordDefinition
      */
     protected $definition;
 
@@ -105,17 +112,11 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * String representation Definition the word belongs to.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("definition")
-     * @JMS\Type("string")
-     *
-     * @return mixed
+     * @return string
      */
-    public function getDefinitionString()
+    public function __toString()
     {
-        return $this->getDefinition()->definition;
+        return $this->getWord();
     }
 
     ############################################################################

@@ -79,6 +79,7 @@ final class ErrorsCodes
     const INVALID_URL                 = 'invalid_url';
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
+    const TOO_LOW                     = 'too_low';
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
     const EXACTLY_ONE_SHOULD_BE_SET   = 'exactly_one_value_should_be_set';

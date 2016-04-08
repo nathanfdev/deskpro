@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Application\DeskPRO\Entity\ArticleComment;
@@ -39,7 +40,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,7 +97,7 @@ class CommentsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
-     * @Annotations\Get(
+     * @Rest\Get(
      *     "/{type}_comments/counts",
      *     name="api_content_comments_counts",
      *     requirements={
@@ -159,8 +160,8 @@ class CommentsController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\ArticleComment>"
      * )
-     * @Annotations\Get("/article_comments", name="api_content_comments_articles")
-     * @Annotations\View(serializerGroups={"list"})
+     * @Rest\Get("/article_comments", name="api_content_comments_articles")
+     * @Rest\View(serializerGroups={"list"})
      *
      * @param Request $request
      *
@@ -199,8 +200,8 @@ class CommentsController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\NewsComment>"
      * )
-     * @Annotations\Get("/news_comments", name="api_content_comments_news")
-     * @Annotations\View(serializerGroups={"list"})
+     * @Rest\Get("/news_comments", name="api_content_comments_news")
+     * @Rest\View(serializerGroups={"list"})
      *
      * @param Request $request
      *
@@ -239,8 +240,8 @@ class CommentsController extends BaseController
      *     },
      *     output="array<Application\DeskPRO\Entity\DownloadComment>"
      * )
-     * @Annotations\Get("/download_comments", name="api_content_comments_downloads")
-     * @Annotations\View(serializerGroups={"list"})
+     * @Rest\Get("/download_comments", name="api_content_comments_downloads")
+     * @Rest\View(serializerGroups={"list"})
      *
      * @param Request $request
      *

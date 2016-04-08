@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -176,34 +177,42 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     protected $is_user_enabled = true;
 
     /**
-     * @var bool
+     * True if field is enabled.
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
+     *
+     * @var bool
      */
     protected $is_enabled = true;
 
     /**
-     * @var int
+     * Obviously it is field`s display order.
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var int
      */
     protected $display_order = 0;
 
     /**
-     * @var string
+     * Default field value.
      *
      * @JMS\Expose()
      * @JMS\Type("integer")
+     *
+     * @var string
      */
     protected $default_value = null;
 
     /**
-     * @var bool
+     * Is this field associated with agents only.
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
+     *
+     * @var bool
      */
     protected $is_agent_field = false;
 

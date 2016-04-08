@@ -2361,6 +2361,24 @@ define(function() {
 	});
 
 	//###
+	//# Incidents
+	//###
+	routes.push({
+		id: 'server.incidents',
+		url: '/incidents',
+		templateName: 'Server/server-incidents.html',
+		controller: 'Admin_ServerIncidents_Ctrl_ServerIncidents'
+	});
+
+	routes.push({
+		id: 'server.incidents.view',
+		url: '/view/{id}',
+		templateName: 'Server/server-incidents-view.html',
+		controller: 'Admin_ServerIncidents_Ctrl_View',
+		target: "appbody@server"
+	});
+
+	//###
 	//# Sendmail Queue
 	//###
 	routes.push({

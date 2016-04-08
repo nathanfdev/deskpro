@@ -31,12 +31,13 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pusher;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,7 +69,7 @@ class NotificationController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Entity\ActionAlert"
+     *     output="array<DeskPRO\Bundle\AppBundle\Entity\ActionAlert>"
      * )
      *
      * @param string  $last
@@ -78,7 +79,7 @@ class NotificationController extends BaseController
      * @throws AccessDeniedHttpException
      *
      * @return View
-     * @Annotations\Get("/notify/action-alerts/{last}", name="action_alerts_last")
+     * @Rest\Get("/notify/action-alerts/{last}", name="action_alerts_last")
      */
     public function getLastActionAlertsAction($last, Request $request)
     {
@@ -102,11 +103,11 @@ class NotificationController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Model\NotificationConfiguration"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration"
      * )
      *
      * @return View
-     * @Annotations\Get("/notify/setup/action-alerts", name="action_alerts_setup")
+     * @Rest\Get("/notify/setup/action-alerts", name="action_alerts_setup")
      */
     public function setupActionAlertsAction()
     {
@@ -132,7 +133,7 @@ class NotificationController extends BaseController
      * @param Request $request
      *
      * @ApiDisableLimits()
-     * @Annotations\Put("/notify/heartbeat", name="online_heartbeat")
+     * @Rest\Put("/notify/heartbeat", name="online_heartbeat")
      *
      * @return View
      */
@@ -174,7 +175,7 @@ class NotificationController extends BaseController
      *     }
      * )
      *
-     * @Annotations\Post("/pusher/auth", name="pusher_auth")
+     * @Rest\Post("/pusher/auth", name="pusher_auth")
      *
      * @param Request $request
      *

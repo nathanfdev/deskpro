@@ -36,6 +36,8 @@ use JMS\Serializer\Annotation as JMS;
 class UsersourceSettings
 {
     /**
+     * True if usersource has agent form for login.
+     *
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -43,6 +45,8 @@ class UsersourceSettings
     private $hasAgentLoginForm = false;
 
     /**
+     * True if usersource has user form for login.
+     *
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -50,6 +54,8 @@ class UsersourceSettings
     private $hasUserLoginForm = false;
 
     /**
+     * True if registration is enabled for usersource.
+     * 
      * @var bool
      *
      * @JMS\Type("boolean")

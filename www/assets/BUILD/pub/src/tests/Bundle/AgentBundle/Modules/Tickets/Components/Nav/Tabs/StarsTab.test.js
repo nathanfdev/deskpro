@@ -5,7 +5,6 @@ jest.dontMock('~components/StarsTab');
 jest.mock('~common/Lists/NestedList');
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
 import { toImmutable } from 'Helpers';
 import { renderInTicketsApp } from '../../../tickets.test-helper';
 
@@ -15,7 +14,7 @@ describe('Tickets Navigation: StarsTab component', () => {
 
   function render() {
     const props = {
-      starsCount: toImmutable([{count: 0, title: 'Test Star'}])
+      starsCount: toImmutable([{ count: 0, title: 'Test Star' }])
     };
 
     return renderInTicketsApp({}, <StarsTab {...props} />);

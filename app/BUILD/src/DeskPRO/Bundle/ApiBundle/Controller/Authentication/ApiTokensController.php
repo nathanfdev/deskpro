@@ -45,8 +45,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +69,7 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Post("/api_tokens", name="api_post_api_tokens")
+     * @Rest\Post("/api_tokens", name="api_post_api_tokens")
      *
      * @param Request $request
      *
@@ -148,7 +147,7 @@ class ApiTokensController extends BaseController
      *          404="Auth code not found"
      *      }
      * )
-     * @Get("/api_tokens/device-setup/{auth}", name="api_authenticate_device")
+     * @Rest\Get("/api_tokens/device-setup/{auth}", name="api_authenticate_device")
      */
     public function authenticateDeviceAction($auth)
     {

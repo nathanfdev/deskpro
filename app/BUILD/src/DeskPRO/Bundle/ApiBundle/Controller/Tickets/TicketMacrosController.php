@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -42,7 +43,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketMacrosController.
  *
  * @ApiModes("all")
- * @Annotations\Route("/ticket_macros")
+ * @Rest\Route("/ticket_macros")
  * @OutputEntity("Application\DeskPRO\Entity\TicketMacro")
  * @ApiDocSection("Tickets")
  */
@@ -81,7 +82,7 @@ class TicketMacrosController extends CrudController
      *     }
      * )
      *
-     * @Annotations\Post("/{id}/apply/{ticketId}")
+     * @Rest\Post("/{id}/apply/{ticketId}")
      *
      * @param int     $id
      * @param int     $ticketId/api/v2/ticket_layouts/agent

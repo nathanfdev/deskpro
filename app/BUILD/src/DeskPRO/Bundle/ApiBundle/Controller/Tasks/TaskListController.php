@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -58,7 +59,7 @@ class TaskListController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskList>"
      *
      * )
-     * @Annotations\Get("/task_lists", name="api_task_lists")
+     * @Rest\Get("/task_lists", name="api_task_lists")
      *
      * @return View
      */

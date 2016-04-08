@@ -56,6 +56,19 @@ class LegacyTicketFilter
     private $displayOrder;
 
     /**
+     * System name for this filter.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $sysName;
+
+    /**
+     * Original filter`s title.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $title;
@@ -125,6 +138,7 @@ class LegacyTicketFilter
         $this->id              = $ticketFilter->getId();
         $this->displayOrder    = $ticketFilter->getDisplayOrder();
         $this->title           = $ticketFilter->getRawTitle();
+        $this->sysName         = $ticketFilter->getSysName();
         $this->term            = $ticketFilter->getTerms();
         $this->ticketFilterSet = $filterSet->getId();
     }

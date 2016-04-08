@@ -35,9 +35,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,7 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @ApiDocSection("Auth")
- * @Route("/me/profile")
+ * @Rest\Route("/me/profile")
  * @SerializerView(mapping={
  *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"
  * })
@@ -66,7 +64,7 @@ class ProfileController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"
      * )
      *
-     * @Get("")
+     * @Rest\Get("")
      */
     public function getAction()
     {
@@ -83,7 +81,7 @@ class ProfileController extends BaseController
      *     }
      * )
      *
-     * @Put("")
+     * @Rest\Put("")
      *
      * @param Request $request
      *

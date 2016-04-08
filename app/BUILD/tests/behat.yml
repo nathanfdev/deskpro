@@ -13,6 +13,7 @@ api:
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
+                - DpBehat\Api\IncidentsContext
                 - DpBehat\PermissionContext
                 - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Api\ApiLogContext

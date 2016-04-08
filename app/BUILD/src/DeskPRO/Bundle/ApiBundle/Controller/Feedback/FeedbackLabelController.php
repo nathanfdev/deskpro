@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,8 +62,8 @@ class FeedbackLabelController extends BaseController
      *          "groups"= {"labels"}
      *     }
      * )
-     * @Annotations\Get("/feedback_labels_list", name="api_feedback_labels_list")
-     * @Annotations\View(serializerGroups={"labels"})
+     * @Rest\Get("/feedback_labels_list", name="api_feedback_labels_list")
+     * @Rest\View(serializerGroups={"labels"})
      *
      * @throws \LogicException
      *

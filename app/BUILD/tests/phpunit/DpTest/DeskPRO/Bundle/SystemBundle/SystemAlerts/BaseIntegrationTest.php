@@ -29,16 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Doctrine\ORM\EntityManager;
 use DpTest\ApiTestCase;
-
-include_once '_mocks.php';
 
 /**
  * Class BaseIntegrationTest.
@@ -49,6 +48,11 @@ abstract class BaseIntegrationTest extends ApiTestCase
      * @var EntityManager
      */
     protected $em;
+
+    /**
+     * @var EntityManager
+     */
+    protected $default_em;
 
     /**
      * @var EventLogger
@@ -66,27 +70,43 @@ abstract class BaseIntegrationTest extends ApiTestCase
     public function setUp()
     {
         $this->em                 = $this->get('doctrine.orm.system_entity_manager');
+        $this->default_em         = $this->get('doctrine.orm.default_entity_manager');
         $this->event_logger       = $this->get('dp_sys.alerts.event_logger');
         $this->triggering_process = $this->get('dp_sys.alerts.triggering_process');
 
-        $this->em->createQuery('DELETE '.Incident::class)->execute();
-        $this->em->createQuery('DELETE '.Event::class)->execute();
-        $this->get('dp_sys.alerts.triggering_process_state_manager')->remove();
+        $events = $this->em->getRepository(AbstractEvent::class)->findAll();
+        foreach ($events as $event) {
+            $this->em->remove($event);
+        }
+        $incidents = $this->em->getRepository(AbstractIncident::class)->findAll();
+        foreach ($incidents as $incident) {
+            $this->em->remove($incident);
+        }
+        $this->em->flush();
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     protected function countEvents()
     {
-        return $this->em->createQuery('SELECT COUNT(e) FROM '.Event::class.' e')->getSingleScalarResult();
+        return $this->em->createQuery('SELECT COUNT(e) FROM '.AbstractEvent::class.' e')->getSingleScalarResult();
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    protected function countIncidents()
+    protected function countRaisedIncidents()
     {
-        return $this->em->createQuery('SELECT COUNT(i) FROM '.Incident::class.' i')->getSingleScalarResult();
+        return $this->em->createQuery(
+            'SELECT COUNT(i) FROM '.AbstractIncident::class.' i WHERE i.raised = true')->getSingleScalarResult();
+    }
+
+    /**
+     * @return int
+     */
+    protected function countAllIncidents()
+    {
+        return $this->em->createQuery('SELECT COUNT(i) FROM '.AbstractIncident::class.' i')->getSingleScalarResult();
     }
 }

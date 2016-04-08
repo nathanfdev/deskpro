@@ -34,8 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Session;
-use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
@@ -50,6 +50,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 abstract class AbstractApiController extends FOSRestController
 {
+    /**
+     * @param mixed $data
+     *
+     * @return ApiWrapper
+     */
     protected function wrap($data)
     {
         return new ApiWrapper($data);
@@ -85,7 +90,7 @@ abstract class AbstractApiController extends FOSRestController
     protected function getApiSession(Request $request)
     {
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        $session_repository = $this->getDoctrine()->getRepository(Session::class);
         $session_code       = $request->query->get('__sid');
 
         $session = null;

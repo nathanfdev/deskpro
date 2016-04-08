@@ -32,6 +32,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -616,6 +617,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Last author touched this content.
+     *
      * @JMS\VirtualProperty()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      * @JMS\SerializedName("last_author_id")
@@ -639,6 +642,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Vote stats object, like {"up": 1, "down": 1}.
+     *
      * @JMS\VirtualProperty()
      * @JMS\Type("array")
      */

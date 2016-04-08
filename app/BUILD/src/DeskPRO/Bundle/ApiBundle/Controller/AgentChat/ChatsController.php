@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentChat;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -36,8 +37,7 @@ use DeskPRO\Bundle\AppBundle\AgentChat\History;
 use DeskPRO\Bundle\AppBundle\AgentChat\Messenger;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,11 +59,13 @@ class ChatsController extends AbstractController
      *      filters={
      *          {
      *              "name"="search",
-     *              "dataType"="string"
+     *              "dataType"="string",
+     *              "pattern"=".*",
+     *              "description"="Any string to search through messages",
      *          }
      *      },
      *      statusCodes={
-     *          200="Returned if response was succesful",
+     *          200="Returned if response was successful",
      *      },
      *      output={
      *          "class"="array<DeskPRO\Bundle\AppBundle\Entity\AgentChat>",
@@ -71,12 +73,11 @@ class ChatsController extends AbstractController
      * )
      *
      * @param Request $request
-     * @Annotations\Get("/agent_chats", name="agent_chats_list")
-     * @FOS\View(serializerEnableMaxDepthChecks=true)
+     * @Rest\Get("/agent_chats", name="agent_chats_list")
      *
      * @return View
      */
-    public function cgetAction(Request $request)
+    public function listAction(Request $request)
     {
         /** @var History $searchService */
         $searchService = $this->get('deskpro.agentchat.history');
@@ -102,7 +103,12 @@ class ChatsController extends AbstractController
      *      resourceDescription="Operations about agent chats",
      *      description="get recently participating agent`s chats collection",
      *      filters={
-     *          {"name"="search", "dataType"="string"}
+     *          {
+     *              "name"="search",
+     *              "dataType"="string",
+     *              "pattern"=".*",
+     *              "description"="Any string to search through messages",
+     *          }
      *      },
      *      statusCodes={
      *          200="Success",
@@ -111,8 +117,8 @@ class ChatsController extends AbstractController
      * )
      *
      * @param Request $request
-     * @Annotations\Get("/agent_chats/recent", name="agent_chats_list_recent")
-     * @FOS\View(serializerEnableMaxDepthChecks=true)
+     * @Rest\Get("/agent_chats/recent", name="agent_chats_list_recent")
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      *
      * @return View
      */
@@ -158,7 +164,7 @@ class ChatsController extends AbstractController
      *      output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
      *
-     * @Annotations\Get("/agent_chats/{id}", name="agent_chats_view_chat")
+     * @Rest\Get("/agent_chats/{id}", name="agent_chats_view_chat")
      *
      * @param int $id
      *
@@ -202,7 +208,7 @@ class ChatsController extends AbstractController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
      * )
-     * @Annotations\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
+     * @Rest\Post("/agent_chats/start", name="agent_chats_add_chat_with_agent")
      *
      * @param Request $request
      *

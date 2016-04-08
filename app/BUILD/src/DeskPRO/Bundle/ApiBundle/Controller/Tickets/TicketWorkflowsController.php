@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -36,7 +37,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * Class TicketWorkflowController.
@@ -44,7 +45,7 @@ use FOS\RestBundle\Controller\Annotations;
  * @ApiModes("all")
  * @ApiDocSection("Tickets")
  * @OutputEntity("Application\DeskPRO\Entity\TicketWorkflow")
- * @Annotations\Route("/ticket_workflows")
+ * @Rest\Route("/ticket_workflows")
  */
 class TicketWorkflowsController extends CrudController
 {

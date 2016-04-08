@@ -3,7 +3,8 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
-import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
+import { setupActionAlerts }
+  from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData = createAction(
@@ -11,19 +12,19 @@ export const preloadData = createAction(
   () => dispatch => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch?get='
-        + 'DP_API/ticket_departments'
-        + ',DP_API/ticket_departments%3Fmy%3Dtrue'
-        + ',DP_API/agents'
-        + ',DP_API/agent_teams'
-        + ',DP_API/agent_teams%3Fmy%3Dtrue'
-        + ',DP_API/languages'
-        + ',DP_API/user_groups'
-        + ',DP_API/helpdesk/agent-client/settings'
-        + ',DP_API/notify/setup/action-alerts'
-        + ',DP_API/me'
-      ;
+          + 'DP_API/ticket_departments'
+          + ',DP_API/ticket_departments%3Fmy%3Dtrue'
+          + ',DP_API/agents'
+          + ',DP_API/agent_teams'
+          + ',DP_API/agent_teams%3Fmy%3Dtrue'
+          + ',DP_API/languages'
+          + ',DP_API/user_groups'
+          + ',DP_API/helpdesk/agent-client/settings'
+          + ',DP_API/notify/setup/action-alerts'
+          + ',DP_API/me'
+        ;
       api.sendGet(batch)
-        .success(({responses}) => {
+        .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
           dispatch(setCollection('Department', 'all', data[0]));
           dispatch(setCollection('Department', 'my', data[1]));

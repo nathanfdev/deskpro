@@ -32,6 +32,9 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class Department.
+ */
 class Department
 {
     /**
@@ -107,9 +110,16 @@ class Department
      */
     protected $avatar;
 
+    /**
+     * Constructor.
+     *
+     * @param DepartmentEntity $department
+     * @param Avatar           $avatar
+     */
     public function __construct(DepartmentEntity $department, Avatar $avatar)
     {
         $this->id                 = $department->getId();
+        $this->parent             = $department->getParent();
         $this->title              = $department->getTitle();
         $this->user_title         = $department->getUserTitle();
         $this->is_chat_enabled    = $department->isChatEnabled();

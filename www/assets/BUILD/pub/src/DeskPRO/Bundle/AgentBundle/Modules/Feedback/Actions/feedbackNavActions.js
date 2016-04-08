@@ -18,38 +18,38 @@ export const initialLoad = createAction(
   () => (dispatch) => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[categories]=DP_API/feedback/counts?group_by%3Dcustom_category'
-          + '&get[types]=DP_API/feedback/counts?group_by%3Dcategory'
-          + '&get[labels]=DP_API/feedback_labels'
-          + '&get[toValidateCount]=DP_API/feedback/counts?awaiting_validation%3D1'
-          + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
-          + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
-          + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
-          + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
-          + '&get[viewFields]=DP_API/person_setting/feedback_display_fields'
-          + '&get[rsTypes]=DP_API/feedback_types'
-          + '&get[rsCategories]=DP_API/feedback_categories'
-        ;
+        + '?get[categories]=DP_API/feedback/counts?group_by%3Dcustom_category'
+        + '&get[types]=DP_API/feedback/counts?group_by%3Dcategory'
+        + '&get[labels]=DP_API/feedback_labels'
+        + '&get[feedbackToReviewCount]=DP_API/feedback/counts?awaiting_validation%3D1'
+        + '&get[active]=DP_API/feedback/counts?status%3Dactive%26group_by%3Dstatus_category'
+        + '&get[closed]=DP_API/feedback/counts?status%3Dclosed%26group_by%3Dstatus_category'
+        + '&get[hidden]=DP_API/feedback/counts?status%3Dhidden%26group_by%3Dhidden_status'
+        + '&get[commentsToReviewCount]=DP_API/feedback_comments/counts?awaiting_validation%3D1'
+        + '&get[viewFields]=DP_API/person_setting/feedback_display_fields'
+        + '&get[rsTypes]=DP_API/feedback_types'
+        + '&get[rsCategories]=DP_API/feedback_categories';
+
       api.sendGet(batch)
-        .success(({responses}) => {
-          const payload = flattenBatchResponses(responses);
+        .success(({ responses }) => {
+          const payload    = flattenBatchResponses(responses);
           payload.statuses = { active: payload.active, closed: payload.closed, hidden: payload.hidden };
           if (payload.viewFields && payload.viewFields.hasOwnProperty('value')) {
             dispatch(setDisplayFields({
               visibleFields: {
-                card: payload.viewFields.value.card,
-                table: payload.viewFields.value.table,
+                card:     payload.viewFields.value.card,
+                table:    payload.viewFields.value.table,
                 comments: payload.viewFields.value.comments,
-                fromDb: true
+                fromDb:   true
               }
             }));
           } else {
             dispatch(setDisplayFields({
               visibleFields: {
-                card: defaultCardFields,
-                table: defaultTableFields,
+                card:     defaultCardFields,
+                table:    defaultTableFields,
                 comments: defaultCommentTableFields,
-                fromDb: false
+                fromDb:   false
               }
             }));
           }

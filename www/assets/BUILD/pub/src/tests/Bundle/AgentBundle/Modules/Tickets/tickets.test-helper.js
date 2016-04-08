@@ -6,8 +6,8 @@ import { massActionsInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Appl
 function fakeTicketsState(state) {
   return fakeState({
     Application: { massActions: massActionsInitialState },
-    Tickets: {
-      nav: toImmutable(ticketsNavInitialState),
+    Tickets:     {
+      nav:  toImmutable(ticketsNavInitialState),
       list: toImmutable(ticketsListInitialState)
     },
     ...state

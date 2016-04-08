@@ -126,6 +126,8 @@ define([
   'Admin/Server/Ctrl/ServerMysqlSortOrder',
   'Admin/Server/Ctrl/ServerErrorLogs',
   'Admin/Server/Ctrl/ServerErrorLogsView',
+  'Admin/Server/Ctrl/ServerIncidents',
+  'Admin/Server/Ctrl/ServerIncidentsView',
   'Admin/Server/Ctrl/ServerTaskQueue',
   'Admin/Server/Ctrl/ServerCronList',
   'Admin/Server/Ctrl/ServerCronLogs',

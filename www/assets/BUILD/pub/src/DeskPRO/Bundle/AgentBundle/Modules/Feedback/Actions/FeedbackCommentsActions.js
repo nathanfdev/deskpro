@@ -26,30 +26,18 @@ export const commentsToReviewCounter = createAction(
 
 export const deleteComment = createAction(
   'FEEDBACK_COMMENTS_DELETE',
-  (ids) => dispatch => {
-    repository('FeedbackComment').removeBatch(ids).then(()=> {
+  (id) => dispatch => {
+    repository('FeedbackComment').remove(id).then(() => {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
-    return ids;
-  }
-);
-
-export const approveComment = createAction(
-  'FEEDBACK_COMMENTS_APPROVE',
-  (ids) => dispatch => {
-    repository('FeedbackComment').approveFeedbackComment(ids).then(()=> {
-      dispatch(commentsToReviewCounter());
-      dispatch(applyParams({ isComments: true }));
-    });
-    return ids;
   }
 );
 
 export const editComment = createAction(
   'FEEDBACK_COMMENTS_EDIT',
-  (data) => dispatch => {
-    repository('FeedbackComment').update(data).then(()=> {
+  (data, id) => dispatch => {
+    repository('FeedbackComment').update(data, id).then(() => {
       dispatch(commentsToReviewCounter());
       dispatch(applyParams({ isComments: true }));
     });
@@ -60,12 +48,12 @@ export const loadFeedbackCommentsList = createAction(
   'FEEDBACK_LIST_OF_COMMENTS',
     params => (dispatch) => repository('FeedbackComment').commentsToReviewList(params).then(promise => {
       const res = promise.getData();
-      const ids = res.data.map(item=>item.id);
+      const ids = res.data.map(item => item.id);
 
       dispatch(setCollection('FeedbackComment', recordStoresId, res.data));
       dispatch(setCollection('Feedback', recordStoresId, prepareLinkedData(res.linked.feedback)));
       dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
 
-      return { ids: ids, pagination: res.meta.pagination };
+      return { ids, pagination: res.meta.pagination };
     }
   ));

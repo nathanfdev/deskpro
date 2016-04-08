@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -212,6 +213,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $email = '';
 
     /**
+     * An unique hash of message.
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *

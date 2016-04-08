@@ -11,7 +11,7 @@ services:
       - { name: form.type_extension, alias: text }
 
   form.choice_transformer_extension:
-    class: DeskPRO\Bundle\AppBundle\Form\Extension\CheckboxExtension
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\ChoiceExtension
     tags:
       - { name: form.type_extension, alias: choice }
 
@@ -197,11 +197,6 @@ services:
     tags:
       - { name: form.type, alias: subtask }
 
-  form.project:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\ProjectType
-    tags:
-      - { name: form.type, alias: project }
-
   form.term_engine.term:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
     arguments:
@@ -266,3 +261,11 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type, alias: ticket_participants }
+
+  form.widget_ticket_setup:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetTicketSetupType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type, alias: widget_ticket_setup }
+

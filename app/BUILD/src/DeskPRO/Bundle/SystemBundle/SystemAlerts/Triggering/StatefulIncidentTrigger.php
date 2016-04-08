@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 
 /**
  * Class StatefulIncidentTrigger.
@@ -40,195 +40,53 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
  * Base class for stateful incidents triggers. Stateful incident have a clear start/stop, unlike simple fire-and-forget
  * incidents, stateful incidents can be continuing and can be updated when new corresponding events occur.
  */
-abstract class StatefulIncidentTrigger extends Trigger
+interface StatefulIncidentTrigger extends Trigger
 {
     /**
-     * @var Incident
+     * @param StatefulIncident[] $incidents
      */
-    protected $continuing_incident = null;
+    public function setContinuingIncidents(array $incidents);
 
     /**
-     * @var callable Executed when the issue is created
+     * @param callable $resolvedCallback
      */
-    private $raised_callback;
+    public function setResolvedCallback(callable $resolvedCallback);
 
     /**
-     * @var callable Executed when the trigger criteria stops matching (i.e. the problem goes away)
+     * @param callable $continuingCallback
      */
-    private $resolved_callback;
+    public function setContinuingCallback(callable $continuingCallback);
 
     /**
-     * @var callable Executed after a continuing incident is updated
+     * @param callable $dismissedCallback
      */
-    private $continuing_callback;
-
-    /**
-     * @var callable Executed when an admin manually dismisses an incident
-     */
-    private $dismissed_callback;
-
-    /**
-     * @var array Array of Incident concrete classes which should be dismissed with the passed callback
-     */
-    private $dismissed_incident_types = [];
-
-    /**
-     * @var callable Executed when the issue is either dismissed or resolved
-     */
-    private $closed_callback;
-
-    /**
-     * @return bool
-     */
-    public function hasContinuingIncident()
-    {
-        return $this->continuing_incident !== null;
-    }
-
-    /**
-     * @return Incident
-     */
-    public function getContinuingIncident()
-    {
-        return $this->continuing_incident;
-    }
-
-    /**
-     * @param Incident $continuing_incident
-     */
-    public function setContinuingIncident(Incident $continuing_incident)
-    {
-        $this->continuing_incident = $continuing_incident;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function consume(Event $event)
-    {
-        if ($this->supports($event)) {
-            $this->process($event);
-
-            // If incident criteria are met, then depending on whether there is a continuing
-            // incident we either update it or create a new one
-            if ($this->isIncidentState()) {
-                if ($this->continuing_incident) {
-                    $this->updateContinuingIncident($event);
-                    if ($this->continuing_callback) {
-                        call_user_func($this->continuing_callback, $this->continuing_incident);
-                    }
-                } else {
-                    $this->continuing_incident = $this->createIncident();
-                    if ($this->raised_callback) {
-                        call_user_func($this->raised_callback, $this->continuing_incident);
-                    }
-
-                    return $this->continuing_incident;
-                }
-            }
-
-            // If incident criteria are no longer valid, then we need to mark the continuing incident as resolved
-            elseif ($this->continuing_incident) {
-                $resolved_incident = $this->continuing_incident;
-                $resolved_incident->setResolved(true);
-                if ($this->resolved_callback) {
-                    call_user_func($this->resolved_callback, $resolved_incident);
-                }
-                if ($this->closed_callback) {
-                    call_user_func($this->closed_callback, $resolved_incident);
-                }
-
-                $this->continuing_incident = null;
-                $this->initState();
-
-                return $resolved_incident;
-            }
-        }
-    }
-
-    /**
-     * @param callable $resolved_callback
-     */
-    public function setResolvedCallback(callable $resolved_callback)
-    {
-        $this->resolved_callback = $resolved_callback;
-    }
-
-    /**
-     * @param callable $continuing_callback
-     */
-    public function setContinuingCallback(callable $continuing_callback)
-    {
-        $this->continuing_callback = $continuing_callback;
-    }
-
-    /**
-     * @param callable     $dismissed_callback
-     * @param string|array $dismissed_incident_types
-     *
-     * @throws \Exception
-     */
-    public function setDismissedCallback(callable $dismissed_callback, $dismissed_incident_types)
-    {
-        if (!is_array($dismissed_incident_types)) {
-            $dismissed_incident_types = [$dismissed_incident_types];
-        }
-        if (empty($dismissed_incident_types)) {
-            throw new \Exception(
-                'You must provide at least one Incident type which should be dismissed with the passed callback');
-        }
-        foreach ($dismissed_incident_types as $type) {
-            if (!is_subclass_of($type, Incident::class, true)) {
-                throw new \Exception("'$type' is not a subclass of Incident");
-            }
-        }
-
-        $this->dismissed_incident_types = $dismissed_incident_types;
-        $this->dismissed_callback       = $dismissed_callback;
-    }
+    public function setDismissedCallback(callable $dismissedCallback);
 
     /**
      * If trigger dismiss and close callbacks are applicable to an incident.
      *
-     * @param Incident $incident
+     * As incidents dismissal happens outside of Trigger context by some external service, we need this method
+     * for the dismissing process so that it can determine if an incident should be dismissed with callback
+     * of this trigger.
+     *
+     * @param StatefulIncident $incident
      *
      * @return bool
      */
-    public function dismisses(Incident $incident)
-    {
-        return in_array(get_class($incident), $this->dismissed_incident_types);
-    }
+    public function dismisses(StatefulIncident $incident);
 
     /**
-     * @param callable $closed_callback
+     * @param callable $closedCallback
      */
-    public function setClosedCallback(callable $closed_callback)
-    {
-        $this->closed_callback = $closed_callback;
-    }
+    public function setClosedCallback(callable $closedCallback);
 
     /**
      * @return callable|null
      */
-    public function getDismissedCallback()
-    {
-        return $this->dismissed_callback;
-    }
+    public function getDismissedCallback();
 
     /**
      * @return callable
      */
-    public function getClosedCallback()
-    {
-        return $this->closed_callback;
-    }
-
-    /**
-     * Updates a continuing incident with information from new logged events.
-     *
-     * (!) Note that this method should not persist an incident with entity manager, it should just update and return
-     *
-     * @return Incident Updated incident
-     */
-    abstract protected function updateContinuingIncident();
+    public function getClosedCallback();
 }
