@@ -4815,7 +4815,6 @@ ul.kb-checkbox-extra {
     @include right(0);
     padding: 10px 15px;
     cursor: pointer;
-    z-index: 9999;
 
     i {
       color: $text-color-lighter;
