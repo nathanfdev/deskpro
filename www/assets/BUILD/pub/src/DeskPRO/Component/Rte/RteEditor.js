@@ -22,6 +22,19 @@ export class RteEditor extends React.Component {
 
     const node = this.getNode();
     const onChangeContent = () => {
+      // remove empty blocks
+      $('p', node).each((i, p) => {
+        const $p = $(p);
+        if (!$p.html()) {
+          $p.remove();
+        }
+      });
+
+      // wrap content
+      if (!$('p', node).length) {
+        node.innerHTML = `<p>${node.innerHTML}</p>`;
+      }
+
       onChange(node.innerHTML);
     };
 
