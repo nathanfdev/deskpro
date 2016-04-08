@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
@@ -154,7 +157,7 @@ class ChatController extends AbstractApiController
         $qb = $em->createQueryBuilder();
         $qb
             ->select('m')
-            ->from('DeskPRO:ChatMessage', 'm')
+            ->from(ChatMessage::class, 'm')
             ->where(
                 'm.conversation = :conversation_id',
                 'm.id > :last_message_id'
@@ -184,7 +187,7 @@ class ChatController extends AbstractApiController
     {
         $this->checkValidSession($conversation, $request);
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, ChatMessageType::class)->getForm();
+        $form = $this->createForm(ChatMessageType::class);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -211,6 +214,10 @@ class ChatController extends AbstractApiController
             $conversation->addMessage($chat_message);
             $chat_messages[] = $chat_message;
         }
+
+        //todo refactor
+        $serializer = $this->get('serializer');
+        $context    = new SideloadSerializationContext(new SideloadStore(), []);
 
         // Add blobs to chat conversation
         /** @var Blob[] $attachments */
@@ -240,7 +247,7 @@ class ChatController extends AbstractApiController
                     'is_html'         => true,
                     'type'            => 'file',
                     'blob_id'         => $attachment->getId(),
-                    'blob'            => $this->wrap($attachment)['data'],
+                    'blob'            => $serializer->toArray($attachment, $context),
                     'is_user_message' => true,
                 ])
             ;
@@ -280,7 +287,7 @@ class ChatController extends AbstractApiController
             $em = $this->getDoctrine()->getManager();
             $qb = $em->createQueryBuilder();
             $qb
-                ->update('DeskPRO:ChatMessage', 'cm')
+                ->update(ChatMessage::class, 'cm')
                 ->set('cm.date_received', ':date_received')
                 ->where(
                     'cm.id IN(:message_ids)',
@@ -313,7 +320,7 @@ class ChatController extends AbstractApiController
     {
         $this->checkValidSession($conversation, $request);
 
-        $form = $this->get('form.factory')->createNamedBuilder(null, ChatUserTypingType::class)->getForm();
+        $form = $this->createForm(ChatUserTypingType::class);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
