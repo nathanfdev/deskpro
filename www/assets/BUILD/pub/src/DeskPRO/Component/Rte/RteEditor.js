@@ -102,6 +102,8 @@ export class RteEditor extends React.Component {
   }
 
   focus() {
+    this.prepareFocusContent();
+
     const doc = this.medium.options.ownerDocument;
     const node = this.getNode();
 
@@ -110,28 +112,48 @@ export class RteEditor extends React.Component {
       // has stored selection
       if (doc.getSelection) {
         const sel = doc.getSelection();
-        const range = sel.getRangeAt(0);
-        range.collapse(false);
+        if (sel.focusNode === node) {
+          // focus outside the <p> tag
+          // could cause for empty content
+          this.focusEnd();
+        } else {
+          const range = sel.getRangeAt(0);
+          range.collapse(false);
 
-        sel.removeAllRanges();
-        sel.addRange(range);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
       }
     } else {
-      if (doc.getSelection) {
-        let $p = $('p', node);
-        if (!$p.length || node.innerHTML === '<p><br></p>') {
-          node.innerHTML = '<p></p>';
-          $p = $('p', node);
-        }
+      // no selection, move caret to end
+      this.focusEnd();
+    }
+  }
 
-        const range = doc.createRange();
-        range.selectNodeContents($p.last().get(0));
-        range.collapse(false);
+  focusEnd() {
+    this.prepareFocusContent();
 
-        const sel = doc.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
+    const doc = this.medium.options.ownerDocument;
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (doc.getSelection) {
+      const range = doc.createRange();
+      range.selectNodeContents($p.last().get(0));
+      range.collapse(false);
+
+      const sel = doc.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
+  prepareFocusContent() {
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (!$p.length || node.innerHTML === '<p><br></p>') {
+      node.innerHTML = '<p></p>';
     }
   }
 
