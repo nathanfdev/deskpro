@@ -33,18 +33,19 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Class ProblemType.
  */
-class ProblemType extends ApiType
+class ProblemType extends AbstractType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -52,5 +53,20 @@ class ProblemType extends ApiType
             ->add('title', TextType::class)
             ->add('is_open', ApiBooleanType::class)
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOpenByDefault']);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetOpenByDefault(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['is_open'])) {
+            $data['is_open'] = 1;
+        }
+
+        $event->setData($data);
     }
 }
