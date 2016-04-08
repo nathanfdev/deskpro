@@ -8,9 +8,9 @@ import Immutable from 'immutable';
 export class AttachedImages extends React.Component {
 
   static propTypes = {
-    attachedImages: PropTypes.object,
+    attachedImages:      PropTypes.object,
     attachedImagesCount: PropTypes.number,
-    onRemoveAttachment: PropTypes.func
+    onRemoveAttachment:  PropTypes.func
   };
 
   constructor(props) {

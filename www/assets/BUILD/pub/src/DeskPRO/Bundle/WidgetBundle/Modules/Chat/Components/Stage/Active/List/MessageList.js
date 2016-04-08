@@ -9,10 +9,10 @@ import popWav from '../../../../../../Resources/sounds/pop.wav';
 export class MessageList extends React.Component {
 
   static propTypes = {
-    messages: PropTypes.object,
+    messages:      PropTypes.object,
     lastMessageId: PropTypes.number,
-    mute: PropTypes.bool,
-    isEnded: PropTypes.bool
+    mute:          PropTypes.bool,
+    isEnded:       PropTypes.bool
   };
 
   constructor(props) {
@@ -45,15 +45,17 @@ export class MessageList extends React.Component {
     if (messages.size !== this.state.messagesCount) {
       this.setState({
         messagesCount: messages.size,
-        lastMessageId: lastMessageId
+        lastMessageId
       });
 
       setTimeout(() => this.refs.scrollArea && this.refs.scrollArea.scrollBottom(), 0);
 
       // Checking for agent messages to play sound notification
-      const newAgentMessage = messages.filter(message => {
-        return message.get('id') > this.state.lastMessageId && !message.get('is_user') && !message.get('is_sys');
-      });
+      const newAgentMessage = messages.filter(message =>
+        message.get('id') > this.state.lastMessageId
+        && !message.get('is_user')
+        && !message.get('is_sys')
+      );
 
       // Don't play sound on initial load
       if (this.canPlaySound && !mute && newAgentMessage.size > 0) {
@@ -78,7 +80,7 @@ export class MessageList extends React.Component {
           <source src={popWav} />
         </audio>
         <ScrollArea ref="scrollArea" ownerDocument={window.widgetFrame.document} vertical>
-          <div className="bottom-aligner"/>
+          <div className="bottom-aligner"></div>
           <div>
             {this.props.messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}
           </div>

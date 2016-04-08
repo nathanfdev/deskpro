@@ -24,9 +24,9 @@ export class MessageImage extends React.Component {
               <img ref="image" src={downloadUrl} onClick={this.openFullImage} />
 
               <div className="dpdesignportal-message-asset-screen-controls">
-                <a href="#"><i className="fa fa-save"></i></a>
-                <a href="#"><i className="fa fa-expand"></i></a>
-                <a href="#"><i className="fa fa-times"></i></a>
+                <a href="#"><i className="fa fa-save" /></a>
+                <a href="#"><i className="fa fa-expand" /></a>
+                <a href="#"><i className="fa fa-times" /></a>
               </div>
 
               <p className="dpdesignportal-message-asset-info">

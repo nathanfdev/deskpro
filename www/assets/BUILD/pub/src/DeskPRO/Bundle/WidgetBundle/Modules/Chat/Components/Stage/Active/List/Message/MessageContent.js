@@ -24,7 +24,7 @@ export class MessageContent extends React.Component {
     return (
       <div>
         {message.get('is_html')
-          ? <p dangerouslySetInnerHTML={{__html: content}} />
+          ? <p dangerouslySetInnerHTML={{ __html: content }} />
           : <p>{content}</p>
         }
 

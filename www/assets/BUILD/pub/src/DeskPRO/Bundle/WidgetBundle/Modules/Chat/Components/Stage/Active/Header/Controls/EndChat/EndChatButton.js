@@ -10,7 +10,7 @@ export class EndChatButton extends React.Component {
   render() {
     return (
       <ControlItem onClick={this.props.onOpenPopup}>
-        End Chat <i className="fa fa-power-off"></i>
+        End Chat <i className="fa fa-power-off" />
       </ControlItem>
     );
   }

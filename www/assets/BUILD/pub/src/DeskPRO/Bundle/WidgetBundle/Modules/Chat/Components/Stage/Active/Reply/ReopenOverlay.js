@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export class ReopenOverlay extends React.Component {
 
   static propTypes = {
-    locked: PropTypes.bool,
+    locked:   PropTypes.bool,
     onReopen: PropTypes.func
   };
 
@@ -14,10 +14,12 @@ export class ReopenOverlay extends React.Component {
   };
 
   render() {
+    const { locked } = this.props;
+
     return (
       <div className="dpdesignportal-chat-form-disabled">
-        <a href="#" className={classNames('dpdesignportal-button', {'locked': this.props.locked})} onClick={this.onReopen}>
-          <i className="fa fa-commenting-o"></i> Reopen this chat
+        <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
+          <i className="fa fa-commenting-o" /> Reopen this chat
         </a>
       </div>
     );

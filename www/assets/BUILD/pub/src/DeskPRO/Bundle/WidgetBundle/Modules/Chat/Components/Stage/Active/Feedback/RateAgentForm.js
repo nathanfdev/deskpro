@@ -4,7 +4,7 @@ export class RateAgentForm extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit:  PropTypes.func.isRequired
   };
 
   constructor(props) {

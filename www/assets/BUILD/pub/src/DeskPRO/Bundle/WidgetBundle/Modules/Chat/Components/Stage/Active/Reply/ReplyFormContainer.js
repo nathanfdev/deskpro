@@ -13,24 +13,24 @@ import {
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  chatLoaded: chatLoadedSelector(state),
-  chatId: chatIdSelector(state),
-  agentName: agentNameSelector(state),
-  attachments: attachmentsSelector(state),
+  chatLoaded:          chatLoadedSelector(state),
+  chatId:              chatIdSelector(state),
+  agentName:           agentNameSelector(state),
+  attachments:         attachmentsSelector(state),
   attachedImagesCount: attachedImagesCountSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    chatLoaded: PropTypes.bool,
-    chatId: PropTypes.number,
+    dispatch:    PropTypes.func,
+    chatLoaded:  PropTypes.bool,
+    chatId:      PropTypes.number,
     attachments: PropTypes.object
   };
 
   onUserTyping = message => {
     const { dispatch, chatId } = this.props;
-    const data = {partial_message: message};
+    const data = { partial_message: message };
 
     dispatch(sendUserTyping(chatId, data));
   };
@@ -38,7 +38,7 @@ export class ReplyFormContainer extends React.Component {
   onSendMessage = message => {
     const { dispatch, chatId, attachments } = this.props;
     const data = {
-      message: replaceSmileCodes(message, true),
+      message:     replaceSmileCodes(message, true),
       attachments: attachments.map(attachment => attachment.get('blob_auth_id'))
     };
 

@@ -5,16 +5,16 @@ export class TranscriptForm extends React.Component {
 
   static propTypes = {
     disabledEmail: PropTypes.bool,
-    name: PropTypes.string,
-    email: PropTypes.string,
-    onSubmit: PropTypes.func.isRequired
+    name:          PropTypes.string,
+    email:         PropTypes.string,
+    onSubmit:      PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      name: props.name || '',
-      email: props.email || '',
+      name:   props.name || '',
+      email:  props.email || '',
       submit: false,
       errors: null
     };
@@ -30,14 +30,14 @@ export class TranscriptForm extends React.Component {
 
   onChangeName = event => {
     this.setState({
-      name: event.target.value,
+      name:   event.target.value,
       errors: null
     });
   };
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value,
+      email:  event.target.value,
       errors: null
     });
   };
@@ -94,7 +94,7 @@ export class TranscriptForm extends React.Component {
 
             <div className="label button-label">
               {this.state.submit
-                ? <div className="spinner"><i/></div>
+                ? <div className="spinner"><i /></div>
                 : <input type="submit"
                          value="Send me a transcript"
                          className="dpdesignportal-button"

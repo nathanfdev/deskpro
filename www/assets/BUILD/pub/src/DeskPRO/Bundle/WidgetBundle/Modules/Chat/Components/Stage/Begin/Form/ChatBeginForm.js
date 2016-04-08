@@ -4,14 +4,14 @@ import { FormItem } from './FormItem';
 export class ChatBeginForm extends React.Component {
 
   static propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string,
+    name:   PropTypes.string,
+    email:  PropTypes.string,
     submit: PropTypes.bool,
     errors: PropTypes.object,
 
-    onChangeName: PropTypes.func,
+    onChangeName:  PropTypes.func,
     onChangeEmail: PropTypes.func,
-    onSubmit: PropTypes.func
+    onSubmit:      PropTypes.func
   };
 
   render() {
@@ -37,7 +37,7 @@ export class ChatBeginForm extends React.Component {
 
           <div className="button-label">
             {submit
-              ? <div className="spinner"><i/></div>
+              ? <div className="spinner"><i /></div>
               : <input type="submit"
                        value="Start a new chat"
                        className="dpdesignportal-button dpdesignportal-button-wide" />

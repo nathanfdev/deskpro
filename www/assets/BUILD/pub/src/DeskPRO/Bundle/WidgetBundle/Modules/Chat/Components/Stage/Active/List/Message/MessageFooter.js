@@ -20,20 +20,20 @@ export class MessageFooter extends React.Component {
       <div className="dpdesignportal-message-footer">
         {/* temporary disabled */ false &&
           <a href="#" className="dpdesignportal-message-footer-assets-link">
-            <i className="fa fa-copy"></i> Chat Assets (4)
+            <i className="fa fa-copy" /> Chat Assets (4)
           </a>
         }
 
-        <div className={classNames({'right': isUser})}>
+        <div className={classNames({ right: isUser })}>
           {date &&
             <TimeAgo className="dpdesignportal-message-footer-timer"
                      formatter={timeAgoForamtter}
                      minPeriod={60000}
-                     date={date}/>
+                     date={date} />
           }
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">
-              <i className="fa fa-warning"/> Not delivered
+              <i className="fa fa-warning" /> Not delivered
             </span>
           }
         </div>

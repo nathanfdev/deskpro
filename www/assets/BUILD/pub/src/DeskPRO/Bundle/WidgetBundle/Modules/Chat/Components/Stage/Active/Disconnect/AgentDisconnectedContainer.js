@@ -12,29 +12,29 @@ import {
 } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  agentId: agentIdSelector(state),
-  agentName: agentNameSelector(state),
-  agentAvatar: agentAvatarSelector(state),
-  messages: messagesSelector(state),
+  agentId:       agentIdSelector(state),
+  agentName:     agentNameSelector(state),
+  agentAvatar:   agentAvatarSelector(state),
+  messages:      messagesSelector(state),
   lastMessageId: lastMessageIdSelector(state)
 }))
 export class AgentDisconnectedContainer extends React.Component {
 
   static propTypes = {
-    agentId: PropTypes.number,
-    agentName: PropTypes.string,
-    agentAvatar: PropTypes.object,
+    agentId:       PropTypes.number,
+    agentName:     PropTypes.string,
+    agentAvatar:   PropTypes.object,
     lastMessageId: PropTypes.number,
-    messages: PropTypes.object
+    messages:      PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      shown: false,
-      started: false,
-      lastMessageId: null,
-      lastAgentName: props.agentName,
+      shown:           false,
+      started:         false,
+      lastMessageId:   null,
+      lastAgentName:   props.agentName,
       lastAgentAvatar: props.agentAvatar
     };
   }
@@ -56,22 +56,20 @@ export class AgentDisconnectedContainer extends React.Component {
   checkForAgentTimeoutMessage() {
     const { messages, lastMessageId } = this.props;
     if (lastMessageId !== this.state.lastMessageId) {
-      const agentTimeoutMessages = messages.filter(message => {
-        return message.get('id') > this.state.lastMessageId
-            && message.get('is_sys')
-            && message.get('content').indexOf('message_agent-timeout') !== -1;
-      });
+      const agentTimeoutMessages = messages.filter(message =>
+        message.get('id') > this.state.lastMessageId
+        && message.get('is_sys')
+        && message.get('content').indexOf('message_agent-timeout') !== -1
+      );
 
       if (agentTimeoutMessages.size > 0) {
         this.setState({
-          shown: true,
+          shown:   true,
           started: true, // auto reassign for now
-          lastMessageId: lastMessageId
+          lastMessageId
         });
       } else {
-        this.setState({
-          lastMessageId: lastMessageId
-        });
+        this.setState({ lastMessageId });
       }
     }
   }
@@ -81,9 +79,9 @@ export class AgentDisconnectedContainer extends React.Component {
 
     if (agentId) {
       this.setState({
-        shown: false,
-        started: false,
-        lastAgentName: agentName,
+        shown:           false,
+        started:         false,
+        lastAgentName:   agentName,
         lastAgentAvatar: agentAvatar
       });
     }

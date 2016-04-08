@@ -7,14 +7,14 @@ import { agentAcceptTimeoutSelector } from '../../../../Application/Selectors/dp
 import { history } from '../../../../../Services/history';
 
 @connect(state => ({
-  chatId: chatIdSelector(state),
+  chatId:        chatIdSelector(state),
   acceptTimeout: agentAcceptTimeoutSelector(state)
 }))
 export class ChatWaitingContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    chatId: PropTypes.number,
+    dispatch:      PropTypes.func,
+    chatId:        PropTypes.number,
     acceptTimeout: PropTypes.number
   };
 
