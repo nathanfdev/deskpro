@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -69,8 +70,6 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\PersonEmail
-     *
-     * @Assert\NotNull()
      */
     protected $person_email = null;
 
