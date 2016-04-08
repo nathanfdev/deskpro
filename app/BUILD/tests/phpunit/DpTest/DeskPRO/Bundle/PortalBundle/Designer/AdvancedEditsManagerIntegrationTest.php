@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,13 +75,14 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     protected function setUp()
     {
         $this->em = $this->getEntityManager();
-
+        /** @var \Twig_Environment $twig */
+        $twig                 = $this->get('twig');
         $this->edit_theme_set = new ThemeSet();
         $this->edit_theme_set->setThemeId('edit_theme_set_id');
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set);
+        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set, $twig);
     }
 
     /**

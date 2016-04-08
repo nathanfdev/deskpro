@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,15 +66,22 @@ class AdvancedEditsManager
     private $edit_theme_set;
 
     /**
-     * @param EntityManager $em
-     * @param ThemeSet      $theme_set
-     * @param ThemeSet      $edit_theme_set
+     * @var \Twig_Environment
      */
-    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set)
+    private $twig;
+
+    /**
+     * @param EntityManager     $em
+     * @param ThemeSet          $theme_set
+     * @param ThemeSet          $edit_theme_set
+     * @param \Twig_Environment $twig
+     */
+    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set, \Twig_Environment $twig)
     {
         $this->em             = $em;
         $this->theme_set      = $theme_set;
         $this->edit_theme_set = $edit_theme_set;
+        $this->twig           = $twig;
     }
 
     /**
@@ -148,9 +155,8 @@ class AdvancedEditsManager
      */
     private function saveTemplate($name, $code)
     {
-        $template                    = $this->findOrCreateTemplate($name);
-        $template->template_code     = $code;
-        $template->template_compiled = $code;
+        $template = $this->findOrCreateTemplate($name);
+        $template->setTemplate($code, $this->twig->compileSource($code, $name));
         $this->em->persist($template);
         $this->em->flush();
     }
