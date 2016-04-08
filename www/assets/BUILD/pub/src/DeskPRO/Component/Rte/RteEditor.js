@@ -159,6 +159,8 @@ export class RteEditor extends React.Component {
       sel.removeAllRanges();
       sel.addRange(range);
     }
+
+    $(node).focus();
   }
 
   prepareFocusContent() {
