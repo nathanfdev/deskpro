@@ -10,22 +10,22 @@ import {
 } from '../../../Selectors/chat';
 
 @connect(state => ({
-  chatId: chatIdSelector(state),
-  locked: lockedPollingSelector(state),
+  chatId:    chatIdSelector(state),
+  locked:    lockedPollingSelector(state),
   dateEnded: dateEndedSelector(state),
-  isEnded: isEndedSelector(state),
+  isEnded:   isEndedSelector(state),
   canReopen: canReopenSelector(state)
 }))
 export class ReopenChatContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    chatId: PropTypes.number,
-    locked: PropTypes.bool,
-    isEnded: PropTypes.bool,
+    dispatch:  PropTypes.func,
+    chatId:    PropTypes.number,
+    locked:    PropTypes.bool,
+    isEnded:   PropTypes.bool,
     dateEnded: PropTypes.string,
     canReopen: PropTypes.bool,
-    children: PropTypes.any
+    children:  PropTypes.any
   };
 
   onReopen = () => {

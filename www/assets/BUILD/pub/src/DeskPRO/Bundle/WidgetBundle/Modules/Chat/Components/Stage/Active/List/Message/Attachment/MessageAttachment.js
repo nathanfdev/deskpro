@@ -15,7 +15,7 @@ export class MessageAttachment extends React.Component {
 
     const metadata = message.get('metadata') || Immutable.fromJS({});
     const attachment = metadata.get('blob') || Immutable.fromJS({});
-    const newProps = {...props, attachment};
+    const newProps = { ...props, attachment };
 
     return attachment.get('is_image') ? <MessageImage {...newProps} /> : <MessageFile {...newProps} />;
   }

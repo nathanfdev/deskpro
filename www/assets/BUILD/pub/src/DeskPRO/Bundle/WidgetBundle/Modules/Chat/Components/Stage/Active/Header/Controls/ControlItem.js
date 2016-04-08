@@ -6,7 +6,7 @@ export class ControlItem extends React.Component {
   static propTypes = {
     disabled: PropTypes.bool,
     children: PropTypes.any,
-    onClick: PropTypes.func
+    onClick:  PropTypes.func
   };
 
   onClick = event => {
@@ -23,7 +23,7 @@ export class ControlItem extends React.Component {
 
     return (
       <a href="#"
-         className={classNames('dpdesignportal-chat-header-control-item', {'disabled': disabled})}
+         className={classNames('dpdesignportal-chat-header-control-item', { disabled })}
          onClick={this.onClick}>
 
         {children}

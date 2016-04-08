@@ -29,10 +29,10 @@ export class AgentMessagePopup extends React.Component {
             {helpPopupMessage && <p className="quote">{helpPopupMessage}</p>}
           </div>
         </div>
-        <hr/>
+        <hr />
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
-            {React.cloneElement(children, {...childProps, primaryAgent})}
+            {React.cloneElement(children, { ...childProps, primaryAgent })}
           </div>
         </div>
       </ChatPopup>

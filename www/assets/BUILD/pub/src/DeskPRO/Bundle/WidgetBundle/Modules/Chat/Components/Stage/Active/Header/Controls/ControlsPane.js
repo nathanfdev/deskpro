@@ -14,7 +14,7 @@ export class ControlsPane extends React.Component {
 
   render() {
     return (
-      <div className={classNames('dpdesignportal-chat-header-controls', {'ended': this.props.isEnded})}>
+      <div className={classNames('dpdesignportal-chat-header-controls', { ended: this.props.isEnded })}>
         <ul>
           {false /* disabled for now */ &&
             <li>

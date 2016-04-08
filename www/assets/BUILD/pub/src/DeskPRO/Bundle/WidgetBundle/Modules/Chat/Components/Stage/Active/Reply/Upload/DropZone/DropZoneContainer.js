@@ -42,9 +42,9 @@ export class DropZoneContainer extends React.Component {
     return React.cloneElement(children, {
       ...childProps,
 
-      onSend: this.onUploadStarted,
+      onSend:    this.onUploadStarted,
       onSuccess: this.onUploadSuccess,
-      onFail: this.onUploadFail
+      onFail:    this.onUploadFail
     });
   }
 }

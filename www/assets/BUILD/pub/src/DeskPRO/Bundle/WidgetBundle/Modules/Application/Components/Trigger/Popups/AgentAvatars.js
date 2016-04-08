@@ -16,7 +16,7 @@ export class AgentAvatars extends React.Component {
 
     return (
       <div className="avatar-container">
-        <ul className={classNames({'multiple': !primaryAgent})}>
+        <ul className={classNames({ multiple: !primaryAgent })}>
           {displayAgents.map((agent, index) =>
             <li key={index}>
               <AvatarResolver avatar={agent.get('avatar')} size={150}>
@@ -25,7 +25,7 @@ export class AgentAvatars extends React.Component {
             </li>
           )}
         </ul>
-        {primaryAgent && <hr/>}
+        {primaryAgent && <hr />}
       </div>
     );
   }

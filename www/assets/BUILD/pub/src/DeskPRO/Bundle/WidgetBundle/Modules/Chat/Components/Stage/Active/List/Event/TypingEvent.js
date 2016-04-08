@@ -6,7 +6,7 @@ import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 export class TypingEvent extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
+    agentName:   PropTypes.string,
     agentAvatar: PropTypes.object
   };
 

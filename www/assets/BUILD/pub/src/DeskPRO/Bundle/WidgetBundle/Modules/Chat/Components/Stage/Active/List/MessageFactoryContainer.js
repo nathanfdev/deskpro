@@ -13,17 +13,17 @@ import { peopleSelector } from '../../../../../Application/Selectors/peopleSelec
 import Immutable from 'immutable';
 
 @connect(state => ({
-  chatAuthorName: authorNameSelector(state),
-  people: peopleSelector(state),
+  chatAuthorName:     authorNameSelector(state),
+  people:             peopleSelector(state),
   phraseTranslations: phraseTranslationsSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
-    chatAuthorName: PropTypes.string,
-    people: PropTypes.object,
+    chatAuthorName:     PropTypes.string,
+    people:             PropTypes.object,
     phraseTranslations: PropTypes.object,
-    message: PropTypes.object
+    message:            PropTypes.object
   };
 
   getAuthor() {

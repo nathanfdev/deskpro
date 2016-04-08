@@ -9,15 +9,15 @@ import { history } from '../../../../Services/history';
 @connect(state => ({
   content: contentSelector(state),
   loading: contentLoadingSelector(state),
-  saving: contentSavingSelector(state)
+  saving:  contentSavingSelector(state)
 }))
 export class TicketFormContentContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    content: PropTypes.string,
-    loading: PropTypes.bool,
-    saving: PropTypes.bool
+    content:  PropTypes.string,
+    loading:  PropTypes.bool,
+    saving:   PropTypes.bool
   };
 
   componentDidMount() {

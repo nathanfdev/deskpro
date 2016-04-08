@@ -5,7 +5,7 @@ export class AttachedFile extends React.Component {
 
   static propTypes = {
     attachment: PropTypes.object,
-    onRemove: PropTypes.func
+    onRemove:   PropTypes.func
   };
 
   onRemove = event => {
@@ -21,13 +21,13 @@ export class AttachedFile extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-attached-file">
         <div className="dpdesignportal-chat-form-attached-file-icon">
-          <i className="fa fa-file-pdf-o"></i>
+          <i className="fa fa-file-pdf-o" />
         </div>
         <div className="attached-file-title">
           {filenameMaxLength(attachment.get('filename'), 30)} ({attachment.get('filesize_readable')})
         </div>
         <a href="#" className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
-          <i className="fa fa-times-circle"/>
+          <i className="fa fa-times-circle" />
         </a>
       </div>
     );

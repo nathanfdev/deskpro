@@ -5,7 +5,7 @@ import classNames from 'classnames';
 export class MuteButton extends React.Component {
 
   static propTypes = {
-    mute: PropTypes.bool,
+    mute:    PropTypes.bool,
     onClick: PropTypes.func
   };
 
@@ -14,7 +14,7 @@ export class MuteButton extends React.Component {
 
     return (
       <ControlItem className="dpdesignportal-chat-header-control-mute" onClick={onClick}>
-        <i className={classNames('fa', {'fa-volume-up': !mute, 'fa-volume-off': mute})}></i>Mute
+        <i className={classNames('fa', { 'fa-volume-up': !mute, 'fa-volume-off': mute })} />Mute
       </ControlItem>
     );
   }

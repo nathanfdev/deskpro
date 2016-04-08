@@ -7,10 +7,10 @@ import { createEmotionImage } from './Emotions';
 export class EmotionButton extends React.Component {
 
   static propTypes = {
-    getEditor: PropTypes.func,
-    onSelect: PropTypes.func,
-    context: PropTypes.any,
-    className: PropTypes.string,
+    getEditor:       PropTypes.func,
+    onSelect:        PropTypes.func,
+    context:         PropTypes.any,
+    className:       PropTypes.string,
     buttonClassName: PropTypes.string,
     popupPositionAt: PropTypes.string,
     popupPositionMy: PropTypes.string
@@ -116,7 +116,7 @@ export class EmotionButton extends React.Component {
            title="Chat Emoticons"
            onClick={this.onSelectEmoticon}>
 
-          <span className={buttonClassName} ref="emotionsButton"/>
+          <span className={buttonClassName} ref="emotionsButton" />
         </a>
 
         <Simple
@@ -131,7 +131,7 @@ export class EmotionButton extends React.Component {
             context={context}
             additionalNodes={['.dpdesignportal-chat-form-button-row-emoticons']}>
 
-            <EmotionsPopup onClick={this.onSelectEmotion}/>
+            <EmotionsPopup onClick={this.onSelectEmotion} />
           </ClickOut>
         </Simple>
       </span>

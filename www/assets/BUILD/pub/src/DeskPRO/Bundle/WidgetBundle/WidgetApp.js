@@ -41,11 +41,11 @@ export class WidgetApp {
     // the DOM is on a parent frame and the JS/state is on this page. Cool!
 
     const $container = $('<div>', {
-      id: 'dp_widget_container',
+      id:  'dp_widget_container',
       css: {
         display: 'block',
-        width: '1px',
-        height: '1px'
+        width:   '1px',
+        height:  '1px'
       }
     });
 

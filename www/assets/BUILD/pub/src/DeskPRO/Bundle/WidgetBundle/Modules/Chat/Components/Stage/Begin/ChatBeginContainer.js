@@ -7,29 +7,29 @@ import { requireChatEmailValidationSelector, requireChatLoginSelector } from '..
 import { history } from '../../../../../Services/history';
 
 @connect(state => ({
-  liveDemo: liveDemoSelector(state),
+  liveDemo:               liveDemoSelector(state),
   requireEmailValidation: requireChatEmailValidationSelector(state),
-  requireLogin: requireChatLoginSelector(state)
+  requireLogin:           requireChatLoginSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
     requireEmailValidation: PropTypes.bool,
-    requireLogin: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
-    children: PropTypes.node,
-    isCreated: PropTypes.bool,
-    liveDemo: PropTypes.bool
+    requireLogin:           PropTypes.bool,
+    dispatch:               PropTypes.func.isRequired,
+    children:               PropTypes.node,
+    isCreated:              PropTypes.bool,
+    liveDemo:               PropTypes.bool
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: '',
+      name:         '',
+      email:        '',
       hidden_email: false,
-      submit: false,
-      errors: null
+      submit:       false,
+      errors:       null
     };
   }
 
@@ -40,10 +40,10 @@ export class ChatBeginContainer extends React.Component {
   componentWillReceiveProps(newProps) {
     if (newProps.children !== this.props.children) {
       this.setState({
-        name: '',
-        email: '',
+        name:         '',
+        email:        '',
         hidden_email: false,
-        errors: null
+        errors:       null
       });
     }
   }
@@ -54,14 +54,14 @@ export class ChatBeginContainer extends React.Component {
 
   onChangeName = event => {
     this.setState({
-      name: event.target.value,
+      name:   event.target.value,
       errors: null
     });
   };
 
   onChangeEmail = event => {
     this.setState({
-      email: event.target.value,
+      email:  event.target.value,
       errors: null
     });
   };
@@ -90,7 +90,7 @@ export class ChatBeginContainer extends React.Component {
     });
 
     const promise = this.props.dispatch(createChat({
-      name: this.state.name,
+      name:  this.state.name,
       email: this.state.email
     }));
 
@@ -133,10 +133,10 @@ export class ChatBeginContainer extends React.Component {
 
       hiddenEmail: state.hidden_email,
 
-      onChangeName: this.onChangeName,
-      onChangeEmail: this.onChangeEmail,
+      onChangeName:        this.onChangeName,
+      onChangeEmail:       this.onChangeEmail,
       onToggleHiddenEmail: this.onToggleHiddenEmail,
-      onSubmit: this.onSubmit
+      onSubmit:            this.onSubmit
     });
 
     return (

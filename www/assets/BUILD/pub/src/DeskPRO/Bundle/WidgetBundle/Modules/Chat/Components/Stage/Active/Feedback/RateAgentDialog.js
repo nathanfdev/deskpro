@@ -3,8 +3,8 @@ import React, { PropTypes } from 'react';
 export class RateAgentDialog extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
-    onClickHelpful: PropTypes.func,
+    agentName:         PropTypes.string,
+    onClickHelpful:    PropTypes.func,
     onClickNotHelpful: PropTypes.func
   };
 

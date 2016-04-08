@@ -8,9 +8,9 @@ import {
 } from '../../../../../../Selectors/chat';
 
 @connect(state => ({
-  attachedImages: attachedImagesSelector(state),
+  attachedImages:      attachedImagesSelector(state),
   attachedImagesCount: attachedImagesCountSelector(state),
-  attachedFiles: attachedFilesSelector(state)
+  attachedFiles:       attachedFilesSelector(state)
 }))
 export class AttachmentContainer extends React.Component {
 

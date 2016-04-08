@@ -20,28 +20,28 @@ import {
 } from '../../../../../../../Application/Selectors/bootstrap';
 
 @connect(state => ({
-  chatId: chatIdSelector(state),
-  authorName: authorNameSelector(state),
-  authorEmail: authorEmailSelector(state),
-  checked: transcriptCheckedSelector(state),
-  sent: transcriptSentSelector(state),
-  disabled: disabledPollingSelector(state),
+  chatId:          chatIdSelector(state),
+  authorName:      authorNameSelector(state),
+  authorEmail:     authorEmailSelector(state),
+  checked:         transcriptCheckedSelector(state),
+  sent:            transcriptSentSelector(state),
+  disabled:        disabledPollingSelector(state),
   emailValidation: requireChatEmailValidationSelector(state),
-  requireLogin: requireChatLoginSelector(state)
+  requireLogin:    requireChatLoginSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    chatId: PropTypes.number,
-    authorName: PropTypes.string,
-    authorEmail: PropTypes.string,
-    checked: PropTypes.bool,
-    disabled: PropTypes.bool,
-    sent: PropTypes.bool,
-    children: PropTypes.node,
+    dispatch:        PropTypes.func,
+    chatId:          PropTypes.number,
+    authorName:      PropTypes.string,
+    authorEmail:     PropTypes.string,
+    checked:         PropTypes.bool,
+    disabled:        PropTypes.bool,
+    sent:            PropTypes.bool,
+    children:        PropTypes.node,
     emailValidation: PropTypes.bool,
-    requireLogin: PropTypes.bool
+    requireLogin:    PropTypes.bool
   };
 
   constructor(props) {
@@ -102,9 +102,9 @@ export class TranscriptContainer extends React.Component {
         {React.cloneElement(children, {
           ...childProps,
 
-          ref: 'button',
-          disabled: disabled,
-          active: checked,
+          disabled,
+          ref:     'button',
+          active:  checked,
           onClick: this.onClick
         })}
 

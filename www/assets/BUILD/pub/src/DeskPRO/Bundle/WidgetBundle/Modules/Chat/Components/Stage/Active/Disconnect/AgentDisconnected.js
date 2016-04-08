@@ -5,7 +5,7 @@ import { AgentAvatar } from '../../../../../Application/Components/Trigger/Popup
 export class AgentDisconnected extends React.Component {
 
   static propTypes = {
-    children: PropTypes.any,
+    children:    PropTypes.any,
     agentAvatar: PropTypes.object
   };
 

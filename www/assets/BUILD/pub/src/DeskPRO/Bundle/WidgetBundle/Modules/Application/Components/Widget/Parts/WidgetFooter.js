@@ -6,7 +6,7 @@ export class WidgetFooter extends React.Component {
     return (
       <div className="dpdesignportal-powered-by-deskpro">
         <a href="http://deskpro.com/" target="_blank">
-          <hr/> Support powered by <span className="dpdesignportal-deskpro-mark-logo"></span> <hr/>
+          <hr /> Support powered by <span className="dpdesignportal-deskpro-mark-logo" /> <hr />
         </a>
       </div>
     );

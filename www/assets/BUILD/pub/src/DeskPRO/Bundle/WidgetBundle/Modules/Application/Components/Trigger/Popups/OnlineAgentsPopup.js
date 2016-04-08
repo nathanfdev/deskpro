@@ -6,10 +6,10 @@ export class OnlineAgentsPopup extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    onlineAgents: PropTypes.object,
-    onClick: PropTypes.func,
-    onClose: PropTypes.func
+    textColor:       PropTypes.string,
+    onlineAgents:    PropTypes.object,
+    onClick:         PropTypes.func,
+    onClose:         PropTypes.func
   };
 
   onClick = event => {
@@ -39,7 +39,7 @@ export class OnlineAgentsPopup extends React.Component {
               <AgentAvatars onlineAgents={onlineAgents} />
             </div>
           </div>
-          <hr/>
+          <hr />
         </div>
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
@@ -48,7 +48,7 @@ export class OnlineAgentsPopup extends React.Component {
                  onClick={this.onClick}
                  className="wide"
                  style={{
-                   backgroundColor: backgroundColor,
+                   backgroundColor,
                    color: textColor
                  }}>
 

@@ -7,12 +7,12 @@ import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/
 export class RteEditor extends React.Component {
 
   static propTypes = {
-    tag: PropTypes.string,
-    value: PropTypes.string,
-    inline: PropTypes.bool,
-    options: PropTypes.object,
-    onChange: PropTypes.func,
-    onSubmit: PropTypes.func,
+    tag:          PropTypes.string,
+    value:        PropTypes.string,
+    inline:       PropTypes.bool,
+    options:      PropTypes.object,
+    onChange:     PropTypes.func,
+    onSubmit:     PropTypes.func,
     onPasteImage: PropTypes.func
   };
 
@@ -22,6 +22,19 @@ export class RteEditor extends React.Component {
 
     const node = this.getNode();
     const onChangeContent = () => {
+      // remove empty blocks
+      $('p', node).each((i, p) => {
+        const $p = $(p);
+        if (!$p.html()) {
+          $p.remove();
+        }
+      });
+
+      // wrap content
+      if (!$('p', node).length) {
+        node.innerHTML = `<p>${node.innerHTML}</p>`;
+      }
+
       onChange(node.innerHTML);
     };
 
@@ -102,6 +115,8 @@ export class RteEditor extends React.Component {
   }
 
   focus() {
+    this.prepareFocusContent();
+
     const doc = this.medium.options.ownerDocument;
     const node = this.getNode();
 
@@ -110,28 +125,50 @@ export class RteEditor extends React.Component {
       // has stored selection
       if (doc.getSelection) {
         const sel = doc.getSelection();
-        const range = sel.getRangeAt(0);
-        range.collapse(false);
+        if (sel.focusNode === node) {
+          // focus outside the <p> tag
+          // could cause for empty content
+          this.focusEnd();
+        } else {
+          const range = sel.getRangeAt(0);
+          range.collapse(false);
 
-        sel.removeAllRanges();
-        sel.addRange(range);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
       }
     } else {
-      if (doc.getSelection) {
-        let $p = $('p', node);
-        if (!$p.length || node.innerHTML === '<p><br></p>') {
-          node.innerHTML = '<p></p>';
-          $p = $('p', node);
-        }
+      // no selection, move caret to end
+      this.focusEnd();
+    }
+  }
 
-        const range = doc.createRange();
-        range.selectNodeContents($p.last().get(0));
-        range.collapse(false);
+  focusEnd() {
+    this.prepareFocusContent();
 
-        const sel = doc.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
+    const doc = this.medium.options.ownerDocument;
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (doc.getSelection) {
+      const range = doc.createRange();
+      range.selectNodeContents($p.last().get(0));
+      range.collapse(false);
+
+      const sel = doc.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    $(node).focus();
+  }
+
+  prepareFocusContent() {
+    const node = this.getNode();
+    const $p = $('p', node);
+
+    if (!$p.length || node.innerHTML === '<p><br></p>') {
+      node.innerHTML = '<p></p>';
     }
   }
 
