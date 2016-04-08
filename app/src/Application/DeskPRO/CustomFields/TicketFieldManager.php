@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Strings;
-use Zend\Loader\Exception\InvalidArgumentException;
 
 class TicketFieldManager extends FieldManager
 {
@@ -209,8 +209,6 @@ class TicketFieldManager extends FieldManager
     /**
      * @param string $id
      * @param bool   $enabled
-     *
-     * @throws \Zend\Loader\Exception\InvalidArgumentException
      */
     public function setFieldEnabledById($id, $enabled = true)
     {
@@ -226,7 +224,7 @@ class TicketFieldManager extends FieldManager
                 case 'priority': $this->setIsPriorityEnabled($enabled); break;
                 case 'category': $this->setIsCategoryEnabled($enabled); break;
                 default:
-                    throw new InvalidArgumentException('Invalid $id');
+                    throw new \Exception('Invalid $id');
             }
         }
     }
