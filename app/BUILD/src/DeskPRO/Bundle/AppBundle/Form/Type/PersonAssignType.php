@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -161,6 +160,9 @@ class PersonAssignType extends AbstractType
             $data['name'] = $person->name;
 
             $event->setData($data);
+        }
+        if (!$person) {
+            $form->addError(new FormError(ErrorsCodes::NOT_NULL));
         }
     }
 
