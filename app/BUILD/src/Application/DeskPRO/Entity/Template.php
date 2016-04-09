@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
@@ -123,6 +122,13 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     public function getTemplateCompiled()
     {
         return $this->template_compiled;
+    }
+
+    public function setThemeSet(ThemeSet $themeSet)
+    {
+        $this->theme_set = $themeSet;
+
+        return $this;
     }
 
     public function setTemplate($code, $compiled)
