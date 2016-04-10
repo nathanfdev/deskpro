@@ -35,7 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
 use FOS\ElasticaBundle\Repository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -56,15 +56,21 @@ class ElasticSearchListener implements EventSubscriberInterface
     private $settings_resolver;
 
     /**
-     * Constructor.
-     *
+     * @var EventLogger
+     */
+    private $logger;
+
+    /**
      * @param RepositoryManager $elastic_manager
      * @param SettingsResolver  $settings_resolver
+     * @param EventLogger       $logger
      */
-    public function __construct(RepositoryManager $elastic_manager, SettingsResolver $settings_resolver)
+    public function __construct(
+        RepositoryManager $elastic_manager, SettingsResolver $settings_resolver, EventLogger $logger)
     {
         $this->elastic_manager   = $elastic_manager;
         $this->settings_resolver = $settings_resolver;
+        $this->logger            = $logger;
     }
 
     /**
@@ -121,7 +127,7 @@ class ElasticSearchListener implements EventSubscriberInterface
                 $context->addEntity($entity);
             }
         } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
+            $this->logger->log($e);
             $this->dispatchFallback($event);
         }
     }

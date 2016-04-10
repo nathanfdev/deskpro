@@ -29,49 +29,46 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use DpSys\LowError\SystemErrorHandler;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
- * Logs exceptions to error.log.
+ * Class ExceptionLoggerListener.
  */
-class ExceptionLoggerListener implements EventSubscriberInterface
+class ExceptionLoggerListener
 {
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    /**
+     * @var EventLogger
+     */
+    private $logger;
+
+    /**
+     * @param EventLogger $logger
+     */
+    public function __construct(EventLogger $logger)
     {
-        $e = $event->getException();
-
-        // Ignore client errors like 404s etc
-        if (
-            (
-                $e instanceof HttpException
-                && $e->getCode() >= 400
-                && $e->getCode() < 500
-            )
-            || $e instanceof MethodNotAllowedException
-        ) {
-            return;
-        }
-
-        $e = $event->getException();
-        SystemErrorHandler::logException($e);
+        $this->logger = $logger;
     }
 
     /**
-     * {@inheritdoc}
+     * @param GetResponseForExceptionEvent $event
+     *
+     * @throws \DeskPRO\Bundle\SystemBundle\SystemAlerts\LoggerException
      */
-    public static function getSubscribedEvents()
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        return [
-            // low priority, if the exception is caught and handled we dont want to log
-            // this is right before the default exception listener (which renders error page)
-            KernelEvents::EXCEPTION => ['onKernelException', -127],
-        ];
+        $exception = $event->getException();
+        if ($exception instanceof HttpException) {
+            return;
+        }
+
+        // only log if there is no response attached by previous listeners
+        if (!$event->hasResponse()) {
+            $this->logger->log($exception);
+        }
     }
 }

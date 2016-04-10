@@ -36,7 +36,7 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 
 /**
  * Class Environment.
@@ -174,7 +174,7 @@ class Environment extends \Twig_Environment
             if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle|Theme|PortalBundle):#', (string) $name)) {
                 if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
                     $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $previous);
-                    SystemErrorHandler::logException($e, false, 'twig_write_failed');
+                    $this->getLogger()->log($e);
                 }
             }
         }
@@ -224,5 +224,13 @@ class Environment extends \Twig_Environment
         $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
 
         return !$key ? false : $key;
+    }
+
+    /**
+     * @return EventLogger
+     */
+    private function getLogger()
+    {
+        return App::$container->get('dp_sys.alerts.event_logger');
     }
 }

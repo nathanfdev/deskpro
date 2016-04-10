@@ -241,4 +241,20 @@ class BaseController extends FOSRestController
 
         return $response && $response->getEtag() === $etag ? $this->getCacheResolver()->restoreResponseBody($response) : null;
     }
+
+    /**
+     * Logs an exception as system alert.
+     *
+     * This is used to track exceptions which we want to let users be aware of, depending on the exception type and
+     * its' handler, once exceptional situation reaches its' critical point, we'll show a system incident in the
+     * admin area.
+     *
+     * Don't use this to log handled exceptions which have no value for end users.
+     *
+     * @param \Exception $exception
+     */
+    protected function logException(\Exception $exception)
+    {
+        $this->get('dp_sys.alerts.event_logger')->log($exception);
+    }
 }
