@@ -1,0 +1,43 @@
+Feature: Production errors logging with System Alerts
+  In order to collect issues information on production instances
+  As a developer
+  I want to log PHP errors and unhandled exceptions
+
+  Background:
+    Given I install the api data set
+    And I go to "/login"
+    And I fill in "login_username" with "admin@deskpro.dev"
+    And I fill in "login_password" with "pass"
+    And I press "Login"
+    And I go to "/new-agent/"
+    And I have no logged system alert events
+
+  @basic
+  Scenario: I access API controller which doesn't produce any errors
+    And I go to "/api/v2/people"
+    Then the response status code should be 200
+    And the JSON node "data" should exist
+    And there should be no system alert events
+
+  Scenario: I access API controller throwing an HTTP exception
+    When I send a GET request to "/api/v2/system/demo/http-exception?confirm=I_understand_this_exists_for_testing_only"
+    Then the response status code should be 400
+    And there should be no system alert events
+
+  @basic
+  Scenario: I access API controller producing a PHP notice
+    When I send a GET request to "/api/v2/system/demo/php-notice?confirm=I_understand_this_exists_for_testing_only"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should be equal to "This action produced a PHP notice"
+    And there should be 1 system alert event
+
+  Scenario: I access API controller producing a PHP fatal error
+    When I send a GET request to "/api/v2/system/demo/php-fatal-error?confirm=I_understand_this_exists_for_testing_only"
+    Then the response status code should be 500
+    And there should be 1 system alert event
+
+  Scenario: I access API controller throwing an exception
+    When I send a GET request to "/api/v2/system/demo/exception?confirm=I_understand_this_exists_for_testing_only"
+    Then the response status code should be 500
+    And there should be 1 system alert event

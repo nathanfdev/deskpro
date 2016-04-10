@@ -61,24 +61,36 @@ class EventLogger
      * @param \Exception|Event $eventOrException
      * @param bool             $aloud            Whether to print the event description
      * @param bool|null        $halt             Whether to halt execution
+     *
+     * @throws LoggerException
      */
     public function log($eventOrException, $aloud = false, $halt = null)
     {
-        if ($eventOrException instanceof SuccessEvent) {
-            return $this->logSuccess($eventOrException);
+        if ($eventOrException instanceof LoggerException) {
+            die('To prevent recursion, you must not pass a LoggerException to the log() method.');
         }
 
-        $event = $this->ensureEvent($eventOrException);
-        $this->em->persist($event);
-        $this->em->flush($event);
+        try {
+            if ($eventOrException instanceof SuccessEvent) {
+                return $this->logSuccess($eventOrException);
+            }
+            $event = $this->ensureEvent($eventOrException);
+            $this->em->persist($event);
+            $this->em->flush($event);
 
-        if ($aloud) {
-            echo 'The following subject has failed: ', (string) $event, "\n";
+            if ($aloud) {
+                echo 'An error occurred: ', (string) $event, "\n";
+            }
+
+            !is_null($halt) or $halt = $aloud;
+            if ($halt) {
+                die();
+            }
         }
 
-        !is_null($halt) or $halt = $aloud;
-        if ($halt) {
-            die();
+        // Turn all exception to LoggerException which isn't processed by the log() method to omit recursion
+        catch (\Exception $e) {
+            throw new LoggerException($e);
         }
     }
 

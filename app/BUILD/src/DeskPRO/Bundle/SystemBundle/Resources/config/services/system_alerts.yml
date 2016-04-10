@@ -17,6 +17,11 @@ services:
     arguments:
       - "@doctrine.orm.system_entity_manager"
 
+  dp_sys.alerts.monolog_handler:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Bridge\SystemAlertsMonologHandler
+    arguments:
+      - "@service_container"
+
   dp_sys.alerts.incident_manager:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\IncidentManager
     arguments:

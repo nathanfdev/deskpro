@@ -313,6 +313,196 @@ class SystemErrorHandler
         self::$is_logging = false;
     }
 
+    /**
+     * Logs error info to the data/error.log file and the summary to the PHP error log.
+     *
+     * @param array $errinfo
+     */
+    public static function logToFile(array $errinfo)
+    {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        self::$wrote_log_file = false;
+
+        $str = array();
+        if ($errinfo['type'] == 'exception') {
+            $e     = $errinfo['exception'];
+            $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
+            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
+            $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
+            $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
+            $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+            if (!empty($errinfo['url'])) {
+                $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+                $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
+            }
+            $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
+        } else {
+            $line  = sprintf('DeskPRO Error: %s (%s line %s): %s', $errinfo['errname'], $errinfo['errfile'], $errinfo['errline'], $errinfo['errstr']);
+            $str[] = sprintf("Error: %s\n", $errinfo['errstr']);
+            $str[] = sprintf("\tType: %s\n", $errinfo['errname']);
+            $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
+            $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
+            if (!empty($errinfo['url'])) {
+                $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+                $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
+            }
+            $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
+        }
+
+        $errinfo['trace'] = trim($errinfo['trace']);
+        if ($errinfo['trace']) {
+            $lines = explode("\n", $errinfo['trace']);
+            foreach ($lines as $l) {
+                $l = trim($l);
+                if (substr($l, 0, 5) == '>>>>>') {
+                    $str[] = sprintf("\t   %s\n", trim($l));
+                } else {
+                    $str[] = sprintf("\t-> %s\n", trim($l));
+                }
+            }
+        }
+
+        if (!empty($errinfo['context_data'])) {
+            $str[] = "Context Data:\n";
+            $str[] = $errinfo['context_data'];
+            $str[] = "\n\n";
+        }
+
+        $str = trim(implode('', $str));
+        $str .= "\n";
+
+        // Prefix each line for easier parsing
+        $str  = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $str);
+        $line = preg_replace('#^#m', "<DP_LOG:{$errinfo['session_name']}> ", $line);
+
+        // First line of the log in the logfile must be DP_LOG.BEGIN, as that is used for the
+        // "quick" counts in admin interface
+        $pos = strpos($str, '<DP_LOG:');
+        if ($pos !== false) {
+            $str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
+        }
+
+        // Always write error line to standard error log
+        if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {
+            $line = '['.DPC_SITE_DOMAIN.'] '.$line;
+        }
+        @error_log($line, 0);
+
+        if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir().'/error.log', 'a')) !== false) {
+            $written = @fwrite($fh, $str);
+
+            if ($written) {
+                self::$wrote_log_file = dp_get_log_dir().'/error.log';
+
+                // Max 30MB
+                $stat = @fstat($fh);
+                if ($stat && $stat['size'] && $stat['size'] > 31457280) {
+                    @ftruncate($fh, 31457280);
+                }
+            }
+
+            @fclose($fh);
+            @chmod(dp_get_log_dir().'/error.log', 0777);
+        }
+
+        $throttle_id = 'email_error';
+        if (isset($errinfo['email_throttle_id'])) {
+            $throttle_id = $errinfo['email_throttle_id'];
+        }
+        if (
+            isset($errinfo['email'])
+            && $errinfo['email']
+            && defined('DP_TECHNICAL_EMAIL')
+            && DP_TECHNICAL_EMAIL
+            && (!$DP_ENV || !$DP_ENV->getConfig('settings.no_report_errors'))
+            && function_exists('dp_should_throttle_action')
+            && self::shouldThrottle($throttle_id, 300)
+        ) {
+            if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
+                $line = 'There has been a MySQL error: '.$errinfo['exception']->getMessage();
+            }
+
+            $fallback_send = true;
+
+            if (isset($errinfo['email_body'])) {
+                $email_str = $errinfo['email_body'];
+            } else {
+                $email_str = $str;
+            }
+
+            $email_subject = $line;
+            if (isset($errinfo['email_subject'])) {
+                $email_subject = $errinfo['email_subject'];
+            }
+
+            if (class_exists('Application\DeskPRO\App')) {
+                try {
+                    $message = App::getMailer()->createMessage();
+                    $message->setTo(DP_TECHNICAL_EMAIL);
+                    $message->setSubject($email_subject);
+
+                    $email_str = nl2br(htmlspecialchars($email_str, \ENT_QUOTES, 'UTF-8'));
+                    $message->setBody($email_str, 'text/html');
+
+                    if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
+                        if (is_file(dp_get_log_dir().'/error.log')) {
+                            $file = @file_get_contents(dp_get_log_dir().'/error.log');
+                            if (isset($file[3670016])) {
+                                $file = substr($file, -3670016);
+                            }
+                            $filename = 'error.log';
+                            $filetype = 'text/plain';
+
+                            if (function_exists('gzencode')) {
+                                $file     = gzencode($file);
+                                $filename = 'error.log.gz';
+                                $filetype = 'application/gzip';
+                            }
+
+                            $message->attach(\Swift_Attachment::newInstance(
+                                $file,
+                                $filename,
+                                $filetype
+                            ));
+                        }
+
+                        if (is_file(dp_get_log_dir().'/cli-phperr.log')) {
+                            $file = @file_get_contents(dp_get_log_dir().'/cli-phperr.log');
+                            if (isset($file[3670016])) {
+                                $file = substr($file, -3670016);
+                            }
+                            $filename = 'cli-phperr.log';
+                            $filetype = 'text/plain';
+
+                            if (function_exists('gzencode')) {
+                                $file     = gzencode($file);
+                                $filename = 'cli-phperr.log.gz';
+                                $filetype = 'application/gzip';
+                            }
+
+                            $message->attach(\Swift_Attachment::newInstance(
+                                $file,
+                                $filename,
+                                $filetype
+                            ));
+                        }
+                    }
+
+                    if (App::getMailer()->send($message)) {
+                        $fallback_send = false;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+
+            if ($fallback_send) {
+                @mail(DP_TECHNICAL_EMAIL, $line, $str);
+            }
+        }
+    }
+
     public function shouldThrottle($id, $timeout)
     {
         $file = dp_get_data_dir().'/last-'.$id.'.dat';

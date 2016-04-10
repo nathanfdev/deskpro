@@ -30,19 +30,20 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
-use Behat\MinkExtension\Context\RawMinkContext;
-use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use Exception;
 
-abstract class BaseContext extends RawMinkContext implements KernelAwareContextInterface
+/**
+ * Class LoggerException.
+ */
+class LoggerException extends Exception
 {
-    use KernelAwareTrait;
-
-    public function resetAllContext()
+    /**
+     * @param Exception $e
+     */
+    public function __construct(Exception $e)
     {
-        // after any kind of re-install, we need to reboot the kernel to reset references
-        $this->kernel->shutdown();
-        $this->kernel->boot();
+        parent::__construct($e->getMessage(), $e->getCode(), $e);
     }
 }

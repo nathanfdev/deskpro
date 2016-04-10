@@ -30,7 +30,7 @@
  * DeskPRO.
  */
 
-namespace DpBehat\Api;
+namespace DpBehat\System\Alerts;
 
 use Application\DeskPRO\Entity\EmailAccount;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -39,6 +39,7 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFai
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Email\IncomingEmailFailureIncident;
 use Doctrine\ORM\EntityManager;
+use DpBehat\Api\RestContext;
 use DpBehat\BaseContext;
 use Zend\Mail\Exception\RuntimeException;
 
@@ -70,7 +71,7 @@ class IncidentsContext extends BaseContext
     /**
      * @Given there are no incidents
      */
-    public function thereAreNoRegisteredUsersInTheDb()
+    public function thereAreNoIncidentsInTheDb()
     {
         $incidents = $this->sysEm()->getRepository(AbstractIncident::class)->findAll();
         foreach ($incidents as $incident) {

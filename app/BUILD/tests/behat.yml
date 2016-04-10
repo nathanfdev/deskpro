@@ -13,7 +13,6 @@ api:
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
-                - DpBehat\Api\IncidentsContext
                 - DpBehat\PermissionContext
                 - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Api\ApiLogContext
@@ -21,6 +20,7 @@ api:
                 - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
+                - DpBehat\System\Alerts\IncidentsContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -159,3 +159,40 @@ e2e:
                 class: DpSys\Kernel\ApiKernel
                 env: test
                 debug: true
+
+production:
+    suites:
+        production:
+            paths:
+                - %paths.base%/features/production/api
+            contexts:
+                - Behat\MinkExtension\Context\MinkContext
+                - behatch:json
+                - DpBehat\Api\RestContext
+                - DpBehat\Portal\AuthContext
+                - DpBehat\Http\HttpContext
+                - DpBehat\System\Alerts\EventsContext
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            base_url: '/'
+            default_session: default
+            sessions:
+                default:
+                    goutte: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
+            factory:
+                page_parameters:
+                    base_url: /
