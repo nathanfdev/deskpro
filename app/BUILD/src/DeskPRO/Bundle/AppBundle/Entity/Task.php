@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -40,7 +41,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -243,9 +243,12 @@ class Task implements EntityInterface
      */
     public function __construct(Person $creator)
     {
-        $this->subtasks = new ArrayCollection();
-        $this->labels   = new ArrayCollection();
-        $this->assigned = new ArrayCollection();
+        $this->subtasks        = new ArrayCollection();
+        $this->labels          = new ArrayCollection();
+        $this->assigned        = new ArrayCollection();
+        $this->linked_tickets  = new ArrayCollection();
+        $this->linked_articles = new ArrayCollection();
+        $this->linked_chats    = new ArrayCollection();
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
@@ -683,9 +686,9 @@ class Task implements EntityInterface
     }
 
     /**
-     * Get isDone
+     * Get isDone.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsDone()
     {
@@ -693,9 +696,9 @@ class Task implements EntityInterface
     }
 
     /**
-     * Get forDel
+     * Get forDel.
      *
-     * @return boolean
+     * @return bool
      */
     public function getForDel()
     {
@@ -703,7 +706,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove subtask
+     * Remove subtask.
      *
      * @param TaskSubtask $subtask
      */
@@ -713,7 +716,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove comment
+     * Remove comment.
      *
      * @param TaskComment $comment
      */
@@ -723,7 +726,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove attachment
+     * Remove attachment.
      *
      * @param TaskAttachment $attachment
      */
@@ -733,7 +736,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove linkedArticle
+     * Remove linkedArticle.
      *
      * @param TaskLinkedArticle $linkedArticle
      */
@@ -743,7 +746,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove linkedChat
+     * Remove linkedChat.
      *
      * @param TaskLinkedChat $linkedChat
      */
@@ -753,7 +756,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove linkedTicket
+     * Remove linkedTicket.
      *
      * @param TaskLinkedTicket $linkedTicket
      */
@@ -763,9 +766,9 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set percentComplete
+     * Set percentComplete.
      *
-     * @param integer $percentComplete
+     * @param int $percentComplete
      *
      * @return Task
      */
@@ -777,7 +780,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set dateCreated
+     * Set dateCreated.
      *
      * @param \DateTime $dateCreated
      *
@@ -791,7 +794,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set taskType
+     * Set taskType.
      *
      * @param string $taskType
      *
@@ -805,7 +808,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set dateDue
+     * Set dateDue.
      *
      * @param \DateTime $dateDue
      *
@@ -819,7 +822,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set dateEventStart
+     * Set dateEventStart.
      *
      * @param \DateTime $dateEventStart
      *
@@ -833,7 +836,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set dateEventEnd
+     * Set dateEventEnd.
      *
      * @param \DateTime $dateEventEnd
      *
@@ -847,7 +850,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set visibility
+     * Set visibility.
      *
      * @param string $visibility
      *
@@ -861,9 +864,9 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set urgency
+     * Set urgency.
      *
-     * @param integer $urgency
+     * @param int $urgency
      *
      * @return Task
      */
@@ -875,7 +878,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set dateDone
+     * Set dateDone.
      *
      * @param \DateTime $dateDone
      *
@@ -889,9 +892,9 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set displayOrder
+     * Set displayOrder.
      *
-     * @param integer $displayOrder
+     * @param int $displayOrder
      *
      * @return Task
      */
@@ -903,7 +906,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set creator
+     * Set creator.
      *
      * @param Person $creator
      *
@@ -917,7 +920,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set project
+     * Set project.
      *
      * @param TaskProject $project
      *
@@ -931,7 +934,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Set list
+     * Set list.
      *
      * @param TaskList $list
      *
@@ -945,7 +948,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add subtask
+     * Add subtask.
      *
      * @param TaskSubtask $subtask
      *
@@ -959,7 +962,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add label
+     * Add label.
      *
      * @param LabelTask $label
      *
@@ -973,7 +976,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Remove label
+     * Remove label.
      *
      * @param LabelTask $label
      */
@@ -983,7 +986,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add comment
+     * Add comment.
      *
      * @param TaskComment $comment
      *
@@ -997,7 +1000,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add attachment
+     * Add attachment.
      *
      * @param TaskAttachment $attachment
      *
@@ -1011,7 +1014,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add linkedArticle
+     * Add linkedArticle.
      *
      * @param TaskLinkedArticle $linkedArticle
      *
@@ -1025,7 +1028,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add linkedChat
+     * Add linkedChat.
      *
      * @param TaskLinkedChat $linkedChat
      *
@@ -1039,7 +1042,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Add linkedTicket
+     * Add linkedTicket.
      *
      * @param TaskLinkedTicket $linkedTicket
      *
@@ -1053,7 +1056,7 @@ class Task implements EntityInterface
     }
 
     /**
-     * Get assigned
+     * Get assigned.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
