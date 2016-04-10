@@ -46,13 +46,42 @@ abstract class AbstractExceptionEvent extends AbstractEvent
      *
      * @ORM\Column(name="exception_class", type="string")
      */
-    protected $exceptionClass;
+    protected $class;
 
     /**
      * @var int
+     *
      * @ORM\Column(name="exception_code", type="integer", options={"unsigned"=true})
      */
-    protected $exceptionCode = 0;
+    protected $code = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $message;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="trace", type="json_array")
+     */
+    protected $trace;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $file;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", options={"unsigned"=true})
+     */
+    protected $line;
 
     /**
      * ExceptionEvent constructor.
@@ -62,16 +91,20 @@ abstract class AbstractExceptionEvent extends AbstractEvent
      */
     public function __construct(\Exception $exception, \DateTime $dateCreated = null)
     {
-        $this->exceptionCode  = $exception->getCode();
-        $this->exceptionClass = get_class($exception);
+        $this->class   = get_class($exception);
+        $this->code    = $exception->getCode();
+        $this->message = $exception->getMessage();
+        $this->trace   = $exception->getTrace();
+        $this->file    = $exception->getFile();
+        $this->line    = $exception->getLine();
         parent::__construct($dateCreated);
     }
 
     /**
      * @return int
      */
-    public function getExceptionCode()
+    public function getCode()
     {
-        return $this->exceptionCode;
+        return $this->code;
     }
 }

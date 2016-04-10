@@ -83,6 +83,7 @@ class EventLogger
             }
 
             !is_null($halt) or $halt = $aloud;
+
             if ($halt) {
                 die();
             }

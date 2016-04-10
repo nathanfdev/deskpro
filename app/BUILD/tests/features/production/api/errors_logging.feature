@@ -22,22 +22,25 @@ Feature: Production errors logging with System Alerts
   Scenario: I access API controller throwing an HTTP exception
     When I send a GET request to "/api/v2/system/demo/http-exception?confirm=I_understand_this_exists_for_testing_only"
     Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "message" should exist
     And there should be no system alert events
 
-  @basic
   Scenario: I access API controller producing a PHP notice
     When I send a GET request to "/api/v2/system/demo/php-notice?confirm=I_understand_this_exists_for_testing_only"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should be equal to "This action produced a PHP notice"
-    And there should be 1 system alert event
+    And there should be 1 "php_error" system alert
 
   Scenario: I access API controller producing a PHP fatal error
     When I send a GET request to "/api/v2/system/demo/php-fatal-error?confirm=I_understand_this_exists_for_testing_only"
     Then the response status code should be 500
-    And there should be 1 system alert event
+    And there should be 1 "php_error" system alert
 
   Scenario: I access API controller throwing an exception
     When I send a GET request to "/api/v2/system/demo/exception?confirm=I_understand_this_exists_for_testing_only"
     Then the response status code should be 500
-    And there should be 1 system alert event
+    And the response should be in JSON
+    And the JSON node "message" should exist
+    And there should be 1 "exception" system alert

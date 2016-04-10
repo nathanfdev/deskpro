@@ -46,7 +46,7 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function getSubjectDescription()
     {
-        return "Exception {$this->exceptionClass}";
+        return "Exception '{$this->message}'of type {$this->class} in {$this->file}:{$this->line}";
     }
 
     /**
@@ -54,6 +54,6 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function generateSubjectUniqueId()
     {
-        return $this->exceptionClass;
+        return $this->class.'-'.md5($this->file).'-'.$this->line;
     }
 }

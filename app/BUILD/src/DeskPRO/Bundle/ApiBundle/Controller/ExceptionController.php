@@ -36,7 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,8 +69,11 @@ class ExceptionController extends BaseController
             $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors(ErrorMessageFactory::PREFIX_API, $exception->getErrors());
         }
 
+        // Log exceptions if when in production
         if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
-            SystemErrorHandler::handleException($exception);
+            if (!$this->container->getParameter('kernel.debug')) {
+                $this->getSysLogger()->log($exception);
+            }
         }
 
         $request = Request::createFromGlobals();
@@ -106,5 +109,13 @@ class ExceptionController extends BaseController
         }
 
         return View::create($representation, $status, $headers);
+    }
+
+    /**
+     * @return EventLogger
+     */
+    private function getSysLogger()
+    {
+        return $this->get('dp_sys.alerts.event_logger');
     }
 }
