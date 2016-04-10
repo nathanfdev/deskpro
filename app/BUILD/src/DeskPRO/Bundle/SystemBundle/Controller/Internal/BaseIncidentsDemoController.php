@@ -30,31 +30,26 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
+namespace DeskPRO\Bundle\SystemBundle\Controller\Internal;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Class DemoController.
+ * Class BaseIncidentsDemoController.
  *
- * @ApiDocSection("System")
- * @ApiModes("all")
- * @Annotations\Route("/system/demo")
+ * This controller provides demo actions producing various system incidents such as PHP errors and exceptions. It's
+ * meant to be used for production mode testing, that's why all actions require the corresponding ?confirm param.
  */
-class DemoController extends BaseController
+abstract class BaseIncidentsDemoController extends BaseController
 {
-    const CONFIRM = 'I_understand_this_exists_for_testing_only';
+    const CONFIRM = 'Yes_I_use_it_for_testing';
 
     /**
-     * @Get("/php-notice", requirements={"id"="\d+"})
+     * @Route("/php-notice", requirements={"id"="\d+"})
      */
     public function phpNoticeAction(Request $request)
     {
@@ -63,11 +58,11 @@ class DemoController extends BaseController
         $array = call_user_func(function () { return []; });
         $array['undefined_index'];
 
-        return View::create($this->wrap('This action produced a PHP notice'), Response::HTTP_OK);
+        return $this->createResponse('This action produced a PHP notice');
     }
 
     /**
-     * @Get("/php-fatal-error", requirements={"id"="\d+"})
+     * @Route("/php-fatal-error", requirements={"id"="\d+"})
      */
     public function phpFatalErrorAction(Request $request)
     {
@@ -76,11 +71,11 @@ class DemoController extends BaseController
         $null = call_user_func(function () { return; });
         new $null('This is a Fatal Error');
 
-        return View::create($this->wrap('A PHP fatal error should have happened'), Response::HTTP_OK);
+        return $this->createResponse('A PHP fatal error should have happened');
     }
 
     /**
-     * @Get("/http-exception", requirements={"id"="\d+"})
+     * @Route("/http-exception", requirements={"id"="\d+"})
      */
     public function httpExceptionAction(Request $request)
     {
@@ -89,13 +84,20 @@ class DemoController extends BaseController
     }
 
     /**
-     * @Get("/exception", requirements={"id"="\d+"})
+     * @Route("/exception", requirements={"id"="\d+"})
      */
     public function exceptionAction(Request $request)
     {
         $this->checkConfirmation($request);
         throw new \Exception('Demo exception');
     }
+
+    /**
+     * @param mixed $data
+     *
+     * @return Response
+     */
+    abstract protected function createResponse($data);
 
     /**
      * @param Request $request

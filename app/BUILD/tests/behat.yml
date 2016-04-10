@@ -164,7 +164,7 @@ production:
     suites:
         production:
             paths:
-                - %paths.base%/features/production/api
+                - %paths.base%/features/production
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json

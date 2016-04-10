@@ -118,6 +118,7 @@ security:
         - { path: ^/admin-preview/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
         - { path: ^/portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
         - { path: template_editor, roles: [ROLE_ADMIN] }
+        - { path: ^/_internal/, roles: [ROLE_ADMIN] }
 
 
 # Twig Configuration
