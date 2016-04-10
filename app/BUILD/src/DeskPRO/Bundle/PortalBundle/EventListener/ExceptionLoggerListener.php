@@ -47,11 +47,18 @@ class ExceptionLoggerListener
     private $logger;
 
     /**
-     * @param EventLogger $logger
+     * @var bool
      */
-    public function __construct(EventLogger $logger)
+    private $enabled;
+
+    /**
+     * @param EventLogger $logger
+     * @param bool        $enabled
+     */
+    public function __construct(EventLogger $logger, $enabled)
     {
-        $this->logger = $logger;
+        $this->logger  = $logger;
+        $this->enabled = $enabled;
     }
 
     /**
@@ -61,6 +68,10 @@ class ExceptionLoggerListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $exception = $event->getException();
         if ($exception instanceof HttpException) {
             return;
