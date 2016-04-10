@@ -49,6 +49,11 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
     private $container;
 
     /**
+     * @var array Last logged error
+     */
+    private $lastRecordHash;
+
+    /**
      * @param ContainerInterface $container
      * @param bool|int           $level
      * @param bool               $bubble
@@ -66,15 +71,38 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $context = array_key_exists('context', $record) ? $record['context'] : [];
-        $this->getEventLogger()->log(new ErrorEvent(
-            array_key_exists('code', $context)    ? $context['code']    : null,
-            array_key_exists('message', $context) ? $context['message'] : null,
-            array_key_exists('file', $context)    ? $context['file']    : null,
-            array_key_exists('line', $context)    ? $context['line']    : null,
-            null,
-            $record
-        ));
+        $context = array_key_exists('context', $record)  ? $record['context']  : [];
+        $code    = array_key_exists('code', $context)    ? $context['code']    : null;
+        $message = array_key_exists('message', $context) ? $context['message'] : null;
+        $file    = array_key_exists('file', $context)    ? $context['file']    : null;
+        $line    = array_key_exists('line', $context)    ? $context['line']    : null;
+
+        // To prevent Monolog from logging a PHP error with both error and fatal handlers
+        // we compare record hash with hash of the previously logged one
+        $hash = $this->recordHash($code, $message, $file, $line);
+        if ($this->lastRecordHash === $hash) {
+            return;
+        }
+        $this->lastRecordHash = $hash;
+
+        $this->getEventLogger()->log(new ErrorEvent($code, $message, $file, $line, null, $record));
+    }
+
+    /**
+     * Get record hash.
+     *
+     * @param int    $code
+     * @param string $message
+     * @param string $file
+     * @param int    $line
+     *
+     * @return string
+     */
+    private function recordHash($code, $message, $file, $line)
+    {
+        $message = md5($message);
+
+        return "{$code}-{$file}-{$line}-{$message}";
     }
 
     /**
