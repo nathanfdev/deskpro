@@ -333,14 +333,14 @@ class CustomDataType extends AbstractType
      */
     protected function getFormData($customData, CustomDefAbstract $customDef)
     {
-        $all_custom_data = $customData ?: new ArrayCollection();
-        $custom_def_data = $this->filterCustomDefData($all_custom_data, $customDef);
+        $allCustomData = $customData ?: new ArrayCollection();
+        $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         $formFieldData = null;
-        if ($custom_def_data->count()) {
-            $formFieldData = $custom_def_data->first()->getData();
+        if ($customDefData->count()) {
+            $formFieldData = $customDefData->first()->getData();
             if ($customDef->isChoiceType()) {
-                $formFieldData = $custom_def_data
+                $formFieldData = $customDefData
                     ->map(function (CustomDataAbstract $custom_data) {
                         return $custom_data->getFieldId();
                     })
@@ -348,6 +348,11 @@ class CustomDataType extends AbstractType
                 ;
 
                 $formFieldData = implode(',', $formFieldData);
+            } elseif ($customDef->isDateType()) {
+                // cast to null
+                if (!$formFieldData) {
+                    $formFieldData = null;
+                }
             }
         }
 
