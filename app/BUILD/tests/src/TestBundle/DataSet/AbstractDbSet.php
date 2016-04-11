@@ -29,13 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use DpRun\DpEnv;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -214,21 +212,28 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function dumpToCache()
     {
-        /** @var DpEnv $env */
-        $env  = $GLOBALS['DP_ENV'];
-        $host = $env->getConfig('database.host');
-        $user = $env->getConfig('database.user');
-        $pass = $env->getConfig('database.password');
-
-        $cmd = $pass ? "MYSQL_PWD=$pass " : '';
-        $cmd .= sprintf(
-            '%s --opt -Q -u %s -h %s %s > %s',
-            $this->mysqldump_bin_path,
-            $user,
-            $host,
-            escapeshellarg($this->getDatabaseName()),
-            escapeshellarg($this->getCachePath())
-        );
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
+            $cmd = sprintf(
+                '%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s',
+                $this->mysqldump_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg(3306),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.password')),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        } else {
+            $cmd = sprintf(
+                '%s --opt -Q -h%s --port=%s -u%s %s > %s',
+                $this->mysqldump_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg(3306),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        }
 
         $cmd .= ' 2>&1';
         $ret = 0;
@@ -248,21 +253,26 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function installFromCache()
     {
-        /** @var DpEnv $env */
-        $env  = $GLOBALS['DP_ENV'];
-        $host = $env->getConfig('database.host');
-        $user = $env->getConfig('database.user');
-        $pass = $env->getConfig('database.password');
-
-        $cmd = $pass ? "MYSQL_PWD=$pass " : '';
-        $cmd .= sprintf(
-            '%s -u %s -h %s %s < %s',
-            $this->mysql_bin_path,
-            $user,
-            $host,
-            escapeshellarg($this->getDatabaseName()),
-            escapeshellarg($this->getCachePath())
-        );
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
+            $cmd = sprintf(
+                '%s -h%s -u%s -p%s %s < %s',
+                $this->mysql_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.password')),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        } else {
+            $cmd = sprintf(
+                '%s -h%s -u%s %s < %s',
+                $this->mysql_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.user')),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        }
 
         $cmd .= ' 2>&1';
         $ret = 0;
@@ -309,8 +319,8 @@ abstract class AbstractDbSet implements DataSetInterface
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     *
      * @return int The number of queries executed
+     *
      */
     private function installDatabase($em_name, $is_master_schema = false)
     {
