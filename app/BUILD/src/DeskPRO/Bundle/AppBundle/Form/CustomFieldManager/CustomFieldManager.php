@@ -244,12 +244,12 @@ class CustomFieldManager
             case CustomDefAbstract::TYPE_DATE:
                 if ($is_inline) {
                     $options = [
-                        'input'  => 'string',
+                        'input'  => 'timestamp',
                         'widget' => 'single_text',
                     ];
                 } else {
                     $options = [
-                        'input'  => 'string',
+                        'input'  => 'timestamp',
                         'widget' => 'choice',
                     ];
                 }
@@ -262,7 +262,7 @@ class CustomFieldManager
             case CustomDefAbstract::TYPE_DATETIME:
                 if ($is_inline) {
                     $options = [
-                        'input'  => 'string',
+                        'input'  => 'timestamp',
                         'widget' => 'single_text',
                     ];
 
@@ -272,7 +272,7 @@ class CustomFieldManager
                     );
                 } else {
                     $options = [
-                        'input'  => 'string',
+                        'input'  => 'timestamp',
                         'widget' => 'choice',
                         'format' => 'Y-m-d H:i',
                     ];

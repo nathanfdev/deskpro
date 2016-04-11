@@ -95,7 +95,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
 
                 case CustomDefAbstract::TYPE_DATE:
                 case CustomDefAbstract::TYPE_DATETIME:
-                    $value = $customData->getInput();
+                    $value = $customData->getData();
 
                     try {
                         $value = new \DateTime('@'.$value);
