@@ -91,6 +91,7 @@ class OrganizationsController extends CrudController
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
     }
+
     /**
      * @ApiDoc(
      *     section="Organizations",
@@ -106,14 +107,12 @@ class OrganizationsController extends CrudController
     {
         $qb = $this->getManager()->createQueryBuilder();
         $qb->select('count(o)')
-            ->from('DeskPRO:Organization', 'o');
-        $count = $qb->getQuery()->getSingleScalarResult();
+            ->from(Organization::class, 'o')
+        ;
 
-        return View::create(
-            $this->wrap(Count::fromValue($count)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap(Count::fromValue($qb->getQuery()->getSingleScalarResult())));
     }
+
     /**
      * {@inheritdoc}
      */
