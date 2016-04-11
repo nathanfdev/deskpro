@@ -36,7 +36,6 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\AbstractStatefulIncidentTrigger;
-use Doctrine\ORM\EntityManager;
 
 /**
  * Class AbstractEmailFailureTrigger.
@@ -48,21 +47,6 @@ abstract class AbstractEmailFailureTrigger extends AbstractStatefulIncidentTrigg
      *          value means immediate rising)
      */
     private $silenceTime = 0;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * IncomingEmailFailureTrigger constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
 
     /**
      * @param int $silenceTime
