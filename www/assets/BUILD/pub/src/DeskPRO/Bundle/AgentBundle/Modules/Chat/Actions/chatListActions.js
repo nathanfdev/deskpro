@@ -22,7 +22,7 @@ const prepareLinkedData = (linked) => {
 
 export const updateCurrentListParams = createAction(
   'CHAT_LIST_UPDATE_CURRENT_LIST_PARAMS',
-    params => params
+  params => params
 );
 
 export const load = createAction(
@@ -50,7 +50,7 @@ export const applyParams = createAction(
   'CHAT_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
-    const params = { ...current, ...overwrite };
+    const params  = { ...current, ...overwrite };
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
       delete params.page;
     }
@@ -63,10 +63,6 @@ export const applyParams = createAction(
 
 export const setOrderBy = createAction(
   'CHAT_LIST_CHANGE_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy }))
+  orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
 
-export const setOrderDir = createAction(
-  'CHAT_LIST_TOGGLE_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir }))
-);

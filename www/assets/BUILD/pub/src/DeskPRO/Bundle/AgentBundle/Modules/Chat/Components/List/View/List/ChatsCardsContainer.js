@@ -1,22 +1,22 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { ChatCard } from './ChatCard';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { connect } from 'react-redux';
 
 @connect(state => ({
-  chats: collectionSelectorFactory('UserChat', 'chats')(state),
-  selected: selectedSelector(state),
-  people: collectionSelectorFactory('Person', 'chats')(state),
+  chats:       collectionSelectorFactory('UserChat', 'chats')(state),
+  selected:    selectedSelector(state),
+  people:      collectionSelectorFactory('Person', 'chats')(state),
   departments: collectionSelectorFactory('Department', 'chats')(state)
 }))
 export class ChatsCardsContainer extends Component {
   static propTypes = {
-    ids: PropTypes.array.isRequired,
-    chats: PropTypes.object.isRequired,
-    people: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    selected: PropTypes.object.isRequired,
+    ids:            PropTypes.array.isRequired,
+    chats:          PropTypes.object.isRequired,
+    people:         PropTypes.object.isRequired,
+    departments:    PropTypes.object.isRequired,
+    selected:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired
   };
 
@@ -30,7 +30,7 @@ export class ChatsCardsContainer extends Component {
                 department={departments.get(element.get('department'))}
                 chat={element}
                 selected={selected.includes(element.get('id'))}
-                toggleSelected={toggleSelected}/>
+                toggleSelected={toggleSelected} />
     );
   }
 
