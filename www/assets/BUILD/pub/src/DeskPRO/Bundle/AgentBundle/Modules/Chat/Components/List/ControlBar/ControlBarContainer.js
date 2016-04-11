@@ -8,56 +8,60 @@ import { applyParams } from '../../../Actions/chatListActions';
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),
-  viewMode: viewModeSelector(state)
+  viewMode:      viewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     currentParams: PropTypes.object.isRequired,
-    viewMode: PropTypes.string.isRequired
+    viewMode:      PropTypes.string.isRequired
   };
 
   render() {
+    const { currentParams } = this.props;
     const config = {
-      applyParams: applyParams,
-      currentParams: this.props.currentParams,
+      applyParams,
+      currentParams,
+
       sorting: {
         date_created: { label: 'Date', icon: 'calendar' },
-        agent: { label: 'Agent', icon: 'calendar' },
-        department: { label: 'Department', icon: 'calendar-o' }
+        agent:        { label: 'Agent', icon: 'calendar' },
+        department:   { label: 'Department', icon: 'calendar-o' }
       },
+
       view: {
         options: {
+
           [constants.VIEW_MODE_CARD]: {
             label: 'Card View',
-            icon: 'list',
+            icon:  'list',
 
             configurableFields: {
-              id: 'ID',
-              urgency: 'Urgency',
-              person: 'Person',
+              id:           'ID',
+              urgency:      'Urgency',
+              person:       'Person',
               date_created: 'Date created',
-              labels: 'Labels'
+              labels:       'Labels'
             }
           },
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
-            icon: 'table',
+            icon:  'table',
 
             configurableFields: {
-              id: 'ID',
-              urgency: 'Urgency',
-              person: 'Person',
+              id:           'ID',
+              urgency:      'Urgency',
+              person:       'Person',
               person_email: 'Person email',
-              agent: 'Agent',
-              subject: 'Subject',
-              status: 'Status',
+              agent:        'Agent',
+              subject:      'Subject',
+              status:       'Status',
               date_created: 'Date created',
-              labels: 'Labels'
+              labels:       'Labels'
             }
           }
         },
 
-        viewMode: this.props.viewMode,
+        viewMode:       this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };

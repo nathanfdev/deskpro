@@ -7,7 +7,6 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
-
 /**
  * Used to identify requests within record stores
  * @type {string}
@@ -16,7 +15,7 @@ const recordStoresId = 'tickets';
 
 // Private -------------------------------------------------------------------------------------------------------------
 
-const markFilterLoading = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
+const markFilterLoading        = createAction('TICKETS_NAV_MARK_FILTER_AS_LOADING');
 const removeFilterNestedCounts = createAction('TICKET_NAV_REMOVE_FILTER_NESTED_COUNTS');
 
 /**
@@ -47,7 +46,7 @@ export const applyFilterEditing = createAction(
       dispatch(markFilterLoading(id));
     }
 
-    repository('TicketFilter').update({id, group_by: groupBy}).success(() => {
+    repository('TicketFilter').update({ id, group_by: groupBy }).success(() => {
       dispatch(updateFilterGrouping(id, groupBy));
 
       // reload filter counts if grouping is applied
@@ -57,34 +56,34 @@ export const applyFilterEditing = createAction(
     });
   }
 );
-export const initialLoad = createAction(
+export const initialLoad        = createAction(
   'TICKETS_NAV_INITIAL_LOAD',
   () => (dispatch, getState) => new Promise(
-      resolve => {
-        const groupingQueryString =
-          compileParams({group_by: filterSetGroupingsSettingsSelector(getState()).toJS()}).replace(/&/g, '%26');
+    (resolve) => {
+      const groupingQueryString =
+              compileParams({ group_by: filterSetGroupingsSettingsSelector(getState()).toJS() }).replace(/&/g, '%26');
 
-        const batch = 'DP_API/batch'
-          + '?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F' + groupingQueryString
-          + '&get[labels]=DP_API/ticket_labels'
-          + '&get[categories]=DP_API/ticket_categories'
-          + '&get[workflows]=DP_API/ticket_workflows'
-          + '&get[products]=DP_API/ticket_products'
-          + '&get[starsCount]=DP_API/ticket_stars_counts'
-          + '&get[filters]=DP_API/ticket_filters'
+      const batch = 'DP_API/batch'
+              + `?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F${groupingQueryString}`
+              + '&get[labels]=DP_API/ticket_labels'
+              + '&get[categories]=DP_API/ticket_categories'
+              + '&get[workflows]=DP_API/ticket_workflows'
+              + '&get[products]=DP_API/ticket_products'
+              + '&get[starsCount]=DP_API/ticket_stars_counts'
+              + '&get[filters]=DP_API/ticket_filters'
         ;
 
-        api.sendGet(batch).success(({responses}) => {
-          const payload = flattenBatchResponses(responses);
-          payload.starsCount = payload.starsCount.nested;
-          dispatch(setCollection('TicketCategory', recordStoresId, payload.categories));
-          dispatch(setCollection('TicketWorkflow', recordStoresId, payload.workflows));
-          dispatch(setCollection('TicketProduct', recordStoresId, payload.products));
-          delete payload.categories;
-          delete payload.workflows;
-          delete payload.products;
-          resolve(payload);
-        });
-      }
+      api.sendGet(batch).success(({ responses }) => {
+        const payload      = flattenBatchResponses(responses);
+        payload.starsCount = payload.starsCount.nested;
+        dispatch(setCollection('TicketCategory', recordStoresId, payload.categories));
+        dispatch(setCollection('TicketWorkflow', recordStoresId, payload.workflows));
+        dispatch(setCollection('TicketProduct', recordStoresId, payload.products));
+        delete payload.categories;
+        delete payload.workflows;
+        delete payload.products;
+        resolve(payload);
+      });
+    }
   )
 );

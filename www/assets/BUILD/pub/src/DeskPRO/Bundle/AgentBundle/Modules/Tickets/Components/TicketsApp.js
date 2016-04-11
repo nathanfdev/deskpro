@@ -4,12 +4,9 @@ import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 
 export class TicketsApp extends React.Component {
-  render() {
-    return (
-      <AppPane>
-        <NavPane><NavContainer/></NavPane>
-        <ListPane><ListContainer/></ListPane>
-      </AppPane>
-    );
-  }
+  render = () =>
+    <AppPane>
+      <NavPane><NavContainer /></NavPane>
+      <ListPane><ListContainer /></ListPane>
+    </AppPane>;
 }

@@ -8,15 +8,24 @@ import { renderInRedux, fakeState, toImmutable } from 'Helpers';
  */
 export function fakeChatsState(num = 0) {
   const records = {};
-  const ids = [];
+  const ids     = [];
   for (let id = 1; id <= num; id++) {
-    records[id] = {id};
-    ids.push('' + id);
+    records[id] = { id };
+    ids.push(`${id}`);
   }
 
   return fakeState({
-    Chat: {list: toImmutable({currentListParams: {}})},
-    RecordsStore: {store: toImmutable({UserChat: {records, collections: {chats: ids}, statuses: {chats: {isDone: true}}}})}
+    Chat:         { list: toImmutable({ currentListParams: {} }) },
+    RecordsStore: {
+      store: toImmutable({
+        UserChat: {
+          records,
+
+          collections: { chats: ids },
+          statuses:    { chats: { isDone: true } }
+        }
+      })
+    }
   });
 }
 

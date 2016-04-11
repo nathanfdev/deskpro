@@ -10,16 +10,13 @@ export class TabsPane extends React.Component {
     children: PropTypes.node
   };
 
+  static defaultTab = 0;
+
   constructor(props) {
     super(props);
-    this.state = {
-      active: TabsPane.defaultTab
-    };
-    this.titles = [];
-    this.tabs = this.tabsFromChildren();
+    Object.assign(this, { state: { active: TabsPane.defaultTab }, titles: [] });
+    Object.assign(this, { tabs: this.tabsFromChildren() });
   }
-
-  static defaultTab = 0;
 
   activate(index) {
     return event => {
@@ -29,7 +26,7 @@ export class TabsPane extends React.Component {
   }
 
   tabsFromChildren() {
-    const tabs = [];
+    const tabs     = [];
     const children = this.props.children.length ? this.props.children : [this.props.children];
     for (let i = 0; i < children.length; i++) {
       if (children[i].type.name !== 'Tab') {
@@ -39,9 +36,9 @@ export class TabsPane extends React.Component {
       this.titles.push(children[i].props.title);
 
       tabs.push({
-        index: i,
-        title: children[i].props.title,
-        icon: children[i].props.icon,
+        index:   i,
+        title:   children[i].props.title,
+        icon:    children[i].props.icon,
         content: children[i].props.children
       });
     }
@@ -49,18 +46,18 @@ export class TabsPane extends React.Component {
     return tabs;
   }
 
-  renderTabHeader({title, icon, index}) {
+  renderTabHeader({ title, icon, index }) {
     const className = index === this.state.active ? 'active' : '';
-    const onClick = this.activate(index).bind(this);
-    const content = icon
-      ? (<span className="icon"><i className={'fa ' + icon}></i></span>)
+    const onClick   = this.activate(index).bind(this);
+    const content   = icon
+      ? (<span className="icon"><i className={`fa${icon}`}></i></span>)
       : title;
 
     return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
   }
 
   render() {
-    const className = 'tabs sidebar-tabs tabs-' + this.tabs.length;
+    const className = `tabs sidebar-tabs tabs-${this.tabs.length}`;
 
     return (
       <div>
@@ -69,7 +66,7 @@ export class TabsPane extends React.Component {
         </ul>
 
         {this.tabs.map(tab => {
-          const classes = classNames('sidebar-list', { 'hidden': tab.index !== this.state.active });
+          const classes = classNames('sidebar-list', { hidden: tab.index !== this.state.active });
 
           return (<div key={tab.index} className={classes}>{tab.content}</div>);
         })}
@@ -79,20 +76,18 @@ export class TabsPane extends React.Component {
 }
 
 @connect(state => ({ state: routingStateSelector(state) }))
+
 export class TabsPaneStatefulContainer extends TabsPane {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
-    id: PropTypes.string.isRequired
+    state:    PropTypes.object.isRequired,
+    id:       PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
-
     const activeTabId = this.titles.indexOf(this.props.state.getIn([this.props.id, 'active'], null));
-    this.state = {
-      active: activeTabId > -1 ? activeTabId : TabsPane.defaultTab
-    };
+    Object.assign(this, { state: { active: activeTabId > -1 ? activeTabId : TabsPane.defaultTab } });
   }
 
   activate(index) {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox,
-         CardDisc, CardTitle, CardLabel, CardStatusBar }
+  CardDisc, CardTitle, CardLabel, CardStatusBar }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
@@ -8,31 +8,28 @@ import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 export class TicketCard extends Component {
   static propTypes = {
     toggleSelected: PropTypes.func.isRequired,
-    intl: intlShape.isRequired,
-    fields: PropTypes.object.isRequired,
-    selected: PropTypes.bool.isRequired,
-    ticket: PropTypes.object.isRequired
+    intl:           intlShape.isRequired,
+    fields:         PropTypes.object.isRequired,
+    selected:       PropTypes.bool.isRequired,
+    ticket:         PropTypes.object.isRequired
   };
 
-  renderStatus(ticket) {
+  renderStatus = ticket => {
     let status = ticket.get('status');
     if (ticket.get('hidden_status')) {
       status = `${status} (${ticket.get('hidden_status')})`;
     }
-    status = status.replace(/\_/g, ' ');
+    status = status.replace(/_/g, ' ');
 
     return (
-      <div style={{textTransform: 'capitalize'}}>{status}</div>
+      <div style={{ textTransform: 'capitalize' }}>{status}</div>
     );
-  }
+  };
 
-  renderAgent() {
-    return (
-      <div className="dpwd--card-line-item">
-        <i className="fa fa-user"></i> Admin Admin
-      </div>
-    );
-  }
+  renderAgent = () =>
+    <div className="dpwd--card-line-item">
+      <i className="fa fa-user"></i> Admin Admin
+    </div>;
 
   renderPerson(ticket) {
     if (this.props.fields.includes('person')) {
@@ -40,44 +37,48 @@ export class TicketCard extends Component {
       return (
         <CardLine>
           <div className="dpwd--card-line-item">
-            <i className="fa fa-user"></i> John Doe {email ? '<' + email + '>' : ''}
+            <i className="fa fa-user"></i> John Doe {email ? `<${email}>` : ''}
           </div>
         </CardLine>
       );
     }
+    return null;
   }
 
   renderId(ticket) {
     if (this.props.fields.includes('id')) {
       return (
         <span>
-        <CardDisc/>
+        <CardDisc />
         <CardLineItem>ID: {ticket.get('id')}</CardLineItem>
       </span>
       );
     }
+    return null;
   }
 
-  renderDateCreated(ticket) {
+  renderDateCreated = ticket => {
     if (this.props.fields.includes('date_created')) {
       return (
-        <CardLineItem><CardDisc/>Created: <FormattedRelative value={ticket.get('date_created')}/></CardLineItem>
+        <CardLineItem><CardDisc />Created: <FormattedRelative value={ticket.get('date_created')} /></CardLineItem>
       );
     }
-  }
+    return null;
+  };
 
-  renderUrgency(ticket) {
+  renderUrgency = ticket => {
     if (this.props.fields.includes('urgency')) {
       return (
         <span>
-          <CardDisc/>
+          <CardDisc />
           <CardLineItem icon="fa-book">Urgency: {ticket.get('urgency')}</CardLineItem>
         </span>
       );
     }
-  }
+    return null;
+  };
 
-  renderLabels(ticket) {
+  renderLabels = ticket => {
     if (this.props.fields.includes('labels')) {
       const labels = ticket.get('labels');
       if (labels) {
@@ -85,27 +86,31 @@ export class TicketCard extends Component {
           <CardLine>
             <CardLineItem>
               <i className="fa fa-tags"></i>
-              {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+              {labels.map((label, index) => <CardLabel key={index} label={label} />)}
             </CardLineItem>
           </CardLine>
         );
       }
     }
-  }
+    return null;
+  };
 
   render() {
     const { selected, ticket, toggleSelected } = this.props;
+    const handleClick = () => {
+      toggleSelected(ticket.get('id'));
+    };
 
     return (
       <Card type="feedback" width={450}>
-        <CardStatusBar align="left" level="5"/>
-        <CardStatusBar align="right" level="5"/>
+        <CardStatusBar align="left" level="5" />
+        <CardStatusBar align="right" level="5" />
 
-        <CardCheckbox selected={selected} onClick={toggleSelected}/>
+        <CardCheckbox selected={selected} onClick={handleClick} />
 
         <CardLine>
           <CardLineLeft>
-            <CardTitle content={ticket.get('subject')}/>
+            <CardTitle content={ticket.get('subject')} />
           </CardLineLeft>
 
           <CardLineRight>

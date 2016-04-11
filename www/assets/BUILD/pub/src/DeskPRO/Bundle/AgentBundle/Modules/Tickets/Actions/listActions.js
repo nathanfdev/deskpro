@@ -7,7 +7,7 @@ import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 const setListParams = createAction('TICKETS_LIST_SET_LIST_PARAMS');
 const setPagination = createAction('TICKETS_LIST_SET_PAGINATION');
-const setElements = createAction('TICKETS_LIST_SET_ELEMENTS');
+const setElements   = createAction('TICKETS_LIST_SET_ELEMENTS');
 
 const loadList = createAction(
   'TICKETS_LIST_LOAD_LIST',
@@ -15,7 +15,7 @@ const loadList = createAction(
     dispatch(releaseCollection('Ticket', 'list'));
     repository('Ticket').search(params).then(response => {
       const res = response.getData();
-      const ids = res.data.map(item=>item.id);
+      const ids = res.data.map(item => item.id);
       dispatch(setCollection('Ticket', 'list', response.getData().data));
       dispatch(setPagination(response.getData().meta.pagination));
       dispatch(setElements(ids));
@@ -24,13 +24,13 @@ const loadList = createAction(
 );
 
 // Public --------------------------------------------------------------------------------------------------------------
-export const loadIndicator = createAction('TICKET_LIST_LOAD_INDICATOR');
-export const unload = createAction('TICKETS_LIST_UNLOAD');
+export const loadIndicator   = createAction('TICKET_LIST_LOAD_INDICATOR');
+export const unload          = createAction('TICKETS_LIST_UNLOAD');
 export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
-    const params = { ...current, ...overwrite };
+    const params  = { ...current, ...overwrite };
 
     // reset pagination when switching to another filter
     if (overwrite.filter) {
@@ -48,14 +48,10 @@ export const applyListParams = createAction(
 
 // Public (control bar) ------------------------------------------------------------------------------------------------
 
-export const setOrderBy = createAction(
+export const setOrderBy                 = createAction(
   'TICKETS_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyListParams({ order_by: orderBy }))
-);
-export const setOrderDir = createAction(
-  'TICKETS_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyListParams({ order_dir: orderDir }))
+  orderBy => dispatch => dispatch(applyListParams({ order_by: orderBy }))
 );
 export const toggleTableFieldVisibility = createAction('TICKETS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
-export const toggleCardFieldVisibility = createAction('TICKETS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-export const setViewMode = createAction('TICKETS_LIST_SET_VIEW_MODE');
+export const toggleCardFieldVisibility  = createAction('TICKETS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
+export const setViewMode                = createAction('TICKETS_LIST_SET_VIEW_MODE');
