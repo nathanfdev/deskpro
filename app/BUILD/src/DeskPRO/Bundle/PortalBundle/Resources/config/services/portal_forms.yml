@@ -124,6 +124,7 @@ services:
       - { name: form.type, alias: request_password_reset }
     arguments:
       - "@captcha_decider"
+      - "@language_manager"
 
 
   form.person_change_password:

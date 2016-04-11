@@ -5,6 +5,7 @@ import { endChat, unsetChatId } from '../../../Actions/chatActions';
 import { chatIdSelector } from '../../../Selectors/chat';
 import { agentAcceptTimeoutSelector } from '../../../../Application/Selectors/dpWindow';
 import { history } from '../../../../../Services/history';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 @connect(state => ({
   chatId:        chatIdSelector(state),
@@ -55,8 +56,8 @@ export class ChatWaitingContainer extends React.Component {
         <WaitingPreview />
         {this.state.buttonShown &&
           <span>
-            <p>It’s taking longer than expected to find an agent to take your chat.</p>
-            <p>Would you like to <a href="#" onClick={this.onOpenTicketForm}>submit</a> a ticket instead?</p>
+            <p>{portalPhrases.get('portal.chat.message_wait-long')}</p>
+            <p><a href="#" onClick={this.onOpenTicketForm}>{portalPhrases.get('portal.chat.message_wait-ticket')}</a></p>
           </span>
         }
       </div>

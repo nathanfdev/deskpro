@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DpxFormTextDraft } from './DpxFormTextDraft';
 import { DpxFormCheckboxDraft } from './DpxFormCheckboxDraft';
 import { DpxFormRadioDraft } from './DpxFormRadioDraft';
@@ -7,6 +8,7 @@ import { DpxFormSelectDraft } from './DpxFormSelectDraft';
 import { DpxFormHiddenDraft } from './DpxFormHiddenDraft';
 import { DpxFormRteBlobsDraft } from './DpxFormRteBlobsDraft';
 import { DpxFormAttachDraft } from './DpxFormAttachDraft';
+
 
 function updateDrafts(obj) {
   window.localStorage.form_drafts = JSON.stringify(obj);
@@ -72,6 +74,6 @@ export class DpxFormDraft extends PageWidget {
     this.$element.on('reset', this.onClearDraft);
 
     const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
-    $('<button type="reset">Reset</button>').insertAfter($formSubmit);
+    $('<button type="reset">'+portalPhrases.get('portal.forms.label_reset')+'</button>').insertAfter($formSubmit);
   }
 }

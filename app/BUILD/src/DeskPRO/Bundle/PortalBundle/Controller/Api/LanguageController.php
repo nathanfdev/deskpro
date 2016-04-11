@@ -62,16 +62,74 @@ class LanguageController extends AbstractApiController
             'portal.general.prop_popularity',
             'portal.general.prop_comments',
             'portal.general.select_placeholder',
+            'portal.account.login-btn',
+            'portal.account.login-email',
             'portal.account.login-invalid',
             'portal.account.login-password',
             'portal.account.login-password-reminder',
+            'portal.account.login-stay-logged-in',
             'portal.general.no-search-results-general',
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
             'portal.general.delete',
+            'portal.general.support_powered_by',
             'portal.tickets.thank_you',
             'portal.tickets.thank_you_desc',
+            'portal.tickets.new-title',
+            'portal.tickets.new-intro',
+            'portal.general.nav-newticket',
+            'portal.general.nav-tickets',
+            'portal.general.nav-kb',
+            'portal.general.nav-downloads',
+            'portal.general.nav-news',
+            'portal.general.nav-feedback',
+            'portal.general.submit-feedback',
             'portal.general.start-chat',
+            'portal.general.agents-available',
+            'portal.general.no-agents-available',
+            'portal.general.toggle_on',
+            'portal.general.toggle_off',
+            'portal.forms.label_choose',
+            'portal.forms.label_drag',
+            'portal.forms.label_drag_overlay',
+            'portal.forms.label_full_name',
+            'portal.forms.label_reset',
+            'portal.chat.asset_failed',
+            'portal.chat.asset_not_delivered',
+            'portal.chat.cancel_end_chat',
+            'portal.chat.chat_transcript',
+            'portal.chat.details-placeholder',
+            'portal.chat.dismiss_message',
+            'portal.chat.dropzone1',
+            'portal.chat.dropzone2',
+            'portal.chat.end_chat',
+            'portal.chat.end_chat_confirm_title',
+            'portal.chat.feedback_enter_message',
+            'portal.chat.feedback_action',
+            'portal.chat.feedback_label',
+            'portal.chat.feedback_not_helpful_title',
+            'portal.chat.feedback_title',
+            'portal.chat.helpful',
+            'portal.chat.not_helpful',
+            'portal.chat.label-details',
+            'portal.chat.label-email',
+            'portal.chat.message_type',
+            'portal.chat.message_wait-pending',
+            'portal.chat.message_wait-long',
+            'portal.chat.message_wait-ticket',
+            'portal.chat.mute_button',
+            'portal.chat.online_agent',
+            'portal.chat.rate_agent_title',
+            'portal.chat.reopen_chat',
+            'portal.chat.reopen_chat_action',
+            'portal.chat.reply_to',
+            'portal.chat.screen_share',
+            'portal.chat.start',
+            'portal.chat.starting',
+            'portal.chat.transcript_desc',
+            'portal.chat.transcript_title',
+            'portal.chat.transcript_action',
+            'portal.chat.upload_file',
         ];
 
         return $this->getResponse($request, $phrases);
@@ -159,9 +217,10 @@ class LanguageController extends AbstractApiController
     protected function getResponse(Request $request, array $phrases)
     {
         $tr = $this->container->get('deskpro.core.translate');
+        $language = $this->container->get('language_stack')->getActiveOrDefault();
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($tr) {
-            return [$id, $tr->getPhraseText($id)];
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($tr, $language) {
+            return [$id, $tr->phrase($id, [], $language)];
         });
 
         $res = new JsonResponse($output);

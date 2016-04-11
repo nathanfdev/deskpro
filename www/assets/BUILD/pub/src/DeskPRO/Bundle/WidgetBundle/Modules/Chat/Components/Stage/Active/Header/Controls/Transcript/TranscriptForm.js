@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class TranscriptForm extends React.Component {
 
@@ -76,16 +77,16 @@ export class TranscriptForm extends React.Component {
 
     return (
       <div>
-        <h1>Need a transcript of this chat?</h1>
-        <p className="grey">Enter your name &amp; email below and we'll email it to you.</p>
+        <h1>{portalPhrases.get('portal.chat.transcript_title')}</h1>
+        <p className="grey">{portalPhrases.get('portal.chat.transcript_desc')}</p>
 
         <div className="popover-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
-            <FormItem label="Your name" field="name" errors={this.state.errors}>
+            <FormItem label={portalPhrases.get('portal.forms.label_full_name')} field="name" errors={this.state.errors}>
               <input type="text" value={this.state.name} onChange={this.onChangeName} />
             </FormItem>
 
-            <FormItem label="Your email" field="email" errors={this.state.errors}>
+            <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={this.state.errors}>
               <input type="text"
                      value={this.state.email}
                      onChange={this.onChangeEmail}
@@ -96,7 +97,7 @@ export class TranscriptForm extends React.Component {
               {this.state.submit
                 ? <div className="spinner"><i /></div>
                 : <input type="submit"
-                         value="Send me a transcript"
+                         value={portalPhrases.get('portal.chat.transcript_action')}
                          className="dpdesignportal-button"
                          onClick={this.onSubmit} />
               }

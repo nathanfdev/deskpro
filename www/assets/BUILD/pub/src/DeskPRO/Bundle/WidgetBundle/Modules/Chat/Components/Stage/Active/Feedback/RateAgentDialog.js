@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class RateAgentDialog extends React.Component {
 
@@ -24,14 +25,14 @@ export class RateAgentDialog extends React.Component {
     return (
       <div className="dpdesignportal-agent-rating">
         <div></div>
-        <h1><span>You just completed a chat with</span> {agentName}</h1>
+        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', {'{agentName}': agentName})}</span></h1>
 
         <div className="dpdesignportal-agent-rating-buttons">
           <a href="#" className="dpdesignportal-button" onClick={this.onClickHelpful}>
-            <i className="fa fa-thumbs-up" /> Helpful
+            <i className="fa fa-thumbs-up" /> {portalPhrases.get('portal.chat.helpful')}
           </a>
           <a href="#" className="dpdesignportal-button negative" onClick={this.onClickNotHelpful}>
-            <i className="fa fa-thumbs-down" /> Not Helpful
+            <i className="fa fa-thumbs-down" /> {portalPhrases.get('portal.chat.not_helpful')}
           </a>
         </div>
       </div>

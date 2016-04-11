@@ -77,3 +77,11 @@ services:
       - "@brand_container_factory"
       - "@theme_resolver"
       - "@portal_mode_storage"
+
+  twig.helpers.deskpro_userdate:
+    class: Application\DeskPRO\Twig\Extension\UserDateExtension
+    arguments:
+      - "@service_container"
+    public: false
+    tags:
+      - { name: twig.extension }

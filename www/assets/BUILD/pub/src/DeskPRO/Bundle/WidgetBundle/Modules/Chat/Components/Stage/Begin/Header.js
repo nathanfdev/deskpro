@@ -1,4 +1,5 @@
 import React from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class Header extends React.Component {
 
@@ -6,7 +7,7 @@ export class Header extends React.Component {
     return (
       <div className="dpdesignportal-collect-user-info-header">
         <span className="img" />
-        <span className="text">Your chat is starting...</span>
+        <span className="text">{portalPhrases.get('portal.chat.starting')}</span>
       </div>
     );
   }

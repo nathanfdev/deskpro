@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { ControlItem } from '../ControlItem';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class EndChatButton extends React.Component {
 
@@ -10,7 +11,7 @@ export class EndChatButton extends React.Component {
   render() {
     return (
       <ControlItem onClick={this.props.onOpenPopup}>
-        End Chat <i className="fa fa-power-off" />
+        {portalPhrases.get('portal.chat.end_chat')} <i className="fa fa-power-off" />
       </ControlItem>
     );
   }

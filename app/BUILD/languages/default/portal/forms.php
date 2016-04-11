@@ -29,6 +29,10 @@
 return array(
     'portal.forms.label_save'             => 'Save',
     'portal.forms.label_submit'           => 'Submit',
+    'portal.forms.label_reset'            => 'Reset',
+    'portal.forms.label_drag'             => 'Drag a file in here or',
+    'portal.forms.label_drag_overlay'     => 'Drag your file in here.',
+    'portal.forms.label_choose'           => 'Choose a file',
     'portal.forms.label_email'            => 'Email',
     'portal.forms.label_name'             => 'Name',
     'portal.forms.label_first_name'       => 'First Name',
@@ -72,6 +76,7 @@ return array(
     'portal.forms.label_captcha'                    => 'To verify you are a human, please tell us the text you see in the image',
     'portal.forms.error_csrf'                       => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
     'portal.forms.error_upload_general'             => 'There was a problem uploading this file. Please try again.',
+    'portal.forms.error_upload_file'                => 'Could not upload file',
     'portal.forms.error_upload_html_size'           => 'The file is too large.',
     'portal.forms.error_upload_ini_size'            => 'The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.',
     'portal.forms.error_upload_empty'               => 'You cannot upload an empty file.',
