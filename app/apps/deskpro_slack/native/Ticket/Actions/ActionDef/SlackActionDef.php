@@ -28,44 +28,55 @@
 
 /**
  * DeskPRO.
+ *
+ * @category Slack
  */
-namespace Application\EmailBundle;
 
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+namespace deskpro_slack\Ticket\Actions\ActionDef;
 
-class EmailBundle extends Bundle
+use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
+
+class SlackActionDef extends AbstractActionDef
 {
-    public function build(ContainerBuilder $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
     {
+        return 'Announce to Slack';
     }
 
     /**
-     * @param Application $application An Application instance
+     * {@inheritdoc}
      */
-    public function registerCommands(Application $application)
+    public function getTriggerActionClass()
     {
-        $commands = array(
-            'Application\\EmailBundle\\Command\\SendSourceCommand',
-            'Application\\EmailBundle\\Command\\GenTestEmailCommand',
-            'Application\\EmailBundle\\Command\\ProcessQueueCommand',
-            'Application\\EmailBundle\\Command\\QueueRawEmailCommand',
-            'Application\\EmailBundle\\Command\\GenTestIncomingEmailCommand',
-        );
+        return 'deskpro_slack\\Ticket\\Actions\\SlackAction';
+    }
 
-        foreach ($commands as $cmd) {
-            $application->add(new $cmd());
+    /**
+     * {@inheritdoc}
+     */
+    public function getActionBuilderTemplate()
+    {
+        return 'Apps:deskpro_slack:type-actions-input.html';
+    }
+
+    /**
+     * Makes sure 'channel' key is set, and adds 'app_id'.
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    public function processActionBuilderOptions(array $options)
+    {
+        if (!isset($options['channel'])) {
+            $options['channel'] = '';
         }
-    }
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
+        $options['app_id'] = $this->getActionDef()->app->id;
 
-    public function getPath()
-    {
-        return __DIR__;
+        return $options;
     }
 }
