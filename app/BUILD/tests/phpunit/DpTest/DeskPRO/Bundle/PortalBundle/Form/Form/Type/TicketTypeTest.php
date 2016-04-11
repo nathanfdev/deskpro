@@ -94,10 +94,10 @@ class TicketTypeTest extends PortalTestCase
         $form = $this->createTicketForm(new Ticket(), $this->getNormalPerson());
 
         $this->assertFields($form, [
+            'person',
             'department',
             'subject',
             'message',
-            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -156,10 +156,10 @@ class TicketTypeTest extends PortalTestCase
         $form = $this->createTicketForm($ticket, $person);
 
         $this->assertFields($form, [
+            'person',
             'department',
             'subject',
             'message',
-            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -184,10 +184,10 @@ class TicketTypeTest extends PortalTestCase
         // assert
         $this->assertRerenderFormExists($form);
         $this->assertFields($form, [
+            'person',
             'department',
             'subject',
             'message',
-            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
@@ -221,10 +221,10 @@ class TicketTypeTest extends PortalTestCase
         $form = $this->createTicketForm($ticket, $person);
 
         $this->assertFields($form, [
+            'person',
             'department',
             'subject',
             'message',
-            'person',
             'attachments',
             'more_attachments',
             'displayed_fields',
