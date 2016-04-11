@@ -12,11 +12,12 @@ export class NavContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
+  componentDidMount() {
+    this.props.dispatch(initialLoad());
+  }
+
   render() {
     return <Nav {...this.props} />;
   }
 
-  componentDidMount() {
-    this.props.dispatch(initialLoad());
-  }
 }

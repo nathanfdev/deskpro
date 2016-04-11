@@ -7,7 +7,7 @@ import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/M
 import Immutable from 'immutable';
 
 @connect(state => ({
-  filter: editedFilterSelector(state),
+  filter:   editedFilterSelector(state),
   grouping: filterSetGroupingsSettingsSelector(state)
 }))
 export class FilterEditPopupContainer extends Component {
@@ -15,7 +15,7 @@ export class FilterEditPopupContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     filterId: PropTypes.number.isRequired,
-    filter: PropTypes.object.isRequired,
+    filter:   PropTypes.object,
     grouping: PropTypes.object.isRequired,
     attachTo: PropTypes.any.isRequired
   };
@@ -57,7 +57,7 @@ export class FilterEditPopupContainer extends Component {
                            onChange={this.applyFilterEditing}
                            close={this.closeFilterEditing}
                            selected={groupBy}
-                           attachTo={attachTo}/>
+                           attachTo={attachTo} />
     );
   }
 }

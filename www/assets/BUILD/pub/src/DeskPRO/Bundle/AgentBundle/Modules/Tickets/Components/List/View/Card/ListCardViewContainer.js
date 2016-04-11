@@ -7,23 +7,24 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({
-  tickets: collectionSelectorFactory('Ticket', 'list')(state),
+  tickets:  collectionSelectorFactory('Ticket', 'list')(state),
   selected: selectedSelector(state),
-  fields: cardVisibleFieldsSelector(state)
+  fields:   cardVisibleFieldsSelector(state)
 }))
+
 export class ListCardViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    ids: PropTypes.array.isRequired,
-    tickets: PropTypes.object.isRequired,
-    fields: PropTypes.object.isRequired,
+    ids:      PropTypes.array.isRequired,
+    tickets:  PropTypes.object.isRequired,
+    fields:   PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired
   };
 
-  toggleSelected(id, e) {
-    e.stopPropagation();
+  toggleSelected = (id) => {
+//    e.stopPropagation();
     this.props.dispatch(toggleSelectedAction(id));
-  }
+  };
 
   renderCard(ticket) {
     const { fields, selected } = this.props;
@@ -33,8 +34,8 @@ export class ListCardViewContainer extends Component {
       <TicketCard key={id}
                   fields={fields}
                   selected={selected.indexOf(id) > -1}
-                  toggleSelected={this.toggleSelected.bind(this, id)}
-                  ticket={ticket}/>
+                  toggleSelected={this.toggleSelected}
+                  ticket={ticket} />
     );
   }
 

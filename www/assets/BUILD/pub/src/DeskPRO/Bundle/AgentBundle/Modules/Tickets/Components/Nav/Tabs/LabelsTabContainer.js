@@ -6,7 +6,12 @@ import { LabelsTab } from './LabelsTab';
 @connect(state => ({
   labels: labelsSelector(state)
 }))
+
 export class LabelsTabContainer extends Component {
+  static propTypes = {
+    labels: PropTypes.object.isRequired
+  };
+
   render() {
     return <LabelsTab {...this.props} />;
   }

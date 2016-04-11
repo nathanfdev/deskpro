@@ -11,10 +11,8 @@ export class StarsTab extends Component {
       <div>
         <SectionHeader>Stars</SectionHeader>
 
-        <NestedList
-          items={this.props.starsCount.toJS()}
-          onClick={() => alert(1)}
-        />
+        <NestedList items={this.props.starsCount.toJS()}
+                    onClick={() => {}} />
       </div>
     );
   }
