@@ -59,7 +59,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             'enabled'        => (bool) $this->settings->get('elastica.enabled'),
             'requires_reset' => (bool) $this->settings->get('elastica.requires_reset'),
             'url'            => $this->settings->get('elastica.clients.default.url'),
-            'tika_enabled'   => $this->settings->get('elastica.tika.enabled'),
+            'tika_enabled'   => (bool) $this->settings->get('elastica.tika.enabled'),
             'tika_ip'        => $this->settings->get('elastica.tika.ip_address'),
             'tika_port'      => $this->settings->get('elastic_settings.tika_port'),
         );
