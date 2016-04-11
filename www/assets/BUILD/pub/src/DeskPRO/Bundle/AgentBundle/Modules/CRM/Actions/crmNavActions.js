@@ -15,7 +15,7 @@ export const initialLoad = createAction(
           + '&get[organizationLabels]=DP_API/organization_labels'
         ;
 
-      api.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);
         payload.labels = {
           person: pluck(payload.personLabels, 'label'),

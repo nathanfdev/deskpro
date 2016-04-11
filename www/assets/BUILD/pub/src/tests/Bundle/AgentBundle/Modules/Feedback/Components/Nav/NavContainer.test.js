@@ -8,9 +8,9 @@ import { renderInFeedbackApp } from '../../feedback.test-helper';
 
 describe('Feedback Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
-  const Nav = require('~nav/Nav').Nav;
-  const actions = require('~root/Actions/feedbackNavActions');
-  const dispatch = jasmine.createSpy('dispatch');
+  const Nav          = require('~nav/Nav').Nav;
+  const actions      = require('~root/Actions/feedbackNavActions');
+  const dispatch     = jasmine.createSpy('dispatch');
 
   function render() {
     return renderInFeedbackApp({}, <NavContainer />, dispatch);

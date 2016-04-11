@@ -13,11 +13,11 @@ import { chatIdSelector, lockedPollingSelector } from '../../../../Selectors/cha
 export class EndChatContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    locked: PropTypes.bool,
-    chatId: PropTypes.number,
+    dispatch:        PropTypes.func,
+    locked:          PropTypes.bool,
+    chatId:          PropTypes.number,
     confirmPosition: PropTypes.string,
-    children: PropTypes.node
+    children:        PropTypes.node
   };
 
   constructor(props) {
@@ -62,8 +62,8 @@ export class EndChatContainer extends React.Component {
         {React.cloneElement(children, {
           ...childProps,
 
-          ref: 'button',
           locked,
+          ref:         'button',
           onOpenPopup: this.onOpenPopup
         })}
 

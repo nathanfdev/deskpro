@@ -181,7 +181,7 @@ class Task
     /**
      * Tickets are linked with this task.
      *
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var ArrayCollection
      */
@@ -190,7 +190,7 @@ class Task
     /**
      * Chats are linked with this task.
      *
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ChatConversation>>")
      *
      * @var ArrayCollection
      */
@@ -199,7 +199,7 @@ class Task
     /**
      * Articles are linked with this task.
      *
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
      *
      * @var ArrayCollection
      */
@@ -306,11 +306,11 @@ class Task
         $this->project          = $task->getProject();
         $this->list             = $task->getList();
         $this->urgency          = $task->getUrgency();
-        $this->linked_tickets   = $task->getLinkedTickets();
-        $this->linked_chats     = $task->getLinkedChats();
-        $this->linked_articles  = $task->getLinkedArticles();
-        $this->date_done        = $task->getDateDone();
-        $this->display_order    = $task->getDisplayOrder();
+        $this->linked_tickets   = $task->getLinkedTickets()->map(function ($item) {return $item->getTicket();});
+        $this->linked_chats = $task->getLinkedChats()->map(function ($item) {return $item->getChat();});
+        $this->linked_articles = $task->getLinkedArticles()->map(function ($item) {return $item->getArticle();});
+        $this->date_done     = $task->getDateDone();
+        $this->display_order = $task->getDisplayOrder();
 
         $this->comment_count  = $comment_count;
         $this->subtasks_total = $subtasks_total;

@@ -46,7 +46,7 @@ export class CardView extends React.Component {
 
     return (
       <div>
-        {groups.valueSeq().map((taskGroup, index) =>
+        {groups.map((taskGroup, index) =>
           <ListGroup key={index}
                      group={taskGroup}
                      onChangeGroup={onChangeGroup}

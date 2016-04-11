@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  tasks: collectionSelectorFactory('Task', 'tasks')(state)
+  tasks: allSelectorFactory('Task')(state)
 }))
 export class TaskCardPreviewContainer extends React.Component {
 

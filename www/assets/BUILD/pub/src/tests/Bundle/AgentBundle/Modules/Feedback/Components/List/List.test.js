@@ -8,18 +8,18 @@ import { renderInFeedbackApp } from '../../feedback.test-helper';
 import { toImmutable } from 'Helpers';
 
 describe('Feedback: List', () => {
-  const ListFrameContainer = require('~ListFrame/frame').ListFrameContainer;
-  const ListFrameMenu = require('~ListFrame/ListFrameMenu').ListFrameMenu;
-  const ListFrameContents = require('~ListFrame/ListFrameContents').ListFrameContents;
-  const List = require('~List/List').List;
-  const PaginationContainer = require('~List/PaginationContainer').PaginationContainer;
-  const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
-  const MassActionContainer = require('~List/ControlBar/MassActionContainer').MassActionContainer;
+  const ListFrameContainer     = require('~ListFrame/frame').ListFrameContainer;
+  const ListFrameMenu          = require('~ListFrame/ListFrameMenu').ListFrameMenu;
+  const ListFrameContents      = require('~ListFrame/ListFrameContents').ListFrameContents;
+  const List                   = require('~List/List').List;
+  const PaginationContainer    = require('~List/PaginationContainer').PaginationContainer;
+  const ControlBarContainer    = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
+  const MassActionContainer    = require('~List/ControlBar/MassActionContainer').MassActionContainer;
   const FeedbackCardsContainer = require('~List/View/Card/FeedbackCardsContainer').FeedbackCardsContainer;
-  const CommentCardsContainer = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
+  const CommentCardsContainer  = require('~List/View/Card/CommentCardsContainer').CommentCardsContainer;
   const FeedbackTableContainer = require('~List/View/Table/FeedbackTableContainer').FeedbackTableContainer;
-  const CommentTableContainer = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
-  const fakeState = {};
+  const CommentTableContainer  = require('~List/View/Table/CommentTableContainer').CommentTableContainer;
+  const fakeState              = {};
 
 
   const renderList = (viewMode = 'card', selected = toImmutable([]), isComments = false, pagination = null) => {
@@ -30,7 +30,7 @@ describe('Feedback: List', () => {
             currentViewMode={viewMode}
             isComments={isComments}
             pagination={pagination}
-            loaded/>
+            loaded />
     );
   };
 

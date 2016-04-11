@@ -4,8 +4,8 @@ import classNames from 'classnames';
 export class Message extends React.Component {
 
   static propTypes = {
-    isUser: PropTypes.bool,
-    typing: PropTypes.bool,
+    isUser:   PropTypes.bool,
+    typing:   PropTypes.bool,
     children: PropTypes.any
   };
 
@@ -17,8 +17,8 @@ export class Message extends React.Component {
         'dpdesignportal-message',
         {
           'agent-message': !isUser,
-          'user-message': isUser,
-          'user-typing': typing
+          'user-message':  isUser,
+          'user-typing':   typing
         })}>
 
         {children}

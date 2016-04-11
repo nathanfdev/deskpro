@@ -8,17 +8,17 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class CommentReviewBarContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:       PropTypes.func.isRequired,
     toggleEditMode: PropTypes.func.isRequired,
-    comment: PropTypes.object.isRequired,
-    isEditingNow: PropTypes.bool
+    comment:        PropTypes.object.isRequired,
+    isEditingNow:   PropTypes.bool
   };
 
   approveComment = (event) => {
     event.preventDefault();
     const { dispatch, comment } = this.props;
     const newValues = {
-      status: constants.STATUS_VISIBLE,
+      status:      constants.STATUS_VISIBLE,
       is_reviewed: true
     };
     dispatch(editComment(newValues, comment.get('id')));

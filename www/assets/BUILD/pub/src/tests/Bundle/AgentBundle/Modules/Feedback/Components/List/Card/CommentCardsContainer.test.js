@@ -9,38 +9,42 @@ import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 describe('Feedback: CommentCardsContainer', () => {
   const CommentCardsContainer = require('~Card/CommentCardsContainer').CommentCardsContainer;
-  const CommentCard = require('~Card/CommentCard').CommentCard;
-  const fakeRecords = [{ id: 1 }, { id: 2 }, { id: 3 }];
-  const fakeState = {
+  const CommentCard           = require('~Card/CommentCard').CommentCard;
+  const fakeRecords           = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  const fakeState             = {
     RecordsStore: {
       store: toImmutable({
+
         Person: {
           collections: { feedback: [1] },
-          records: mapKeyedFromArray(fakeRecords, 'id'),
-          statuses: { loading: false, success: true }
+          records:     mapKeyedFromArray(fakeRecords, 'id'),
+          statuses:    { loading: false, success: true }
         },
+
         Feedback: {
           collections: { feedback: [1] },
-          records: mapKeyedFromArray(fakeRecords, 'id'),
-          statuses: { loading: false, success: true }
+          records:     mapKeyedFromArray(fakeRecords, 'id'),
+          statuses:    { loading: false, success: true }
         },
+
         FeedbackComment: {
           collections: { feedback: [1] },
-          records: mapKeyedFromArray(fakeRecords, 'id'),
-          statuses: { loading: false, success: true }
+          records:     mapKeyedFromArray(fakeRecords, 'id'),
+          statuses:    { loading: false, success: true }
         }
       })
     },
+
     Feedback: {
       list: toImmutable({
-        elements: [1],
+        elements:      [1],
         visibleFields: { card: [], table: [] }
       })
     }
   };
 
   const render = () => {
-    renderInFeedbackApp(fakeState, <CommentCardsContainer/>);
+    renderInFeedbackApp(fakeState, <CommentCardsContainer />);
   };
 
   it('should render FeedbackCard', () => {

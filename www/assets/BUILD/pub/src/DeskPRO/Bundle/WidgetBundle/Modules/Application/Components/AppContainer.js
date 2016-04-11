@@ -14,7 +14,7 @@ export class AppContainer extends React.Component {
 
   static propTypes = {
     widgetLoaded: PropTypes.bool,
-    dispatch: PropTypes.func
+    dispatch:     PropTypes.func
   };
 
   constructor(props) {

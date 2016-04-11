@@ -14,16 +14,16 @@ import { history } from '../../../../../Services/history';
 export class ChatEmailValidationContainer extends React.Component {
 
   static propTypes = {
-    chatId: PropTypes.number,
+    chatId:   PropTypes.number,
     dispatch: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      code: '',
-      submit: false,
-      errors: null,
+      code:             '',
+      submit:           false,
+      errors:           null,
       anotherEmailSent: false
     };
   }
@@ -41,7 +41,7 @@ export class ChatEmailValidationContainer extends React.Component {
 
   onChangeCode = event => {
     this.setState({
-      code: event.target.value,
+      code:   event.target.value,
       errors: null
     });
   };
@@ -54,12 +54,12 @@ export class ChatEmailValidationContainer extends React.Component {
     });
 
     const { chatId, dispatch } = this.props;
-    const promise = dispatch(regenerateEmailValidationCode(chatId, {code: this.state.code}));
+    const promise = dispatch(regenerateEmailValidationCode(chatId, { code: this.state.code }));
     promise.then(
       () => {
         if (this.mounted) {
           this.setState({
-            submit: false,
+            submit:           false,
             anotherEmailSent: true
           });
         }
@@ -67,8 +67,8 @@ export class ChatEmailValidationContainer extends React.Component {
       result => {
         if (this.mounted) {
           this.setState({
-            submit: false,
-            errors: result.getData(),
+            submit:           false,
+            errors:           result.getData(),
             anotherEmailSent: false
           });
         }
@@ -84,12 +84,12 @@ export class ChatEmailValidationContainer extends React.Component {
     });
 
     const { chatId, dispatch } = this.props;
-    const promise = dispatch(validateEmail(chatId, {code: this.state.code}));
+    const promise = dispatch(validateEmail(chatId, { code: this.state.code }));
     promise.then(
       () => {
         if (this.mounted) {
           this.setState({
-            submit: false,
+            submit:           false,
             anotherEmailSent: false
           });
 
@@ -99,8 +99,8 @@ export class ChatEmailValidationContainer extends React.Component {
       result => {
         if (this.mounted) {
           this.setState({
-            submit: false,
-            errors: result.getData(),
+            submit:           false,
+            errors:           result.getData(),
             anotherEmailSent: false
           });
         }
@@ -112,10 +112,10 @@ export class ChatEmailValidationContainer extends React.Component {
     const hasError = hasErrors(this.state.errors, 'code');
 
     return (
-      <div className={classNames('dpdesignportal-chat-email-validation', {'error': hasError})}>
+      <div className={classNames('dpdesignportal-chat-email-validation', { error: hasError })}>
         <span className="description">
           <p>We require you to validate your email address.</p>
-          <br/>
+          <br />
           <p>We sent you an email with a validation code.</p>
           <p>Check your email then enter the code below</p>
         </span>
@@ -125,14 +125,16 @@ export class ChatEmailValidationContainer extends React.Component {
           {hasError && <FieldErrors errors={this.state.errors} name="code" />}
 
           {this.state.submit
-            ? <div className="spinner"><i/></div>
+            ? <div className="spinner"><i /></div>
             :
               <span>
                 <a href="#" className="email-code-submit" onClick={this.onSubmit}>
-                  Start Chat <i className="fa fa-chevron-right"/>
+                  Start Chat <i className="fa fa-chevron-right" />
                 </a>
                 <a href="#" className="email-code-resend" onClick={this.onRegenerateCode}>Send me another email</a>
-                {this.state.anotherEmailSent && <span className="another-email-sent">Another email was successfully sent.</span>}
+                {this.state.anotherEmailSent
+                  && <span className="another-email-sent">Another email was successfully sent.</span>
+                }
               </span>
           }
         </form>

@@ -12,7 +12,17 @@ import { addToCollection, setCollection, releaseCollection, collectionSelectorFa
  * Used to identify requests within record stores
  * @type {string}
  */
-const recordStoresId = 'tasks';
+const recordStoresId = 'all';
+
+const prepareLinkedData = (linked) => {
+  const result = [];
+  for (const key in linked) {
+    if (linked.hasOwnProperty(key)) {
+      result.push(linked[key]);
+    }
+  }
+  return result;
+};
 
 export const setListParamsNav = createAction('TASKS_LIST_SET_PARAMS_NAV');
 export const setListParamsFilters = createAction(
@@ -48,7 +58,8 @@ export const loadList = createAction(
       ...navParams,
       ...filtersParams,
       order_by: currentOrderBySelector(state),
-      order_dir: currentOrderDirSelector(state)
+      order_dir: currentOrderDirSelector(state),
+      include: 'ticket,chat_conversation,article'
     };
 
     return api
@@ -56,6 +67,11 @@ export const loadList = createAction(
       .then(promise => {
         const res = promise.getData();
         const ids = res.data.map(item=>item.id);
+
+        dispatch(addToCollection('Ticket', 'all', prepareLinkedData(res.linked.ticket)));
+        dispatch(addToCollection('Article', 'all', prepareLinkedData(res.linked.article)));
+        dispatch(addToCollection('UserChat', 'all', prepareLinkedData(res.linked.chat_conversation)));
+
         dispatch(releaseCollection('Task', recordStoresId));
         dispatch(setCollection('Task', recordStoresId, res.data));
 
@@ -109,10 +125,7 @@ export const editTask = createAction(
     const oldTask = tasks.get(taskId);
     let newTask = tasks.get(taskId);
     const changedProps = Object.keys(data).filter(taskProp => newTask.get(taskProp) !== data[taskProp]);
-    if (undefined !== data.display_order) {
-      // Re order tasks
-      tasks = reOrderCollection(tasks, newTask.get('id'), data.display_order);
-    }
+
     changedProps.forEach(changedProp => {
       let newValue = data[changedProp];
       if (Array.isArray(newValue)) {
@@ -135,14 +148,12 @@ export const editTask = createAction(
       if (latestPromise !== promise) return;
 
       console.time('set collections');
-      dispatch(releaseCollection('Task', recordStoresId));
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
       console.timeEnd('set collections');
     }).error(() => {
       latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, oldTask);
       if (latestPromise !== promise) return;
-      dispatch(releaseCollection('Task', recordStoresId));
       dispatch(setCollection('Task', recordStoresId, latestTasks));
       latestTasks = null;
     });

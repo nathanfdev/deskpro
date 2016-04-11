@@ -33,9 +33,15 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedArticleType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedChatType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedTicketType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -43,6 +49,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType as CoreDateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -141,7 +148,33 @@ class TaskType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
-        ;
+            ->add('linked_tickets', new SetCollectionType(), [
+                'entry_property_path' => 'ticket.id',
+                'entry_type'          => LinkedTicketType::class,
+                'entry_options'       => [
+                    'empty_data' => function (FormInterface $form) use ($builder) {
+                        return new TaskLinkedTicket($builder->getData());
+                    },
+                ],
+            ])
+            ->add('linked_articles', new SetCollectionType(), [
+                'entry_property_path' => 'article.id',
+                'entry_type'          => LinkedArticleType::class,
+                'entry_options'       => [
+                    'empty_data' => function (FormInterface $form) use ($builder) {
+                        return new TaskLinkedArticle($builder->getData());
+                    },
+                ],
+            ])
+            ->add('linked_chats', new SetCollectionType(), [
+                'entry_property_path' => 'chat.id',
+                'entry_type'          => LinkedChatType::class,
+                'entry_options'       => [
+                    'empty_data' => function (FormInterface $form) use ($builder) {
+                        return new TaskLinkedChat($builder->getData());
+                    },
+                ],
+            ]);
     }
 
     /**

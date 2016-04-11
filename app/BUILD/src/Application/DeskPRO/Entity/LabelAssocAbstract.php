@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Labels\Label;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Base labels associations class.
@@ -48,6 +50,8 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
      */
     protected $label;
 

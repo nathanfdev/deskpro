@@ -130,6 +130,13 @@ services:
         tags:
           - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.theme_set_asset:
+        class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ThemeSetAssetHandler
+        arguments:
+          - "@router"
+        tags:
+          - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener

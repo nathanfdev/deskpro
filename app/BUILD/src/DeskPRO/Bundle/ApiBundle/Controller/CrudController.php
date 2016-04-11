@@ -174,6 +174,7 @@ abstract class CrudController extends BaseController
             $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
+
             $result = $pager;
         } else {
             $result = $qb->getQuery()->getResult();
@@ -210,10 +211,7 @@ abstract class CrudController extends BaseController
         $view   = $this->handleForm($entity, $request);
 
         if ($this->isExposed('get')) {
-            $view->setLocation($this->generateUrl(
-                preg_replace('/_post$/', '_get', $request->get('_route')),
-                ['id' => $entity->getId()]
-            ));
+            $view->setLocation($this->getLocationUrl($entity, $request));
         }
 
         return $view;
@@ -408,7 +406,7 @@ abstract class CrudController extends BaseController
         // https://github.com/symfony/symfony/pull/10567
         // https://github.com/symfony/symfony/issues/11493
 
-        // in this case form ViolationMapper should applies entity validation errors on the submitted form
+        // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
         $form->submit($decoded, !$partial_update);
         if (!$form->isValid()) {
@@ -431,6 +429,20 @@ abstract class CrudController extends BaseController
             $request->getContent(),
             true // convert to assoc arrays instead of stdClass instances
         );
+    }
+
+    /**
+     * @param object  $entity
+     * @param Request $request
+     * @param array   $params
+     *
+     * @return string
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
+
+        return $this->generateUrl($route, array_merge(['id' => $entity->getId()], $params));
     }
 
     /**

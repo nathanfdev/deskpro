@@ -1,19 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import * as actions from '../../Actions/crmListActions';
+import { applyParams } from '../../Actions/crmListActions';
 import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Service/routing';
 
 @connect(state => ({
   hash: state.Application.routing.get('hash')
 }))
+
 export class ListItemContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    hash: PropTypes.object,
-    group: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    children: PropTypes.node,
+    dispatch:    PropTypes.func.isRequired,
+    hash:        PropTypes.object,
+    group:       PropTypes.string,
+    label:       PropTypes.string.isRequired,
+    children:    PropTypes.node,
     listOptions: PropTypes.object.isRequired
   };
 
@@ -23,25 +24,25 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount() {
-    const {hash, listOptions, dispatch, group} = this.props;
+    const { hash, listOptions, dispatch, group } = this.props;
     const activeItemId = hash.get('nav') ? hash.get('nav').get(group) : null;
     if (activeItemId === this.itemId) {
-      dispatch(actions.applyParams(listOptions));
+      dispatch(applyParams(listOptions));
     }
   }
 
   loadList = () => {
     const { listOptions } = this.props;
-    this.props.dispatch(actions.applyParams(listOptions));
+    this.props.dispatch(applyParams(listOptions));
   };
 
   render() {
     const props = {
-      groupId: 'nav',
-      active: this.props.group,
-      onClick: this.loadList,
-      itemId: this.itemId,
-      label: this.props.label,
+      groupId:  'nav',
+      active:   this.props.group,
+      onClick:  this.loadList,
+      itemId:   this.itemId,
+      label:    this.props.label,
       children: this.props.children
     };
 

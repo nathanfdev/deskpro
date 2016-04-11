@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -98,7 +99,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb
             ->select('t.id')
             ->from('DeskPRO:Ticket', 't')
-            ->setMaxResults(100)
+            ->setMaxResults($request->getLimit())
             ->orderBy('t.id', 'desc')
             ->where('t.id >= :after_id')
             ->setParameter('after_id', $this->getMinTicketId())

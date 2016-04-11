@@ -15,6 +15,7 @@ Feature: Assets management
     And I send the "image2.png" file as "file" to "/portal/api/style/edit-theme-set/assets"
     When I send a GET request to "/portal/api/style/edit-theme-set/assets"
     Then the response status code should be 200
+
     And the JSON node "data" should have 2 elements
 
   Scenario: I delete an asset

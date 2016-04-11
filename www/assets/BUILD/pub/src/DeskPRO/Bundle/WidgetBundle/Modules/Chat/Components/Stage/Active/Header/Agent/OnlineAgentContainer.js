@@ -4,8 +4,8 @@ import { agentNameSelector, agentAvatarSelector, departmentNameSelector } from '
 import { OnlineAgent } from './OnlineAgent';
 
 @connect(state => ({
-  agentName: agentNameSelector(state),
-  agentAvatar: agentAvatarSelector(state),
+  agentName:      agentNameSelector(state),
+  agentAvatar:    agentAvatarSelector(state),
   departmentName: departmentNameSelector(state)
 }))
 export class OnlineAgentContainer extends React.Component {

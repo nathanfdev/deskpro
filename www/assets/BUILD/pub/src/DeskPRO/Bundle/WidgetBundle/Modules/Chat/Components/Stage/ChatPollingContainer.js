@@ -14,25 +14,25 @@ import {
 } from '../../Selectors/chat';
 
 @connect(state => ({
-  chatId: chatIdSelector(state),
-  hasChatInfo: hasChatInfoSelector(state),
-  agentId: agentIdSelector(state),
-  lastMessageId: lastMessageIdSelector(state),
-  authorEmail: authorEmailSelector(state),
-  isEnded: isEndedSelector(state),
+  chatId:            chatIdSelector(state),
+  hasChatInfo:       hasChatInfoSelector(state),
+  agentId:           agentIdSelector(state),
+  lastMessageId:     lastMessageIdSelector(state),
+  authorEmail:       authorEmailSelector(state),
+  isEnded:           isEndedSelector(state),
   needValidateEmail: needValidateEmailSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    chatId: PropTypes.number,
-    hasChatInfo: PropTypes.bool,
-    agentId: PropTypes.number,
-    lastMessageId: PropTypes.any,
-    children: PropTypes.node,
-    authorEmail: PropTypes.string,
-    isEnded: PropTypes.bool,
+    dispatch:          PropTypes.func.isRequired,
+    chatId:            PropTypes.number,
+    hasChatInfo:       PropTypes.bool,
+    agentId:           PropTypes.number,
+    lastMessageId:     PropTypes.any,
+    children:          PropTypes.node,
+    authorEmail:       PropTypes.string,
+    isEnded:           PropTypes.bool,
     needValidateEmail: PropTypes.bool
   };
 
@@ -83,7 +83,7 @@ export class ChatPollingContainer extends React.Component {
 
     // Send ajax next request
     const queryParams = {
-      last_timestamp: moment().format(),
+      last_timestamp:  moment().format(),
       last_message_id: lastMessageId
     };
     const promise = dispatch(pollingChat(chatId, queryParams));

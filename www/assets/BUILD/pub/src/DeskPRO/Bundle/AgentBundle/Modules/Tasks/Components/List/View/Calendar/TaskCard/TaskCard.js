@@ -32,7 +32,7 @@ export class TaskCard extends BaseTaskCard {
                    onChange={onChange.bind(null, 'date_due')} />
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
-          <LinkedItemContainer value={task} />
+          <LinkedItemContainer value={task} onChange={onChange.bind(null, 'linked_items')} />
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />

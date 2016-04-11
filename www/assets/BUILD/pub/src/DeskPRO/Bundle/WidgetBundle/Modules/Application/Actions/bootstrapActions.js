@@ -12,17 +12,15 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import * as windowApiActions from '../../../Services/WindowApi';
 import $ from 'jquery';
 
-export const ajaxOptions = {crossDomain: true, dataType: 'json'};
-export const addSessionCode = (state, params = {}) => {
-  return {...params, __sid: widgetSessionCodeSelector(state)};
-};
+export const ajaxOptions = { crossDomain: true, dataType: 'json' };
+export const addSessionCode = (state, params = {}) => ({ ...params, __sid: widgetSessionCodeSelector(state) });
 
 // Api actions
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
   () => dispatch => new Promise(resolve =>
     widgetApi
-      .sendPost('DP_API/auth/get_session', {session_code: localStorage.getItem('dpWidget.sessionCode')}, {...ajaxOptions})
+      .sendPost('DP_API/auth/get_session', { session_code: localStorage.getItem('dpWidget.sessionCode') }, { ...ajaxOptions })
       .success(response => {
         const data = response.data;
         localStorage.setItem('dpWidget.sessionCode', data.session_code);
@@ -60,14 +58,14 @@ export const loadSettings = createAction(
   'WIDGET_LOAD_SETTINGS',
   () => dispatch =>
     widgetApi
-      .sendGet('DP_API/widget/settings', {...ajaxOptions})
+      .sendGet('DP_API/widget/settings', { ...ajaxOptions })
       .success(response => dispatch(setSettings(response.data)))
 );
 
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
   () => widgetApi
-    .sendGet('DP_API/lang/widget-phrases.json', {...ajaxOptions})
+    .sendGet('DP_API/lang/widget-phrases.json', { ...ajaxOptions })
     .success(response => {
       portalPhrases.setPhrases(response);
     })

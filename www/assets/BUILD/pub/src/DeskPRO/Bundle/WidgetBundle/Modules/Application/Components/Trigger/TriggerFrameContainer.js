@@ -12,23 +12,23 @@ import { Frame } from 'Ampliflux/common/components/Frame';
 import { store } from '../../../../Services/store';
 
 @connect(state => ({
-  widgetLoaded: widgetLoadedSelector(state),
-  widgetOpened: widgetOpenedSelector(state),
+  widgetLoaded:   widgetLoadedSelector(state),
+  widgetOpened:   widgetOpenedSelector(state),
   widgetPosition: widgetPositionSelector(state),
-  isBubble: isBubbleSelector(state),
+  isBubble:       isBubbleSelector(state),
 
   // Use it to re-calc frame dimension
   triggerPopupOpened: triggerPopupOpenedSelector(state),
-  widgetDimensions: widgetDimensionsSelector(state)
+  widgetDimensions:   widgetDimensionsSelector(state)
 }))
 export class TriggerFrameContainer extends React.Component {
 
   static propTypes = {
-    isBubble: PropTypes.bool,
-    widgetLoaded: PropTypes.bool,
-    widgetOpened: PropTypes.bool,
+    isBubble:       PropTypes.bool,
+    widgetLoaded:   PropTypes.bool,
+    widgetOpened:   PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children: PropTypes.node
+    children:       PropTypes.node
   };
 
   componentDidMount() {

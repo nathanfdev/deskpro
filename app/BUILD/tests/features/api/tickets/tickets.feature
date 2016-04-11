@@ -77,7 +77,7 @@ Feature: /tickets endpoint
   "is_hold": true,
   "person":  3,
   "agent": 1,
-  "followers": ["agent@deskpro.dev"],
+  "followers": ["agent@deskpro.dev", 1],
   "cc": ["user@deskpro.dev"]
 }
     """
@@ -90,19 +90,37 @@ Feature: /tickets endpoint
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.cc" should have 1 element
     And the JSON node "data.cc[0]" should be equal to 3
-    And the JSON node "data.followers" should have 1 element
+    And the JSON node "data.followers" should have 2 elements
     And the JSON node "data.followers[0]" should be equal to 2
+    And the JSON node "data.followers[1]" should be equal to 1
+
+    When I send a GET request to "/api/v2/tickets/6"
+    Then the response status code should be 200
+    And the JSON node "data.subject" should be equal to "Sample Ticket"
+    And the JSON node "data.cc" should have 1 element
+    And the JSON node "data.cc[0]" should be equal to 3
+    And the JSON node "data.followers" should have 2 elements
+    And the JSON node "data.followers[0]" should be equal to 2
+    And the JSON node "data.followers[1]" should be equal to 1
 
   Scenario: I modify and retrieve a ticket
-    When I send a PUT request to "/api/v2/tickets/1" with body:
+    When I send a PUT request to "/api/v2/tickets/6" with body:
     """
 {
-  "subject": "Modified subject"
+  "subject": "Modified subject",
+  "followers": [1, 4]
 }
     """
-    And I send a GET request to "/api/v2/tickets/1"
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/6"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Modified subject"
+    And the JSON node "data.cc" should have 1 element
+    And the JSON node "data.cc[0]" should be equal to 3
+    And the JSON node "data.followers" should have 2 elements
+    And the JSON node "data.followers[0]" should be equal to 1
+    And the JSON node "data.followers[1]" should be equal to 4
 
   Scenario: I delete a ticket
     When I send a DELETE request to "/api/v2/tickets/5"

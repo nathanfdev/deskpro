@@ -4,7 +4,7 @@ import { isBubbleSelector, windowDimensionsSelector, widgetDimensionsSelector } 
 import { WidgetBody } from './WidgetBody';
 
 @connect(state => ({
-  isBubble: isBubbleSelector(state),
+  isBubble:         isBubbleSelector(state),
   windowDimensions: windowDimensionsSelector(state),
   widgetDimensions: widgetDimensionsSelector(state)
 }))

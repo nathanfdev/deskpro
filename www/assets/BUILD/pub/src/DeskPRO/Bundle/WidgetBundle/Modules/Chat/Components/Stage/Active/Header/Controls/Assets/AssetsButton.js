@@ -10,7 +10,7 @@ export class AssetsButton extends React.Component {
   render() {
     return (
       <ControlItem onClick={this.props.onClick}>
-        <i className="fa fa-angle-double-left"></i>Assets
+        <i className="fa fa-angle-double-left" />Assets
       </ControlItem>
     );
   }

@@ -4,10 +4,10 @@ import { ControlItem } from '../ControlItem';
 export class ReopenChatButton extends React.Component {
 
   static propTypes = {
-    isEnded: PropTypes.bool,
-    locked: PropTypes.bool,
+    isEnded:   PropTypes.bool,
+    locked:    PropTypes.bool,
     canReopen: PropTypes.bool,
-    onReopen: PropTypes.func
+    onReopen:  PropTypes.func
   };
 
   render() {
@@ -15,7 +15,7 @@ export class ReopenChatButton extends React.Component {
 
     return (
       <ControlItem onClick={onReopen} disabled={locked || (isEnded && !canReopen)}>
-        Reopen Chat <i className="fa fa-commenting-o"></i>
+        Reopen Chat <i className="fa fa-commenting-o" />
       </ControlItem>
     );
   }

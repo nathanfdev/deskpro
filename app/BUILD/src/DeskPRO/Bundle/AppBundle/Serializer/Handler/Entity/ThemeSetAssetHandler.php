@@ -26,10 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset as ThemeSetAssetEntity;
-use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ThemeSetAsset as ThemeSetAssetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;

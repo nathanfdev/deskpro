@@ -6,8 +6,8 @@ import { massActionsInitialState } from 'DeskPRO/Bundle/AgentBundle/Modules/Appl
 function fakeFeedbackState(state) {
   return fakeState({
     Application: { massActions: massActionsInitialState },
-    Feedback: {
-      nav: toImmutable(feedbackNavInitialState),
+    Feedback:    {
+      nav:  toImmutable(feedbackNavInitialState),
       list: toImmutable(feedbackListInitialState)
     },
     ...state

@@ -4,7 +4,7 @@ import { uploadingFilesSelector, uploadingFilesFailedSelector } from '../../../.
 import { repeatUploadingFile, removeUploadingFile } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
-  files: uploadingFilesSelector(state),
+  files:  uploadingFilesSelector(state),
   failed: uploadingFilesFailedSelector(state)
 }))
 export class UploadingFilesContainer extends React.Component {

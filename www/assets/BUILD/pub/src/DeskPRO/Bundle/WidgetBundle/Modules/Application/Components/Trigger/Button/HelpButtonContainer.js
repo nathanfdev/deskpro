@@ -27,37 +27,37 @@ import {
 } from '../../../Selectors/dpWindow';
 
 @connect(state => ({
-  hasChat: widgetHasChatSelector(state),
-  triggerPopupOpened: triggerPopupOpenedSelector(state),
-  widgetOpened: widgetOpenedSelector(state),
-  widgetPosition: widgetPositionSelector(state),
-  size: helpButtonSizeSelector(state),
-  name: helpButtonNameSelector(state),
-  backgroundColor: helpButtonBackgroundColorSelector(state),
-  textColor: helpButtonTextColorSelector(state),
-  borderColor: helpButtonBorderColorSelector(state),
-  helpPopupTitle: helpPopupTitleSelector(state),
-  helpPopupMessage: helpPopupMessageSelector(state),
-  helpPopupReplyType: helpPopupReplyTypeSelector(state),
-  agentsCount: onlineAgentsCountSelector(state),
+  hasChat:             widgetHasChatSelector(state),
+  triggerPopupOpened:  triggerPopupOpenedSelector(state),
+  widgetOpened:        widgetOpenedSelector(state),
+  widgetPosition:      widgetPositionSelector(state),
+  size:                helpButtonSizeSelector(state),
+  name:                helpButtonNameSelector(state),
+  backgroundColor:     helpButtonBackgroundColorSelector(state),
+  textColor:           helpButtonTextColorSelector(state),
+  borderColor:         helpButtonBorderColorSelector(state),
+  helpPopupTitle:      helpPopupTitleSelector(state),
+  helpPopupMessage:    helpPopupMessageSelector(state),
+  helpPopupReplyType:  helpPopupReplyTypeSelector(state),
+  agentsCount:         onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state),
-  liveDemo: liveDemoSelector(state)
+  liveDemo:            liveDemoSelector(state)
 }))
 export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
-    hasChat: PropTypes.bool,
-    triggerPopupOpened: PropTypes.bool,
-    widgetOpened: PropTypes.bool,
-    widgetPosition: PropTypes.string,
-    dispatch: PropTypes.func,
-    helpPopupTitle: PropTypes.string,
-    helpPopupMessage: PropTypes.string,
-    helpPopupReplyType: PropTypes.string,
-    backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    borderColor: PropTypes.string,
-    agentsCount: PropTypes.number,
+    hasChat:             PropTypes.bool,
+    triggerPopupOpened:  PropTypes.bool,
+    widgetOpened:        PropTypes.bool,
+    widgetPosition:      PropTypes.string,
+    dispatch:            PropTypes.func,
+    helpPopupTitle:      PropTypes.string,
+    helpPopupMessage:    PropTypes.string,
+    helpPopupReplyType:  PropTypes.string,
+    backgroundColor:     PropTypes.string,
+    textColor:           PropTypes.string,
+    borderColor:         PropTypes.string,
+    agentsCount:         PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number

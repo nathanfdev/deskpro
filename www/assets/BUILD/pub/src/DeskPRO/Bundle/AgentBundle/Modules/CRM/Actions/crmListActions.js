@@ -27,8 +27,8 @@ export const loadPeople = createAction(
     dispatch(setCollection('UserGroup', recordStoresId, prepareLinkedData(res.linked.usergroup)));
     dispatch(setCollection('Language', recordStoresId, prepareLinkedData(res.linked.language)));
     dispatch(setCollection('Person', recordStoresId, res.data));
-    const ids = res.data.map(item=>item.id);
-    return { ids: ids, pagination: res.meta.pagination };
+    const ids = res.data.map(item => item.id);
+    return { ids, pagination: res.meta.pagination };
   })
 );
 
@@ -37,8 +37,8 @@ export const loadOrganizations = createAction(
   (params) => dispatch => repository('Organization').search(params).then(promise => {
     const res = promise.getData();
     dispatch(setCollection('Organization', recordStoresId, res.data));
-    const ids = res.data.map(item=>item.id);
-    return { ids: ids, pagination: res.meta.pagination };
+    const ids = res.data.map(item => item.id);
+    return { ids, pagination: res.meta.pagination };
   })
 );
 
@@ -80,9 +80,9 @@ export const applyParams = createAction(
 
 export const setOrderBy = createAction(
   'CRM_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ 'order_by': orderBy }))
+    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
 export const setOrderDir = createAction(
   'CRM_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ 'order_dir': orderDir }))
+    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );

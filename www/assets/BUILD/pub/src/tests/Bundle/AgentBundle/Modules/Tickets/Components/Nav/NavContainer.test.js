@@ -8,9 +8,9 @@ import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: NavContainer component', () => {
   const NavContainer = require('~nav/NavContainer').NavContainer;
-  const Nav = require('~nav/Nav').Nav;
-  const actions = require('~root/Actions/navActions');
-  const dispatch = jasmine.createSpy('dispatch');
+  const Nav          = require('~nav/Nav').Nav;
+  const actions      = require('~root/Actions/navActions');
+  const dispatch     = jasmine.createSpy('dispatch');
 
   function render() {
     return renderInTicketsApp({}, <NavContainer />, dispatch);

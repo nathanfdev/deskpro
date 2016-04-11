@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class TranscriptPopup extends React.Component {
 
   static propTypes = {
-    onClose: PropTypes.func,
+    onClose:  PropTypes.func,
     children: PropTypes.any
   };
 
@@ -13,7 +13,7 @@ export class TranscriptPopup extends React.Component {
     return (
       <div className="dpdesignportal-popover dpdesignportal-popover-request-transcript">
         <div className="dpdesignportal-popover-close" onClick={onClose}>
-          <i className="fa fa-times"></i>
+          <i className="fa fa-times" />
         </div>
 
         {children}

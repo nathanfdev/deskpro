@@ -4,7 +4,7 @@ import { AttachedImage } from './AttachedImage';
 export class AttachedImagesList extends React.Component {
 
   static propTypes = {
-    attachedImages: PropTypes.object,
+    attachedImages:     PropTypes.object,
     onRemoveAttachment: PropTypes.func
   };
 

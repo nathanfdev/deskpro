@@ -156,7 +156,7 @@ export const messageIdsSelector = createSelector(
 
 export const lastMessageIdSelector = createSelector(
   messageIdsSelector,
-  messageIds => messageIds.size ? messageIds.max((a, b) => a - b) : null
+  messageIds => (messageIds.size ? messageIds.max((a, b) => a - b) : null)
 );
 
 // Uploading files selectors

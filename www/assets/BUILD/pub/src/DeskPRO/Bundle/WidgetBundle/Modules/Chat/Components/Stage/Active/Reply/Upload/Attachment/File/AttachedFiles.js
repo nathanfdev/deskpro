@@ -4,7 +4,7 @@ import { AttachedFile } from './AttachedFile';
 export class AttachedFiles extends React.Component {
 
   static propTypes = {
-    attachedFiles: PropTypes.object,
+    attachedFiles:      PropTypes.object,
     onRemoveAttachment: PropTypes.func
   };
 

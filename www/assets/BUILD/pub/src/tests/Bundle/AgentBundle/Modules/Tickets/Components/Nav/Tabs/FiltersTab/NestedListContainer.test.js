@@ -5,39 +5,50 @@ jest.dontMock('~components/ListItemContainer');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
-import { toImmutable } from 'Helpers';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
 describe('Tickets Navigation: NestedListContainer component', () => {
   const NestedListContainer = require('~components/NestedListContainer').NestedListContainer;
-  const UrgencyList = require('~components/UrgencyList').UrgencyList;
+  const UrgencyList         = require('~components/UrgencyList').UrgencyList;
 
   const dummyProps = {
-    items: [
-      {count: 1, id: 1, title: 'Filter #1', nested: []},
-      {count: 2, id: 2, title: 'Filter #2', nested: []},
-      {count: 3, id: 3, title: 'Filter #3', grouped_by: 'open_time', nested: [
-        {count: 1, id: '1m', title: '1m', type: 'open_time'},
-        {count: 2, id: '1w', title: '1w', type: 'open_time'}
-      ]}
-    ],
-    alwaysExpanded: true
-  };
-  const dummyUrgencyProps = {
-    items: [
-      {count: 3, id: 3, title: 'Filter #3', grouped_by: 'urgency', nested: [
-        {count: 1, id: '1', title: '1', type: 'open_time'},
-        {count: 2, id: '2', title: '2', type: 'open_time'}
-      ]}
-    ],
-    alwaysExpanded: true
+    alwaysExpanded: true,
+    items:          [
+      { count: 1, id: 1, title: 'Filter #1', nested: [] },
+      { count: 2, id: 2, title: 'Filter #2', nested: [] },
+      {
+        count:      3,
+        id:         3,
+        title:      'Filter #3',
+        grouped_by: 'open_time',
+        nested:     [
+          { count: 1, id: '1m', title: '1m', type: 'open_time' },
+          { count: 2, id: '1w', title: '1w', type: 'open_time' }
+        ]
+      }
+    ]
   };
 
-  let component, node;
+  const dummyUrgencyProps = {
+    alwaysExpanded: true,
+    items:          [
+      {
+        count:      3,
+        id:         3,
+        title:      'Filter #3',
+        grouped_by: 'urgency',
+        nested:     [
+          { count: 1, id: '1', title: '1', type: 'open_time' },
+          { count: 2, id: '2', title: '2', type: 'open_time' }
+        ]
+      }
+    ]
+  };
+
+  let node;
+
   function render(props) {
-    component = renderInTicketsApp({}, <NestedListContainer {...props} />);
-    node = ReactDOM.findDOMNode(component);
+    node = ReactDOM.findDOMNode(renderInTicketsApp({}, <NestedListContainer {...props} />));
   }
 
   it('should render list items', () => {
