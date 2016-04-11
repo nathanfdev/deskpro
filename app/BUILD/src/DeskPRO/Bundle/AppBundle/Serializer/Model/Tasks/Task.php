@@ -306,12 +306,21 @@ class Task
         $this->project          = $task->getProject();
         $this->list             = $task->getList();
         $this->urgency          = $task->getUrgency();
-        $this->linked_tickets   = $task->getLinkedTickets()->map(function ($item) {return $item->getTicket();});
-        $this->linked_chats = $task->getLinkedChats()->map(function ($item) {return $item->getChat();});
-        $this->linked_articles = $task->getLinkedArticles()->map(function ($item) {return $item->getArticle();});
-        $this->date_done     = $task->getDateDone();
-        $this->display_order = $task->getDisplayOrder();
 
+        $this->linked_tickets = $task->getLinkedTickets()
+            ? $task->getLinkedTickets()->map(function ($item) {return $item->getTicket();})
+            : null;
+
+        $this->linked_chats = $task->getLinkedChats()
+            ? $task->getLinkedChats()->map(function ($item) {return $item->getChat();})
+            : null;
+
+        $this->linked_articles = $task->getLinkedArticles()
+            ? $task->getLinkedArticles()->map(function ($item) {return $item->getArticle();})
+            : null;
+
+        $this->date_done      = $task->getDateDone();
+        $this->display_order  = $task->getDisplayOrder();
         $this->comment_count  = $comment_count;
         $this->subtasks_total = $subtasks_total;
         $this->subtasks_done  = $subtasks_done;

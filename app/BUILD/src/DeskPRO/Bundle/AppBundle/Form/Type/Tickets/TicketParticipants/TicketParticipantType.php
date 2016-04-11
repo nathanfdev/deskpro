@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -53,9 +54,7 @@ class TicketParticipantType extends AbstractType
     {
         $builder->add('person', PersonAssignType::class, [
             'constraints' => [
-                new AppAssert\User([
-                    'type' => $options['is_agent'] ? 'agent' : 'user',
-                ]),
+                new AppAssert\User(['type' => $options['is_agent'] ? 'agent' : 'user']),
             ],
         ]);
 
