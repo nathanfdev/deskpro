@@ -560,6 +560,25 @@ class ChatConversation extends DomainObject
     }
 
     /**
+     * If the person given is the manager of the organization of a user on the ticket, they 
+     * will be able to see the chat. This is used in portal security checks.
+     *
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function isPersonOrganizationManager(Person $person)
+    {
+        // if this is the person on the chat
+        if ($this->person->getOrganization() === $person->getOrganization()
+            && $person->organization_manager) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get an array of only user participants.
      *
      * @return array

@@ -27,11 +27,16 @@
  */
 
 return array(
-    'portal.chat.chat_logs_header' => 'Chat Logs',
-    'portal.chat.chat_logs_desc'   => '',
-    'portal.chat.list_date'        => 'Date',
-    'portal.chat.list_agent'       => 'Agent',
-    'portal.chat.list_chat'        => 'Chat',
+    'portal.chat.chat_logs_header'            => 'Your Chat Logs',
+    'portal.chat.chat_logs_desc'              => '',
+    'portal.chat.chat_logs_header_org'        => 'Organization Chat Logs',
+    'portal.chat.chat_logs_desc_org'          => '',
+    'portal.chat.list_date'                   => 'Date',
+    'portal.chat.list_agent'                  => 'Agent',
+    'portal.chat.list_user'                   => 'User',
+    'portal.chat.list_chat'                   => 'Chat',
+    'portal.chat.list_switch_to_organization' => 'Switch to Organization',
+    'portal.chat.list_switch_to_my_chats'     => 'Switch to My Chats',
 
     'portal.chat.log_title'              => 'Your chat with {{ person }}',
     'portal.chat.log_department'         => 'Department',

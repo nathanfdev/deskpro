@@ -112,16 +112,17 @@ class ChatDataService
      * Gets a count to display to the user in portal.
      *
      * @param Person $person
+     * @param string $type
      *
      * @return int
      */
-    public function countUserChats(Person $person)
+    public function countUserChats(Person $person, string $type)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select($qb->expr()->countDistinct('c.id'))
             ->from('DeskPRO:ChatConversation', 'c');
 
-        $this->configureQbForQueryChats($qb, $person);
+        $this->configureQbForQueryChats($qb, $person, $type);
         $qb->distinct(true);
 
         return $qb->getQuery()->getSingleScalarResult();
@@ -133,16 +134,17 @@ class ChatDataService
      * @param Person $person
      * @param        $page
      * @param        $max_per_page
+     * @param        $type
      *
      * @return Pagerfanta
      */
-    public function getUserChatPager(Person $person, $page, $max_per_page)
+    public function getUserChatPager(Person $person, $page, $max_per_page, $type)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select('c')
             ->from('DeskPRO:ChatConversation', 'c');
 
-        $this->configureQbForQueryChats($qb, $person);
+        $this->configureQbForQueryChats($qb, $person, $type);
 
         $qb->orderBy('c.id', 'DESC');
 
@@ -205,14 +207,28 @@ class ChatDataService
      *
      * @param QueryBuilder $qb
      * @param Person       $person
+     * @param string       $type
      *
+     * @throws \Exception
      * @return QueryBuilder
      */
-    private function configureQbForQueryChats(QueryBuilder $qb, Person $person)
+    private function configureQbForQueryChats(QueryBuilder $qb, Person $person, string $type)
     {
         $qb->andWhere('c.is_agent = 0');
         $qb->andWhere('c.status = :status')->setParameter('status', ChatConversation::STATUS_ENDED);
-        $qb->andWhere('c.person = :person')->setParameter('person', $person);
+        switch ($type) {
+            case "own":
+                $qb->andWhere('c.person = :person')->setParameter('person', $person);
+                break;
+            case "organization":
+                $qb->innerJoin('c.person', 'person')
+                    ->innerJoin('person.organization', 'organization')
+                    ->andWhere('organization.id = :organization')
+                    ->setParameter('organization', $person->getOrganizationId());
+                break;
+            default:
+                throw new \Exception('Invalid type');
+        }
     }
 
     /**
