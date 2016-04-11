@@ -32,7 +32,7 @@
   {% if ticket_count > 0 and can_use_tickets() %}
   <li class="welcome item-tickets hideable">
     <span class="disc"></span>
-    <a class="tickets-link" href="{{ path('portal_tickets') }}" class="dpx-ticket-count">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+    <a class="tickets-link dpx-ticket-count" href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
   </li>
   {% endif %}
 
