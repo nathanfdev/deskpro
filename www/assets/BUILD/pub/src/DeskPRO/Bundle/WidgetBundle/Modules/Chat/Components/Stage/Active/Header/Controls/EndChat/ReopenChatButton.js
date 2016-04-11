@@ -5,10 +5,10 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class ReopenChatButton extends React.Component {
 
   static propTypes = {
-    isEnded: PropTypes.bool,
-    locked: PropTypes.bool,
+    isEnded:   PropTypes.bool,
+    locked:    PropTypes.bool,
     canReopen: PropTypes.bool,
-    onReopen: PropTypes.func
+    onReopen:  PropTypes.func
   };
 
   render() {
@@ -16,7 +16,7 @@ export class ReopenChatButton extends React.Component {
 
     return (
       <ControlItem onClick={onReopen} disabled={locked || (isEnded && !canReopen)}>
-        {portalPhrases.get('portal.chat.reopen_chat_action')} <i className="fa fa-commenting-o"></i>
+        {portalPhrases.get('portal.chat.reopen_chat_action')} <i className="fa fa-commenting-o" />
       </ControlItem>
     );
   }

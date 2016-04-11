@@ -5,7 +5,7 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class UploadingFile extends React.Component {
 
   static propTypes = {
-    file: PropTypes.object,
+    file:     PropTypes.object,
     isFailed: PropTypes.bool,
     onRepeat: PropTypes.func,
     onRemove: PropTypes.func
@@ -31,7 +31,7 @@ export class UploadingFile extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-attached-file">
         <div className="dpdesignportal-chat-form-attached-file-icon">
-          <i className="fa fa-file-pdf-o"></i>
+          <i className="fa fa-file-pdf-o" />
         </div>
         <div className="attached-file-title">
           {filenameMaxLength(file.name, isFailed ? 20 : 30)}
@@ -39,14 +39,14 @@ export class UploadingFile extends React.Component {
           {isFailed
             ? <div>
                 <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>
-                  <i className="fa fa-repeat"/>
+                  <i className="fa fa-repeat" />
                 </a>
                 <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
-                  <i className="fa fa-times-circle"/>
+                  <i className="fa fa-times-circle" />
                 </a>
               </div>
             : <div className="spinner dpdesignportal-chat-form-attached-file-spinner">
-                <i/>
+                <i />
               </div>
           }
         </div>

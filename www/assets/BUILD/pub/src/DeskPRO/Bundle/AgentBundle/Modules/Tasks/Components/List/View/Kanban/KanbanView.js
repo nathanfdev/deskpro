@@ -45,7 +45,7 @@ export class KanbanView extends React.Component {
 
     return (
       <div className="kanban kanban-columns">
-        {groups.valueSeq().map((taskGroup, index) =>
+        {groups.map((taskGroup, index) =>
           <ListGroup key={index}
                      group={taskGroup}
                      onChangeGroup={onChangeGroup}

@@ -4,7 +4,7 @@ import { UploadingFile } from './UploadingFile';
 export class UploadingFiles extends React.Component {
 
   static propTypes = {
-    files: PropTypes.object,
+    files:  PropTypes.object,
     failed: PropTypes.object
   };
 

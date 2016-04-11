@@ -4,10 +4,10 @@ import { openFullImage } from 'DeskPRO/Component/Util/FullImage';
 export class AttachedImage extends React.Component {
 
   static propTypes = {
-    count: PropTypes.number,
-    onExpand: PropTypes.func,
+    count:      PropTypes.number,
+    onExpand:   PropTypes.func,
     attachment: PropTypes.object,
-    onRemove: PropTypes.func
+    onRemove:   PropTypes.func
   };
 
   openFullImage = () => {
@@ -23,15 +23,15 @@ export class AttachedImage extends React.Component {
         <div className="dpdesignportal-chat-form-attached-image">
           {count > 1
             ? <div className="dpdesignportal-chat-form-attached-image-count" onClick={onExpand}>
-                {count} <i className="fa fa-angle-double-right"></i>
+                {count} <i className="fa fa-angle-double-right" />
               </div>
             : <div className="dpdesignportal-chat-form-attached-image-remove" onClick={() => onRemove(attachment)}>
-                <i className="fa fa-times"></i>
+                <i className="fa fa-times" />
               </div>
           }
           <div className="dpdesignportal-chat-form-attached-image-thumb"
                onClick={this.openFullImage}
-               style={{backgroundImage: `url(${downloadUrl})`}} />
+               style={{ backgroundImage: `url(${downloadUrl})` }}></div>
 
           <img src={downloadUrl} ref="image" className="hidden" />
         </div>

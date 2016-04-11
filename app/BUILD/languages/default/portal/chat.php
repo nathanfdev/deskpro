@@ -28,7 +28,7 @@
 
 return array(
     'portal.chat.chat_logs_header' => 'Chat Logs',
-    'portal.chat.chat_logs_desc'   => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip',
+    'portal.chat.chat_logs_desc'   => '',
     'portal.chat.list_date'        => 'Date',
     'portal.chat.list_agent'       => 'Agent',
     'portal.chat.list_chat'        => 'Chat',

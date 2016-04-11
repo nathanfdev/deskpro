@@ -38,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -59,6 +60,45 @@ class AgentAlertsController extends CrudController
     public static $listOrder = 'desc';
 
     /**
+     * Get user's notification counts.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts counts",
+     *     resourceDescription="Operations about agent alerts",
+     *     description="Get notifications counts",
+     *     statusCodes={
+     *         204="Returned if everything is ok",
+     *     }
+     * )
+     *
+     * @Rest\Get("/counts")
+     *
+     * @return View
+     */
+    public function getCountsAction()
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('count(a.id) as group_count, a.is_dismissed')
+            ->from(AgentAlert::class, 'a')
+            ->where('a.person = :user')
+            ->setParameter('user', $this->getUser())
+            ->groupBy('a.is_dismissed')
+        ;
+
+        $count  = Count::fromGroupedBy('is_dismissed');
+        $result = $qb->getQuery()->getResult();
+        if (is_array($result)) {
+            foreach ($result as $item) {
+                $type = $item['is_dismissed'] ? 'dismissed' : 'non_dismissed';
+                $count->addNested($item['group_count'], null, $type, null, true);
+            }
+        }
+
+        return new View($this->wrap($count));
+    }
+
+    /**
      * Dismiss alerts with given ids array.
      *
      * @ApiDoc(
@@ -66,7 +106,7 @@ class AgentAlertsController extends CrudController
      *     resourceDescription="Operations about agent alerts",
      *     description="Dismiss set of alerts",
      *     statusCodes={
-     *         200="Returned if everything is ok",
+     *         204="Returned if everything is ok",
      *     }
      * )
      * @Rest\Post("/dismiss")
@@ -77,23 +117,20 @@ class AgentAlertsController extends CrudController
      */
     public function dismissAction(Request $request)
     {
-        $em  = $this->getManager();
         $ids = $request->get('alert_ids');
         if ($ids) {
-            $qb = $em->createQueryBuilder();
+            $qb = $this->getManager()->createQueryBuilder();
             $qb
-                ->select('alert')
-                ->from('DeskPRO:AgentAlert', 'alert')
-                ->where('alert.id IN (:ids)')
-                ->setParameter('ids', $ids);
-            $alerts = $qb->getQuery()->getResult();
-            foreach ($alerts as $alert) {
-                $alert->is_dismissed = true;
-            }
-            $em->flush();
+                ->update(AgentAlert::class, 'a')
+                ->set('a.is_dismissed', 1)
+                ->where('a.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->execute()
+            ;
         }
 
-        return View::create([], Response::HTTP_OK);
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -113,22 +150,20 @@ class AgentAlertsController extends CrudController
      */
     public function dismissAllAction()
     {
-        $em = $this->getManager();
-        $qb = $em->createQueryBuilder();
+        $qb = $this->getManager()->createQueryBuilder();
         $qb
-            ->select('alert')
-            ->from('DeskPRO:AgentAlert', 'alert')
-            ->where('alert.is_dismissed = :false')
-            ->setParameter('false', false)
-            ->andWhere('alert.person = :user')
-            ->setParameter('user', $this->getUser());
-        $alerts = $qb->getQuery()->getResult();
-        foreach ($alerts as $alert) {
-            $alert->is_dismissed = true;
-        }
-        $em->flush();
+            ->update(AgentAlert::class, 'a')
+            ->set('a.is_dismissed', 1)
+            ->where(
+                'a.is_dismissed = 0',
+                'a.person = :user'
+            )
+            ->setParameter('user', $this->getUser())
+            ->getQuery()
+            ->execute()
+        ;
 
-        return View::create([], Response::HTTP_OK);
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

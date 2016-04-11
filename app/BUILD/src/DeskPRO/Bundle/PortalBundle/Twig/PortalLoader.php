@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
@@ -111,7 +112,12 @@ class PortalLoader implements \Twig_LoaderInterface
     {
         // NOT the theme_set id. The actual filesystem theme id.
 
-        return $this->getBrandTheme()->getActiveThemeSet()->getThemeId().$name;
+        $persisted = $this->getDbTemplate($name) ? '1' : '';
+
+        return $this->getBrandTheme()->getActiveThemeSet()->getThemeId()
+               .$this->brand_theme_loader->getPortalModeStorage()->getMode()
+               .$persisted
+               .$name;
     }
 
     /**
@@ -173,14 +179,6 @@ class PortalLoader implements \Twig_LoaderInterface
         } catch (\Exception $e) {
             return;
         }
-    }
-
-    /**
-     * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface
-     */
-    private function getTheme()
-    {
-        return $this->getBrandTheme()->getActiveTheme();
     }
 
     /**

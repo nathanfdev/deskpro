@@ -35,7 +35,6 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -45,8 +44,6 @@ use JMS\Serializer\Annotation as JMS;
  */
 class TaskLinkedTicket extends TaskLinkedItem
 {
-    use NotifyPropertyChangedTrait;
-
     /**
      * The ticket attached to the task.
      *
@@ -75,7 +72,7 @@ class TaskLinkedTicket extends TaskLinkedItem
      */
     public function setTicket(Ticket $ticket)
     {
-        $this->setModelField('ticket', $ticket);
+        $this->ticket = $ticket;
 
         return $this;
     }

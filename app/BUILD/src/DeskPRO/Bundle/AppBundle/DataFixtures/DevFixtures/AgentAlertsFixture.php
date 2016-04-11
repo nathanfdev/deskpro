@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\AgentAlert;
@@ -36,6 +37,9 @@ use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Class AgentAlertsFixture.
+ */
 class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
     const NUM_ALERTS = 10;
@@ -43,9 +47,7 @@ class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtur
     private $types = ['is_new_ticket', 'is_new_agent_reply', 'is_new_agent_note', 'is_new_user_reply'];
 
     /**
-     * Get the order of this fixture.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getOrder()
     {
@@ -53,9 +55,7 @@ class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtur
     }
 
     /**
-     * Load data fixtures with the passed EntityManager.
-     *
-     * @param ObjectManager $manager
+     * {@inheritdoc}
      */
     public function load(ObjectManager $manager)
     {
@@ -77,7 +77,7 @@ class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtur
                 'is_new_agent_reply' => $type === 'is_new_agent_reply',
                 'is_new_agent_note'  => $type === 'is_new_agent_note',
                 'is_new_user_reply'  => $type === 'is_new_user_reply',
-                'browser_rendered'   => 'Some template',
+                'browser_rendered'   => '<big>Alert title</big><small>Alert summary</small>',
                 // 'log_items'          => $log_ids,
             ];
             $alert           = new AgentAlert();

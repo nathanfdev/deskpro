@@ -1119,24 +1119,8 @@ button, .button, input[type="submit"] {
         font-weight: 500;
       }
 
-      .mobile-expand {
-        display: inline-block;
-        z-index: 299;
-        position: absolute;
-        @include right(12px);
-        top: 6px;
-        opacity: 0.5;
 
-        &:hover {
-          opacity: 1;
-          cursor: pointer;
-        }
-      }
     }
-  }
-
-  .mobile-expand {
-    display: none;
   }
 
   .register-or-signup {
@@ -1187,9 +1171,31 @@ button, .button, input[type="submit"] {
     display: inline-block;
     color: #b4b4b4;
 
+    .mobile-expand {
+      display: none;
+    }
+
     @media screen and (max-width: 760px) {
       display: block;
       width: 100%;
+
+      .hideable.hidden {
+        display: none;
+      }
+
+      .mobile-expand {
+        display: inline-block;
+        z-index: 299;
+        position: absolute;
+        @include right(12px);
+        top: 39px;
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+          cursor: pointer;
+        }
+      }
     }
 
     .disc {
@@ -1242,11 +1248,15 @@ button, .button, input[type="submit"] {
           display: block;
           padding: 5px;
           border-top: 1px solid $divider-color;
-          border-bottom: 1px solid $divider-color;
+          cursor: pointer;
           .agent-avatar {
             @include margin-right(2px);
             top: -2px;
           }
+        }
+
+        .profile-link {
+          border-top: 1px solid $divider-color;
         }
 
         a {
@@ -4734,6 +4744,7 @@ ul.kb-checkbox-extra {
   border-radius: 4px;
   background: #ffffff;
   font-weight: 300;
+  z-index: 110;
 
   h1 {
     font-weight: 300;
@@ -4814,7 +4825,6 @@ ul.kb-checkbox-extra {
     @include right(0);
     padding: 10px 15px;
     cursor: pointer;
-    z-index: 9999;
 
     i {
       color: $text-color-lighter;

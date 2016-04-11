@@ -6,6 +6,7 @@ export { DateDue } from './DateDue';
 export { SubTasks } from './SubTasks';
 export { ShowDetailsButton } from './ShowDetailsButton';
 export { AssignButton } from './AssignButton';
+export { CardWidget } from './CardWidget';
 export { CardProject } from './CardProject';
 export { CardProjectContainer } from './CardProjectContainer';
 export { LinkedItem } from './LinkedItem';

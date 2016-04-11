@@ -13,13 +13,13 @@ import {
 
 // Define chat selectors to force dispatch to re render the widget content
 @connect(state => ({
-  chatLoaded: chatLoadedSelector(state),
-  isEnded: isEndedSelector(state),
-  messages: messagesSelector(state),
-  uploading: uploadingFilesSelector(state),
-  attachments: attachmentsSelector(state),
+  chatLoaded:    chatLoadedSelector(state),
+  isEnded:       isEndedSelector(state),
+  messages:      messagesSelector(state),
+  uploading:     uploadingFilesSelector(state),
+  attachments:   attachmentsSelector(state),
   feedbackStage: feedbackStageSelector(state),
-  canReopen: canReopenSelector(state)
+  canReopen:     canReopenSelector(state)
 }))
 export class ChatContentContainer extends React.Component {
 

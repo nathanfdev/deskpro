@@ -4,10 +4,10 @@ import classNames from 'classnames';
 export class UserInfoForm extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    title:    PropTypes.string.isRequired,
     onSubmit: PropTypes.func.isRequired,
     children: PropTypes.any,
-    error: PropTypes.bool
+    error:    PropTypes.bool
   };
 
   onSubmit = event => {
@@ -19,7 +19,7 @@ export class UserInfoForm extends React.Component {
     const { title, children, error } = this.props;
 
     return (
-      <div className={classNames('dpdesignportal-collect-user-info', {'error-field': error})}>
+      <div className={classNames('dpdesignportal-collect-user-info', { 'error-field': error })}>
         <span className="title">{title}</span>
         <form onSubmit={this.onSubmit}>
           {children}

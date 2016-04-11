@@ -35,9 +35,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -60,10 +58,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "chat" = "TaskLinkedChat"
  * })
  */
-class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
+class TaskLinkedItem implements EntityInterface
 {
-    use NotifyPropertyChangedTrait;
-
     /**
      * The unique ID.
      *
@@ -93,6 +89,11 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
      */
     protected $task;
 
+    public function __construct(Task $task = null)
+    {
+        $this->task = $task;
+    }
+
     /**
      * @return int
      */
@@ -116,7 +117,7 @@ class TaskLinkedItem implements EntityInterface, NotifyPropertyChanged
      */
     public function setTask(Task $task)
     {
-        $this->setModelField('task', $task);
+        $this->task = $task;
 
         return $this;
     }

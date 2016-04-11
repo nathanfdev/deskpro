@@ -5,8 +5,8 @@ import { agentNameSelector, agentAvatarSelector, agentTypingDateSelector } from 
 import moment from 'moment';
 
 @connect(state => ({
-  agentName: agentNameSelector(state),
-  agentAvatar: agentAvatarSelector(state),
+  agentName:       agentNameSelector(state),
+  agentAvatar:     agentAvatarSelector(state),
   agentTypingDate: agentTypingDateSelector(state)
 }))
 export class TypingEventContainer extends React.Component {
@@ -18,7 +18,7 @@ export class TypingEventContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayChild: false,
+      displayChild:        false,
       agentLastTypingTime: null
     };
   }
@@ -47,7 +47,7 @@ export class TypingEventContainer extends React.Component {
     if (!agentTypingDate) {
       if (this.state.displayChild) {
         this.setState({
-          displayChild: false,
+          displayChild:    false,
           agentTypingDate: null
         });
       }
@@ -62,7 +62,7 @@ export class TypingEventContainer extends React.Component {
     if (delay > 0 && (!this.state.displayChild || agentTypingDate !== this.state.agentTypingDate)) {
       this.setState({
         displayChild: true,
-        agentTypingDate: agentTypingDate
+        agentTypingDate
       });
 
       this.timeout = setTimeout(this.onHide, delay * 1000);

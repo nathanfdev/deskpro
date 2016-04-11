@@ -11,7 +11,7 @@ export class EndChatButton extends React.Component {
   render() {
     return (
       <ControlItem onClick={this.props.onOpenPopup}>
-        {portalPhrases.get('portal.chat.end_chat')} <i className="fa fa-power-off"></i>
+        {portalPhrases.get('portal.chat.end_chat')} <i className="fa fa-power-off" />
       </ControlItem>
     );
   }

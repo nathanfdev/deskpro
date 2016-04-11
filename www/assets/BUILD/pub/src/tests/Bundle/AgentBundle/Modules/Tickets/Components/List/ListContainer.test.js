@@ -8,7 +8,7 @@ import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;
-  const List = require('~Components/List').List;
+  const List          = require('~Components/List').List;
 
   it('should render List component', () => {
     spyOn(List.prototype, 'render').and.callThrough();

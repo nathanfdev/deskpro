@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,60 +29,106 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
+use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
+use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
 use DpSys\LowError\SystemErrorHandler;
 
+/**
+ * Class Environment.
+ */
 class Environment extends \Twig_Environment
 {
+    /**
+     * Environment constructor.
+     *
+     * @param \Twig_LoaderInterface|null $loader
+     * @param array                      $options
+     */
     public function __construct(\Twig_LoaderInterface $loader = null, $options = array())
     {
         parent::__construct($loader, $options);
     }
 
+    /**
+     * @param string $name
+     * @param int    $time
+     *
+     * @return bool
+     */
+    public function isTemplateFresh($name, $time)
+    {
+        return $this->getLoader()->isFresh($name, $time);
+    }
+
+    /**
+     * @param string $name
+     * @param null   $index
+     *
+     * @return \Twig_TemplateInterface
+     */
     public function loadTemplate($name, $index = null)
     {
-        $name_str = (string) $name;
-        // if not in DB, just load the template
-        if (!$this->isCustomTemplate($name_str)) {
-            return $this->doLoadTemplate($name, $index);
-        } else {
-            // it is in the db, so try loading it. if it fails, log exception and try again.
-            // under the hood, the loader will not reload from the DB if it crashed.
-            try {
-                return $this->doLoadTemplate($name, $index);
-            } catch (\Exception $e) {
-                $errinfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
-                $errinfo['no_send_error'] = true;
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($errinfo);
-
-                $this->markCustomTemplateAsCrashed($name_str);
-
-                return $this->loadTemplate($name, $index);
+        $nameStr = (string) $name;
+        try {
+            return $this->loadTemplateFromDb($nameStr, $index);
+        } catch (CustomTemplateCompilationException $e) {
+            // should mark it as crashed
+            // falling back to render default template
+            $this->markCustomTemplateAsCrashed($name);
+        } catch (CustomTemplateNotFoundException $e) {
+            // falling back to render default template
+            // we wont mark it as crashed template, since we are not even found it
+        } catch (PortalLoaderException $e) {
+            // fallback to simple loading from filesystem with parent class, since we don't have PortalLoader and know
+            // nothing about theming
+            return parent::loadTemplate($name, $index);
+        } finally {
+            // should be initialized if not yet initialized any way
+            if (!$this->runtimeInitialized) {
+                $this->initRuntime();
             }
         }
+
+        return $this->doLoadTemplate($name, $index);
     }
 
-    private function loadClassFromDb($class_name, $template_name)
+    /**
+     * @param $name
+     * @param $index
+     *
+     * @return mixed
+     */
+    private function loadTemplateFromDb($name, $index)
     {
-        if (!$pl = $this->getPortalLoader()) {
-            return false;
+        $className = $this->getTemplateClass($name, $index);
+
+        try {
+            if ($template = $this->getPortalLoader()->getDbTemplate($name)) {
+                if (!class_exists($className, false)) {
+                    // we have to check for class existence otherwise whole script will fail without ability to fallback
+                    eval('?>'.$this->compileSource($template->getTemplateCode(), $name));
+                }
+            } else {
+                throw new CustomTemplateNotFoundException(sprintf('Template [ %s ] was not found', $name));
+            }
+        } catch (\Twig_Error $e) {
+            throw new CustomTemplateCompilationException(sprintf('Couldn\'t compile custom template [ %s ]', $name), $e);
         }
 
-        if ($template = $pl->getDbTemplate($template_name)) {
-            try {
-                eval('?>'.$template->getTemplateCompiled());
-            } catch (\Exception $e) {
-            }
-            if (class_exists($class_name, false)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->loadedTemplates[$className] = new $className($this);
     }
 
+    /**
+     * @param      $name
+     * @param null $index
+     *
+     * @return mixed
+     */
     private function doLoadTemplate($name, $index = null)
     {
         $cls = $this->getTemplateClass($name, $index);
@@ -92,14 +138,49 @@ class Environment extends \Twig_Environment
         }
 
         if (!class_exists($cls, false)) {
-            $this->loadClass($cls, $name);
-        }
-
-        if (!$this->runtimeInitialized) {
-            $this->initRuntime();
+            $this->loadClass($name);
         }
 
         return $this->loadedTemplates[$cls] = new $cls($this);
+    }
+
+    /**
+     * @param $name
+     *
+     * @throws \Twig_Error
+     * @throws \Twig_Error_Syntax
+     */
+    private function loadClass($name)
+    {
+        if (false === $cache = $this->getCachePath($name)) {
+            eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
+        } else {
+            if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
+                try {
+                    $this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
+                    require_once $cache;
+                } catch (\Exception $e) {
+                    $this->fallback($name, $e);
+                }
+            } else {
+                require_once $cache;
+            }
+        }
+    }
+
+    private function fallback($name, \Exception $previous)
+    {
+        if (!isset($GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) || !$GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) {
+            if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle|Theme|PortalBundle):#', (string) $name)) {
+                if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
+                    $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $previous);
+                    SystemErrorHandler::logException($e, false, 'twig_write_failed');
+                }
+            }
+        }
+
+        $source = $this->compileSource($this->loader->getSource($name), $name);
+        eval('?>'.$source);
     }
 
     /**
@@ -110,99 +191,38 @@ class Environment extends \Twig_Environment
      *
      * @return string
      */
-    public function markCustomTemplateAsCrashed($name)
+    private function markCustomTemplateAsCrashed($name)
     {
-        if (!$pl = $this->getPortalLoader()) {
-            return;
-        }
-
-        if ($pl->getDbTemplate($name)) {
-            $pl->markCustomTemplateAsCrashed($name);
+        try {
+            $portalLoader = $this->getPortalLoader();
+            if ($portalLoader->getDbTemplate($name)) {
+                $portalLoader->markCustomTemplateAsCrashed($name);
+            }
+        } catch (PortalLoaderException $e) {
         }
     }
 
     /**
-     * Check if a particular template is a custom template.
-     *
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function isCustomTemplate($name)
-    {
-        if (!$pl = $this->getPortalLoader()) {
-            return false;
-        }
-
-        if ($pl->getDbTemplate($name)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isTemplateFresh($name, $time)
-    {
-        return $this->getLoader()->isFresh($name, $time);
-    }
-
-    /**
-     * @return PortalLoader|null
+     * @return PortalLoader
      */
     private function getPortalLoader()
     {
-        return App::$container && App::$container->has('portal_loader.twig') ? App::$container->get('portal_loader.twig') : null;
+        if (App::$container && App::$container->has('portal_loader.twig')) {
+            return App::$container->get('portal_loader.twig');
+        }
+
+        throw new PortalLoaderException('Couldn\'t load PortalLoader');
     }
 
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
     private function getCachePath($name)
     {
         $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
 
         return !$key ? false : $key;
-    }
-
-    private function loadClass($cls, $name)
-    {
-        if ($this->loadClassFromDb($cls, $name)) {
-            return true;
-        }
-
-        if (false === $cache = $this->getCachePath($name)) {
-            eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
-        } else {
-            if (!is_file($cache) || ($this->isAutoReload() && !$this->isTemplateFresh($name, filemtime($cache)))) {
-                $fallback = false;
-                $e        = null;
-                try {
-                    $this->writeCacheFile($cache, $this->compileSource($this->loader->getSource($name), $name));
-                    require_once $cache;
-                } catch (\Exception $e) {
-                    $fallback = true;
-                }
-
-                if ($fallback) {
-                    if (!isset($GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) || !$GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) {
-                        // Fallback on just evalling the template so everything
-                        $prev = null;
-                        if ($e) {
-                            $prev = $e;
-                        }
-
-                        $name_str = (string) $name;
-                        if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle|Theme|PortalBundle):#', $name_str)) {
-                            if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-                                $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-                                SystemErrorHandler::logException($e, false, 'twig_write_failed');
-                            }
-                        }
-                    }
-
-                    $source = $this->compileSource($this->loader->getSource($name), $name);
-                    eval('?>'.$source);
-                }
-            } else {
-                require_once $cache;
-            }
-        }
     }
 }

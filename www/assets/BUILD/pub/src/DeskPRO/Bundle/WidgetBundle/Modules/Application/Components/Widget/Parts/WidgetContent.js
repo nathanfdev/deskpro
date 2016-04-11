@@ -4,10 +4,10 @@ import classNames from 'classnames';
 export class WidgetContent extends React.Component {
 
   static propTypes = {
-    isBubble: PropTypes.bool,
+    isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
-    children: PropTypes.any,
-    triggerResize: PropTypes.func
+    children:       PropTypes.any,
+    triggerResize:  PropTypes.func
   };
 
   constructor(props) {
@@ -43,8 +43,8 @@ export class WidgetContent extends React.Component {
       <div className={classNames(
         'widget-container',
         'dpdesignportal', {
-          'chat-bubble': isBubble,
-          'mobile': !isBubble,
+          'chat-bubble':   isBubble,
+          mobile:          !isBubble,
           'position-left': widgetPosition === 'bottom.left' && !isBubble
         })}>
 

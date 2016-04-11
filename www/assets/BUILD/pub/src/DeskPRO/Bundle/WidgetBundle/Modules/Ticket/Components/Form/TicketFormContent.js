@@ -7,9 +7,9 @@ import 'jquery.serializejson';
 export class TicketFormContent extends React.Component {
 
   static propTypes = {
-    saving: PropTypes.bool,
+    saving:   PropTypes.bool,
     onSubmit: PropTypes.func,
-    content: PropTypes.string
+    content:  PropTypes.string
   };
 
   componentDidMount() {
@@ -65,6 +65,6 @@ export class TicketFormContent extends React.Component {
   }
 
   render() {
-    return <div dangerouslySetInnerHTML={{__html: this.props.content}} />;
+    return <div dangerouslySetInnerHTML={{ __html: this.props.content }}></div>;
   }
 }

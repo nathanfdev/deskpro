@@ -5,10 +5,10 @@ export class ReplyButtons extends React.Component {
 
   static propTypes = {
     backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    primaryAgent: PropTypes.object,
-    onClick: PropTypes.func,
-    onClose: PropTypes.func
+    textColor:       PropTypes.string,
+    primaryAgent:    PropTypes.object,
+    onClick:         PropTypes.func,
+    onClose:         PropTypes.func
   };
 
   onClick = event => {
@@ -32,13 +32,15 @@ export class ReplyButtons extends React.Component {
           <a href="#"
              onClick={this.onClick}
              style={{
-               backgroundColor: backgroundColor,
+               backgroundColor,
                color: textColor
              }}>
 
-            <i className="fa fa-mail-reply-all"></i> {portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
+            <i className="fa fa-mail-reply-all" /> {portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
           </a>
-          <a href="#" className="blank" onClick={this.onClose}><i className="fa fa-times"></i> {portalPhrases.get('portal.chat.dismiss_message')}</a>
+          <a href="#" className="blank" onClick={this.onClose}>
+              <i className="fa fa-times" /> {portalPhrases.get('portal.chat.dismiss_message')}
+          </a>
         </div>
       </div>
     );

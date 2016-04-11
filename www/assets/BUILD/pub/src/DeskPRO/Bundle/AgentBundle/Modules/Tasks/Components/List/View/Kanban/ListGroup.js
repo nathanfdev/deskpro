@@ -20,7 +20,7 @@ export class ListGroup extends BaseListGroup {
       <div className={classNames('list', {'drag-hover': isOver})}>
         <h1 className="kanban-list-header">{title}</h1>
 
-        {elements.valueSeq().map((task, key) =>
+        {elements.map((task, key) =>
           <TaskCardEditContainer key={key}
                                  task={task}
                                  updateData={updateData}

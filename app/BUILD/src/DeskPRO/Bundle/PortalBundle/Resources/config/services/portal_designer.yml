@@ -22,6 +22,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
       - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
+      - "@twig"
 
   dp.portal.designer.assets_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\AssetsManager

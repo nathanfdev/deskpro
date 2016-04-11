@@ -9,13 +9,13 @@ import { WidgetHeader } from './WidgetHeader';
 @connect(state => ({
   companyName: companyNameSelector(state),
   companyLogo: companyLogoSelector(state),
-  chatEnded: isEndedSelector(state)
+  chatEnded:   isEndedSelector(state)
 }))
 export class WidgetHeaderContainer extends React.Component {
 
   static propTypes = {
     chatEnded: PropTypes.bool,
-    dispatch: PropTypes.func
+    dispatch:  PropTypes.func
   };
 
   onOpenMenu = () => {

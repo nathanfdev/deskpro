@@ -7,10 +7,10 @@ import { createEmotionImage } from './Emotions';
 export class EmotionButton extends React.Component {
 
   static propTypes = {
-    getEditor: PropTypes.func,
-    onSelect: PropTypes.func,
-    context: PropTypes.any,
-    className: PropTypes.string,
+    getEditor:       PropTypes.func,
+    onSelect:        PropTypes.func,
+    context:         PropTypes.any,
+    className:       PropTypes.string,
     buttonClassName: PropTypes.string,
     popupPositionAt: PropTypes.string,
     popupPositionMy: PropTypes.string
@@ -44,16 +44,17 @@ export class EmotionButton extends React.Component {
   };
 
   onSelectEmotion = code => {
+    this.onCloseEmotionsPopup();
+
     const editor = this.props.getEditor();
     const medium = editor.getMediumEditor();
+    medium.stopSelectionUpdates();
 
+    // focus the rte field
     editor.focus();
 
     const contentWindow = medium.options.contentWindow;
     const ownerDocument = medium.options.ownerDocument;
-
-    // Clears default empty content to avoid new lines
-    medium.trigger('clearEmptyContent');
 
     const html = ` ${createEmotionImage(code)} `;
 
@@ -85,16 +86,11 @@ export class EmotionButton extends React.Component {
 
         // Preserve the selection
         if (lastNode) {
-          range = range.cloneRange();
-          range.setStartAfter(lastNode);
-          range.collapse(true);
+          range = ownerDocument.createRange();
+          range.selectNodeContents(lastNode);
+          range.collapse(false);
 
-          if (selection.empty) {  // Chrome
-            selection.empty();
-          } else if (selection.removeAllRanges) {  // Firefox
-            selection.removeAllRanges();
-          }
-
+          selection.removeAllRanges();
           selection.addRange(range);
         }
       }
@@ -106,7 +102,8 @@ export class EmotionButton extends React.Component {
     medium.saveSelection();
     medium.trigger('onChange');
 
-    this.onCloseEmotionsPopup();
+    // focus the rte again to correct display caret position
+    editor.focus();
   };
 
   render() {

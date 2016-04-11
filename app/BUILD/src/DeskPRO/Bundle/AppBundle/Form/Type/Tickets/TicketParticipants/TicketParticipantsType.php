@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
@@ -80,6 +81,7 @@ class TicketParticipantsType extends AbstractType
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformIdToEmail']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData']);
     }
@@ -114,6 +116,34 @@ class TicketParticipantsType extends AbstractType
     public function getName()
     {
         return 'ticket_participants';
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return array
+     */
+    public function onTransformIdToEmail(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $this->em->getRepository(Person::class);
+
+        $data   = $event->getData();
+        $result = [];
+        if (!is_array($data)) {
+            return;
+        }
+
+        foreach ($data as $item) {
+            if (is_numeric($item)) {
+                $person   = $personRepo->find($item);
+                $result[] = $person ? $person->getPrimaryEmailAddress() : '';
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        $event->setData($result);
     }
 
     /**

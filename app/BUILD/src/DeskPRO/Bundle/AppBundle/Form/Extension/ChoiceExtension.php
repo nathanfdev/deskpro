@@ -34,9 +34,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 /**
- * Class CheckboxExtension.
+ * Class ChoiceExtension.
  */
-class CheckboxExtension extends AbstractTypeExtension
+class ChoiceExtension extends AbstractTypeExtension
 {
     /**
      * {@inheritdoc}

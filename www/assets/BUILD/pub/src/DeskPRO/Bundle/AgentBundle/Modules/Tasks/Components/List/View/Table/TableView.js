@@ -48,7 +48,7 @@ export class TableView extends React.Component {
         <Table>
           <HeaderContainer />
 
-          {groups.valueSeq().map((taskGroup, index) =>
+          {groups.map((taskGroup, index) =>
             <ListGroup key={index}
                        group={taskGroup}
                        onChangeGroup={onChangeGroup}

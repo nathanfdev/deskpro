@@ -6,8 +6,8 @@ import React from 'react';
 import { renderInRedux, fakeState } from 'Helpers';
 
 describe('Ticket: TicketsApp component', () => {
-  const TicketsApp = require('~components/TicketsApp').TicketsApp;
-  const NavContainer = require('~components/Nav/NavContainer').NavContainer;
+  const TicketsApp    = require('~components/TicketsApp').TicketsApp;
+  const NavContainer  = require('~components/Nav/NavContainer').NavContainer;
   const ListContainer = require('~components/List/ListContainer').ListContainer;
 
   function render() {

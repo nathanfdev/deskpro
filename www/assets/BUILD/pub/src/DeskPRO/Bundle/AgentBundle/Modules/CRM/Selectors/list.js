@@ -9,37 +9,37 @@ export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view']
 
 export const paginationSelector = createSelector(
   stateSelector,
-    list => list.get('pagination')
+  list => list.get('pagination')
 );
 
 export const isLoadedSelector = createSelector(
   stateSelector,
-    list => list.getIn(['async', 'done'])
+  list => list.getIn(['async', 'done'])
 );
 
 export const currentListParamsSelector = createSelector(
   stateSelector,
-    state => state.get('currentListParams')
+  state => state.get('currentListParams')
 );
 
 export const elementsSelector = createSelector(
   stateSelector,
-    state => state.get('elements')
+  state => state.get('elements')
 );
 
 export const currentListOrderBySelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order_by')
+  params => params.get('order_by')
 );
 
 export const currentListOrderDirSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('order_dir')
+  params => params.get('order_dir')
 );
 
 export const currentContentSelector = createSelector(
   currentListParamsSelector,
-    params => params.get('content')
+  params => params.get('content')
 );
 
 export const listFiltersSelector = createSelector(
@@ -48,28 +48,37 @@ export const listFiltersSelector = createSelector(
     const datePeriodsOptions = () => {
       const periods = DatePeriods.all;
       const options = [];
-      for (var property in periods) {
+      for (const property in periods) {
         if (periods.hasOwnProperty(property)) {
           options.push({ value: property, label: periods[property] });
         }
       }
       return options;
     };
-    const filterSelector = [
+    const filterSelector     = [
       { label: 'Created', type: 'select', param: 'period_created', options: datePeriodsOptions() }
     ];
     if (currentContent === 'people') {
       const userGroupsOptions = userGroups.toArray()
         .map(group => ({
-          label: group.get('title'),
-          value: group.get('id')
-        })
+               label: group.get('title'),
+               value: group.get('id')
+             })
       );
+
       filterSelector.push({
-        label: 'User group', type: 'select', param: 'user_group', quickFilter: true,
-        options: userGroupsOptions
+        label:       'User group',
+        type:        'select',
+        param:       'user_group',
+        quickFilter: true,
+        options:     userGroupsOptions
       });
-      const organizationsOptions = organizations.toArray().map(org=>({ label: org.get('name'), value: org.get('id') }));
+
+      const organizationsOptions = organizations.toArray()
+        .map(org => ({
+               label: org.get('name'),
+               value: org.get('id')
+             }));
 
       const compare = (a, b) => {
         if (a.label < b.label) {
@@ -79,11 +88,14 @@ export const listFiltersSelector = createSelector(
         }
         return 0;
       };
-
       organizationsOptions.sort(compare);
+
       filterSelector.push({
-        label: 'Organization', type: 'select', param: 'organization', quickFilter: true,
-        options: organizationsOptions
+        label:       'Organization',
+        type:        'select',
+        param:       'organization',
+        quickFilter: true,
+        options:     organizationsOptions
       });
     }
 
@@ -91,9 +103,8 @@ export const listFiltersSelector = createSelector(
   }
 );
 
+/** Just stub **/
 export const massActionsSelector = createSelector(
   [],
-  () => {
-    return [];
-  }
+  () => []
 );

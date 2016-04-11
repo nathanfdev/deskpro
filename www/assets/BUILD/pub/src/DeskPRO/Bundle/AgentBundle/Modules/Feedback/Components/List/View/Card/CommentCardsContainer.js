@@ -6,21 +6,21 @@ import { selectedSelector } from '../../../../../Application/Selectors/massActio
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  ids: idsSelector(state),
+  ids:      idsSelector(state),
   comments: collectionSelectorFactory('FeedbackComment', 'feedback')(state),
   selected: selectedSelector(state),
-  people: collectionSelectorFactory('Person', 'feedback')(state),
+  people:   collectionSelectorFactory('Person', 'feedback')(state),
   feedback: collectionSelectorFactory('Feedback', 'feedback')(state)
 }))
 export class CommentCardsContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    ids: PropTypes.array.isRequired,
-    comments: PropTypes.object.isRequired,
+    dispatch:       PropTypes.func.isRequired,
+    ids:            PropTypes.array.isRequired,
+    comments:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    people: PropTypes.object.isRequired,
-    feedback: PropTypes.object.isRequired,
-    selected: PropTypes.object.isRequired
+    people:         PropTypes.object.isRequired,
+    feedback:       PropTypes.object.isRequired,
+    selected:       PropTypes.object.isRequired
   };
 
   renderComment(id) {
@@ -33,7 +33,7 @@ export class CommentCardsContainer extends Component {
                    feedback={feedback.get(element.get('feedback'))}
                    selected={selected.includes(id)}
                    toggleSelected={toggleSelected}
-                   author={people.get(element.get('person'))}/>
+                   author={people.get(element.get('person'))} />
     );
   }
 

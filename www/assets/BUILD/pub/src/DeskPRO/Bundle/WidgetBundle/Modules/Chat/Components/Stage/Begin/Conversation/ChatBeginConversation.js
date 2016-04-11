@@ -6,15 +6,15 @@ import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 export class ChatBeginConversation extends React.Component {
 
   static propTypes = {
-    name: PropTypes.string,
-    email: PropTypes.string,
-    hiddenEmail: PropTypes.bool,
-    submit: PropTypes.bool,
-    errors: PropTypes.object,
-    onChangeName: PropTypes.func,
-    onChangeEmail: PropTypes.func,
+    name:                PropTypes.string,
+    email:               PropTypes.string,
+    hiddenEmail:         PropTypes.bool,
+    submit:              PropTypes.bool,
+    errors:              PropTypes.object,
+    onChangeName:        PropTypes.func,
+    onChangeEmail:       PropTypes.func,
     onToggleHiddenEmail: PropTypes.func,
-    onSubmit: PropTypes.func
+    onSubmit:            PropTypes.func
   };
 
   constructor(props) {
@@ -65,7 +65,7 @@ export class ChatBeginConversation extends React.Component {
         <FieldErrors errors={errors} name="email" />
 
         {submit
-          ? <div className="spinner"><i/></div>
+          ? <div className="spinner"><i /></div>
           : <input type="submit" value="Go" />
         }
 

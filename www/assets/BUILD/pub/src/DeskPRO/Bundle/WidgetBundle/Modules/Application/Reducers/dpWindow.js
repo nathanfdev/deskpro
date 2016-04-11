@@ -3,16 +3,17 @@ import { setValue, setFullPayload } from 'Ampliflux/reducers/handlers';
 import * as actions from '../Actions/dpWindowActions';
 
 const initialState = {
-  options: {},
+  options:            {},
   triggerPopupOpened: false,
-  widgetOpened: false,
+  widgetOpened:       false,
+
   dimensions: {
     window: {
-      width: null,
+      width:  null,
       height: null
     },
     widget: {
-      width: null,
+      width:  null,
       height: null
     }
   }
@@ -24,9 +25,9 @@ export default createReducer(initialState, {
   [actions.windowResize]: setFullPayload('dimensions.window'),
   [actions.widgetResize]: setFullPayload('dimensions.widget'),
 
-  [actions.openTriggerPopup]: setValue('triggerPopupOpened', true),
+  [actions.openTriggerPopup]:  setValue('triggerPopupOpened', true),
   [actions.closeTriggerPopup]: setValue('triggerPopupOpened', false),
 
-  [actions.openWidget]: setValue('widgetOpened', true),
+  [actions.openWidget]:  setValue('widgetOpened', true),
   [actions.closeWidget]: setValue('widgetOpened', false)
 });

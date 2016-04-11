@@ -13,11 +13,11 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    isLoaded: PropTypes.bool,
-    isComments: PropTypes.bool,
-    selected: PropTypes.object.isRequired,
-    pagination: PropTypes.object,
-    toggleSelected: PropTypes.func.isRequired,
+    isLoaded:        PropTypes.bool,
+    isComments:      PropTypes.bool,
+    selected:        PropTypes.object.isRequired,
+    pagination:      PropTypes.object,
+    toggleSelected:  PropTypes.func.isRequired,
     currentViewMode: PropTypes.string.isRequired
   };
 
@@ -25,7 +25,7 @@ export class List extends Component {
     super(props);
 
     this.state = {
-      data: [],
+      data:   [],
       offset: 0
     };
   }
@@ -42,11 +42,11 @@ export class List extends Component {
 
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
-        <FeedbackCardsContainer toggleSelected={toggleSelected}/>
+        <FeedbackCardsContainer toggleSelected={toggleSelected} />
       );
     }
     return (
-      <FeedbackTableContainer/>
+      <FeedbackTableContainer />
     );
   }
 
@@ -55,11 +55,11 @@ export class List extends Component {
     if (currentViewMode === constants.VIEW_MODE_CARD) {
       return (
         <CommentCardsContainer selected={selected}
-                               toggleSelected={toggleSelected}/>
+                               toggleSelected={toggleSelected} />
       );
     }
     return (
-      <CommentTableContainer/>
+      <CommentTableContainer />
     );
   }
 
@@ -69,12 +69,12 @@ export class List extends Component {
     return (
       <ListFrameContainer>
         <ListFrameMenu>
-          {!selected.size && <ControlBarContainer key="1"/>}
-          {selected.size && <MassActionContainer key="2"/>}
+          {!selected.size && <ControlBarContainer key="1" />}
+          {selected.size && <MassActionContainer key="2" />}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           {this.contentChoice()}
-          {pagination && pagination.get('total_pages') > 1 && <PaginationContainer/>}
+          {pagination && pagination.get('total_pages') > 1 && <PaginationContainer />}
         </ListFrameContents>
       </ListFrameContainer>
     );

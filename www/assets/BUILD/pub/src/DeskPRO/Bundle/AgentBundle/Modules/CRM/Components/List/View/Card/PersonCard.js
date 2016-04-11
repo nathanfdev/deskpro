@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardLabel }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
@@ -7,13 +7,18 @@ import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox
 export class PersonCard extends Component {
 
   static propTypes = {
-    intl: intlShape.isRequired,
-    person: PropTypes.object.isRequired,
-    organization: PropTypes.object,
-    usergroups: PropTypes.object.isRequired,
-    language: PropTypes.object.isRequired,
+    intl:           intlShape.isRequired,
+    person:         PropTypes.object.isRequired,
+    organization:   PropTypes.object,
+    usergroups:     PropTypes.object.isRequired,
+    language:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    selected: PropTypes.bool
+    selected:       PropTypes.bool
+  };
+
+  handleClick = () => {
+    const { person, toggleSelected } = this.props;
+    toggleSelected(person.get('id'));
   };
 
   renderOrganization() {
@@ -23,6 +28,7 @@ export class PersonCard extends Component {
         <CardLineItem>{organization.get('name')}</CardLineItem>
       );
     }
+    return null;
   }
 
   renderLabels() {
@@ -31,11 +37,12 @@ export class PersonCard extends Component {
       return (
         <CardLine>
           <CardLineItem>
-            <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+            <i className="fa fa-tags"></i> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
           </CardLineItem>
         </CardLine>
       );
     }
+    return null;
   }
 
   renderUserGroups() {
@@ -49,34 +56,36 @@ export class PersonCard extends Component {
           </CardLineItem>)
       );
     }
+    return null;
   }
 
   renderLanguage() {
-    const {language} = this.props;
+    const { language } = this.props;
     if (language) {
       return (
-        <CardLineItem><CardDisc/>{language.get('title')} ({language.get('locale')})</CardLineItem>
+        <CardLineItem><CardDisc />{language.get('title')} ({language.get('locale')})</CardLineItem>
       );
     }
+    return null;
   }
 
   render() {
-    const { person, selected, toggleSelected } = this.props;
+    const { person, selected } = this.props;
 
     return (
       <Card type="crm">
 
-        <CardCheckbox selected={selected} onClick={toggleSelected}/>
+        <CardCheckbox selected={selected} onClick={this.handleClick} />
 
         <CardLine>
           <CardLineLeft>
             <CardLineItem>[#{person.get('id')}] {person.get('name')}</CardLineItem>
-            <CardLineItem><CardDisc/>{person.get('primary_email')}</CardLineItem>
+            <CardLineItem><CardDisc />{person.get('primary_email')}</CardLineItem>
           </CardLineLeft>
           <CardLineRight>
             {this.renderOrganization()}
             {person.get('organization_position') &&
-            <CardLineItem><CardDisc/>{person.get('organization_position')}</CardLineItem>}
+            <CardLineItem><CardDisc />{person.get('organization_position')}</CardLineItem>}
           </CardLineRight>
         </CardLine>
 
@@ -86,12 +95,12 @@ export class PersonCard extends Component {
           <CardLineLeft>
             {this.renderUserGroups()}
           </CardLineLeft>
-          <CardLineRight/>
+          <CardLineRight />
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem><FormattedRelative value={person.get('date_created')}/></CardLineItem>
+            <CardLineItem><FormattedRelative value={person.get('date_created')} /></CardLineItem>
             {this.renderLanguage()}
           </CardLineLeft>
           <CardLineRight>

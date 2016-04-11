@@ -6,8 +6,8 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class OnlineAgent extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
-    agentAvatar: PropTypes.object,
+    agentName:      PropTypes.string,
+    agentAvatar:    PropTypes.object,
     departmentName: PropTypes.string
   };
 
@@ -27,7 +27,7 @@ export class OnlineAgent extends React.Component {
             </li>
           </ul>
         </div>
-        <hr/>
+        <hr />
         <h1>You are chatting with <span className="name">{agentName}</span></h1>
         <h2>{departmentName}</h2>
       </div>

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,8 +59,11 @@ class TasksDataService extends AbstractTasksDataService
             ->leftJoin('t.project', 'p')
             ->leftJoin('t.labels', 'l')
             ->leftJoin('t.linked_tickets', 'lt')
+            ->leftJoin('lt.ticket', 'ltt')
             ->leftJoin('t.linked_chats', 'lc')
+            ->leftJoin('lc.chat', 'lcc')
             ->leftJoin('t.linked_articles', 'la')
+            ->leftJoin('la.article', 'laa')
             ->andWhere('t.for_del <> 1')
             ->addGroupBy('t.id')
         ;

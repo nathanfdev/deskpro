@@ -34,7 +34,7 @@ export class Widget extends React.Component {
           <WidgetHeaderContainer />
           <WidgetBodyContainer>
             <Router history={history}>
-              <Redirect from="/" to="chat"/>
+              <Redirect from="/" to="chat" />
               <Route path="chat" component={ChatApp}>
                 <Route path="begin" component={ChatBeginContainer}>
                   <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />

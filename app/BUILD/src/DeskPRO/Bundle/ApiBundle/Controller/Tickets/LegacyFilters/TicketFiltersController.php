@@ -96,8 +96,22 @@ class TicketFiltersController extends CrudController
             'offset' => $maxPerPage * ($currentPage - 1),
         ]);
 
-        $tickets = $this->getRepository(Ticket::class)->findBy(['id' => $ticketIds]);
-        $pager   = new Pagerfanta(new FixedAdapter($searcher->getCount(), $tickets));
+        $tickets = [];
+        if (count($ticketIds)) {
+            $qb = $this
+                ->getManager()
+                ->createQueryBuilder()
+                ->select('t, field(t.id, :ids) as HIDDEN field')
+                ->from(Ticket::class, 't')
+                ->where('t.id IN (:ids)')
+                ->orderBy('field')
+                ->setParameter('ids', $ticketIds)
+            ;
+
+            $tickets = $qb->getQuery()->getResult();
+        }
+
+        $pager = new Pagerfanta(new FixedAdapter($searcher->getCount(), $tickets));
 
         $pager->setMaxPerPage($maxPerPage);
         $pager->setCurrentPage($currentPage);

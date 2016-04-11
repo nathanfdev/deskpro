@@ -4,7 +4,7 @@ export class FindAnotherAgent extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
-    onClick: PropTypes.func
+    onClick:   PropTypes.func
   };
 
   onClick = event => {

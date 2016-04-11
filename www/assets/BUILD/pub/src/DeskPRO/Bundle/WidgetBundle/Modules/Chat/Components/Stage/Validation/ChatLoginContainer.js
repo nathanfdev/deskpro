@@ -7,7 +7,7 @@ import { widgetSessionIsLoginSelector } from '../../../../Application/Selectors/
 import { history } from '../../../../../Services/history';
 
 @connect(state => ({
-  isLogin: widgetSessionIsLoginSelector(state),
+  isLogin:  widgetSessionIsLoginSelector(state),
   liveDemo: liveDemoSelector(state)
 }))
 export class ChatLoginContainer extends React.Component {
@@ -15,7 +15,7 @@ export class ChatLoginContainer extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func,
     liveDemo: PropTypes.bool,
-    isLogin: PropTypes.bool
+    isLogin:  PropTypes.bool
   };
 
   componentDidMount() {

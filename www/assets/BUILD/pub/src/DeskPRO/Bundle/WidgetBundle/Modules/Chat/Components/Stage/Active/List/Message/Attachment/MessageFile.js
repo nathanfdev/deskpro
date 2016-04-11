@@ -5,7 +5,7 @@ import { filenameMaxLength, getFileIcon } from 'DeskPRO/Component/Util/Filename'
 export class MessageFile extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object,
+    message:    PropTypes.object,
     attachment: PropTypes.object
   };
 

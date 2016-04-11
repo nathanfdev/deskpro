@@ -4,16 +4,16 @@ import classNames from 'classnames';
 export class HelpButton extends React.Component {
 
   static propTypes = {
-    widgetPosition: PropTypes.string,
-    type: PropTypes.string,
-    onClick: PropTypes.func,
-    size: PropTypes.string,
-    name: PropTypes.string,
+    widgetPosition:  PropTypes.string,
+    type:            PropTypes.string,
+    onClick:         PropTypes.func,
+    size:            PropTypes.string,
+    name:            PropTypes.string,
     backgroundColor: PropTypes.string,
-    textColor: PropTypes.string,
-    borderColor: PropTypes.string,
-    disabled: PropTypes.bool,
-    triggerResize: PropTypes.func
+    textColor:       PropTypes.string,
+    borderColor:     PropTypes.string,
+    disabled:        PropTypes.bool,
+    triggerResize:   PropTypes.func
   };
 
   componentDidUpdate() {
@@ -33,20 +33,20 @@ export class HelpButton extends React.Component {
         <a href="#"
            onClick={this.onClick}
            style={{
-             backgroundColor: backgroundColor,
+             backgroundColor,
              color: textColor
            }}
            className={classNames('preemtive-button', {
-             'button-s': size === 'small',
-             'button-l': size === 'large',
-             'disabled': disabled,
+             disabled,
+             'button-s':      size === 'small',
+             'button-l':      size === 'large',
              'position-left': widgetPosition === 'bottom.left'
            })}>
 
           <span className="state-button-text">{name}</span>
           <span className="state-button-icon" style={{
             color: backgroundColor,
-            borderColor: borderColor
+            borderColor
           }}>
             <span>?</span>
           </span>

@@ -20,12 +20,12 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class ReplyForm extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
+    agentName:           PropTypes.string,
     attachedImagesCount: PropTypes.number,
-    isEnded: PropTypes.bool,
-    canReopen: PropTypes.bool,
-    onUserTyping: PropTypes.func,
-    onSendMessage: PropTypes.func
+    isEnded:             PropTypes.bool,
+    canReopen:           PropTypes.bool,
+    onUserTyping:        PropTypes.func,
+    onSendMessage:       PropTypes.func
   };
 
   constructor(props) {
@@ -85,17 +85,16 @@ export class ReplyForm extends React.Component {
           options={{
             contentWindow: window.widgetFrame.window,
             ownerDocument: window.widgetFrame.document,
-            autoLink: true,
+            autoLink:      true,
             imageDragging: true,
-            placeholder: {
+            placeholder:    {
               text: portalPhrases.get('portal.chat.message_type', {'{agentName}': this.props.agentName})
             },
             toolbar: {
-              buttons: ['bold', 'italic', 'underline'],
+              buttons:                ['bold', 'italic', 'underline'],
               updateOnEmptySelection: true
             }
-          }}
-          />
+          }} />
       </ScrollArea>
     );
   }
@@ -136,20 +135,20 @@ export class ReplyForm extends React.Component {
           </div>
 
           <button>
-            <i className="fa fa-angle-double-right"></i>
+            <i className="fa fa-angle-double-right" />
           </button>
         </form>
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
             <span className="dpdesignportal-chat-form-button">
-              <i className="fa fa-upload"></i> {portalPhrases.get('portal.chat.upload_file')}
-              <input ref="fileUpload" className="file" type="file" name="files[]" multiple />
+              <i className="fa fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
+              <input ref="fileUpload" className="file" type="file" name="files[]" multiple="multiple" />
             </span>
 
             {false /* disabled for now */ &&
               <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-                <i className="fa fa-camera"></i> {portalPhrases.get('portal.chat.screen_share')}
+                <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
               </a>
             }
 
@@ -158,8 +157,7 @@ export class ReplyForm extends React.Component {
               context={[parent.document, window.widgetFrame.document]}
               getEditor={() => this.refs.editor}
               popupPositionAt="center top-15"
-              popupPositionMy="center bottom"
-            />
+              popupPositionMy="center bottom" />
           </div>
 
           <EndChatContainer>
@@ -170,7 +168,7 @@ export class ReplyForm extends React.Component {
         <DropZoneContainer>
           <DropZone ref="dropZone"
                     getExternalInput={() => this.refs.fileUpload}
-                    uploadUrl={window.DP_HELPDESK_URL + 'portal/api/blobs/temp'}>
+                    uploadUrl={`${window.DP_HELPDESK_URL}portal/api/blobs/temp`}>
 
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />

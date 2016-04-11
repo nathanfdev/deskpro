@@ -9,20 +9,20 @@ import { MessageListSpinner } from './MessageListSpinner';
 import $ from 'jquery';
 
 @connect(state => ({
-  chatLoaded: chatLoadedSelector(state),
-  messages: messagesSelector(state),
-  lastMessageId: lastMessageIdSelector(state),
+  chatLoaded:       chatLoadedSelector(state),
+  messages:         messagesSelector(state),
+  lastMessageId:    lastMessageIdSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),
-  widgetHeight: widgetHeightSelector(state),
-  mute: muteSelector(state),
-  isBubble: isBubbleSelector(state),
-  people: peopleSelector(state)
+  widgetHeight:     widgetHeightSelector(state),
+  mute:             muteSelector(state),
+  isBubble:         isBubbleSelector(state),
+  people:           peopleSelector(state)
 }))
 export class MessageListContainer extends React.Component {
 
   static propTypes = {
-    chatLoaded: PropTypes.bool,
-    isBubble: PropTypes.bool,
+    chatLoaded:   PropTypes.bool,
+    isBubble:     PropTypes.bool,
     widgetHeight: PropTypes.number
   };
 

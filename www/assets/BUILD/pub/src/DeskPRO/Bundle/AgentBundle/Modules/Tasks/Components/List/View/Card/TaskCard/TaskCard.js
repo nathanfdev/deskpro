@@ -19,7 +19,7 @@ import {
   AssignButton,
   CardProjectContainer,
   LinkedItemContainer
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Components/List/TaskCard';
+} from '../../../TaskCard';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -39,7 +39,7 @@ export class TaskCard extends BaseTaskCard {
           <CardProjectContainer value={task.get('project')}
                                 onChange={onChange.bind(null, 'project')} />
           <span className="dpw--card-disc"/>
-          <LinkedItemContainer value={task} />
+          <LinkedItemContainer value={task} onChange={onChange.bind(null, 'linked_items')} />
         </div>
         <div style={{position: 'absolute', right: 0, top: 0}}>
           <Comments count={this.state.comments} />
@@ -56,7 +56,6 @@ export class TaskCard extends BaseTaskCard {
   render() {
     const { task, moving, selected } = this.props;
     const { onToggleSelected, onChange } = this.props;
-    console.info(task.toJS());
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">

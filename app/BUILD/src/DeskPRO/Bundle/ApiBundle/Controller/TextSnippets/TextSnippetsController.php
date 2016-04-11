@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -211,5 +212,15 @@ class TextSnippetsController extends CrudController
         }
 
         return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        return parent::getLocationUrl($entity, $request, [
+            'context' => $request->attributes->get('context'),
+        ]);
     }
 }

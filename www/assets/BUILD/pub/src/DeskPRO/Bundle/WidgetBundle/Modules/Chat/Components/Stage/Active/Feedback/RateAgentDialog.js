@@ -4,8 +4,8 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class RateAgentDialog extends React.Component {
 
   static propTypes = {
-    agentName: PropTypes.string,
-    onClickHelpful: PropTypes.func,
+    agentName:         PropTypes.string,
+    onClickHelpful:    PropTypes.func,
     onClickNotHelpful: PropTypes.func
   };
 

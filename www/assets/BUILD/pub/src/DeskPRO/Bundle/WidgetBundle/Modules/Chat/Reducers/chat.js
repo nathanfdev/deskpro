@@ -13,32 +13,32 @@ import moment from 'moment';
 
 const initialState = {
   phrases: {},
-  mute: false,
+  mute:    false,
   polling: {
-    locked: false,
+    locked:  false,
     skipped: false
   },
   chat: {
-    id: null,
-    loaded: false,
+    id:        null,
+    loaded:    false,
     canReopen: true,
-    info: {}
+    info:      {}
   },
-  feedbackStage: 'dialog',
-  messages: [],
   uploading: {
-    files: [],
+    files:  [],
     failed: [],
     repeat: []
   },
-  attachments: []
+  messages:      [],
+  attachments:   [],
+  feedbackStage: 'dialog'
 };
 
 export default createReducer(initialState, {
   // Polling
-  [actions.lockPollingResponse]: setValue('polling.locked', true),
-  [actions.unlockPollingResponse]: setValue('polling', {locked: false, skipped: true}),
-  [actions.enablePollingResponse]: setValue('polling', {locked: false, skipped: false}),
+  [actions.lockPollingResponse]:   setValue('polling.locked', true),
+  [actions.unlockPollingResponse]: setValue('polling', { locked: false, skipped: true }),
+  [actions.enablePollingResponse]: setValue('polling', { locked: false, skipped: false }),
 
   // Phrase translations
   [actions.setPhraseTranslations]: setFullPayload('phrases'),
@@ -54,30 +54,34 @@ export default createReducer(initialState, {
     setValue('messages', [])
   ),
   [actions.unsetChatId]: setValue('chat', {
-    id: null,
-    loaded: false,
+    id:        null,
+    loaded:    false,
     canReopen: true,
-    info: {}
+    info:      {}
   }),
-  [actions.setLoaded]: setValue('chat.loaded', true),
-  [actions.unsetLoaded]: setValue('chat.loaded', false),
+  [actions.setLoaded]:      setValue('chat.loaded', true),
+  [actions.unsetLoaded]:    setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),
+
   [actions.optimisticToggleSendTranscript]: setFullPayload('chat.info.should_send_transcript'),
+
   [actions.sendTranscriptInfo]: async({
     done: setValue('chat.info.should_send_transcript', true)
   }),
-  [actions.endChat]: setValue('chat.info.date_ended', moment().format()),
+
+  [actions.endChat]:    setValue('chat.info.date_ended', moment().format()),
   [actions.reopenChat]: composeHandlers(
     setValue('chat.canReopen', true),
     setValue('chat.info.date_ended', null),
     setValue('chat.info.date_transcript_sent', null),
     setValue('feedbackStage', 'dialog')
   ),
-  [actions.enableChatReopen]: setValue('chat.canReopen', true),
+
+  [actions.enableChatReopen]:  setValue('chat.canReopen', true),
   [actions.disableChatReopen]: setValue('chat.canReopen', false),
 
   // Messages
-  [actions.addNewMessages]: pushPayloadToCollection('messages'),
+  [actions.addNewMessages]:   pushPayloadToCollection('messages'),
   [actions.markNotDelivered]: (state, tmpId) => {
     let newMessages = state.get('messages');
 
@@ -93,7 +97,7 @@ export default createReducer(initialState, {
   },
 
   // Uploading files
-  [actions.addUploadingFile]: pushPayloadToCollection('uploading.files', true),
+  [actions.addUploadingFile]:        pushPayloadToCollection('uploading.files', true),
   [actions.markUploadingFileFailed]: composeHandlers(
     deletePayloadFromCollection('uploading.repeat'),
     pushPayloadToCollection('uploading.failed', true)
@@ -109,11 +113,11 @@ export default createReducer(initialState, {
   ),
 
   // Attachments
-  [actions.addAttachment]: pushPayloadToCollection('attachments'),
+  [actions.addAttachment]:    pushPayloadToCollection('attachments'),
   [actions.removeAttachment]: deletePayloadFromCollection('attachments'),
   [actions.resetAttachments]: setValue('attachments', []),
 
   // Feedback
   [actions.showNotHelpfulForm]: setValue('feedbackStage', 'form'),
-  [actions.sendFeedback]: setValue('feedbackStage', 'finished')
+  [actions.sendFeedback]:       setValue('feedbackStage', 'finished')
 });
