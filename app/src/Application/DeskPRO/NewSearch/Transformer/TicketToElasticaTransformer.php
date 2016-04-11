@@ -33,7 +33,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
-use Application\DeskPRO\ApacheTika\ClientFactory as ApacheTikaFactory;
+use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 
 /**
  * Ticket To Elastica Transformer.
@@ -45,12 +45,12 @@ use Application\DeskPRO\ApacheTika\ClientFactory as ApacheTikaFactory;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var ApacheTikaFactory $apache_tika
+     * @var ApacheTikaManager $apache_tika
      */
     private $apache_tika;
 
     /**
-     * @return ApacheTikaFactory
+     * @return ApacheTikaManager
      */
     public function getApacheTika()
     {
@@ -58,7 +58,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
     }
 
     /**
-     * @param ApacheTikaFactory $apache_tika
+     * @param ApacheTikaManager $apache_tika
      */
     public function setApacheTika($apache_tika)
     {
@@ -125,7 +125,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             if ($object->has_attachments) {
                 try {
                     /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
-                    $client         = $this->getApacheTika()->createClient();
+                    $client         = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
                     foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();

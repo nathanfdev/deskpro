@@ -215,7 +215,7 @@ $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
-$definition->addMethodCall('setApacheTika', array(new Reference('deskpro.apache_tika.client_factory')));
+$definition->addMethodCall('setApacheTika', array(new Reference('deskpro.apache_tika.client_manager')));
 
 // deskpro.search.person_to_elastica_transformer
 $definition = new Definition();

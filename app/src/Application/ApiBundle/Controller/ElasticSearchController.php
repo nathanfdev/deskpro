@@ -32,6 +32,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\ApacheTika\ClientManager;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
 use Elastica\Response;
@@ -165,6 +166,26 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         } catch (\Exception $e) {
             $elastica_logger->error("Exception: {$e->getMessage()}");
             $error = true;
+        }
+
+        if (!$error && $this->in->getBoolInt('tika_enabled')) {
+            try {
+                /** @var ClientManager $tika_client_manager */
+                $tika_client_manager = $this->container->get('deskpro.apache_tika.client_manager');
+                $config = $tika_client_manager->createConfigFromUrl(
+                    $this->in->getString('tika_ip'),
+                    $this->in->getString('tika_port')
+                );
+                $tika_client = $tika_client_manager->getClientFromConfig($config);
+
+                $version = $tika_client->request('version');
+                $elastica_logger->debug('Apache Tika');
+                $elastica_logger->debug('checking version');
+                $elastica_logger->debug('Version: '.$version);
+            } catch (\Exception $e) {
+                $elastica_logger->error("Exception: {$e->getMessage()}");
+                $error = true;
+            }
         }
 
         return $this->createApiResponse(array(
