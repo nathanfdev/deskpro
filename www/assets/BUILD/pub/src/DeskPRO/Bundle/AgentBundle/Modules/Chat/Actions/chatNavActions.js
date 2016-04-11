@@ -15,10 +15,10 @@ export const initialLoad = createAction(
   () => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[my]=DP_API/user_chats/counts?group_by%3Ddate_period'
-          + '&get[all]=DP_API/user_chats/counts?group_by%3Dagent'
+              + '?get[my]=DP_API/user_chats/counts?group_by%3Ddate_period'
+              + '&get[all]=DP_API/user_chats/counts?group_by%3Dagent'
         ;
-      api.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);
         resolve(payload);
       });
@@ -35,10 +35,7 @@ export const loadCounts = createAction(
         dispatch(loadBatch('Department', res.data.nested.map(count => count.group), recordStoresId));
       }
 
-      return {
-        list,
-        counts: res.data
-      };
+      return { list, counts: res.data };
     })
 );
 

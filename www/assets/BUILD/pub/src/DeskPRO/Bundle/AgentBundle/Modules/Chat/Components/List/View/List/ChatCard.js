@@ -1,17 +1,18 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser }
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull,
+  CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
 @injectIntl
 export class ChatCard extends Component {
   static propTypes = {
-    intl: intlShape.isRequired,
-    chat: PropTypes.object.isRequired,
-    author: PropTypes.object.isRequired,
-    agent: PropTypes.object.isRequired,
-    department: PropTypes.object.isRequired,
-    selected: PropTypes.object.isRequired,
+    intl:           intlShape.isRequired,
+    chat:           PropTypes.object.isRequired,
+    author:         PropTypes.object.isRequired,
+    agent:          PropTypes.object.isRequired,
+    department:     PropTypes.object.isRequired,
+    selected:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired
   };
 
@@ -23,7 +24,7 @@ export class ChatCard extends Component {
         <div className="card-status-bar status-bar-left level-8"></div>
         <div className="card-status-bar status-bar-right level-8"></div>
 
-        <CardCheckbox selected={selected} onClick={toggleSelected(chat.get('id'))}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected(chat.get('id'))} />
 
         <CardLine>
           <CardLineLeft>
@@ -32,7 +33,7 @@ export class ChatCard extends Component {
 
           <CardLineRight>
             <CardLineItem>
-              <FormattedRelative value={chat.get('date_created')}/>
+              <FormattedRelative value={chat.get('date_created')} />
             </CardLineItem>
           </CardLineRight>
         </CardLine>
@@ -47,12 +48,12 @@ export class ChatCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardUser user={author}/>
-            <CardDisc/>
-            <CardUser user={agent}/>
-            <CardDisc/>
+            <CardUser user={author} />
+            <CardDisc />
+            <CardUser user={agent} />
+            <CardDisc />
             <CardLineItem>{department && department.get('title')}</CardLineItem>
-            <CardDisc/>
+            <CardDisc />
             <span className="text"></span> <i className="fa fa-comment"></i>
           </CardLineLeft>
 

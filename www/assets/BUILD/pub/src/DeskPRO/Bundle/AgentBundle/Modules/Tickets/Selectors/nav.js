@@ -8,9 +8,9 @@ export const filterSetsCountSelector = createSelector(
   state => mapKeyedFromArray(state.get('filterSetsCount'), 'id')
 );
 
-const filtersSelector = createSelector(stateSelector, state => state.get('filters'));
+const filtersSelector               = createSelector(stateSelector, state => state.get('filters'));
 export const editedFilterIdSelector = createSelector(stateSelector, state => state.get('editedFilterId'));
-export const editedFilterSelector = createSelector(
+export const editedFilterSelector   = createSelector(
   [editedFilterIdSelector, filtersSelector],
   (id, filters) => filters.find(filter => filter.get('id') === id)
 );

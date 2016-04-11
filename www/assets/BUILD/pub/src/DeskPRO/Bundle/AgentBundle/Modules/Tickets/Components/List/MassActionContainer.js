@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { MassActionBarContainer }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/MassActionBar/MassActionBarContainer';
 import { initialLoad } from '../../Actions/navActions';
@@ -9,14 +9,14 @@ import { connect } from 'react-redux';
 
 @connect(state => ({
   selected: selectedSelector(state),
-  actions: massActionsSelector(state)
+  actions:  massActionsSelector(state)
 }))
 
 export class MassActionContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     selected: PropTypes.object.isRequired,
-    actions: PropTypes.array.isRequired
+    actions:  PropTypes.array.isRequired
   };
 
   componentWillMount() {
@@ -29,11 +29,12 @@ export class MassActionContainer extends Component {
     const { actions } = this.props;
 
     const config = {
-      actions: actions,
-      jobType: 'publish_mass',
-      content: 'tickets',
+      actions,
+
+      jobType:             'publish_mass',
+      content:             'tickets',
       loadIndicatorAction: loadIndicator,
-      reloadNavAction: initialLoad
+      reloadNavAction:     initialLoad
     };
 
     return (

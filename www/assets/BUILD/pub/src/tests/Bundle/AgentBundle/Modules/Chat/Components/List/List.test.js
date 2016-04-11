@@ -10,7 +10,6 @@ jest.dontMock('~List/View/Table/ChatsTableContainer');
 jest.dontMock('~List/ControlBar/ControlBarContainer');
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
 import { renderChatsInRedux } from '../../chats.test-helper';
 
 describe('List', () => {
@@ -21,7 +20,7 @@ describe('List', () => {
   const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
 
   const renderList = (viewMode = 'card') => {
-    renderChatsInRedux(0, <List elements={[]} viewMode={viewMode} loaded={true} />);
+    renderChatsInRedux(0, <List elements={[]} viewMode={viewMode} loaded />);
   };
 
   it('should render ListFrameContainer', () => {

@@ -31,9 +31,10 @@ export class ControlBarContainer extends Component {
     const sorting = { date_created: { label: 'Date', icon: 'calendar' } };
 
     if (!this.props.isComments) {
-      sorting.num_ratings = { label: 'Votes', icon: 'calendar' };
-
-      sorting.total_rating = { label: 'Rating', icon: 'calendar-o' };
+      Object.assign(sorting, {
+        num_ratings:  { label: 'Votes', icon: 'calendar' },
+        total_rating: { label: 'Rating', icon: 'calendar-o' }
+      });
     }
 
     const config = {

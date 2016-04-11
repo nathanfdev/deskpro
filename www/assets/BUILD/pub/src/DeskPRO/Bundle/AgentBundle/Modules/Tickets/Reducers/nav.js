@@ -1,18 +1,18 @@
 import { createReducer } from 'Ampliflux';
 import { async, setFullPayload, mergeFullPayload, setValue } from 'Ampliflux/reducers/handlers';
-import { startFilterEditing, applyFilterEditing, closeFilterEditing, initialLoad, unload } from '../Actions/navActions';
+import { startFilterEditing, applyFilterEditing, closeFilterEditing, initialLoad } from '../Actions/navActions';
 
 export const ticketsNavInitialState = {
   filterSetsCount: {},
-  filters: [],
-  labels: [],
-  starsCount: [],
+  filters:         [],
+  labels:          [],
+  starsCount:      [],
 
   editedFilterId: null,
 
   // async indicators
   async: {
-    done: false,       // initial load
+    done:           false,       // initial load
     filtersLoading: [] // filters being loaded (array of filter IDs)
   }
 };
@@ -38,14 +38,13 @@ export default createReducer(ticketsNavInitialState, {
           if (filterSets[i].nested[j].id === newFilterCount.id) {
             filterSets[i].nested[j] = newFilterCount;
 
-            let next = setFullPayload('filterSetsCount')(state, filterSets);
-            next = next.setIn(
+            const filterSetsCount = setFullPayload('filterSetsCount')(state, filterSets);
+
+            return filterSetsCount.setIn(
               ['async', 'filtersLoading'],
               state.getIn(['async', 'filtersLoading'])
-                   .delete(state.getIn(['async', 'filtersLoading']).indexOf(newFilterCount.id))
+                .delete(state.getIn(['async', 'filtersLoading']).indexOf(newFilterCount.id))
             );
-
-            return next;
           }
         }
       }
@@ -73,9 +72,10 @@ export default createReducer(ticketsNavInitialState, {
   [startFilterEditing]: setFullPayload('editedFilterId'),
   [closeFilterEditing]: setFullPayload('editedFilterId'),
   [applyFilterEditing]: setFullPayload('editedFilterId'),
+
   [initialLoad]: async({
     success: mergeFullPayload(),
-    start: setValue('async.done', false),
-    done: setValue('async.done', true)
+    start:   setValue('async.done', false),
+    done:    setValue('async.done', true)
   })
 });

@@ -41,7 +41,7 @@ Feature: /ticket_layouts endpoint
     And the JSON node "[1].fields" should have 31 elements
     And the JSON node "[1].fields[0].field_type" should be equal to "person"
     And the JSON node "[1].fields[1].field_type" should be equal to "department"
-    And the JSON node "[1].fields[2].field_type" should be equal to "user_field"
+    And the JSON node "[1].fields[2].field_type" should be equal to "captcha"
     And the JSON node "[1].fields[28].field_type" should be equal to "subject"
     And the JSON node "[1].fields[29].field_type" should be equal to "message"
     And the JSON node "[1].fields[30].field_type" should be equal to "attachments"

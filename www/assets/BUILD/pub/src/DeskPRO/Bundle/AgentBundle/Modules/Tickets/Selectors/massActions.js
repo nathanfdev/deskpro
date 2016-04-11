@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
-
 export const massActionsSelector = createSelector(
   [
     collectionSelectorFactory('Language', 'all'),
@@ -14,11 +13,11 @@ export const massActionsSelector = createSelector(
     const massActions = [];
     // Status options
     massActions.push({
-      label: 'Status',
-      type: 'set_action',
-      param: 'set_status',
+      label:       'Status',
+      type:        'set_action',
+      param:       'set_status',
       quickFilter: true,
-      options: [
+      options:     [
         { value: 'awaiting_agent', label: 'Awaiting agent' },
         { value: 'awaiting_user', label: 'Awaiting user' },
         { value: 'resolved', label: 'Resolved' },
@@ -28,16 +27,16 @@ export const massActionsSelector = createSelector(
 
     // Assign options
     massActions.push({
-      label: 'Assign',
-      type: 'assign_action',
-      param: 'assign',
+      label:       'Assign',
+      type:        'assign_action',
+      param:       'assign',
       quickFilter: true
     });
 
     // Set options
-    const productOptions = products.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
-    const categoryOptions = categories.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
-    const workflowOptions = workflows.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const productOptions   = products.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const categoryOptions  = categories.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
+    const workflowOptions  = workflows.toArray().map(type => ({ value: type.get('id'), label: type.get('title') }));
     const languagesOptions = languages.toArray().map(type => ({ value: type.get('id'), label: type.get('locale') }));
 
     const setOptions = [
@@ -62,9 +61,9 @@ export const massActionsSelector = createSelector(
       { label: 'Mark as Spam', value: 'mark_as_spam' }
     ];
     massActions.push({
-      icon: 'fa-asterisk',
-      type: 'select_action',
-      param: 'set_of_actions',
+      icon:    'fa-asterisk',
+      type:    'select_action',
+      param:   'set_of_actions',
       options: otherOptions
     });
 

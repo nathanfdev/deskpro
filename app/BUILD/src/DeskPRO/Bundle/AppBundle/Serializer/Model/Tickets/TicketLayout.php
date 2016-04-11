@@ -98,10 +98,14 @@ class TicketLayout
      */
     private function getOrderedFields(Layout $layout, $context)
     {
-        $fields = $layout->all();
+        /** @var LayoutField[] $fields */
+        $fields = array_values($layout->all());
 
         if ($context === 'agent') {
-            uasort($fields, function (LayoutField $a, LayoutField $b) {
+            uksort($fields, function ($aKey, $bKey) use ($fields) {
+                $a = $fields[$aKey];
+                $b = $fields[$bKey];
+
                 $aType = $a->getFieldType();
                 $bType = $b->getFieldType();
 
@@ -122,7 +126,7 @@ class TicketLayout
                     }
                 }
 
-                return 0;
+                return $aKey > $bKey ? 1 : -1;
             });
         }
 
