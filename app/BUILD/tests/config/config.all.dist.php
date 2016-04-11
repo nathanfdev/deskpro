@@ -67,9 +67,7 @@ $CONFIG['env'] = [
 ];
 
 $CONFIG['settings']                 = [];
-$CONFIG['settings']['core.license'] = <<<'LIC'
-dev lic code
-LIC;
+$CONFIG['settings']['core.license'] = file_get_contents(__DIR__.'/../../../../dev/dev-lic-key.txt');
 
 $CONFIG['settings'] = [
     'disable_outgoing_email' => true,
