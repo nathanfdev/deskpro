@@ -17,7 +17,13 @@ import { connect } from 'react-redux';
 export class ListContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch:        PropTypes.func.isRequired,
+    handlePageClick: PropTypes.func.isRequired,
+    selected:        PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired,
+    content:         PropTypes.string.isRequired,
+    isLoaded:        PropTypes.bool,
+    pagination:      PropTypes.object
   };
 
   render() {

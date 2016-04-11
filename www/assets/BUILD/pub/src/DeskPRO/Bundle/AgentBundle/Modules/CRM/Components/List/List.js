@@ -12,11 +12,11 @@ import { MassActionContainer } from './ControlBar/MassActionContainer';
 export class List extends Component {
   static propTypes = {
     selected:        PropTypes.object.isRequired,
-    isLoaded:        PropTypes.bool.isRequired,
-    pagination:      PropTypes.object,
     currentViewMode: PropTypes.string.isRequired,
+    content:         PropTypes.string.isRequired,
     handlePageClick: PropTypes.func.isRequired,
-    content:         PropTypes.string.isRequired
+    isLoaded:        PropTypes.bool,
+    pagination:      PropTypes.object
   };
 
   render() {
