@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import _ from 'lodash';
-import moment from 'moment';
+import TimeAgo from 'react-timeago';
+import { timeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
 
 class SearchResultCollection {
 
@@ -162,7 +163,11 @@ export class OmniSearchResultSection extends React.Component {
       t = (
         <span>
           <span className="date-mark">
-            <i className="fa fa-calendar-o" /> {moment(item.date).fromNow()}
+            <i className="fa fa-calendar-o" />
+            <TimeAgo className="dpdesignportal-event-time"
+                     formatter={timeAgoFormatter}
+                     minPeriod={60000}
+                     date={item.date} />
           </span>
           <span className="item-name">{item.name}</span>
         </span>

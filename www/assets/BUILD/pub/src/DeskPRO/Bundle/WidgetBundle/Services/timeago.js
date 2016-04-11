@@ -1,4 +1,4 @@
-export function timeAgoForamtter(value, unit, suffix) {
+export function timeAgoFormatter(value, unit, suffix) {
   if (unit === 'second') {
     return 'a moment ago';
   }

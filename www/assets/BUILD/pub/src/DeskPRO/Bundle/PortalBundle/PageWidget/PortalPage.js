@@ -15,6 +15,7 @@ import { LanguageChangerWidget } from './LanguageChangerWidget';
 import { AgentBarWidget } from './AgentBarWidget';
 import { LoginDropdownWidget } from './LoginDropdownWidget';
 import { SearchResultsPage } from './SearchResultsPage';
+import { MobileTopbarWidget } from './MobileTopbarWidget';
 import { MobileMenuWidget } from './MobileMenuWidget';
 import { ArticleHighlighter } from './ArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
@@ -43,6 +44,7 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(AgentBarWidget, '#agent-bar');
     this.addWidgetDef(ArticleHighlighter, '.dpx-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
+    this.addWidgetDef(MobileTopbarWidget, '.agent-greeting');
     this.addWidgetDef(LoginPage, '#login-page');
     this.addWidgetDef(AlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
