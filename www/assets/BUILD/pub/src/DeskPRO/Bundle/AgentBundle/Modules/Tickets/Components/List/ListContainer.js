@@ -4,6 +4,7 @@ import { viewModeSelector } from '../../Selectors/list';
 import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
+import { applyListParams } from '../../Actions/listActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -26,6 +27,10 @@ export class ListContainer extends Component {
   }
 
   render() {
-    return <List {...this.props} />;
+    const handlePageClick = page => {
+      this.props.dispatch(applyListParams({ page }));
+    };
+
+    return <List {...this.props} handlePageClick={handlePageClick} />;
   }
 }

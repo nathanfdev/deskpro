@@ -4,6 +4,7 @@ import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { isCommentsSelector, currentViewModeSelector, paginationSelector, isLoadedSelector }
   from '../../Selectors/list';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
+import { applyParams } from '../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 
 @connect(state => ({
@@ -26,10 +27,11 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const toggleSelected = (id) => () => this.props.dispatch(toggleSelectedAction(id));
+    const toggleSelected  = id => () => this.props.dispatch(toggleSelectedAction(id));
+    const handlePageClick = page => this.props.dispatch(applyParams({ page }));
 
     return (
-      <List {...this.props} toggleSelected={toggleSelected} />
+      <List {...this.props} toggleSelected={toggleSelected} handlePageClick={handlePageClick} />
     );
   }
 }

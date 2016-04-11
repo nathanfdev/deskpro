@@ -1,4 +1,5 @@
 // #define ~ListFrame DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame
+// #define ~Pagination DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination
 // #define ~List DeskPRO/Bundle/AgentBundle/Modules/CRM/Components/List
 
 jest.dontMock('~List/List');
@@ -12,11 +13,11 @@ describe('CRM: List', () => {
   const ListFrameMenu       = require('~ListFrame/ListFrameMenu').ListFrameMenu;
   const ListFrameContents   = require('~ListFrame/ListFrameContents').ListFrameContents;
   const List                = require('~List/List').List;
-  const PaginationContainer = require('~List/PaginationContainer').PaginationContainer;
+  const PaginationBoxView   = require('~Pagination/PaginationBoxView').PaginationBoxView;
   const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
   const MassActionContainer = require('~List/ControlBar/MassActionContainer').MassActionContainer;
   const CrmCardContainer    = require('~List/View/Card/CrmCardContainer').CrmCardContainer;
-  const CrmTableContainer    = require('~List/View/Table/CrmTableContainer').CrmTableContainer;
+  const CrmTableContainer   = require('~List/View/Table/CrmTableContainer').CrmTableContainer;
   const fakeState           = {};
 
   const renderList = (viewMode = 'card', selected = toImmutable([]), isComments = false, pagination = null) => {
@@ -85,27 +86,27 @@ describe('CRM: List', () => {
     expect(CrmCardContainer.prototype.render).not.toHaveBeenCalled();
   });
 
-  it('shouldn\'t render PaginationContainer when the pagination not passed', () => {
-    spyOn(PaginationContainer.prototype, 'render').and.callThrough();
+  it('shouldn\'t render PaginationBoxView when the pagination not passed', () => {
+    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
     renderList();
 
-    expect(PaginationContainer.prototype.render).not.toHaveBeenCalled();
+    expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
   });
 
-  it('shouldn\'t render PaginationContainer when the pagination passed with total_pages === 1', () => {
-    spyOn(PaginationContainer.prototype, 'render').and.callThrough();
+  it('shouldn\'t render PaginationBoxView when the pagination passed with total_pages === 1', () => {
+    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
     renderList('card', toImmutable([]), false, toImmutable({ total_pages: 1 }));
 
-    expect(PaginationContainer.prototype.render).not.toHaveBeenCalled();
+    expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
   });
 
-  it('should render PaginationContainer when the pagination passed with total_pages > 1', () => {
-    spyOn(PaginationContainer.prototype, 'render').and.callThrough();
+  it('should render PaginationBoxView when the pagination passed with total_pages > 1', () => {
+    spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
     renderList('card', toImmutable([]), false, toImmutable({ total_pages: 2 }));
 
-    expect(PaginationContainer.prototype.render).toHaveBeenCalled();
+    expect(PaginationBoxView.prototype.render).toHaveBeenCalled();
   });
 });
