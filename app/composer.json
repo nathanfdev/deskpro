@@ -11,6 +11,7 @@
     "doctrine/migrations": "1.0.*@dev",
     "doctrine/doctrine-fixtures-bundle": "2.2.*@dev",
     "guzzle/guzzle": "3.9.*",
+    "guzzlehttp/guzzle": "^6.2",
     "imagine/imagine": "0.5.*",
     "mockery/mockery": "0.9.*@dev",
     "monolog/monolog": "1.*",
