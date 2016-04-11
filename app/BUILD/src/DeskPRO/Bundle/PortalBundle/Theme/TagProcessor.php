@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
@@ -80,8 +81,10 @@ class TagProcessor
         if (!$response) {
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
-            $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
-            SystemErrorHandler::logException($e);
+            if (!defined('DP_INTERFACE') || DP_INTERFACE !== 'test') {
+                $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
+                SystemErrorHandler::logException($e);
+            }
 
             return ''; // be passive and default to blank
         }
