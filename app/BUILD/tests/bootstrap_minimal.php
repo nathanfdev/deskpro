@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,3 +111,14 @@ require DP_APP_DIR.'/sys/Boot/Boot.php';
     'PreparePaths',
 ]);
 libxml_disable_entity_loader(false);
+
+#------------------------------
+# Set lic loader
+#------------------------------
+
+\DpSys\License::setLoaderFunction(function () {
+    $CONFIG = require __DIR__.'/config/config.all.php';
+    $code = $CONFIG['settings']['core.license'];
+
+    return ['install_key' => '', 'license_code' => $code];
+});
