@@ -7,13 +7,10 @@ import { renderInCrmApp } from '../../../../crm.test-helper';
 import { toImmutable } from 'Helpers';
 import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
-describe('CRM: CrmCardContainer', () => {
-  const CrmCardContainer = require('~Card/CrmCardContainer').CrmCardContainer;
-  const OrganizationCard = require('~Card/OrganizationCard').OrganizationCard;
-  const PersonCard       = require('~Card/PersonCard').PersonCard;
-  const fakeRecords      = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const fakeRecords = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
-  const fakeState = (content) => ({
+export function fakeState(content) {
+  return {
     RecordsStore: {
       store: toImmutable({
         Person: {
@@ -36,7 +33,13 @@ describe('CRM: CrmCardContainer', () => {
         currentListParams: { content }
       })
     }
-  });
+  };
+}
+
+describe('CRM: CrmCardContainer', () => {
+  const CrmCardContainer = require('~Card/CrmCardContainer').CrmCardContainer;
+  const OrganizationCard = require('~Card/OrganizationCard').OrganizationCard;
+  const PersonCard       = require('~Card/PersonCard').PersonCard;
 
   const render = (content) => {
     renderInCrmApp(fakeState(content), <CrmCardContainer />);
