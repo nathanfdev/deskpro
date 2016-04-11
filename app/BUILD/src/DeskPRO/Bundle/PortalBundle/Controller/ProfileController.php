@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -284,7 +283,10 @@ class ProfileController extends AbstractController
             $add_email_form = $this->createForm(
                 PersonEmailType::class,
                 $new_email,
-                ['action' => $this->generateUrl('portal_user_profile_emails')]
+                [
+                    'action'      => $this->generateUrl('portal_user_profile_emails'),
+                    'email_label' => 'Email',
+                ]
             );
             $add_email_form->handleRequest($request);
             if ($add_email_form->isValid()) {
