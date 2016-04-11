@@ -78,7 +78,10 @@ Feature: /tickets endpoint
   "person":  3,
   "agent": 1,
   "followers": ["agent@deskpro.dev", 1],
-  "cc": ["user@deskpro.dev"]
+  "cc": ["user@deskpro.dev"],
+  "fields": {
+    "6": "some text"
+  }
 }
     """
     Then the response status code should be 201
@@ -93,6 +96,7 @@ Feature: /tickets endpoint
     And the JSON node "data.followers" should have 2 elements
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.followers[1]" should be equal to 1
+    And the JSON node "data.fields.6.value" should be equal to "some text"
 
     When I send a GET request to "/api/v2/tickets/6"
     Then the response status code should be 200

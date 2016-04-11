@@ -124,6 +124,14 @@ class CustomFieldManager
     }
 
     /**
+     * @return CustomDefTicket[]
+     */
+    public function getAvailableTicketDefs()
+    {
+        return $this->getAvailableCustomDefs(CustomDefTicket::class);
+    }
+
+    /**
      * @param LayoutField $layout_field
      *
      * @return CustomDefAbstract|null
