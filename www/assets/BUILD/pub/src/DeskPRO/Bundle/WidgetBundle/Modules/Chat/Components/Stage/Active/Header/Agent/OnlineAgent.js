@@ -13,7 +13,6 @@ export class OnlineAgent extends React.Component {
 
   render() {
     const { agentAvatar, agentName, departmentName } = this.props;
-    // portal.chat.online_agent
     return (
       <div className="dpdesignportal-chat-header">
         <div className="dpdesignportal-chat-header-avatar-container">
@@ -28,7 +27,7 @@ export class OnlineAgent extends React.Component {
           </ul>
         </div>
         <hr />
-        <h1>You are chatting with <span className="name">{agentName}</span></h1>
+        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.online_agent', {'{agentName}': agentName})} />
         <h2>{departmentName}</h2>
       </div>
     );

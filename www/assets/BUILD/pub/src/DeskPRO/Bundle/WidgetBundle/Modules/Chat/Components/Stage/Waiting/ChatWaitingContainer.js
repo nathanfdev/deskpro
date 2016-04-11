@@ -51,14 +51,13 @@ export class ChatWaitingContainer extends React.Component {
   };
 
   render() {
-    // portal.chat.message_wait-ticket
     return (
       <div>
         <WaitingPreview />
         {this.state.buttonShown &&
           <span>
             <p>{portalPhrases.get('portal.chat.message_wait-long')}</p>
-            <p>Would you like to <a href="#" onClick={this.onOpenTicketForm}>submit</a> a ticket instead?</p>
+            <p><a href="#" onClick={this.onOpenTicketForm}>{portalPhrases.get('portal.chat.message_wait-ticket')}</a></p>
           </span>
         }
       </div>

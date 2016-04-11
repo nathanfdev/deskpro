@@ -28,10 +28,10 @@ export class RateAgentForm extends React.Component {
 
   render() {
     const { agentName } = this.props;
-    // portal.chat.feedback_not_helpful_title
+    
     return (
       <div className="dpdesignportal-agent-rating">
-        <h1>You have rated <div></div> {agentName} as <span className="negative">Not Helpful</span></h1>
+        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.feedback_not_helpful_title', {'{agentName}': agentName, '{notHelpful}': portalPhrases.get('portal.chat.not_helpful')})} />
 
         <div className="dpdesignportal-agent-rating-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>

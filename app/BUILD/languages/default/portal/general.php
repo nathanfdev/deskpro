@@ -113,7 +113,7 @@ return array(
     'portal.general.no-search-results'           => 'We couldn\'t find any results for "{{ query }}"',
     'portal.general.no-search-results-general'   => 'We couldn\'t find any results',
     'portal.general.no-search-query'             => 'Please type a search query into the search box.',
-    'portal.general.support_powered_by'          => 'Support powered by {{ Deskpro }}',
+    'portal.general.support_powered_by'          => 'Support powered by {{DeskPRO}}',
     'portal.general.software_provided_by'        => 'Helpdesk software provided by',
     'portal.general.impersonation_mode'          => 'Impersonation Mode',
     'portal.general.switch_interface'            => 'Switch to interface',
