@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -42,6 +41,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -64,7 +64,7 @@ class PeopleController extends CrudController
     use LabelsHelper;
 
     public static $entity      = Person::class;
-    public static $type        = 'api_person';
+    public static $type        = PersonType::class;
     public static $sortOptions = [
         'date_created'    => 'date_created',
         'date_last_login' => 'date_last_login',

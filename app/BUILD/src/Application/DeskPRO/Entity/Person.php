@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2279,14 +2278,17 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * @param PersonEmail $email
      */
-    public function setPrimaryEmail($email)
+    public function setPrimaryEmail(PersonEmail $email = null)
     {
-        if (
-            !$this->_changed_from_primary_email
-            && $this->primary_email
-            && $this->primary_email->email !== $email->email
-        ) {
-            $this->_changed_from_primary_email = $this->primary_email->email;
+        if ($email) {
+            if (!$this->_changed_from_primary_email
+                && $this->primary_email
+                && $this->primary_email->email !== $email->email
+            ) {
+                $this->_changed_from_primary_email = $this->primary_email->email;
+            }
+
+            $email->setPerson($this);
         }
 
         $this->setModelField('primary_email', $email);
