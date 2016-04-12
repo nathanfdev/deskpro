@@ -33,6 +33,7 @@
 namespace DpSys\LowError;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\DBAL\DBALException;
 
 class SystemErrorHandler
@@ -244,6 +245,34 @@ class SystemErrorHandler
             $einfo['no_send_error'] = true;
         }
         self::logErrorInfo($einfo);
+    }
+
+    /**
+     * Logs debug data to a file.
+     *
+     * @param string $content
+     * @param null   $id
+     *
+     * @return string
+     */
+    public static function logDebugDataDump($content, $id = null)
+    {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        $path = $DP_ENV->getUserDebugDir().DIRECTORY_SEPARATOR.'data_dumps';
+        if (!is_dir($path)) {
+            @mkdir($path, 0777, true);
+        }
+
+        if (!$id) {
+            $id = date('YmdHis').'--'.RandUtils::randomString(20);
+        }
+
+        $dumpPath = $path.DIRECTORY_SEPARATOR.$id.'.dump';
+        @file_put_contents($dumpPath, $content);
+
+        return $dumpPath;
     }
 
     /**

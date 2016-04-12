@@ -82,7 +82,10 @@ class TagProcessor
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
             if (!defined('DP_INTERFACE') || DP_INTERFACE !== 'test') {
-                $e = new \RuntimeException('Unable to render theme content: '.$response->getContent());
+                $id       = 'tag-'.$tag->getName().'-code'.$response->getStatusCode();
+                $dumpFile = SystemErrorHandler::logDebugDataDump($response->getContent(), $id);
+
+                $e = new \RuntimeException('Theme tag returned error status: '.$response->getStatusCode().' (details in '.basename($dumpFile).')');
                 SystemErrorHandler::logException($e);
             }
 
