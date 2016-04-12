@@ -10,11 +10,11 @@ Feature: /ticket_filters endpoint
 
   @reinstall
   Scenario: I retrieve list of ticket filters
-    When I send a GET request to "/api/v2/ticket_filters"
+    When I send a GET request to "/api/v2/ticket_filters?count=100"
     Then the response status code should be 200
     And the response should be in JSON
 
-    And the JSON node "data" should have 10 elements
+    And the JSON node "data" should have 16 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "My Tickets"
     And the JSON node "data[0].sys_name" should be equal to "agent"
@@ -49,7 +49,6 @@ Feature: /ticket_filters endpoint
     And the JSON node "linked.ticket_filter_set.2.id" should be equal to 2
     And the JSON node "linked.ticket_filter_set.2.title" should be equal to "All tickets"
 
-
   Scenario: I get ticket filter
     When I send a GET request to "/api/v2/ticket_filters/2"
     Then the response status code should be 200
@@ -62,6 +61,10 @@ Feature: /ticket_filters endpoint
     And the JSON node "data.term[0].type" should be equal to "agent_team"
     And the JSON node "data.term[1].type" should be equal to "status"
     And the JSON node "data.term[2].type" should be equal to "is_hold"
+
+  Scenario: I try to get filter with sys_name = "problem_\d+"
+    When I send a GET request to "/api/v2/ticket_filters/17"
+    Then the response status code should be 404
 
   Scenario: I retrieve list of filter's tickets
     Given I re-fill ticket search table

@@ -796,7 +796,8 @@ SQL
                 ('13', '1', 'Tickets I Follow (Hold)', '1', 'participant_w_hold', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '13'),
                 ('14', '1', 'Unassigned (Hold)', '1', 'unassigned_w_hold', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '14'),
                 ('15', '1', 'All (Hold)', '1', 'all_w_hold', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '15'),
-                ('16', '1', 'My custom filter', '1', '', '[{"type":"subject","op":"contains","options":{"subject":"Demo"}}]', '', '', '1000');
+                ('16', '1', 'My custom filter', '1', '', '[{"type":"subject","op":"contains","options":{"subject":"Demo"}}]', '', '', '1000'),
+                ('17', '1', 'Problem filter', '1', 'problem_1', '[{"type":"problems","op":"is","options":{"problems":1}}]', '', '', '1000');
 SQL
         );
         // end of legacy ticket filters

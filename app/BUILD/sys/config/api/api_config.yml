@@ -151,6 +151,7 @@ doctrine:
              string_functions:
                  field: DoctrineExtensions\Query\Mysql\Field
                  group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
+                 regexp: DoctrineExtensions\Query\Mysql\Regexp
 
 #rms_push_notifications:
 #  ios:
