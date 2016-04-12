@@ -38,6 +38,11 @@ export class TaskCardNew extends React.Component {
         teams:       [],
         departments: []
       }),
+      links: Immutable.fromJS({
+        linked_tickets: [],
+        linked_chats: [],
+        linked_articles: []
+      }),
       project: null
     };
     this.defaultDate = this.state.due;
@@ -101,7 +106,7 @@ export class TaskCardNew extends React.Component {
   }
 
   render() {
-    const { title, due, project, assignee, links } = this.state;
+    const { title, due, project, assignee, links, submit } = this.state;
 
     return (
       <Card type="task" additionalClasses="calendar-task-card">
