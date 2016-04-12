@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,14 +29,19 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Symfony\Component\HttpKernel\KernelEvents;
+use Application\DeskPRO\Command\WorkerJobCommand;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Check if the helpdesk is offline.
@@ -72,7 +77,9 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onPreRequest', 2000), // runs before everything
+            // runs before everything
+            KernelEvents::REQUEST  => ['onPreRequest', 2000],
+            ConsoleEvents::COMMAND => ['onCommand', 2000],
         );
     }
 
@@ -87,6 +94,29 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         } elseif ($this->isUpgradePending()) {
             $event->setResponse($this->createUpgradePendingResponse($event->getRequest()));
             $event->stopPropagation();
+        }
+    }
+
+    /**
+     * @param ConsoleCommandEvent $event
+     */
+    public function onCommand(ConsoleCommandEvent $event)
+    {
+        $cmd = $event->getCommand();
+        if ($cmd instanceof WorkerJobCommand && ($this->isHelpdeskOffline() || $this->isUpgradePending())) {
+            $event->disableCommand();
+
+            $output = $event->getOutput();
+            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                if ($this->isHelpdeskOffline()) {
+                    $output->writeln('<error>Helpdesk is disabled - cron will not run</error>');
+                    if ($message = $this->getOfflineMessage()) {
+                        $output->writeln("Message: $message");
+                    }
+                } else {
+                    $output->writeln('<error>Upgrade is pending - cron will not run</error>');
+                }
+            }
         }
     }
 
