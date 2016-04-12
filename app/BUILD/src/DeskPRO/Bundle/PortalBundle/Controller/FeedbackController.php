@@ -479,22 +479,29 @@ class FeedbackController extends AbstractController
     public function feedbackRateAction(Request $request, Feedback $item, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_FEEDBACK')) {
-            return $this->createAccessDeniedException('Module not allowed');
+            return $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
         }
         if (!$this->isGranted('RATE_FEEDBACK', $item)) {
             if ($this->getUser()) {
-                return $this->createAccessDeniedException('Rate not allowed');
+                return $this->createAccessDeniedException($this->phrase('portal.feedback.rate_forbidden'));
             }
             if ($request->getContentType() == 'json') {
-                return new JsonResponse(['error' => 'Try to login']);
+                return new JsonResponse(
+                    [
+                        'error'    => $this->phrase('portal.feedback.error_login'),
+                        'redirect' => $this->generateUrl('portal_login', [
+                            '_destination' => $this->generateUrl('portal_feedback_view', ['slug' => $item->getSlug()]),
+                        ]),
+                    ]
+                );
             } else {
-                $this->addFlash('notice', 'You should login to vote');
+                $this->addFlash('notice', $this->phrase('portal.flashes.feedback_login'));
 
                 return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_feedback_view', ['slug' => $item->getSlug()])]);
             }
         }
         if (!$item->isVisibleOnPortal()) {
-            throw $this->createNotFoundException('this feedback item is hidden');
+            throw $this->createNotFoundException($this->phrase('portal.feedback.error_hidden'));
         }
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;

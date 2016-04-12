@@ -67,4 +67,8 @@ return array(
     'portal.feedback.sort_rating'               => 'Rating',
     'portal.feedback.dir_asc'                   => 'ASC',
     'portal.feedback.dir_desc'                  => 'DESC',
+    'portal.feedback.error_login'               => 'You must be logged in to vote',
+    'portal.feedback.error_hidden'              => 'This feedback item is hidden',
+    'portal.feedback.module_forbidden'          => 'You don\'t have access to this module',
+    'portal.feedback.rate_forbidden'            => 'You are not allowed to vote',
 );
