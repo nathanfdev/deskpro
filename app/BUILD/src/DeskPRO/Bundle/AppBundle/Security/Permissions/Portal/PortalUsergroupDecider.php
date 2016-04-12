@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -109,7 +109,7 @@ class PortalUsergroupDecider
 
                 // if a user is logged in and agent confirmed, they also get the "regsitered" perm.
                 $registeredGroup = $em->getRepository('DeskPRO:Usergroup')->findOneBy(array('sys_name' => 'registered'));
-                if ($registeredGroup && $registeredGroup->is_enabled && $person->getId() && $person->isUserValid()) {
+                if ($registeredGroup && $registeredGroup->is_enabled && $person->getId()) {
                     $ids[] = $registeredGroup->id;
                 }
 

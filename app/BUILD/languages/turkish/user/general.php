@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,10 @@
 return array(
     'user.general.add'                           => 'Ekle',
     'user.general.attachments'                   => 'Ekler',
+    'user.general.btn_sort'                      => 'Kısa',
+    'user.general.can-view-because-agent'        => 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.',
+    'user.general.click_to_change_picture'       => 'Resmi değiştirmek için tıklayınız',
+    'user.general.comments-login-or-register'    => '<a href="{{login_link}}">Giriş</a>veya<a href="{{register_link}}">Kayıt Ol</a> yorum eklemek için.',
     'user.general.comments_add-comment'          => 'Yorum ekle',
     'user.general.comments_logged_in_as'         => 'Oturum açıldı',
     'user.general.comments_no_comments'          => 'Yorum yok.',
@@ -50,22 +54,31 @@ return array(
     'user.general.login_below'                   => 'Hesabınız var mı? Aşağıdan oturum açın.',
     'user.general.marked_as_helpful'             => 'Bu sayfayı yararlı olarak işaretlediniz',
     'user.general.marked_as_unhelpful'           => 'Bu sayfayı yararsız olarak işaretlediniz',
+    'user.general.more'                          => 'Devamı',
     'user.general.name'                          => 'Adı',
     'user.general.next'                          => 'Sonraki',
     'user.general.page'                          => 'Sayfa',
     'user.general.page_prev'                     => 'Önceki',
+    'user.general.picture'                       => 'Resim',
     'user.general.please_enter_your_email'       => 'Lütfen eposta adresinizi girin',
     'user.general.please_enter_your_name'        => 'Lütfen adınızı girin',
     'user.general.post_comment_btn'              => 'Yorum Gönder',
     'user.general.rating_x_of_y_found_helpful'   => '{{vote_up}} / {{vote_count}} kişi bu sayfayı yararlı buldu',
     'user.general.read_more'                     => 'Daha fazla',
+    'user.general.remember_me'                   => 'Beni Hatırla',
     'user.general.save'                          => 'Kaydet',
     'user.general.set_as_helpful'                => 'Bu sayfa yararlıydı.',
     'user.general.set_as_unhelpful'              => 'Bu sayfa yararsızdı.',
+    'user.general.signing_in'                    => 'Oturum açılıyor...',
+    'user.general.signing_in_please_wait'        => 'Oturum açılıyor. Lütfen bekleyiniz.',
+    'user.general.title'                         => 'Başlık',
     'user.general.upload'                        => 'Yükle',
     'user.general.upload-drag'                   => 'Yüklemek için dosyalarınızı buraya sürükleyin',
     'user.general.upload_a_file'                 => 'Dosya yükle',
+    'user.general.upload_allowed_exts'           => 'İzin türleri:{{types}}',
+    'user.general.upload_maxsize'                => 'Maksimum dosya boyutu: {{size}}',
     'user.general.uploading'                     => 'Yükleniyor',
+    'user.general.wait_attach_loading'           => 'Ek\'in yüklenmesinin bitmesi beklenmektedir...',
     'user.general.you'                           => 'Siz',
     'user.general.your_comment_agent_validation' => 'Yorumunuz yayınlanmak için personelimizin onayını bekliyor',
     'user.general.your_email_address'            => 'Eposta adresiniz',

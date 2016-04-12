@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,10 +35,6 @@ return array(
     'user.portal.our-staff'                     => '직원',
     'user.portal.search'                        => '검색',
     'user.portal.search-everything'             => '전체',
-    'user.portal.search.new-chat'               => '채팅 시작하기',
-    'user.portal.search.new-feedback'           => 'Feedback 등록',
-    'user.portal.search.new-ticket'             => '서비스 문의',
-    'user.portal.search.no_matches'             => '적합한게 없으신가요? ...',
     'user.portal.search_label-search_show'      => '보기',
     'user.portal.search_label-search_with'      => 'labelled with',
     'user.portal.search_labels_title'           => '레벨 검색',

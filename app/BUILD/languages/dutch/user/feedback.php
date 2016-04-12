@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,6 +59,7 @@ return array(
     'user.feedback.title-feedback'           => 'Er bevindt zich 1 feedback artikel|Er bevinden zich {{count}} feedback artikelen',
     'user.feedback.title-feedback-closed'    => '1 gesloten feedback|{{count}} gesloten feedbacks',
     'user.feedback.title-status'             => '1 actieve feedback|{{count}} actieve feedbacks',
+    'user.feedback.type'                     => 'Type',
     'user.feedback.type_feedback'            => 'Suggesties',
     'user.feedback.voting_button-yes'        => 'Ik ben het eens',
     'user.feedback.voting_closed'            => 'Stemmen gesloten',

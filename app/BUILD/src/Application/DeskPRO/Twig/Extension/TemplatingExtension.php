@@ -51,7 +51,6 @@ use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -185,7 +184,6 @@ class TemplatingExtension extends \Twig_Extension
             'encode_number'              => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
             'decode_number'              => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
             'md5_hash'                   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
-            'date'                       => new \Twig_Filter_Method($this, 'userDate', array('needs_context' => true)),
             'to_jqueryui_dateformat'     => new \Twig_Filter_Method($this, 'jqueryUiDateFormat'),
             'time_length'                => new \Twig_Filter_Method($this, 'timeLength'),
             'momentjs_format'            => new \Twig_Filter_Method($this, 'momentJsFormat'),
@@ -662,100 +660,6 @@ class TemplatingExtension extends \Twig_Extension
         return Strings::slugifyTitle($str);
     }
 
-    public function userDate($context, $date, $format = 'fulltime', $timezone = null)
-    {
-        // Backwards compat calls: args shifted back one
-        if (!is_array($context)) {
-            $args = func_get_args();
-            if (!isset($args[1])) {
-                $args[1] = 'F j, Y H:i';
-            }
-            if (!isset($args[2])) {
-                $args[2] = null;
-            }
-
-            list($date, $format, $timezone) = $args;
-            $context                        = null;
-        }
-
-        switch ($format) {
-            case 'full':
-                //D, jS M Y
-                $format = App::getSetting('core.date_full');
-                break;
-
-            case 'fulltime':
-                //D, jS M Y g:ia
-                $format = App::getSetting('core.date_fulltime');
-                break;
-
-            case 'day':
-                //M j Y
-                $format = App::getSetting('core.date_day');
-                break;
-
-            case 'day_short':
-                //M j
-                $format = App::getSetting('core.date_day_short');
-                break;
-
-            case 'time':
-                //g:i a
-                $format = App::getSetting('core.date_time');
-                break;
-        }
-
-        if (!($date instanceof \DateTime)) {
-            if (ctype_digit((string) $date)) {
-                $date = new \DateTime('@'.$date);
-                $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-            } else {
-                try {
-                    $date_str = $date;
-                    $date     = new \DateTime($date_str);
-                } catch (\Exception $e) {
-                }
-            }
-        }
-
-        if (!($date instanceof \DateTime)) {
-            $date_str = (string) $date;
-
-            return "invalid_date($date_str)";
-        }
-
-        if ($timezone === null && $context && isset($context['context']['person_timezone'])) {
-            $timezone = $context['context']['person_timezone'];
-        }
-
-        if ($timezone === null && App::getCurrentPerson()) {
-            $timezone = App::getCurrentPerson();
-        }
-
-        if ($timezone instanceof \Application\DeskPRO\Entity\Person) {
-            $timezone = $timezone->getDateTimezone();
-        }
-
-        if (null !== $timezone) {
-            if (!($timezone instanceof \DateTimeZone)) {
-                $timezone = new \DateTimeZone($timezone);
-            }
-        }
-
-        if (!$timezone || $timezone == 'UTC') {
-            $timezone = new \DateTimeZone('UTC');
-        }
-
-        $date->setTimezone($timezone);
-
-        $prefix = 'user.time.';
-        if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
-            $prefix = 'agent.time.';
-        }
-
-        return $this->container->getTranslator()->date($format, $date, $prefix);
-    }
-
     public function jqueryUiDateFormat($format)
     {
         // Map of PHP symbols to jQuery date format symbols
@@ -1187,22 +1091,18 @@ class TemplatingExtension extends \Twig_Extension
         return md5($string);
     }
 
-    public function assetFull($location)
+    public function assetFull($location, $packageName = 'legacy_web')
     {
-        $url = App::getSetting('core.deskpro_url');
-        $url = trim(str_replace('/index.php', '', $url), '/');
-        $url .= (App::getConfig('static_path') ?: '/web').'/';
+        $assetHelper = App::$container->get('templating.helper.assets');
+        $assetUrl    = $assetHelper->getUrl($location, $packageName);
 
-        /** @var Request $r */
-        $r = $this->container->get('request', ContainerInterface::NULL_ON_INVALID_REFERENCE);
-
-        // If the current request is https, then all urls sholud be https even if the
-        // helpdesk url isn't explicitly set to use https
-        if ($r && $r->isSecure() && strtolower(substr($url, 0, 7)) === 'http://') {
-            $url = 'https://'.substr($url, 7);
+        if (!preg_match('#^https?://#', $assetUrl)) {
+            $url      = App::getSetting('core.deskpro_url');
+            $url      = trim(str_replace('/index.php', '', $url), '/');
+            $assetUrl = $url.$assetUrl;
         }
 
-        return $url.ltrim($location, '/');
+        return $assetUrl;
     }
 
     public function rawUrlEncode($str)
@@ -1789,54 +1689,7 @@ class TemplatingExtension extends \Twig_Extension
 
     public function js_error_tracking($loc, array $options = array())
     {
-        if ($this->getContainer()->isDebug()) {
-            if (!defined('DP_USE_JS_LOGGER')) {
-                return '';
-            }
-        }
-
-        if (defined('DPC_IS_CLOUD')) {
-            return '';
-        }
-
-        $sid = '';
-        if ($this->getContainer()->isDebug()) {
-            $sid .= 'DEV-';
-        }
-        if (defined('DP_BUILD_TIME')) {
-            $sid .= '#'.DP_BUILD_TIME.'-';
-        } else {
-            $sid .= '#0-';
-        }
-        if (defined('DP_REQUEST_ID')) {
-            $sid .= DP_REQUEST_ID;
-        } else {
-            $sid .= 'unknown';
-        }
-
-        $version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
-
-        /** @var \Symfony\Component\Asset\Packages $helper */
-        $helper = $this->getContainer()->get('assets.packages');
-
-        $src = $helper->getUrl('vendor/trackjs/tracker.js');
-
-        $html = <<<HTML
-<script type="text/javascript">
-window.onerror = function () {};
-window.onerror = null;
-window._trackJs = {
-    sessionId: '$sid',
-    token: '4eebe4aa1bc2404e89fc4250152d18a0',
-    version: '$version',
-    console: { enabled: true, display: true, error: true },
-    network: { error: false }
-};
-</script>
-<script type="text/javascript" src="$src" data-token="4eebe4aa1bc2404e89fc4250152d18a0"></script>
-HTML;
-
-        return $html;
+        return '';
     }
 
     public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = array())

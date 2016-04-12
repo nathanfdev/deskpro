@@ -99,3 +99,9 @@ services:
     arguments: ["@brand_stack", "@portal_brand_theme_loader", "@language_stack", "@portal_mode_storage"]
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
+
+  start_agent_session.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\StartAgentSessionListener
+    arguments: ["@session"]
+    tags:
+      - { name: kernel.event_subscriber }

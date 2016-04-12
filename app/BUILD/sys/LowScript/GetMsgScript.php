@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -148,6 +148,13 @@ class GetMsgScript extends LowScriptAbstract
             }
             if ($count && $count % 3 === 0) {
                 $dos[] = 'get-online-visitors';
+            }
+
+            // We don't do custom filters data based on request, but instead based on the poll count
+            // We do it every 125 polls, which is roughly 10 minutes
+            $dos = array_filter($dos, function ($v) { return $v !== 'get-custom-filters-data'; });
+            if ($count && $count % 125 === 0) {
+                $dos[] = 'get-custom-filters-data';
             }
 
             $dos = array_unique($dos);

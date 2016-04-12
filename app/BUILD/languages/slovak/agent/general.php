@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -186,7 +186,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'Aktuálny čas podľa Vášho profilu',
     'agent.general.date'                                    => 'Schôdza',
     'agent.general.date_archived'                           => 'Schôdza uzavretá',
-    'agent.general.date_closed'                             => 'Schôdza uzavretá',
     'agent.general.date_completed'                          => 'Schôdza dokončená',
     'agent.general.date_created'                            => 'Schôdza vytvorená',
     'agent.general.date_created_newestoldest'               => 'Schôdza vytvorená (najnovšia-najstaršia)',

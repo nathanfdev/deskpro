@@ -1342,7 +1342,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
         if ($amount !== null) {
-            $amount = floatval($amount);
+            $amount = floatval($amount) ?: null;
         }
 
         if ($time === null && $amount === null) {
@@ -1482,6 +1482,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addMessage(TicketMessage $message)
     {
+        $changes = $this->getStateChangeRecorder()->getChangesForField('message');
+        if ($changes) {
+            foreach ($changes as $c) {
+                if ($c->getNew() === $message) {
+                    // already added
+                    return;
+                }
+            }
+        }
+
         $this->messages->add($message);
         $message->ticket = $this;
 
@@ -3894,11 +3904,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         && $person->getOrganization() === $this->getOrganization();
     }
 
-    public function isInvolved(Person $person)
+    /**
+     * @param Person $person
+     * @param string $context Which context to check in: user or agent
+     *
+     * @return bool
+     */
+    public function isInvolved(Person $person, $context = 'user')
     {
-        return $this->isOwner($person)
-        || $this->isParticipant($person)
-        || $this->isOrganizationManager($person);
+        if ($context === 'user') {
+            return $this->isOwner($person)
+            || (!$person->isAgent() && $this->isParticipant($person))
+            || $this->isOrganizationManager($person);
+        } else {
+            return $this->isOwner($person)
+            || $this->isParticipant($person)
+            || $this->getAgent() === $person
+            || $this->isOrganizationManager($person);
+        }
     }
 
     public function hasVisibleStatus()

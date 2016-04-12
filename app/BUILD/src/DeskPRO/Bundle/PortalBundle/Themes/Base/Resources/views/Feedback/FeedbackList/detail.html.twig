@@ -30,7 +30,7 @@
       </h1>
 
       <div class="comment">
-        <p>{{ item.content_html|raw|slice(0,350) ~ '...' }}</p>
+        <p>{{ item.content_html|html_content_preview(350) }}</p>
       </div>
 
       <div class="article-meta">

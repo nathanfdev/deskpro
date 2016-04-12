@@ -79,7 +79,7 @@ $container->setDefinition('listener.security_headers', $definition);
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
 $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
-$definition->addTag('form.type_extension', array('alias' => 'form'));
+$definition->addTag('form.type_extension', array('extended_type' => 'Symfony\Component\Form\Extension\Core\Type\FormType'));
 $container->setDefinition('form.cleaner_extension', $definition);
 
 ############################################################################

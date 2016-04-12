@@ -921,6 +921,9 @@ class Translate implements PersonContextInterface
      *
      * @param string        $format     A date format string
      * @param int|\DateTime $date_or_ts A DateTime object or a timestamp
+     * @param string        $prefix
+     *
+     * @return string
      */
     public function date($format, $date_or_ts = null, $prefix = 'user.time.')
     {

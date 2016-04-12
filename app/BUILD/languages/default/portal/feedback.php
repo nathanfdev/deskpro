@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,7 +44,6 @@ return array(
     'portal.feedback.filter_closed_items'       => 'Closed items',
     'portal.feedback.filter_my_votes_and_stars' => 'My votes & stars',
     'portal.feedback.filter_sort'               => 'Sort',
-    'portal.feedback.form_name_not_shown'       => 'Your Name (will not be shown publicly)',
     'portal.feedback.form_email_not_shown'      => 'Your Email (will not be shown publicly)',
     'portal.feedback.form_title'                => 'Title',
     'portal.feedback.form_attach_files'         => 'Attach files',
@@ -54,7 +53,7 @@ return array(
     'portal.feedback.form_i_have_a'             => 'I have a',
     'portal.feedback.form_btn_submit'           => 'Add your feedback',
     'portal.feedback.form_start'                => 'Start',
-    'portal.feedback.attachments'               => 'Attachements',
+    'portal.feedback.attachments'               => 'Attachments',
     'portal.feedback.subscribed_info'           => 'You are subscribed to recieve notifications about this feedback item',
     'portal.feedback.submit_feedback'           => 'Submit feedback',
     'portal.feedback.status_all'                => 'All items',

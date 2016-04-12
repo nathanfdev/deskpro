@@ -3,6 +3,7 @@ import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGe
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { AttachedList } from './AttachedList';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class PortalAttach extends React.Component {
 
@@ -81,7 +82,7 @@ export class PortalAttach extends React.Component {
 
     this.setState({
       files: this.state.files.filter(f => f.file !== file),
-      lastError: error && error.message || 'Could not upload file'
+      lastError: error && error.message || portalPhrases.get('portal.forms.error_upload_file')
     });
   };
 
@@ -105,7 +106,7 @@ export class PortalAttach extends React.Component {
     }
 
     return (
-       <div className="new-ticket-attachements">
+       <div className="new-ticket-attachments">
          <DropZone
            ref="dropZone"
            getExternalInput={() => this.refs.fileUpload}
@@ -118,8 +119,8 @@ export class PortalAttach extends React.Component {
 
            <span className="attach-file">
               <i className="fa fa-upload" />
-              <span className="text">Drag a file in here or</span>
-              <span className="fake-button">Choose a file</span>
+              <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
+              <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
               <input type="file" ref="fileUpload" name="file[blob]" />
           </span>
          </DropZone>

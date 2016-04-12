@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;
@@ -220,8 +221,10 @@ class CheckUsesCommand extends ContainerAwareCommand
                 $json_data = array_map(function ($x) use ($cols) {
                     $row = [];
                     foreach ($cols as $idx => $key) {
-                        $row[] = $x[$idx];
+                        $row[$key] = $x[$idx];
                     }
+
+                    return $row;
                 }, $data);
                 echo json_encode($json_data, JSON_PRETTY_PRINT);
                 break;

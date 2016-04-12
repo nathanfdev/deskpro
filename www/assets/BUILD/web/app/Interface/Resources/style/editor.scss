@@ -18,13 +18,6 @@ $stack-4: "Ubuntu", "Trebuchet Ms", Arial, Sans-Serif;
 .stack-3 { font-family: $stack-3; }
 .stack-4 { font-family: $stack-4; }
 
-// Overall wrapper
-.editor {
-  background: url(/web/app/Interface/Resources/img/grid.png);
-}
-
-
-
 // Panel measurements
 // This should idealy have a total max width of about 1500px for any large screens
 
@@ -38,22 +31,22 @@ $editor-gutters: 20px;
 // Total width of the dark background panel is the width of the editor sidebar + the preview + the gutters(padding of the overall wrapper)
 $total-width: $panel-width + 960px + $editor-gutters;
 
-// The bucket for everything
+// Overall wrapper
 .editor {
-  position: relative;
+  background: url("#{$web-path}/web/app/Interface/Resources/img/grid.png");
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
   padding: $editor-gutters;
 }
 
 // Dark background wrapper
 .editor-panel {
-  @include clearfix;
-  padding: 10px;
-  // Total width of the panel
-  width: $total-width;
-
-  // The space on the right we allocate to the preview
-  padding-right: $preview-panel-width;
-  position: relative;
+  position: absolute;
+  top: $editor-gutters;
+  right: $editor-gutters;
+  left: $editor-gutters;
+  bottom: $editor-gutters;
+  padding: 8px;
 }
 
 // Holds the panel sidebar stuff
@@ -69,12 +62,18 @@ $total-width: $panel-width + 960px + $editor-gutters;
   top: 75px;
   left: $panel-width + 40px;
   display: block;
-  width: $preview-panel-width;
-  height: 1500px;//Calculate with js
+  right: 20px;
   border-radius: 2px;
   background: #fff;
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
   z-index: 99;
+  bottom: 20px;
+
+  iframe {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
 
   // Warning for small screens
   .widescreen-info {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,7 +43,7 @@ return array(
     'agent.tickets.admin_trigger_notifications'         => 'Déclencheurs qui vous alertent',
     'agent.tickets.admin_trigger_notifications_explain' => 'Un administrateur a créé ces déclencheurs qui vous envoient des emails de notifications.',
     'agent.tickets.agent_has_lock'                      => 'Le ticket est verrouillé par {{agent}}. Pour modifier ce ticket, il doit d\'abord être libéré.',
-    'agent.tickets.agents_action'                       => 'Agents: {{agents}}',
+    'agent.tickets.agents_action'                       => 'Agents : {{agents}}',
     'agent.tickets.always_notify_people'                => 'Toujours notifier {{parts}}',
     'agent.tickets.and_count_were_cced'                 => '(et {{display_count}} était en copie)|(et {{display_count}} étaient en copie)',
     'agent.tickets.announce_this_ticket_in_campfire'    => 'Annoncer ce ticket dans l\'appli Campfire',
@@ -166,8 +166,6 @@ return array(
     'agent.tickets.hidden_status'                       => 'Statut caché',
     'agent.tickets.hidden_status_deleted'               => 'Supprimé',
     'agent.tickets.hidden_status_spam'                  => 'Spam',
-    'agent.tickets.hidden_status_temp'                  => 'Temporaire',
-    'agent.tickets.hidden_status_validating'            => 'En cours de validation',
     'agent.tickets.hidden_tickets'                      => 'Tickets cachés',
     'agent.tickets.hold_btn'                            => 'Suspendre le ticket',
     'agent.tickets.html_body'                           => 'HTML Body',
@@ -201,8 +199,6 @@ return array(
     'agent.tickets.log_message_old_message'             => 'Ancien message',
     'agent.tickets.log_message_updated'                 => 'Message #{{id}} mis à jour',
     'agent.tickets.log_new_email_agent'                 => 'Nouveau ticket par agent via transfert',
-    'agent.tickets.log_new_email_api'                   => 'Nouveau ticket via API',
-    'agent.tickets.log_new_email_portal'                => 'Nouveau ticket par agent via interface web',
     'agent.tickets.log_new_email_user'                  => 'Nouveau ticket par utilisateur via passerelle email',
     'agent.tickets.log_new_web_agent_portal'            => 'Nouveau ticket par agent via interface web',
     'agent.tickets.log_new_web_user_embed'              => 'Nouveau ticket par utilisateur via formulaire intégré',
@@ -346,11 +342,6 @@ return array(
     'agent.tickets.status_awaiting_user_spam'           => 'Spam',
     'agent.tickets.status_awaiting_user_temp'           => 'Temporaire',
     'agent.tickets.status_awaiting_user_validating'     => 'En attente  validation',
-    'agent.tickets.status_closed'                       => 'Archivé',
-    'agent.tickets.status_closed_deleted'               => 'Supprimé',
-    'agent.tickets.status_closed_spam'                  => 'Spam',
-    'agent.tickets.status_closed_temp'                  => 'Temporaire',
-    'agent.tickets.status_closed_validating'            => 'En attente de validation',
     'agent.tickets.status_hidden'                       => 'Caché',
     'agent.tickets.status_hidden_deleted'               => 'Supprimé',
     'agent.tickets.status_hidden_spam'                  => 'Spam',
@@ -365,7 +356,7 @@ return array(
     'agent.tickets.subject_changed'                     => 'Sujet modifié',
     'agent.tickets.subject_changed_from'                => 'Sujet modifié de',
     'agent.tickets.subscribed_tickets'                  => 'Tickets avec abonnés',
-    'agent.tickets.teams_action'                        => 'Equipes: {{teams}}',
+    'agent.tickets.teams_action'                        => 'Equipes : {{teams}}',
     'agent.tickets.text_body'                           => 'Corps du texte',
     'agent.tickets.ticket_changes'                      => 'Modifications ticket',
     'agent.tickets.ticket_feedback'                     => 'Feedback du ticket',

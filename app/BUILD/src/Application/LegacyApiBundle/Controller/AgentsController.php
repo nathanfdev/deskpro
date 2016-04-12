@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -45,6 +46,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\DeskPRO\People\PermissionUtil;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -81,7 +83,7 @@ class AgentsController extends AbstractController implements ProtectedController
     ####################################################################################################################
 
     /**
-     * @return JsonResponse
+     * @return Response
      *
      * SWG\Api(
      * 	path="/agents",
@@ -273,6 +275,26 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return JsonResponse
+     *
+     *
+     * SWG\Api(
+     * 	path="/agents/deleted/{id}",
+     * 	SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get deleted agent by ID",
+     * 		notes="",
+     *		type="array",
+     *      SWG\Parameters (
+     *          SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getDeletedAgentAction($id)
     {
@@ -712,9 +734,9 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 } elseif ($p['assign']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -727,7 +749,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 }
 
                 if ($p['full']) {
-                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
+                    $set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1);
                 }
             }
 
@@ -766,6 +788,8 @@ class AgentsController extends AbstractController implements ProtectedController
         if (!$id && !$skip_email) {
             $this->sendWelcomeEmail($agent);
         }
+
+        PermissionUtil::optimizePermissions($agent);
 
         #-------------------------
         # Return
@@ -957,23 +981,24 @@ class AgentsController extends AbstractController implements ProtectedController
      * @param $id
      *
      * @return JsonResponse
-     *                      SWG\Api(
-     *                      path="/agents/{id}/reset-password",
-     *                      SWG\Operation(
-     *                      method="POST",
-     *                      summary="Reset agent profile by ID",
-     *                      type="array",
-     *                      SWG\Parameters (
-     *                      SWG\Parameter(
-     *                      name="id",
-     *                      description="Agent ID",
-     *                      paramType="path",
-     *                      required=true,
-     *                      type="integer",
-     *                      ),
-     *                      )
-     *                      )
-     *                      )
+     *
+     * SWG\Api(
+     * 	path="/agents/{id}/reset-password",
+     * 	SWG\Operation(
+     * 		method="POST",
+     * 		summary="Reset agent profile by ID",
+     *		type="array",
+     *      SWG\Parameters (
+     *          SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function resetPasswordAction($id)
     {
@@ -1040,23 +1065,24 @@ class AgentsController extends AbstractController implements ProtectedController
      *
      * @return JsonResponse
      *
+     *
      * SWG\Api(
-     * 	  path="/agents/{id}/delete",
-     * 	  SWG\Operation(
-     * 	      method="DELETE",
-     * 		  summary="Delete agent and move it to deleted list",
-     * 		  notes="",
-     *		  type="array",
-     *        SWG\Parameters (
-     *            SWG\Parameter(
-     *                name="id",
-     *                description="Agent ID",
-     *                paramType="path",
-     *                required=true,
-     *			      type="integer",
-     *            ),
-     *       )
-     *    )
+     * 	path="/agents/{id}/delete",
+     * 	SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete agent and move it to deleted list",
+     * 		notes="",
+     *		type="array",
+     *      SWG\Parameters (
+     *          SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
      * )
      
      * SWG\Api(
@@ -1077,7 +1103,6 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-     * @return JsonResponse
      */
     public function deleteAgentAction($id, $mode)
     {
@@ -1121,6 +1146,25 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return JsonResponse
+     *
+     *
+     * SWG\Api(
+     * 	path="/agents/deleted/{id}/undelete",
+     * 	SWG\Operation(
+     * 		method="POST",
+     * 		summary="Undelete existing agent by ID",
+     *		type="array",
+     *      SWG\Parameters (
+     *          SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function undeleteAgentAction($id)
     {
@@ -1207,6 +1251,25 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Exception
      *
      * @return JsonResponse
+     *
+     *
+     * SWG\Api(
+     * 	path="/agents/{id}/notify-prefs/get-tables",
+     * 	SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get agent notification preferences",
+     *		type="array",
+     *      SWG\Parameters (
+     *          SWG\Parameter(
+     *				name="id",
+     *				description="Agent ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
      */
     public function getNotifyPrefsAction($id)
     {

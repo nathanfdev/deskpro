@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -396,6 +396,8 @@ return array(
     'agent.general.is_not'                                  => 'is not',
     'agent.general.is_not_a_new_user'                       => 'Is not a new user',
     'agent.general.is_not_published'                        => 'Is Not Published',
+    'agent.general.is_not_set'                              => 'Is not set',
+    'agent.general.is_set'                                  => 'Is set',
     'agent.general.is_not_x'                                => 'is not {{field}}',
     'agent.general.is_published'                            => 'Is Published',
     'agent.general.is_x'                                    => 'is {{field}}',

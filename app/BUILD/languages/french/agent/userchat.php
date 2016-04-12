@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ return array(
     'agent.userchat.agent_blocked_user_on'  => '{{name}} a bloqué le {{date}}',
     'agent.userchat.assigned_to'            => 'Chat assigné à {{name}}',
     'agent.userchat.block_ip_address'       => 'Bloquer l\'adresse IP',
+    'agent.userchat.block_ip_address_info'  => 'Bloquer l\'adresse IP peut être plus efficace, mais il se pourrait que d\'autres utilisateurs légitimes soient également bloqués si l\'adresse IP est utilisée par un grand nombre de personnes (par exemple sur un réseau partagé, un wifi public, etc.).',
     'agent.userchat.block_reason'           => 'Raison: {{reason}}',
     'agent.userchat.block_title'            => 'Terminer le chat et empêcher cet utilisateur de commencer un nouveau chat dans le prochaines 24 heures.',
     'agent.userchat.block_user'             => 'Bloquer un utilisateur',

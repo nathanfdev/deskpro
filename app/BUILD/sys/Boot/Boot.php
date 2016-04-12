@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,83 +74,17 @@ class Boot
         return $resources;
     }
 
-    private static function bootServerInfoChecks($reqName)
+    /**
+     * Runs /__serverinfo/xyz requests.
+     *
+     * @param \DpRun\DpEnv $env
+     * @param string       $action
+     */
+    private static function bootServerInfoChecks(\DpRun\DpEnv $env, $action)
     {
-        self::authlessServerChecks($reqName);
-        self::checkAuth();
-        self::authRequiredServerChecks($reqName);
-
+        $tasks = ['HttpServerInfo'];
+        self::runBootTasks($env, $tasks, ['serverinfo_action' => $action]);
         exit;
-    }
-
-    protected static function authlessServerChecks($reqName)
-    {
-        switch ($reqName) {
-            case 'ping':
-                header('Content-Type: text/plain');
-                echo 'pong';
-                if ($msg = self::env()->getDatManager()->readTxtFile('pong_message')) {
-                    echo "\n";
-                    echo $msg;
-                }
-                exit;
-            case 'check_http_methods':
-                header('Content-Type: text/plain');
-                echo 'HTTP_METHOD_'.strtoupper(@$_SERVER['REQUEST_METHOD']);
-                exit;
-        }
-    }
-
-    protected static function authRequiredServerChecks($reqName)
-    {
-        switch ($reqName) {
-            case 'phpinfo':
-                phpinfo();
-                break;
-
-            case 'check_requirements':
-                $checker = require __DIR__.'/../SoftwareRequirements/load_checker.php';
-
-                if (isset($_GET['encode-output'])) {
-                    header('Content-Type: text/plain');
-                    echo str_repeat('-', 25).'BEGIN'.str_repeat('-', 25).PHP_EOL;
-                    echo base64_encode(serialize($checker));
-                    echo PHP_EOL;
-                    echo str_repeat('-', 25).'END'.str_repeat('-', 25).PHP_EOL;
-                    exit;
-                }
-
-                $majorProblems = $checker->getFailedRequirements();
-                $minorProblems = $checker->getFailedRecommendations();
-                require __DIR__.'/../Resources/views/requirements.php';
-                break;
-
-            case 'url_check/path':
-                header('Content-Type: text/plain');
-                echo 'DP_CHECK_SUCCESS';
-                break;
-
-            default:
-                echo 'Unknown serverinfo request.';
-        }
-    }
-
-    protected static function checkAuth()
-    {
-        $env = self::env();
-
-        // If installed, we require auth
-        if (($env->getConfig('database.host') || $env->getConfig('database.0.host'))) {
-            $server_info_auth = $env->getDatManager()->readTxtFile('server_info_auth', null);
-            if (!$server_info_auth || empty($_GET['auth'])) {
-                echo "Use the dp:web-server-info command to generate links to view server info.\n";
-                exit;
-            }
-            if ($_GET['auth'] !== $server_info_auth) {
-                echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
-                exit;
-            }
-        }
     }
 
     /**
@@ -186,7 +120,7 @@ class Boot
 
         // An 'early' serverinfo request
         if (isset($_GET['__serverinfo'])) {
-            self::bootServerInfoChecks($_GET['__serverinfo']);
+            self::bootServerInfoChecks($env, $_GET['__serverinfo']);
 
             return;
         }
@@ -207,7 +141,14 @@ class Boot
         // this is usually only used when we need to test URL rewriting
         $path = '/'.ltrim($request->getPathInfo(), '/');
         if (substr($path, 0, 14) === '/__serverinfo/') {
-            self::bootServerInfoChecks(substr($path, 14));
+            self::bootServerInfoChecks($env, substr($path, 14));
+
+            return;
+        }
+
+        if (substr($path, 0, 30) === '/web/javascripts/DeskPRO/User/') {
+            header('Content-Type: application/javascript');
+            echo "/* This URL is no longer active. Please update your website to use the latest DeskPRO website widget code. */\n";
 
             return;
         }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
@@ -98,7 +99,7 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
                 return; // matches brand settings
             }
 
-            $this->logger->info(sprintf('invalid redirect detected: attempted to redirect to unauthorized host "%s"', $location));
+            $this->logger->warning(sprintf('invalid redirect detected: attempted to redirect to unauthorized host "%s" (brand URL is "%s")', $location, $deskpro_url_setting));
 
             $event->setResponse(new Response(
                 '<html><body>Invalid Redirect</body></html>',

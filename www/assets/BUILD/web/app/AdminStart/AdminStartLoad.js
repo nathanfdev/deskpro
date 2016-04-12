@@ -5,7 +5,6 @@ define([
   'AdminStart/App/App',
   'AdminStart/Ctrl/StartBase',
   'AdminStart/Ctrl/Home',
-  'AdminStart/Ctrl/Cron',
   'AdminStart/Ctrl/Email',
   'AdminStart/Ctrl/Finish'
 ], function(angular) {

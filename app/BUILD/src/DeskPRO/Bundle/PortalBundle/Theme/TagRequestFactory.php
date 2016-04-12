@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -68,7 +69,15 @@ class TagRequestFactory
     {
         $current_request = $this->stack->getCurrentRequest();
 
-        $tr = new TagRequest($this->makeQuery($tag, $arguments), array(), $this->makeAttributes($tag, $arguments));
+        $tr = TagRequest::create(
+            '',
+            'GET',
+            $this->makeQuery($tag, $arguments),
+            [],
+            [],
+            $current_request->server->all()
+        );
+        $tr->attributes->add($this->makeAttributes($tag, $arguments));
 
         $tr->setOptionsResolver(new OptionsResolver());
         $tr->setSession($current_request->getSession());

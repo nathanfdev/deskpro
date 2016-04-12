@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Annotation\Metadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache;
 use DpTest\ApiTestCase;
 use Metadata\ClassMetadata;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class MetadataCacheTest.
@@ -94,7 +95,8 @@ class MetadataCacheTest extends ApiTestCase
 
     public static function tearDownAfterClass()
     {
-        rmdir(self::getEnvironmentCacheDir().'/metadata_cache');
+        $fs = new Filesystem();
+        $fs->remove(self::getEnvironmentCacheDir().'/metadata_cache');
     }
 
     /**

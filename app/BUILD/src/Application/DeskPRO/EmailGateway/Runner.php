@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
+use DeskPRO\Component\Util\MathUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
@@ -47,7 +48,6 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
 use Orb\Util\Util;
-use Zend\Mail\Exception\RuntimeException;
 
 /**
  * This runs collection and processsing in accounts.
@@ -425,7 +425,7 @@ class Runner
 
         // Attempt to detect if we should break due to memory
         $mem   = memory_get_usage();
-        $avail = deskpro_install_check_parseinisize(@ini_get('memory_limit'));
+        $avail = MathUtils::parseByteSize(@ini_get('memory_limit'));
         if ($mem && $mem > 0 && $avail && $avail > 0) {
             $remain = $avail - $mem;
             $min    = max(10485760, $source->blob->filesize * 4);
@@ -552,6 +552,14 @@ class Runner
                 $source->error_code  = $result->error_code ?: 'server_error';
                 $source->source_info = $result->source_info ?: array();
                 $source_logger->logError("Status: REJECTED {$source->error_code}");
+                break;
+
+            case 'rejected_soft':
+                $return_result       = true;
+                $source->status      = 'rejected_soft';
+                $source->error_code  = $result->error_code ?: 'server_error';
+                $source->source_info = $result->source_info ?: array();
+                $source_logger->logError("Status: REJECTED SOFT {$source->error_code}");
                 break;
 
             case 'error':
@@ -686,7 +694,7 @@ class Runner
 
         $inserted_source_ids = array();
 
-        $only_collect = $only_collect || !$DP_ENV->getConfig('adv_email_process');
+        $only_collect = $only_collect || $DP_ENV->getConfig('adv_email_process');
 
         if (!$only_collect) {
             $inserted_source_ids = App::getDb()->fetchAllCol("
@@ -749,7 +757,7 @@ class Runner
                         break;
                     }
                     App::getEventLogger()->log(new IncomingEmailSuccessEvent($account));
-                } catch (RuntimeException $e) {
+                } catch (\Exception $e) {
                     $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
                     App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($account, $e));
                     break;
@@ -799,7 +807,7 @@ class Runner
                 continue;
             }
 
-            if ($only_collect && $source->status !== 'error' && !$DP_ENV->getConfig('adv_email_process')) {
+            if ($only_collect && $source->status !== 'error' && $DP_ENV->getConfig('adv_email_process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 try {

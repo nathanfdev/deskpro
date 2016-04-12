@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Ticket;
 
 use Application\DeskPRO\Entity\Person;
@@ -143,10 +144,15 @@ class NewTicket
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        // in this case we are authorized to make a person from a guest
-        $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
-        $person->setName($person->getDisplayName());
-        $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
+        $exist_person = $this->person_factory->getPersonByEmail($person->getEmailAddress());
+        if ($exist_person) {
+            $person = $exist_person;
+        } else {
+            // in this case we are authorized to make a person from a guest
+            $person_context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+            $person->setName($person->getDisplayName());
+            $person = $this->person_factory->createPersonByEmail($person->getEmailAddress(), $person_context);
+        }
 
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
@@ -191,14 +197,14 @@ class NewTicket
      */
     protected function saveNewTicket(Ticket $ticket, Person $person)
     {
+        $this->ticket_manager->markAsManaged($ticket);
+
         $this->em->beginTransaction();
 
         try {
             // allow all blobs for a new ticket
             $this->em->persist($ticket);
 
-            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
             $context = $this->ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
 
             $this->ticket_manager->saveTicket($ticket, $context);

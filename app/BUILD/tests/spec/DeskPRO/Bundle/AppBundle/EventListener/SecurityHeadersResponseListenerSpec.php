@@ -30,6 +30,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -54,14 +55,19 @@ class SecurityHeadersResponseListenerSpec extends ObjectBehavior
     public function it_adds_security_headers_to_every_response(
         FilterResponseEvent $event,
         Response $response,
+        Request $request,
         HeaderBag $headers
     ) {
         $response->headers = $headers;
         $event->getResponse()->willReturn($response);
 
-        $headers->add([
-            'X-Content-Type-Options' => 'nosniff',
-        ])->shouldBeCalled();
+        $request->isSecure()->willReturn(false);
+        $request->getPathInfo()->willReturn('/');
+        $event->getRequest()->willReturn($request);
+
+        $headers->add(['X-Content-Type-Options' => 'nosniff'])->shouldBeCalled();
+        $headers->add(['X-Frame-Options' => 'sameorigin'])->shouldBeCalled();
+        $headers->add(['Content-Security-Policy' => 'default-src \'self\'; script-src * \'unsafe-inline\' \'unsafe-eval\'; style-src * \'unsafe-inline\'; img-src * data:; font-src * data:; connect-src *; media-src *; object-src *; child-src *; form-action *; referrer no-referrer-when-downgrade; frame-ancestors \'self\''])->shouldBeCalled();
 
         $this->onResponse($event);
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
@@ -256,8 +258,12 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
 
         // if there is or isn't a lang code in url when should be, redirect
         if (
-            ($this->isMultiLanguage() && !$request_info->getLanguageUrlCode())
-            || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
+            !RequestUtils::isLowRequest($request)
+            && !RequestUtils::isPortalApiRequest($request)
+            && (
+                ($this->isMultiLanguage() && !$request_info->getLanguageUrlCode())
+                || (!$this->isMultiLanguage() && $request_info->getLanguageUrlCode())
+            )
         ) {
             $url = $this->buildUrl($request_info->getRoutablePath());
 

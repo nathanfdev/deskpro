@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -121,11 +122,29 @@ class MainController extends AbstractController
             WHERE p.is_agent = true AND s.date_last > ?
         ', array($cutoff));
 
-        $with_chat_perm = array();
+        $online_chat_agent_ids = $this->db->fetchAllCol('
+            SELECT p.id
+            FROM sessions s
+            JOIN people AS p ON p.id = s.person_id
+            WHERE s.is_chat_available = 1 AND p.is_agent = true AND s.date_last > ?
+        ', array($cutoff));
+
+        $with_chat_perm    = array();
+        $without_chat_perm = array();
         foreach ($this->container->getAgentData()->getAgents() as $a) {
             if ($a->hasPerm('agent_chat.use')) {
                 $with_chat_perm[] = $a->id;
+            } elseif (in_array($a->id, $online_chat_agent_ids)) {
+                $without_chat_perm[] = $a->id;
             }
+        }
+
+        if ($without_chat_perm) {
+            $this->db->executeUpdate(
+                'UPDATE sessions SET is_chat_available = ? WHERE person_id IN (?)',
+                array(0, $without_chat_perm),
+                array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY)
+            );
         }
 
         if ($with_chat_perm) {

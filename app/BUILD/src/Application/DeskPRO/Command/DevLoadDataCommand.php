@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -337,6 +338,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
                 'app'           => $dep->is_tickets_enabled ? 'tickets' : 'chat',
                 'name'          => 'full',
                 'value'         => 1,
+                'is_active'     => 1,
             );
         }
         $db->batchInsert('department_permissions', $batch);
@@ -650,6 +652,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'app'           => 'tickets',
             'name'          => 'full',
             'value'         => 1,
+            'is_active'     => 1,
         );
 
         App::getDb()->batchInsert('department_permissions', $dep_perms);
@@ -967,6 +970,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             'app'           => 'chat',
             'name'          => 'full',
             'value'         => 1,
+            'is_active'     => 1,
         );
 
         App::getDb()->batchInsert('department_permissions', $dep_perms);

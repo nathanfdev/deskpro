@@ -43,9 +43,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				, href = $a.attr('href')
 				;
 			$a.attr('target', '_blank');
-			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 1) === '/') return;
+			if (!href || href.length < 5 || href.substr(0, 4) === 'http' || href.substr(0, 6) === 'mailto' || href.substr(0, 1) === '/') return;
 			$a.attr('href', 'http://' + href);
 		});
+	},
+
+	prepareWrapper: function(wrapper) {
+		this.rewriteRadioNames(wrapper);
+	},
+
+	rewriteRadioNames: function(wrapper) {
+		var baseId = this.meta.baseId;
+
+		// we need to rename custom radio fields or else they are all
+		// part of the same 'group' within the page
+		this.getEl('field_holders').find('input[type="radio"]').each(function () {
+			$(this).attr('name', baseId + '_' + $(this).attr('name'));
+		});
+
+		// the name will be replaced on submit in TicketFields.js
 	},
 
 	initPage: function(el) {
@@ -1125,6 +1141,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.sections.tickets_section.listPage.refreshTicketResults([self.meta.ticket_id]);
 				}
 			}
+
+			self.handleTicketUpdate(result);
 		};
 
 		this.clearAlerts();
@@ -2783,8 +2801,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 
-	doTicketUpdate: function() {
-    var self = this;
+	doTicketUpdate: function(isOwnUpdate) {
+    	var self = this;
 		if (this.doTicketUpdateRunning) {
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
@@ -2807,15 +2825,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			success: function(result) {
-				this.alertTab();
-
-        if (this.initPromise) {
-          this.initPromise.then(function(){
-            self.handleTicketUpdate(result);
-          });
-        } else {
-          this.handleTicketUpdate(result);
-        }
+				if (!isOwnUpdate) {
+					this.alertTab();
+				}
+				// this needs to happen instantly now, dont put this in any other promise
+				// or else it makes the ui feel slow
+				self.handleTicketUpdate(result);
 			}
 		});
 	},

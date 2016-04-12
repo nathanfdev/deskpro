@@ -489,6 +489,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
+			console.info('event: ticket-updated', data, Date.now());
 			var ticketId = data.ticket_id;
 
 			var tab = DeskPRO_Window.getTabWatcher().findTab('ticket', function(tab) {
@@ -500,7 +501,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			if (tab && data.changed_fields) {
-				tab.page.doTicketUpdate();
+				var isOwnUpdate = data.via_person && data.via_person === DP_PERSON_ID;
+				if (data.is_via_replybox && isOwnUpdate) {
+					// ignore this change because our own reply ajax
+					// contains all the data we need to refresh the ui
+				} else {
+					tab.page.doTicketUpdate(isOwnUpdate);
+				}
 			}
 
 			// And if we're viewing any groups affected by the changed field, then we need to reload the group

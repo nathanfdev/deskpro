@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -262,7 +263,9 @@ class QueueRunner
             $batch       = $this->reserveBatch();
             $this->logger->info(sprintf('Reserved %d records', count($batch)));
 
-            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger);
+            // FIXME
+            // dp_sys.alerts.event_logger should be injected
+            $proc = new QueueProc($this->source_mapper, $this->source_sender, $this->logger, \Application\DeskPRO\App::$container->get('dp_sys.alerts.event_logger'));
 
             if ($batch) {
                 while ($r = array_shift($batch)) {

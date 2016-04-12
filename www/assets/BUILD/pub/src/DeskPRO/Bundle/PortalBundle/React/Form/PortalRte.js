@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
@@ -174,7 +175,7 @@ export class PortalRte extends React.Component {
 
           <DragOverlayListener context={context}>
             <div className="dp-medium-rte-wrapper-overlay">
-              <h1>Drag your file in here.</h1>
+              <h1>{portalPhrases.get('portal.forms.label_drag_overlay')}</h1>
             </div>
           </DragOverlayListener>
         </DropZone>

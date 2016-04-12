@@ -127,7 +127,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var ticketId = $(this).data('ticket-id');
-			if (this.exclude.indexOf(ticketId) > -1) {
+			if (self.exclude.indexOf(ticketId) > -1) {
 				return;
 			}
 			var subject = $('.ticket-subject', this).text().trim();

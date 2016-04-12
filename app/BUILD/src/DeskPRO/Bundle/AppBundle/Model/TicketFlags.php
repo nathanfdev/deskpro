@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\TicketFlagged;

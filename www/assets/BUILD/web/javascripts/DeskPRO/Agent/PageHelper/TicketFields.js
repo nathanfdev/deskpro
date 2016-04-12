@@ -189,39 +189,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	updateDisplay_modify: function() {
 		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
+		var baseId = this.page.meta.baseId;
 		if (!fields || !fields['default']) {
 			fields['default'] = [];
 		}
 
 		fields = fields['default'];
-
-		// Check to see if the fields are the same and in the same order
-		if (fields.length == this.currentDisplayModify.length) {
-			var change = false;
-			for (var i = 0; i < fields.length; i++) {
-				if (this.currentDisplayModify && this.currentDisplayModify[i] && fields[i].field_type == this.currentDisplayModify[i].field_type) {
-					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplayModify[i].field_id) {
-						change = true;
-						break;
-					}
-				} else {
-					change = true;
-					break;
-				}
-			}
-		} else {
-			var change = true;
-		}
-
-		// No Changes, dont need to do any expensive dom work
-		if (!change) {
-			console.log("[TicketFields] No change");
-			return;
-		}
-
 		this.currentDisplayModify = fields;
 
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
+		this.display.find('tbody.item.item-on').hide().removeClass('item-on').removeClass('always-display');
 		var last = this.display.find('tbody.always-bottom');
 
 		Array.each(this.currentDisplayModify, function(f) {
@@ -237,7 +213,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				var classname = f.field_type;
 			}
 
-			this.display.find('.item.' + classname).detach().appendTo(this.display).show().addClass('item-on');
+			var item = this.display.find('.item.' + classname);
+			item.detach().appendTo(this.display).show().addClass('item-on');
 		}, this);
 
     this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
@@ -318,6 +295,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	saveChanges: function() {
 		var changeManager = this.page.changeManager;
+		var baseId = this.page.meta.baseId;
 
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
@@ -327,6 +305,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
 		var customFieldData = this.display.find('.custom-field input, .custom-field textarea, .custom-field select').serializeArray();
+		for (var i = 0; i < customFieldData.length; i++) {
+			customFieldData[i].name = customFieldData[i].name.replace(baseId + '_', '');
+		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
 		changeManager.saveChanges(
@@ -370,7 +351,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		last.detach();
 
 		var old = this.display;
-		this.display = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		this.page.rewriteRadioNames(newDisplay);
+		this.display = newDisplay;
 		old.after(this.display);
 		old.remove();
 		this.display.append(last);

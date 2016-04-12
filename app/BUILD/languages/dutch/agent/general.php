@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -112,7 +112,6 @@ return array(
     'agent.general.current_page'               => 'Huidige pagina',
     'agent.general.date'                       => 'Datum',
     'agent.general.date_archived'              => 'Datum gearchiveerd',
-    'agent.general.date_closed'                => 'Datum gearchiveerd',
     'agent.general.date_completed'             => 'Datum voltooid',
     'agent.general.date_created'               => 'Datum aangemaakt',
     'agent.general.date_created_newestoldest'  => 'Datum aangemaakt (nieuwste-oudste)',

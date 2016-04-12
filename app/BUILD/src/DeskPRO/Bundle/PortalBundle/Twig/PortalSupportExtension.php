@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
@@ -109,6 +110,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_multi_lang', [$this, 'isMultLang']),
             new \Twig_SimpleFunction('lang_code', [$this, 'langCode']),
             new \Twig_SimpleFunction('lang_dir', [$this, 'langDir']),
+            new \Twig_SimpleFunction('lang_locale', [$this, 'langLocale']),
             new \Twig_SimpleFunction('enabled_languages', [$this, 'enabledLanguages']),
             new \Twig_SimpleFunction('date', [$this, 'date']),
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
@@ -266,6 +268,18 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $lang->getUrlCode();
+    }
+
+    /**
+     * @return string
+     */
+    public function langLocale()
+    {
+        if (!$lang = $this->container->get('language_stack')->getActive()) {
+            $lang = $this->container->get('language_stack')->getDefaultLanguage();
+        }
+
+        return $lang->getLocale();
     }
 
     /**

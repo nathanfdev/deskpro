@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -95,8 +94,9 @@ class PersonRegistrationType extends AbstractType
                 ],
             ])
             ->add('primary_email', PersonEmailType::class, [
-                'required' => true,
-                'label'    => false,
+                'label'       => $this->language_manager->phrase('portal.forms.label_email'),
+                'email_label' => 'Email',
+                'required'    => true,
             ])
             ->add('password', 'repeated', [
                 'first_name'    => 'password',

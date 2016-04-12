@@ -71,6 +71,7 @@ phantomjsdriver.log
 /app/BUILD/sys/Resources/agent-perm-names.php
 /app/BUILD/src/Application/InstallBundle/Data/schema.php
 /app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
+/app/BUILD/sys/enc
 
 # tests
 /app/BUILD/tests/config/config.all.php

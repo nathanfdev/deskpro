@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -85,6 +86,24 @@ class Permission extends DomainObject
      * @var bool
      */
     protected $value = null;
+
+    /**
+     * True means this permission record is active for normal use with the permission resolver.
+     *
+     * When a $person permission is used but the $person in question is also part
+     * of a usergroup, then this record might be superfluous: If the ug grants the perm,
+     * and this record grants the perm, then we have two records that both grant the perm.
+     *
+     * This isn't harmful usually but if you have many many agents defined and they all have
+     * these duplicative perms, then you end up with many thousands of extra rows, which are all
+     * fetched and processed with the permission resolver.
+     *
+     * So we turn these extra perms "off" so the resolver doesn't fetch them. That means if a
+     * hd with many agent uses groups instead of overrides, permission resolving is much much faster.
+     *
+     * @var bool
+     */
+    protected $is_active = true;
 
     /**
      * @return int
@@ -150,7 +169,12 @@ class Permission extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'permissions'));
+        $metadata->setPrimaryTable(array(
+            'name'    => 'permissions',
+            'indexes' => array(
+                'is_active_idx' => array('columns' => array('is_active')),
+            ),
+        ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -182,6 +206,17 @@ class Permission extends DomainObject
                  'scale'      => 0,
                  'nullable'   => true,
                  'columnName' => 'value',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_active',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'options'    => array('default' => '1'),
+                'columnName' => 'is_active',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

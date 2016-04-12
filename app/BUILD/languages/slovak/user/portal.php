@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,10 +35,6 @@ return array(
     'user.portal.our-staff'                     => 'Naši zamestnanci',
     'user.portal.search'                        => 'Hľadať',
     'user.portal.search-everything'             => 'Všetko',
-    'user.portal.search.new-chat'               => 'Začať konverzáciu',
-    'user.portal.search.new-feedback'           => 'Potvrdiť sptnú väzbu',
-    'user.portal.search.new-ticket'             => 'Kontaktujte nás',
-    'user.portal.search.no_matches'             => 'Nič vyhovujúce? ...',
     'user.portal.search_label-search_show'      => 'Ukáž',
     'user.portal.search_label-search_with'      => 'Označené s',
     'user.portal.search_labels_title'           => 'Hľadaj štítky',

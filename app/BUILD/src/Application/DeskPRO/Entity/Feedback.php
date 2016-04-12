@@ -163,6 +163,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isPublic()
+    {
+        return $this->status !== self::STATUS_HIDDEN;
+    }
+
+    /**
      * @return int
      */
     public function getTotalRating()
@@ -198,9 +206,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * @JMS\VirtualProperty()
      * @JMS\Type("string")
      *
+     * // FIXME: getCustomData is making $this->custom_data return a string from outside, which breaks FieldManager
+     * // So I've renamed it 'X' so this can be reviewed.
+     *
      * @return string
      */
-    public function getCustomData()
+    public function XgetCustomData()
     {
         return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : null;
     }

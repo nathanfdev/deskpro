@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -187,7 +187,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
             return false;
         }
 
-        return ($this->date_due->getTimestamp() < time());
+        return $this->date_due->getTimestamp() < time();
     }
 
     public function isDueToday(Person $person_context = null)
@@ -208,7 +208,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $cmp_tomorrow = clone $this->date_due;
         $cmp_tomorrow->setTimezone($tz);
 
-        return ($cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d'));
+        return $cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d');
     }
 
     public function isDueTomorrow(Person $person_context = null)
@@ -231,7 +231,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $cmp_tomorrow->modify('+1 day');
         $cmp_tomorrow->setTimezone($tz);
 
-        return ($cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d'));
+        return $cmp_tomorrow->format('Y-m-d') == $tomorrow->format('Y-m-d');
     }
 
     /**
@@ -276,10 +276,10 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     public function isDelegated()
     {
         if ($this->assigned_agent !== null) {
-            return ($this->person['id'] !== $this->assigned_agent['id']);
+            return $this->person['id'] !== $this->assigned_agent['id'];
         }
 
-        return ($this->assigned_agent !== null);
+        return $this->assigned_agent !== null;
     }
 
     /**
@@ -628,9 +628,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set isCompleted
+     * Set isCompleted.
      *
-     * @param boolean $isCompleted
+     * @param bool $isCompleted
      *
      * @return Task
      */
@@ -642,9 +642,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get isCompleted
+     * Get isCompleted.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsCompleted()
     {
@@ -652,7 +652,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -662,9 +662,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get visibility
+     * Get visibility.
      *
-     * @return integer
+     * @return int
      */
     public function getVisibility()
     {
@@ -672,7 +672,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set dateDue
+     * Set dateDue.
      *
      * @param \DateTime $dateDue
      *
@@ -686,7 +686,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get dateDue
+     * Get dateDue.
      *
      * @return \DateTime
      */
@@ -696,7 +696,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set dateCreated
+     * Set dateCreated.
      *
      * @param \DateTime $dateCreated
      *
@@ -710,7 +710,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get dateCreated
+     * Get dateCreated.
      *
      * @return \DateTime
      */
@@ -720,7 +720,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set dateCompleted
+     * Set dateCompleted.
      *
      * @param \DateTime $dateCompleted
      *
@@ -734,7 +734,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get dateCompleted
+     * Get dateCompleted.
      *
      * @return \DateTime
      */
@@ -744,7 +744,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set person
+     * Set person.
      *
      * @param \Application\DeskPRO\Entity\Person $person
      *
@@ -758,7 +758,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get person
+     * Get person.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -768,7 +768,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set assignedAgent
+     * Set assignedAgent.
      *
      * @param \Application\DeskPRO\Entity\Person $assignedAgent
      *
@@ -782,7 +782,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get assignedAgent
+     * Get assignedAgent.
      *
      * @return \Application\DeskPRO\Entity\Person
      */
@@ -792,7 +792,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Set assignedAgentTeam
+     * Set assignedAgentTeam.
      *
      * @param \Application\DeskPRO\Entity\AgentTeam $assignedAgentTeam
      *
@@ -806,7 +806,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get assignedAgentTeam
+     * Get assignedAgentTeam.
      *
      * @return \Application\DeskPRO\Entity\AgentTeam
      */
@@ -816,7 +816,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Remove label
+     * Remove label.
      *
      * @param \Application\DeskPRO\Entity\LabelTask $label
      */
@@ -826,7 +826,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get labels
+     * Get labels.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -836,7 +836,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Remove comment
+     * Remove comment.
      *
      * @param \Application\DeskPRO\Entity\TaskComment $comment
      */
@@ -846,7 +846,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get comments
+     * Get comments.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -856,7 +856,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Add taskAssociation
+     * Add taskAssociation.
      *
      * @param \Application\DeskPRO\Entity\TaskAssociation $taskAssociation
      *
@@ -870,7 +870,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Remove taskAssociation
+     * Remove taskAssociation.
      *
      * @param \Application\DeskPRO\Entity\TaskAssociation $taskAssociation
      */
@@ -880,7 +880,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Get taskAssociations
+     * Get taskAssociations.
      *
      * @return \Doctrine\Common\Collections\Collection
      */

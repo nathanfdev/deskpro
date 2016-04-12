@@ -1,5 +1,6 @@
 import React from 'react';
 import { TicketFormContentContainer } from './TicketFormContentContainer';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class TicketForm extends React.Component {
 
@@ -8,8 +9,8 @@ export class TicketForm extends React.Component {
       <div className="dpdesignportal-content dpdesignportal-open-new-ticket">
         <div className="header">
           <span className="img" />
-          <h1>Open a new ticket</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.</p>
+          <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
+          <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
         </div>
 
         <div className="dpdesignportal-form">

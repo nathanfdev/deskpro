@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -681,6 +681,7 @@ class ServeFileScript extends LowScriptAbstract
 
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
         header('Content-Length: '.$filesize);
+        header('X-Content-Type-Options: nosniff');
         header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
         header('X-Robots-Tag: noindex, nofollow');
 
@@ -735,7 +736,7 @@ class ServeFileScript extends LowScriptAbstract
         # can serve it without a db connection
         #------------------------------
 
-        $base_path = dp_get_blob_dir();
+        $base_path = $this->dpEnv->getUserFilesDir();
 
         $filepath_part = $batch.DIRECTORY_SEPARATOR.$batch.$authcode.$blob_id.$namehash;
         $filepath      = $base_path.DIRECTORY_SEPARATOR.$filepath_part;
@@ -777,6 +778,16 @@ class ServeFileScript extends LowScriptAbstract
                 }
                 header('HTTP/1.0 404 Not Found');
                 echo 'File not found. (2.1)';
+
+                return;
+            }
+        }
+
+        // Check if we have a record of it being moved
+        if (!file_exists($filepath)) {
+            $moved_blob = $this->findMovedAuthBlob($authcode.$blob_id.$namehash);
+            if ($moved_blob) {
+                $this->showBlob($moved_blob, $size);
 
                 return;
             }
@@ -839,6 +850,7 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
+        header('X-Content-Type-Options: nosniff');
         header('Content-Length: '.filesize($filepath));
         header('Content-Disposition: '.$content_disposition.'; filename="'.addslashes($filename).'"');
         header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
@@ -890,6 +902,13 @@ class ServeFileScript extends LowScriptAbstract
                 $this->addLogMessage('Could not load blob record');
             } elseif ($blob_auth && $blob['authcode'] != $blob_auth) {
                 $this->addLogMessage('bad authcode: %s != %s', $blob['authcode'], $blob_auth);
+
+                // check if it was moved
+                $moved_blob = $this->findMovedAuthBlob($blob_auth);
+                if ($moved_blob && $moved_blob['id'] == $blob['id']) {
+                    $this->addLogMessage('blob was moved');
+                    $blob_auth = $moved_blob['authcode'];
+                }
             }
 
             if (!$blob || ($blob_auth && $blob['authcode'] != $blob_auth)) {
@@ -1043,6 +1062,7 @@ class ServeFileScript extends LowScriptAbstract
         header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
         header('Cache-Control: max-age=31556926,private');
         header('X-Robots-Tag: noindex, nofollow');
+        header('X-Content-Type-Options: nosniff');
     }
 
     /**
@@ -1055,7 +1075,7 @@ class ServeFileScript extends LowScriptAbstract
         $this->sendHeaders($blob);
 
         // folder we store blobs in
-        $base_path = dp_get_blob_dir();
+        $base_path = $this->dpEnv->getUserFilesDir();
 
         $filepath_part = $blob['save_path'];
         $filepath      = $base_path.DIRECTORY_SEPARATOR.$blob['save_path'];
@@ -1273,7 +1293,7 @@ class ServeFileScript extends LowScriptAbstract
         // where the GD handler tries to save a temp file and the default
         // temp dir is not writable.
         } catch (\Imagine\Exception\RuntimeException $e) {
-            $tmp = dp_get_tmp_dir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
+            $tmp = $this->dpEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
             $image->save($tmp);
             $file = file_get_contents($tmp);
             @unlink($tmp);
@@ -1346,6 +1366,7 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
+        header('X-Content-Type-Options: nosniff');
         header('Content-Length: '.$filesize);
         header('Last-Modified: '.date('D, d M Y H:i:s', time() - 3600).' GMT');
         header('Expires: '.date('D, d M Y H:i:s', time() - 3600).' GMT');
@@ -1390,6 +1411,38 @@ class ServeFileScript extends LowScriptAbstract
                     'basepath' => $base_path.'/'.$appname.'/'.$type_f,
                 );
             }
+        }
+
+        return;
+    }
+
+    private function findMovedAuthBlob($old_authcode)
+    {
+        $moved = $this->findMovedBlobAuthInfo($old_authcode);
+        if ($moved) {
+            $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE authcode = :authcode');
+            $sth->execute(array('authcode' => $moved['new_authcode']));
+            $blob = $sth->fetch(\PDO::FETCH_ASSOC);
+
+            return $blob;
+        }
+
+        return;
+    }
+
+    private function findMovedBlobAuthInfo($old_authcode)
+    {
+        $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs_auth_moved WHERE old_authcode = :authcode');
+        $sth->execute(array('authcode' => $old_authcode));
+        $moved = $sth->fetch(\PDO::FETCH_ASSOC);
+
+        if ($moved) {
+            $moved_again = $this->findMovedBlobAuthInfo($moved['new_authcode']);
+            if ($moved_again) {
+                return $moved_again;
+            }
+
+            return $moved;
         }
 
         return;

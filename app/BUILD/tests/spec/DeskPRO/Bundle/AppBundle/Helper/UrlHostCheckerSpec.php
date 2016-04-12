@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -77,6 +77,12 @@ class UrlHostCheckerSpec extends ObjectBehavior
         $this->isMatchUrl('site.com', 'http://site.com:443')->shouldReturn(false);
 
         $this->isMatchUrl('http://site.com:443', 'http://site.com:443')->shouldReturn(true);
+        $this->isMatchUrl('http://samesite.com/', 'http://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com/', 'https://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com:8043/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://samesite.com/', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://site.com:443/', 'http://site.com:443/')->shouldReturn(true);
         $this->isMatchUrl('/news', 'http://site.com:443')->shouldReturn(true);
     }
 }

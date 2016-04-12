@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -37,13 +38,16 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -120,6 +124,20 @@ class PortalController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
+        if (($token = $request->query->get('tok')) && strpos($token, '-')) {
+            list($person_id, $login_token) = explode('-', $token, 2);
+
+            /** @var \Application\DeskPRO\Entity\Person $person */
+            $person = $this->getEm()->find('DeskPRO:Person', $person_id);
+
+            if ($person && $person->checkPassword($login_token)) {
+                $token = new DpTransferSessionAuthToken($person, 'token_login_'.RandUtils::randomString(20));
+                $this->get('security.token_storage')->setToken($token);
+
+                return $this->redirectToRoute('portal_home');
+            }
+        }
+
         $saved_form_message = null;
         if ($saved_form = $this->getFormSaver()->getByExternalCode($request->get('saved_form'))) {
             // this person just filled out a form and is being asked to login to auto-submit it
@@ -154,6 +172,22 @@ class PortalController extends AbstractController
                 'usersources_view'     => $usersources_view,
             )
         );
+    }
+
+    /**
+     * @Route("/logout/{auth}", name="user_logout")
+     *
+     * @return RedirectResponse
+     */
+    public function legacyLogoutLinkAction($auth)
+    {
+        $appSecret = $this->get('settings_resolver')->getGlobalSettings()->get('core.app_secret', '');
+
+        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5($appSecret.'user_logout'))) {
+            throw $this->createNotFoundException();
+        }
+
+        return new RedirectResponse($this->get('security.logout_url_generator')->getLogoutUrl('portal'));
     }
 
     /**

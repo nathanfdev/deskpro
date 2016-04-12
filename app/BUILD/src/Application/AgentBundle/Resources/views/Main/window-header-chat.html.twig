@@ -11,7 +11,6 @@
 			</span>
 		<ul class="info">
 			<li><i class="icon-user"></i> <span class="dp-phrase agent_chrome_chat_online_agents" data-phrase-text="{{ phrase_code('agent.chrome.chat_online-agents') }}" data-phrase-html="1">{{ phrase('agent.chrome.chat_online-agents', {count:0}, true) }}</span></li>
-			<li><i class="icon-globe"></i> <span class="dp-phrase agent_chrome_chat_online_users" data-phrase-text="{{ phrase_code('agent.chrome.chat_online-users') }}" data-phrase-html="1">{{ phrase('agent.chrome.chat_online-users', {count:0}, true) }}</span></li>
 		</ul>
 		<div class="arrow">
 			<span class="caret"></span>
@@ -23,9 +22,6 @@
 	{####################}
 	<div class="dp-header-group-chat-dropdown" id="dp_header_userchat_dropdown">
 		<table class="layout-table" width="100%"><tbody><tr>
-			<td class="column2" id="agent_status_online_users">
-				{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
-			</td>
 			<td class="column1" id="agent_status_menu_onlinelist">
 				<div id="agent_status_menu_me_list">
 				<div class="dp-not-loading">

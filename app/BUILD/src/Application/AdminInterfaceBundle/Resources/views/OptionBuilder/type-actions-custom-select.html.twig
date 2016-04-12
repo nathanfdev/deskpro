@@ -1,0 +1,38 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+				<td ng-show="rowOpts.rowEnabled" class="row-options">
+
+					<select
+							ui-select2="{dropdownAutoWidth:true}"
+							ng-model="model.op"
+							style="min-width: 80px"
+					>
+						<option value="set">Set to</option>
+						<option value="unset">Unset</option>
+					</select>
+
+					<select
+						ng-if="!multiselect && 'unset' !== model.op"
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.value"
+						style="min-width: 140px"
+					>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+					<select
+						ng-if="multiselect && 'unset' !== model.op"
+						multiple
+						ui-select2="{dropdownAutoWidth:true}"
+						ng-model="model.value"
+						style="width: 60%"
+					>
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

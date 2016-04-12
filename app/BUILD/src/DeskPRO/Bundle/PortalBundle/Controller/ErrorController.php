@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,19 +29,24 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
 class ErrorController extends AbstractController
 {
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
+        if ($response = $this->delegateApi($exception)) {
+            return $response;
+        }
+
         $code     = $exception->getStatusCode();
         $template = $this->makeTemplateName($code);
 
@@ -136,5 +141,30 @@ class ErrorController extends AbstractController
         $tpl_start = ($code >= 500 ? 'exception' : 'error');
 
         return sprintf('%s:%s%s.html.twig', $tpl_prefix, $tpl_start, ($code && !$force_use_default) ? $code : '');
+    }
+
+    protected function delegateApi(FlattenException $exception)
+    {
+        // Let's try to figure out if this Controller was from API
+        try {
+            $controller = $this->get('request_stack')->getMasterRequest()->attributes->get('_controller');
+            $parts      = explode('::', $controller);
+            $reflection = new \ReflectionClass($parts[0]);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if ($reflection->isSubclassOf(AbstractApiController::class)) {
+            $request = $this->get('request_stack')->getCurrentRequest()->duplicate(null, null,
+                [
+                    '_controller' => 'FOS\RestBundle\Controller\ExceptionController::showAction',
+                    'exception'   => $exception,
+                ]
+            );
+
+            return $this->get('kernel')->handle($request, HttpKernelInterface::SUB_REQUEST, false);
+        }
+
+        return false;
     }
 }

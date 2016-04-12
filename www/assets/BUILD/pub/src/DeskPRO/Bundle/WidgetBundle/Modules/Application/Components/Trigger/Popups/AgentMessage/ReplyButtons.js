@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class ReplyButtons extends React.Component {
 
@@ -35,10 +36,10 @@ export class ReplyButtons extends React.Component {
                color: textColor
              }}>
 
-            <i className="fa fa-mail-reply-all" /> Reply to {firstName}
+            <i className="fa fa-mail-reply-all" /> {portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
           </a>
           <a href="#" className="blank" onClick={this.onClose}>
-            <i className="fa fa-times" /> Dismiss message
+              <i className="fa fa-times" /> {portalPhrases.get('portal.chat.dismiss_message')}
           </a>
         </div>
       </div>

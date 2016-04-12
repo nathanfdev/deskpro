@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class ReopenOverlay extends React.Component {
 
@@ -19,7 +20,7 @@ export class ReopenOverlay extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-disabled">
         <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
-          <i className="fa fa-commenting-o" /> Reopen this chat
+          <i className="fa fa-commenting-o" /> {portalPhrases.get('portal.chat.reopen_chat')}
         </a>
       </div>
     );

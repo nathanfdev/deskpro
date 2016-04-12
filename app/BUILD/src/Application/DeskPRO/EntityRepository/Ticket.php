@@ -322,10 +322,13 @@ class Ticket extends AbstractEntityRepository
     public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
     {
         $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
-            SELECT id FROM tickets WHERE person_id = ?
-            UNION
-            SELECT ticket_id FROM tickets_participants WHERE person_id = ?
-            LIMIT 2000', array($person->id, $person->id));
+            SELECT DISTINCT id FROM (
+                SELECT id FROM tickets WHERE person_id = ?
+                UNION
+                SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+                LIMIT 2000
+            ) AS t
+        ', array($person->id, $person->id));
 
         if (!$ids) {
             return array();
@@ -434,7 +437,7 @@ class Ticket extends AbstractEntityRepository
      */
     public function countTicketsForPerson(Entity\Person $person, $status = null)
     {
-        $status = $status ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ') : '';
+        $status = $status ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ') : (' AND tickets.status NOT IN ("'.implode('","', array('hidden')).'") ');
 
         $excludeNotesCondition = '';
         if (defined('DP_INTERFACE') && 'user' === DP_INTERFACE) {
@@ -472,7 +475,7 @@ class Ticket extends AbstractEntityRepository
     public function getCountInfoForPerson(Entity\Person $person, $status = null)
     {
         $counts = array(
-            'person' => $this->countTicketsForPerson2($person),
+            'person' => $this->countTicketsForPerson($person),
             'org'    => 0,
         );
 
@@ -958,12 +961,40 @@ class Ticket extends AbstractEntityRepository
 
     public function getTicketsForPerson(PersonEntity $person, $offset, $limit, $sort)
     {
-        return $this->getQueryForPerson($person, false, $sort)->setFirstResult($offset)->setMaxResults($limit)->getResult();
+        return $this->getQueryForPerson($person, $sort)->setFirstResult($offset)->setMaxResults($limit)->getResult();
     }
 
     public function countTicketsForPerson2(Entity\Person $person)
     {
-        return $this->getQueryForPerson($person, true)->getSingleScalarResult();
+        list($parts, $params, $parts_union) = $this->getQueryPartsForPerson($person);
+
+        return $this->getEntityManager()->getConnection()->fetchColumn(
+            "SELECT COUNT(DISTINCT id) FROM ($parts_union) AS t",
+            $params
+        );
+    }
+
+    protected function getQueryPartsForPerson(Entity\Person $person)
+    {
+        $parts  = array();
+        $params = array();
+
+        $parts[]  = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
+        $params[] = $person->id;
+
+        if (!$person->is_agent) {
+            $parts[]  = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
+            $params[] = $person->id;
+
+            if ($person->organization && $person->organization_manager) {
+                $parts[]  = '(SELECT id FROM tickets WHERE organization_id = ? ORDER BY id DESC LIMIT 2000)';
+                $params[] = $person->organization->id;
+            }
+        }
+
+        $parts_union = implode("\nUNION\n", $parts);
+
+        return array($parts, $params, $parts_union);
     }
 
     /**
@@ -973,41 +1004,39 @@ class Ticket extends AbstractEntityRepository
      *
      * @return \Doctrine\ORM\Query
      */
-    protected function getQueryForPerson(Entity\Person $person, $isCount = false, $sort = null)
+    protected function getQueryForPerson(Entity\Person $person, $sort = null)
     {
-        $qb = $this->createQueryBuilder('t');
-        $qb->select($isCount ? $qb->expr()->countDistinct('t.id') : 't');
-        $qb->leftJoin('t.participants', 'p');
-        $qb->where('t.status != \'hidden\' AND (t.date_last_agent_reply IS NOT NULL OR t.date_last_user_reply IS NOT NULL)');
-        $qb->setParameter('person', $person);
+        list($parts, $params, $parts_union) = $this->getQueryPartsForPerson($person);
 
-        if ($person->is_agent) {
-            $qb->andWhere('t.person = :person');
-        } elseif ($person->organization && $person->organization_manager) {
-            // Managers can always see their org tickets, so dont show them
-            // tickets if they are of their own org because those will be on the org page
-            $qb->andWhere('t.person = :person OR (p.person = :person AND t.organization != :org)');
-            $qb->setParameter('org', $person->organization);
-        } else {
-            $qb->andWhere('(t.person = :person OR p.person = :person)');
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+            "SELECT DISTINCT id FROM ($parts_union) AS t",
+            $params
+        );
+
+        if (!$ids) {
+            $ids = array(0);
         }
 
-        if (!$isCount) {
-            switch ($sort) {
-                case 'department':
-                    $qb->leftJoin('t.department', 'd');
-                    $qb->leftJoin('d.parent', 'd_parent');
-                    $qb->addOrderBy('d_parent.display_order, d.display_order, t.id', 'DESC');
-                    break;
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('t');
+        $qb->where('t.status != \'hidden\' AND (t.date_last_agent_reply IS NOT NULL OR t.date_last_user_reply IS NOT NULL)');
+        $qb->andWhere('t.id IN (:ids)');
+        $qb->setParameter('ids', $ids);
 
-                case 'last_reply':
-                    $qb->addOrderBy('t.date_last_user_reply', 'DESC');
-                    break;
+        switch ($sort) {
+            case 'department':
+                $qb->leftJoin('t.department', 'd');
+                $qb->leftJoin('d.parent', 'd_parent');
+                $qb->addOrderBy('d_parent.display_order, d.display_order, t.id', 'DESC');
+                break;
 
-                case 'date_created':
-                default:
-                    $qb->addOrderBy('t.id', 'DESC');
-            }
+            case 'last_reply':
+                $qb->addOrderBy('t.date_last_user_reply', 'DESC');
+                break;
+
+            case 'date_created':
+            default:
+                $qb->addOrderBy('t.id', 'DESC');
         }
 
         return $qb->getQuery();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\Entity\Usersource;
@@ -93,6 +94,11 @@ class AuthenticationManager
      * @var \Application\DeskPRO\Settings\Settings
      */
     private $appSettings;
+
+    /**
+     * @var string
+     */
+    private $authBy;
 
     /**
      * @param UsersourceManager            $usersourceManager    system service
@@ -219,8 +225,9 @@ class AuthenticationManager
                     $login_processor = new LoginProcessor($us, $result->getIdentity());
                     $person          = $login_processor->getPerson();
 
-                    $identity = new Identity($person->id, array('person' => $person));
-                    $result   = new Result(Result::SUCCESS, $identity);
+                    $identity     = new Identity($person->id, array('person' => $person));
+                    $result       = new Result(Result::SUCCESS, $identity);
+                    $this->authBy = $us->source_type;
 
                     return $result;
                 }
@@ -413,5 +420,10 @@ class AuthenticationManager
     public function getInterface()
     {
         return $this->interface;
+    }
+
+    public function getAuthBy()
+    {
+        return $this->authBy;
     }
 }

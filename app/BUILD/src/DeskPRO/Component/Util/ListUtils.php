@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 /**
@@ -270,5 +271,90 @@ class ListUtils
         }
 
         return $all;
+    }
+
+    /**
+     * @param \Traversable|array $array
+     *
+     * @return array
+     */
+    public static function flatten($array)
+    {
+        $ret = [];
+        foreach ($array as $a) {
+            if (is_array($a) || $a instanceof \Traversable) {
+                $ret = array_merge($ret, self::flatten($a));
+            } else {
+                $ret[] = $a;
+            }
+        }
+
+        return $a;
+    }
+
+    /**
+     * Sorts a list using the return value of $fn(item).
+     *
+     * The return value of an item is typically an integer. If it is not,
+     * we will try to handle it th ebest we can (e.g. true/false, nulls, objects with toString, etc).
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn
+     * @param bool               $reverse
+     *
+     * @return array
+     */
+    public static function sortByFnValue($array, $fn, $reverse = false)
+    {
+        $procType = function ($val) {
+            $type = strtolower(gettype($val));
+
+            switch ($type) {
+                case $val instanceof \Countable:
+                    return count($val);
+                case 'null':
+                    return 2;
+                case 'boolean':
+                    return $val ? -1 : 1;
+                case 'array':
+                    return count($val);
+                case 'object':
+                    if (method_exists($val, '__toString')) {
+                        return $val->__toString();
+                    } else {
+                        return 1;
+                    }
+                case 'integer':
+                case 'double':
+                case 'float':
+                    return $val;
+                case 'resource':
+                    return 0;
+                default:
+                    return 0;
+            }
+        };
+
+        $array2 = $array;
+        usort($array2, function ($a, $b) use ($fn, $procType, $reverse) {
+            $aVal = $procType($fn($a));
+            $bVal = $procType($fn($b));
+
+            if ($aVal === $bVal) {
+                $order = 0;
+            } elseif (is_string($aVal) && is_string($bVal)) {
+                $order = strcmp($aVal, $bVal);
+            } else {
+                $order = $aVal < $bVal ? -1 : 1;
+            }
+
+            if ($reverse) {
+                $order = $order * -1;
+            }
+
+            return $order;
+        });
+
+        return $array2;
     }
 }

@@ -560,7 +560,7 @@ class FieldManager
         $this->_orig_display = $this->getDisplayArrayForObject($object);
 
         foreach ($fields as $field_def) {
-            if ($only_set && !isset($form['field_'.$field_def->getId()])) {
+            if ($only_set && !array_key_exists('field_'.$field_def->getId(), $form)) {
                 continue;
             }
 

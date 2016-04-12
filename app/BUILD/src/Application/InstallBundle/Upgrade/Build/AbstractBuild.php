@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\SchemaHelper;
@@ -36,6 +37,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
 use DeskPRO\Component\Util\MapUtils;
 use Doctrine\DBAL\Connection;
+use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -189,7 +191,10 @@ abstract class AbstractBuild
     }
 
     /**
-     * @param $sql
+     * @param string $sql
+     * @param bool   $ignore_err
+     *
+     * @throws \Exception
      */
     public function execMutateSql($sql, $ignore_err = false)
     {
@@ -202,6 +207,54 @@ abstract class AbstractBuild
             if (!$ignore_err) {
                 throw $e;
             }
+        }
+    }
+
+    /**
+     * Execute a DB query.
+     *
+     * @param string $connName The connection to use.
+     * @param string $sql      The query to execute
+     *
+     * @throws \Exception
+     */
+    public function execDbQuery($connName = 'default', $sql)
+    {
+        $db = $this->container->get('doctrine')->getConnection($connName);
+
+        $sql = preg_replace('#^\s*#m', '', $sql);
+        try {
+            $db->exec($sql);
+        } catch (\Exception $e) {
+            $this->logger->info('SQL['.$connName.']: '.$sql);
+            $this->logger->info('Error: '.$e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Execute a DB query but catch and return any exceptions.
+     * Returns exception on error, null on success.
+     *
+     * @param string $connName The connection to use.
+     * @param string $sql      The query to execute
+     *
+     * @return null|\Exception
+     */
+    public function execDbQueryQuiet($connName = 'default', $sql)
+    {
+        $db = $this->container->get('doctrine')->getConnection($connName);
+
+        $sql = preg_replace('#^\s*#m', '', $sql);
+        try {
+            $db->exec($sql);
+
+            return;
+        } catch (\Exception $e) {
+            $this->logger->info('SQL['.$connName.']: '.$sql);
+            $this->logger->info('Error: '.$e->getMessage());
+
+            return $e;
         }
     }
 
@@ -262,22 +315,20 @@ abstract class AbstractBuild
 
             $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
-            $port   = '';
-            $dbhost = DP_DATABASE_HOST;
-            $m      = null;
-            if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-                $dbhost = $m[1];
-                $port   = $m[2];
-            }
+            $dbinfo = LowUtil::getMysqlInfoFromConfigArray($env->getConfig('database'));
+
+            $port   = $dbinfo['port'];
+            $dbhost = $dbinfo['host'];
+            $dbname = $dbinfo['dbname'];
 
             $params = array(
                 '{tool}'    => $tool,
                 '{query}'   => escapeshellarg($alter),
                 '{db_host}' => escapeshellarg($dbhost),
                 '{db_port}' => escapeshellarg($port ?: 3306),
-                '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
-                '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: DP_DATABASE_USER),
-                '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: DP_DATABASE_PASSWORD),
+                '{db_name}' => escapeshellarg($dbname),
+                '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: $dbinfo['user']),
+                '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: $dbinfo['password']),
                 '{dsn}'     => "t=$table",
             );
 
@@ -290,6 +341,7 @@ abstract class AbstractBuild
             $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
 
             $logger->info('BEGIN: LIVE');
+            $logger->debug('Command: '.str_replace($params['{db_pass}'], '***', $cmd_exec));
             $proc = new Process($cmd_exec, DP_ROOT);
             $proc->setTimeout(600);
             $proc->run(function ($type, $data) use ($logger) {

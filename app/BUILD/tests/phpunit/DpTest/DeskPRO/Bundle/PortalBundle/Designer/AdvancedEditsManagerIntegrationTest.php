@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\BlobStorage;

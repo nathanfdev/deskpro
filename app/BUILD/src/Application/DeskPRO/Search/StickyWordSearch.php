@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -141,10 +142,11 @@ class StickyWordSearch implements PersonContextInterface
     /**
      * @param string $query
      * @param int    $limit
+     * @param array  $limit_types Which types to search in
      *
      * @return array
      */
-    public function getResults($query, $limit = 10)
+    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback'])
     {
         $words = $this->getWordsFromQuery($query);
 
@@ -158,16 +160,24 @@ class StickyWordSearch implements PersonContextInterface
             $words = array_slice($words, 0, 15);
         }
 
-        $in_q = array_fill(0, count($words), '?');
-        $in_q = implode(',', $in_q);
+        // Convert input $limit_types to the type strings used in the db
+        $limit_types = array_map(function ($t) {
+            switch ($t) {
+                case 'article':  return 'DeskPRO:Article';
+                case 'news':     return 'DeskPRO:News';
+                case 'download': return 'DeskPRO:Download';
+                case 'feedback': return 'DeskPRO:Feedback';
+                default: return $t;
+            }
+        }, $limit_types);
 
-        $results_raw = $this->db->fetchAll("
+        $results_raw = $this->db->fetchAll('
             SELECT object_type, object_id
             FROM search_sticky_result
-            WHERE word IN ($in_q)
+            WHERE word IN (?) AND object_type IN (?)
             ORDER BY object_id DESC
             LIMIT 1000
-        ", $words);
+        ', [$words, $limit_types], [Connection::PARAM_STR_ARRAY, Connection::PARAM_STR_ARRAY]);
 
         if (!$results_raw) {
             return array();
@@ -179,11 +189,16 @@ class StickyWordSearch implements PersonContextInterface
         #------------------------------
 
         $check_ids = array(
-            'DeskPRO:Article'  => array(),
-            'DeskPRO:News'     => array(),
-            'DeskPRO:Download' => array(),
-            'DeskPRO:Feedback' => array(),
+            'DeskPRO:Article'  => [],
+            'DeskPRO:News'     => [],
+            'DeskPRO:Download' => [],
+            'DeskPRO:Feedback' => [],
         );
+
+        if (empty($check_ids)) {
+            return [];
+        }
+
         $valid_ids = $check_ids; //copy structure
 
         if ($this->person_context) {

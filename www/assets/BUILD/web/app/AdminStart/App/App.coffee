@@ -69,9 +69,6 @@ define [
     $routeProvider.when('/', {
       templateUrl: 'AdminInterface/Start/home.html',
       controller: 'AdminStart_Ctrl_Home'
-    }).when('/cron', {
-      templateUrl: 'AdminInterface/Start/cron.html',
-      controller: 'AdminStart_Ctrl_Cron'
     }).when('/email', {
       templateUrl: 'AdminInterface/Start/email.html',
       controller: 'AdminStart_Ctrl_Email'

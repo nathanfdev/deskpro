@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -853,6 +853,12 @@ $collection->create(
     )
 );
 
+$collection->create('api_people_quick_search_email', array(
+    'path'       => '/people/quick_search_email',
+    'controller' => 'LegacyApiBundle:Person:quickSearchEmail',
+    'methods'    => array('GET'),
+));
+
 $collection->create(
     'api_people_post',
     array(
@@ -991,6 +997,41 @@ $collection->create(
         'methods'      => array('DELETE'),
     )
 );
+
+$collection->create('api_people_person_phone_numbers_get', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'LegacyApiBundle:Person:getPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_phone_numbers_update', array(
+    'path'         => '/people/{person_id}/phone_numbers',
+    'controller'   => 'LegacyApiBundle:Person:postPersonPhoneNumbers',
+    'requirements' => array('person_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_phone_numbers', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:getPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_people_person_phone_numbers_post', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:postPersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_people_person_phone_numbers_delete', array(
+    'path'         => '/people/{person_id}/phone_numbers/{number_id}',
+    'controller'   => 'LegacyApiBundle:Person:deletePersonPhoneNumber',
+    'requirements' => array('person_id' => '\\d+', 'number_id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
 
 $collection->create(
     'api_people_person_vcard',
@@ -1219,6 +1260,12 @@ $collection->create(
         'methods'    => array('GET'),
     )
 );
+
+$collection->create('api_people_authlogin', array(
+    'path'       => '/people/auth-login',
+    'controller' => 'LegacyApiBundle:Person:authLogin',
+    'methods'    => array('POST'),
+));
 
 $collection->create(
     'api_agents_list',
@@ -6030,6 +6077,32 @@ $collection->create(
 );
 
 $collection->create(
+    'api_common_custom_fields_get',
+    array(
+        'path'         => '/custom_fields/{objectType}/{objectId}',
+        'controller'   => 'LegacyApiBundle:CustomFields:getCommonFields',
+        'requirements' => array(
+            'objectType' => implode(
+                '|',
+                array_keys(\Application\LegacyApiBundle\Controller\CustomFieldsController::$allowed_common)
+            ),
+            'id' => '\\d+',
+        ),
+        'methods' => array('GET'),
+    )
+);
+
+$collection->create(
+    'api_common_custom_fields_set',
+    array(
+        'path'         => '/custom_fields/{objectType}/{objectId}',
+        'controller'   => 'LegacyApiBundle:CustomFields:setCommonField',
+        'requirements' => array('objectType' => '\\w+', 'objectId' => '\\d+'),
+        'methods'      => array('POST'),
+    )
+);
+
+$collection->create(
     'api_custom_fields_children',
     array(
         'path'         => '/custom_fields/{id}/children',
@@ -6558,7 +6631,7 @@ $collection->create(
         'path'         => '/langs/{id}/install',
         'controller'   => 'LegacyApiBundle:Languages:installLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '[a-z]+'),
+        'requirements' => array('id' => '[a-z_]+'),
     )
 );
 
@@ -6568,7 +6641,7 @@ $collection->create(
         'path'         => '/langs/{id}/uninstall',
         'controller'   => 'LegacyApiBundle:Languages:uninstallLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6578,7 +6651,7 @@ $collection->create(
         'path'         => '/langs/{id}',
         'controller'   => 'LegacyApiBundle:Languages:getLang',
         'methods'      => array('GET'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6588,7 +6661,7 @@ $collection->create(
         'path'         => '/langs/{id}',
         'controller'   => 'LegacyApiBundle:Languages:saveLang',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 
@@ -6598,7 +6671,7 @@ $collection->create(
         'path'         => '/langs/{id}/phrases',
         'controller'   => 'LegacyApiBundle:Languages:savePhraseSet',
         'methods'      => array('POST'),
-        'requirements' => array('id' => '\d+|[a-z]+'),
+        'requirements' => array('id' => '\d+|[a-z_]+'),
     )
 );
 

@@ -119,12 +119,14 @@ export class Frame extends React.Component {
         const $body = $(doc.body);
 
         const $styles = $(document).find('style').clone();
+        const $links = $(document).find('link').clone();
         const $container = $('<div/>', {
           id: 'react_frame_container',
           css: frameContainerStyles
         });
 
         $head.html($styles);
+        $head.append($links);
         $body.html($container);
 
         this.containerReady = true;

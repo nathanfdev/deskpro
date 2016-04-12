@@ -59,7 +59,7 @@
 
 body {
   margin: 0;
-  padding: 20px;
+  padding: 0;
   background: $world-background;
   color: $text-color;
   font-size: $font-default;
@@ -68,8 +68,12 @@ body {
   text-align: $text-left;
 }
 
+.dp-page-body {
+  padding: 20px;
+}
+
 @media screen and (max-width: 760px) {
-  body {
+  .dp-page-body {
     padding: 0;
     padding-top: 50px;
   }
@@ -1115,24 +1119,8 @@ button, .button, input[type="submit"] {
         font-weight: 500;
       }
 
-      .mobile-expand {
-        display: inline-block;
-        z-index: 299;
-        position: absolute;
-        @include right(12px);
-        top: 6px;
-        opacity: 0.5;
 
-        &:hover {
-          opacity: 1;
-          cursor: pointer;
-        }
-      }
     }
-  }
-
-  .mobile-expand {
-    display: none;
   }
 
   .register-or-signup {
@@ -1183,9 +1171,31 @@ button, .button, input[type="submit"] {
     display: inline-block;
     color: #b4b4b4;
 
+    .mobile-expand {
+      display: none;
+    }
+
     @media screen and (max-width: 760px) {
       display: block;
       width: 100%;
+
+      .hideable.hidden {
+        display: none;
+      }
+
+      .mobile-expand {
+        display: inline-block;
+        z-index: 299;
+        position: absolute;
+        @include right(12px);
+        top: 39px;
+        opacity: 0.5;
+
+        &:hover {
+          opacity: 1;
+          cursor: pointer;
+        }
+      }
     }
 
     .disc {
@@ -1238,11 +1248,15 @@ button, .button, input[type="submit"] {
           display: block;
           padding: 5px;
           border-top: 1px solid $divider-color;
-          border-bottom: 1px solid $divider-color;
+          cursor: pointer;
           .agent-avatar {
             @include margin-right(2px);
             top: -2px;
           }
+        }
+
+        .profile-link {
+          border-top: 1px solid $divider-color;
         }
 
         a {
@@ -4730,6 +4744,7 @@ ul.kb-checkbox-extra {
   border-radius: 4px;
   background: #ffffff;
   font-weight: 300;
+  z-index: 110;
 
   h1 {
     font-weight: 300;
@@ -4810,7 +4825,6 @@ ul.kb-checkbox-extra {
     @include right(0);
     padding: 10px 15px;
     cursor: pointer;
-    z-index: 9999;
 
     i {
       color: $text-color-lighter;
@@ -4837,6 +4851,22 @@ ul.kb-checkbox-extra {
     vertical-align: middle;
     text-decoration: none;
     border-radius: 2px;
+  }
+}
+
+.dp-page-banner {
+  background: #2B373C;
+  padding: 8px;
+  color: #eee;
+  text-align: center;
+  font-size: 0.9em;
+  a {
+    text-decoration: none;
+    color: #5D90EA;
+
+    &:hover {
+      color: #96B8F5;
+    }
   }
 }
 
@@ -5354,16 +5384,19 @@ h1.fancy-header {
 
     small {
       font-size: 0.7em;
+      line-height: 100%;
     }
   }
 
-  .no-dropdown a:hover {
-    color: $text-color-darker;
-    border-bottom: 3px solid $button-color-secondary;
+  .quick-jump > a, .quick-jump > a {
+    border-bottom: 3px solid transparent;
   }
 
-  .quick-jump a.active {
+  .quick-jump > a:hover {
     color: $text-color-darker;
+  }
+
+  .quick-jump > a.active {
     border-bottom: 3px solid $button-color-secondary;
   }
 
@@ -5380,11 +5413,10 @@ h1.fancy-header {
   .quick-jump .dropdown-content {
     @include generate-background-and-border($surface-secondary);
     text-align: $text-left;
-    border-top: 3px solid $button-color-secondary;
     min-width: 120px;
     position: absolute;
     @include margin-left(0);
-    top: 27px;
+    top: 30px;
     @include left(15px);
     display: none;
 
@@ -5410,7 +5442,8 @@ h1.fancy-header {
           }
           input {
             display: inline-block;
-            @include margin-right(4px);
+            vertical-align: baseline;
+            @include margin-right(7px);
 
             @media all and (-ms-high-contrast: none) {// Reposition the checkboxes
               position: relative;
@@ -5420,6 +5453,7 @@ h1.fancy-header {
           }
           a {
             display: inline-block;
+            @include padding-left(0);
           }
         }
         &:hover {
@@ -6321,15 +6355,16 @@ h1.fancy-header {
       color: #cecece;
     }
 
+    span {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      @include margin-left(5px);
+    }
+
     a {
       color: #3575bd;
       text-decoration: none;
-      span {
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-        @include margin-left(5px);
-      }
       &:hover {
         text-decoration: underline;
       }
@@ -8882,7 +8917,7 @@ body.with-agent-bar {
 // Forms
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.new-ticket-attachements {
+.new-ticket-attachments {
   cursor: pointer;
   margin-top: 10px;
 
@@ -10038,16 +10073,9 @@ form {
     }
     &.no-hover {
       position: relative;
-
       &:before {
-        position: absolute;
-        top: -8px;
-        @include left(40px);
-        display: block;
-        width: 0;
-        border: 4px solid rgba(0, 0, 0, 0);
-        border-bottom: 4px solid $red;
-        content: " ";
+        content: "";
+        display: none;
       }
     }
   }

@@ -53,7 +53,8 @@ define [
       # @return {Array}
     ###
     getOperators: (options) ->
-      return options.operators || ['is', 'not', 'isset', 'not_isset']
+      ops = options.operators || ['is', 'not', 'isset', 'not_isset']
+      return ops
 
     ###
       # Constructs standard input from a custom field def
@@ -61,16 +62,18 @@ define [
     getStandardForFieldDef: (field, options = {}) ->
       options.type_name = field.type_name
       if not options.propName then options.propName = 'value'
-      options.operators = ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
 
       if field.type_name == 'choice'
+        options.operators = options.operators || ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched']
         options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
         return @getStandardSelect(options)
       else if field.type_name == 'toggle'
+        options.operators = options.operators || ['isset', 'not_isset', 'touched', 'nottouched']
         options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
         options.single = true
         return @getStandardSelect(options)
       else if field.type_name == 'date' || field.type_name == 'datetime'
+        options.operators = options.operators || ['lte', 'gte', 'between']
         return @getDateInput(options)
       else
         if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']

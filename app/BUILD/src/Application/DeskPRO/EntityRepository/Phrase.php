@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -82,8 +83,8 @@ class Phrase extends AbstractEntityRepository
         $phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
-            WHERE language_id = ? AND groupname = ?
-        ', array($language['id'], $group));
+            WHERE language_id = ? AND groupname LIKE ?
+        ', array($language['id'], $group.'%'));
 
         return $phrases;
     }

@@ -62,7 +62,7 @@ class PersonEmailType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class'  => PersonEmail::class,
-            'email_label' => 'Email',
+            'email_label' => false,
             'constraints' => [
                 new UniqueEntity([
                     'fields'    => 'email',

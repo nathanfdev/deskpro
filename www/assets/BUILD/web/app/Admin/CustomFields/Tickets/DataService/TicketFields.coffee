@@ -14,7 +14,6 @@ define [
         priority: true,
         workflow: true,
         product:  true
-        label:    true
       }
 
     _doLoadList: ->

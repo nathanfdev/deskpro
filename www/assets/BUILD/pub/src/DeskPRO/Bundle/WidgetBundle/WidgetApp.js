@@ -10,7 +10,6 @@ import { widgetApi } from './Services/DpApi';
 import { repositoriesConfig } from './Modules/Application/DAL/config';
 import $ from 'jquery';
 import './Services/WindowApi';
-import './Resources/style/widget-style.scss';
 
 export class WidgetApp {
 

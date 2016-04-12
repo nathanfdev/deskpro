@@ -10,6 +10,8 @@
 			{% else %}
 				Unchecked
 			{% endif %}
+        {% elseif field_handler_name == 'Choice' %}
+			{{ data.value|raw }}
 		{% else %}
 			{{ data.value }}
 		{% endif %}

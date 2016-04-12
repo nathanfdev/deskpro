@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set baseId = el_uid() %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -14,9 +12,7 @@
 	pageMeta.refreshUrl = '{{ path('agent_orgsearch_customfilter') }}?cache_id={{cache_id}}';
 	pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 	pageMeta.fetchResultsUrl = '{{ path('agent_orgsearch_getpage') }}';
-
-	{% set baseId = el_uid() %}
-	pageMeta.baseId = '{{ tplvars.baseId }}';
+	pageMeta.baseId = '{{ baseId }}';
 
 	pageMeta.resultId = {{cache_id}};
 	pageMeta.perPage = {{ per_page }};

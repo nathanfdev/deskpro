@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,10 +42,6 @@ if (!defined('DP_ROOT')) {
 
 if (!defined('DP_WEB_ROOT')) {
     define('DP_WEB_ROOT', realpath(DP_ROOT.'/../'));
-}
-
-if (!defined('DP_CONFIG_FILE')) {
-    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 }
 
 @setlocale(LC_CTYPE, 'C');

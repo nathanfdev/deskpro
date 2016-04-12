@@ -17,7 +17,8 @@
         $g.attr('label', parent.title);
 
         $.each(parent.children, function(i, child) {
-          var $opt = $('<option value="' + child.id + '">' + child.title + '</option>');
+          var $opt = $('<option value="' + child.id + '"></option>');
+          $opt.text(child.title);
           var ft = parent.title + ' > ' + child.title;
           $opt.data('full-title', ft).attr('data-full-title', ft);
           $g.append($opt);
@@ -25,7 +26,9 @@
 
         $select.append($g);
       } else {
-        $select.append('<option value="' + parent.id + '">' + parent.title + '</option>');
+        var $pOpt = $('<option value="' + parent.id + '"></option>');
+        $pOpt.text(parent.title);
+        $select.append($pOpt);
       }
     });
 
@@ -74,7 +77,9 @@
 
       $emptyAllowed && $select.append('<option value=""></option>');
       $.each(node.children, function (i, child) {
-        $select.append('<option value="' + child.id + '">' + child.title + '</option>');
+        var $opt = $('<option value="' + child.id + '"></option>');
+        $opt.text(child.title);
+        $select.append($opt);
         child.parent = node;
         if (node.children) {
           add(child, lvl+1);
@@ -83,7 +88,7 @@
 
       $select.on('change', function () {
         var val = parseInt($(this).val());
-        NaN === val && $el.val('');
+        isNaN(val) && $el.val('');
 
         var process = function (node) {
           if (!node.children) return;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -127,6 +128,6 @@ class ProcessEmailGateways extends AbstractJob
         // The PHP time limit would've been set above while processing messages,
         // reset it to disabled so other cron tasks can finish in this same execution
         @set_time_limit(0);
-        @ini_set('memory_limit', DP_SET_MEMSIZE);
+        @ini_set('memory_limit', DP_USE_MEMSIZE);
     }
 }

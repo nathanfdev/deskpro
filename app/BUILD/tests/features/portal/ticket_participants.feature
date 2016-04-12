@@ -18,7 +18,7 @@ Feature: Ticket Participants
       | agent   | An agent ticket 4   |   awaiting_agent  | user | walmart |
 
   @reinstall
-  Scenario: An agent deos not see the participant tickets in the lists
+  Scenario: An agent does not see the participant tickets in the lists
     Given I login with agent credentials
     When I go to "/tickets"
     Then I should see "2" tickets "awaiting_user"
@@ -44,11 +44,11 @@ Feature: Ticket Participants
     And I should see a header ticket count of "6"
 
   @reinstall
-  Scenario: An agent can still view a ticket they participate in
+  Scenario: An agent cant view a ticket they participate in through portal
     Given I login with agent credentials
     When I go to "/tickets/1"
-    Then the response status code should be 200
-    And I should see "My Ticket"
+    Then the response status code should be 403
+
 
   @reinstall
   Scenario: A user can view a ticket they participate in

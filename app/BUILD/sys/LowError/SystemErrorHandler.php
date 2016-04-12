@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\LowError;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\DBAL\DBALException;
 
 class SystemErrorHandler
@@ -243,6 +245,34 @@ class SystemErrorHandler
             $einfo['no_send_error'] = true;
         }
         self::logErrorInfo($einfo);
+    }
+
+    /**
+     * Logs debug data to a file.
+     *
+     * @param string $content
+     * @param null   $id
+     *
+     * @return string
+     */
+    public static function logDebugDataDump($content, $id = null)
+    {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        $path = $DP_ENV->getUserDebugDir().DIRECTORY_SEPARATOR.'data_dumps';
+        if (!is_dir($path)) {
+            @mkdir($path, 0777, true);
+        }
+
+        if (!$id) {
+            $id = date('YmdHis').'--'.RandUtils::randomString(20);
+        }
+
+        $dumpPath = $path.DIRECTORY_SEPARATOR.$id.'.dump';
+        @file_put_contents($dumpPath, $content);
+
+        return $dumpPath;
     }
 
     /**
@@ -832,8 +862,11 @@ class SystemErrorHandler
             return true;
         }
 
-        // Calling cmd.php with bad args
-        if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Too many arguments') !== false) {
+        // Calling cli with bad args
+        if ($exception instanceof \Symfony\Component\Console\Exception\RuntimeException && strpos($exception->getMessage(), 'Too many arguments') !== false) {
+            return true;
+        }
+        if ($exception instanceof \Symfony\Component\Console\Exception\RuntimeException && strpos($exception->getMessage(), 'option does not exist.') !== false) {
             return true;
         }
         if ($exception instanceof \InvalidArgumentException && strpos($exception->getMessage(), 'is ambiguous') !== false) {

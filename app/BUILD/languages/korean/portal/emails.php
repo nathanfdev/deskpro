@@ -1,0 +1,78 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+return array(
+    'portal.emails.auto-close'                  => '활동이 잦지 않아 고객님의 티켓 "{{ticket.subject}}"이 자동으로 닫혀집니다. 티켓을 닫고 싶지 않으시면 저희 상담원이 도와드릴 수 있도록 새 답변을 추가하시면 됩니다.',
+    'portal.emails.chat_transcript'             => '상담 감사합니다. 상담 기록입니다.',
+    'portal.emails.comment_approved'            => '코멘트가 발행되었습니다.',
+    'portal.emails.comment_deleted'             => '고객님의 코멘트가 페이지의 개선에 도움이 되었습니다',
+    'portal.emails.comment_thank-you'           => '{{link}} 에 코멘트를 남겨주셔서 감사합니다.',
+    'portal.emails.comment_validate-email'      => '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.',
+    'portal.emails.do-not-reply'                => '이 이메일에 답변하지 마십시오. 이 이메일은 기계 발생 메세지이니 스태프가 받지 못합니다.',
+    'portal.emails.email-too-big'               => '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.',
+    'portal.emails.feedback_approved'           => '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.',
+    'portal.emails.feedback_closed'             => '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  ',
+    'portal.emails.feedback_disapproved'        => '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.',
+    'portal.emails.feedback_disapproved-reason' => '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:',
+    'portal.emails.feedback_new-comment'        => '{{name}} 이 새 댓글을 달았습니다:',
+    'portal.emails.feedback_published'          => '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.',
+    'portal.emails.feedback_thank-you'          => '피드백 "{{title}}"을 남겨주셔서 감사합니다.',
+    'portal.emails.feedback_updated'            => '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.',
+    'portal.emails.feedback_validate-email'     => '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.',
+    'portal.emails.feedback_votes'              => '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: ',
+    'portal.emails.greeting'                    => '{{to_name}}님께,',
+    'portal.emails.kb-explain'                  => '이 이메일은 지식베이스를 <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{ unsubscribe_url }}"> 를 클릭해 구독을 취소해주십시오.</a>',
+    'portal.emails.kb-new-articles'             => '하나의 새로운 논문 {{count}}개의 새로운 논문',
+    'portal.emails.kb-updated-articles'         => '하나의 업데이트 논문 {{count}} 개의 업데이트 논문',
+    'portal.emails.label_view-online'           => '온라인에서 확인하세요',
+    'portal.emails.message-clipped'             => '(메세지들이 클립되었습니다 )',
+    'portal.emails.password_agent-reset'        => '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오',
+    'portal.emails.password_reset'              => '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:',
+    'portal.emails.profile_email-new-confirm'   => '두번째 이메일 주소를 추가하시려면 아래의 확인 링크를 클릭해주십시오',
+    'portal.emails.profile_email_link-validate' => '이메일 주소를 인증시키시려면 아래 링크를 클릭해주십시오',
+    'portal.emails.register-agent-validation'   => '메모: 계정이 활성화 되려면 에이전트가 계정을 인증해야합니다. 티켓과 다른 콘텐츠는 에이전트가 계정을 승인하기까지 승인 목록에 대기 될것입니다.',
+    'portal.emails.register-confirm'            => '가입해주셔서 감사합니다. <br /><br />아래 링크를 클릭해 이메일 주소를 확인해주셔야 계정을 사용하실 수 있습니다.',
+    'portal.emails.register-welcome'            => '가입해 주셔서 감사합니다. {{to_email}} 로 Helpdesk 에 로그인 하십시오:',
+    'portal.emails.registration_closed'         => '{{name}}님, <br /><br />현 헬프데스크 멤버들만 새로운 티켓을 받을 수 있습니다. 계정이 있으시면 가입하신 이메일 주소로 이메일을 보내주세요.',
+    'portal.emails.reject_resolved'             => '티켓이 이미 해결되었기 때문에 답변이 수락 되지 않았습니다. 에이전트가 이 메세지를 읽거나 답변 하지 않을 것 입니다',
+    'portal.emails.reject_resolved-new'         => '새로운 티켓을 생성하시려면 <a href="mailto:{{email_to}}">{{email_to}}</a> 로 이메일을 보내시거나 <br /><a href="{{link}}">{{link}}</a> 에서 온라인 양식을 작성해 주세요.',
+    'portal.emails.reject_resolved-newemail'    => '새로운 티켓을 생성하시려면 <a href="mailto:{{email_to}}">{{email_to}}</a> 로 이메일을 보내주세요.',
+    'portal.emails.ticket_access_ticket_online' => '티켓은 온라인에서 보시고 관리해주세요:',
+    'portal.emails.ticket_cc-new'               => '티켓에 {{name}}에 의해 참여되셨습니다.',
+    'portal.emails.ticket_message_title'        => '{{date}} {{time}}에, {{author}} 님이 쓰신 글 입니다:',
+    'portal.emails.ticket_no-autoresponse'      => '알림: 확인 이메일이 정지 되었습니다',
+    'portal.emails.ticket_rate-negative'        => '아니오',
+    'portal.emails.ticket_rate-neutral'         => '괜찮았습니다',
+    'portal.emails.ticket_rate-positive'        => '예',
+    'portal.emails.ticket_rate-question'        => '메세지가 도움이 되셨습니까?',
+    'portal.emails.ticket_received'             => '티켓이 접수되었습니다. 빠른시간 안에 답변을 받아보실 수 있습니다.',
+    'portal.emails.ticket_reply-confirm'        => '답변해 주셔서 감사하니다. 빠른시간 안에 답변 해 드리도록 하겠습니다.',
+    'portal.emails.ticket_validate'             => '연락해 주셔서 감사합니다. <br /><br />에이전트가 메세지를 읽고 답변 해 드릴 수 있도록 이메일 주소를 확인해 주세요.',
+    'portal.emails.tickets_ommitted'            => '1개의 메세지가 제외 되었습니다. {{count}}개의 메세지가 제외 되었습니다',
+    'portal.emails.view_full_history_online'    => '티켓 전체는 온라인에서 확인해주세요.',
+);

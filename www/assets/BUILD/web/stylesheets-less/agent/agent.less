@@ -443,8 +443,8 @@ em.counter, em.list-counter {
 		position: relative;
 		margin: 4px 0 0 8px;
 		height: (@agent_header_height - 13);
-		width: 180px;
-		padding: 2px 12px 0px 0;
+		min-width: 100px;
+		padding: 2px 75px 0px 0;
 		font-size: 14px;
 		line-height: 16px;
 		color: #fff;
@@ -588,26 +588,18 @@ em.counter, em.list-counter {
 	display: none;
 	.zindex-chrome;
 	position: absolute;
-	left: -589px;
+	left: 9px;
 	top: 43px;
 	min-height: 178px;
-	width: 790px;
+	width: 350px;
 	overflow: hidden;
 	background: @agent_bigmenu_bg_color;
-	border-radius: 3px 0 3px 3px;
+	border-radius: 0px 3px 3px 3px;
 	box-shadow:  0px 1px 3px rgba(0, 0, 0, 0.3);
 
 	.column1 {
-		width: 192px;
-		height: 100%;
 		border-left: 1px solid @agent_bigmenu_border_color;
 		color: @agent_bigmenu_text_color;
-	}
-
-	.column2 {
-		width: 607px;
-		height: 100%;
-		color: @agent_bigmenu_border_color;
 	}
 
 	#agent_status_menu_me_list {

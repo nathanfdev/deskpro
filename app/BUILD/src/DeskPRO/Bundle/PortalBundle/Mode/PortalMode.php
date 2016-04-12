@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
  * A portal mode represents a mode that the portal is in for a given request.
  *
  * There is always a portal mode. The default mode is "normal".
+ *
+ * @see DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
  */
 class PortalMode
 {
@@ -46,6 +48,11 @@ class PortalMode
      * used from chat.
      */
     const MODE_FOCUS_WINDOW = 'focus-window';
+
+    /**
+     * Framed mode is a website embed option.
+     */
+    const MODE_FRAME_EMBED = 'frame-embed';
 
     protected $mode;
     protected $original_path;
@@ -75,6 +82,10 @@ class PortalMode
 
         if ($this->isFocusWindow()) {
             return self::MODE_FOCUS_WINDOW;
+        }
+
+        if ($this->isFrameEmbed()) {
+            return self::MODE_FRAME_EMBED;
         }
 
         return self::MODE_NORMAL;
@@ -132,9 +143,19 @@ class PortalMode
         return self::MODE_FOCUS_WINDOW === $this->mode;
     }
 
+    public function isFrameEmbed()
+    {
+        return self::MODE_FRAME_EMBED === $this->mode;
+    }
+
     public function setFocusWindow()
     {
         $this->mode = self::MODE_FOCUS_WINDOW;
+    }
+
+    public function setFrameEmbed()
+    {
+        $this->mode = self::MODE_FRAME_EMBED;
     }
 
     public function getOriginalPath()

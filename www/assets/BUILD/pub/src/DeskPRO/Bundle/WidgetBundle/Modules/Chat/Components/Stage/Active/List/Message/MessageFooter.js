@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import classNames from 'classnames';
-import { timeAgoForamtter } from '../../../../../../../Services/timeago';
+import { timeAgoFormatter } from '../../../../../../../Services/timeago';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class MessageFooter extends React.Component {
 
@@ -27,13 +28,13 @@ export class MessageFooter extends React.Component {
         <div className={classNames({ right: isUser })}>
           {date &&
             <TimeAgo className="dpdesignportal-message-footer-timer"
-                     formatter={timeAgoForamtter}
+                     formatter={timeAgoFormatter}
                      minPeriod={60000}
                      date={date} />
           }
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">
-              <i className="fa fa-warning" /> Not delivered
+              <i className="fa fa-warning"/> {portalPhrases.get('portal.chat.asset_not_delivered')}
             </span>
           }
         </div>

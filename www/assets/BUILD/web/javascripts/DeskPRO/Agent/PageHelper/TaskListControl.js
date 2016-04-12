@@ -233,7 +233,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			var elPos = $(this).offset();
 
 			openForEl.datepicker('dialog', date, function (date, inst) {
-				sendUpdate(openForEl, 'date_due', date);
+				sendUpdate(openForEl, 'date_due', inst.selectedYear + '-' + (inst.selectedMonth + 1) + '-' + inst.selectedDay);
 				label.text(date);
 			}, {
 				dateFormat: dateFormat,

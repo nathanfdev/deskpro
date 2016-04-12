@@ -5,7 +5,7 @@ imports:
 parameters:
   router.options.matcher.cache_class: null
   portal.session.name: sess_data
-  doctrine.orm.proxy_dir: %kernel.cache_dir%/doctrine-proxies
+  doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
   templating.globals.class: Application\DeskPRO\Templating\GlobalVariables
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
@@ -101,9 +101,12 @@ security:
                 key:    "irrelevant - compiler pass will override this"
             logout:
                 path: portal_logout
+                csrf_parameter: auth
+                csrf_provider: security.csrf.token_manager
                 target: /
                 invalidate_session: true
                 handlers:  [security.authentication.logout_handler]
+                success_handler: security.authentication.logout_handler
             remember_me:
                 key:      "irrelevant - compiler pass will override this"
                 lifetime: 31536000 # 365 days in seconds
@@ -164,7 +167,8 @@ fos_rest:
             - { path: '^/portal/api/', priorities: ['json', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: false }
             - { path: '^/', stop: true }
     exception:
-        enabled: true
+        # disabled because this is portal and we want to use portal exception handler
+        enabled: false
     view:
         view_response_listener: force
         formats:

@@ -15,6 +15,7 @@ import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListe
 import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
 import ScrollArea from 'react-scrollbar-iframe';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class ReplyForm extends React.Component {
 
@@ -86,8 +87,8 @@ export class ReplyForm extends React.Component {
             ownerDocument: window.widgetFrame.document,
             autoLink:      true,
             imageDragging: true,
-            placeholder:   {
-              text: `Type your message to ${this.props.agentName}`
+            placeholder:    {
+              text: portalPhrases.get('portal.chat.message_type', {'{agentName}': this.props.agentName})
             },
             toolbar: {
               buttons:                ['bold', 'italic', 'underline'],
@@ -141,13 +142,13 @@ export class ReplyForm extends React.Component {
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
             <span className="dpdesignportal-chat-form-button">
-              <i className="fa fa-upload" /> Upload file
+              <i className="fa fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
               <input ref="fileUpload" className="file" type="file" name="files[]" multiple="multiple" />
             </span>
 
             {false /* disabled for now */ &&
               <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-                <i className="fa fa-camera" /> Screen Share
+                <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
               </a>
             }
 

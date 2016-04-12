@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;

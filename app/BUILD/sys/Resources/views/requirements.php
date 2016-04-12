@@ -302,13 +302,13 @@
                 <?php endif; ?>
 
                 <?php if (!count($majorProblems)): ?>
-                    <p class="ok">All checks passed successfully. Your system is ready to run Symfony applications.</p>
+                    <p class="ok">All checks passed successfully. Your system is ready to run DeskPRO.</p>
                 <?php endif; ?>
 
                 <?php if (count($minorProblems)): ?>
                     <h2>Recommendations</h2>
                     <p>
-                        <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Symfony experience,
+                        <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your DeskPRO experience,
                         it’s recommended that you fix the following:
                     </p>
                     <ol>

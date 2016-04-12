@@ -189,7 +189,7 @@
 					<% if (field == 'organization') { %>
 						<span class="prop-title">{{ phrase('agent.general.organization') }}:</span>
 						<span class="prop-val">
-							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
+							<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'})|raw }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
 						</span>
 					<% } %>
 

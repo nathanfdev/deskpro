@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\People\PasswordPolicyValidator;
@@ -65,7 +64,7 @@ class DpPasswordValidator extends ConstraintValidator
 
         $person = $constraint->person;
         if (!$this->pw_validator->checkPassword($value, $person, $error)) {
-            $policy = $this->pw_validator->getPasswordPolicy($person);
+            $policy = $this->pw_validator->getPolicy($person);
 
             $error_phrase = 'portal.forms.error_password_'.$error;
             $error_params = [];

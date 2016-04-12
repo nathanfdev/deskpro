@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Controller
  */
+
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
@@ -94,7 +95,33 @@ class Connection extends \Doctrine\DBAL\Connection
      */
     protected $do_reset_isolation = false;
 
+    /**
+     * @var int
+     */
+    private $connectAttempts = 0;
+
     public function connect()
+    {
+        ++$this->connectAttempts;
+
+        try {
+            return $this->doConnect();
+        } catch (\Exception $e) {
+            $params = $this->getParams();
+
+            // It can be common to have a bit of a network glitch that prevents a connection
+            // from failing, and its better to retry once now then show the user a failure screen
+
+            if (isset($params['dp_connect_attempts']) && $this->connectAttempts < $params['dp_connect_attempts']) {
+                usleep(500000); // half a second
+                return $this->doConnect();
+            }
+
+            throw $e;
+        }
+    }
+
+    private function doConnect()
     {
         if (parent::connect()) {
             $this->exec("SET sql_mode='', time_zone='+00:00'");

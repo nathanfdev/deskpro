@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,45 +34,6 @@ return array(
         'locale'     => 'en_US',
         'flag_image' => 'us.png',
         'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => true,
-        'has_admin'  => true,
-        'is_managed' => false,
-    ),
-
-    'dev_findmissing' => array(
-        'id'         => 'dev_blankout',
-        'lang_code'  => 'eng',
-        'title'      => 'Dev Blank Out',
-        'locale'     => 'en_T1',
-        'flag_image' => 'us.png',
-        'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => true,
-        'has_admin'  => true,
-        'is_managed' => false,
-    ),
-
-    'dev_longstring' => array(
-        'id'         => 'dev_longstring',
-        'lang_code'  => 'eng',
-        'title'      => 'Dev Long String',
-        'locale'     => 'en_T2',
-        'flag_image' => 'us.png',
-        'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => true,
-        'has_admin'  => true,
-        'is_managed' => false,
-    ),
-
-    'dev_rtl' => array(
-        'id'         => 'dev_rtl',
-        'lang_code'  => 'eng',
-        'title'      => 'Dev RTL',
-        'locale'     => 'en_T3',
-        'flag_image' => 'us.png',
-        'is_rtl'     => true,
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => true,

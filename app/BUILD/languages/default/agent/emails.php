@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,7 +55,7 @@ return array(
     'agent.emails.invalid_fwd_try_attach'               => 'If your email client supports forwarding the original email as an attachment instead, you can try that instead of forwarding the message in-line. This method of forwarding tickets works better with DeskPRO.',
     'agent.emails.login_url'                            => 'Login URL',
     'agent.emails.new_agent_reply_ticket_subject'       => '[#{{ticket.id}} AGENT REPLY] Re: {{ticket.subject}}',
-    'agent.emails.new_chat_message_from'                => 'New chat message from {{name}}',
+    'agent.emails.new_chat_message_from'                => 'New IM message from {{name}}',
     'agent.emails.new_mention_ticket_subject'           => '[#{{ticket.id}} MENTIONED] Re: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'              => '[#{{ticket.id}} NOTE] Re: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'        => '[#{{ticket.id}} USER REPLY] Re: {{ticket.subject}}',

@@ -56,7 +56,7 @@ dp_build_runcmd('bin/console cache:warmup --kernel api --env prod --verbose --ba
 ########################################################################################################################
 
 echo "Legacy assets\n";
-dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose --barg is-building');
+dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose');
 
 ####################################################################################################################php####
 # Schema file
@@ -101,6 +101,12 @@ if ($build_num) {
 
     file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-num.txt', $build_num);
 }
+
+########################################################################################################################
+# Encode files
+########################################################################################################################
+
+dp_build_runcmd('dev/bin/build/encode-files');
 
 ########################################################################################################################
 # Checksum file

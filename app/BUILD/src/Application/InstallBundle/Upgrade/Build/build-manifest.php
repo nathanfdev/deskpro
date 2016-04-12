@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1583,120 +1583,92 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1452775755.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1452775755',
     ),
-    1453972853 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1453972853.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1453972853',
+    1456917973 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1456917973.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1456917973',
     ),
-    1454263358 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/01/Build1454263358.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1454263358',
+    1456929296 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1456929296.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1456929296',
     ),
-    1454775077 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1454775077.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1454775077',
+    1458048785 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1458048785.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1458048785',
     ),
-    1454850311 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1454850311.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1454850311',
+    1458124129 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1458124129.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1458124129',
     ),
-    1454864297 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1454864297.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1454864297',
+    1459273988 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1459273988.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1459273988',
     ),
-    1455032315 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455032315.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455032315',
-    ),
-    1455058562 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455058562.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455058562',
-    ),
-    1455225069 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455225069.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455225069',
-    ),
-    1455309205 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455309205.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455309205',
-    ),
-    1455612405 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1455612405.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1455612405',
-    ),
-    1456169401 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/02/Build1456169401.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1456169401',
-    ),
-    1456790400 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0060_ticketalter1.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0060_ticketalter1',
-    ),
-    1456790401 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0041_userchat2.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0041_userchat2',
-    ),
-    1456790402 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0021_validatingpublish.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0021_validatingpublish',
-    ),
-    1456790403 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0020_misc.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0020_misc',
-    ),
-    1456790404 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0050_peoplealter1.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0050_peoplealter1',
-    ),
-    1456790405 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0010_brand.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0010_brand',
-    ),
-    1456790406 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0051_peoplealter2.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0051_peoplealter2',
-    ),
-    1456790407 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0061_ticketalter2.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0061_ticketalter2',
-    ),
-    1456790408 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0030_validatingtickets.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0030_validatingtickets',
-    ),
-    1456790409 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0004_visitorids.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0004_visitorids',
-    ),
-    1456790410 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0001_newalters.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0001_newalters',
-    ),
-    1456790411 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0200_oldtables2.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0200_oldtables2',
-    ),
-    1456790412 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0022_publish.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0022_publish',
-    ),
-    1456790413 => array(
+    1460678400 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0000_newtables.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0000_newtables',
     ),
-    1456790414 => array(
+    1460678401 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0001_newalters.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0001_newalters',
+    ),
+    1460678402 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0002_publishslugs.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0002_publishslugs',
     ),
-    1456790415 => array(
+    1460678403 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0003_oldtables.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0003_oldtables',
     ),
-    1456790416 => array(
+    1460678404 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0004_visitorids.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0004_visitorids',
+    ),
+    1460678405 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0010_brand.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0010_brand',
+    ),
+    1460678406 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0020_misc.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0020_misc',
+    ),
+    1460678407 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0021_validatingpublish.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0021_validatingpublish',
+    ),
+    1460678408 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0022_publish.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0022_publish',
+    ),
+    1460678409 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0030_validatingtickets.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0030_validatingtickets',
+    ),
+    1460678410 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0040_userchat1.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0040_userchat1',
     ),
-    1456835664 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/03/Build1456835664.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1456835664',
+    1460678411 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0041_userchat2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0041_userchat2',
+    ),
+    1460678412 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0050_peoplealter1.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0050_peoplealter1',
+    ),
+    1460678413 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0051_peoplealter2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0051_peoplealter2',
+    ),
+    1460678414 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0060_ticketalter1.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0060_ticketalter1',
+    ),
+    1460678415 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0061_ticketalter2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0061_ticketalter2',
+    ),
+    1460678416 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0200_oldtables2.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0200_oldtables2',
     ),
 );

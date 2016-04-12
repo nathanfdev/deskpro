@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -588,17 +588,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     public function getCustomFieldInput($input_name = 'field')
     {
-        $custom_fields = $this->request->request->get($input_name, array());
-        if (!is_array($custom_fields) || empty($custom_fields)) {
-            $custom_fields = $this->request->query->get($input_name, array());
-            if (!is_array($custom_fields) || empty($custom_fields)) {
-                return array();
-            }
-        }
+        $custom_fields = $this->in->getArrayValue($input_name) ?: array();
 
         $output = array();
         foreach ($custom_fields as $key => $value) {
-            if (is_int($key)) {
+            if (is_numeric($key)) {
                 $output['field_'.$key] = $value;
             } elseif (preg_match('/^field_\d+/', $key)) {
                 $output[$key] = $value;

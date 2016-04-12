@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Organization;
@@ -53,26 +54,31 @@ class TicketSpec extends ObjectBehavior
         $bob->getPrimaryEmail()->willReturn(null);
         $bob->getOrganization()->willReturn($walmart);
         $bob->isOrganizationManager()->willReturn(true);
+        $bob->isAgent()->willReturn(false);
 
         $alice->getId()->willReturn(2);
         $alice->getRealLanguage()->willReturn(null);
         $alice->getOrganization()->willReturn(null);
         $alice->isOrganizationManager()->willReturn(false);
+        $alice->isAgent()->willReturn(false);
 
         $colin->getId()->willReturn(3);
         $colin->getPrimaryEmail()->willReturn(null);
         $colin->getOrganization()->willReturn(null);
         $colin->isOrganizationManager()->willReturn(false);
+        $colin->isAgent()->willReturn(false);
 
         $dimitri->getId()->willReturn(4);
         $dimitri->getPrimaryEmail()->willReturn(null);
         $dimitri->getOrganization()->willReturn(null);
         $dimitri->isOrganizationManager()->willReturn(false);
+        $dimitri->isAgent()->willReturn(false);
 
         $walmart_employee_but_not_manager->getId()->willReturn(5);
         $walmart_employee_but_not_manager->getPrimaryEmail()->willReturn(null);
         $walmart_employee_but_not_manager->getOrganization()->willReturn($walmart);
         $walmart_employee_but_not_manager->isOrganizationManager()->willReturn(false);
+        $walmart_employee_but_not_manager->isAgent()->willReturn(false);
 
         $this->setPerson($alice);
         $this->addParticipantPerson($colin);

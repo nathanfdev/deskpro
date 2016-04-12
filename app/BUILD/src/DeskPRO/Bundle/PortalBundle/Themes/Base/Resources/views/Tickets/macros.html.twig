@@ -39,7 +39,7 @@
     {% else %}
         <span class="agent-avatar agent-avatar-blank" style=""></span>
     {% endif %}
-    <a href="#" class="ticket-owner-name">{{ person.display_name_user }}</a>
+    <span class="ticket-owner-name">{{ person.display_name_user }}</span>
     {% if include_email or person.isAgent() %}
         <span class="ticket-owner-email">({{ person.primary_email_address }})</span>
     {% endif %}

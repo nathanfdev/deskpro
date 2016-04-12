@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class RateAgentForm extends React.Component {
 
@@ -27,22 +28,22 @@ export class RateAgentForm extends React.Component {
 
   render() {
     const { agentName } = this.props;
-
+    
     return (
       <div className="dpdesignportal-agent-rating">
-        <h1>You have rated <div></div> {agentName} as <span className="negative">Not Helpful</span></h1>
+        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.feedback_not_helpful_title', {'{agentName}': agentName, '{notHelpful}': portalPhrases.get('portal.chat.not_helpful')})} />
 
         <div className="dpdesignportal-agent-rating-form">
           <form className="dpdesignportal-form" onSubmit={this.onSubmit}>
             <label>
-              <span className="dpdesignportal-form-item-label-title">Comment</span>
-              <textarea placeholder="Enter your message here"
+              <span className="dpdesignportal-form-item-label-title">{portalPhrases.get('portal.chat.feedback_label')}</span>
+              <textarea placeholder={portalPhrases.get('portal.chat.feedback_enter_message')}
                         value={this.state.comment}
                         onChange={this.onChangeComment} />
             </label>
 
             <div className="label button-label">
-              <input type="submit" className="dpdesignportal-button" value="Send Feedback" />
+              <input type="submit" className="dpdesignportal-button" value={portalPhrases.get('portal.chat.feedback_action')} />
             </div>
 
             </form>

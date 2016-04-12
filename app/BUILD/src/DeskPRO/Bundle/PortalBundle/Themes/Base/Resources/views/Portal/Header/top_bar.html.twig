@@ -3,7 +3,6 @@
     <a class="dpx-toggle-big-buttons" href="#"><i class="fa fa-navicon"></i> <span class="title">Navigate</span></a>
   </div>
   <div class="brand">
-    <span class="mobile-expand"><i class="fa fa-angle-double-down"></i></span>
     <a href="{{ path('portal_home') }}">
       {% if portal_custom_logo() %}
         <img alt="{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}"

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\EntityRepository\CustomDefAbstract;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -76,6 +77,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
         $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getCommonFieldsAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'setCommonFieldsAction');
 
         return $multi;
     }
@@ -113,11 +116,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         $criteria = array('parent' => null);
 
-        if ($owner = $request->get('owner')) {
+        if ($owner = $this->in->getString('owner')) {
             $criteria['owner_class'] = $this->filterOwnerClass($owner);
         }
 
-        if ($context = $request->get('context')) {
+        if ($context = $this->in->getString('context')) {
             $criteria['context_class'] = $this->filterContextClass($context);
         }
 
@@ -141,9 +144,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         $criteria = array('parent' => $id);
 
-        if ($context = $request->get('context')) {
+        if ($context = $this->in->getString('context')) {
             $criteria['context_class'] = $this->filterContextClass($context);
-            if ($cid = $request->get('context_id')) {
+            if ($cid = $this->in->getString('context_id')) {
                 $criteria['context_id'] = $cid;
             }
         }
@@ -173,8 +176,8 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             throw new NotFoundHttpException();
         }
 
-        $context = $this->filterContextClass($request->get('context'));
-        if (!$context = $this->em->find($context, $request->get('context_id'))) {
+        $context = $this->filterContextClass($this->in->getString('context'));
+        if (!$context = $this->em->find($context, $this->in->getInt('context_id'))) {
             throw new NotFoundHttpException();
         }
 
@@ -308,19 +311,19 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             'chats'         => 'CustomDefChat',
         );
 
-        if (!$repClass = @$types[$request->get('type')]) {
+        if (!$repClass = @$types[$this->in->getString('type')]) {
             throw new BadRequestHttpException();
         }
-        if (!$ids = $request->get('ids')) {
+        if (!$ids = $this->in->getArrayValue('ids')) {
             throw new BadRequestHttpException();
         }
 
         if (!$ids = array_filter($ids, function ($id) {return 'cb_' !== substr($id, 0, 3);})) {
             throw new BadRequestHttpException();
         }
-
+        /** @var CustomDefAbstract $rep */
         $rep  = $this->em->getRepository('DeskPRO:'.$repClass);
-        $step = (int) $request->get('step');
+        $step = (int) $this->in->getInt('step');
         switch ($step) {
 
             case 1:
@@ -351,7 +354,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
                 break;
 
             case 2:
-                if (!$to = $request->get('update_to')) {
+                if (!$to = $this->in->getInt('update_to')) {
                     throw new BadRequestHttpException();
                 }
                 $rep->updateTo($ids, $to);
@@ -431,12 +434,16 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
      */
     public function setCommonFieldAction($objectType, $objectId, Request $request)
     {
-        if (!isset(self::$allowed_common[$objectType])) {
+        if (!$data = json_decode($request->getContent(), 1)) {
             throw new BadRequestHttpException();
         }
 
-        if (!$id = $request->get('id')) {
-            throw new BadRequestHttpException();
+        if (!isset(self::$allowed_common[$objectType])) {
+            throw new BadRequestHttpException(sprintf('Invalid object type "%s"', $objectType));
+        }
+
+        if (!$id = @$data['id']) {
+            throw new BadRequestHttpException('No field id provided');
         }
 
         if (!$object = $this->em->find('DeskPRO:'.self::$allowed_common[$objectType], $objectId)) {
@@ -445,11 +452,11 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
         /** @var FieldManager $manager */
         $manager = $this->container->getSystemService($objectType.'_fields_manager');
-        $data    = array(
-            'field_'.$id => $request->get('value'),
+        $submit  = array(
+            'field_'.$id => @$data['value'],
         );
 
-        $manager->saveFormToObject($data, $object);
+        $manager->saveFormToObject($submit, $object);
 
         return $this->createSuccessResponse();
     }

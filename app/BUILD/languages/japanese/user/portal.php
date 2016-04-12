@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,10 +35,6 @@ return array(
     'user.portal.our-staff'                     => '弊社のスタッフ',
     'user.portal.search'                        => '検索',
     'user.portal.search-everything'             => '全て',
-    'user.portal.search.new-chat'               => 'チャットを開始',
-    'user.portal.search.new-feedback'           => 'フィードバックを送信',
-    'user.portal.search.new-ticket'             => '連絡先',
-    'user.portal.search.no_matches'             => '適合するものはありませんか？',
     'user.portal.search_label-search_with'      => 'ラベル',
     'user.portal.search_labels_title'           => '検索ラベル',
     'user.portal.search_more-results'           => '検索結果の続きを表示させる。',

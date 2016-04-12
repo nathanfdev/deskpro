@@ -1489,17 +1489,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.meta.agentMap ? this.meta.agentMap : false,
 			false,
 			function(agentId) {
-				agentId = parseInt(agentId);
-        // todo perm check for new ticket?
-				//if (
-				//	!self.meta.agents_with_perm[agentId]
-				//	&& parseInt(self.getEl('value_form').find('.agent_id').val()) != agentId
-				//	&& !self.getEl('followers_list').find('.agent-' + agentId)[0]
-				//) {
-				//	DeskPRO_Window.showAlert("That agent does not have permission to view this ticket. Add them as a follower before trying to mention them.");
-				//	return false;
-				//}
-
 				return true;
 			}
 		);
@@ -1783,7 +1772,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 
 				$discard.on('click', function(){
-					d.reset();
+					d.reset(true);
 				});
 
 				redactor && self.textarea.getEditor().on('keyup.draft change.draft synced.draft', function(){
@@ -1857,7 +1846,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         this.set(item, backup);
         !backup && $discard.show();
       },
-      reset: function () {
+      reset: function (reloadForm) {
         var item = this.get()
           , $form = self.getEl('newticket')
           , $discard = $('#discard-draft-btn', $form)
@@ -1875,8 +1864,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         window.localStorage.removeItem(this.key());
 
 		  // reload self
-		  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist:true});
-		  self.closeSelf();
+		  if (reloadForm) {
+			  DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/new', {ignoreExist: true});
+			  self.closeSelf();
+		  }
       },
       isEmpty: function() {
         var item = this.get();

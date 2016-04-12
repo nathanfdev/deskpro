@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Person;
@@ -52,6 +53,7 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket
     ) {
         $person->getId()->willReturn(1);
+        $person->isAgent()->willReturn(false);
         $token->getUser()->willReturn($person);
 
         $this->beConstructedWith($container);
@@ -85,7 +87,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(false);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(false);
 
         $this->verifyDeniedVote(TicketsVoter::TICKET_VIEW, $token, $ticket);
     }
@@ -95,7 +98,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(true);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(true);
 
         $this->verifyGrantedVote(TicketsVoter::TICKET_VIEW, $token, $ticket);
     }
@@ -105,7 +109,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(false);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(false);
 
         $this->verifyDeniedVote(TicketsVoter::TICKET_EDIT, $token, $ticket);
     }
@@ -115,7 +120,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(true);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(true);
         $ticket->isParticipant($person)->willReturn(true);
         $ticket->isOwner($person)->willReturn(false);
         $ticket->isOrganizationManager($person)->willReturn(false);
@@ -128,7 +134,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(true);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(true);
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(true);
         $ticket->isOrganizationManager($person)->willReturn(false);
@@ -142,7 +149,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(true);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(true);
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(true);
         $ticket->isOrganizationManager($person)->willReturn(false);
@@ -156,7 +164,8 @@ class TicketsVoterSpec extends ObjectBehavior
         Ticket $ticket,
         Person $person
     ) {
-        $ticket->isInvolved($person)->willReturn(true);
+        $person->isAgent()->willReturn(false);
+        $ticket->isInvolved($person, 'user')->willReturn(true);
         $ticket->isParticipant($person)->willReturn(false);
         $ticket->isOwner($person)->willReturn(false);
         $ticket->isOrganizationManager($person)->willReturn(true);

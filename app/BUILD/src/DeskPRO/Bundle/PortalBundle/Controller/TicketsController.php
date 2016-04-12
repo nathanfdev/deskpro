@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
@@ -169,7 +170,7 @@ class TicketsController extends AbstractController
 
         if ($form->isValid()) {
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
-            if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 $this->addCurrentUserAsParticipantIfTheyAreNot($ticket);
 
                 $this->saveNewReply($ticket, $message);
@@ -235,7 +236,7 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        $form = $this->createForm('ticket', $ticket, [
+        $form = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
             'settings'          => $this->getBrandContainer()->getSettings(),
@@ -262,13 +263,12 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm('ticket', $ticket, [
+        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
             'person'            => $person,
-            'ticket_message'    => null,
             'settings'          => $this->getBrandContainer()->getSettings(),
             'full_version'      => true,
             'ticket_visibility' => 'edit',
-            'action'            => $this->generateUrl('portal_new_ticket'),
+            'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
         ]);
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
@@ -643,16 +643,16 @@ class TicketsController extends AbstractController
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)
     {
-        $em = $this->getEm();
+        $ticket_manager = $this->getTicketManager();
+        $ticket_manager->markAsManaged($ticket);
 
+        $em = $this->getEm();
         $em->beginTransaction();
 
         try {
             $em->persist($ticket);
 
-            $ticket_manager = $this->getTicketManager();
             // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);
@@ -671,8 +671,10 @@ class TicketsController extends AbstractController
     {
         $person = $message->person;
 
-        $em = $this->getEm();
+        $ticket_manager = $this->getTicketManager();
+        $ticket_manager->markAsManaged($ticket);
 
+        $em = $this->getEm();
         $em->beginTransaction();
 
         try {
@@ -704,9 +706,6 @@ class TicketsController extends AbstractController
             $em->persist($ticket);
             $em->persist($message);
 
-            $ticket_manager = $this->getTicketManager();
-            // we handle this the new way (TicketManager), so disable the doctrine auto ticket process
-            $ticket->disableAutoTicketProcess();
             $context = $ticket_manager->createUserExecutorContext($person, $event_type, 'portal');
 
             $ticket_manager->saveTicket($ticket, $context);

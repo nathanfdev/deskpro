@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Language;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session as LegacySessionEntity;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -98,6 +99,7 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             ($lang = $this->detectFromRequestPath($request))
             || ($lang = $this->detectFromEsiQuery($request))
             || ($lang = $this->detectFromPersonIfLoggedIn($request))
+            || ($lang = $this->detectFromPersonIfLoggedInLegacy($request))
             || ($lang = $this->detectFromRequestCookies($request))
             || ($lang = $this->detectFromRequestHeaders($request))
         ) {
@@ -173,13 +175,9 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
         // is to manually fetch the sess_data and find the person_id
         if ($session_id = $request->cookies->get('dpsid', null)) {
             $query = $this->em->getConnection()->executeQuery(
-                'SELECT * FROM sess_data WHERE sess_id = :sess_id',
-                array(
-                    'sess_id' => $session_id,
-                ),
-                array(
-                    'sess_id' => \PDO::PARAM_STR,
-                )
+                'SELECT person_id FROM sess_data WHERE sess_id = :sess_id',
+                array('sess_id' => $session_id),
+                array('sess_id' => \PDO::PARAM_STR)
             );
 
             if (!$sess_row = $query->fetch()) {
@@ -199,7 +197,50 @@ class LanguageStackInitializeListener implements EventSubscriberInterface
             }
 
             /* @var Person $person */
-            return $person->language;
+            return $person->getLanguage();
+        }
+    }
+
+    protected function detectFromPersonIfLoggedInLegacy(Request $request)
+    {
+        // Dont attempt to run this on portal since it makes no sense
+        if (!defined('DP_INTERFACE') || DP_INTERFACE === 'user') {
+            return;
+        }
+
+        // this is a request listener that runs before the security firewall
+        // the only way to detect language this early (needed for routing)
+        // is to manually fetch the sess_data and find the person_id
+        if ($session_id = $request->cookies->get('dpsid-agent', null)) {
+            $sid = LegacySessionEntity::getIdFromCode($session_id);
+            if (!$sid) {
+                return;
+            }
+
+            $query = $this->em->getConnection()->executeQuery(
+                'SELECT person_id FROM sessions WHERE id = :sess_id',
+                array('sess_id' => $sid),
+                array('sess_id' => \PDO::PARAM_STR)
+            );
+
+            if (!$sess_row = $query->fetch()) {
+                return;
+            }
+
+            if (!isset($sess_row['person_id'])) {
+                return;
+            }
+
+            if (!$person_id = $sess_row['person_id']) {
+                return;
+            }
+
+            if (!$person = $this->em->getRepository('DeskPRO:Person')->find($person_id)) {
+                return;
+            }
+
+            /* @var Person $person */
+            return $person->getLanguage();
         }
     }
 

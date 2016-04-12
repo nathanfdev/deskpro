@@ -31,10 +31,7 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
 
       @$scope.is_loading = true
       @Api.sendPostJson('/start-settings', @$scope.opt).success((data) =>
-        if @AppState.hasCronRun()
-          @$location.path('/email')
-        else
-          @$location.path('/cron')
+        @$location.path('/email')
       ).error( (data) =>
         @$scope.is_loading = false
         if 'form_error' == data?.error_code

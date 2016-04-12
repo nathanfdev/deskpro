@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 return array(
     'user.chat.email'                           => 'Eposta Adresiniz',
     'user.chat.ended-no-agent'                  => 'Üzgünüz ama şu anda uygun çağrınızı alacak uygun personelimiz bulunmamakta. Lütfen eposta gönderin ya da daha sonra yeniden deneyin.',
+    'user.chat.error'                           => 'Hatalı Sohbet',
     'user.chat.form_chat_button-submit'         => 'Gönder',
     'user.chat.form_chat_send-file'             => 'Dosya Gönder',
     'user.chat.form_create_button-submit'       => 'Sohbet Başlat',
@@ -42,6 +43,15 @@ return array(
     'user.chat.form_feedback_rate-unsatisfied'  => 'Hayır',
     'user.chat.form_feedback_title'             => 'Geri bildirimde bulunun',
     'user.chat.form_feedback_transcript-email'  => 'Bu sohbetin dökümünü gönder',
+    'user.chat.log-title'                       => 'Sohbetiniz',
+    'user.chat.log_chat-id'                     => 'Sohbet İsminiz',
+    'user.chat.log_created-date'                => 'Oluştur {{date}}',
+    'user.chat.log_fields_agent'                => 'Personel',
+    'user.chat.log_fields_department'           => 'Departman',
+    'user.chat.log_message_author-you'          => 'Siz',
+    'user.chat.log_nav-view-chats'              => '{{count}} sohbet kayıtlarını kontrol et',
+    'user.chat.log_no_department'               => 'Departman Yok',
+    'user.chat.log_unassigned'                  => 'Personel atanamadı',
     'user.chat.message_agent-timeout'           => 'Özür dileriz; {{name}} bağlantı dışında gözüküyor. Lütfen başka bir personel bulmaya çalışırken bekleyin.',
     'user.chat.message_assigned'                => 'Sohbet atandı: {{name}}',
     'user.chat.message_chatting-with'           => 'Sohbet ediyorsunuz',
@@ -59,13 +69,17 @@ return array(
     'user.chat.message_user-returned'           => 'Kullanıcı geri döndü',
     'user.chat.message_user-timeout'            => 'Kullanıcı zaman aşımı',
     'user.chat.message_wait'                    => 'Sizin için uygun bir personel arıyoruz',
+    'user.chat.message_wait-timeout'            => 'Personel bulunamadı',
     'user.chat.name'                            => 'Adınız',
     'user.chat.submit-ticket-button'            => 'Bize Eposta',
     'user.chat.submit-ticket-title'             => 'Sohbet Yerine Eposta',
+    'user.chat.transcript_sent'                 => '{{email}} adresinize transkript gönderilmiştir.',
     'user.chat.window_cancel'                   => 'Vazgeç',
     'user.chat.window_cancel-confirm'           => 'Sohbetinizi bitirmek istediğinize emin misiniz?',
     'user.chat.window_close'                    => 'Hayır teşekkürler. Sadece pencereyi kapat.',
+    'user.chat.window_close_only'               => 'Pencereyi Kapat',
     'user.chat.window_end-chat'                 => 'Sohbeti Bitir',
+    'user.chat.window_offline-button'           => 'İletişim için tıklayınız',
     'user.chat.window_open-new'                 => 'Bu sohbeti yeni bir pencerede aç',
     'user.chat.window_resume-button'            => 'Sohbeti Aç',
     'user.chat.window_start-button'             => 'Buraya tıklayarak bizimle konuşun',

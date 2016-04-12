@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class ChatBeginForm extends React.Component {
 
@@ -21,14 +22,14 @@ export class ChatBeginForm extends React.Component {
     return (
       <div className="dpdesignportal-open-new-chat">
         <form className="dpdesignportal-form" onSubmit={onSubmit}>
-          <FormItem label="Your Details" field="name" errors={errors}>
+          <FormItem label={portalPhrases.get('portal.chat.label-details')} field="name" errors={errors}>
             <input type="text"
-                   placeholder="First name, Last name"
+                   placeholder={portalPhrases.get('portal.chat.details-placeholder')}
                    value={name}
                    onChange={onChangeName} />
           </FormItem>
 
-          <FormItem label="Your Email" field="email" errors={errors}>
+          <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
             <input type="text"
                    placeholder="email@example.com"
                    value={email}
@@ -39,7 +40,7 @@ export class ChatBeginForm extends React.Component {
             {submit
               ? <div className="spinner"><i /></div>
               : <input type="submit"
-                       value="Start a new chat"
+                       value={portalPhrases.get('portal.chat.start')}
                        className="dpdesignportal-button dpdesignportal-button-wide" />
             }
           </div>

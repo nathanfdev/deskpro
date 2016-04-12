@@ -1,12 +1,31 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import 'jquery-datetimepicker';
+import 'jquery-datetimepicker/build/jquery.datetimepicker.full';
+
 import moment from 'moment';
+import 'DeskPRO/Bundle/AppBundle/moment-locales';
+
+// required to make jquery-datetimepicker use moment
+Date.parseDate = function( input, format ){
+  return moment(input,format).toDate();
+};
+Date.prototype.dateFormat = function( format ){
+  return moment(this).format(format);
+};
 
 export class DpxDateWidget extends PageWidget {
 
   renderWidget() {
+
+    if (window.DESKPRO_LANG) {
+      // datetime picker has locale for month/day names
+      $.datetimepicker.setLocale(window.DESKPRO_LANG.toLowerCase().split('_')[0]);
+
+      // we have to use moment for formatting tho
+      moment.locale(window.DESKPRO_LANG.toLowerCase().replace('_', '-'));
+    }
+
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
     // it hides the original widgets and connects them with events to a new text input that uses jquery-datetimepicker
@@ -49,11 +68,12 @@ export class DpxDateWidget extends PageWidget {
     const options = {
       parentID: $el.parent(),
       timepicker: isTimeIncluded,
-      format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
+      format: isTimeIncluded ? 'L LT' : 'L',
       closeOnDateSelect: true,
       scrollInput: false,
       onChangeDateTime: (dp, $input) => {
-        const m = moment($input.val(), isTimeIncluded ? 'M/D/YYYY hh:mma' : 'M/D/YYYY');
+        const val = $textBox.datetimepicker('getValue');
+        const m = moment(val);
 
         $sMonth.val(m.month() + 1).trigger('change');
         $sDay.val(m.date()).trigger('change');
@@ -106,11 +126,11 @@ export class DpxDateWidget extends PageWidget {
 
           if (minute || hour) {
             initialValue = new Date(year, month - 1, day, hour, minute);
-            $textBox.val(moment(initialValue).format('MM/DD/YYYY hh:mma'));
+            $textBox.val(moment(initialValue).format(options.format));
           }
         } else {
           initialValue = new Date(year, month - 1, day);
-          $textBox.val(moment(initialValue).format('MM/DD/YYYY'));
+          $textBox.val(moment(initialValue).format(options.format));
         }
 
         $textBox.datetimepicker('setDate', initialValue);

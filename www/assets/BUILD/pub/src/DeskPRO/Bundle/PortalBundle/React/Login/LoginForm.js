@@ -82,7 +82,7 @@ export class LoginForm extends React.Component {
           value={failurePath}
           />
         <label className={classNames({'error': this.state.failed})}>
-          <span>Your email</span>
+          <span>{portalPhrases.get('portal.account.login-email')}</span>
           <input
             ref="username"
             type="text"
@@ -94,7 +94,7 @@ export class LoginForm extends React.Component {
 
         <label className={classNames({'error': this.state.failed})}>
           {this.state.failed && <div className="message">{portalPhrases.get('portal.account.login-invalid')}</div>}
-          <span>Your password</span>
+          <span>{portalPhrases.get('portal.account.login-password')}</span>
           <input
             ref="password"
             type="password"
@@ -119,11 +119,11 @@ export class LoginForm extends React.Component {
               type="checkbox"
               name="remember_me"
               />
-            Stay Logged In?
+            {portalPhrases.get('portal.account.login-stay-logged-in')}
           </label>
         </div>
 
-        <button type="submit" tabIndex="2">Login</button>
+        <button type="submit" tabIndex="2">{portalPhrases.get('portal.account.login-btn')}</button>
 
         <div className="secondary-action">
           <a href={portalUrlGenerator.path('/login/reset-password')}>

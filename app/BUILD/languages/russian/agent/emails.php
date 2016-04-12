@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ return array(
     'agent.emails.agent_completed_task_you_created'     => '{{agent}} завершил задачу {{title}}, которая была создана вами',
     'agent.emails.alert_failed_login'                   => 'Оповещение о неудачной попытке авторизации',
     'agent.emails.alert_successful_login'               => 'Оповещение об успешной авторизации',
+    'agent.emails.change_password_instructions'         => 'Чтобы установить новый пароль, войдите в интерфейс Агента и нажмите ссылку "Предпочтения" в левом верхнем углу экрана.',
     'agent.emails.deskpro_test_email'                   => 'Тестовый e-mail DeskPRO',
     'agent.emails.deskpro_test_email_body'              => 'Проверка почтовой системы DeskPRO. <br /><br />Если вы получили это сообщение, проверка прошла успешно.',
     'agent.emails.detected_as_forward'                  => 'Сообщение, которое вы отправили, является перенаправленным.',
@@ -52,6 +53,7 @@ return array(
     'agent.emails.invalid_fwd_email_parse'              => 'К сожалению, <b>удалось получить оригинальное сообщение</b>, но не получилось преобразовать его в новый тикет.',
     'agent.emails.invalid_fwd_try_attach'               => 'Если ваш почтовый клиент поддерживает пересылку оригинальных сообщений в виде вложений, вы можете  попробовать переслать это сообщение. Этот метод лучше использовать в DeskPRO.',
     'agent.emails.login_url'                            => 'URL логина',
+    'agent.emails.name_reset_your_password'             => '{{name}} установил новый пароль от Вашего агентского аккаунта',
     'agent.emails.new_agent_reply_ticket_subject'       => '[#{{ticket.id}} АГЕНТ ОТВЕТИЛ] Ответ: {{ticket.subject}}',
     'agent.emails.new_chat_message_from'                => 'Новое сообщение в чате от {{name}}',
     'agent.emails.new_mention_ticket_subject'           => '[#{{ticket.id}} УПОМИНАНИЕ] Ответ: {{ticket.subject}}',
@@ -62,6 +64,7 @@ return array(
     'agent.emails.newagent-about-cloud-demo'            => 'DeskPRO - это облачная система поддержки, которую ваша организация может опробовать в работе.',
     'agent.emails.newagent-about-demo'                  => 'DeskPRO - это приложение, которое ваша организация может опробовать в работе.',
     'agent.emails.newagent-created-account'             => 'Ваш коллега {{admin_name}} ({{admin_email}}) создал для вас акканут в DeskPRO: <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>/.',
+    'agent.emails.newagent-login-link'                  => 'Вы можете войти здесь: <a href="{{link}}">{{link}}</a>',
     'agent.emails.notice_account_login'                 => 'Этот аккаунт уже авторизован.',
     'agent.emails.notice_login_attempt'                 => 'Кто-то пытался использовать ваш аккаунт.',
     'agent.emails.person_replied'                       => '{{name}} ответил по теме "{{subject}}"',

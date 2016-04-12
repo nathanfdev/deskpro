@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Setting;
@@ -60,6 +61,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             'core.install_timestamp' => time(),
             'core.install_key' => RandUtils::randomStringFormat('%25An'),
             'core.app_secret' => RandUtils::randomStringFormat('%75An'),
+            'portal.widget.enabled' => 1,
         ) as $name => $value) {
             $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;

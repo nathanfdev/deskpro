@@ -31,7 +31,7 @@
                 <nav class="tabs secondary-tabs">
                     <ul>
                         <li class="{{ resolved_only ? 'tab-inactive' : 'tab-active' }}">
-                            <a href="{{ path('portal_tickets') }}">
+                            <a href="{{ path('portal_tickets', { type: type }) }}">
                                 <div>
                                     <div class="title">
                                         {{ phrase('portal.tickets.list_status_open') }}

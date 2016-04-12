@@ -94,8 +94,8 @@ define [
 
 
     factory: (serviceId) ->
-      # If this class has a custom initXXX method, call that
-      # instead uf the default
+# If this class has a custom initXXX method, call that
+# instead uf the default
       initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
       return @[initName]() if @[initName]?
 

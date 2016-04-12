@@ -225,32 +225,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var self = this;
 
 		this.addEvent('statusMenuOpened', function() {
-			this.refreshOnlineUsers();
-		}, this);
-
-		this.addEvent('statusMenuOpened', function() {
 			if (this.onlineUsersRefreshTimer) {
 				window.clearTimeout(this.onlineUsersRefreshTimer);
 				this.onlineUsersRefreshTimer = null;
 			}
 		}, this);
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.online-users-count', function(info) {
-			var count = parseInt(info.online_count) || 0;
-
-			Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
-			DeskPRO_Window.util.modCountEl($('.userchat-online-users-count'), '=', count);
-
-			if (count != self.lastOnlineUserCount) {
-				self.lastOnlineUserLoad = null;
-			}
-			self.lastOnlineUserCount = count;
-		});
-
-		this.onlineUsersWrap.on('click', '.reload-table-btn', function() {
-			self.onlineUsersWrap.addClass('refreshing refreshing-clicked');
-			self.refreshOnlineUsers();
-		});
 	},
 
 	_initTemplates: function() {
@@ -289,45 +268,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			window.clearTimeout(this.onlineUsersRefreshTimer);
 			this.onlineUsersRefreshTimer = null;
 		}
-
-		this.onlineUsersRefreshTimer = window.setTimeout(function() {
-			self.refreshOnlineUsers();
-		}, 5000);
 	},
-
-	refreshOnlineUsersIfNeeded: function() {
-		var now = new Date();
-
-		if (!this.lastOnlineUserLoad || (now.getTime() - this.lastOnlineUserLoad.getTime()) > 15000) {
-			this.refreshOnlineUsers();
-		}
-	},
-
-	refreshOnlineUsers: function() {
-		this.onlineUsersWrap.addClass('refreshing');
-
-		this.onlineUsersRefreshAjax = $.ajax({
-			url: BASE_URL + 'agent/user-track/win-header-table.html',
-			type: 'GET',
-			dataType: 'html',
-			context: this,
-			complete: function() {
-				this.onlineUsersRefreshAjax = null;
-				this.onlineUsersWrap.removeClass('refreshing refreshing-clicked');
-				this.startRefreshingWhileOpenTimer();
-			},
-			success: function(html) {
-				$('#agent_status_online_users').empty().html(html);
-				var count = parseInt($.trim($('#agent_status_online_users').find('.count-online-users').text()));
-				count = count || 0;
-
-				Orb.phraseTextEl($('.agent_chrome_chat_online_users'), {count: count});
-				$('.userchat-online-users-count').text(count);
-				this.lastOnlineUserLoad = new Date();
-			}
-		});
-	},
-
 
 	//##################################################################################################################
 	//# Window: Online agents / status

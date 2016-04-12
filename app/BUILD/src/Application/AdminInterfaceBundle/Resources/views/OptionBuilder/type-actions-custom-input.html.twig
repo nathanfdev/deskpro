@@ -1,0 +1,16 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<label class="row-label">{{ ng_var('type_title') }}</label>
+		<select
+				ui-select2="{dropdownAutoWidth:true}"
+				ng-model="model.op"
+				style="min-width: 80px"
+		>
+			<option value="set">Set to</option>
+			<option value="unset">Unset</option>
+		</select>
+		<input type="text" class="form-control row-content" ng-model="model.value"
+			   ng-if="'unset' !== model.op"
+			   placeholder="{{ ng_var('options.placeholder') }}" />
+	</div>
+</dp-optionbuilder-row>

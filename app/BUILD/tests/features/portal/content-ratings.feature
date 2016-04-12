@@ -98,48 +98,6 @@ Feature: Ratings
   #
 
   @reinstall
-  Scenario: I rate a feedback item positively as a user
-    Given I login with user credentials
-    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    When I follow "This page was helpful"
-    And I press "Continue"
-    Then I should be on "/feedback/view/example-feedback"
-    And I should see a "success" flash message
-    And I should see "You marked this page as helpful"
-
-  @reinstall
-  Scenario: I rate a feedback item negatively as a user
-    Given I login with user credentials
-    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    When I follow "This page was not helpful"
-    And I press "Continue"
-    Then I should be on "/feedback/view/example-feedback"
-    And I should see a "success" flash message
-    And I should see "You marked this page as unhelpful"
-
-  @reinstall
-  Scenario: I rate a feedback item positively as a GUEST
-    Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    When I follow "This page was helpful"
-    And I press "Continue"
-    Then I should be on "/feedback/view/example-feedback"
-    And I should see a "success" flash message
-    And I should see "You marked this page as helpful"
-
-  @reinstall
-  Scenario: I rate a feedback item negatively as a GUEST
-    Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    When I follow "This page was not helpful"
-    And I press "Continue"
-    Then I should be on "/feedback/view/example-feedback"
-    And I should see a "success" flash message
-    And I should see "You marked this page as unhelpful"
-
-  @reinstall
   Scenario: I rate a feedback item positively as a user via I AGREE
     Given I login with user credentials
     And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
@@ -148,7 +106,7 @@ Feature: Ratings
     And I press "Continue"
     Then I should be on "/feedback/view/example-feedback"
     And I should see a "success" flash message
-    And I should see "You marked this page as helpful"
+    And I should see "Thank you for your feedback!"
 
   @reinstall
   Scenario: I rate a feedback item positively as a GUEST via I AGREE
@@ -158,7 +116,7 @@ Feature: Ratings
     And I press "Continue"
     Then I should be on "/feedback/view/example-feedback"
     And I should see a "success" flash message
-    And I should see "You marked this page as helpful"
+    And I should see "Thank you for your feedback!"
 
   #
   # DOWNLOADS

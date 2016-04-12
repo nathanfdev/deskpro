@@ -23,21 +23,21 @@
     {% endif %}
 
     <div class="bucket">
-        <label>{{ phrase('portal.feedback.form_title') }}</label>
+        {{ form_label(form.title, phrase('portal.feedback.form_title')) }}
         {{ form_errors(form.title) }}
-        {{ form_widget(form.title, { attr: { placeholder: 'A one-sentance summary', style: 'width: 100%' } }) }}
+        {{ form_widget(form.title, { style: 'width: 100%' }) }}
     </div>
 
     <div class="bucket">
-        <label>{{ phrase('portal.feedback.form_tell_us_more') }}</label>
+        {{ form_label(form.content, phrase('portal.feedback.form_tell_us_more')) }}
         {{ form_errors(form.content) }}
-        {{ form_widget(form.content, { attr: { placeholder: 'More details...' } } ) }}
+        {{ form_widget(form.content) }}
     </div>
 
     {{ form_widget(form.custom_data) }}
 
-    <div class="bucket new-ticket-attachements">
-        <div class="title">{{ phrase('portal.feedback.form_attach_files') }}:</div>
+    <div class="bucket new-ticket-attachments">
+        {{ form_label(form.attachments, phrase('portal.feedback.form_attach_files')) }}
         {{ form_errors(form.attachments) }}
         {{ form_widget(form.attachments) }}
         {{ form_widget(form.more_attachments) }}
@@ -45,24 +45,24 @@
 
     {% if form.name is defined %}
         <div class="bucket">
-        {{ phrase('portal.feedback.form_name_not_shown') }}:<br>
-        {{ form_errors(form.name) }}
-        {{ form_widget(form.name) }}
+            {{ form_label(form.name, phrase('portal.forms.label_full_name')) }}
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name) }}
         </div>
     {% endif %}
 
     {% if form.email is defined %}
         <div class="bucket">
-        {{ phrase('portal.feedback.form_email_not_shown') }}:<br>
-        {{ form_errors(form.email) }}
-        {{ form_widget(form.email) }}
+            {{ form_label(form.email.email, phrase('portal.feedback.form_email_not_shown')) }}
+            {{ form_errors(form.email.email) }}
+            {{ form_widget(form.email.email) }}
         </div>
     {% endif %}
 
     {% if form.captcha is defined %}
         <div class="bucket">
-        {{ form_errors(form.captcha) }}
-        {{ form_widget(form.captcha) }}
+            {{ form_errors(form.captcha) }}
+            {{ form_widget(form.captcha) }}
         </div>
     {% endif %}
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -106,6 +107,13 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     protected $value = null;
 
     /**
+     * @see Permission::$is_active doc
+     *
+     * @var bool
+     */
+    protected $is_active = true;
+
+    /**
      * @return int
      */
     public function getId()
@@ -157,12 +165,28 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DepartmentPermission';
-        $metadata->setPrimaryTable(array('name' => 'department_permissions'));
+        $metadata->setPrimaryTable(array(
+            'name'    => 'department_permissions',
+            'indexes' => array(
+                'is_active_idx' => array('columns' => array('is_active')),
+            ),
+        ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapField(array('fieldName' => 'app', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'app'));
         $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
         $metadata->mapField(array('fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_active',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'options'    => array('default' => '1'),
+                'columnName' => 'is_active',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array('fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
         $metadata->mapManyToOne(array('fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));

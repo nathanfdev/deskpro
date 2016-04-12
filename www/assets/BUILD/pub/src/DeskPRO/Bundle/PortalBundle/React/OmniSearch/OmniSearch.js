@@ -121,7 +121,7 @@ export class OmniSearch extends React.Component {
       return (
         <div>
           <OmniSearchResultSection
-            name="Tickets"
+            name={portalPhrases.get('portal.general.nav-tickets')}
             nameApi="ticket"
             nameIcon="fa fa-support"
             initialResult={'ticket' in data ? data.ticket : []}
@@ -129,7 +129,7 @@ export class OmniSearch extends React.Component {
             />
 
           <OmniSearchResultSection
-            name="Knowledge base"
+            name={portalPhrases.get('portal.general.nav-kb')}
             nameApi="article"
             nameIcon="fa fa-file-text-o"
             initialResult={'article' in data ? data.article : []}
@@ -137,7 +137,7 @@ export class OmniSearch extends React.Component {
             />
 
           <OmniSearchResultSection
-            name="Downloads"
+            name={portalPhrases.get('portal.general.nav-downloads')}
             nameApi="download"
             nameIcon="fa fa-download"
             initialResult={'download' in data ? data.download : []}
@@ -145,7 +145,7 @@ export class OmniSearch extends React.Component {
             />
 
           <OmniSearchResultSection
-            name="News"
+            name={portalPhrases.get('portal.general.nav-news')}
             nameApi="news"
             nameIcon="fa fa-file-text-o"
             initialResult={'news' in data ? data.news : []}
@@ -153,7 +153,7 @@ export class OmniSearch extends React.Component {
             />
 
           <OmniSearchResultSection
-            name="Feedback"
+            name={portalPhrases.get('portal.general.nav-feedback')}
             nameApi="feedback"
             nameIcon="fa fa-comments"
             initialResult={'feedback' in data ? data.feedback : []}
@@ -195,15 +195,15 @@ export class OmniSearch extends React.Component {
           <div className="search-results-footer">
             <a href={portalUrlGenerator.path('/new-ticket')}>
               <i className="fa fa-comment"></i>
-              <span>Contact Us</span>
+              <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
             </a>
             <a href={portalUrlGenerator.path('/feedback')}>
               <i className="fa fa-list"></i>
-              <span>Submit Feedback</span>
+              <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
             </a>
             <a href="#">
               <i className="fa fa-comments"></i>
-              <span>Start Chat Session</span>
+              <span>{portalPhrases.get('portal.general.start-chat')}</span>
             </a>
           </div>
         </div>

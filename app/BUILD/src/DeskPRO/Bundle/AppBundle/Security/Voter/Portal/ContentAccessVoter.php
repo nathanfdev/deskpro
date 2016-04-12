@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
@@ -52,7 +53,7 @@ class ContentAccessVoter extends AbstractVoter
     const VIEW_FEEDBACK = 'VIEW_FEEDBACK';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
@@ -71,7 +72,7 @@ class ContentAccessVoter extends AbstractVoter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
@@ -82,19 +83,23 @@ class ContentAccessVoter extends AbstractVoter
 
         switch ($attribute) {
             case static::VIEW_FEEDBACK:
-                return $permissions_bag->hasContentCategoryAccess($object);
+                /* @var \Application\DeskPRO\Entity\Feedback $object */
+                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::DOWNLOAD_DOWNLOAD:
                 return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_DOWNLOAD:
-                return $permissions_bag->hasContentCategoryAccess($object);
+                /* @var \Application\DeskPRO\Entity\Download $object */
+                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_DOWNLOAD_CATEGORY:
                 return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_ARTICLE:
-                return $permissions_bag->hasContentCategoryAccess($object);
+                /* @var \Application\DeskPRO\Entity\Article $object */
+                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_ARTICLE_CATEGORY:
                 return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_NEWS:
-                return $permissions_bag->hasContentCategoryAccess($object);
+                /* @var \Application\DeskPRO\Entity\News $object */
+                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_NEWS_CATEGORY:
                 return $permissions_bag->hasContentCategoryAccess($object);
         }

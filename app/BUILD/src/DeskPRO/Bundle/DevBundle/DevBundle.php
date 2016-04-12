@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\DevBundle;
 
-use DeskPRO\Bundle\DevBundle\Command\DevTestCommand;
-use DeskPRO\Bundle\DevBundle\Command\Lang\CheckUsesCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -40,12 +39,17 @@ class DevBundle extends Bundle
 {
     public function registerCommands(Application $application)
     {
-        $application->add(new CheckUsesCommand());
-        $application->add(new DevTestCommand());
+        $application->add(new Command\DevTestCommand());
 
         $application->add(new Command\Gen\GenIntegrityMapCommand());
         $application->add(new Command\Gen\GenSchemaFileCommand());
         $application->add(new Command\Gen\GenTemplateMapCommand());
+
+        $application->add(new Command\Lang\CheckUsesCommand());
+        $application->add(new Command\Lang\OneSkyDownloadCommand());
+        $application->add(new Command\Lang\OneSkyUploadCommand());
+        $application->add(new Command\Lang\RemovePhrasesCommand());
+        $application->add(new Command\Lang\TrimExtraLangFilesCommand());
     }
 
     public function getNamespace()

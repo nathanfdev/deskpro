@@ -31,10 +31,10 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
@@ -158,50 +159,50 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      * @param $id
      *
      * @return \Symfony\Component\HttpFoundation\Response
-     *                                                    SWG\Api(
+     * SWG\Api(
      *                                                    path="/ticket_filters/{id}",
-     *                                                    SWG\Operation(
+     * SWG\Operation(
      *                                                    method="POST",
      *                                                    summary="Save ticket filter details",
      *                                                    notes="",
      *                                                    type="array",
-     *                                                    SWG\Parameters (
-     *                                                    SWG\Parameter(
+     * SWG\Parameters (
+     * SWG\Parameter(
      *                                                    name="id",
      *                                                    description="ticket id",
      *                                                    paramType="path",
      *                                                    required=true,
      *                                                    type="integer",
      *                                                    ),
-     *                                                    SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.title",
      *                                                    description="Title for this filter",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="string",
      *                                                    ),
-     *                                                    SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.is_global",
      *                                                    description="ticket global flag",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="boolean",
      *                                                    ),
-     *                                                    SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.person_id",
      *                                                    description="Added person identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     *                                                    SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.agent_team_id",
      *                                                    description="Agent team identificator",
      *                                                    paramType="query",
      *                                                    required=false,
      *                                                    type="integer",
      *                                                    ),
-     *                                                    SWG\Parameter(
+     * SWG\Parameter(
      *                                                    name="filter.terms",
      *                                                    description="",
      *                                                    paramType="query",

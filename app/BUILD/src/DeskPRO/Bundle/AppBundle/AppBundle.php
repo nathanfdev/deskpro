@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
@@ -36,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
@@ -58,9 +60,10 @@ class AppBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new DoctrineCacheClassPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+        $container->addCompilerPass(new DoctrineCacheClassPass());
         $container->addCompilerPass(new LazyWarmersPass());
-        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
+        $container->addCompilerPass(new AppSecretPass());
+        $container->addCompilerPass(new FormOrderExtensionsPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new TermEnginePass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
         $container->addCompilerPass(new DbalConnectionPass());

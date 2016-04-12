@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,11 @@ class AgentChromeController extends AbstractController
 
     public function agentChromeAction()
     {
+        $env = $this->get('deskpro.app_env');
+        if (!($env->getEnvId() === 'dev' || $env->getEnvId() === 'test' || $env->getConfig('settings.enable_agent_v2'))) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('AgentBundle:AgentChrome:agent-window.html.twig');
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\HitTrack\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
@@ -57,6 +58,7 @@ class HitTrackJavascriptListener implements EventSubscriberInterface
         if ($response->isRedirection()
             || ($response->headers->has('Content-Type') && false === strpos($response->headers->get('Content-Type'), 'html'))
             || 'html' !== $request->getRequestFormat()
+            || !$response->isSuccessful()
         ) {
             return;
         }
@@ -87,7 +89,9 @@ JS;
             } else {
                 $script = file_get_contents(DP_WEB_ROOT.'/pub/build/hit_recorder.min.js');
             }
-            $script = str_replace('__DP_URL__', 'window.DESKPRO_ROOT_URL', $script);
+
+            // the replace() call is to trim trailing slashes
+            $script = str_replace('__DP_URL__', 'window.DESKPRO_ROOT_URL.replace(/\/+$/, \'\')', $script);
             $script = "$pre_script<script type=\"text/javascript\">{$script}</script>";
 
             $content = substr($content, 0, $pos).$script.substr($content, $pos);

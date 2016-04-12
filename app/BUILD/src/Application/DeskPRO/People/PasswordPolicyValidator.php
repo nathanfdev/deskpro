@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\PasswordHistory as PasswordHistoryRepos;
 use Application\DeskPRO\Settings\PasswordPolicy;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class PasswordPolicyValidator
 {
@@ -64,29 +65,21 @@ class PasswordPolicyValidator
     private $history_repos;
 
     /**
+     * @var Session
+     */
+    private $session;
+
+    /**
      * @param PasswordPolicy       $user_policy
      * @param PasswordPolicy       $agent_policy
      * @param PasswordHistoryRepos $history_repos
      */
-    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos)
+    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos, Session $session)
     {
         $this->user_policy   = $user_policy;
         $this->agent_policy  = $agent_policy;
         $this->history_repos = $history_repos;
-    }
-
-    /**
-     * @param Person $person
-     *
-     * @return PasswordPolicy
-     */
-    public function getPasswordPolicy(Person $person = null)
-    {
-        if ($person && $person->is_agent) {
-            return $this->agent_policy;
-        }
-
-        return $this->user_policy;
+        $this->session       = $session;
     }
 
     /**
@@ -98,7 +91,7 @@ class PasswordPolicyValidator
      */
     public function checkPassword($password, Person $person = null, &$error = null)
     {
-        $policy = $this->getPasswordPolicy($person);
+        $policy = $this->getPolicy($person);
 
         if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
             $error = 'min_length';
@@ -154,6 +147,10 @@ class PasswordPolicyValidator
             return false;
         }
 
+        if ($this->session->get('auth_by') !== 'Application\DeskPRO\Usersource\Adapter\DeskPRO') {
+            return false;
+        }
+
         // Matches special expired date
         if ($person->date_password_set->format('Y-m-d H:i:s') === self::MAGIC_PASSWORD_EXPIRED_TRIGGER_DATE) {
             return true;
@@ -172,5 +169,14 @@ class PasswordPolicyValidator
         $days = floor((time() - $person->date_password_set->getTimestamp()) / 86400);
 
         return $days > $policy->max_age && ($person->hasDeskproUsersource('user') || $person->hasDeskproUsersource('agent'));
+    }
+
+    public function getPolicy(Person $person)
+    {
+        if (false && $person->is_agent) {
+            return $this->agent_policy;
+        } else {
+            return $this->user_policy;
+        }
     }
 }

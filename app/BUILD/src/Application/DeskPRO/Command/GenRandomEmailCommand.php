@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
+use DeskPRO\Component\Util\RandUtils;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,7 +43,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     protected function configure()
     {
         $this->setName('dp:gen-rand-email');
-        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well.');
+        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well. You can use %RAND% as a palceholder for a random value.');
         $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.');
         $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
         $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
@@ -90,6 +92,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         } else {
             $from_line = $from_email;
         }
+
+        $from_email = str_replace('%RAND%', RandUtils::randomStringFormat('%10A'), $from_email);
 
         #------------------------------
         # To

@@ -361,12 +361,6 @@ class TicketController extends AbstractController
 
         $logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
 
-        $agents_with_perm = array();
-        foreach ($this->container->getAgentData()->getAgents() as $agent) {
-            $agent->loadHelper('AgentPermissions');
-            $agents_with_perm[$agent->id] = $agent->PermissionsManager->TicketChecker->canView($ticket);
-        }
-
         $open_problems = array();
         $incidents     = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
@@ -383,11 +377,10 @@ class TicketController extends AbstractController
         }
 
         $vars = array(
-            'agents'           => $agents,
-            'agents_with_perm' => $agents_with_perm,
-            'agent_teams'      => $agent_teams,
-            'agent_map'        => $agent_map,
-            'tasks'            => $tasks,
+            'agents'      => $agents,
+            'agent_teams' => $agent_teams,
+            'agent_map'   => $agent_map,
+            'tasks'       => $tasks,
 
             'ticket_perms'               => $this->_getTicketPerms($ticket),
             'ticket'                     => $ticket,
@@ -1117,6 +1110,7 @@ class TicketController extends AbstractController
         }
 
         $ticket_context = $this->container->getTicketManager()->createAgentExecutorContext($this->person, 'newreply', 'web');
+        $ticket_context->getVars()->set('is_via_replybox', true);
         $this->container->getTicketManager()->markAsManaged($ticket);
 
         $action_type = $this->in->getString('options.action');
@@ -3844,9 +3838,16 @@ class TicketController extends AbstractController
         $field_manager = $this->container->getTicketFieldManager();
         $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-        $billing_field_manager = $this->container->getBillingFieldManager();
-        $group                 = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
-        $billing_fields        = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+        $billing_field_manager     = $this->container->getBillingFieldManager();
+        $group                     = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billing_fields            = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+        $person                    = new Person();
+        $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject($person, $custom_person_fields_form);
+        $custom_org_fields         = $person->organization
+            ? $this->container->getOrgFieldManager()->getDisplayArrayForObject($person->organization, $custom_org_fields_form)
+            : array();
 
         $layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
         $page    = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
@@ -3886,6 +3887,8 @@ class TicketController extends AbstractController
             'new_custom_fields'    => $new_custom_fields->createView(),
             'billing_fields'       => $billing_fields,
             'open_problems'        => $open_problems,
+            'custom_person_fields' => $custom_person_fields,
+            'custom_org_fields'    => $custom_org_fields,
         ));
     }
 
@@ -4010,7 +4013,11 @@ class TicketController extends AbstractController
 
             $layout                   = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $newticket->getMockTicket());
             $newticket->ticket_fields = $this->request->request->get('custom_fields', array());
-            $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+
+            if (isset($check_person) && $check_person) {
+                $newticket->setValuesFromTicket(null, $check_person, $check_person->organization);
+            }
+
             $newticket->post_custom_person_fields = $this->request->request->get('custom_person_fields', array());
             $newticket->post_custom_org_fields    = $this->request->request->get('custom_org_fields', array());
             $newticket->billing_fields            = $this->request->request->get('billing_fields', array());

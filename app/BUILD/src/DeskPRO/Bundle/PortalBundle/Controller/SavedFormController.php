@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
@@ -86,6 +87,45 @@ class SavedFormController extends AbstractController
             'type'      => PortalValidation::NEW_TICKET,
             'auth_code' => $auth_code,
         ]);
+    }
+
+    /**
+     * @Route("/validate/new-ticket-email/auth/{auth_code}", name="user_validate_ticketemail")
+     */
+    public function ticketEmailValidateAction($auth_code)
+    {
+        if (!$tmp = $this->getEm()->getRepository('DeskPRO:TmpData')->getByCode($auth_code)) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($tmp->getType() !== 'newticket_email_validate') {
+            throw new NotFoundHttpException();
+        }
+
+        $this->getEm()->remove($tmp);
+        $this->getEm()->flush();
+
+        $source = $this->getEm()->find('DeskPRO:EmailSource', $tmp->getData('email_source_id', 0));
+        if (!$source) {
+            throw new NotFoundHttpException();
+        }
+
+        $person_email = $this->getEm()->find('DeskPRO:PersonEmail', $tmp->getData('person_email_id', 0));
+        if (!$person_email || !$person_email->person) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->validateThisPerson($person_email->person, $person_email->getEmail());
+
+        $source['status']     = 'inserted';
+        $source['error_code'] = null;
+
+        $runner = new Runner();
+        $runner->executeSource($source);
+
+        $this->addFlash('success', $this->phrase('portal.flashes.ticket_created'));
+
+        return $this->redirectToRoute('portal_home');
     }
 
     /**

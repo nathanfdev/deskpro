@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -632,6 +633,8 @@ class PersonSearch extends SearcherAbstract
                             break;
                         }
 
+                        $field_def = $field;
+
                         $search_type = $field->getHandler()->getSearchType();
 
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
@@ -720,6 +723,12 @@ class PersonSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
+                                    case 'not_isset':
+                                        $wheres[] = "$field IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $wheres[] = "$field IS NOT NULL";
+                                        break;
                                 }
                                 break;
 
@@ -769,7 +778,7 @@ class PersonSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = array(
                                                 'custom_data_person',
-                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})",
+                                                "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                             );
                                             $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                         } else {
@@ -779,6 +788,20 @@ class PersonSearch extends SearcherAbstract
                                             );
                                             $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         }
+                                        break;
+                                    case 'not_isset':
+                                        $joins[] = array(
+                                            'custom_data_person',
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_person_$join_id.id IS NULL";
+                                        break;
+                                    case 'isset':
+                                        $joins[] = array(
+                                            'custom_data_person',
+                                            "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
+                                        );
+                                        $wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
                                         break;
                                 }
                                 break;

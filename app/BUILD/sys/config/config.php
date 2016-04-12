@@ -89,6 +89,15 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 
+// twig.helpers.deskpro_userdate
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Twig\\Extension\\UserDateExtension');
+$definition->setArguments(array(
+    new Reference('service_container'),
+));
+$definition->addTag('twig.extension');
+$container->setDefinition('twig.helpers.deskpro_userdate', $definition);
+
 // deskpro.interface_value
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\InterfaceValue');

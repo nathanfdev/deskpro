@@ -36,7 +36,7 @@ Feature: Guests can submit new tickets
     And I fill in "Message" with "Here is my ticket message"
     And I press "Submit"
     Then I should be on "/new-ticket"
-    And I should see a form error with the phrase "portal.forms.error_required"
+    And I should see a "error" flash message with the phrase "portal.forms.error_email_required"
 
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
@@ -54,9 +54,10 @@ Feature: Guests can submit new tickets
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
     And I fill in "Email" with "user@deskpro.dev"
+
     And I press "Submit"
     Then I should be on "/login"
-    When I fill in "Email" with "user@deskpro.dev"
+    When I fill in "Your email" with "user@deskpro.dev"
     And I fill in "Your password" with "12345"
     And I press "Login"
     Then I should be on "/thank-you/2"

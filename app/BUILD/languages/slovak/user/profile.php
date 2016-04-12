@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,11 +82,7 @@ return array(
     'user.profile.register_or_login_below'             => '<a href="{{url}}">Registrujte sa</a> alebo prihláste nižšie.',
     'user.profile.register_password_expired'           => 'VaŠe heslo vypršalo. Prosím zadajte nové heslo.',
     'user.profile.register_password_invalid'           => 'Prosím zadajte platné heslo',
-    'user.profile.register_password_min_lc'            => 'Minimálne {{count}} malé písmeno|Minimálne {{count}} malých písmen',
     'user.profile.register_password_min_length'        => 'Minimálne {{count}}znak|Minimálne {{count}} znakov',
-    'user.profile.register_password_min_num'           => 'Aspoň {{count}} číslica|Aspoň {{count}} číslic',
-    'user.profile.register_password_min_sym'           => 'Aspoň {{count}} znak|Aspoň {{count}} znakov',
-    'user.profile.register_password_min_uc'            => 'Minimálne {{count}} veľké písmeno|Minimálne {{count}} veľkých písmen',
     'user.profile.register_password_mismatch'          => 'Heslá v kolónkach sa nezhodujú.',
     'user.profile.register_password_unused'            => 'Nemôžte použiť heslo používané predtým',
     'user.profile.remove_email_address'                => 'Odstrániť e-mailovú adresu',

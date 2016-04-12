@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -196,23 +198,25 @@ class ArticlesDataService extends AbstractDataService
                 $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
 
                 if (!$category) { // get root categories
-                    return $that->getArticleCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
-                }
+                    $result = $that->getArticleCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
+                } else {
+                    if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
+                        if (!$category = $that->getCategory($category)) {
+                            throw new \InvalidArgumentException(sprintf('could not convert "%s" into an article category'));
+                        }
+                    }
 
-                if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
-                    if (!$category = $that->getCategory($category)) {
-                        throw new \InvalidArgumentException(sprintf('could not convert "%s" into an article category'));
+                    $children = $category->children;
+
+                    $result = array();
+                    foreach ($children as $child) {
+                        if (in_array($child->getId(), $allowed_ids)) {
+                            $result[] = $child;
+                        }
                     }
                 }
 
-                $children = $category->children;
-
-                $result = array();
-                foreach ($children as $child) {
-                    if (in_array($child->getId(), $allowed_ids)) {
-                        $result[] = $child;
-                    }
-                }
+                $result = ListUtils::sortByFnValue($result, function ($v) { return $v->getDisplayOrder(); });
 
                 return $result;
             }

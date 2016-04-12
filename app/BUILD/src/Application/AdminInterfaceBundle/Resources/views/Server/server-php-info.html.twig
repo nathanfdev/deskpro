@@ -47,43 +47,21 @@
 							{{ phrase('admin.server.memory_limit') }}
 						</td>
 						<td>
-							<span ng-if="server_php_info.web_php.php_config.memory_limit_real == -1">
+							<span ng-if="server_php_info.web_php.php_config.memory_limit == -1">
 								No limit
 							</span>
-							<span ng-if="server_php_info.web_php.php_config.memory_limit_real != -1">
-								{{ ng_var('server_php_info.web_php.php_config.memory_limit_real | filesize_display') }}
-							</span>
-							(<a ng-href="{{ ng_var('server_php_info.memtest_link') }}" target="_blank">
-								{{ phrase('admin.server.test_this_value') }}
-							</a>)
-							<div
-									style="font-size: 11px;"
-									ng-if="
-									server_php_info.web_php.php_config.memory_limit
-									&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
-									">
-								Successfully changed at runtime:
+							<span ng-if="server_php_info.web_php.php_config.memory_limit != -1">
 								{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
-							</div>
+							</span>
 						</td>
 						<td>
 							<div ng-if="server_php_info.cli_php.php_config">
-								<span ng-if="server_php_info.cli_php.php_config.memory_limit_real || !server_php_info.cli_php.php_config.memory_limit_real">
+								<span ng-if="server_php_info.cli_php.php_config.memory_limit == -1 || !server_php_info.cli_php.php_config.memory_limit">
 									No limit
 								</span>
-
-								<div
-										style="font-size: 11px;"
-										ng-if="
-										server_php_info.web_php.php_config.memory_limit
-										&& server_php_info.web_php.php_config.memory_limit != server_php_info.web_php.php_config.memory_limit_real
-										">
-									Successfully changed at runtime:
-									{{ ng_var('server_php_info.web_php.php_config.memory_limit | filesize_display') }}
-								</div>
-							</div>
-							<div ng-if="!server_php_info.cli_php.php_config">
-								n/a
+								<span ng-if="!(server_php_info.cli_php.php_config.memory_limit == -1 || !server_php_info.cli_php.php_config.memory_limit)">
+								{{ ng_var('server_php_info.cli_php.php_config.memory_limit | filesize_display') }}
+							</span>
 							</div>
 						</td>
 					</tr>
@@ -109,35 +87,20 @@
 					<tr>
 						<td class="alt dp-id-col">{{ phrase('admin.server.error_log') }}</td>
 						<td>
-							<span ng-if="server_php_info.web_php.php_config.error_log_real">
-								{{ ng_var('server_php_info.web_php.php_config.error_log_real') }}
+							<span ng-if="server_php_info.web_php.php_config.error_log">
+								{{ ng_var('server_php_info.web_php.php_config.error_log') }}
 							</span>
-							<span ng-if="!server_php_info.web_php.php_config.error_log_real">
+							<span ng-if="!server_php_info.web_php.php_config.error_log">
 								None
 							</span>
-							<div
-									style="font-size: 11px;"
-									ng-if="server_php_info.web_php.php_config.error_log
-									&& server_php_info.web_php.php_config.error_log != server_php_info.web_php.php_config.error_log_real">
-								Successfully changed at runtime:<br/>
-								{{ ng_var('server_php_info.web_php.php_config.error_log') }}
-							</div>
 						</td>
 						<td>
-							<span ng-if="server_php_info.cli_php.php_config.error_log_real">
+							<span ng-if="server_php_info.cli_php.php_config.error_log">
 								{{ ng_var('server_php_info.cli_php.php_config.error_log_real') }}
 							</span>
-							<span ng-if="!server_php_info.cli_php.php_config.error_log_real">
+							<span ng-if="!server_php_info.cli_php.php_config.error_log">
 								None
 							</span>
-
-							<div
-									style="font-size: 11px;"
-									ng-if="server_php_info.cli_php.php_config.error_log
-									&& server_php_info.cli_php.php_config.error_log != server_php_info.cli_php.php_config.error_log_real">
-								Successfully changed at runtime:<br/>
-								{{ ng_var('server_php_info.cli_php.php_config.error_log') }}
-							</div>
 						</td>
 					</tr>
 
@@ -164,37 +127,15 @@
 					<tr>
 						<td class="alt dp-id-col">Link to PHP Info</td>
 						<td>
-							<a ng-href="{{ ng_var('server_php_info.web_php_link') }}"
-							   onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">
-								Copy link Web PHP Info
+							<a href="{{ ng_var('server_php_info.web_php_link') }}" target="_blank">
+								{{ ng_var('server_php_info.web_php_link') }}
 							</a>
 						</td>
 						<td>
-							<a href="{{ ng_var('server_php_info.cli_php_link') }}"
-							   onclick="prompt('If a support agent asks for it, provide this link to your PHP info:', $(this).attr('href')); return false;">
-								Copy link to Command-line PHP Info
+							<a href="{{ ng_var('server_php_info.cli_php_link') }}" target="_blank">
+								{{ ng_var('server_php_info.cli_php_link') }}
 							</a>
 						</td>
-					</tr>
-				</tbody>
-			</table>
-		</article>
-
-		{##################################################################################################}
-
-		<article class="padd">
-			<table class="table table-bordered">
-				<thead>
-				<tr>
-					<th colspan="2">
-						Config Settings
-					</th>
-				</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="(k, v) in server_php_info.debug_settings">
-						<td class="alt dp-id-col">{{ ng_var('k') }}</td>
-						<td>{{ ng_var('v') }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -340,9 +281,7 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							DeskPRO requires the paths to these system binaries for some features like the automatic
-							upgrader.
-							<br/>To specify the path to these binaries, edit your config.php file.
+							These paths are set in the <var>config/config.paths.php</var> file.
 						</td>
 					</tr>
 				</tbody>

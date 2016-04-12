@@ -20,5 +20,22 @@ export class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxRte, '[data-rte]');
     this.addWidgetDef(DpxRadio, '.dpx-radio-button');
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
+
+    if (this.$element.is('form')) {
+      this.initForms(this.$element);
+    } else {
+      this.initForms(this.$element.find('form'));
+    }
+  }
+
+  initForms($forms) {
+    // Disable pressing enter from submitting forms by accident
+    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', function(ev) {
+      const keyCode = ev.keyCode || ev.which;
+      if (keyCode === 13) {
+        ev.preventDefault();
+        return false;
+      }
+    });
   }
 }

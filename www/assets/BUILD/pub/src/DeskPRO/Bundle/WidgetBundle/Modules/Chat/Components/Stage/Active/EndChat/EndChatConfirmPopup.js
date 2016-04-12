@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 export class EndChatConfirmPopup extends React.Component {
 
@@ -15,14 +16,14 @@ export class EndChatConfirmPopup extends React.Component {
 
     return (
       <div className={classNames('dpdesignportal-popover', 'dpdesignportal-popover-end-chat', positionAt)}>
-        <h1>Are you sure you want to end this chat?</h1>
+        <h1>{portalPhrases.get('portal.chat.end_chat_confirm_title')}</h1>
 
         <div className="popover-buttons">
           <a href="#" className={classNames('dpdesignportal-button', { locked })} onClick={onConfirm}>
-            <i className="fa fa-power-off" /> End Chat
+            <i className="fa fa-power-off" /> {portalPhrases.get('portal.chat.end_chat')}
           </a>
           <a href="#" className="dpdesignportal-button grey" onClick={onCancel}>
-            <i className="fa fa-reply" /> Cancel and return to chat
+            <i className="fa fa-reply" /> {portalPhrases.get('portal.chat.cancel_end_chat')}
           </a>
         </div>
       </div>

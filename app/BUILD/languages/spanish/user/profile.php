@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,11 +82,7 @@ return array(
     'user.profile.register_or_login_below'             => '<a href="{{url}}">Registrese</a> o acceda.',
     'user.profile.register_password_expired'           => 'Tu contraseña ha expirado. Por favor ingresa una nueva contraseña.',
     'user.profile.register_password_invalid'           => 'Por favor ingresa una contraseña valida.',
-    'user.profile.register_password_min_lc'            => 'Al menos {{count}} carácter en minúscula | Al menos {{count}} caracteres en minúscula',
     'user.profile.register_password_min_length'        => 'Mínimo de {{count}} caracteres|Mínimo de {{count}} caracteres',
-    'user.profile.register_password_min_num'           => 'Al menos {{count}} numero | Al menos {{count}} numeros',
-    'user.profile.register_password_min_sym'           => 'Al menos {{count}} simbolo | Al menos {{count}} simbolos',
-    'user.profile.register_password_min_uc'            => 'Al menos {{count}} carácter en mayúscula | Al menos {{count}} caracteres en mayúscula',
     'user.profile.register_password_mismatch'          => 'Las dos contraseñas no son iguales',
     'user.profile.register_password_unused'            => 'No puedes usar una contraseña que ya utilizaste anteriormente.',
     'user.profile.remove_email_address'                => 'Eliminar dirección de correo electrónico',

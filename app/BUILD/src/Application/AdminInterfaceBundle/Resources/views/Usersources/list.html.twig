@@ -21,7 +21,7 @@
 							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
 							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
-							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}"
+							<img ng-if="!source.app" ng-src="{{ asset('/images/dp-logo-16.png') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
 						</aside>
 
@@ -74,7 +74,7 @@
 						<aside style="display: inline-block">
 							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
-							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}"
+							<img ng-if="!source.app" ng-src="{{ asset('/images/dp-logo-16.png') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
 						</aside>
 
@@ -121,9 +121,9 @@
 						<li>XenForo</li>
 					</ul>
 		</section>
-		
-		
-				
+
+
+
 		<section>
 			<h2><span>FAQ</span></h2>
 			<dl>
@@ -131,15 +131,15 @@
 				<dd><em>A:</em> The Google Authentication app uses an older authentication system which is being retired by Google. You should only use Google+ Sign-In. If you are currently using Google Authentication, switch to Google+ Sign-In.</dd>
 			</dl>
 		</section>
-		
-		
+
+
 				<section class="related-content">
 			<h2><span>Related Content</span></h2>
 
 				<ul>
 
 				<li><i class="fa fa-globe"></i> <a href="https://manuals.deskpro.com/html/admin/authentication/authentication.html" target="_blank">Authentication and SSO</a></li>
-				
+
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/344" target="_blank">How do I debug setting up an authentication app?</a> 		</li>
 				</ul>
         	</section>

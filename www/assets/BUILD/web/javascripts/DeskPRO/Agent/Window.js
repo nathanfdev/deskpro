@@ -936,9 +936,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$('#dp_header_userchat_btn').on('click', function() {
-			if (DeskPRO_Window.sections.chat_section) {
-				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
-			}
 			var wrap = $(this).parent();
 			wrap.addClass('active');
 
@@ -2855,8 +2852,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
+		if (xhr && xhr.status && xhr.status == '503') {
+			return window.location.reload();
+		}
+
 		if (DPC_IS_CLOUD) {
-			if (xhr && xhr.status && (xhr.status == '503' || xhr.status == '500')) {
+			if (xhr && xhr.status && xhr.status == '500') {
 				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
 				if (DpErrorLog) {
 					DpErrorLog.logError('AJAX Error ' + xhr.status + ' on ' + ajaxOptions.url);
@@ -3467,9 +3468,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				var showFn = function() {
 					var pos = me.offset();
+					var left = pos.left;
+					var winW = $(window).width();
+					var w = target.width();
+					if (left + w + 15 > winW) {
+						left = winW-w-30;
+					}
 					target.css({
-						left: pos.left,
-						top: pos.top + 15
+						left: left,
+						top: pos.top + 20
 					});
 					target.show();
 				};

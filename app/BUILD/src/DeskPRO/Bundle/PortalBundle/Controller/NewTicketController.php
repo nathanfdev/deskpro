@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -97,12 +98,15 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
             // dont process if user hit "more attachments"
-            if ($form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if (!$rerendering && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
                         try {
-                            $this->getPersonFactory()->checkGuestForValidation($person, $this->isSavedFormSubRequest($request));
+                            $this->getPersonFactory()->checkGuestForValidation(
+                                $person,
+                                $this->isSavedFormSubRequest($request)
+                            );
 
                             // the below block only executes during a saved form request (they clicked validation link)
                             $email  = $person->getPrimaryEmail();
@@ -118,6 +122,10 @@ class NewTicketController extends AbstractController
                             $new_ticket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
 
                             return $this->onSavedTicket($new_ticket, $request);
+                        } catch (\InvalidArgumentException $e) {
+                            $this->addFlash('error', $this->phrase('portal.forms.error_email_required'));
+
+                            return $this->redirectToRoute('portal_new_ticket');
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();

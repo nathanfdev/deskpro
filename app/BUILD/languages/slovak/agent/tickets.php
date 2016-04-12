@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -164,7 +164,6 @@ return array(
     'agent.tickets.hidden_status'                       => 'Skytý Status',
     'agent.tickets.hidden_status_deleted'               => 'Zmazané',
     'agent.tickets.hidden_status_spam'                  => 'Spam',
-    'agent.tickets.hidden_status_validating'            => 'Overovanie',
     'agent.tickets.hidden_tickets'                      => 'Skyté Tickety',
     'agent.tickets.hold_btn'                            => 'Pridržať Ticket',
     'agent.tickets.html_body'                           => 'HTML Body',
@@ -197,8 +196,6 @@ return array(
     'agent.tickets.log_message_old_message'             => 'Stará správa',
     'agent.tickets.log_message_updated'                 => 'Správa #{{id}} aktualizovaná',
     'agent.tickets.log_new_email_agent'                 => 'Nový tiket od operátora cez preposlanie',
-    'agent.tickets.log_new_email_api'                   => 'Nový tiket cez API',
-    'agent.tickets.log_new_email_portal'                => 'Nový tiket od operátora cez webové rozhranie',
     'agent.tickets.log_new_email_user'                  => 'Nový tiket od užívateľa cez e-mailovú bránu',
     'agent.tickets.log_new_web_agent_portal'            => 'Nový tiket od operátora cez webové rozhranie',
     'agent.tickets.log_new_web_user_embed'              => 'Nový tiket od užívateľa cez vloženú formu',
@@ -341,11 +338,6 @@ return array(
     'agent.tickets.status_awaiting_user_spam'           => 'SPAM',
     'agent.tickets.status_awaiting_user_temp'           => 'Dočasne',
     'agent.tickets.status_awaiting_user_validating'     => 'Očakáva sa overenie',
-    'agent.tickets.status_closed'                       => 'Archivované',
-    'agent.tickets.status_closed_deleted'               => 'Zmazané',
-    'agent.tickets.status_closed_spam'                  => 'Spam',
-    'agent.tickets.status_closed_temp'                  => 'Dočasne',
-    'agent.tickets.status_closed_validating'            => 'Očakáva sa overenie',
     'agent.tickets.status_hidden'                       => 'Skryté',
     'agent.tickets.status_hidden_deleted'               => 'Zmazané',
     'agent.tickets.status_hidden_spam'                  => 'Spam',

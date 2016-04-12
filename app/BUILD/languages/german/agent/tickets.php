@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -166,8 +166,6 @@ return array(
     'agent.tickets.hidden_status'                       => 'Versteckter Status',
     'agent.tickets.hidden_status_deleted'               => 'Gelöschte',
     'agent.tickets.hidden_status_spam'                  => 'Spam',
-    'agent.tickets.hidden_status_temp'                  => 'Temporär',
-    'agent.tickets.hidden_status_validating'            => 'Validierung',
     'agent.tickets.hidden_tickets'                      => 'Versteckte Tickets',
     'agent.tickets.hold_btn'                            => 'Ticket in den Status "halten" setzen',
     'agent.tickets.html_body'                           => 'HTML Body',
@@ -201,8 +199,6 @@ return array(
     'agent.tickets.log_message_old_message'             => 'Alte Nachricht',
     'agent.tickets.log_message_updated'                 => 'Nachricht #{{id}} aktualisiert',
     'agent.tickets.log_new_email_agent'                 => 'Neues Ticket vom Agenten über Weiterleitung',
-    'agent.tickets.log_new_email_api'                   => 'Neues Ticket über die API',
-    'agent.tickets.log_new_email_portal'                => 'Neus Ticket vom Agenten über die Web Schnittstelle',
     'agent.tickets.log_new_email_user'                  => 'Neues Ticket vom Anwender über das E-Mail Gateway',
     'agent.tickets.log_new_web_agent_portal'            => 'Neus Ticket vom Agenten über die Web Schnittstelle',
     'agent.tickets.log_new_web_user_embed'              => 'Neues Ticket vom Anwender über eingebettetes Formuler',
@@ -340,11 +336,6 @@ return array(
     'agent.tickets.status_awaiting_user_spam'           => 'Spam',
     'agent.tickets.status_awaiting_user_temp'           => 'Temporär',
     'agent.tickets.status_awaiting_user_validating'     => 'warte auf Freigabe',
-    'agent.tickets.status_closed'                       => 'Archiviert',
-    'agent.tickets.status_closed_deleted'               => 'Gelöschte',
-    'agent.tickets.status_closed_spam'                  => 'Spam',
-    'agent.tickets.status_closed_temp'                  => 'Temporär',
-    'agent.tickets.status_closed_validating'            => 'warte auf Freigabe',
     'agent.tickets.status_hidden'                       => 'Versteckte',
     'agent.tickets.status_hidden_deleted'               => 'Gelöschte',
     'agent.tickets.status_hidden_spam'                  => 'Spam',

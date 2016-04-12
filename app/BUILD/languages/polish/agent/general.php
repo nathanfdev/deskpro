@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -192,7 +192,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'Obecny czas według czasu z twojego profilu',
     'agent.general.date'                                    => 'Data',
     'agent.general.date_archived'                           => 'Data Archiwizacji',
-    'agent.general.date_closed'                             => 'Data Archiwizacji',
     'agent.general.date_completed'                          => 'Data Archiwizacji',
     'agent.general.date_created'                            => 'Data Utworzenia',
     'agent.general.date_created_newestoldest'               => 'Data utworzenia (najnowsze-najstarsze)',

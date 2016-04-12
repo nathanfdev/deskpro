@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 
@@ -157,7 +158,35 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
+
+            // Copied from legacy templating, used to render notification rows
+            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilters()
+    {
+        return [
+            new \Twig_SimpleFilter('html_content_preview', [$this, 'getHtmlContentPreview']),
+
+            // Copied from legacy templating, its used to render custom field values (eg for templates)
+            new \Twig_SimpleFilter('smart_wrap', function ($string, $len = 50, $break = null) {
+                if ($break === null) {
+                    $break = Strings::ZERO_WIDTH_SPACE;
+                }
+
+                return Strings::smartWordWrap($string, $len, $break);
+            }),
+        ];
+    }
+
+    // legacy
+    public function hasPhrase($phrase_name)
+    {
+        return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
     }
 
     /**
@@ -504,6 +533,29 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getWidgetLoader()
     {
         return $this->container->get('widget_loader_code_renderer')->getWidgetCode();
+    }
+
+    /**
+     * @param string $html     The content string
+     * @param int    $len      Max chars to use
+     * @param string $ellipses String to append when the string was truncated
+     *
+     * @return string
+     */
+    public function getHtmlContentPreview($html, $len, $ellipses = '…')
+    {
+        $html = Strings::decodeWhitespaceHtmlEntities($html);
+        $html = Strings::decodeHtmlEntities($html);
+        $html = Strings::stripTags($html);
+        $html = preg_replace('#\s{2,}#', '', $html);
+
+        if (isset($html[$len])) {
+            $html = Strings::utf8_substr($html, 0, $len);
+            $html = preg_replace('#\W$#u', '', $html); // strip non-word chars from end
+            $html .= $ellipses;
+        }
+
+        return $html;
     }
 
     /**

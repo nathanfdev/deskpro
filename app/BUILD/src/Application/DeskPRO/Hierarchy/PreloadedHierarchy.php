@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Hierarchy;
 
 class PreloadedHierarchy
@@ -52,6 +53,16 @@ class PreloadedHierarchy
      * @var array
      */
     protected $parent_to_children = array();
+
+    /**
+     * @var array
+     */
+    protected $all_values;
+
+    /**
+     * @var array
+     */
+    protected $all_ids;
 
     /**
      * @var int
@@ -308,7 +319,11 @@ class PreloadedHierarchy
      */
     public function getAllIds()
     {
-        return array_keys($this->objects);
+        if ($this->all_ids === null) {
+            $this->all_ids = array_keys($this->objects);
+        }
+
+        return $this->all_ids;
     }
 
     /**
@@ -316,7 +331,11 @@ class PreloadedHierarchy
      */
     public function getAll()
     {
-        return array_values($this->objects);
+        if ($this->all_values === null) {
+            $this->all_values = array_values($this->objects);
+        }
+
+        return $this->all_values;
     }
 
     /**

@@ -288,6 +288,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Check if this content is publicly visible (i.e. not spam, not a draft, etc).
+     * 
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->status === self::STATUS_PUBLISHED || $this->status === self::STATUS_ARCHIVED;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateLastComment()
@@ -344,10 +354,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getPermalink($absolute = true)
     {
-        SystemErrorHandler::logExceptionIfUniqueBacktrace(
-            new \Exception('DEPRECATED METHOD CALL: '.get_called_class().'::getPermalink()')
-        );
-
         if ($absolute) {
             return App::getObjectRouter()->getPortalUrl($this, 'permalink');
         }

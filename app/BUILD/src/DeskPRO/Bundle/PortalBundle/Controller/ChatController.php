@@ -49,25 +49,35 @@ use Symfony\Component\HttpFoundation\Response;
 class ChatController extends AbstractController
 {
     /**
-     * @Route("/chat-logs", name="portal_chats")
+     * @Route("/chat-logs/{type}", name="portal_chats", defaults={"type":"own"}, requirements={"type":"organization"})
      * @Route("/chat-logs", name="user_chatlogs")
+     * @Route("/chat-logs/organization", name="user_chats_organization", defaults={"type":"organization"})
      * @Security("is_granted('ROLE_USER') and is_granted('USE_CHAT')")
      *
      * @param Request $request
      *
      * @return Response
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $type)
     {
+        $person = $this->getUser();
+
+        // access to organization list?
+        if ($type === 'organization' && !($person->organization && $person->organization_manager)) {
+            return $this->redirectToRoute('portal_chats');
+        }
+
         $max_per_page = $this->getBrandSetting('portal.per_page_chat', 50);
         $page         = $request->get('page', 1);
 
-        $chats       = $this->getChatDataService()->getUserChatPager($this->getUser(), $page, $max_per_page);
+        $chats       = $this->getChatDataService()->getUserChatPager($this->getUser(), $page, $max_per_page, $type);
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildChat();
 
         return $this->renderThemeView('Theme:Chat:list.html.twig', [
             'breadcrumbs' => $breadcrumbs,
             'pager'       => $chats,
+            'type'        => $type,
+            'person'      => $person,
         ]);
     }
 

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -523,6 +522,16 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $_person_logger = null;
 
     /**
+     * @var string
+     */
+    protected $_orig_email_address;
+
+    /**
+     * @var string
+     */
+    protected $_changed_from_primary_email;
+
+    /**
      * @var bool
      */
     protected $_updated_org = false;
@@ -794,7 +803,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * Is this a user? (Can log in).
+     * Is this a user? A 'user' is simply a person who we know can log in. For example, they
+     * have a password or are attached to a usersource.
+     *
+     * If the person is NOT a user, they are simply a contact record in the database.
      *
      * @return bool
      */
@@ -804,46 +816,17 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * You can trust this method to answer the question "Do we consider
-     * this person valid?".
+     * True if the Person has every confirmed themselves. A user is confirmed by
+     * clicking a link in their email at least once.
      *
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function isUserValid()
-    {
-        return $this->isEmailValidated();
-    }
-
-    /**
-     * True if the Person is considered confirmed (not a bot). This means the user has
-     * either signed in from a usersource, or clicked a link in an email, etc. They are
-     * confirmed as trusted.
-     *
-     * It is possible to be is_confirmed and at the same time not yet is_user (no pw).
+     * Each app in DeskPRO has different requirements for user confirmations. Some apps
+     * might require the user to validate, some might not.
      *
      * @return bool
      */
     public function isConfirmed()
     {
         return $this->is_confirmed;
-    }
-
-    /**
-     * Tells you if the user is "email validated", but they might still need
-     * agent validation depending on the system settings.See isUserValid() for a more
-     * encompassing method.
-     *
-     * @return bool
-     */
-    public function isEmailValidated()
-    {
-        if (!$primary = $this->getPrimaryEmail()) {
-            return false;
-        }
-
-        return (bool) $primary->isValidated();
     }
 
     /**
@@ -1725,14 +1708,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @return CustomDataPerson[]|ArrayCollection
-     */
-    public function getCustomData()
-    {
-        return $this->custom_data;
-    }
-
-    /**
      * Find an existing data record for a field id.
      *
      * @param int|CustomDefPerson $field_id
@@ -1752,6 +1727,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
 
         return;
+    }
+
+    /**
+     * @return CustomDataTicket[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     public function removeCustomDataForField(CustomDefPerson $field)
@@ -2058,15 +2041,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->primary_email;
     }
 
-    public function setPrimaryEmail(PersonEmail $person_email = null)
-    {
-        if ($person_email) {
-            $person_email->person = $this;
-        }
-
-        $this->setModelField('primary_email', $person_email);
-    }
-
     public function pickEmailAddress($search)
     {
         $search = strtolower($search);
@@ -2138,6 +2112,43 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $emails
         );
         $this->setEmailAddresses($addresses);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountOriginalEmailAddress()
+    {
+        if (!$this->id) {
+            return $this->getEmailAddress() ?: '';
+        }
+
+        if ($this->_orig_email_address === null) {
+            $db                        = App::$container->getDb();
+            $this->_orig_email_address = $db->fetchColumn('
+              SELECT value_str
+              FROM people_prefs
+              WHERE person_id = ? AND name = ?
+            ', array($this->id, 'sys.account_original_email_address'));
+            if (!$this->_orig_email_address) {
+                $this->_orig_email_address = $this->getEmailAddress() ?: '';
+            }
+        }
+
+        return $this->_orig_email_address;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAccountTrackingId()
+    {
+        $email = $this->getAccountOriginalEmailAddress();
+        if ($email) {
+            return sha1($email);
+        }
+
+        return;
     }
 
     /**
@@ -2265,6 +2276,25 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * @param PersonEmail $email
+     */
+    public function setPrimaryEmail(PersonEmail $email = null)
+    {
+        if ($email) {
+            if (!$this->_changed_from_primary_email
+                && $this->primary_email
+                && $this->primary_email->email !== $email->email
+            ) {
+                $this->_changed_from_primary_email = $this->primary_email->email;
+            }
+
+            $email->setPerson($this);
+        }
+
+        $this->setModelField('primary_email', $email);
+    }
+
+    /**
      * Sets the primary email address on the account.
      *
      * @param string $email_address
@@ -2291,7 +2321,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $email->setIsValidated(true);
         }
 
-        $this->setModelField('primary_email', $email);
+        $this->setPrimaryEmail($email);
 
         return $email;
     }
@@ -2334,7 +2364,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function addEmailAddress(PersonEmail $email)
     {
         if (!$this->primary_email && $this->emails->count() < 1) {
-            $this->setModelField('primary_email', $email);
+            $this->setPrimaryEmail($email);
         }
 
         foreach ($this->emails as $old) {
@@ -2413,10 +2443,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             }
 
             if ($next_valid_email) {
-                $this->setModelField('primary_email', $next_valid_email);
+                $this->setPrimaryEmail($next_valid_email);
                 $em->persist($this);
             } elseif ($next_email) {
-                $this->setModelField('primary_email', $next_email);
+                $this->setPrimaryEmail($next_email);
                 $em->persist($this);
             }
         }
@@ -2540,7 +2570,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * {@inheritdoc}
+     * @param Label $label
+     *
+     * @return $this
      */
     public function addLabel(Label $label)
     {
@@ -2969,6 +3001,29 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     {
         if (isset($GLOBALS['DP_IS_IMPORTING'])) {
             return;
+        }
+
+        if (
+            $this->_changed_from_primary_email
+            && !$this->_person_logger->isNewPerson()
+            && $this->id
+        ) {
+            try {
+                $db   = App::$container->getDb();
+                $orig = $db->fetchColumn('
+                  SELECT value_str
+                  FROM people_prefs
+                  WHERE person_id = ? AND name = ?
+                ', array($this->id, 'sys.account_original_email_address'));
+                if (!$orig) {
+                    $db->insertIgnore('people_prefs', array(
+                        'person_id' => $this->id,
+                        'name'      => 'sys.account_original_email_address',
+                        'value_str' => $this->_changed_from_primary_email,
+                    ));
+                }
+            } catch (\Exception $e) {
+            }
         }
 
         if ($this->_person_logger) {

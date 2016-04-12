@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,8 @@ return array(
     'user.error.form_choice_max'         => 'Lütfen en az 1 opsiyon seçin|Lütfen en fazla {{count}} opsiyon seçin',
     'user.error.form_choice_min'         => 'Lütfen en az 1 opsiyon seçin|Lütfen en az {{count}} opsiyon seçin',
     'user.error.form_date_invalid'       => 'Lütfen geçerli bir tarih girin',
+    'user.error.form_date_invalid_dow'   => 'Seçtiğiniz gün ve hafta uygun değildir',
+    'user.error.form_date_invalid_range' => 'Seçtiğiniz tarih izin verilen aralıklarda değildir',
     'user.error.form_required'           => 'Bu alan gereklidir',
     'user.error.form_text_max'           => 'Lütfen en fazla 1 karakter girin|Lütfen en fazla {{count}} karakter girin',
     'user.error.form_text_min'           => 'Lütfen en az 1 karakter girin|Lütfen en az {{count}} karakter girin',

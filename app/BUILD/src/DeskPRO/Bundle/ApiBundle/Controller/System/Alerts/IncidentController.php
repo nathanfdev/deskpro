@@ -67,7 +67,7 @@ class IncidentController extends CrudController
         }
         $instructions_html = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
 
-        return View::create($this->dataSerialize(compact('incident', 'instructions_html')), Response::HTTP_OK);
+        return View::create($this->wrap(compact('incident', 'instructions_html')), Response::HTTP_OK);
     }
 
     /**

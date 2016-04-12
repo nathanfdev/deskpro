@@ -162,6 +162,9 @@ class PersonAssignType extends AbstractType
 
             $event->setData($data);
         }
+        if (!$person) {
+            $form->addError(new FormError(ErrorsCodes::NOT_NULL));
+        }
     }
 
     /**

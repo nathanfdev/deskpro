@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller\JsonRenderer;
 
 use Application\DeskPRO\App;
@@ -172,6 +173,9 @@ class TicketListRenderer
 
         foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
             if ($ticket->$field) {
+                if ($timezone = $this->person ? new \DateTimeZone($this->person->getTimezone()) : null) {
+                    $ticket->$field->setTimezone($timezone);
+                }
                 $data[$field]        = $ticket->$field->format('Y-m-d H:i:s');
                 $data["{$field}_ts"] = $ticket->$field->getTimestamp();
             }

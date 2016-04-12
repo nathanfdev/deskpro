@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
@@ -51,25 +52,17 @@ class BrandContainer
     private $settings;
 
     /**
-     * @var BrandAssetLoader
-     */
-    private $asset_loader;
-
-    /**
      * Constructor.
      *
-     * @param Brand            $brand
-     * @param SettingsBag      $settings
-     * @param BrandAssetLoader $asset_loader
+     * @param Brand       $brand
+     * @param SettingsBag $settings
      */
     public function __construct(
         Brand $brand,
-        SettingsBag $settings,
-        BrandAssetLoader $asset_loader
+        SettingsBag $settings
     ) {
-        $this->brand        = $brand;
-        $this->settings     = $settings;
-        $this->asset_loader = $asset_loader;
+        $this->brand    = $brand;
+        $this->settings = $settings;
     }
 
     /**
@@ -89,14 +82,6 @@ class BrandContainer
     public function getBrand()
     {
         return $this->brand;
-    }
-
-    /**
-     * @return BrandAssetLoader
-     */
-    public function getAssetLoader()
-    {
-        return $this->asset_loader;
     }
 
     /**

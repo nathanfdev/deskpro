@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -65,6 +66,8 @@ class TicketTimelineDataService extends AbstractDataService
         $logs        = array_slice($logs_source, $page_offset, $per_page);
         $timeline    = new TicketTimeline(count($logs_source));
 
+        $have_messages = [];
+
         foreach ($logs as $l) {
             switch ($l->action_type) {
                 case 'ticket_created':
@@ -72,7 +75,11 @@ class TicketTimelineDataService extends AbstractDataService
                     break;
 
                 case 'message_created':
-                    if (isset($messages[$l->id_after])) {
+                    if (isset($messages[$l->id_after]) && !isset($have_messages[$l->id_after])) {
+                        // This prevents dupe messages appearing if the log isn't correct and has
+                        // dupe entries for whatever reason
+                        $have_messages[$l->id_after] = true;
+
                         $m = $messages[$l->id_after];
                         if ($m->person->is_agent && $m->person !== $ticket->person) {
                             $timeline->addLine(new Line\AgentMessageLine($m));
