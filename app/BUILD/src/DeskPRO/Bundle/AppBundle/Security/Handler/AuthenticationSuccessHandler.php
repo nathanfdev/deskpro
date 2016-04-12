@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
+use Symfony\Component\Security\Http\ParameterBagUtils;
 
 /**
  * When a login succeeds, this class does logging, checks, etc and then redirects the user to the right url.
@@ -133,6 +134,10 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             if ($targetUrl != $login_url) {
                 return $targetUrl;
             }
+        }
+
+        if ($targetUrl = ParameterBagUtils::getRequestParameterValue($request, $this->options['target_path_parameter'])) {
+            return $targetUrl;
         }
 
         if (null !== $this->providerKey && $targetUrl = $request->getSession()->get(

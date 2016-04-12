@@ -488,7 +488,9 @@ class FeedbackController extends AbstractController
             if ($request->getContentType() == 'json') {
                 return new JsonResponse(['error' => 'Try to login']);
             } else {
-                return $this->redirectToRoute('login');
+                $this->addFlash('notice', 'You should login to vote');
+
+                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_feedback_view', ['slug' => $item->getSlug()])]);
             }
         }
         if (!$item->isVisibleOnPortal()) {
@@ -503,13 +505,13 @@ class FeedbackController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($item, $visitor_id, $person);
         }
 
-        $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
-
         if ($request->getContentType() == 'json') {
             return new JsonResponse([
                 'success' => true,
             ]);
         } else {
+            $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
+
             return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
         }
     }
