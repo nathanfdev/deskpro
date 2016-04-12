@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
@@ -123,7 +124,7 @@ class PersonType extends ApiType
                 'owner'          => $builder->getData(),
                 'property_path'  => 'usergroups',
             ])
-            ->add('fields', 'deskpro_combined_type', [
+            ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])

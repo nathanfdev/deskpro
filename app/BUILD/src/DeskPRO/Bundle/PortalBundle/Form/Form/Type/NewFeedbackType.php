@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -105,7 +106,7 @@ class NewFeedbackType extends AbstractType
                     new NotNull(),
                 ],
             ])
-            ->add('custom_data', 'deskpro_combined_type', [
+            ->add('custom_data', CombinedType::class, [
                 'forms' => $this->getCustomDataForms($options),
             ])
             ->add('attachments', 'feedback_attachment_collection', [

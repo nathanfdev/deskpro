@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -46,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
@@ -376,7 +378,7 @@ class TicketWithLayoutsType extends AbstractType
             // add custom field groups to the form
             foreach (self::$custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
-                    $form->add($form_field_name, 'deskpro_combined_type', [
+                    $form->add($form_field_name, CombinedType::class, [
                         'forms'          => $custom_field_groups[$field_type],
                         'error_bubbling' => false,
                     ]);
@@ -591,7 +593,7 @@ class TicketWithLayoutsType extends AbstractType
                 'allow_create'     => true,
             ]);
         } else {
-            return new FormField('deskpro_combined_type', [
+            return new FormField(CombinedType::class, [
                 'forms' => [
                     $this->createUserNameOptions($context),
                     $this->createUserEmailOptions($context),
