@@ -8877,7 +8877,7 @@ body.with-agent-bar {
     @include right(0);
     bottom: 0;
     width: 100%;
-    cursor: pointer;
+    cursor: default;
   }
 
   div.frame {
@@ -9129,7 +9129,7 @@ table .form-help {
 .multiselect {
   position: relative;
   margin-bottom: 10px;
-  cursor: pointer;
+  cursor: default;
   background: #ffffff;
 
   .default {
@@ -9452,9 +9452,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
   font-weight: 400;
   width: 100%;
   transition: all 0.30s ease-in-out;
-  &:hover {
-    cursor: pointer;
-  }
 }
 
 textarea {
