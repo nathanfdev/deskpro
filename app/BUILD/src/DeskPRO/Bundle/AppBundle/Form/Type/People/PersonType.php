@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
@@ -118,11 +119,12 @@ class PersonType extends ApiType
             ])
             ->add('primary_email', new PersonEmailType($person, $this->em))
             ->add('emails', CollectionType::class, [
-                'type'         => new PersonEmailType($person, $this->em),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'by_reference' => false,
+                'type'           => new PersonEmailType($person, $this->em),
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'delete_empty'   => true,
+                'by_reference'   => false,
+                'error_bubbling' => false,
             ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
@@ -141,6 +143,14 @@ class PersonType extends ApiType
             ->add('contact_data', ContactDataType::class, [
                 'owner'          => $builder->getData(),
                 'parent_builder' => $builder,
+            ])
+            ->add('teams', EntityType::class, [
+                'class'        => AgentTeam::class,
+                'multiple'     => true,
+                'by_reference' => false,
+            ])
+            ->add('primary_team', EntityType::class, [
+                'class' => AgentTeam::class,
             ])
         ;
 
