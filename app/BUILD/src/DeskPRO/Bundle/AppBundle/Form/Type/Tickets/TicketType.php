@@ -42,20 +42,45 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class TicketType.
  */
-class TicketType extends ApiType
+class TicketType extends AbstractType
 {
+    /**
+     * @var CustomFieldManager
+     */
+    private $field_manager;
+
+    /**
+     * Constructor.
+     *
+     * @param CustomFieldManager $field_manager
+     */
+    public function __construct(CustomFieldManager $field_manager)
+    {
+        $this->field_manager = $field_manager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'ticket';
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -116,6 +141,50 @@ class TicketType extends ApiType
                 'required'      => false,
                 'view_type'     => 'array',
             ])
+            ->add('fields', 'deskpro_combined_type', [
+                'forms'          => $this->getCustomDataFields($options),
+                'error_bubbling' => false,
+            ])
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults([
+                'data_class'      => Ticket::class,
+                'agent_interface' => false,
+            ])
+        ;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    private function getCustomDataFields(array $options)
+    {
+        $field_defs  = $this->field_manager->getAvailableTicketDefs();
+        $form_fields = [];
+
+        foreach ($field_defs as $field_def) {
+            $form_fields[] = [
+                'name'    => $field_def->getId(),
+                'type'    => 'deskpro_custom_data',
+                'options' => [
+                    'custom_def'      => $field_def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => $options['agent_interface'],
+                    'label'           => $field_def->getTitle(),
+                    'inline'          => true,
+                ],
+            ];
+        }
+
+        return $form_fields;
     }
 }

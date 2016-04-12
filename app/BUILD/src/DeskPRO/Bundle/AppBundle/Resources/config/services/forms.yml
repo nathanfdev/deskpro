@@ -120,6 +120,12 @@ services:
     tags:
       - { name: form.type, alias: api_person }
 
+  form.ticket:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type, alias: ticket }
+
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
