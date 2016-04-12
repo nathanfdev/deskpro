@@ -28,6 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
+/**
+ * This util is used to determine if two URLs are the same host. This is used
+ * in our redirection listener to verify a redirect is safe by making sure
+ * the target URL is the same host as the helpdesk.
+ */
 class UrlHostChecker
 {
     public function isMatch($check_url, $verified_host, $verified_port)
@@ -39,7 +44,7 @@ class UrlHostChecker
 
         $check_scheme = parse_url($check_url, PHP_URL_SCHEME) ?: 'http';
         $check_host   = parse_url($check_url, PHP_URL_HOST);
-        $check_port   = parse_url($check_url, PHP_URL_PORT) ?: 80;
+        $check_port   = parse_url($check_url, PHP_URL_PORT);
         if (!$check_port) {
             $check_port = $check_scheme === 'https' ? 443 : 80;
         }
