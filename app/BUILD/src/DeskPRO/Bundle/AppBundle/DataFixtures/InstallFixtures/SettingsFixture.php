@@ -62,6 +62,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             'core.install_key' => RandUtils::randomStringFormat('%25An'),
             'core.app_secret' => RandUtils::randomStringFormat('%75An'),
             'portal.widget.enabled' => 1,
+            'core_tickets.use_ref' => 1,
         ) as $name => $value) {
             $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;
