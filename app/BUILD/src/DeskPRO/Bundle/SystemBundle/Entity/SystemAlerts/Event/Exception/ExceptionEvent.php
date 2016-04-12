@@ -30,7 +30,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,7 +46,7 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function getSubjectDescription()
     {
-        return "Exception '{$this->message}'of type {$this->class} in {$this->file}:{$this->line}";
+        return "Exception \"{$this->message}\" of type {$this->class}";
     }
 
     /**
@@ -54,6 +54,6 @@ class ExceptionEvent extends AbstractExceptionEvent
      */
     public function generateSubjectUniqueId()
     {
-        return $this->class.'-'.md5($this->file).'-'.$this->line;
+        return $this->class.'-'.$this->code;
     }
 }

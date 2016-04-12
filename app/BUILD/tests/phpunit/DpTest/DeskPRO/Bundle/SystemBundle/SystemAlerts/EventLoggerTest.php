@@ -32,7 +32,7 @@
 
 namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Doctrine\ORM\EntityManager;
 use DpTest\DeskProTestCase;

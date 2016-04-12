@@ -93,6 +93,23 @@ services:
       - [setPeriodMinutes, ["@= 60 * 24 * 7"]]
       - [setIncidentErrorsCount, [3]]
 
+  dp_sys.alerts.exception_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Exception\ExceptionTrigger
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      # Configure to raise an incident on a single exception within a year period
+      - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
+      - [setIncidentErrorsCount, [1]]
+      -
+        - setRaisedCallback
+        -
+          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+          -
+            - "%dp_sys.alerts.email.from%"
+            - "Exception occurred"
+            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger action services
   # --------------------------------------------------------------------------------------------------------------------
@@ -116,6 +133,7 @@ services:
       - [addIncidentTemplate, ["Email\\OutgoingEmailFailureIncident", "Email:outgoing-failure.html.twig"]]
       - [addIncidentTemplate, ["PHP\\PhpCriticalErrorIncident", "PHP:php-critical-error.html.twig"]]
       - [addIncidentTemplate, ["PHP\\PhpNoticeIncident", "PHP:php-notice.html.twig"]]
+      - [addIncidentTemplate, ["Exception\\ExceptionIncident", "Exception:exception.html.twig"]]
 
   # --------------------------------------------------------------------------------------------------------------------
   # Incident subject listeners

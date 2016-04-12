@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email;
 
 use Application\EmailBundle\Mail\RawTransport\RawTransportException;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\AbstractExceptionEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

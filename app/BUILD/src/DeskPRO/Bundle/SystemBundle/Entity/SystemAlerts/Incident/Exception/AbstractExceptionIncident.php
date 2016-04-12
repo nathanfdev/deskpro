@@ -30,30 +30,20 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Exception;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpNoticeIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractStatefulIncident;
 
 /**
- * Class PhpNoticeTrigger.
+ * Class AbstractExceptionIncident.
  */
-class PhpNoticeTrigger extends AbstractCodeErrorTrigger
+abstract class AbstractExceptionIncident extends AbstractStatefulIncident
 {
     /**
      * {@inheritdoc}
      */
-    public function getIncidentClass()
+    public function getTitle()
     {
-        return PhpNoticeIncident::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function supports(Event $event)
-    {
-        return $event instanceof ErrorEvent && !$event->isCritical();
+        return $this->getFirstEvent()->getSubjectDescription();
     }
 }

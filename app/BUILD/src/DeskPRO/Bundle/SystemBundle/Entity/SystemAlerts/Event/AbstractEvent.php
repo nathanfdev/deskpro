@@ -44,7 +44,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({
- *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent",
+ *     "generic_exception"      = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent",
  *     "email_incoming_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent",
  *     "email_incoming_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent",
  *     "email_outgoing_failure" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFailureEvent",

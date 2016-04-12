@@ -30,8 +30,9 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception;
 
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -106,5 +107,45 @@ abstract class AbstractExceptionEvent extends AbstractEvent
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTrace()
+    {
+        return $this->trace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLine()
+    {
+        return $this->line;
     }
 }

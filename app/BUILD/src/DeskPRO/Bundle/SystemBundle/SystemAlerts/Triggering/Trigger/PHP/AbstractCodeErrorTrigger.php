@@ -36,9 +36,9 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\AbstractStatefulIncidentTrigger;
 
 /**
- * Class AbstractPhpErrorTrigger.
+ * Class AbstractCodeErrorTrigger.
  */
-abstract class AbstractPhpErrorTrigger extends AbstractStatefulIncidentTrigger
+abstract class AbstractCodeErrorTrigger extends AbstractStatefulIncidentTrigger
 {
     /**
      * @var int Trigger will analyse errors within the specified period
@@ -51,7 +51,7 @@ abstract class AbstractPhpErrorTrigger extends AbstractStatefulIncidentTrigger
     private $incidentErrorsCount;
 
     /**
-     * AbstractPhpErrorTrigger constructor.
+     * AbstractCodeErrorTrigger constructor.
      */
     public function __construct()
     {

@@ -39,7 +39,7 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpCriticalErro
 /**
  * Class PhpCriticalErrorTrigger.
  */
-class PhpCriticalErrorTrigger extends AbstractPhpErrorTrigger
+class PhpCriticalErrorTrigger extends AbstractCodeErrorTrigger
 {
     /**
      * {@inheritdoc}

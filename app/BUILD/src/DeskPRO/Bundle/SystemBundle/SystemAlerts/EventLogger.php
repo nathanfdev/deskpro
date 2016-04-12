@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
 use Doctrine\ORM\EntityManager;
 

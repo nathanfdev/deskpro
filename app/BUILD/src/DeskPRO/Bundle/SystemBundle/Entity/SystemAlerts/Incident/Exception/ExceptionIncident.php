@@ -30,18 +30,15 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
+namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Exception;
+
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class AbstractExceptionIncident.
+ * Class ExceptionIncident.
+ *
+ * @ORM\Entity
  */
-abstract class AbstractExceptionIncident extends AbstractIncident
+class ExceptionIncident extends AbstractExceptionIncident
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return $this->getFirstEvent()->getSubjectDescription();
-    }
 }

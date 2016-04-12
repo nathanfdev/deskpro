@@ -32,20 +32,20 @@
 
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpCriticalErrorIncident;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP\PhpCriticalErrorTrigger;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Exception\ExceptionIncident;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Exception\ExceptionTrigger;
 use DpTest\Bundle\SystemBundle\SystemAlerts\BaseIntegrationTest;
 
 require_once realpath(__DIR__.'/../../../BaseIntegrationTest.php');
 
 /**
- * Class PhpCriticalErrorTriggerIntegrationTest.
+ * Class ExceptionTriggerIntegrationTest.
  */
-class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
+class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
 {
     /**
-     * @var PhpCriticalErrorTrigger
+     * @var ExceptionTrigger
      */
     protected $trigger;
 
@@ -55,28 +55,28 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->trigger = $this->get('dp_sys.alerts.php_critical_error_trigger');
+        $this->trigger = $this->get('dp_sys.alerts.exception_trigger');
         $this->trigger->setIncidentErrorsCount(1);
     }
 
     /**
      * @test
      */
-    public function it_should_create_an_incident_for_error_that_appeared_3_days_ago()
+    public function it_should_create_an_incident_for_exception_that_appeared_3_days_ago()
     {
         $this->assertEquals(0, $this->countRaisedIncidents());
-        $this->event_logger->log($this->dummyError('Message 1', 'test.php', 1, '-3 days'));
+        $this->event_logger->log($this->dummyException('-3 days'));
         $this->triggering_process->run();
-        $this->assertEquals(1, $this->countIncidents(PhpCriticalErrorIncident::class));
+        $this->assertEquals(1, $this->countIncidents(ExceptionIncident::class));
     }
 
     /**
      * @test
      */
-    public function it_should_not_create_an_incident_for_error_that_appeared_two_years_ago()
+    public function it_should_not_create_an_incident_for_an_event_occurred_two_years_ago()
     {
         $this->assertEquals(0, $this->countRaisedIncidents());
-        $this->event_logger->log($this->dummyError('Message 1', 'test.php', 1, '-2 years'));
+        $this->event_logger->log($this->dummyException('-2 years'));
         $this->triggering_process->run();
         $this->assertEquals(0, $this->countRaisedIncidents());
     }
@@ -84,43 +84,33 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @test
      */
-    public function it_should_not_create_an_incident_for_PHP_notice()
-    {
-        $this->event_logger->log(new ErrorEvent(E_NOTICE, 'test', 'test.php', 1));
-        $this->triggering_process->run();
-        $this->assertEquals(0, $this->countIncidents(PhpCriticalErrorIncident::class));
-    }
-
-    /**
-     * @test
-     */
-    public function it_should_group_events_into_incidents_by_error_code_and_file_and_line()
+    public function it_should_group_events_into_incidents_by_exception_class_and_code()
     {
         $this->assertEquals(0, $this->countAllIncidents());
-        $this->event_logger->log($this->dummyError('Message 1', 'test.php', 1));
-        $this->event_logger->log($this->dummyError('Message 2', 'test.php', 1));
-        $this->event_logger->log($this->dummyError('Message 3', 'test.php', 1));
-        $this->event_logger->log($this->dummyError('Message 4', 'test-2.php', 2));
+        $this->event_logger->log(new \Exception('First', 1));
+        $this->event_logger->log(new \Exception('Second', 1));
+        $this->event_logger->log(new \Exception('Third', 1));
+        $this->event_logger->log(new \Exception('Fourth', 2));
 
         $this->triggering_process->run();
 
-        $this->assertEquals(2, $this->countIncidents(PhpCriticalErrorIncident::class));
+        $this->assertEquals(2, $this->countIncidents(ExceptionIncident::class));
     }
 
     /**
      * @test
      */
-    public function it_should_update_continuing_incident_with_new_errors()
+    public function it_should_update_continuing_incident_with_new_exceptions()
     {
         // Given an incident
-        $this->event_logger->log($this->dummyError());
+        $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
         $incident = $this->findSingleIncident();
         $this->assertEquals(1, $this->countRaisedIncidents());
         $this->assertCount(1, $incident->getEvents());
 
-        // When adding a new error
-        $this->event_logger->log($this->dummyError());
+        // When adding a new exception event
+        $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
 
         // Then there should be still 1 incident, but related to 2 events
@@ -131,10 +121,10 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
     /**
      * @test
      */
-    public function it_should_create_a_new_incident_after_the_same_one_has_been_dismissed_and_new_error_appeared()
+    public function it_should_create_a_new_incident_after_the_same_one_has_been_dismissed_and_new_exception_occurred()
     {
         // Given a resolved incident
-        $this->event_logger->log($this->dummyError());
+        $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
         $incident = $this->findSingleIncident();
         $this->assertEquals(1, $this->countRaisedIncidents());
@@ -143,8 +133,8 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
         $this->em->persist($incident);
         $this->em->flush();
 
-        // When adding a new error
-        $this->event_logger->log($this->dummyError());
+        // When adding a new event
+        $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
 
         // Then there should be 2 incidents
@@ -162,27 +152,23 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
         $this->assertEquals(0, $this->countRaisedIncidents());
         $this->assertEquals(0, $logger->countMessages());
 
-        $this->event_logger->log($this->dummyError());
-        $this->event_logger->log($this->dummyError());
+        $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
 
-        $this->assertEquals(1, $this->countIncidents(PhpCriticalErrorIncident::class));
+        $this->assertEquals(1, $this->countIncidents(ExceptionIncident::class));
         $this->assertEquals(1, $logger->countMessages());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * @param string $message
-     * @param string $file
-     * @param int    $line
      * @param string $date
      *
-     * @return ErrorEvent
+     * @return ExceptionEvent
      */
-    protected function dummyError($message = 'Test error', $file = 'error.php', $line = 1, $date = 'now')
+    protected function dummyException($date = 'now')
     {
-        $event = new ErrorEvent(E_ERROR, $message, $file, $line, new \DateTime($date));
+        $event = new ExceptionEvent(new \Exception(), new \DateTime($date));
         $this->em->persist($event);
         $this->em->flush($event);
 
