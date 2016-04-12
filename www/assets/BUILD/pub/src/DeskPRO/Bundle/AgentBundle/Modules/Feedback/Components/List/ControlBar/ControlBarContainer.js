@@ -1,10 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector }
-  from '../../../Selectors/list';
+import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector } from '../../../Selectors/list';
 import { listFiltersSelector } from '../../../Selectors/filters';
-import { applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility,
-  storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
+import { applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility, storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
   from '../../../Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
