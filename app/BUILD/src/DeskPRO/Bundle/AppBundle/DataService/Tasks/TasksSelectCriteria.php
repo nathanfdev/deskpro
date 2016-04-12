@@ -232,7 +232,7 @@ class TasksSelectCriteria extends Criteria
         /** @var \Application\DeskPRO\Entity\Person $me */
         list($me) = $data;
 
-        $person_validator = function ($value) {
+        $personValidator = function ($value) {
             if (is_null($value)) {
                 return true;
             }
@@ -247,7 +247,7 @@ class TasksSelectCriteria extends Criteria
             return true;
         };
 
-        $person_normalizer = function (Options $options, $value) use ($me) {
+        $personNormalizer = function (Options $options, $value) use ($me) {
             $value = (array) $value;
             foreach ($value as &$person) {
                 if ($person === 'me') {
@@ -258,28 +258,24 @@ class TasksSelectCriteria extends Criteria
             return $value;
         };
 
-        $team_normalizer = function (Options $options, $value) use ($me) {
+        $teamNormalizer = function (Options $options, $value) use ($me) {
             $value = (array) $value;
-            foreach ($value as &$team) {
-                if ($team === 'me') {
-                    $me->loadHelper('AgentTeam');
-                    $team = $me->getAgentTeamIds() ?: -1;
-                }
+            if (in_array('me', $value)) {
+                $me->loadHelper('AgentTeam');
+                $value = array_merge($value, $me->getAgentTeamIds() ?: []);
             }
 
-            return $value;
+            return array_unique($value);
         };
 
-        $department_normalizer = function (Options $options, $value) use ($me) {
+        $departmentNormalizer = function (Options $options, $value) use ($me) {
             $value = (array) $value;
-            foreach ($value as &$department) {
-                if ($department === 'me') {
-                    $me->loadHelper('AgentPermissions');
-                    $department = $me->getAllowedDepartments() ?: -1;
-                }
+            if (in_array('me', $value)) {
+                $me->loadHelper('AgentPermissions');
+                $value = array_merge($value, $me->getAllowedDepartments() ?: []);
             }
 
-            return $value;
+            return array_unique($value);
         };
 
         $resolver
@@ -308,26 +304,26 @@ class TasksSelectCriteria extends Criteria
                 'count',
             ])
 
-            ->setAllowedValues('assigned_agent', $person_validator)
-            ->setNormalizer('assigned_agent', $person_normalizer)
+            ->setAllowedValues('assigned_agent', $personValidator)
+            ->setNormalizer('assigned_agent', $personNormalizer)
 
-            ->setAllowedValues('not_assigned_agent', $person_validator)
-            ->setNormalizer('not_assigned_agent', $person_normalizer)
+            ->setAllowedValues('not_assigned_agent', $personValidator)
+            ->setNormalizer('not_assigned_agent', $personNormalizer)
 
-            ->setAllowedValues('assigned_team', $person_validator)
-            ->setNormalizer('assigned_team', $team_normalizer)
+            ->setAllowedValues('assigned_team', $personValidator)
+            ->setNormalizer('assigned_team', $teamNormalizer)
 
-            ->setAllowedValues('not_assigned_team', $person_validator)
-            ->setNormalizer('not_assigned_team', $team_normalizer)
+            ->setAllowedValues('not_assigned_team', $personValidator)
+            ->setNormalizer('not_assigned_team', $teamNormalizer)
 
-            ->setAllowedValues('assigned_department', $person_validator)
-            ->setNormalizer('assigned_department', $department_normalizer)
+            ->setAllowedValues('assigned_department', $personValidator)
+            ->setNormalizer('assigned_department', $departmentNormalizer)
 
-            ->setAllowedValues('not_assigned_department', $person_validator)
-            ->setNormalizer('not_assigned_department', $department_normalizer)
+            ->setAllowedValues('not_assigned_department', $personValidator)
+            ->setNormalizer('not_assigned_department', $departmentNormalizer)
 
-            ->setAllowedValues('creator', $person_validator)
-            ->setNormalizer('creator', $person_normalizer)
+            ->setAllowedValues('creator', $personValidator)
+            ->setNormalizer('creator', $personNormalizer)
 
             ->setAllowedValues('label_mode', ['any', 'all'])
             ->setAllowedValues('done', ['done', 'undone'])

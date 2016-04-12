@@ -7,7 +7,6 @@ import { quickSearchAction } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { editTask } from 'DeskPRO/Bundle/AgentBundle/Modules/Tasks/Actions/listActions';
 import { LoadIndicator } from 'DeskPRO/Component/LoadIndicator';
 import Select from 'react-select-plus';
-import { connect } from 'react-redux';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import invariant from 'invariant';
 
@@ -17,11 +16,11 @@ export class LinkedItem extends CardWidget {
     value: PropTypes.object,
 
     openBySingleClick: PropTypes.bool,
-    onSetEditing: PropTypes.func,
-    onChange: PropTypes.func,
+    onSetEditing:      PropTypes.func,
+    onChange:          PropTypes.func,
 
-    tickets: PropTypes.object,
-    chats: PropTypes.object,
+    tickets:  PropTypes.object,
+    chats:    PropTypes.object,
     articles: PropTypes.object,
 
     dispatch: PropTypes.func.isRequired

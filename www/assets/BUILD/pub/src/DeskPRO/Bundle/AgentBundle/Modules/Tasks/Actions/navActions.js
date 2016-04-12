@@ -6,7 +6,7 @@ import { addToCollection, setCollection, releaseCollection, collectionSelectorFa
 
 export const createProject = createAction(
   'TASKS_NAV_POST_PROJECT',
-  data => (dispatch, getState) => api.sendPost('DP_API/task_projects', data).success((response) => {
+  data => (dispatch) => api.sendPost('DP_API/task_projects', data).success((response) => {
     const project = Immutable.fromJS(response.data);
     dispatch(addToCollection('Project', 'all', Immutable.List([project])));
   })
@@ -14,12 +14,12 @@ export const createProject = createAction(
 
 export const editProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
-  (projectId, data) => api.sendPut('DP_API/task_projects/' + projectId, data)
+  (projectId, data) => api.sendPut(`DP_API/task_projects/${projectId}`, data)
 );
 
 export const deleteProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
-  (projectId) => (dispatch, getState) => api.sendDelete('DP_API/task_projects/' + projectId).success((response) => {
+  (projectId) => (dispatch, getState) => api.sendDelete(`DP_API/task_projects/${projectId}`).success(() => {
     let projects = collectionSelectorFactory('Project', 'all')(getState());
     projects = projects.delete(projectId);
     dispatch(releaseCollection('Project', 'all'));
@@ -36,7 +36,7 @@ export const initialLoad = createAction(
       + '&get[projects]=DP_API/tasks/project_counts'
     ;
 
-    api.sendGet(batch).success(({responses}) => {
+    api.sendGet(batch).success(({ responses }) => {
       const payload = flattenBatchResponses(responses);
       resolve(payload);
     });

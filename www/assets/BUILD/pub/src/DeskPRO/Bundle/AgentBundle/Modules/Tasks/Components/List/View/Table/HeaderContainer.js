@@ -2,32 +2,28 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { currentOrderBySelector, currentOrderDirSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
-import { applySort, applyOrder } from '../../../../Actions/listActions';
+import { applyOrderBy, applyOrderDir } from '../../../../Actions/listActions';
 
 @connect(state => ({
-  currentSort: currentOrderBySelector(state),
-  currentOrder: currentOrderDirSelector(state),
+  currentSort:   currentOrderBySelector(state),
+  currentOrder:  currentOrderDirSelector(state),
   visibleFields: tableVisibleFieldsSelector(state)
 }))
 export class HeaderContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:      PropTypes.func.isRequired,
     visibleFields: PropTypes.object.isRequired
   };
 
   onChange = (sort, order) => {
-    this.props.dispatch(applySort(sort));
-    this.props.dispatch(applyOrder(order));
+    this.props.dispatch(applyOrderBy(sort));
+    this.props.dispatch(applyOrderDir(order));
   };
 
   render() {
     const props = this.props;
-    const columnProps = {
-      ...props,
-      onChange: this.onChange
-    };
-
+    const columnProps = { ...props, onChange: this.onChange };
     const isVisible = type => props.visibleFields.includes(type);
 
     return (

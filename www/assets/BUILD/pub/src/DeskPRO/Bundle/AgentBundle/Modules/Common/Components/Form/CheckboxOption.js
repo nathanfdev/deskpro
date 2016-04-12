@@ -1,13 +1,11 @@
-import React, {Component, PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 
-import { connect } from 'react-redux';
-@connect()
-export class CheckboxOption extends Component {
+export class CheckboxOption extends React.Component {
   static propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    values: PropTypes.array,
-    onClick: PropTypes.func.isRequired,
+    label:    PropTypes.string.isRequired,
+    value:    PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    values:   PropTypes.array,
+    onClick:  PropTypes.func.isRequired,
     children: PropTypes.any
   };
 
@@ -26,13 +24,13 @@ export class CheckboxOption extends Component {
   }
 
   render() {
-    const {label, value, onClick} = this.props;
+    const { label, value, onClick } = this.props;
 
     return (
       <li>
-        <div className={'dpw--popup-item-box'} onClick={onClick.bind(this, value)}>
+        <div className={'dpw--popup-item-box'} onClick={() => onClick(value)}>
           <span className={'dpw--checkbox-boxy'}>
-            {this.state.isActive && <i className="fa fa-check"></i>}
+            {this.state.isActive && <i className="fa fa-check" />}
           </span>
           <span className="dpw-popup-item-collection-name">
             {label}

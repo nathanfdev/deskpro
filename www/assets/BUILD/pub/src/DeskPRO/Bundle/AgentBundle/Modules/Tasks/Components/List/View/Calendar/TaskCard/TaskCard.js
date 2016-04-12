@@ -14,7 +14,7 @@ import {
   AssignButton,
   LinkedItemContainer,
   CardProjectContainer
-} from '../../../TaskCard';
+} from '../../../TaskCard/index';
 
 export class TaskCard extends BaseTaskCard {
 
@@ -28,17 +28,14 @@ export class TaskCard extends BaseTaskCard {
     return (
       <CardLine>
         <CardLineLeft>
-          <DateDue value={task.get('date_due')}
-                   onChange={onChange.bind(null, 'date_due')} />
-          <CardProjectContainer value={task.get('project')}
-                                onChange={onChange.bind(null, 'project')} />
-          <LinkedItemContainer value={task} onChange={onChange.bind(null, 'linked_items')} />
+          <DateDue value={task.get('date_due')} onChange={value => onChange('date_due', value)} />
+          <CardProjectContainer value={task.get('project')} onChange={value => onChange('project', value)} />
+          <LinkedItemContainer value={task} onChange={value => onChange('linked_items', value)} />
         </CardLineLeft>
         <CardLineRight>
           <Comments count={this.state.comments} />
           {task.get('subtasks_total') > 0 &&
-            <SubTasks current={task.get('subtasks_done')}
-                      total={task.get('subtasks_total')} />
+            <SubTasks current={task.get('subtasks_done')} total={task.get('subtasks_total')} />
           }
         </CardLineRight>
       </CardLine>
@@ -49,19 +46,23 @@ export class TaskCard extends BaseTaskCard {
     const { task, moving, onChange } = this.props;
 
     return (
-      <Card statusBars={false}
-            type="task"
-            moving={moving}
-            additionalClasses="calendar-task-card">
+      <Card
+        statusBars={false}
+        type="task"
+        moving={moving}
+        additionalClasses="calendar-task-card"
+        >
 
         <CardLine>
           <CardLineLeft>
-            <Title value={task.get('title')}
-                   isDone={task.get('is_done')}
-                   onSubmit={onChange.bind(null, 'title')} />
+            <Title
+              value={task.get('title')}
+              isDone={task.get('is_done')}
+              onSubmit={() => onChange('title')}
+              />
           </CardLineLeft>
           <CardLineRight>
-            {!task.get('is_done') && <AssignButton value={task} onChange={onChange.bind(null, 'assignee')} />}
+            {!task.get('is_done') && <AssignButton value={task} onChange={value => onChange('assignee', value)} />}
           </CardLineRight>
         </CardLine>
 

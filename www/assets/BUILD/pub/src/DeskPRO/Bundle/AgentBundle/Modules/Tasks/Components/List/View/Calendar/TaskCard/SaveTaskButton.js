@@ -1,23 +1,18 @@
 import React, { PropTypes } from 'react';
-import Loader from 'react-loader';
-import classNames from 'classnames';
 
 export class SaveTaskButton extends React.Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
-    submit: PropTypes.bool
+    onClick: PropTypes.func
   };
 
   render() {
-    const { onClick, submit } = this.props;
+    const { onClick } = this.props;
 
     return (
-      <div className="dpw--single-card-mark-done hovered"
-           onClick={onClick}>
-
+      <div className="dpw--single-card-mark-done hovered" onClick={onClick}>
         <div>
-          <i className="fa fa-save"/>
+          <i className="fa fa-save" />
           <span>Save Task</span>
         </div>
       </div>

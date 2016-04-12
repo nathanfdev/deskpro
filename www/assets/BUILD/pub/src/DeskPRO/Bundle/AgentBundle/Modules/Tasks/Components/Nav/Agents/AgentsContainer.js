@@ -5,7 +5,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import { agentsCountSelector } from '../../../Selectors/nav';
 
 @connect(state => ({
-  agents: agentsSelector(state),
+  agents:      agentsSelector(state),
   agentsCount: agentsCountSelector(state)
 }))
 export class AgentsContainer extends React.Component {

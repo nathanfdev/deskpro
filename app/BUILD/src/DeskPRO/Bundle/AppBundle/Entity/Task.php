@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -40,7 +41,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -239,13 +239,19 @@ class Task implements EntityInterface
     protected $for_del = false;
 
     /**
+     * Constructor.
+     *
      * @param Person $creator
      */
     public function __construct(Person $creator)
     {
-        $this->subtasks = new ArrayCollection();
-        $this->labels   = new ArrayCollection();
-        $this->assigned = new ArrayCollection();
+        $this->subtasks        = new ArrayCollection();
+        $this->labels          = new ArrayCollection();
+        $this->assigned        = new ArrayCollection();
+        $this->linked_articles = new ArrayCollection();
+        $this->linked_chats    = new ArrayCollection();
+        $this->linked_tickets  = new ArrayCollection();
+
         $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
@@ -443,14 +449,16 @@ class Task implements EntityInterface
     }
 
     /**
-     * @param bool $is_done
+     * @param bool $isDone
+     *
+     * @return $this
      */
-    public function setIsDone($is_done = true)
+    public function setIsDone($isDone = true)
     {
-        $date_done = $is_done ? new \DateTime() : null;
+        $date_done = $isDone ? new \DateTime() : null;
 
         $this->setDateDone($date_done);
-        $this->is_done = $is_done;
+        $this->is_done = $isDone;
 
         return $this;
     }
@@ -618,7 +626,387 @@ class Task implements EntityInterface
     }
 
     /**
-     * Re order display positions of related tasks.
+     * Get isDone.
+     *
+     * @return bool
+     */
+    public function getIsDone()
+    {
+        return $this->is_done;
+    }
+
+    /**
+     * Get forDel.
+     *
+     * @return bool
+     */
+    public function getForDel()
+    {
+        return $this->for_del;
+    }
+
+    /**
+     * Remove subtask.
+     *
+     * @param TaskSubtask $subtask
+     */
+    public function removeSubtask(TaskSubtask $subtask)
+    {
+        $this->subtasks->removeElement($subtask);
+    }
+
+    /**
+     * Remove comment.
+     *
+     * @param TaskComment $comment
+     */
+    public function removeComment(TaskComment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Remove attachment.
+     *
+     * @param TaskAttachment $attachment
+     */
+    public function removeAttachment(TaskAttachment $attachment)
+    {
+        $this->attachments->removeElement($attachment);
+    }
+
+    /**
+     * Remove linkedArticle.
+     *
+     * @param TaskLinkedArticle $linkedArticle
+     */
+    public function removeLinkedArticle(TaskLinkedArticle $linkedArticle)
+    {
+        $this->linked_articles->removeElement($linkedArticle);
+    }
+
+    /**
+     * Remove linkedChat.
+     *
+     * @param TaskLinkedChat $linkedChat
+     */
+    public function removeLinkedChat(TaskLinkedChat $linkedChat)
+    {
+        $this->linked_chats->removeElement($linkedChat);
+    }
+
+    /**
+     * Remove linkedTicket.
+     *
+     * @param TaskLinkedTicket $linkedTicket
+     */
+    public function removeLinkedTicket(TaskLinkedTicket $linkedTicket)
+    {
+        $this->linked_tickets->removeElement($linkedTicket);
+    }
+
+    /**
+     * Set percentComplete.
+     *
+     * @param int $percentComplete
+     *
+     * @return $this
+     */
+    public function setPercentComplete($percentComplete)
+    {
+        $this->percent_complete = $percentComplete;
+
+        return $this;
+    }
+
+    /**
+     * Set dateCreated.
+     *
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->date_created = $dateCreated;
+
+        return $this;
+    }
+
+    /**
+     * Set taskType.
+     *
+     * @param string $taskType
+     *
+     * @return $this
+     */
+    public function setTaskType($taskType)
+    {
+        $this->task_type = $taskType;
+
+        return $this;
+    }
+
+    /**
+     * Set dateDue.
+     *
+     * @param \DateTime $dateDue
+     *
+     * @return $this
+     */
+    public function setDateDue($dateDue)
+    {
+        $this->date_due = $dateDue;
+
+        return $this;
+    }
+
+    /**
+     * Set dateEventStart.
+     *
+     * @param \DateTime $dateEventStart
+     *
+     * @return $this
+     */
+    public function setDateEventStart($dateEventStart)
+    {
+        $this->date_event_start = $dateEventStart;
+
+        return $this;
+    }
+
+    /**
+     * Set dateEventEnd.
+     *
+     * @param \DateTime $dateEventEnd
+     *
+     * @return $this
+     */
+    public function setDateEventEnd($dateEventEnd)
+    {
+        $this->date_event_end = $dateEventEnd;
+
+        return $this;
+    }
+
+    /**
+     * Set visibility.
+     *
+     * @param string $visibility
+     *
+     * @return $this
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * Set urgency.
+     *
+     * @param int $urgency
+     *
+     * @return $this
+     */
+    public function setUrgency($urgency)
+    {
+        $this->urgency = $urgency;
+
+        return $this;
+    }
+
+    /**
+     * Set dateDone.
+     *
+     * @param \DateTime $dateDone
+     *
+     * @return $this
+     */
+    public function setDateDone($dateDone)
+    {
+        $this->date_done = $dateDone;
+
+        return $this;
+    }
+
+    /**
+     * Set displayOrder.
+     *
+     * @param int $displayOrder
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($displayOrder)
+    {
+        $this->display_order = $displayOrder;
+
+        return $this;
+    }
+
+    /**
+     * Set creator.
+     *
+     * @param Person $creator
+     *
+     * @return $this
+     */
+    public function setCreator(Person $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Set project.
+     *
+     * @param TaskProject $project
+     *
+     * @return $this
+     */
+    public function setProject(TaskProject $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Set list.
+     *
+     * @param TaskList $list
+     *
+     * @return $this
+     */
+    public function setList(TaskList $list = null)
+    {
+        $this->list = $list;
+
+        return $this;
+    }
+
+    /**
+     * Add subtask.
+     *
+     * @param TaskSubtask $subtask
+     *
+     * @return $this
+     */
+    public function addSubtask(TaskSubtask $subtask)
+    {
+        $this->subtasks[] = $subtask;
+
+        return $this;
+    }
+
+    /**
+     * Add label.
+     *
+     * @param LabelTask $label
+     *
+     * @return $this
+     */
+    public function addLabel(LabelTask $label)
+    {
+        $this->labels[] = $label;
+
+        return $this;
+    }
+
+    /**
+     * Remove label.
+     *
+     * @param LabelTask $label
+     */
+    public function removeLabel(LabelTask $label)
+    {
+        $this->labels->removeElement($label);
+    }
+
+    /**
+     * Add comment.
+     *
+     * @param TaskComment $comment
+     *
+     * @return $this
+     */
+    public function addComment(TaskComment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Add attachment.
+     *
+     * @param TaskAttachment $attachment
+     *
+     * @return $this
+     */
+    public function addAttachment(TaskAttachment $attachment)
+    {
+        $this->attachments[] = $attachment;
+
+        return $this;
+    }
+
+    /**
+     * Add linkedArticle.
+     *
+     * @param TaskLinkedArticle $linkedArticle
+     *
+     * @return $this
+     */
+    public function addLinkedArticle(TaskLinkedArticle $linkedArticle)
+    {
+        $this->linked_articles[] = $linkedArticle;
+
+        return $this;
+    }
+
+    /**
+     * Add linkedChat.
+     *
+     * @param TaskLinkedChat $linkedChat
+     *
+     * @return $this
+     */
+    public function addLinkedChat(TaskLinkedChat $linkedChat)
+    {
+        $this->linked_chats[] = $linkedChat;
+
+        return $this;
+    }
+
+    /**
+     * Add linkedTicket.
+     *
+     * @param TaskLinkedTicket $linkedTicket
+     *
+     * @return $this
+     */
+    public function addLinkedTicket(TaskLinkedTicket $linkedTicket)
+    {
+        $this->linked_tickets[] = $linkedTicket;
+
+        return $this;
+    }
+
+    /**
+     * Get assigned.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAssigned()
+    {
+        return $this->assigned;
+    }
+
+    /**
+     * Set display order for a new task.
      *
      * @ORM\PrePersist
      *
@@ -632,9 +1020,10 @@ class Task implements EntityInterface
 
         $qb = $args
             ->getObjectManager()
-            ->getRepository('App:Task')
+            ->getRepository(self::class)
             ->createQueryBuilder('t')
-            ->select('MAX(t.display_order)');
+            ->select('MAX(t.display_order)')
+        ;
 
         $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
     }
@@ -659,20 +1048,19 @@ class Task implements EntityInterface
             $qb = $args->getEntityManager()->createQueryBuilder();
             $qb
                 ->update()
-                ->from('App:Task', 't')
+                ->from(self::class, 't')
                 ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
                 ->where(
                     't.id != :task_id',
                     't.display_order > :min_order',
                     't.display_order <= :max_order'
                 )
-                ->setParameters(
-                    [
-                        'task_id'   => $this->getId(),
-                        'min_order' => min($old_order, $new_order),
-                        'max_order' => max($old_order, $new_order),
-                    ]
-                );
+                ->setParameters([
+                    'task_id'   => $this->getId(),
+                    'min_order' => min($old_order, $new_order),
+                    'max_order' => max($old_order, $new_order),
+                ])
+            ;
 
             $qb->getQuery()->execute();
 
@@ -680,385 +1068,5 @@ class Task implements EntityInterface
                 ++$this->display_order;
             }
         }
-    }
-
-    /**
-     * Get isDone
-     *
-     * @return boolean
-     */
-    public function getIsDone()
-    {
-        return $this->is_done;
-    }
-
-    /**
-     * Get forDel
-     *
-     * @return boolean
-     */
-    public function getForDel()
-    {
-        return $this->for_del;
-    }
-
-    /**
-     * Remove subtask
-     *
-     * @param TaskSubtask $subtask
-     */
-    public function removeSubtask(TaskSubtask $subtask)
-    {
-        $this->subtasks->removeElement($subtask);
-    }
-
-    /**
-     * Remove comment
-     *
-     * @param TaskComment $comment
-     */
-    public function removeComment(TaskComment $comment)
-    {
-        $this->comments->removeElement($comment);
-    }
-
-    /**
-     * Remove attachment
-     *
-     * @param TaskAttachment $attachment
-     */
-    public function removeAttachment(TaskAttachment $attachment)
-    {
-        $this->attachments->removeElement($attachment);
-    }
-
-    /**
-     * Remove linkedArticle
-     *
-     * @param TaskLinkedArticle $linkedArticle
-     */
-    public function removeLinkedArticle(TaskLinkedArticle $linkedArticle)
-    {
-        $this->linked_articles->removeElement($linkedArticle);
-    }
-
-    /**
-     * Remove linkedChat
-     *
-     * @param TaskLinkedChat $linkedChat
-     */
-    public function removeLinkedChat(TaskLinkedChat $linkedChat)
-    {
-        $this->linked_chats->removeElement($linkedChat);
-    }
-
-    /**
-     * Remove linkedTicket
-     *
-     * @param TaskLinkedTicket $linkedTicket
-     */
-    public function removeLinkedTicket(TaskLinkedTicket $linkedTicket)
-    {
-        $this->linked_tickets->removeElement($linkedTicket);
-    }
-
-    /**
-     * Set percentComplete
-     *
-     * @param integer $percentComplete
-     *
-     * @return Task
-     */
-    public function setPercentComplete($percentComplete)
-    {
-        $this->percent_complete = $percentComplete;
-
-        return $this;
-    }
-
-    /**
-     * Set dateCreated
-     *
-     * @param \DateTime $dateCreated
-     *
-     * @return Task
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->date_created = $dateCreated;
-
-        return $this;
-    }
-
-    /**
-     * Set taskType
-     *
-     * @param string $taskType
-     *
-     * @return Task
-     */
-    public function setTaskType($taskType)
-    {
-        $this->task_type = $taskType;
-
-        return $this;
-    }
-
-    /**
-     * Set dateDue
-     *
-     * @param \DateTime $dateDue
-     *
-     * @return Task
-     */
-    public function setDateDue($dateDue)
-    {
-        $this->date_due = $dateDue;
-
-        return $this;
-    }
-
-    /**
-     * Set dateEventStart
-     *
-     * @param \DateTime $dateEventStart
-     *
-     * @return Task
-     */
-    public function setDateEventStart($dateEventStart)
-    {
-        $this->date_event_start = $dateEventStart;
-
-        return $this;
-    }
-
-    /**
-     * Set dateEventEnd
-     *
-     * @param \DateTime $dateEventEnd
-     *
-     * @return Task
-     */
-    public function setDateEventEnd($dateEventEnd)
-    {
-        $this->date_event_end = $dateEventEnd;
-
-        return $this;
-    }
-
-    /**
-     * Set visibility
-     *
-     * @param string $visibility
-     *
-     * @return Task
-     */
-    public function setVisibility($visibility)
-    {
-        $this->visibility = $visibility;
-
-        return $this;
-    }
-
-    /**
-     * Set urgency
-     *
-     * @param integer $urgency
-     *
-     * @return Task
-     */
-    public function setUrgency($urgency)
-    {
-        $this->urgency = $urgency;
-
-        return $this;
-    }
-
-    /**
-     * Set dateDone
-     *
-     * @param \DateTime $dateDone
-     *
-     * @return Task
-     */
-    public function setDateDone($dateDone)
-    {
-        $this->date_done = $dateDone;
-
-        return $this;
-    }
-
-    /**
-     * Set displayOrder
-     *
-     * @param integer $displayOrder
-     *
-     * @return Task
-     */
-    public function setDisplayOrder($displayOrder)
-    {
-        $this->display_order = $displayOrder;
-
-        return $this;
-    }
-
-    /**
-     * Set creator
-     *
-     * @param Person $creator
-     *
-     * @return Task
-     */
-    public function setCreator(Person $creator = null)
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    /**
-     * Set project
-     *
-     * @param TaskProject $project
-     *
-     * @return Task
-     */
-    public function setProject(TaskProject $project = null)
-    {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    /**
-     * Set list
-     *
-     * @param TaskList $list
-     *
-     * @return Task
-     */
-    public function setList(TaskList $list = null)
-    {
-        $this->list = $list;
-
-        return $this;
-    }
-
-    /**
-     * Add subtask
-     *
-     * @param TaskSubtask $subtask
-     *
-     * @return Task
-     */
-    public function addSubtask(TaskSubtask $subtask)
-    {
-        $this->subtasks[] = $subtask;
-
-        return $this;
-    }
-
-    /**
-     * Add label
-     *
-     * @param LabelTask $label
-     *
-     * @return Task
-     */
-    public function addLabel(LabelTask $label)
-    {
-        $this->labels[] = $label;
-
-        return $this;
-    }
-
-    /**
-     * Remove label
-     *
-     * @param LabelTask $label
-     */
-    public function removeLabel(LabelTask $label)
-    {
-        $this->labels->removeElement($label);
-    }
-
-    /**
-     * Add comment
-     *
-     * @param TaskComment $comment
-     *
-     * @return Task
-     */
-    public function addComment(TaskComment $comment)
-    {
-        $this->comments[] = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Add attachment
-     *
-     * @param TaskAttachment $attachment
-     *
-     * @return Task
-     */
-    public function addAttachment(TaskAttachment $attachment)
-    {
-        $this->attachments[] = $attachment;
-
-        return $this;
-    }
-
-    /**
-     * Add linkedArticle
-     *
-     * @param TaskLinkedArticle $linkedArticle
-     *
-     * @return Task
-     */
-    public function addLinkedArticle(TaskLinkedArticle $linkedArticle)
-    {
-        $this->linked_articles[] = $linkedArticle;
-
-        return $this;
-    }
-
-    /**
-     * Add linkedChat
-     *
-     * @param TaskLinkedChat $linkedChat
-     *
-     * @return Task
-     */
-    public function addLinkedChat(TaskLinkedChat $linkedChat)
-    {
-        $this->linked_chats[] = $linkedChat;
-
-        return $this;
-    }
-
-    /**
-     * Add linkedTicket
-     *
-     * @param TaskLinkedTicket $linkedTicket
-     *
-     * @return Task
-     */
-    public function addLinkedTicket(TaskLinkedTicket $linkedTicket)
-    {
-        $this->linked_tickets[] = $linkedTicket;
-
-        return $this;
-    }
-
-    /**
-     * Get assigned
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAssigned()
-    {
-        return $this->assigned;
     }
 }

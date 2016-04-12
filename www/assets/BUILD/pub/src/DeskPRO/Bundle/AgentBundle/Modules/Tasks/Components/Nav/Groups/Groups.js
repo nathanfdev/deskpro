@@ -7,7 +7,7 @@ export class Groups extends React.Component {
 
   static propTypes = {
     options: PropTypes.object.isRequired,
-    count: PropTypes.object.isRequired
+    count:   PropTypes.object.isRequired
   };
 
   render() {

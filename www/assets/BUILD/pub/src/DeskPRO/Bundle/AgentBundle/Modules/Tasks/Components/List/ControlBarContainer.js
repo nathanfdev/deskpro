@@ -22,25 +22,25 @@ import {
 } from '../../Actions/listActions';
 
 @connect(state => ({
-  viewMode: currentViewModeSelector(state),
-  cardVisibleFields: cardVisibleFieldsSelector(state),
-  tableVisibleFields: tableVisibleFieldsSelector(state),
-  kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
+  viewMode:              currentViewModeSelector(state),
+  cardVisibleFields:     cardVisibleFieldsSelector(state),
+  tableVisibleFields:    tableVisibleFieldsSelector(state),
+  kanbanVisibleFields:   kanbanVisibleFieldsSelector(state),
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentParams: listParamsFiltersSelector(state),
-  labels: allSelectorFactory('TaskLabel')(state)
+  currentParams:         listParamsFiltersSelector(state),
+  labels:                allSelectorFactory('TaskLabel')(state)
 }))
 export class ControlBarContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    cardVisibleFields: PropTypes.object.isRequired,
-    tableVisibleFields: PropTypes.object.isRequired,
-    kanbanVisibleFields: PropTypes.object.isRequired,
+    dispatch:              PropTypes.func.isRequired,
+    viewMode:              PropTypes.string.isRequired,
+    cardVisibleFields:     PropTypes.object.isRequired,
+    tableVisibleFields:    PropTypes.object.isRequired,
+    kanbanVisibleFields:   PropTypes.object.isRequired,
     calendarVisibleFields: PropTypes.object.isRequired,
-    currentParams: PropTypes.object.isRequired,
-    labels: PropTypes.object.isRequired
+    currentParams:         PropTypes.object.isRequired,
+    labels:                PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -54,102 +54,110 @@ export class ControlBarContainer extends React.Component {
 
     const config = {
       applyParams: applyFilters,
-      currentParams: currentParams,
+      currentParams,
+
       sorting: {
-        list: { label: 'List', icon: 'list' },
-        project: { label: 'Project', icon: 'briefcase' },
-        date_due: { label: 'Due Date', icon: 'calendar' },
-        date_done: { label: 'Done Date', icon: 'calendar' },
+        list:         { label: 'List', icon: 'list' },
+        project:      { label: 'Project', icon: 'briefcase' },
+        date_due:     { label: 'Due Date', icon: 'calendar' },
+        date_done:    { label: 'Done Date', icon: 'calendar' },
         date_created: { label: 'Created Date', icon: 'calendar' },
-        assignee: { label: 'Assignee', icon: 'user' }
+        assignee:     { label: 'Assignee', icon: 'user' }
       },
       filters: [
         {
-          label: 'Date Created',
-          type: 'date',
+          label:     'Date Created',
+          type:      'date',
           fromParam: 'created_from',
-          toParam: 'created_to'
+          toParam:   'created_to'
         },
         {
-          label: 'Date Due',
-          type: 'date',
+          label:     'Date Due',
+          type:      'date',
           fromParam: 'due_from',
-          toParam: 'due_to'
+          toParam:   'due_to'
         },
         {
-          label: 'Date Done',
-          type: 'date',
+          label:     'Date Done',
+          type:      'date',
           fromParam: 'done_from',
-          toParam: 'done_to'
+          toParam:   'done_to'
         },
         {
-          label: 'Status', type: 'select', param: 'done', multiple: false,
-          options: [
+          label:    'Status',
+          type:     'select',
+          param:    'done',
+          multiple: false,
+          options:  [
             { value: 'done', label: 'Done' },
             { value: 'undone', label: 'Not Done' }
           ]
         },
         {
-          label: 'Labels',
-          type: 'labels',
-          param: 'label',
+          label:     'Labels',
+          type:      'labels',
+          param:     'label',
           modeParam: 'label_mode',
-          labels: labels.map(label => label.get('label'))
+          labels:    labels.map(label => label.get('label'))
         }
       ],
       view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
             label: 'Card View',
-            icon: 'list',
+            icon:  'list',
+
             configurableFields: {
-              title: 'Title',
-              project: 'Project',
+              title:    'Title',
+              project:  'Project',
               date_due: 'Due Date',
               assignee: 'Assignee'
             },
-            visibleFields: cardVisibleFields,
+            visibleFields:         cardVisibleFields,
             toggleFieldVisibility: toggleCardFieldVisibility
           },
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
-            icon: 'table',
+            icon:  'table',
+
             configurableFields: {
-              id: 'ID',
-              project: 'Project',
+              id:       'ID',
+              project:  'Project',
               date_due: 'Due Date',
               assignee: 'Assignee'
             },
-            visibleFields: tableVisibleFields,
+            visibleFields:         tableVisibleFields,
             toggleFieldVisibility: toggleTableFieldVisibility
           },
           [constants.VIEW_MODE_KANBAN]: {
             label: 'Kanban View',
-            icon: 'sticky-note-o',
+            icon:  'sticky-note-o',
+
             configurableFields: {
-              title: 'Title',
-              project: 'Project',
+              title:    'Title',
+              project:  'Project',
               date_due: 'Due Date',
               assignee: 'Assignee'
             },
-            visibleFields: kanbanVisibleFields,
+            visibleFields:         kanbanVisibleFields,
             toggleFieldVisibility: toggleKanbanFieldVisibility
           },
           [constants.VIEW_MODE_CALENDAR]: {
             label: 'Calendar View',
-            icon: 'calendar',
+            icon:  'calendar',
+
             configurableFields: {
-              title: 'Title',
-              project: 'Project',
+              title:    'Title',
+              project:  'Project',
               date_due: 'Due Date',
               assignee: 'Assignee'
             },
-            visibleFields: calendarVisibleFields,
+            visibleFields:         calendarVisibleFields,
             toggleFieldVisibility: toggleCalendarFieldVisibility
           }
         },
 
-        viewMode: viewMode,
+        viewMode,
         viewModeAction: value => updateRoutingState('list', 'view', value)
       }
     };

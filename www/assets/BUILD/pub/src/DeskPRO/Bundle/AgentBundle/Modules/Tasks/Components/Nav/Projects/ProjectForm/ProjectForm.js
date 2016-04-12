@@ -3,27 +3,26 @@ import { createProject, editProject, deleteProject } from '../../../../Actions/n
 import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
-import { FieldGroup, Popup} from '../../../../../Common/Components/Popup';
+import { FieldGroup, Popup } from '../../../../../Common/Components/Popup/index';
 import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
-  from '../../../../../Common/Components/Form/Lists';
+  from '../../../../../Common/Components/Form/Lists/index';
 import {
   BaseForm,
   Header,
   FullField,
   FloatField,
-  CollectionField,
   ShowOnlySelected,
   Unassign
-} from '../../../Form';
+} from '../../../Form/index';
 import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { Modal } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Modal';
 
 export class ProjectForm extends BaseForm {
 
   static propTypes = {
-    project: PropTypes.object,
+    project:    PropTypes.object,
     tasksCount: PropTypes.number,
-    dispatch: PropTypes.func.isRequired
+    dispatch:   PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -36,11 +35,11 @@ export class ProjectForm extends BaseForm {
     this.state = {
       ...localState,
 
-      title: project.get('title'),
+      title:            project.get('title'),
       showOnlySelected: false,
-      agents: project.get('agents', emptyObject).toArray(),
-      agentTeams: project.get('teams', emptyObject).toArray(),
-      departments: project.get('departments', emptyObject).toArray()
+      agents:           project.get('agents', emptyObject).toArray(),
+      agentTeams:       project.get('teams', emptyObject).toArray(),
+      departments:      project.get('departments', emptyObject).toArray()
     };
   }
 
@@ -69,10 +68,10 @@ export class ProjectForm extends BaseForm {
     const { project, dispatch } = this.props;
     const isNew = !project.get('id');
     const submitData = {
-      title: this.state.title,
+      title:       this.state.title,
       departments: this.state.departments,
-      teams: this.state.agentTeams,
-      agents: this.state.agents
+      teams:       this.state.agentTeams,
+      agents:      this.state.agents
     };
 
     let promise;
@@ -84,13 +83,17 @@ export class ProjectForm extends BaseForm {
 
     promise.then(
       () => {
-        !this.unmounted && this.setState({ submit: false });
+        if (!this.unmounted) {
+          this.setState({ submit: false });
+        }
       },
-        result => {
-        !this.unmounted && this.setState({
-          errors: result.getData().errors,
-          submit: false
-        });
+      result => {
+        if (!this.unmounted) {
+          this.setState({
+            errors: result.getData().errors,
+            submit: false
+          });
+        }
       }
     );
   };
@@ -103,10 +106,12 @@ export class ProjectForm extends BaseForm {
     this.setState({ submit: true });
     const { project, dispatch } = this.props;
     dispatch(deleteProject(project.get('id'))).catch((result) => {
-      !this.unmounted && this.setState({
-        errors: result.getData().errors,
-        submit: false
-      });
+      if (!this.unmounted) {
+        this.setState({
+          errors: result.getData().errors,
+          submit: false
+        });
+      }
     });
   };
 
@@ -124,75 +129,79 @@ export class ProjectForm extends BaseForm {
           <div className="dpw--popup-content">
             <FieldGroup>
               <FullField title="Title">
-                <input name="title"
-                       type="text"
-                       placeholder="Title"
-                       value={this.state.title}
-                       onChange={this.onChangeTitle}/>
+                <input
+                  name="title"
+                  type="text"
+                  placeholder="Title"
+                  value={this.state.title}
+                  onChange={this.onChangeTitle}
+                  />
 
-                <FieldErrors errors={this.state.errors} name="title"/>
+                <FieldErrors errors={this.state.errors} name="title" />
               </FullField>
             </FieldGroup>
 
             <FieldGroup>
               <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter}
-                             onChange={this.onChangeQuickFilter}/>
+                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
               </FloatField>
 
               <FloatField align="right">
-                <ShowOnlySelected value={this.state.showOnlySelected}
-                                  onChange={this.onChangeFilterSelected}/>
-                <Unassign onClick={this.onUnassignAll}/>
+                <ShowOnlySelected value={this.state.showOnlySelected} onChange={this.onChangeFilterSelected} />
+                <Unassign onClick={this.onUnassignAll} />
               </FloatField>
             </FieldGroup>
 
             <FieldGroup>
-              <AgentsListContainer multiple
-                                   selfAssign={this.onAssignSelf}
-                                   selected={this.state.agents}
-                                   showOnlySelected={this.state.showOnlySelected}
-                                   filter={this.state.quickFilter}
-                                   onChange={this.onChange.bind(this, 'agents')}/>
-              <TeamsListContainer multiple
-                                  selected={this.state.agentTeams}
-                                  showOnlySelected={this.state.showOnlySelected}
-                                  filter={this.state.quickFilter}
-                                  onChange={this.onChange.bind(this, 'agentTeams')}/>
-              <DepartmentsListContainer multiple
-                                        selected={this.state.departments}
-                                        showOnlySelected={this.state.showOnlySelected}
-                                        filter={this.state.quickFilter}
-                                        onChange={this.onChange.bind(this, 'departments')}/>
+              <AgentsListContainer
+                multiple
+                selfAssign={this.onAssignSelf}
+                selected={this.state.agents}
+                showOnlySelected={this.state.showOnlySelected}
+                filter={this.state.quickFilter}
+                onClick={value => this.onChange('agents', value)}
+                />
+              <TeamsListContainer
+                multiple
+                selected={this.state.agentTeams}
+                showOnlySelected={this.state.showOnlySelected}
+                filter={this.state.quickFilter}
+                onClick={value => this.onChange('agentTeams', value)}
+                />
+              <DepartmentsListContainer
+                multiple
+                selected={this.state.departments}
+                showOnlySelected={this.state.showOnlySelected}
+                filter={this.state.quickFilter}
+                onClick={value => this.onChange('departments', value)}
+                />
             </FieldGroup>
 
             <FieldGroup>
               <FullField>
-                {!this.state.submit && <button type="submit"
-                                               value="Save"
-                                               className="dpw--popup-button"
-                                               onClick={this.onSubmit}>
-                  Save
-                </button>
+                {!this.state.submit &&
+                  <button type="submit" value="Save" className="dpw--popup-button" onClick={this.onSubmit}>
+                    Save
+                  </button>
                 }
-                {!isNew && !this.state.submit && <button type="button"
-                                                         className="dpw--popup-button"
-                                                         onClick={this.onDeletePrompt}>
-                  Delete
-                </button>
+                {!isNew && !this.state.submit &&
+                  <button type="button" className="dpw--popup-button" onClick={this.onDeletePrompt}>
+                    Delete
+                  </button>
                 }
-                {!isNew && <Modal ref="deleteModal"
-                                  title="Delete project?"
-                                  onConfirm={this.onDeleteConfirm}
-                                  confirmTitle="Delete">
-                  Are you sure you want to delete "{project.get('title')}"?
-                  <br />
-                  {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
-                </Modal>
+                {!isNew &&
+                  <Modal
+                    ref="deleteModal"
+                    title="Delete project?"
+                    onConfirm={this.onDeleteConfirm}
+                    confirmTitle="Delete"
+                    >
+                    Are you sure you want to delete "{project.get('title')}"?
+                    <br />
+                    {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
+                  </Modal>
                 }
-                <Loader opacity={0}
-                        width={3}
-                        loaded={!this.state.submit}/>
+                <Loader opacity={0} width={3} loaded={!this.state.submit} />
               </FullField>
             </FieldGroup>
           </div>

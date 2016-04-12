@@ -4,8 +4,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { cardSourceSpec, cardSourceCollect, cardTargetSpec, targetCollect } from '../../../TaskCard/TaskCardEditContainer';
 import { Td, TdId, TdTitle } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { BaseTaskCard, CardProjectContainer, AssigneeName } from '../../../TaskCard';
-import { Project } from './Project';
+import { BaseTaskCard, CardProjectContainer, AssigneeName } from '../../../TaskCard/index';
 import { TableCheckbox } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import classNames from 'classnames';
 import moment from 'moment';
@@ -16,11 +15,11 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     tableVisibleFields: PropTypes.object,
-    currentSort: PropTypes.string,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool,
-    isDragging: PropTypes.bool
+    currentSort:        PropTypes.string,
+    connectDragSource:  PropTypes.func.isRequired,
+    connectDropTarget:  PropTypes.func.isRequired,
+    isOver:             PropTypes.bool,
+    isDragging:         PropTypes.bool
   };
 
   componentDidMount() {
@@ -30,26 +29,21 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, onChange, selected, currentSort, onToggleSelected, tableVisibleFields, isOver, isDragging } = this.props;
+    const { task, selected, currentSort, tableVisibleFields, isOver, isDragging } = this.props;
+    const { onChange, onToggleSelected } = this.props;
     const { connectDragSource, connectDropTarget } = this.props;
 
     const isVisible = type => tableVisibleFields.includes(type);
 
     let result = connectDragSource(
-      <tr className={classNames({
-        'is-over': isOver,
-        'done': task.get('is_done'),
-        'dragging-item': isDragging
-      })}>
-
+      <tr className={classNames({ 'is-over': isOver, done: task.get('is_done'), 'dragging-item': isDragging })}>
         <Td>
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
         <TdId visible={isVisible('id')}>{task.get('id')}</TdId>
         <TdTitle>{task.get('title')}</TdTitle>
         <Td visible={isVisible('project')}>
-          <CardProjectContainer  value={task.get('project')}
-                                 onChange={onChange.bind(null, 'project')} />
+          <CardProjectContainer value={task.get('project')} onChange={value => onChange('project', value)} />
         </Td>
         <Td visible={isVisible('date_due')}>
           {task.get('date_due') ? moment(task.get('date_due')).format('DD/MM/YY') : 'N/A'}

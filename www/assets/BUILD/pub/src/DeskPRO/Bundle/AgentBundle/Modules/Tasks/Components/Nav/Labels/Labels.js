@@ -24,7 +24,7 @@ export class Labels extends React.Component {
                 {labels.map((label, index) =>
                   <ListItemContainer key={index}
                                      urlHash={`label-${label.get('label')}`}
-                                     listOptions={{label: [label.get('label')]}}>
+                                     listOptions={{ label: [label.get('label')] }}>
 
                     <LabelItem label={label} />
                   </ListItemContainer>

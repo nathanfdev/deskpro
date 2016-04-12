@@ -11,9 +11,9 @@ export class BaseForm extends React.Component {
 
     this.state = {
       quickFilter: '',
-      assign: {},
-      errors: {},
-      submit: false
+      assign:      {},
+      errors:      {},
+      submit:      false
     };
   }
 

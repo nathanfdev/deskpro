@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import { injectIntl, intlShape, FormattedRelative } from 'react-intl';
 import Immutable from 'immutable';
@@ -7,29 +7,24 @@ export class Card extends Component {
 
   static propTypes = {
     additionalClasses: PropTypes.string,
-    children: PropTypes.any,
-    minimized: PropTypes.bool,
-    moving: PropTypes.bool,
-    type: PropTypes.string.isRequired,
-    width: PropTypes.number
+    children:          PropTypes.any,
+    minimized:         PropTypes.bool,
+    moving:            PropTypes.bool,
+    type:              PropTypes.string.isRequired,
+    width:             PropTypes.number
   };
 
   render() {
-    const {type, moving, minimized, width, additionalClasses} = this.props;
+    const { type, moving, minimized, width, additionalClasses } = this.props;
     const classes = classNames(
       'dpmw--single-card',
       additionalClasses,
-      {
-        'dpmw--single-task-card': type === 'task',
-        'floating': type === 'float',
-        'minimized': minimized,
-        'moving': moving
-      }
+      { 'dpmw--single-task-card': type === 'task', floating: type === 'float', minimized, moving }
     );
 
     const styles = {};
     if (width) {
-      styles.width = width + 'px';
+      styles.width = `${width}px`;
     }
 
     return (
@@ -119,20 +114,20 @@ export class CardLineItem extends Component {
 
   static propTypes = {
     clickParams: PropTypes.object,
-    onClick: PropTypes.func,
-    children: PropTypes.any,
-    icon: PropTypes.string
+    onClick:     PropTypes.func,
+    children:    PropTypes.any,
+    icon:        PropTypes.string
   };
 
   handleClick() {
-    const {clickParams, onClick} = this.props;
+    const { clickParams, onClick } = this.props;
     if (clickParams && onClick) {
       onClick(clickParams);
     }
   }
 
   render() {
-    const {icon} = this.props;
+    const { icon } = this.props;
     let classes = '';
 
     if (icon) {
@@ -161,7 +156,7 @@ export class CardCheckbox extends Component {
 
     return (
       <div className="dpm--card-checkbox" onClick={onClick}>
-        <i className={classes}></i>
+        <i className={classes} />
       </div>
     );
   }
@@ -170,48 +165,16 @@ export class CardCheckbox extends Component {
 export class CardReset extends Component {
 
   static propTypes = {
-    isChanged: PropTypes.func
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isChanged: false
-    };
-    this.prev = false;
-  }
-
-  componentDidUpdate() {
-    this.props.isChanged && this.props.isChanged(this.state.isChanged);
-  }
-
-  onSetEditing = (isEditing) => {
-    this.setState({ isChanged: isEditing || this.prev });
-  };
-
-  onChange = () => {
-    const wasChanged = this.state.isChanged;
-    if (wasChanged) {
-      this.prev = true;
-    } else {
-      this.setState({ isChanged: true });
-    }
-  };
-
-  reset = () => {
-    if (!this.state.isChanged) {
-      return;
-    }
-    this.setState({ isChanged: false });
-    this.props.onReset && this.props.onReset();
+    isChanged: PropTypes.bool,
+    onReset:   PropTypes.func
   };
 
   render() {
-    const classes = classNames('fa fa-trash', { 'active': this.state.isChanged });
+    const { isChanged, onReset } = this.props;
 
     return (
-      <div className="dpm--card-reset" onClick={this.reset}>
-        <i className={classes}></i>
+      <div className="dpm--card-reset" onClick={onReset}>
+        <i className={classNames('fa fa-trash', { active: isChanged })} />
       </div>
     );
   }
@@ -220,9 +183,7 @@ export class CardReset extends Component {
 export class CardDisc extends Component {
 
   render() {
-    return (
-      <span className="dpw--card-disc"/>
-    );
+    return <span className="dpw--card-disc" />;
   }
 }
 
@@ -234,14 +195,12 @@ export class CardStatusBar extends Component {
   };
 
   render() {
-    const {align, level} = this.props;
-    var classes = classNames('dpw--card-status-bar', `level-${level}`,
+    const { align, level } = this.props;
+    const classes = classNames('dpw--card-status-bar', `level-${level}`,
       { 'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right' }
     );
 
-    return (
-      <div className={classes}/>
-    );
+    return <div className={classes}></div>;
   }
 }
 
@@ -297,7 +256,7 @@ export class CardUser extends Component {
 
     return (
       <div className="dpwd--card-line-item">
-        <i className="fa fa-user"></i> {user.get('first_name')} {user.get('last_name')}
+        <i className="fa fa-user" /> {user.get('first_name')} {user.get('last_name')}
         {email ? <CardDisc/> : ''}
         {email ? <span>{email}</span> : ''}
       </div>
@@ -312,10 +271,8 @@ export class CardLabel extends Component {
   };
 
   render() {
-    const {label} = this.props;
-
     return (
-      <span><a href="#">{label}</a>, </span>
+      <span><a href="#">{this.props.label}</a>, </span>
     );
   }
 }
@@ -326,10 +283,12 @@ export class CardComments extends Component {
   };
 
   render() {
-    const {commentsCounter} = this.props;
+    const { commentsCounter } = this.props;
 
     return (
-      <CardLineItem>{commentsCounter} <i className="fa fa-comments-o"/></CardLineItem>
+      <CardLineItem>
+        {commentsCounter} <i className="fa fa-comments-o" />
+      </CardLineItem>
     );
   }
 }

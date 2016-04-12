@@ -9,7 +9,7 @@ export class Header extends React.Component {
   render() {
     return (
       <div className="dpw--popup-header">
-        <i className="fa fa-tags"/> {this.props.children}
+        <i className="fa fa-tags" /> {this.props.children}
       </div>
     );
   }
