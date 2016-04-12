@@ -462,6 +462,14 @@ class LegacyTicketFilter extends DomainObject
         return $this->terms;
     }
 
+    /**
+     * @return bool
+     */
+    public function isProblemFilter()
+    {
+        return (bool) preg_match('/^problem_\d+$/', $this->getSysName());
+    }
+
     public function __toString()
     {
         return (string) $this->id;

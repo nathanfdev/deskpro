@@ -40,6 +40,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\FixedAdapter;
@@ -117,5 +118,28 @@ class TicketFiltersController extends CrudController
         $pager->setCurrentPage($currentPage);
 
         return View::create($this->wrap($pager));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1');
+        $qb->setParameter('regexp', '^problem_\\d+$');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id, Request $request)
+    {
+        /** @var LegacyTicketFilter $entity */
+        $entity = parent::findEntity($id, $request);
+        if ($entity->isProblemFilter()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 }

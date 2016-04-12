@@ -90,9 +90,14 @@ class LegacyTicketFilterSetDataService
      */
     public function getAllFilters()
     {
-        $filters = new Filters();
+        $filtersService = new Filters();
 
-        return $filters->getFiltersForPerson($this->getUser());
+        $filters = $filtersService->getFiltersForPerson($this->getUser());
+        $filters = array_filter($filters, function (LegacyTicketFilter $filter) {
+            return !$filter->isProblemFilter();
+        });
+
+        return $filters;
     }
 
     /**

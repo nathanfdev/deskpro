@@ -155,6 +155,10 @@ class TicketCountsController extends AbstractLegacyFiltersController
      */
     public function getTicketFilterCountAction(Request $request, LegacyTicketFilter $filter)
     {
+        if ($filter->isProblemFilter()) {
+            throw $this->createNotFoundException();
+        }
+
         $groupBy = $request->get('group_by');
         $count   = $this->getLegacyFilterSetService()->getFilterCount($filter, $groupBy);
 
