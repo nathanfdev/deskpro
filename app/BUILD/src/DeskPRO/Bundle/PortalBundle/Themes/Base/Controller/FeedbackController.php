@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
@@ -74,7 +75,7 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $person = $this->getUser() ?: new PersonGuest();
+       $person = $this->getUser() ?: new PersonGuest();
 
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
@@ -90,6 +91,10 @@ class FeedbackController extends AbstractController
             $filter,
             $person
         );
+        
+        foreach ($pager as $item) {
+            $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
+        }
 
         return $this->renderThemeView(
             sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),

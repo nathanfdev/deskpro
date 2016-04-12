@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -421,6 +422,7 @@ class FeedbackController extends AbstractController
         // RATING
         //
         $rating = $this->findContentRating($item, $visitor_id);
+        $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
 
         //
         // NUM RATINGS

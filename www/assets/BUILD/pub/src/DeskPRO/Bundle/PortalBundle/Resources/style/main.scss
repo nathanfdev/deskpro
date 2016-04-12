@@ -5682,10 +5682,14 @@ h1.fancy-header {
         @include right(0px);
         z-index: 1111;
       }
+
+      &.rate_forbidden:not(.closed) {
+        cursor: not-allowed;
+      }
     }
 
     .i-agree {
-      &:hover {
+      &:hover:not(.rate_forbidden):not(.closed) {
         border: 1px solid #14d3a1;
         i {
           color: #14d3a1;
@@ -5699,6 +5703,15 @@ h1.fancy-header {
       i {
         color: #14d3a1;
         opacity: 1;
+      }
+      &.closed {
+        border-color: #E0E0E0;
+        div {
+          color: #C0C0C0;
+        }
+        i {
+          color: #14d3a1;
+        }
       }
     }
 
@@ -5763,6 +5776,12 @@ h1.fancy-header {
       font-size: 10.5px;
       padding-top: 5px;
 
+    }
+
+    .closed {
+      .counter {
+        background: #C0C0C0;;
+      }
     }
 
     @-moz-document url-prefix() {

@@ -36,6 +36,7 @@ return array(
     'portal.feedback.nav-closed-items'          => 'Closed Items',
     'portal.feedback.nav-my-items'              => 'My Votes & Stars',
     'portal.feedback.btn-vote'                  => 'I Agree',
+    'portal.feedback.btn-closed'                => 'Closed',
     'portal.feedback.view-x-feedback'           => 'View 1 feedback|View {{count}} feedback',
     'portal.feedback.x-feedback'                => '1 feedback|{{count}} feedback',
     'portal.feedback.none'                      => 'No feedback yet',
