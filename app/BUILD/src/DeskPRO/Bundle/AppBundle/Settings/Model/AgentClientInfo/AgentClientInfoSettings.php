@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo;
 
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings;
@@ -48,6 +49,13 @@ class AgentClientInfoSettings
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\CoreSettings")
      */
     private $settings;
+
+    /**
+     * @var AccountInfo
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo")
+     */
+    private $accountInfo;
 
     /**
      * @var ChatSettings
@@ -96,13 +104,14 @@ class AgentClientInfoSettings
      */
     public function __construct()
     {
-        $this->settings = new CoreSettings();
-        $this->chat     = new ChatSettings();
-        $this->crm      = new CRMSettings();
-        $this->feedback = new FeedbackSettings();
-        $this->publish  = new PublishSettings();
-        $this->tasks    = new TasksSettings();
-        $this->tickets  = new TicketsSettings();
+        $this->accountInfo = new AccountInfo();
+        $this->settings    = new CoreSettings();
+        $this->chat        = new ChatSettings();
+        $this->crm         = new CRMSettings();
+        $this->feedback    = new FeedbackSettings();
+        $this->publish     = new PublishSettings();
+        $this->tasks       = new TasksSettings();
+        $this->tickets     = new TicketsSettings();
     }
 
     /**
@@ -121,6 +130,26 @@ class AgentClientInfoSettings
     public function setSettings(CoreSettings $settings)
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return AccountInfo
+     */
+    public function getAccountInfo()
+    {
+        return $this->accountInfo;
+    }
+
+    /**
+     * @param AccountInfo $accountInfo
+     *
+     * @return $this
+     */
+    public function setAccountInfo(AccountInfo $accountInfo)
+    {
+        $this->accountInfo = $accountInfo;
 
         return $this;
     }
