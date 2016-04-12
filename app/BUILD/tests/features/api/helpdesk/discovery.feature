@@ -24,6 +24,10 @@ Feature: Discover settings
     And the JSON node "data.settings.attachments.agents.whitelist" should have 0 elements
     And the JSON node "data.settings.attachments.agents.blacklist" should have 0 elements
 
+    And the JSON node "data.account_info.timezone" should be equal to "UTC"
+    And the JSON node "data.account_info.language" should be equal to 1
+    And the JSON node "data.account_info.signature_html" should exist
+
     And the JSON node "data.tickets.enabled" should be equal to 1
     And the JSON node "data.tickets.ref_code" should be equal to 0
     And the JSON node "data.tickets.archiving" should be equal to 1

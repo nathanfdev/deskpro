@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings;
@@ -73,8 +74,11 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param EntityManager              $em
      */
-    public function __construct(BrandAwareSettingsResolver $settingsResolver, TokenStorageInterface $tokenStorage, EntityManager $em)
-    {
+    public function __construct(
+        BrandAwareSettingsResolver $settingsResolver,
+        TokenStorageInterface $tokenStorage,
+        EntityManager $em
+    ) {
         parent::__construct($settingsResolver);
 
         $this->tokenStorage = $tokenStorage;
@@ -86,16 +90,16 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getSettings()
     {
-        $model = new AgentClientInfoSettings();
+        $model = new AgentClientInfoSettings($this->getUser());
         $model
             ->setSettings($this->getCoreSettings())
+            ->setAccountInfo($this->getAccountInfo())
             ->setTickets($this->getTicketsSettings())
             ->setChat($this->getChatSettings())
             ->setCrm($this->getCrmSettings())
             ->setFeedback($this->getFeedbackSettings())
             ->setPublish($this->getPublishSettings())
-            ->setTasks($this->getTasksSettings())
-        ;
+            ->setTasks($this->getTasksSettings());
 
         return $model;
     }
@@ -109,8 +113,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setMultiLang($this->getSetting('core.enable_languages'))
             ->setHelpdeskName($this->getSetting('core.deskpro_name'))
-            ->setAttachments($this->getAttachmentsSettings())
-        ;
+            ->setAttachments($this->getAttachmentsSettings());
 
         return $model;
     }
@@ -125,9 +128,12 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $agentsSettings = $model->getAgents();
         $agentsSettings
             ->setMaxSize($this->getSetting('core.attach_agent_maxsize'))
-            ->setWhitelist(Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_must_exts') ?: '')))
-            ->setBlacklist(Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_not_exts') ?: '')))
-        ;
+            ->setWhitelist(
+                Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_must_exts') ?: ''))
+            )
+            ->setBlacklist(
+                Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_not_exts') ?: ''))
+            );
 
         return $model;
     }
@@ -141,8 +147,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setEnabled($this->getUser()->hasPerm('agent_tickets.use'))
             ->setRefCode($this->getSetting('core_tickets.use_ref'))
-            ->setArchiving($this->getSetting('core_tickets.use_archive'))
-        ;
+            ->setArchiving($this->getSetting('core_tickets.use_archive'));
 
         // set fields info
         $fields = $model->getFieldInfo();
@@ -150,26 +155,22 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $product = $fields->getProduct();
         $product
             ->setEnabled($this->getSetting('core.use_product'))
-            ->setDefaultId($this->getSetting('core.default_prod_id'))
-        ;
+            ->setDefaultId($this->getSetting('core.default_prod_id'));
 
         $category = $fields->getCategory();
         $category
             ->setEnabled($this->getSetting('core.use_ticket_category'))
-            ->setDefaultId($this->getSetting('core.default_ticket_cat'))
-        ;
+            ->setDefaultId($this->getSetting('core.default_ticket_cat'));
 
         $workflow = $fields->getWorkflow();
         $workflow
             ->setEnabled($this->getSetting('core.use_ticket_workflow'))
-            ->setDefaultId($this->getSetting('core.default_ticket_work'))
-        ;
+            ->setDefaultId($this->getSetting('core.default_ticket_work'));
 
         $priority = $fields->getPriority();
         $priority
             ->setEnabled($this->getSetting('core.use_ticket_priority'))
-            ->setDefaultId($this->getSetting('core.default_ticket_pri'))
-        ;
+            ->setDefaultId($this->getSetting('core.default_ticket_pri'));
 
         /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
         $customDefRepo = $this->em->getRepository(CustomDefTicket::class);
@@ -217,7 +218,6 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             TicketGrouping::WAITING_TIME,
             TicketGrouping::ALL_WAITING_TIME,
             TicketGrouping::DATE_CREATED,
-
             // not supported by legacy ticket grouping counter
             // temporary disabled until we are using legacy filters
             // TicketGrouping::OPEN_TIME,
@@ -229,11 +229,13 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
-            $model->addGroupByField(new TicketGroupFieldSettings(
-                'ticket_field.'.$customDef->getId(),
-                'ticket_field',
-                $customDef->getId()
-            ));
+            $model->addGroupByField(
+                new TicketGroupFieldSettings(
+                    'ticket_field.'.$customDef->getId(),
+                    'ticket_field',
+                    $customDef->getId()
+                )
+            );
         }
 
         return $model;
@@ -292,6 +294,19 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model->setEnabled($this->getUser()->hasPerm('core.apps_tasks'));
 
         return $model;
+    }
+
+    public function getAccountInfo()
+    {
+        $user          = $this->getUser();
+        $signatureHtml = $user->getHelper('Agent')->getSignatureHtml();
+        $accountInfo   = new AccountInfo();
+        $accountInfo
+            ->setLanguage($user->getLanguage())
+            ->setTimezone($user->getTimezone())
+            ->setSignatureHtml($signatureHtml);
+
+        return $accountInfo;
     }
 
     /**
