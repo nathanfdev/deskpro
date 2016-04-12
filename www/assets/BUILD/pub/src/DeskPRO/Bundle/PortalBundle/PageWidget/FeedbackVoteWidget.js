@@ -10,10 +10,6 @@ export class FeedbackVoteWidget extends PageWidget {
       if ($iAgreeBox.hasClass('closed')) {
         return; // rate closed
       }
-      if ($iAgreeBox.hasClass('rate_forbidden')) {
-        // TODO if user is not connected redirect to login then redirect to action
-        return; // rate_forbidden
-      }
       if ($iAgreeBox.hasClass('agreed')) {
         return; // already agreed
       }
@@ -25,6 +21,12 @@ export class FeedbackVoteWidget extends PageWidget {
         url: action,
         method: 'POST',
         contentType: 'application/json'
+      }).success(function(data) {
+        if (!data.success) {
+          $iAgreeBox.find('div').text(data.error);
+          $counter.text(_.parseInt($counter.text()) - 1);
+          $iAgreeBox.removeClass('agreed');
+        }
       }).fail(function(){
         $counter.text(_.parseInt($counter.text()) - 1);
         $iAgreeBox.removeClass('agreed');

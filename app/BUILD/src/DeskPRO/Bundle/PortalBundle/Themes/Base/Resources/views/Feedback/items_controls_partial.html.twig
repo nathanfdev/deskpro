@@ -1,5 +1,5 @@
 <div class="feedback-item-controls" ref="feedbackItemControls">
-    <a {% if (item.can_rate and not item.isClosed) %}href="{{  portal_path(item, 'vote_up') }}"{% endif %}
+    <a {% if (not item.isClosed) %}href="{{  portal_path(item, 'vote_up') }}"{% endif %}
        class="i-agree {% if user_up_voted(item) %} agreed{% endif %}{% if item.isClosed %} closed{% endif %}{% if not item.can_rate %} rate_forbidden{% endif %}">
         <i class="fa fa-thumbs-up"></i>
         <div>
