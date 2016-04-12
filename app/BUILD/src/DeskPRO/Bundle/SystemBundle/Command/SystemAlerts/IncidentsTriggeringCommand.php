@@ -113,12 +113,17 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
         $iterationsLimit = $input->getArgument('iterations_limit');
         $totalTime       = 0;
         $i               = 1;
-        while ($i <= $iterationsLimit) {
-            $start  = microtime(true);
-            $result = $triggeringProcess->run($batchSize);
-            $time   = microtime(true) - $start;
-            $totalTime += $time;
-            $this->batchReport($i, $time, $result['events'], $result['new_incidents'], $result['updated_incidents']);
+        $finished        = false;
+        while ($i <= $iterationsLimit && !$finished) {
+            $start    = microtime(true);
+            $result   = $triggeringProcess->run($batchSize);
+            $finished = empty($result['events']);
+            if (!$finished) {
+                $time = microtime(true) - $start;
+                $totalTime += $time;
+                $this->batchReport(
+                    $i, $time, $result['events'], $result['new_incidents'], $result['updated_incidents']);
+            }
             ++$i;
         }
 

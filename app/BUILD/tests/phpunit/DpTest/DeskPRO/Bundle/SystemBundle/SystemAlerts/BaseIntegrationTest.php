@@ -34,6 +34,8 @@ namespace DpTest\Bundle\SystemBundle\SystemAlerts;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\Incident;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\StatefulIncident;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\TriggeringProcess;
 use Doctrine\ORM\EntityManager;
@@ -108,5 +110,26 @@ abstract class BaseIntegrationTest extends ApiTestCase
     protected function countAllIncidents()
     {
         return $this->em->createQuery('SELECT COUNT(i) FROM '.AbstractIncident::class.' i')->getSingleScalarResult();
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return int
+     */
+    protected function countIncidents($type)
+    {
+        return $this->em->createQuery('SELECT COUNT(i) FROM '.$type.' i')->getSingleScalarResult();
+    }
+
+    /**
+     * @return Incident|StatefulIncident
+     */
+    protected function findSingleIncident()
+    {
+        $incidents = $this->em->getRepository(AbstractIncident::class)->findAll();
+        $this->assertCount(1, $incidents);
+
+        return $incidents[0];
     }
 }

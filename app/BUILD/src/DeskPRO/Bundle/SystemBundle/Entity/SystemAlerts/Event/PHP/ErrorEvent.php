@@ -43,11 +43,11 @@ use Doctrine\ORM\Mapping as ORM;
 class ErrorEvent extends AbstractEvent
 {
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="error_type", type="string")
+     * @ORM\Column(name="error_type", type="integer", options={"unsigned"=true})
      */
-    protected $type;
+    protected $errorType;
 
     /**
      * @var string
@@ -78,20 +78,20 @@ class ErrorEvent extends AbstractEvent
     protected $data;
 
     /**
-     * @param string    $type
+     * @param string    $errorType
      * @param string    $message
      * @param string    $file
      * @param int       $line
      * @param \DateTime $dateCreated
      * @param array     $data
      */
-    public function __construct($type, $message, $file, $line, \DateTime $dateCreated = null, $data = [])
+    public function __construct($errorType, $message, $file, $line, \DateTime $dateCreated = null, $data = [])
     {
-        $this->type    = $type;
-        $this->message = $message;
-        $this->file    = $file;
-        $this->line    = $line;
-        $this->data    = $data;
+        $this->errorType = $errorType;
+        $this->message   = $message;
+        $this->file      = $file;
+        $this->line      = $line;
+        $this->data      = $data;
         parent::__construct($dateCreated);
     }
 
@@ -100,7 +100,7 @@ class ErrorEvent extends AbstractEvent
      */
     protected function generateSubjectUniqueId()
     {
-        return $this->type.'-'.md5($this->message).'-'.md5($this->file).'-'.$this->line;
+        return $this->errorType.'-'.md5($this->file).'-'.$this->line;
     }
 
     /**
@@ -108,6 +108,48 @@ class ErrorEvent extends AbstractEvent
      */
     public function getSubjectDescription()
     {
-        return "PHP error #{$this->type} \"{$this->message}\" in {$this->file} on line {$this->line}";
+        return "PHP error \"{$this->message}\"";
+    }
+
+    /**
+     * If error is critical.
+     *
+     * @return bool
+     */
+    public function isCritical()
+    {
+        return in_array(intval($this->errorType), [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE]);
+    }
+
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->errorType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLine()
+    {
+        return $this->line;
     }
 }
