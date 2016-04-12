@@ -12,7 +12,10 @@
     "max-len": [
       1,
       {
-        "code": 120
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignorePattern": "^import\\s.+"
       }
     ],
     "react/no-multi-comp": 0,
@@ -44,9 +47,8 @@
     ],
     "react/jsx-closing-bracket-location": [
       2,
-      "after-props"
+      "props-aligned"
     ],
-    "react/jsx-indent-props": 0,
     "react/prefer-stateless-function": 0,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
