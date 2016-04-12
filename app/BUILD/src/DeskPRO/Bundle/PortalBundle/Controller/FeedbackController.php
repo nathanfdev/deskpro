@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -51,6 +52,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -421,7 +423,7 @@ class FeedbackController extends AbstractController
         //
         // RATING
         //
-        $rating = $this->findContentRating($item, $visitor_id);
+        $rating         = $this->findContentRating($item, $visitor_id);
         $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
 
         //
@@ -465,17 +467,30 @@ class FeedbackController extends AbstractController
      * @Route("/feedback/view/{slug}/vote-up", name="portal_feedback_vote_up", defaults={"up_or_down":"up"})
      * @Route("/feedback/view/{slug}/vote-down", name="portal_feedback_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_FEEDBACK') and is_granted('RATE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
      *
+     * @param Request  $request
      * @param Feedback $item
      * @param string   $visitor_id
      * @param string   $up_or_down
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|JsonResponse
      */
-    public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
+    public function feedbackRateAction(Request $request, Feedback $item, $visitor_id, $up_or_down)
     {
+        if (!$this->isGranted('USE_FEEDBACK')) {
+            return $this->createAccessDeniedException('Module not allowed');
+        }
+        if (!$this->isGranted('RATE_FEEDBACK', $item)) {
+            if ($this->getUser()) {
+                return $this->createAccessDeniedException('Rate not allowed');
+            }
+            if ($request->getContentType() == 'json') {
+                return new JsonResponse(['error' => 'Try to login']);
+            } else {
+                return $this->redirectToRoute('login');
+            }
+        }
         if (!$item->isVisibleOnPortal()) {
             throw $this->createNotFoundException('this feedback item is hidden');
         }
@@ -490,7 +505,13 @@ class FeedbackController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-        return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
+        if ($request->getContentType() == 'json') {
+            return new JsonResponse([
+                'success' => true,
+            ]);
+        } else {
+            return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
+        }
     }
 
     /**

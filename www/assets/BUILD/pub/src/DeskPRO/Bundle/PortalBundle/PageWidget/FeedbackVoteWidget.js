@@ -21,7 +21,11 @@ export class FeedbackVoteWidget extends PageWidget {
       let $counter = $iAgreeBox.find('span.counter');
       $counter.text(_.parseInt($counter.text()) + 1);
       $iAgreeBox.addClass('agreed');
-      $.post(action).fail(function(){
+      $.ajax({
+        url: action,
+        method: 'POST',
+        contentType: 'application/json'
+      }).fail(function(){
         $counter.text(_.parseInt($counter.text()) - 1);
         $iAgreeBox.removeClass('agreed');
       });
