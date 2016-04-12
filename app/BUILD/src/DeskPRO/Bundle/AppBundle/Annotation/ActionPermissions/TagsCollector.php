@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,30 +87,14 @@ class TagsCollector
     }
 
     /**
-     * @param $tags
-     */
-    public function addTags($tags)
-    {
-        $this->tags = array_merge($this->tags, $tags);
-    }
-
-    /**
-     *
-     */
-    public function unique()
-    {
-        $this->tags = array_unique($this->tags);
-    }
-
-    /**
      * @return array
      */
     public function getTagsHierarchy()
     {
-        $this->unique();
-        $tags_hierarhy = call_user_func_array('array_merge_recursive', array_map([$this->helper, 'createActionTagsHierarchy'], $this->tags));
+        $this->tags    = array_unique($this->tags);
+        $tagsHierarchy = call_user_func_array('array_merge_recursive', array_map([$this->helper, 'createActionTagsHierarchy'], $this->tags));
 
-        return $tags_hierarhy;
+        return $tagsHierarchy;
     }
 
     /**
@@ -125,7 +109,7 @@ class TagsCollector
                 /** @var \Metadata\ClassMetadata $metadatum */
                 foreach ($classMetadata->methodMetadata as $metadatum) {
                     /* @var MethodMetadata $metadatum */
-                    $this->addTags($metadatum->getTags());
+                    $this->tags = array_merge($this->tags, $metadatum->getTags());
                 }
             } catch (AbstractClassException $e) {
                 // There is nothing to do. Or just output it
@@ -142,14 +126,17 @@ class TagsCollector
      */
     public function getTagsHierarchyForApi($key)
     {
-        $tags          = $this->getTagsHierarchy();
-        $gathered_tags = [];
+        $tags         = ['*' => $this->getTagsHierarchy()];
+        $gatheredTags = [];
         foreach ($this->getKey($key)->getActions() as $action) {
             /* @var ApiKeyAction $action */
-            $gathered_tags[] = $action->getAction();
+            $gatheredTags[] = $action->getAction();
         }
 
-        return $this->array_values_recursive($this->populateByGathered($gathered_tags, $this->mutate($tags)));
+        $mutated   = $this->mutate($tags);
+        $populated = $this->populateByGathered($gatheredTags, $mutated);
+
+        return $this->array_values_recursive($populated);
     }
 
     /**
@@ -157,16 +144,22 @@ class TagsCollector
      *
      * @return array
      */
-    protected function mutate($tags)
+    protected function mutate($tags, $path = [])
     {
         static $id = 0;
         $mutated   = [];
         foreach ($tags as $key => $value) {
             ++$id;
+
+            $mutated[$key] = [
+                'id'    => $id,
+                'title' => $key,
+                'value' => 0,
+                'path'  => $key !== '*' ? implode('.', array_merge($path, [$key])) : '*',
+            ];
+
             if (is_array($value)) {
-                $mutated[$key] = ['id' => $id, 'title' => str_replace('-', '', $key), 'value' => 0, 'nodes' => $this->mutate($value)];
-            } else {
-                $mutated[$key] = ['id' => $id, 'title' => str_replace('-', '', $key), 'value' => 0];
+                $mutated[$key]['nodes'] = $this->mutate($value, array_merge($path, $key !== '*' ? [$key] : []));
             }
         }
 
@@ -230,8 +223,10 @@ class TagsCollector
      */
     protected function processRecursive(&$tmp, $allowed)
     {
-        $tmp['value'] = $allowed && $tmp['value'] >= 0 ? 1 : -1;
-        if ($tmp['nodes']) {
+        if (isset($tmp['value'])) {
+            $tmp['value'] = $allowed && $tmp['value'] >= 0 ? 1 : -1;
+        }
+        if (isset($tmp['nodes'])) {
             foreach ($tmp['nodes'] as &$node) {
                 $this->processRecursive($node, $allowed);
             }
@@ -247,12 +242,12 @@ class TagsCollector
     {
         $key = $this->getKey($key);
         $this->collectTags();
-        $tags_hierarchy = $this->getTagsHierarchy();
+        $tagsHierarchy = $this->getTagsHierarchy();
 
-        $original_action = $action;
+        $originalAction = $action;
 
-        $parts = explode('.', $original_action);
-        $tag   = $tags_hierarchy;
+        $parts = explode('.', $originalAction);
+        $tag   = $tagsHierarchy;
         while ($part = array_shift($parts)) {
             if (array_key_exists($part, $tag)) {
                 $tag = $tag[$part];
@@ -260,10 +255,10 @@ class TagsCollector
         }
 
         if (is_array($tag)) {
-            $deletePattern = "$original_action%";
-            $action .= '.*';
+            $deletePattern = "$originalAction%";
+            $action .= $action !== '*' ? '.*' : '';
         } else {
-            $deletePattern = $original_action;
+            $deletePattern = $originalAction;
         }
         $this->deleteOld($key, $deletePattern);
 
@@ -274,11 +269,11 @@ class TagsCollector
             $prefix = '-';
         }
 
-        $action     = $prefix.$action;
-        $api_action = new ApiKeyAction();
-        $api_action->setAction($action)->setKey($key);
-        $this->em->persist($api_action);
-        $this->em->flush($api_action);
+        $action    = $prefix.$action;
+        $apiAction = new ApiKeyAction();
+        $apiAction->setAction($action)->setKey($key);
+        $this->em->persist($apiAction);
+        $this->em->flush($apiAction);
     }
 
     /**
@@ -290,7 +285,7 @@ class TagsCollector
      *
      * @return ApiKey|null|object
      */
-    public function getKey($key)
+    private function getKey($key)
     {
         $key = $this->em->find('\Application\DeskPRO\Entity\ApiKey', $key);
         if (!$key) {

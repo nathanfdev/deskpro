@@ -34,18 +34,18 @@ define [
       @$scope.enable = (node) =>
         node.value = 1
         @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.title, node.value, @form.id)
+        @service.tags.updateTags(node.path, node.value, @form.id)
 
 
       @$scope.default = (node) =>
         node.value = 0
         @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.title, node.value, @form.id)
+        @service.tags.updateTags(node.path, node.value, @form.id)
 
       @$scope.disable = (node) =>
         node.value = -1
         @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.title, node.value, @form.id)
+        @service.tags.updateTags(node.path, node.value, @form.id)
 
     updateChildren: (nodes, value) =>
       for node in nodes
@@ -67,8 +67,6 @@ define [
 
 
       p2 = @service.agents.all().then (agents) => @agents = agents
-
-
 
       # Load logs separately
       if @$stateParams.id
