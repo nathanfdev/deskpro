@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\TicketWorkflow;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -175,7 +176,7 @@ class TicketType extends AbstractType
         foreach ($field_defs as $field_def) {
             $form_fields[] = [
                 'name'    => $field_def->getId(),
-                'type'    => 'deskpro_custom_data',
+                'type'    => CustomDataType::class,
                 'options' => [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',

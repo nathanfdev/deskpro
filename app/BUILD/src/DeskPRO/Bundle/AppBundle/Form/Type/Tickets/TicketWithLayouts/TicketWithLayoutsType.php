@@ -48,6 +48,7 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
@@ -353,7 +354,7 @@ class TicketWithLayoutsType extends AbstractType
 
             if ($form_field) {
                 // we need to collect custom data fields to make custom field groups
-                if ($context->forApi() && $form_field->getType() === 'deskpro_custom_data') {
+                if ($context->forApi() && $form_field->getType() === CustomDataType::class) {
                     $custom_field_groups[$field->getFieldType()][] = [
                         'name'    => $field->getFieldId(),
                         'type'    => $form_field->getType(),
@@ -776,7 +777,7 @@ class TicketWithLayoutsType extends AbstractType
             $options['ignore_validation'] = true;
         }
 
-        return new FormField('deskpro_custom_data', $options);
+        return new FormField(CustomDataType::class, $options);
     }
 
     /**

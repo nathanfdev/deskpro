@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
@@ -218,7 +219,7 @@ class PersonType extends ApiType
         foreach ($field_defs as $field_def) {
             $form_fields[] = [
                 'name'    => $field_def->getId(),
-                'type'    => 'deskpro_custom_data',
+                'type'    => CustomDataType::class,
                 'options' => [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',
