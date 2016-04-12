@@ -4,11 +4,12 @@ import { NavContainer } from './Nav/NavContainer';
 import { ListContainer } from './List/ListContainer';
 
 export class TasksApp extends React.Component {
+
   render() {
     return (
       <AppPane>
-        <NavPane><NavContainer/></NavPane>
-        <ListPane><ListContainer/></ListPane>
+        <NavPane><NavContainer /></NavPane>
+        <ListPane><ListContainer /></ListPane>
       </AppPane>
     );
   }

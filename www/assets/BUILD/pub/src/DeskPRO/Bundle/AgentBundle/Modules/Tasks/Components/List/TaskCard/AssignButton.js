@@ -10,8 +10,8 @@ export class AssignButton extends CardWidget {
 
   static propTypes = {
     onSetEditing: PropTypes.func,
-    onChange: PropTypes.func.isRequired,
-    value: PropTypes.object.isRequired
+    onChange:     PropTypes.func.isRequired,
+    value:        PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -19,9 +19,9 @@ export class AssignButton extends CardWidget {
 
     this.state = {
       isOpen: false,
-      value: Immutable.fromJS({
-        agents: props.value.get('agents'),
-        teams: props.value.get('teams'),
+      value:  Immutable.fromJS({
+        agents:      props.value.get('agents'),
+        teams:       props.value.get('teams'),
         departments: props.value.get('departments')
       })
     };
@@ -30,8 +30,8 @@ export class AssignButton extends CardWidget {
   componentWillReceiveProps(props) {
     this.setState({
       value: Immutable.fromJS({
-        agents: props.value.get('agents'),
-        teams: props.value.get('teams'),
+        agents:      props.value.get('agents'),
+        teams:       props.value.get('teams'),
         departments: props.value.get('departments')
       })
     });
@@ -43,14 +43,18 @@ export class AssignButton extends CardWidget {
 
   hasAvatar() {
     const { value } = this.state;
-    return value.get('agents') && value.get('agents').size || value.get('teams') && value.get('teams').size || value.get('departments') && value.get('departments').size;
+
+    return value.get('agents') && value.get('agents').size
+      || value.get('teams') && value.get('teams').size
+      || value.get('departments') && value.get('departments').size;
   }
 
   onChange = (val) => {
     this.setState({
-      value: val,
+      value:  val,
       isOpen: false
     });
+
     this.props.onChange(val);
   };
 
@@ -60,10 +64,10 @@ export class AssignButton extends CardWidget {
         <div className="dpwd--card-assigned" onClick={this.onOpen} ref="button">
 
           {this.hasAvatar()
-            ? <AssigneeAvatar task={this.state.value}/>
-            : <div className="dpw--avatar-face" style={{position: 'relative'}}>
-            <i className="fa fa-caret-down"/>
-          </div>
+            ? <AssigneeAvatar task={this.state.value} />
+            : <div className="dpw--avatar-face" style={{ position: 'relative' }}>
+                <i className="fa fa-caret-down" />
+              </div>
           }
         </div>
 
@@ -74,7 +78,7 @@ export class AssignButton extends CardWidget {
                     zIndex={1002}>
 
           <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.assign-form', '.fa-check']}>
-            <AssignForm task={this.state.value} onSubmit={this.onChange}/>
+            <AssignForm task={this.state.value} onSubmit={this.onChange} />
           </ClickOut>
         </Positioned>
       </div>

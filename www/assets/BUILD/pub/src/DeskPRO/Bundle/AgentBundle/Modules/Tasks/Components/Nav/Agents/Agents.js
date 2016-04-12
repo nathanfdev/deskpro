@@ -6,7 +6,7 @@ import { ListItemContainer } from '../ListItemContainer';
 export class Agents extends React.Component {
 
   static propTypes = {
-    agents: PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
     agentsCount: PropTypes.object.isRequired
   };
 

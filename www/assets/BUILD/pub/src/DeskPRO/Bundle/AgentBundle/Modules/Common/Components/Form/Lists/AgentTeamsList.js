@@ -1,4 +1,3 @@
-import React, { PropTypes } from 'react';
 import { BaseList } from './BaseList';
 
 export class AgentTeamsList extends BaseList {

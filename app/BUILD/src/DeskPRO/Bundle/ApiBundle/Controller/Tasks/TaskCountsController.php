@@ -62,20 +62,20 @@ class TaskCountsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\Grouped"
      * )
      *
-     * @Rest\Get("/tasks/group_counts", name="api_task_group_counts")
+     * @Rest\Get("/tasks/group_counts")
      */
     public function getGroupCountsAction()
     {
-        $count_service = $this->get('data.task_counts');
-        $counts        = new Grouped();
-
+        $dataService = $this->get('data.task_counts');
+        $counts      = new Grouped();
         $counts
-            ->setAll($count_service->getAllCount())
-            ->setMy($count_service->getMyCount())
-            ->setTeam($count_service->getTeamCount())
-            ->setDepartment($count_service->getDepartmentCount())
-            ->setDelegated($count_service->getDelegatedCount())
-            ->setUnassigned($count_service->getUnassignedCount());
+            ->setAll($dataService->getAllCount())
+            ->setMy($dataService->getMyCount())
+            ->setTeam($dataService->getTeamCount())
+            ->setDepartment($dataService->getDepartmentCount())
+            ->setDelegated($dataService->getDelegatedCount())
+            ->setUnassigned($dataService->getUnassignedCount())
+        ;
 
         return View::create($this->wrap($counts), Response::HTTP_OK);
     }
@@ -93,13 +93,12 @@ class TaskCountsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\AgentGrouped>"
      * )
      *
-     * @Rest\Get("/tasks/agent_counts", name="api_task_agent_counts")
+     * @Rest\Get("/tasks/agent_counts")
      */
     public function getAgentCountsAction()
     {
-        $counts_res = $this->get('data.task_counts')->getAgentsCounts();
-        $counts     = [];
-        foreach ($counts_res as $count) {
+        $counts = [];
+        foreach ($this->get('data.task_counts')->getAgentsCounts() as $count) {
             $counts[] = new AgentGrouped($count['agent_id'], $count['tasks_count']);
         }
 
@@ -119,13 +118,12 @@ class TaskCountsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\ProjectGrouped>"
      * )
      *
-     * @Rest\Get("/tasks/project_counts", name="api_task_project_counts")
+     * @Rest\Get("/tasks/project_counts")
      */
     public function getProjectCountsAction()
     {
-        $counts_res = $this->get('data.task_counts')->getProjectsCounts();
-        $counts     = [];
-        foreach ($counts_res as $count) {
+        $counts = [];
+        foreach ($this->get('data.task_counts')->getProjectsCounts() as $count) {
             $counts[] = new ProjectGrouped($count['project_id'], $count['tasks_count']);
         }
 

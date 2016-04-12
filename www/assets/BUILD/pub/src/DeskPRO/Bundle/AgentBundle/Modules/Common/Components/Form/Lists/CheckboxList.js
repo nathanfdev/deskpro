@@ -5,19 +5,19 @@ import classNames from 'classnames';
 export class CheckboxList extends React.Component {
 
   static propTypes = {
-    values: PropTypes.object.isRequired,
-    renderLabel: PropTypes.func.isRequired,
-    getKeyword: PropTypes.func.isRequired,
-    multiple: PropTypes.bool,
-    selected: PropTypes.object,
+    values:           PropTypes.object.isRequired,
+    renderLabel:      PropTypes.func.isRequired,
+    getKeyword:       PropTypes.func.isRequired,
+    multiple:         PropTypes.bool,
+    selected:         PropTypes.array,
     showOnlySelected: PropTypes.bool,
-    filter: PropTypes.string,
-    options: PropTypes.any,
-    onChange: PropTypes.func.isRequired
+    filter:           PropTypes.string,
+    options:          PropTypes.any,
+    onClick:          PropTypes.func
   };
 
   onClick(value) {
-    const { multiple, selected = [], onChange } = this.props;
+    const { multiple, selected = [], onClick } = this.props;
     const index = selected.indexOf(value);
 
     if (multiple) {
@@ -27,9 +27,9 @@ export class CheckboxList extends React.Component {
         selected.splice(index, 1);
       }
 
-      onChange(selected);
+      onClick(selected);
     } else {
-      onChange(index > -1 ? [] : [value]);
+      onClick(index > -1 ? [] : [value]);
     }
   }
 
@@ -48,10 +48,10 @@ export class CheckboxList extends React.Component {
 
     return (
       <li key={index}>
-        <a className={classNames('checkbox-button', {'checked': checked})} onClick={this.onClick.bind(this, id)}>
+        <a className={classNames('checkbox-button', { checked })} onClick={() => this.onClick(id)}>
 
           <span className="checkbox">
-            {checked ? <i className="fa fa-check"></i> : null}
+            {checked ? <i className="fa fa-check" /> : null}
           </span>
           {renderLabel(option)}
         </a>

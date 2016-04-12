@@ -8,38 +8,29 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import { editTask } from '../../Actions/listActions';
 
 @connect(state => ({
-  ids: elementsSelector(state),
-  tasks: allSelectorFactory('Task')(state),
-  orderBy: currentOrderBySelector(state),
-  lists: allSelectorFactory('TaskList')(state),
-  projects: allSelectorFactory('Project')(state),
-  agents: agentsSelector(state),
-  agentTeams: allSelectorFactory('AgentTeam')(state),
+  ids:         elementsSelector(state),
+  tasks:       allSelectorFactory('Task')(state),
+  orderBy:     currentOrderBySelector(state),
+  lists:       allSelectorFactory('TaskList')(state),
+  projects:    allSelectorFactory('Project')(state),
+  agents:      agentsSelector(state),
+  agentTeams:  allSelectorFactory('AgentTeam')(state),
   departments: allSelectorFactory('Department')(state)
 }))
-
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    orderBy: PropTypes.string,
-    ids: PropTypes.object,
-    tasks: PropTypes.object,
-    lists: PropTypes.object.isRequired,
-    projects: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
+    dispatch:    PropTypes.func.isRequired,
+    orderBy:     PropTypes.string,
+    ids:         PropTypes.object,
+    tasks:       PropTypes.object,
+    lists:       PropTypes.object.isRequired,
+    projects:    PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
+    agentTeams:  PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired
+    children:    PropTypes.node.isRequired
   };
-
-  componentWillReceiveProps() {
-    console.time('ListGroupContainer did update');
-  }
-
-  componentDidUpdate() {
-    console.timeEnd('ListGroupContainer did update');
-  }
 
   onChangeGroup = (taskId, updateData) => {
     this.props.dispatch(editTask(taskId, updateData));
@@ -51,60 +42,62 @@ export class ListGroupContainer extends React.Component {
     const childProps = children.props;
 
     const groupConfig = {
-      groupKey: orderBy,
+      groupKey:        orderBy,
       defaultGroupKey: 'list',
+
       options: {
         project: {
-          type: 'record',
-          records: projects,
+          type:       'record',
+          records:    projects,
           titleField: 'title',
-          refField: 'project',
+          refField:   'project',
           emptyGroup: 'None'
         },
         date_due: {
-          type: 'date',
-          refField: 'date_due',
+          type:          'date',
+          refField:      'date_due',
           dateGroupKeys: 'all'
         },
         date_done: {
-          type: 'date',
-          refField: 'date_done',
+          type:          'date',
+          refField:      'date_done',
           dateGroupKeys: 'past'
         },
         date_created: {
-          type: 'date',
-          refField: 'date_created',
+          type:          'date',
+          refField:      'date_created',
           dateGroupKeys: 'past'
         },
         assignee: {
-          type: 'record',
+          type:       'record',
           emptyGroup: 'None',
           collection: true,
+
           records: [
             {
-              records: departments,
+              records:    departments,
               titleField: 'title',
-              refField: 'departments'
+              refField:   'departments'
             },
             {
-              records: agentTeams,
+              records:    agentTeams,
               titleField: 'name',
-              refField: 'teams'
+              refField:   'teams'
             },
             {
-              records: agents,
+              records:    agents,
               titleField: 'name',
-              refField: 'agents'
+              refField:   'agents'
             }
           ]
         },
         list: {
-          type: 'record',
-          records: lists,
+          type:       'record',
+          records:    lists,
           titleField: 'title',
-          refField: 'list',
+          refField:   'list',
           emptyGroup: 'Tasks not in any list',
-          sortBy: (a, b) => a.get('display_order') - b.get('display_order')
+          sortBy:     (a, b) => a.get('display_order') - b.get('display_order')
         }
       }
     };
@@ -112,9 +105,9 @@ export class ListGroupContainer extends React.Component {
     return React.cloneElement(children, {
       ...childProps,
 
-      ids: ids,
-      tasks: tasks,
-      taskGroups: Immutable.fromJS(groupCollection(groupConfig, tasks)),
+      ids,
+      tasks,
+      taskGroups:    Immutable.fromJS(groupCollection(groupConfig, tasks)),
       onChangeGroup: this.onChangeGroup
     });
   }

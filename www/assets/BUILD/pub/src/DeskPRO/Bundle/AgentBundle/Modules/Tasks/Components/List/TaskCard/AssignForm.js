@@ -1,21 +1,21 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
-import { FieldGroup, Popup} from '../../../../Common/Components/Popup';
+import { FieldGroup, Popup } from '../../../../Common/Components/Popup/index';
+import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import {
   BaseForm,
   Header,
   FullField,
   FloatField,
   Unassign
-} from '../../Form';
+} from '../../Form/index';
 import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
-  from '../../../../Common/Components/Form/Lists';
-
-import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
+  from '../../../../Common/Components/Form/Lists/index';
 
 export class AssignForm extends BaseForm {
+
   static propTypes = {
-    task: PropTypes.object.isRequired,
+    task:     PropTypes.object.isRequired,
     onSubmit: PropTypes.func.isRequired
   };
 
@@ -32,10 +32,8 @@ export class AssignForm extends BaseForm {
     } else if (task.get('departments')) {
       assign = { department: task.get('departments').toArray()[0] };
     }
-    this.state = {
-      ...localState,
-      assign: assign
-    };
+
+    this.state = { ...localState, assign };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,12 +46,11 @@ export class AssignForm extends BaseForm {
     } else if (task.get('departments')) {
       assign = { department: task.get('departments').toArray()[0] };
     }
-    this.state = {
-      assign: assign
-    };
+
+    this.state = { assign };
   }
 
-  onClick = (param, value, isActive)=> {
+  onClick = (param, value, isActive) => {
     if (isActive) {
       this.setState({ assign: {} });
     } else {
@@ -79,33 +76,36 @@ export class AssignForm extends BaseForm {
           <div className="dpw--popup-content">
             <FieldGroup>
               <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter}/>
+                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
               </FloatField>
 
               <FloatField align="right">
-                <Unassign onClick={this.onUnassignAll}/>
+                <Unassign onClick={this.onUnassignAll} />
               </FloatField>
             </FieldGroup>
 
             <FieldGroup>
-              <AgentsListContainer selected={this.state.assign.agent}
-                                   filter={this.state.quickFilter}
-                                   selfAssign={this.onAssignSelf}
-                                   onClick={this.onClick}/>
-              <TeamsListContainer selected={this.state.assign.team}
-                                  filter={this.state.quickFilter}
-                                  onClick={this.onClick}/>
-              <DepartmentsListContainer selected={this.state.assign.department}
-                                        filter={this.state.quickFilter}
-                                        onClick={this.onClick}/>
+              <AgentsListContainer
+                selected={this.state.assign.agent}
+                filter={this.state.quickFilter}
+                selfAssign={this.onAssignSelf}
+                onClick={this.onClick}
+                />
+              <TeamsListContainer
+                selected={this.state.assign.team}
+                filter={this.state.quickFilter}
+                onClick={this.onClick}
+                />
+              <DepartmentsListContainer
+                selected={this.state.assign.department}
+                filter={this.state.quickFilter}
+                onClick={this.onClick}
+                />
             </FieldGroup>
 
             <FieldGroup>
               <FullField>
-                <button type="submit"
-                        value="Save"
-                        className="dpw--popup-button"
-                        onClick={this.onSubmit}>
+                <button type="submit" value="Save" className="dpw--popup-button" onClick={this.onSubmit}>
                   {task.get('id') ? 'Save' : 'Ok'}
                 </button>
               </FullField>

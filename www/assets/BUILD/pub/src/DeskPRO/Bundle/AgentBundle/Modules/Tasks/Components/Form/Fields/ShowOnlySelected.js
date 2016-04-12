@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class ShowOnlySelected extends React.Component {
 
   static propTypes = {
-    value: PropTypes.bool,
+    value:    PropTypes.bool,
     onChange: PropTypes.func.isRequired
   };
 

@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class CollectionField extends React.Component {
 
   static propTypes = {
-    title: PropTypes.string,
+    title:    PropTypes.string,
     children: PropTypes.node.isRequired
   };
 

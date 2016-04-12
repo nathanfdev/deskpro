@@ -21,3 +21,15 @@ export const projectsCountSelector = createSelector(
   stateSelector,
   state => state.get('projects')
 );
+
+export const projectsCountMapSelector = createSelector(
+  projectsCountSelector,
+  projectsCount => {
+    const countMap = [];
+    projectsCount.forEach(projectCount => {
+      countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
+    });
+
+    return countMap;
+  }
+);

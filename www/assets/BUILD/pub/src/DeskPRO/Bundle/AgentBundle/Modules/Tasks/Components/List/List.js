@@ -14,9 +14,9 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 export class List extends React.Component {
   static propTypes = {
     currentView: PropTypes.string.isRequired,
-    selected: PropTypes.object.isRequired,
-    currentNav: PropTypes.object,
-    isLoaded: PropTypes.bool
+    selected:    PropTypes.object.isRequired,
+    currentNav:  PropTypes.object,
+    isLoaded:    PropTypes.bool
   };
 
   renderView() {
@@ -38,8 +38,8 @@ export class List extends React.Component {
     return (
       <ListFrameContainer className="task-list-frame">
         <ListFrameMenu>
-          {!selected.size && <ControlBarContainer key="1"/>}
-          {selected.size && <MassActionContainer key="2"/>}
+          {!selected.size && <ControlBarContainer key="1" />}
+          {selected.size && <MassActionContainer key="2" />}
         </ListFrameMenu>
         {currentNav &&
         <ListFrameContents isLoaded={isLoaded}>

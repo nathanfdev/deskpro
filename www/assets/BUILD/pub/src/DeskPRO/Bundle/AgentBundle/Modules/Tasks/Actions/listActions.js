@@ -4,7 +4,6 @@ import Immutable from 'immutable';
 import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelector, currentOrderDirSelector }
   from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { reOrderCollection } from 'DeskPRO/Component/Util/DisplayOrder';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
@@ -29,6 +28,13 @@ export const setListParamsFilters = createAction(
   'TASKS_LIST_SET_PARAMS_FILTERS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsFiltersSelector(getState()).toJS();
+    if (overwrite.order_by) {
+      dispatch(updateRoutingState('list', 'order_by', overwrite.order_by));
+    }
+    if (overwrite.order_dir) {
+      dispatch(updateRoutingState('list', 'order_dir', overwrite.order_dir));
+    }
+
     return { ...current, ...overwrite };
   }
 );
@@ -57,16 +63,17 @@ export const loadList = createAction(
     const params = {
       ...navParams,
       ...filtersParams,
-      order_by: currentOrderBySelector(state),
+
+      order_by:  currentOrderBySelector(state),
       order_dir: currentOrderDirSelector(state),
-      include: 'ticket,chat_conversation,article'
+      include:   'ticket,chat_conversation,article'
     };
 
     return api
-      .sendGet('DP_API/tasks?' + compileParams(params))
+      .sendGet(`DP_API/tasks?${compileParams(params)}`)
       .then(promise => {
         const res = promise.getData();
-        const ids = res.data.map(item=>item.id);
+        const ids = res.data.map(item => item.id);
 
         dispatch(addToCollection('Ticket', 'all', prepareLinkedData(res.linked.ticket)));
         dispatch(addToCollection('Article', 'all', prepareLinkedData(res.linked.article)));
@@ -75,7 +82,7 @@ export const loadList = createAction(
         dispatch(releaseCollection('Task', recordStoresId));
         dispatch(setCollection('Task', recordStoresId, res.data));
 
-        return { ids: ids, pagination: res.meta.pagination };
+        return { ids, pagination: res.meta.pagination };
       }
     );
   }
@@ -107,7 +114,7 @@ export const applyFilters = createAction(
 
 export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
-  (data) => dispatch => api.sendPost(`DP_API/tasks`, data).success(response => {
+  (data) => dispatch => api.sendPost('DP_API/tasks', data).success(response => {
     const task = Immutable.fromJS(response.data);
     dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
   })
@@ -119,7 +126,7 @@ let latestTasks;
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
-    let tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
+    const tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
 
     // Update task props
     const oldTask = tasks.get(taskId);

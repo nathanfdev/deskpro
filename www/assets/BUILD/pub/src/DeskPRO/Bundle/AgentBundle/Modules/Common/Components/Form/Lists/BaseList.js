@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { RadioList } from './RadioList';
+import { CheckboxList } from './CheckboxList';
 
 export class BaseList extends React.Component {
 
   static propTypes = {
-    values: PropTypes.object.isRequired
+    multiple: PropTypes.bool,
+    values:   PropTypes.object.isRequired
   };
 
   getKeyword() {
@@ -15,11 +17,27 @@ export class BaseList extends React.Component {
     return value;
   }
 
-  render() {
+  renderRadioList() {
     return (
-      <RadioList {...this.props} renderLabel={this.renderLabel}
-                                 getKeyword={this.getKeyword}/>
+      <RadioList
+        {...this.props}
+
+        renderLabel={this.renderLabel}
+        getKeyword={this.getKeyword} />
     );
   }
-}
 
+  renderCheckboxList() {
+    return (
+      <CheckboxList
+        {...this.props}
+
+        renderLabel={this.renderLabel}
+        getKeyword={this.getKeyword} />
+    );
+  }
+
+  render() {
+    return this.props.multiple ? this.renderCheckboxList() : this.renderRadioList();
+  }
+}

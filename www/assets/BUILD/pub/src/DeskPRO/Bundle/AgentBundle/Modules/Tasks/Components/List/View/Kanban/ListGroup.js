@@ -1,30 +1,29 @@
-import React, { PropTypes } from 'react';
-import Immutable from 'immutable';
+import React from 'react';
 import { TaskDragCard } from './TaskCard/TaskDragCard';
 import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { BaseListGroup } from '../BaseListGroup';
 import classNames from 'classnames';
-
 import { DropTarget } from 'react-dnd';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { groupTargetSpec, targetCollect } from '../../TaskCard/TaskCardEditContainer';
-@DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
 
+@DropTarget(constants.TYPE_TASK, groupTargetSpec, targetCollect)
 export class ListGroup extends BaseListGroup {
 
   render() {
-    const { connectDropTarget } = this.props;
-    const { isOver, elements, title, updateData } = this.state;
+    const { connectDropTarget, isOver, group } = this.props;
 
     return connectDropTarget(
-      <div className={classNames('list', {'drag-hover': isOver})}>
-        <h1 className="kanban-list-header">{title}</h1>
+      <div className={classNames('list', { 'drag-hover': isOver })}>
+        <h1 className="kanban-list-header">{group.get('title')}</h1>
 
-        {elements.map((task, key) =>
-          <TaskCardEditContainer key={key}
-                                 task={task}
-                                 updateData={updateData}
-                                 onUpdate={this.onUpdate.bind(this, key)}>
+        {group.get('elements').map((task, key) =>
+          <TaskCardEditContainer
+            key={key}
+            task={task}
+            updateData={group.get('updateData')}
+            >
+
             <TaskDragCard />
           </TaskCardEditContainer>
         )}

@@ -8,51 +8,25 @@ import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/C
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object,
+    taskGroups:    PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    const groups = props.taskGroups || Immutable.fromJS([]);
-    this.state = {
-      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    const groups = props.taskGroups || Immutable.fromJS([]);
-    this.setState({
-      groups: groups.filter(taskGroup => taskGroup.get('elements').size)
-    });
-  }
-
-  shouldComponentUpdate(props, state) {
-    return !Immutable.is(this.state.groups, state.groups);
-  }
-
-  onUpdate(index, elements) {
-    let group = this.state.groups.get(index);
-    group = group.set('elements', elements);
-    this.setState({
-      groups: this.state.groups.set(index, group)
-    });
-  }
-
   render() {
-    const { onChangeGroup } = this.props;
-    const { groups } = this.state;
+    const { taskGroups, onChangeGroup } = this.props;
 
     return (
       <div>
         <Table>
           <HeaderContainer />
 
-          {groups.map((taskGroup, index) =>
-            <ListGroup key={index}
-                       group={taskGroup}
-                       onChangeGroup={onChangeGroup}
-                       onUpdate={this.onUpdate.bind(this, index)} />
+          {taskGroups.map((taskGroup, index) =>
+            <ListGroup
+              key={index}
+              group={taskGroup}
+              onChangeGroup={onChangeGroup}
+              onUpdate={() => this.onUpdate(index)}
+              />
           )}
         </Table>
 

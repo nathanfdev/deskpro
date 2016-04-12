@@ -7,7 +7,7 @@ export class AgentsList extends BaseList {
   renderLabel(value) {
     return (
       <span className="name">
-          <span style={{position: 'relative'}}>
+          <span style={{ position: 'relative' }}>
             <PersonAvatar person={value} size={16} />
           </span>
           {value.get('name')}
