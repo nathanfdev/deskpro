@@ -24,7 +24,7 @@ export class Card extends Component {
 
     const styles = {};
     if (width) {
-      styles.width = `${width}px`;
+      styles.width = width;
     }
 
     return (

@@ -1,5 +1,24 @@
 .dpmw--single-task-card {
   margin-right: 68px;
+
+  .title-line {
+    position: relative;
+    padding-right: 65px;
+    margin-bottom: 6px;
+  }
+
+  .details-line {
+    position: relative;
+    padding-right: 70px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .icon-block {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 .dpw--single-card-mark-done {// The check on the right
   position: absolute;
