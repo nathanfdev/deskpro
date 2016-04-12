@@ -69,7 +69,7 @@ class TicketMacrosController extends CrudController
      *     section="Tickets",
      *     description="apply macro to ticket",
      *     statusCodes={
-     *         204="Everthing is OK",
+     *         204="Everything is OK",
      *         403="User is not allowed to modify the ticket",
      *         404={
      *             "Ticket wasn't found",

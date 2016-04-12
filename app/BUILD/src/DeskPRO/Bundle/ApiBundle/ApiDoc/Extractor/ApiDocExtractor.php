@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
@@ -48,7 +49,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     /**
      * @var array
      */
-    protected $action_list = [
+    protected $actionList = [
         'list'   => true,
         'get'    => true,
         'post'   => true,
@@ -96,7 +97,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     protected function getExposedActions($action, \ReflectionClass $reflection)
     {
-        if (!in_array($action, $this->action_list)) {
+        if (!in_array($action, array_keys($this->actionList))) {
             // This method is custom for crud - e.g. getMySuperListAction, shouldn't process it
             return false;
         }
@@ -166,7 +167,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     protected function getCreativeMethods()
     {
         $return = [];
-        foreach ($this->action_list as $action => $creative) {
+        foreach ($this->actionList as $action => $creative) {
             if ($creative) {
                 $return[] = $action;
             }
