@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import $ from 'jquery';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import { FeedbackVoteWidget } from '../../PageWidget/FeedbackVoteWidget';
 
 export class ResultsPartial extends React.Component {
 
@@ -71,30 +72,9 @@ export class ResultsPartial extends React.Component {
 
     // add events to "I Agree"
     results.find('.feedback-item-controls a.i-agree').each(function () {
-      let $iAgreeBox = $(this);
-      $iAgreeBox.click(function (e) {
-        e.preventDefault();
-        if ($iAgreeBox.hasClass('closed')) {
-          return; // rate closed
-        }
-        if ($iAgreeBox.hasClass('rate_forbidden')) {
-          // TODO if user is not connected redirect to login then redirect to action
-          return; // rate_forbidden
-        }
-        if ($iAgreeBox.hasClass('agreed')) {
-          return; // already agreed
-        }
-        let action = $iAgreeBox.attr('href');
-        let $counter = $iAgreeBox.find('span.counter');
-        $counter.text(_.parseInt($counter.text()) + 1);
-        $iAgreeBox.addClass('agreed');
-        $.post(action).fail(function(){
-          $counter.text(_.parseInt($counter.text()) - 1);
-          $iAgreeBox.removeClass('agreed');
-        });
-
-        return false;
-      });
+      const $el = $(this);
+      const w = new FeedbackVoteWidget($el);
+      w.render();
     });
 
     // add events to status category links
