@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -116,7 +116,7 @@ class ChatDataService
      *
      * @return int
      */
-    public function countUserChats(Person $person, string $type)
+    public function countUserChats(Person $person, $type)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select($qb->expr()->countDistinct('c.id'))
@@ -210,17 +210,18 @@ class ChatDataService
      * @param string       $type
      *
      * @throws \Exception
+     *
      * @return QueryBuilder
      */
-    private function configureQbForQueryChats(QueryBuilder $qb, Person $person, string $type)
+    private function configureQbForQueryChats(QueryBuilder $qb, Person $person, $type)
     {
         $qb->andWhere('c.is_agent = 0');
         $qb->andWhere('c.status = :status')->setParameter('status', ChatConversation::STATUS_ENDED);
         switch ($type) {
-            case "own":
+            case 'own':
                 $qb->andWhere('c.person = :person')->setParameter('person', $person);
                 break;
-            case "organization":
+            case 'organization':
                 $qb->innerJoin('c.person', 'person')
                     ->innerJoin('person.organization', 'organization')
                     ->andWhere('organization.id = :organization')
