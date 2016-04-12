@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -645,6 +644,7 @@ class TicketWithLayoutsType extends AbstractType
             'options' => [
                 'property_path' => 'person.primary_email',
                 'label'         => $this->phrase('portal.forms.label_email'),
+                'email_label'   => 'Email',
                 'constraints'   => [], // ignore the "unique entity" constraint here
             ],
         ];
