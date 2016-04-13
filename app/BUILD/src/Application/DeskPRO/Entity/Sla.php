@@ -183,6 +183,7 @@ class Sla extends DomainObject
      * Conditions to apply.
      *
      * @JMS\Expose()
+     * @JMS\Groups({"details"})
      * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
      *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
@@ -213,6 +214,7 @@ class Sla extends DomainObject
      * How to warn about SLA will fail.
      *
      * @JMS\Expose()
+     * @JMS\Groups({"details"})
      * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
      *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
@@ -243,6 +245,7 @@ class Sla extends DomainObject
      * What to do if SLA failed.
      *
      * @JMS\Expose()
+     * @JMS\Groups({"details"})
      * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
      *
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions

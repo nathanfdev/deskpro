@@ -33,10 +33,13 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * API access to languages.
@@ -52,4 +55,51 @@ class SlasController extends CrudController
     public static $listOrder    = 'desc';
     public static $exposeOnly   = ['list', 'get'];
     public static $listPaginate = false;
+
+    /**
+     * @ApiDoc(
+     *     section="SLAs",
+     *     resourceDescription="Operations about SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="get SLAs collection",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\Sla>"
+     * )
+     *
+     * @param Request $request
+     * @Rest\Get("", name="slas_list")
+     * @Rest\View(serializerGroups={"Default"})
+     *
+     * @return View
+     */
+    public function listAction(Request $request)
+    {
+        return parent::listAction($request);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="SLAs",
+     *     resourceDescription="Operations about SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="get SLA",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="Application\DeskPRO\Entity\Sla"
+     * )
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     * @Rest\Get("/{id}", name="sla_view", requirements={"id": "\d+"})
+     * @Rest\View(serializerGroups={"Default", "details"})
+     */
+    public function getAction(Request $request, $id)
+    {
+        return parent::getAction($request, $id);
+    }
 }

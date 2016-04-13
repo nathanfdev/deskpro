@@ -162,8 +162,7 @@ SQL
         $layout = new Layout();
         $layout
             ->add(new LayoutField(FormFields::DEPARTMENT))
-            ->add(new LayoutField(FormFields::MESSAGE))
-        ;
+            ->add(new LayoutField(FormFields::MESSAGE));
 
         $ticket_layout1               = new TicketLayout();
         $ticket_layout1->is_enabled   = true;
@@ -184,26 +183,25 @@ SQL
             ->add(new LayoutField(FormFields::CATEGORY))
             ->add(new LayoutField(FormFields::WORKFLOW))
             ->add(new LayoutField(FormFields::LABELS))
+            ->add(new LayoutField('ticket_field', 1))// Select box
+            ->add(new LayoutField('ticket_field', 5))// Datetime
+            ->add(new LayoutField('ticket_field', 6))// Text
+            ->add(new LayoutField('ticket_field', 7))// Textarea
+            ->add(new LayoutField('ticket_field', 8))// Checkbox group
+            ->add(new LayoutField('ticket_field', 12))// Date
 
-            ->add(new LayoutField('ticket_field', 1)) // Select box
-            ->add(new LayoutField('ticket_field', 5)) // Datetime
-            ->add(new LayoutField('ticket_field', 6)) // Text
-            ->add(new LayoutField('ticket_field', 7)) // Textarea
-            ->add(new LayoutField('ticket_field', 8)) // Checkbox group
-            ->add(new LayoutField('ticket_field', 12)) // Date
+            ->add(new LayoutField('user_field', 1))// Select box
+            ->add(new LayoutField('user_field', 5))// Datetime
+            ->add(new LayoutField('user_field', 6))// Text
+            ->add(new LayoutField('user_field', 7))// Textarea
+            ->add(new LayoutField('user_field', 8))// Checkbox group
+            ->add(new LayoutField('user_field', 12))// Date
 
-            ->add(new LayoutField('user_field', 1)) // Select box
-            ->add(new LayoutField('user_field', 5)) // Datetime
-            ->add(new LayoutField('user_field', 6)) // Text
-            ->add(new LayoutField('user_field', 7)) // Textarea
-            ->add(new LayoutField('user_field', 8)) // Checkbox group
-            ->add(new LayoutField('user_field', 12)) // Date
-
-            ->add(new LayoutField('org_field', 1)) // Select box
-            ->add(new LayoutField('org_field', 5)) // Datetime
-            ->add(new LayoutField('org_field', 6)) // Text
-            ->add(new LayoutField('org_field', 7)) // Textarea
-            ->add(new LayoutField('org_field', 8)) // Checkbox group
+            ->add(new LayoutField('org_field', 1))// Select box
+            ->add(new LayoutField('org_field', 5))// Datetime
+            ->add(new LayoutField('org_field', 6))// Text
+            ->add(new LayoutField('org_field', 7))// Textarea
+            ->add(new LayoutField('org_field', 8))// Checkbox group
             ->add(new LayoutField('org_field', 12)) // Date
         ;
 
@@ -290,14 +288,12 @@ SQL
         $organization1
             ->setName('Organization 1')
             ->setSummary('test organization')
-            ->setImportance(1)
-        ;
+            ->setImportance(1);
         $organization2 = new Organization();
         $organization2
             ->setName('Organization 2')
             ->setSummary('test organization')
-            ->setImportance(1)
-        ;
+            ->setImportance(1);
 
         $this->getEm()->persist($organization1);
         $this->getEm()->persist($organization2);
@@ -1022,24 +1018,24 @@ SQL
             <<<SQL
             INSERT INTO `text_snippet_categories` (`id`, `person_id`, `typename`, `is_global`)
             VALUES
-                (1, null, 'tickets', 1),
+                (1, NULL, 'tickets', 1),
                 (2, 1, 'tickets', 0),
                 (3, 2, 'tickets', 0),
 
-                (4, null, 'chat', 1),
+                (4, NULL, 'chat', 1),
                 (5, 1, 'chat', 0),
                 (6, 2, 'chat', 0)
             ;
 
             INSERT INTO `text_snippets` (`id`, `person_id`, `category_id`, `shortcut_code`, `is_draft`)
             VALUES
-                (1, null, 1, 'ticket_snippet1', 1),
+                (1, NULL, 1, 'ticket_snippet1', 1),
                 (2, 1, 1, 'ticket_snippet2', 1),
                 (3, 1, 2, 'ticket_snippet3', 0),
                 (4, 2, 1, 'ticket_snippet4', 0),
                 (5, 1, 3, 'ticket_snippet5', 1),
 
-                (6, null, 4, 'chat_snippet1', 1),
+                (6, NULL, 4, 'chat_snippet1', 1),
                 (7, 1, 4, 'chat_snippet2', 1),
                 (8, 1, 5, 'chat_snippet3', 0),
                 (9, 2, 4, 'chat_snippet4', 0),
@@ -1107,6 +1103,19 @@ SQL
         ];
 
         $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
+
+        // SLAs
+
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `slas` (`id`, `title`, `sla_type`,`active_time`, `work_start`, `work_end`, `work_days`, `apply_type`, `warn_time`, `warn_time_unit`, `fail_time`, `fail_time_unit`)
+            VALUES
+                (1, 'First', 'first_response', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'all', 1, 'hours', 1, 'hours'),
+                (2, 'Second', 'resolution', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'auto', 1, 'days', 1, 'days'),
+                (3, 'Third', 'waiting_time', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'manual', 1, 'hours', 1, 'hours')
+            ;
+SQL
+        );
 
         ++$count;
 
