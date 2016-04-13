@@ -437,7 +437,16 @@
 {% block captcha_widget %}
 {% spaceless %}
     <div class="captcha-field">
-        <img src="{{ root_url(false) }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        <img id="{{ image_id }}" src="{{ root_url(false) }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        {% if reload %}
+            <script type="text/javascript">
+                function reload_{{ image_id }}() {
+                    var img = document.getElementById('{{ image_id }}');
+                    img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
+                }
+            </script>
+            <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+        {% endif %}
         {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
     </div>
 {% endspaceless %}

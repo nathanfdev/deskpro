@@ -62,16 +62,16 @@
 			</ul>
 		</div>
 		{% endif %}
-                <div class="everyone" style="display: none;">
-                    <ul id="everyone_list" class="list">
-                        <li
-                            data-member-ids="{% for agent in agents %}{{ agent.id }}{% if not loop.last %},{% endif %}{% endfor %}"
-                        >
-                            {#<div class="avatar" style="background-image: url({{ asset('images/icons.png') }});"></div>#}
-                            Broadcast!
-                        </li>
-                    </ul>
-            </div>
+		<div class="everyone" style="display: none;">
+			<ul id="everyone_list" class="list">
+				<li
+					data-member-ids="{% for agent in agents %}{{ agent.id }}{% if not loop.last %},{% endif %}{% endfor %}"
+				>
+					{#<div class="avatar" style="background-image: url({{ asset('images/icons.png') }});"></div>#}
+					Broadcast!
+				</li>
+			</ul>
+		</div>
 	</section>
 	<footer>
 		<button class="view-history view-history-trigger">{{ phrase('agent.chat.chat_history') }}</button>

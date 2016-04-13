@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 return array(
     'portal.general.rating_x_of_y_found_helpful' => '{{vote_up}} of {{vote_count}} people found this page helpful',
     'portal.general.get-in-touch'                => 'Get in touch',
-    'portal.general.get-in-touch-desc'           => 'With this excellent form',
+    'portal.general.get-in-touch-desc'           => 'Report a problem or ask a question',
     'portal.general.submit-feedback'             => 'Submit Feedback',
-    'portal.general.submit-feedback-desc'        => 'An excellent feedback system',
+    'portal.general.submit-feedback-desc'        => 'Make a suggestion for how we can improve',
     'portal.general.find-us'                     => 'Find us on the map',
     'portal.general.start-chat'                  => 'Start a chat session',
     'portal.general.agents-available'            => 'Agents Available',

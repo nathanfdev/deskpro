@@ -35,7 +35,7 @@
 
       <div class="article-meta">
         {{ phrase('portal.general.by_2') }}
-        <a href="#"><span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.display_name }}</a>
+        <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.display_name }}
          {{ phrase('portal.general.on') }} {{ item.date_published ? item.date_published|date('day') : item.date_created|date('day') }}
 
         {% if item.num_comments > 0 %}

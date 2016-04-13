@@ -82,8 +82,8 @@ class MainController extends AbstractController
         }
 
         // Person menu needs these
-        $people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
-        $org_fields    = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
+        //$people_fields = $this->container->getSystemService('person_fields_manager')->getDisplayArray();
+        //$org_fields    = $this->container->getSystemService('org_fields_manager')->getDisplayArray();
 
         // Ticket options for search pane of tickets menu
         $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
@@ -93,10 +93,10 @@ class MainController extends AbstractController
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
         // Countr code
-        $phone_country_info = \Orb\Data\CountryCallingCodes::getData();
+        //$phone_country_info = \Orb\Data\CountryCallingCodes::getData();
 
         // Auto-load chats in tabs if assigned to an agent
-        $open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
+        //$open_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenChatsForAgent($this->person);
 
         $ticket_field_defs                      = App::getApi('custom_fields.tickets')->getEnabledFields();
         $custom_fields                          = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
@@ -110,17 +110,17 @@ class MainController extends AbstractController
         $people_options                         = $titles;
         $people_options['custom_people_fields'] = $ticket_options['custom_people_fields'];
 
-        $org_options = array(
-            'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
-        );
+        //$org_options = array(
+        //  'custom_org_fields' => $this->container->getSystemService('org_fields_manager')->getDisplayArray(),
+        //);
 
-        $cutoff           = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
-        $online_agent_ids = $this->db->fetchAllCol('
-            SELECT p.id
-            FROM sessions s
-            JOIN people AS p ON p.id = s.person_id
-            WHERE p.is_agent = true AND s.date_last > ?
-        ', array($cutoff));
+        $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
+        //online_agent_ids = $this->db->fetchAllCol('
+        //    SELECT p.id
+        //    FROM sessions s
+        //    JOIN people AS p ON p.id = s.person_id
+        //    WHERE p.is_agent = true AND s.date_last > ?
+        //', array($cutoff));
 
         $online_chat_agent_ids = $this->db->fetchAllCol('
             SELECT p.id
@@ -189,6 +189,9 @@ class MainController extends AbstractController
             'is_first_login'      => $is_first_login,
             'is_first_login_name' => $is_first_login_name,
             'timezones'           => \DateTimeZone::listIdentifiers(),
+            'agents'              => $agents,
+            'agent_teams'         => $agent_teams,
+            'agent_chat_depmap'   => $agent_chat_depmap,
         ));
     }
 

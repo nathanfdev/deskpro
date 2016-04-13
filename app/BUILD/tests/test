@@ -61,7 +61,7 @@ Feature: Ratings
       │ </head>
       │ <body class=" portal-mode-normal">
       │ <div class="dp-page-banner">
-      │     Welcome to our new Portal. <a href="https://support.deskpro.com/en/news/posts/new-deskpro-portal-coming-soon-to-your-helpdesk">Learn more about about it here &rarr;</a>
+      │     Welcome to our new Portal. <a href="https://support.deskpro.com/en/news/posts/new-deskpro-portal-coming-soon-to-your-helpdesk">Learn more about it here &rarr;</a>
       │ </div>
       │ <script type="text/javascript">
       │ /*! modernizr 3.2.0 (Custom Build) | MIT *
@@ -206,7 +206,7 @@ Feature: Ratings
       │ 
       │               <h1>Get in touch</h1>
       │ 
-      │               <p>With this excellent form</p>
+      │               <p>Report a problem or ask a question</p>
       │             </a>
       │           </li>
       │                               <li>
@@ -215,7 +215,7 @@ Feature: Ratings
       │ 
       │               <h1>Submit Feedback</h1>
       │ 
-      │               <p>An excellent feedback system</p>
+      │               <p>Make a suggestion for how we can improve</p>
       │             </a>
       │           </li>
       │                               <li>
