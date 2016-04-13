@@ -9834,15 +9834,31 @@ form {
     }
 
     .captcha-field {
+      white-space: nowrap;
       img {
         display: inline-block;
       }
       input {
         position: relative;
         bottom: 20px;
+        width: calc(100% - 140px);
         max-width: 480px;
         @include margin-left(10px);
       }
+      .captcha_reload {
+        display: inline-block;
+        line-height: 50px;
+        vertical-align: top;
+        padding-left: 5px;
+        i {
+          vertical-align: middle;
+        }
+      }
+      .captcha_reload + input {
+        width: calc(100% - 157px);
+        max-width: 463px;
+      }
+    ;
     }
 
     .column-full {
