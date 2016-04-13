@@ -90,22 +90,23 @@ class TagsManipulator
     public function updateTags($key, $action, $value)
     {
         $key = $this->getKey($key);
+
         $this->tagsCollector->collectTags();
-        $tagsHierarchy = $this->tagsCollector->getTagsHierarchy();
+        $this->tagsCollector->createTagsHierarchy();
 
         $originalAction = $action;
 
         $parts = explode('.', $originalAction);
-        $tag   = $tagsHierarchy;
-        $i     = 0;
 
+        $i   = 0;
+        $tag = null;
         while ($part = array_shift($parts)) {
             if ($part !== '*') {
                 $tag = $this->hierarchyCreator->findTag($part, $originalAction, $i++);
             }
         }
 
-        if ($tag->hasNodes()) {
+        if ($tag && $tag->hasNodes()) {
             $deletePattern = "$originalAction%";
             $action .= $action !== '*' ? '.*' : '';
         } else {
@@ -121,10 +122,8 @@ class TagsManipulator
             $prefix = '-';
         }
 
-        $action = $prefix.$action;
-
         $apiAction = new ApiKeyAction();
-        $apiAction->setAction($action)->setKey($key);
+        $apiAction->setAction($prefix.$action)->setKey($key);
 
         $this->em->persist($apiAction);
         $this->em->flush($apiAction);
@@ -151,7 +150,7 @@ class TagsManipulator
      */
     private function deleteOld(ApiKey $key, $pattern)
     {
-        $qb = $this->em->getRepository('DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction')->createQueryBuilder('aka');
+        $qb = $this->em->getRepository(ApiKeyAction::class)->createQueryBuilder('aka');
         $qb->delete()
            ->where($qb->expr()->like('aka.action', $qb->expr()->literal($pattern)))
            ->orWhere($qb->expr()->like('aka.action', $qb->expr()->literal('-'.$pattern)))

@@ -79,22 +79,28 @@ class TagsCollector
         return $this->hierarchyCreator;
     }
 
+    public function resetHierarchy()
+    {
+        $this->hierarchyCreator = new HierarchyCreator();
+    }
+
     /**
+     * @param array|null $tags
+     *
      * @return array
      */
-    public function getTagsHierarchy()
+    public function createTagsHierarchy($tags = null)
     {
-        $this->tags = array_unique($this->tags);
+        if ($tags === null) {
+            $this->collectTags();
+            $tags = $this->getTags();
+        }
 
-        foreach ($this->tags as $tagPath) {
+        foreach ($tags as $tagPath) {
             $tagPathReplaced = str_replace('-', '', $tagPath);
             $tags            = explode('.', $tagPathReplaced);
             $this->hierarchyCreator->processTags($tags, $tagPathReplaced);
         }
-
-        $tagsHierarchy = $this->hierarchyCreator->getHierarchy();
-
-        return $tagsHierarchy;
     }
 
     /**
@@ -102,33 +108,48 @@ class TagsCollector
      */
     public function collectTags($force_reload = false)
     {
-        foreach ($this->finder->getClasses() as $class) {
-            try {
-                $classMetadata = $this->factory->getMetadataForClass($class, $force_reload);
-                $metadata[]    = $classMetadata;
-                /** @var \Metadata\ClassMetadata $metadatum */
-                foreach ($classMetadata->methodMetadata as $metadatum) {
-                    /* @var MethodMetadata $metadatum */
-                    $this->tags = array_merge($this->tags, $metadatum->getTags());
+        if ($force_reload || !$this->tags) {
+            foreach ($this->finder->getClasses() as $class) {
+                try {
+                    $classMetadata = $this->factory->getMetadataForClass($class, $force_reload);
+                    $metadata[]    = $classMetadata;
+                    /** @var \Metadata\ClassMetadata $metadatum */
+                    foreach ($classMetadata->methodMetadata as $metadatum) {
+                        /* @var MethodMetadata $metadatum */
+                        $this->tags = array_merge($this->tags, $metadatum->getTags());
+                    }
+                } catch (AbstractClassException $e) {
+                    // There is nothing to do. Or just output it
+                } catch (\ReflectionException $e) {
+                    // TODO: we should dive into FQCN to know why it return directories as FQCN.
                 }
-            } catch (AbstractClassException $e) {
-                // There is nothing to do. Or just output it
-            } catch (\ReflectionException $e) {
-                // TODO: we should dive into FQCN to know why it return directories as FQCN.
             }
+
+            $this->tags = array_unique($this->tags);
         }
     }
 
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
     /**
-     * @param array $gatheredTags
+     * @param array $tags
      *
      * @return array
      */
-    public function getTagsHierarchyForApi(array $gatheredTags)
+    public function getTagsHierarchy(array $tags = null)
+    {
+        $this->createTagsHierarchy($tags);
+
+        return $this->hierarchyCreator->getHierarchy();
+    }
+
+    public function getTagsHierarchyForApi($gatheredTags)
     {
         $root = new Tag(0, '*');
         $root->replaceNodes($this->getTagsHierarchy());
-
         $this->populateByGathered($gatheredTags, $root);
 
         return [$root];
@@ -140,7 +161,7 @@ class TagsCollector
      *
      * @return mixed
      */
-    protected function populateByGathered($tags, $hierarchy)
+    public function populateByGathered($tags, $hierarchy)
     {
         foreach ($tags as $tagPath) {
             $current = $hierarchy;

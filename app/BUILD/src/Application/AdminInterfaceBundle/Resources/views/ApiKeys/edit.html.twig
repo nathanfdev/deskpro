@@ -7,12 +7,12 @@
 
             <nav class="dp-blocktabs responsive">
                 <ul>
-                    <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.api_keys.keys_title') }}</a></li>
+                    <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"/> {{ phrase('adm.api_keys.keys_title') }}</a></li>
                     <li class="pipe" ng-if="EditCtrl.tags && EditCtrl.form.id">|</li>
-                    <li ng-if="EditCtrl.tags && EditCtrl.form.id" dp-tab-btn="api.tags"><a href="#"><i class="fa fa-tag"></i> {{ phrase('adm.api_keys.tags_title') }}</a></li>
+                    <li ng-if="EditCtrl.tags && EditCtrl.form.id" dp-tab-btn="api.tags"><a href="#"><i class="fa fa-tag"/> {{ phrase('adm.api_keys.tags_title') }}</a></li>
                     <li class="pipe" ng-if="EditCtrl.logs && EditCtrl.logs.length">|</li>
                     <li dp-tab-btn="api.logs" ng-if="EditCtrl.logs && EditCtrl.logs.length">
-	                    <a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a>
+	                    <a href="#"><i class="fa fa-key"/> {{ phrase('adm.api_keys.logs_title') }}</a>
                     </li>
                 </ul>
             </nav>
@@ -116,7 +116,7 @@
 												ng-model="EditCtrl.form.person"
 												style="min-width: 240px"
 												class="no-search"
-												>
+											>
 												<option value="">No default agent</option>
 												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.agents">
 													{{ ng_var('agent.display_name') }}
@@ -137,7 +137,7 @@
 												style="min-width: 240px"
 												class="no-search"
 											    required
-												>
+											>
 												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.agents">
 													{{ ng_var('agent.display_name') }}
 												</option>
@@ -182,37 +182,35 @@
                 <div dp-tab-body="api.tags">
                     <script type="text/ng-template" id="nodes_renderer.html">
                         <div ui-tree-handle>
-                            <a  ng-click="toggle(this)" ng-if="node.nodes && node.nodes.length > 0"
-                                data-nodrag=true
-                                    >
-                                        <span class="fa fa-chevron-right" ng-class="{
-                                                'fa fa-chevron-right': collapsed,
-                                                'fa fa-chevron-down': !collapsed
-                                            }">
-                                        </span>
+                            <a  ng-click="toggle(this)" ng-if="node.nodes && node.nodes.length > 0" data-nodrag=true>
+								<span class="fa fa-chevron-right" ng-class="{
+										'fa fa-chevron-right': collapsed,
+										'fa fa-chevron-down': !collapsed
+									}">
+								</span>
                             </a>
                             {{ ng_var('node.title')}}
                             <span ng-if="!node.nodes || !collapsed">
-                                        <span
-                                                class="fa"
-                                                ng-click="enable(node)"
-                                                ng-class="{'fa-check-square': node.value > 0, 'fa-check-square-o': node.value <= 0}"
-                                                >
-                                        </span>
-                                        <span ng-if="node.value == 0"
-                                              class="fa"
-                                              ng-click="default(node)"
-                                              ng-class="{'fa-square': node.value == 0, 'fa-square-o': node.value != 0}"
-                                                >
-                                        </span>
-                                        <span
-                                                class="fa"
-                                                ng-click="disable(node)"
-                                                ng-class="{'fa-minus-square': node.value < 0, 'fa-minus-square-o': node.value >= 0}"
-                                                >
+								<span
+										class="fa"
+										ng-click="enable(node)"
+										ng-class="{'fa-check-square': node.value > 0, 'fa-check-square-o': node.value <= 0}"
+										>
+								</span>
+								<span ng-if="node.value == 0"
+									  class="fa"
+									  ng-click="default(node)"
+									  ng-class="{'fa-square': node.value == 0, 'fa-square-o': node.value != 0}"
+										>
+								</span>
+								<span
+										class="fa"
+										ng-click="disable(node)"
+										ng-class="{'fa-minus-square': node.value < 0, 'fa-minus-square-o': node.value >= 0}"
+										>
 
-                                        </span>
-                                    </span>
+								</span>
+							</span>
                         </div>
                         <ol ui-tree-nodes ng-model="node.nodes" ng-class="{hidden: collapsed}">
                             <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'" collapsed="true">
@@ -230,12 +228,12 @@
 										<div ui-tree data-drag-enabled="false">
 											<ol ui-tree-nodes id="tree-root" ng-model="tags">
 												<li
-														ng-repeat="node in tags"
-														ui-tree-node
-														ng-include="'nodes_renderer.html'"
-														collapsed="true"
-														ng-class="{collapsed: collapsed}"
-														>
+													ng-repeat="node in tags"
+													ui-tree-node
+													ng-include="'nodes_renderer.html'"
+													collapsed="true"
+													ng-class="{collapsed: collapsed}"
+												>
 												</li>
 											</ol>
 										</div>
@@ -264,7 +262,8 @@
 	                                    </button>
                                     </h4>
 
-	                                <br />
+	                                <br/>
+
                                     <dl class="dl-horizontal">
                                         <dt>{{ phrase('adm.api_keys.path') }}</dt>
                                         <dd>{{ ng_var('item.request.path') }}</dd>
@@ -276,8 +275,7 @@
                                         </div>
                                     </dl>
 
-
-	                                <br />
+	                                <br/>
 
                                     <h4>{{ phrase('adm.api_keys.response') }}</h4>
                                     <dl class="dl-horizontal" ng-class="!item.response.status && 'text-danger'">
@@ -286,7 +284,8 @@
                                         <dt>{{ phrase('adm.api_keys.content') }}</dt>
                                         <dd>{{ ng_var('item.response.content') }}</dd>
                                     </dl>
-                                    <br /><br />
+
+                                    <br/><br/>
                                 </div>
                             </div>
                         </li>
@@ -323,5 +322,4 @@
 
 		</section>
 	</form>
-
 {% endblock %}

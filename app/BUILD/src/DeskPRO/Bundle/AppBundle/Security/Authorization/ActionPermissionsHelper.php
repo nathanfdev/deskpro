@@ -28,134 +28,87 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Authorization;
 
-/**
+/*
  * Class ActionPermissionsHelper.
  */
+use DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag;
+use DeskPRO\Bundle\AppBundle\ApiTag\TagsCollector;
+
 /**
  * Class ActionPermissionsHelper.
  */
 class ActionPermissionsHelper
 {
     /**
+     * @var TagsCollector
+     */
+    private $tagsCollector;
+
+    /**
+     * ActionPermissionsHelper constructor.
+     *
+     * @param TagsCollector $tagsCollector
+     */
+    public function __construct(TagsCollector $tagsCollector)
+    {
+        $this->tagsCollector = $tagsCollector;
+    }
+
+    /**
      * @param $action_tags
      * @param $gathered_tags
-     * Please don't ask me how does it work
      *
      * @return array|mixed
      */
     public function calculateAccess($action_tags, $gathered_tags)
     {
-        $action_tags_hierarchy   = call_user_func_array('array_merge_recursive', array_map([$this, 'createActionTagsHierarchy'], $action_tags));
-        $gathered_tags_hierarchy = $gathered_tags ? call_user_func_array('array_merge_recursive', array_map([$this, 'createGatheredTagsHierarchy'], $gathered_tags)) : [];
 
-        //temporary allow/deny all restrictions
+        // just a little optimisation - no need to calculate something if everything is allowed/denied
         if (in_array('*', $gathered_tags)) {
             return true;
         } elseif (in_array('-*', $gathered_tags)) {
             return false;
         }
 
-        $result = array_merge($action_tags_hierarchy, $gathered_tags_hierarchy);
+        $hierarchy = $this->tagsCollector->getTagsHierarchy($action_tags);
+        foreach ($hierarchy as $hierarchyItem) {
+            $this->tagsCollector->populateByGathered($gathered_tags, $hierarchyItem);
+        }
 
-        $result = array_reduce($result, [$this, 'reduce']);
+        $result = array_reduce($hierarchy, [$this, 'reduce']);
+        $this->tagsCollector->resetHierarchy();
 
         return $result;
     }
 
     /**
-     * @param $tags
-     *
-     * @return array
-     */
-    public function createActionTagsHierarchy($tags)
-    {
-        return $this->createTagsHierarchy($tags);
-    }
-
-    /**
-     * @param $tags
-     *
-     * @return array
-     */
-    public function createGatheredTagsHierarchy($tags)
-    {
-        return $this->createTagsHierarchy($tags, true);
-    }
-
-    /**
-     * null means deny by default
-     * false meet strict deny
-     * true means allow.
-     *
-     * @param $tags
-     * @param bool $calc_permission
-     *
-     * @return mixed
-     */
-    protected function createTagsHierarchy($tags, $calc_permission = false)
-    {
-        $permit    = $calc_permission ? !(0 === strpos($tags, '-')) : null;
-        $tags      = explode('.', str_replace('-', '', $tags));
-        $hierarchy = $this->recursion($tags, $permit);
-
-        return $hierarchy;
-    }
-
-    /**
-     * This method just inflate hierarchy tree. E.g.
-     *     'test.test2.test3' becomes
-     *      'test' => [
-     *          'test1' => [
-     *              'test3' => true
-     *              ],
-     *          ],
-     *      ].
-     *
-     * @param $tags
-     * @param $permit
-     *
-     * @return mixed
-     */
-    protected function recursion($tags, $permit)
-    {
-        $hierarchy = [];
-        $tag       = array_shift($tags);
-        if ($tags) {
-            $hierarchy[$tag] = $this->recursion($tags, $permit);
-        } else {
-            $hierarchy[$tag] = $permit;
-        }
-
-        return $hierarchy;
-    }
-
-    /**
-     * @param $permit
-     * @param $item
      * Reduces whole the hierarchy tree for current method to just one boolean value.
      * It's simple. Access will be granted if and only all tags are allowed.
+     *
+     * @param null|bool $permit
+     * @param Tag       $item
      *
      * @return bool|mixed
      */
     protected function reduce($permit, $item)
     {
-        return is_array($item) ? array_reduce($item, [$this, 'reduce'], $permit) : $this->calculatePermission($permit, $item);
+        return $item->hasNodes() ? array_reduce($item->getNodes(), [$this, 'reduce'], $permit) : $this->calculatePermission($permit, $item);
     }
 
     /**
-     * @param $permit
-     * @param $item
+     * @param null|bool $permit
+     * @param Tag       $item
      *
      * @return bool
      */
     protected function calculatePermission($permit, $item)
     {
         if ($permit === null) {
-            return $item;
-        } elseif ($item === null && $permit === true) {
+            return $item->getValue() === null ? null : $item->getValue() > 0;
+        } elseif ($item->getValue() === null && $permit === true) {
             return $permit;
         } else {
-            return $permit && $item;
+            return $permit && $item->getValue() > 0;
         }
     }
 }

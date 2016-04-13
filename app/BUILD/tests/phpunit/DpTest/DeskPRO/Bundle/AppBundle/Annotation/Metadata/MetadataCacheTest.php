@@ -54,7 +54,7 @@ class MetadataCacheTest extends ApiTestCase
      */
     public function testUnableCreateCacheDir()
     {
-        new MetadataCache('/action_permissions', 'metadata_cache');
+        new MetadataCache('/', 'metadata_cache');
     }
 
     /**

@@ -101,6 +101,8 @@ services:
 
   api_authorization.action_permissions_helper:
     class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper
+    arguments:
+      - "@api_tags.tags_collector"
 
 
   api_authorization.action_permissions.metadata_cache:
