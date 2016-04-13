@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -83,25 +84,23 @@ class ContentAccessVoter extends AbstractVoter
 
         switch ($attribute) {
             case static::VIEW_FEEDBACK:
-                /* @var \Application\DeskPRO\Entity\Feedback $object */
-                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::DOWNLOAD_DOWNLOAD:
-                return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_DOWNLOAD:
-                /* @var \Application\DeskPRO\Entity\Download $object */
-                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_DOWNLOAD_CATEGORY:
-                return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_ARTICLE:
-                /* @var \Application\DeskPRO\Entity\Article $object */
-                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_ARTICLE_CATEGORY:
-                return $permissions_bag->hasContentCategoryAccess($object);
             case static::VIEW_NEWS:
-                /* @var \Application\DeskPRO\Entity\News $object */
-                return $permissions_bag->hasContentCategoryAccess($object) && $object->isPublic();
             case static::VIEW_NEWS_CATEGORY:
-                return $permissions_bag->hasContentCategoryAccess($object);
+                /* @var \Application\DeskPRO\Entity\ContentAbstract $object */
+
+                if ($permissions_bag->hasContentCategoryAccess($object) && $object->isPublic()) {
+                    return true;
+                }
+
+                // agents can still see unpublished stuff
+                if ($user && $user instanceof Person && $user->is_agent && $object->getStatusCode() === 'hidden.unpublished') {
+                    return true;
+                }
         }
 
         return false;

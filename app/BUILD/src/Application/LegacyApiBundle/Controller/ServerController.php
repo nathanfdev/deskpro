@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -107,7 +107,10 @@ class ServerController extends AbstractController implements ProtectedController
         /*
          * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
          */
-        $mysql_info = new ServerMysqlInfo($this->db);
+        $mysql_info = new ServerMysqlInfo($this->db, [
+            'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+        ]);
 
         return $this->createApiResponse(array('server_mysql_info' => $mysql_info->getMysqlInfo()));
     }
@@ -117,7 +120,10 @@ class ServerController extends AbstractController implements ProtectedController
         /*
          * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
          */
-        $mysql_info = new ServerMysqlInfo($this->db);
+        $mysql_info = new ServerMysqlInfo($this->db, [
+            'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+        ]);
 
         return $this->createApiResponse(array('mysql_schema_diff' => $mysql_info->getSchemaDiff()));
     }

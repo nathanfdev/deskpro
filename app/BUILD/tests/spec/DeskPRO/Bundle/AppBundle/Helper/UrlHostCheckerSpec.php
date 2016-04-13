@@ -77,12 +77,12 @@ class UrlHostCheckerSpec extends ObjectBehavior
         $this->isMatchUrl('site.com', 'http://site.com:443')->shouldReturn(false);
 
         $this->isMatchUrl('http://site.com:443', 'http://site.com:443')->shouldReturn(true);
-        $this->isMatchUrl('http://samesite.com/', 'http://samesite.com/')->shouldReturn(true);
-        $this->isMatchUrl('https://samesite.com/', 'https://samesite.com/')->shouldReturn(true);
-        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com:8043/')->shouldReturn(true);
-        $this->isMatchUrl('https://samesite.com:8043/', 'https://samesite.com/')->shouldReturn(false);
-        $this->isMatchUrl('http://samesite.com/', 'https://samesite.com/')->shouldReturn(false);
-        $this->isMatchUrl('http://site.com:443/', 'http://site.com:443/')->shouldReturn(true);
+        $this->isMatchUrl('http://samesite.com/fooA', 'http://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com/fooB', 'https://samesite.com/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/fooX', 'https://samesite.com:8043/')->shouldReturn(true);
+        $this->isMatchUrl('https://samesite.com:8043/fooD', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://samesite.com/fooE', 'https://samesite.com/')->shouldReturn(false);
+        $this->isMatchUrl('http://site.com:443/fooF', 'http://site.com:443/')->shouldReturn(true);
         $this->isMatchUrl('/news', 'http://site.com:443')->shouldReturn(true);
     }
 }

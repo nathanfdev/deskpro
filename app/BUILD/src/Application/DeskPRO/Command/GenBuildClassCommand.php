@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Application\InstallBundle\Util\GenBuildManifest;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,27 +52,28 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         $indent = '    ';
 
         if (!$input->getOption('no-schema')) {
-            $diff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql(App::getOrm());
-        } else {
-            $diff = array();
-        }
-
-        if ($diff) {
             $defaultcode = array();
 
-            foreach ($diff as $sql) {
-                $sql       = str_replace("\\'", "'", addslashes($sql));
-                $sql       = str_replace('$', '\\$', $sql);
-                $use_quote = '"';
-                if (false === strpos($sql, "'")) {
-                    $use_quote = "'"; // sql has no single quotes, so we can use it
+            foreach ([
+                'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+                'sys' => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+            ] as $dbId => $em) {
+                $diff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql($em);
+
+                foreach ($diff as $sql) {
+                    $sql       = str_replace("\\'", "'", addslashes($sql));
+                    $sql       = str_replace('$', '\\$', $sql);
+                    $use_quote = '"';
+                    if (false === strpos($sql, "'")) {
+                        $use_quote = "'"; // sql has no single quotes, so we can use it
+                    }
+                    $defaultcode[] = $indent.$indent.'$this->execDbQuery(\''.$dbId.'\', '.$use_quote.$sql.$use_quote.');';
                 }
-                $defaultcode[] = $indent.$indent.'$this->execMutateSql('.$use_quote.$sql.$use_quote.');';
             }
 
             $defaultcode = implode(PHP_EOL, $defaultcode);
         } else {
-            $defaultcode = $indent.$indent.'//$this->execMutateSql("...");';
+            $defaultcode = $indent.$indent.'//$this->execDbQuery(\'default\', "...");';
         }
 
         $header = <<<HEADER
@@ -82,7 +83,7 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/

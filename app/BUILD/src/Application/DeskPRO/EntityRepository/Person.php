@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -285,9 +286,15 @@ class Person extends AbstractEntityRepository
         $datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
         $agent_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
-            SELECT DISTINCT(person_id)
+            SELECT DISTINCT(sessions.person_id)
             FROM sessions
-            WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1
+            LEFT JOIN people ON (people.id = sessions.person_id)
+            WHERE
+              sessions.date_last >= ?
+              AND sessions.active_status = 'available'
+              AND sessions.is_person = 1
+              AND sessions.is_chat_available = 1
+              AND people.is_agent = 1
         ", array($datecut));
 
         return $agent_ids;
