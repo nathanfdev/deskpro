@@ -74,7 +74,7 @@ return array(
     'portal.forms.error_banned_email'               => 'Email "{{ email }}" is banned.',
     'portal.forms.error_captcha'                    => 'This captcha value was incorrect',
     'portal.forms.label_captcha'                    => 'To verify you are a human, please tell us the text you see in the image',
-    'portal.forms.error_csrf'                       => 'You did not submit a valid token. For security reasons, please ensure javascript is enabled, and cookies are enabled.',
+    'portal.forms.error_csrf'                       => 'The form you submitted has expired. Please re-submit your form again.',
     'portal.forms.error_upload_general'             => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_upload_file'                => 'Could not upload file',
     'portal.forms.error_upload_html_size'           => 'The file is too large.',

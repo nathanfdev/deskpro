@@ -45,6 +45,7 @@ use Application\DeskPRO\ServerReportFile\ServerReportFile;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiModes("all")
@@ -63,21 +64,15 @@ class ServerController extends AbstractController implements ProtectedController
     # get Server Reqs
     ####################################################################################################################
 
-    public function getServerReqsAction()
+    public function getServerReqsAction(Request $request)
     {
-        /*
-         * @var \Application\DeskPRO\ServerReqs\ServerReqs
-         */
-        $server_reqs = $this->container->getSystemService('server_reqs');
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
 
-        return $this->createApiResponse(
-            array(
-                 'server_reqs' => array(
-                     'web_checks' => $server_reqs->getWebChecks(),
-                     'cli_checks' => $server_reqs->getCliChecks(),
-                 ),
-            )
-        );
+        $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth', '');
+        $url  = $request->getUriForPath('/__serverinfo/check_requirements?auth='.$auth);
+
+        return $this->createApiResponse(['check_requirements_url' => $url]);
     }
 
     ####################################################################################################################

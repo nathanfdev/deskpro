@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Orb\Util\Arrays;
@@ -50,16 +49,16 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_file_cat_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:DownloadCategory', $new_id);
+            $newId = $this->getNewId('dp3_file_cat_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:DownloadCategory', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_downloads', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_downloads', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_downloads_home', array(), 301);
+        return $this->redirectToRoute('user_downloads_home', [], 301);
     }
 
     /**
@@ -70,16 +69,16 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_filescat_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Download', $new_id);
+            $newId = $this->getNewId('dp3_filescat_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:Download', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_downloads_file', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_downloads_file', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_downloads_home', array(), 301);
+        return $this->redirectToRoute('user_downloads_home', [], 301);
     }
 
     ############################################################################
@@ -93,24 +92,24 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function feedbackAction()
     {
-        $cat_id   = isset($_GET['cat']) ? $_GET['cat'] : 0;
-        $idea_str = Arrays::getFirstKey($_GET);
+        $catId   = isset($_GET['cat']) ? $_GET['cat'] : 0;
+        $ideaStr = Arrays::getFirstKey($_GET);
 
-        if ($cat_id) {
+        if ($catId) {
             // Ignore (go to home)
             // We dont filter on cats anymore
-        } elseif ($idea_str) {
-            $id     = Strings::extractRegexMatch('#^([0-9]+)#', $idea_str);
-            $new_id = $this->getNewId('dp3_ideaid_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Feedback', $new_id);
+        } elseif ($ideaStr) {
+            $id    = Strings::extractRegexMatch('#^([0-9]+)#', $ideaStr);
+            $newId = $this->getNewId('dp3_ideaid_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:Feedback', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_feedback_view', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_feedback', array(), 301);
+        return $this->redirectToRoute('user_feedback', [], 301);
     }
 
     ############################################################################
@@ -125,16 +124,16 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['ref']) ? $_GET['ref'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_kbref_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Article', $new_id);
+            $newId = $this->getNewId('dp3_kbref_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:Article', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_articles_article', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_articles_article', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', [], 301);
     }
 
     /**
@@ -145,16 +144,16 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_kbcatid_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:ArticleCategory', $new_id);
+            $newId = $this->getNewId('dp3_kbcatid_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:ArticleCategory', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_articles', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_articles', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', [], 301);
     }
 
     /**
@@ -162,7 +161,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function articlesHomeAction()
     {
-        return $this->redirectToRoute('user_articles_home', array(), 301);
+        return $this->redirectToRoute('user_articles_home', [], 301);
     }
 
     ############################################################################
@@ -178,16 +177,16 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['id']) ? $_GET['id'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_newsid_'.$id);
-            if ($new_id) {
-                $obj = $this->em->find('DeskPRO:News', $new_id);
+            $newId = $this->getNewId('dp3_newsid_'.$id);
+            if ($newId) {
+                $obj = $this->getEm()->find('DeskPRO:News', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_news_view', array('slug' => $obj->getUrlSlug()), 301);
+                    return $this->redirectToRoute('user_news_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_news_home', array(), 301);
+        return $this->redirectToRoute('user_news_home', [], 301);
     }
 
     /**
@@ -195,7 +194,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newsArchiveAction()
     {
-        return $this->redirectToRoute('user_news_home', array(), 301);
+        return $this->redirectToRoute('user_news_home', [], 301);
     }
 
     ############################################################################
@@ -207,7 +206,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newTicketAction()
     {
-        return $this->redirectToRoute('portal_new_ticket', array(), 301);
+        return $this->redirectToRoute('portal_new_ticket', [], 301);
     }
 
     /**
@@ -217,7 +216,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function ticketListAction()
     {
-        return $this->redirectToRoute('portal_tickets', array(), 301);
+        return $this->redirectToRoute('portal_tickets', [], 301);
     }
 
     /**
@@ -228,17 +227,17 @@ class Deskpro3RedirectController extends AbstractController
         $id = isset($_GET['ticketref']) ? $_GET['ticketref'] : 0;
 
         if ($id) {
-            $new_id = $this->getNewId('dp3_ticketref_'.$id);
-            if ($new_id) {
-                $new_id = $new_id['new_id'];
-                $obj    = $this->em->find('DeskPRO:Ticket', $new_id);
+            $newId = $this->getNewId('dp3_ticketref_'.$id);
+            if ($newId) {
+                $newId = $newId['new_id'];
+                $obj   = $this->getEm()->find('DeskPRO:Ticket', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
+                    return $this->redirectToRoute('user_tickets_view', ['ticket_ref' => $obj->getRef()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('portal_tickets', array(), 301);
+        return $this->redirectToRoute('portal_tickets', [], 301);
     }
 
     ############################################################################
@@ -250,7 +249,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function loginAction()
     {
-        return $this->redirectToRoute('portal_login', array(), 301);
+        return $this->redirectToRoute('portal_login', [], 301);
     }
 
     /**
@@ -258,7 +257,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function registerAction()
     {
-        return $this->redirectToRoute('portal_user_registration', array(), 301);
+        return $this->redirectToRoute('portal_user_registration', [], 301);
     }
 
     /**
@@ -268,26 +267,26 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function profileAction()
     {
-        return $this->redirectToRoute('portal_user_profile', array(), 301);
+        return $this->redirectToRoute('portal_user_profile', [], 301);
     }
 
     ############################################################################
     # Unsupported : Manuals and Troubles
     ############################################################################
 
-    public function rewrittenManualsAction($manual_bit = '', $page_bit = '')
+    public function rewrittenManualsAction($manualBit = '', $pageBit = '')
     {
-        $manual_id = Strings::extractRegexMatch('#^(\d+)#', $manual_bit);
-        $page_id   = Strings::extractRegexMatch('#^(\d+)#', $page_bit);
+        $manulaId = Strings::extractRegexMatch('#^(\d+)#', $manualBit);
+        $pageId   = Strings::extractRegexMatch('#^(\d+)#', $pageBit);
 
-        if (!$manual_id && !$page_id) {
-            return $this->redirectToRoute('user', array(), 301);
+        if (!$manulaId && !$pageId) {
+            return $this->redirectToRoute('user', [], 301);
         }
 
-        if ($page_id) {
-            return $this->redirectToRoute('dp3_redirect_manual_php', array('m' => $manual_id, 'p' => $page_id));
+        if ($pageId) {
+            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId, 'p' => $pageId]);
         } else {
-            return $this->redirectToRoute('dp3_redirect_manual_php', array('m' => $manual_id));
+            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId]);
         }
     }
 
@@ -301,7 +300,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function manualsAction()
     {
-        return $this->redirectToRoute('user', array(), 301);
+        return $this->redirectToRoute('user', [], 301);
     }
 
     /**
@@ -310,19 +309,19 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function troublesAction()
     {
-        return $this->redirectToRoute('user', array(), 301);
+        return $this->redirectToRoute('user', [], 301);
     }
 
     ############################################################################
 
     /**
-     * @param string $lookup_id
+     * @param string $lookupId
      *
      * @return int
      */
-    public function getNewId($lookup_id)
+    public function getNewId($lookupId)
     {
-        $data = $this->getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', array($lookup_id));
+        $data = $this->getDb()->fetchColumn('SELECT data FROM import_datastore WHERE typename = ?', [$lookupId]);
 
         if (preg_match('#^a:[0-9]+:\{#', $data)) {
             $data = unserialize($data);

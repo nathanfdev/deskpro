@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle;
 
+use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
@@ -78,6 +79,7 @@ class AppBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $application->add(new WebServerInfoCommand());
+        $application->add(new ConfigElasticCommand());
     }
 
     public function getNamespace()

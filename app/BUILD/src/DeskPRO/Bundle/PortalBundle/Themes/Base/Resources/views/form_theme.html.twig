@@ -218,7 +218,7 @@
                 {% set label = name|humanize %}
             {%- endif -%}
         {%- endif -%}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if not dp_no_validation_indicator is defined or not dp_no_validation_indicator %}<span class="form-item-valid{% if not  (submitted and valid) %} hidden{% endif %}">{#<i class="fa fa-check"></i></span>#}{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link">
                 <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-managment-from-form') }}<i class="fa fa-angle-double-right"></i></a>
             </span>
