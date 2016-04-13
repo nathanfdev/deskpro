@@ -34,7 +34,7 @@
 						</td>
 						<td>
 							<div ng-if="server_php_info.cli_php.php_config">
-								{{ ng_var('server_php_info.cli_php.php_config.php_version') }}
+								{{ ng_var('server_php_info.cli_php.php_config.version') }}
 							</div>
 							<div ng-if="!server_php_info.cli_php.php_config">
 								n/a
@@ -96,7 +96,7 @@
 						</td>
 						<td>
 							<span ng-if="server_php_info.cli_php.php_config.error_log">
-								{{ ng_var('server_php_info.cli_php.php_config.error_log_real') }}
+								{{ ng_var('server_php_info.cli_php.php_config.error_log') }}
 							</span>
 							<span ng-if="!server_php_info.cli_php.php_config.error_log">
 								None

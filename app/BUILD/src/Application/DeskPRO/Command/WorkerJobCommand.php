@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Log\Logger;
+use Orb\Util\Env;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -138,6 +139,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         App::getDb()->delete('install_data', array('build' => 1, 'name' => 'cron_run_errors'));
 
+        #------------------------------
+        # CLI phpinfo
+        #------------------------------
+
         ob_start();
         phpinfo();
         $phpinfo = ob_get_clean();
@@ -145,6 +150,15 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         @file_put_contents(
             $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpinfo.html',
             $phpinfo
+        );
+
+        @file_put_contents(
+            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpconfig.json',
+            json_encode([
+                'version'      => phpversion(),
+                'memory_limit' => Env::getMemoryLimit(),
+                'error_log'    => ini_get('error_log'),
+            ], \JSON_PRETTY_PRINT)
         );
 
         #------------------------------

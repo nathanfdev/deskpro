@@ -136,6 +136,10 @@ class ServerPhpInfo
             $cli_php['phpinfo'] = $phpinfo;
         }
 
+        if (file_exists($this->appEnv->getUserCacheDir().'/cli-phpconfig.json')) {
+            $cli_php['php_config'] = @json_decode(file_get_contents($this->appEnv->getUserCacheDir().'/cli-phpconfig.json'), true);
+        }
+
         $has_apc = false;
 
         if (function_exists('apc_store') && ini_get('apc.enabled')) {
