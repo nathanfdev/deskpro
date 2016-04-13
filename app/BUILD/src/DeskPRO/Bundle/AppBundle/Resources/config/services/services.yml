@@ -47,9 +47,6 @@ services:
     #todo #portal second param here needs to be setting for gravatar
     arguments: ["@router.default", true]
 
-  translator.noop:
-      class: DeskPRO\Bundle\AppBundle\Translator\NoopTranslator
-
   doctrine_association_manager:
     class: DeskPRO\Component\DoctrineAssociation\DoctrineAssociationManager
     arguments: ["@doctrine.orm.default_entity_manager"]

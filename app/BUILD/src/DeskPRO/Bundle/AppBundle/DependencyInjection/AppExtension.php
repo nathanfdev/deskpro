@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -55,7 +56,7 @@ class AppExtension extends Extension
         $loader->loadDir(__DIR__.'/../Resources/config/services');
 
         // use our translator
-        $container->setAlias('translator', 'translator.noop');
+        $container->setAlias('translator', 'deskpro.core.translate');
 
         $this->applyBackwardsCompatibilityRequirements($container);
     }
