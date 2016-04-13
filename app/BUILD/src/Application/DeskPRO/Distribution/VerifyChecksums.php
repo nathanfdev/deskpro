@@ -31,7 +31,6 @@
  *
  * @category File
  */
-
 namespace Application\DeskPRO\Distribution;
 
 use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
@@ -42,12 +41,12 @@ class VerifyChecksums
     /**
      * @var array
      */
-    private $standard_hashes;
+    private $standardHashes;
 
     /**
      * @var int
      */
-    private $count_all;
+    private $countAll;
 
     /**
      * @var ProjectFileSet
@@ -59,7 +58,7 @@ class VerifyChecksums
      */
     private $hasher;
 
-    public function __construct($chunk_size = 350)
+    public function __construct($chunkSize = 350)
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
@@ -68,17 +67,17 @@ class VerifyChecksums
 
         if (!is_file($checksumPath)) {
             // Get it to appear in the missing list in admin
-            $standard_hashes = array($checksumPath => 'missing');
+            $standardHashes = [$checksumPath => 'missing'];
         } else {
-            $standard_hashes = json_decode(file_get_contents($checksumPath), true);
+            $standardHashes = json_decode(file_get_contents($checksumPath), true);
         }
 
         $this->proj   = new ProjectFileSet($DP_ENV);
         $this->hasher = new FileHasher();
 
-        $this->count_all       = count($standard_hashes);
-        $standard_hashes       = array_chunk($standard_hashes, $chunk_size, true);
-        $this->standard_hashes = $standard_hashes;
+        $this->countAll       = count($standardHashes);
+        $standardHashes       = array_chunk($standardHashes, $chunkSize, true);
+        $this->standardHashes = $standardHashes;
     }
 
     /**
@@ -91,32 +90,32 @@ class VerifyChecksums
      */
     public function compareChunk($chunk = 0)
     {
-        $standard_chunk_hashes = $this->getStandardChunk($chunk);
-        $chunk_files           = array_keys($standard_chunk_hashes);
-        $chunk_hashes          = array();
+        $standardChunkHashes = $this->getStandardChunk($chunk);
+        $chunkFiles          = array_keys($standardChunkHashes);
+        $chunkHashes         = [];
 
-        foreach ($chunk_files as $f) {
+        foreach ($chunkFiles as $f) {
             $filepath = $this->proj->getRealPath($f);
             if (file_exists($filepath)) {
-                $chunk_hashes[$f] = $this->hasher->hash($filepath);
+                $chunkHashes[$f] = $this->hasher->hash($filepath);
             } else {
-                $chunk_hashes[$f] = null;
+                $chunkHashes[$f] = null;
             }
         }
 
-        $results = array(
-            'added'   => array(),
-            'removed' => array(),
-            'changed' => array(),
-            'okay'    => array(),
-        );
+        $results = [
+            'added'   => [],
+            'removed' => [],
+            'changed' => [],
+            'okay'    => [],
+        ];
 
-        foreach ($chunk_hashes as $path => $checksum) {
-            if (!isset($standard_chunk_hashes[$path])) {
+        foreach ($chunkHashes as $path => $checksum) {
+            if (!isset($standardChunkHashes[$path])) {
                 $results['added'][] = $path;
             } elseif ($checksum === null) {
                 $results['removed'][] = $path;
-            } elseif ($checksum != $standard_chunk_hashes[$path]) {
+            } elseif ($checksum != $standardChunkHashes[$path]) {
                 $results['changed'][] = $path;
             } else {
                 $results['okay'][] = $path;
@@ -127,11 +126,11 @@ class VerifyChecksums
     }
 
     /**
-     * @param string $file_contents
+     * @param string $fileContents
      *
      * @return string
      */
-    protected function normalizeFileString($file_contents)
+    protected function normalizeFileString($fileContents)
     {
         static $bom = null;
 
@@ -139,30 +138,29 @@ class VerifyChecksums
             $bom = pack('CCC', 0xEF, 0xBB, 0xBF);
         }
 
-        if (substr($file_contents, 0, 3) === $bom) {
-            $file_contents = substr($file_contents, 3);
+        if (substr($fileContents, 0, 3) === $bom) {
+            $fileContents = substr($fileContents, 3);
         }
 
-        $file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
+        $fileContents = trim(str_replace(array("\r", "\n"), '', $fileContents));
 
-        return $file_contents;
+        return $fileContents;
     }
 
     /**
      * Get a chunk.
      *
      * @param int $chunk
-     * @param int $chunk_size
      *
      * @return array
      */
     public function getStandardChunk($chunk)
     {
-        if (!isset($this->standard_hashes[$chunk])) {
+        if (!isset($this->standardHashes[$chunk])) {
             return array();
         }
 
-        return $this->standard_hashes[$chunk];
+        return $this->standardHashes[$chunk];
     }
 
     /**
@@ -172,11 +170,11 @@ class VerifyChecksums
      */
     public function countChunks()
     {
-        return count($this->standard_hashes);
+        return count($this->standardHashes);
     }
 
     public function countFiles()
     {
-        return $this->count_all;
+        return $this->countAll;
     }
 }

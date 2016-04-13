@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -50,7 +50,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
     /**
      * @var RequestStack
      */
-    private $request_stack;
+    private $requestStack;
 
     /**
      * @var string the kernel env (dev/test/prod)
@@ -60,15 +60,15 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
-    public function __construct(RequestStack $request_stack, LanguageManager $language_manager, $environment)
+    public function __construct(RequestStack $requestStack, LanguageManager $languageManager, $environment)
     {
         // generally its not a good idea to make form's directly associated with a request object,
         // but in this case its the easiest way to access the cookie value
-        $this->request_stack    = $request_stack;
-        $this->environment      = $environment;
-        $this->language_manager = $language_manager;
+        $this->requestStack    = $requestStack;
+        $this->environment     = $environment;
+        $this->languageManager = $languageManager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -77,7 +77,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
             return;
         }
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     protected function shouldNotApply(array $options)
@@ -109,10 +109,15 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         if (!$view->parent && $options['compound']) {
             $factory = $form->getConfig()->getFormFactory();
 
-            $csrfForm = $factory->createNamed($options['csrf_double_submit_cookie_name'], 'hidden', '', array(
-                'mapped' => false,
-                'label'  => false,
-            ));
+            $csrfForm = $factory->createNamed(
+                $options['csrf_double_submit_cookie_name'],
+                'hidden',
+                '',
+                [
+                    'mapped' => false,
+                    'label'  => false,
+                ]
+            );
 
             $view->children[$options['csrf_double_submit_cookie_name']] = $csrfForm->createView($view);
         }
@@ -124,31 +129,33 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         $data = $event->getData();
 
         if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
-            $form_config  = $form->getConfig();
-            $cookie_name  = $form_config->getOption('csrf_double_submit_cookie_name');
-            $cookie_value = $this->request_stack->getCurrentRequest()->cookies->get($cookie_name, null);
+            $formConfig  = $form->getConfig();
+            $cookieName  = $formConfig->getOption('csrf_double_submit_cookie_name');
+            $cookieValue = $this->requestStack->getCurrentRequest()->cookies->get($cookieName, null);
 
             // token must be present in submitted data, and exactly equal to the request cookie value
             // token MUST be at least 5 characters
             if (
-                !isset($data[$cookie_name])
-                || !$cookie_value
-                || strlen($cookie_value) < 5
-                || $data[$cookie_name] !== $cookie_value
+                !isset($data[$cookieName])
+                || !$cookieValue
+                || strlen($cookieValue) < 5
+                || $data[$cookieName] !== $cookieValue
             ) {
-                $error_message = null;
-                if ($lang = $this->language_manager->getLanguageStack()->getActive()) {
-                    $error_message = $this->language_manager->getTranslator($lang)->phrase($form_config->getOption('csrf_double_submit_error_message'));
+                $errorMessage = null;
+                if ($lang = $this->languageManager->getLanguageStack()->getActive()) {
+                    $errorMessage = $this->languageManager->getTranslator($lang)->phrase(
+                        $formConfig->getOption('csrf_double_submit_error_message')
+                    );
                 }
-                if (!$error_message) {
-                    $error_message = $form_config->getOption('csrf_double_submit_error_message');
+                if (!$errorMessage) {
+                    $errorMessage = $formConfig->getOption('csrf_double_submit_error_message');
                 }
 
-                $form->addError(new FormError($error_message));
+                $form->addError(new FormError($errorMessage));
             }
 
             if (is_array($data)) {
-                unset($data[$cookie_name]);
+                unset($data[$cookieName]);
             }
         }
 
@@ -162,18 +169,18 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         // apply to all forms and use the new method of protection
         // calling-code can always turn this off and the other back on
         $resolver->setDefaults(
-            array(
+            [
                 'csrf_protection'                  => false,
                 'csrf_double_submit_protection'    => true,
                 'csrf_double_submit_cookie_name'   => self::COOKIE_NAME,
                 'csrf_double_submit_error_message' => 'portal.forms.error_csrf',
-            )
+            ]
         )->setAllowedTypes(
-            array(
+            [
                 'csrf_double_submit_protection'    => 'bool',
                 'csrf_double_submit_cookie_name'   => 'string',
                 'csrf_double_submit_error_message' => 'string',
-            )
+            ]
         );
     }
 
@@ -184,6 +191,6 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'Symfony\Component\Form\Extension\Core\Type\FormType';
+        return FormType::class;
     }
 }
