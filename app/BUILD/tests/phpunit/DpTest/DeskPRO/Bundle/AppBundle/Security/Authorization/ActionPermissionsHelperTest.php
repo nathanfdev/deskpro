@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Security\Authorization;
 
+use DeskPRO\Bundle\AppBundle\ApiTag\TagsCollector;
 use DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper;
 use DpTest\ApiTestCase;
 
@@ -38,7 +39,9 @@ class ActionPermissionsHelperTest extends ApiTestCase
 
     public function setUp()
     {
-        $this->helper = new ActionPermissionsHelper();
+        /** @var TagsCollector $tagsCollector */
+        $tagsCollector = $this->get('api_tags.tags_collector');
+        $this->helper  = new ActionPermissionsHelper($tagsCollector);
     }
 
     /**
@@ -65,7 +68,7 @@ class ActionPermissionsHelperTest extends ApiTestCase
             [['test.test2.test3', 'test.test2.test4'], ['-test.test2.test3', 'test.test2.test4'], false],
             // same case, but tags has different roots
             [['test.test2.test3', 'test1.test2.test4'], ['-test.test2.test3', 'test1.test2.test4'], false],
-            // two tags, one allowed and one wasn't described in store. Deny.
+            // two tags, one allowed and one wasn't described in store. Allow. Strict allow takes precedence.
             [['test.test2.test3', 'test1.test2.test4'], ['test1.test2.test4'], true],
             [['test.test2.test3', 'test1.test2.test4'], ['test.test2.test3'], true],
             // one tag received, one tag was allowed

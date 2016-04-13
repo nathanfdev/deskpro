@@ -59,7 +59,8 @@ class TagsController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
-     *     }
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag>"
      * )
      * @Rest\Get("/api_tags/{id}", name="api_tags_list_for_key")
      *
@@ -69,11 +70,12 @@ class TagsController extends BaseController
      */
     public function listAction($id)
     {
-        $tags_collector = $this->get('api_authorization.tags_collector');
-        $tags_collector->collectTags(true);
+        $tagsCollector = $this->get('api_tags.tags_collector');
+        $tagsCollector->collectTags(true);
+        $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
 
         return View::create(
-            $this->wrap($tags_collector->getTagsHierarchyForApi($id)),
+            $this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)),
             Response::HTTP_OK
         );
     }
@@ -116,10 +118,10 @@ class TagsController extends BaseController
      */
     public function putAction(Request $request, $id)
     {
-        $value     = $request->request->getInt('value');
-        $action    = $request->request->get('action');
-        $collector = $this->get('api_authorization.tags_collector');
-        $collector->updateTags($id, $action, $value);
+        $value       = $request->request->getInt('value');
+        $action      = $request->request->get('action');
+        $manipulator = $this->get('api_tags.tags_manipulator');
+        $manipulator->updateTags($id, $action, $value);
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }

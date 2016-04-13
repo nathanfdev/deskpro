@@ -88,12 +88,7 @@ services:
       - "@api_authorization.action_permissions.metadata_cache"
       - %kernel.debug%
 
-  api_authorization.action_permissions.cache_warmer:
-    class: DeskPRO\Bundle\AppBundle\CacheWarmer\ActionPermissionsCacheWarmer
-    arguments:
-      - "@api_authorization.tags_collector"
-    tags:
-      - { name: 'kernel.cache_warmer' }
+
 
   api_authorization.action_permissions_voter:
     class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsVoter
@@ -106,14 +101,9 @@ services:
 
   api_authorization.action_permissions_helper:
     class: DeskPRO\Bundle\AppBundle\Security\Authorization\ActionPermissionsHelper
-
-  api_authorization.tags_collector:
-    class: DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\TagsCollector
     arguments:
-      - "@api_authorization.action_permissions_helper"
-      - "@api_authorization.action_permissions.metadata_factory"
-      - "@doctrine.orm.default_entity_manager"
-      - "@api_controllers_finder"
+      - "@api_tags.tags_collector"
+
 
   api_authorization.action_permissions.metadata_cache:
     class: DeskPRO\Bundle\AppBundle\Annotation\Metadata\MetadataCache
