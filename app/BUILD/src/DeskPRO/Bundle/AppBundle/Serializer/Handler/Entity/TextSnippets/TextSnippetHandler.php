@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippet as TextSnippetEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet as TextSnippetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -74,6 +75,24 @@ class TextSnippetHandler extends AbstractEntityHandler
         $user  = $this->tokenStorage->getToken()->getUser();
         $title = $entity->getObjectPropLanguageTranslationValue('title', $user->getLanguage());
 
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'text_snippet_content',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getSnippetContent'], [$entity, $context])
+        );
+
         return new TextSnippetModel($entity, $title);
+    }
+
+    /**
+     * @param TextSnippetEntity            $entity
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    public function getSnippetContent(TextSnippetEntity $entity, SideloadSerializationContext $context)
+    {
+        return $context->accept($entity->getTextSnippetContents());
     }
 }
