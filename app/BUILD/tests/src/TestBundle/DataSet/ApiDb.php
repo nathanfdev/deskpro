@@ -1105,48 +1105,6 @@ SQL
         $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         // SLAs
-        /*$slas = [
-            [
-                'title'          => 'First',
-                'sla_type'       => 'first_response',
-                'active_time'    => 'default',
-                'work_start'     => 60 * 60 * 10,
-                'work_end'       => 60 * 60 * 18,
-                'work_days'      => "1,2,3,4,5,6",
-                'apply_type'     => 'all',
-                'warn_time'      => 1,
-                'warn_time_unit' => 'hours',
-                'fail_time'      => 1,
-                'fail_time_unit' => 'hours'
-            ],
-            [
-                'title'          => 'Second',
-                'sla_type'       => 'resolution',
-                'active_time'    => 'all',
-                'work_start'     => 60 * 60 * 10,
-                'work_end'       => 60 * 60 * 18,
-                'work_days'      => "1,2,3,4,5,6",
-                'apply_type'     => 'auto',
-                'warn_time'      => 2,
-                'warn_time_unit' => 'days',
-                'fail_time'      => 2,
-                'fail_time_unit' => 'days'
-            ],
-            [
-                'title'          => 'Third',
-                'sla_type'       => 'waiting_time',
-                'active_time'    => 'work_hours',
-                'work_start'     => 60 * 60 * 10,
-                'work_end'       => 60 * 60 * 18,
-                'work_days'      => "1,2,3,4,5,6",
-                'apply_type'     => 'manual',
-                'warn_time'      => 3,
-                'warn_time_unit' => 'hours',
-                'fail_time'      => 3,
-                'fail_time_unit' => 'days'
-            ],
-        ];
-        $this->getDb()->batchInsert('slas', $slas, true);*/
 
         $this->getDb()->exec(
             <<<SQL
