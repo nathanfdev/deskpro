@@ -1,9 +1,9 @@
 import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-export const toggleMassAction = createAction('APP_TOGGLE_MASS_ACTION');
+export const toggleMassAction     = createAction('APP_TOGGLE_MASS_ACTION');
 export const toggleSelectedAction = createAction('APP_TOGGLE_SELECTED_ACTION');
-export const cancelMassActions = createAction('APP_CANCEL_MASS_ACTIONS');
+export const cancelMassActions    = createAction('APP_CANCEL_MASS_ACTIONS');
 export const setMassActionsParams = createAction('APP_SET_MASS_ACTIONS_PARAMS');
 
 export const resetParam = createAction(
@@ -26,13 +26,13 @@ export const getJobStatus = createAction(
 
 export const submitMassActions = createAction(
   'APP_MASS_ACTIONS_SUBMIT',
-  (data) => (dispatch) => new Promise(resolve =>
-    api.sendPost('DP_API/mass_actions/', { jobType: data.jobType, params: data.params })
+  ({ content, ids, actions, loadIndicatorAction, reloadNavAction }) => (dispatch) => new Promise(resolve =>
+    api.sendPost(`DP_API/mass_actions/${content}`, { ids, actions })
       .success(response => {
         dispatch(toggleMassAction());
         dispatch(cancelMassActions());
-        dispatch(data.loadIndicatorAction());
-        setTimeout(() => dispatch(getJobStatus(response.job, data.reloadNavAction)), 350);
+        dispatch(loadIndicatorAction());
+        setTimeout(() => dispatch(getJobStatus(response.job, reloadNavAction)), 350);
         return resolve(response);
       }))
 );

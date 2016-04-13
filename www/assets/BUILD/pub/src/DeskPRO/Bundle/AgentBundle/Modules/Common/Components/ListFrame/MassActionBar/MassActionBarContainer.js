@@ -16,20 +16,20 @@ export class MassActionBarContainer extends Component {
     reloadNavAction:     PropTypes.func.isRequired,
     loadIndicatorAction: PropTypes.func.isRequired,
     actions:             PropTypes.array.isRequired,
-    jobType:             PropTypes.string.isRequired,
     content:             PropTypes.string.isRequired,
     currentParams:       PropTypes.object
   };
 
   submit = () => {
-    const { dispatch, jobType, selected, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
+    const { dispatch, selected, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
     dispatch(submitMassActions(
       {
-        jobType,
+        content,
         reloadNavAction,
         loadIndicatorAction,
 
-        params: { ids: selected, content, actions: currentParams }
+        ids:     selected,
+        actions: currentParams
       }));
   };
 
