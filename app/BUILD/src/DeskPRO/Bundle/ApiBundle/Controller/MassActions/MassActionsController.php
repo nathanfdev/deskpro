@@ -42,6 +42,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class MassActionsController.
@@ -96,8 +97,11 @@ class MassActionsController extends BaseController
         list($ids, $actions) = $this->checkRequest($request, $content);
         /* @var ApplicatorServiceInterface $applicator */
         $service = $this->getActionApplicatorService($content);
-        $service->apply($ids, $actions);
-        $service->apply($ids, $actions);
+        try {
+            $service->apply($ids, $actions);
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
         return Response::HTTP_OK;
     }

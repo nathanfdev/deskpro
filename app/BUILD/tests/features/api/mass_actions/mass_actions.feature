@@ -107,9 +107,9 @@ Feature: /mass_actions endpoint
   "actions":{"set_status":1}
 }
     """
-    Then the response status code should be 500
+    Then the response status code should be 400
     And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 500
+    And the JSON node "status" should be equal to 400
     And the JSON node "message" should exist
     And the JSON node "message" should be equal to 'The option "options" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
 
