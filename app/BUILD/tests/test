@@ -206,7 +206,7 @@ Feature: Ratings
       │ 
       │               <h1>Get in touch</h1>
       │ 
-      │               <p>With this excellent form</p>
+      │               <p>Report a problem or ask a question</p>
       │             </a>
       │           </li>
       │                               <li>
@@ -215,7 +215,7 @@ Feature: Ratings
       │ 
       │               <h1>Submit Feedback</h1>
       │ 
-      │               <p>An excellent feedback system</p>
+      │               <p>Make a suggestion for how we can improve</p>
       │             </a>
       │           </li>
       │                               <li>
