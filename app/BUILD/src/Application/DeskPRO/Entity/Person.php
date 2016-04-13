@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -59,6 +60,7 @@ use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -118,9 +120,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string                              $browser
  *
  * @JMS\ExclusionPolicy("all")
+ * @Assert\GroupSequenceProvider
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
-    EquatableInterface, Chatable, LabelsOwner
+    EquatableInterface, Chatable, LabelsOwner, GroupSequenceProviderInterface
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -552,11 +555,15 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Count(max=0, groups="User")
      */
     protected $teams;
 
     /**
      * @var AgentTeam
+     *
+     * @Assert\Null(groups="User")
      */
     protected $primary_team;
 
@@ -3315,6 +3322,17 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         }
     }
 
+    /**
+     * @return ArrayCollection|\Application\DeskPRO\Entity\AgentTeam[]
+     */
+    public function getTeams()
+    {
+        return $this->teams;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\AgentTeam
+     */
     public function getPrimaryTeam()
     {
         if ($this->primary_team) {
@@ -4411,5 +4429,21 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function isEqualTo(UserInterface $user)
     {
         return $this->id == $user->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Person'];
+
+        if ($this->is_agent) {
+            $groups[] = 'Agent';
+        } else {
+            $groups[] = 'User';
+        }
+
+        return $groups;
     }
 }

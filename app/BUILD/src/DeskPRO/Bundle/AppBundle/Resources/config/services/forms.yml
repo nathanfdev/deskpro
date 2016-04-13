@@ -45,11 +45,6 @@ services:
     tags:
       - { name: form.type, alias: html_textarea }
 
-  form.combined:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\CombinedType
-    tags:
-      - { name: form.type, alias: deskpro_combined_type }
-
   form.person_identity:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType
     arguments:

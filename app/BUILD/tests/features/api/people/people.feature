@@ -1,4 +1,4 @@
-@basic @chat-nav @tasks-nav
+@basic @chat-nav @tasks-nav @people
 Feature: /people endpoint
   To retrieve DeskPRO people
   As a developer
@@ -80,6 +80,13 @@ Feature: /people endpoint
     When I send a POST request to "/api/v2/people"
     Then the response should be in JSON
     And the response status code should be 400
+    And the JSON node "errors.errors" should not exist
+    And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.primary_email.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.primary_email.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.emails.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.emails.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
   Scenario: I modify and retrieve a person
     When I send a PUT request to "/api/v2/people/5" with body:

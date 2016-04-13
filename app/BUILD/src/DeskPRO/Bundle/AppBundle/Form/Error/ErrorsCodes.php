@@ -68,6 +68,7 @@ final class ErrorsCodes
     const NOT_USER                       = 'person_not_user';
 
     /** Validator/Constraint specific error codes */
+    const NULL                        = 'empty';
     const NOT_NULL                    = 'required';
     const NOT_BLANK                   = 'required';
     const LENGTH_TOO_LONG             = 'length_too_long';

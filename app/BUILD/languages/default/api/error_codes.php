@@ -56,6 +56,7 @@ return array(
     'api.error_codes.invalid_charset'  => 'This value does not match the expected {{ charset }} charset.',
     # NotNull/NotBlank
     'api.error_codes.required' => 'This value should not be blank.',
+    'api.error_codes.empty'    => 'This value should be blank.',
     # Forms
     'api.error_codes.person_not_found'                => 'Person with identifier "{{ value }}" not found.',
     'api.error_codes.person_not_agent'                => 'Person with identifier "{{ value }}" is not agent.',

@@ -32,15 +32,23 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -90,28 +98,33 @@ class PersonType extends ApiType
         $person = $builder->getData();
 
         $builder
-            ->add('name', 'text')
-            ->add('title_prefix')
-            ->add('first_name', 'text')
-            ->add('last_name', 'text')
-            ->add('override_display_name', 'text')
-            ->add('summary', 'text')
-            ->add('timezone', 'text')
-            ->add('organization', 'entity', ['class' => 'DeskPRO:Organization'])
-            ->add('organization_position', 'text')
-            ->add('language', 'entity', ['class' => 'DeskPRO:Language'])
+            ->add('name', TextType::class)
+            ->add('title_prefix', TextType::class)
+            ->add('first_name', TextType::class)
+            ->add('last_name', TextType::class)
+            ->add('override_display_name', TextType::class)
+            ->add('summary', TextType::class)
+            ->add('timezone', TextType::class)
+            ->add('organization', EntityType::class, [
+                'class' => Organization::class,
+            ])
+            ->add('organization_position', TextType::class)
+            ->add('language', EntityType::class, [
+                'class' => Language::class,
+            ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelPerson::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
             ])
             ->add('primary_email', new PersonEmailType($person, $this->em))
-            ->add('emails', 'collection', [
-                'type'         => new PersonEmailType($person, $this->em),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'by_reference' => false,
+            ->add('emails', CollectionType::class, [
+                'type'           => new PersonEmailType($person, $this->em),
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'delete_empty'   => true,
+                'by_reference'   => false,
+                'error_bubbling' => false,
             ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
@@ -123,13 +136,21 @@ class PersonType extends ApiType
                 'owner'          => $builder->getData(),
                 'property_path'  => 'usergroups',
             ])
-            ->add('fields', 'deskpro_combined_type', [
+            ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])
             ->add('contact_data', ContactDataType::class, [
                 'owner'          => $builder->getData(),
                 'parent_builder' => $builder,
+            ])
+            ->add('teams', EntityType::class, [
+                'class'        => AgentTeam::class,
+                'multiple'     => true,
+                'by_reference' => false,
+            ])
+            ->add('primary_team', EntityType::class, [
+                'class' => AgentTeam::class,
             ])
         ;
 
@@ -208,7 +229,7 @@ class PersonType extends ApiType
         foreach ($field_defs as $field_def) {
             $form_fields[] = [
                 'name'    => $field_def->getId(),
-                'type'    => 'deskpro_custom_data',
+                'type'    => CustomDataType::class,
                 'options' => [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',

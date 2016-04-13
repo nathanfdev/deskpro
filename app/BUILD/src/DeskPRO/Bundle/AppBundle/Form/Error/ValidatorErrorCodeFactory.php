@@ -54,6 +54,7 @@ class ValidatorErrorCodeFactory
      * @var array
      */
     private static $errorCodeMapping = [
+        Assert\IsNull::NOT_NULL_ERROR            => ErrorsCodes::NULL,
         Assert\NotNull::IS_NULL_ERROR            => ErrorsCodes::NOT_NULL,
         Assert\NotBlank::IS_BLANK_ERROR          => ErrorsCodes::NOT_NULL,
         Assert\Type::INVALID_TYPE_ERROR          => ErrorsCodes::INVALID_DATA_TYPE,

@@ -422,6 +422,24 @@ class Person
     protected $contact_data;
 
     /**
+     * Agent teams.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\AgentTeam>>")
+     *
+     * @var \Application\DeskPRO\Entity\AgentTeam[]
+     */
+    protected $teams;
+
+    /**
+     * Primary agent team.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
+     * @var \Application\DeskPRO\Entity\AgentTeam
+     */
+    protected $primaryTeam;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\Person $person
@@ -468,6 +486,8 @@ class Person
         $this->fields                    = $person->custom_data;
         $this->contact_data              = $person->getContactData();
         $this->emails                    = $person->getEmails();
+        $this->teams                     = $person->getTeams();
+        $this->primaryTeam               = $person->getPrimaryTeam();
     }
 
     /**

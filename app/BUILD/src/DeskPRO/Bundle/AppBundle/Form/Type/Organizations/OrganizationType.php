@@ -35,7 +35,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Symfony\Component\Form\AbstractType;
@@ -93,7 +95,7 @@ class OrganizationType extends AbstractType
                 'owner'          => $builder->getData(),
                 'error_bubbling' => false,
             ])
-            ->add('fields', 'deskpro_combined_type', [
+            ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])
@@ -136,7 +138,7 @@ class OrganizationType extends AbstractType
         foreach ($field_defs as $field_def) {
             $form_fields[] = [
                 'name'    => $field_def->getId(),
-                'type'    => 'deskpro_custom_data',
+                'type'    => CustomDataType::class,
                 'options' => [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',
