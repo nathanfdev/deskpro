@@ -45,6 +45,17 @@ class ExceptionLoggerListener implements EventSubscriberInterface
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $e = $event->getException();
+
+        if (
+            $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            || $e instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException
+            || $e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+            || $e instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException
+        ) {
+            return;
+        }
+
+        $e = $event->getException();
         SystemErrorHandler::logException($e);
     }
 
