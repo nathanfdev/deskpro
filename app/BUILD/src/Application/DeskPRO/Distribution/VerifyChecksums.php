@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,23 +31,51 @@
  *
  * @category File
  */
+
 namespace Application\DeskPRO\Distribution;
+
+use DeskPRO\Bundle\InstallBundle\FileIntegrity\FileHasher;
+use DeskPRO\Bundle\InstallBundle\FileIntegrity\ProjectFileSet;
 
 class VerifyChecksums
 {
-    /** @var array  */
-    protected $standard_hashes;
-    /** @var int  */
-    protected $count_all;
+    /**
+     * @var array
+     */
+    private $standard_hashes;
+
+    /**
+     * @var int
+     */
+    private $count_all;
+
+    /**
+     * @var ProjectFileSet
+     */
+    private $proj;
+
+    /**
+     * @var FileHasher
+     */
+    private $hasher;
 
     public function __construct($chunk_size = 350)
     {
-        if (!is_file(DP_ROOT.'/sys/Resources/distro-checksums.php')) {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        $checksumPath = $DP_ENV->getAppBaseKernelCacheDir().'/integrity_file_map.dat';
+
+        if (!is_file($checksumPath)) {
             // Get it to appear in the missing list in admin
-            $standard_hashes = array('/app/sys/Resources/distro-checksums.php' => 'missing');
+            $standard_hashes = array($checksumPath => 'missing');
         } else {
-            $standard_hashes = require DP_ROOT.'/sys/Resources/distro-checksums.php';
+            $standard_hashes = json_decode(file_get_contents($checksumPath), true);
         }
+
+        $this->proj   = new ProjectFileSet($DP_ENV);
+        $this->hasher = new FileHasher();
+
         $this->count_all       = count($standard_hashes);
         $standard_hashes       = array_chunk($standard_hashes, $chunk_size, true);
         $this->standard_hashes = $standard_hashes;
@@ -58,6 +86,8 @@ class VerifyChecksums
      * and then compares those hashes.
      *
      * @param int $chunk
+     *
+     * @return array
      */
     public function compareChunk($chunk = 0)
     {
@@ -65,13 +95,10 @@ class VerifyChecksums
         $chunk_files           = array_keys($standard_chunk_hashes);
         $chunk_hashes          = array();
 
-        $uproot = realpath(DP_ROOT.'/../');
-
         foreach ($chunk_files as $f) {
-            $filepath = $uproot.$f;
+            $filepath = $this->proj->getRealPath($f);
             if (file_exists($filepath)) {
-                $file_contents    = $this->normalizeFileString(file_get_contents($filepath));
-                $chunk_hashes[$f] = md5($file_contents);
+                $chunk_hashes[$f] = $this->hasher->hash($filepath);
             } else {
                 $chunk_hashes[$f] = null;
             }
