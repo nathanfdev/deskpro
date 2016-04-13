@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -89,6 +90,8 @@ class CaptchaType extends AbstractType
                     'label'           => false,
                     'as_url'          => true,
                     'invalid_message' => 'portal.forms.error_captcha',
+                    // Workaround to avoid null bypass_code to be cast as a string that de-require the captcha
+                    'bypass_code' => rand(0, 123456),
                 ]);
             }
         });
