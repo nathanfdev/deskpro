@@ -6,51 +6,58 @@ import { SubmitButton } from './SubmitButton';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  selected: selectedSelector(state),
+  selected:      selectedSelector(state),
   currentParams: paramsSelector(state)
 }))
 export class MassActionBarContainer extends Component {
   static propTypes = {
-    selected: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    reloadNavAction: PropTypes.func.isRequired,
+    selected:            PropTypes.object.isRequired,
+    dispatch:            PropTypes.func.isRequired,
+    reloadNavAction:     PropTypes.func.isRequired,
     loadIndicatorAction: PropTypes.func.isRequired,
-    actions: PropTypes.array.isRequired,
-    jobType: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
-    currentParams: PropTypes.object
+    actions:             PropTypes.array.isRequired,
+    jobType:             PropTypes.string.isRequired,
+    content:             PropTypes.string.isRequired,
+    currentParams:       PropTypes.object
   };
 
-  submit(jobType) {
-    const { dispatch, selected, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
+  submit = () => {
+    const { dispatch, jobType, selected, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
     dispatch(submitMassActions(
       {
-        jobType: jobType,
-        reloadNavAction: reloadNavAction,
-        loadIndicatorAction: loadIndicatorAction,
-        params: { ids: selected, content: content, actions: currentParams }
-      }));
-  }
+        jobType,
+        reloadNavAction,
+        loadIndicatorAction,
 
-  cancel() {
+        params: { ids: selected, content, actions: currentParams }
+      }));
+  };
+
+  cancel = () => {
     const { dispatch } = this.props;
     dispatch(cancelMassActions());
-  }
+  };
 
   render() {
-    const { actions, currentParams, jobType } = this.props;
-    const isActive = currentParams && currentParams.size > 0;
-    const renderByType = (item, index)=> {
+    const { actions, currentParams } = this.props;
+    const isActive     = currentParams && currentParams.size > 0;
+    const renderByType = (item, index) => {
       if (item.type === 'button') {
         return (
-          <SubmitButton label={item.label} key={index}
-                        onClick={item.onClick}/>
+          <SubmitButton
+            label={item.label}
+            key={index}
+            onClick={item.onClick}
+            />
         );
       }
       return (
-        <MassActionDropdown key={index} id={index}
-                            item={item}
-                            currentParams={currentParams}/>
+        <MassActionDropdown
+          key={index}
+          id={index}
+          item={item}
+          currentParams={currentParams}
+          />
       );
     };
 
@@ -58,15 +65,21 @@ export class MassActionBarContainer extends Component {
       <ul className="dpwd-navigation-dropdown-top-row-main-list">
         {actions.map((item, index) => renderByType(item, index))}
         {isActive && <li>
-          <hr/>
+          <hr />
         </li>}
-        {isActive && <SubmitButton label="Go"
-                                   onClick={this.submit.bind(this, jobType)}
-                                   isActive={isActive}/>
+        {isActive &&
+        <SubmitButton
+          label="Go"
+          onClick={this.submit}
+          isActive={isActive}
+          />
         }
-        {isActive && <SubmitButton label="Cancel"
-                                   onClick={this.cancel.bind(this)}
-                                   isActive={isActive}/>}
+        {isActive &&
+        <SubmitButton label="Cancel"
+          onClick={this.cancel}
+          isActive={isActive}
+          />
+        }
 
       </ul>
     );
