@@ -71,6 +71,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_PEOPLE                     = 'people';
     const TABLE_PROBLEMS                   = 'problems';
     const TABLE_PRODUCTS                   = 'products';
+    const TABLE_SLAS                       = 'slas';
     const TABLE_TASK_ASSIGNMENTS           = 'task_assignments';
     const TABLE_TASK_ATTACHMENTS           = 'task_attachments';
     const TABLE_TASK_LISTS                 = 'task_lists';
