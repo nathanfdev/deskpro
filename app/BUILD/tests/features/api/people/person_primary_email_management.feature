@@ -1,3 +1,4 @@
+@people
 Feature: Person primary email CRUD
 
   Background:

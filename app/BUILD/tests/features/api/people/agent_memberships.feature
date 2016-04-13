@@ -1,3 +1,4 @@
+@people
 Feature: /people endpoint
   I want to check setting agent teams
 

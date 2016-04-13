@@ -1,4 +1,4 @@
-@chat-nav
+@chat-nav @people
 Feature: /agents endpoint
   To retrieve DeskPRO agents
   As a developer

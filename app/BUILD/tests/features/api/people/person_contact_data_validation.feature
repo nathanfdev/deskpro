@@ -1,3 +1,4 @@
+@people
 Feature: /people endpoint
   To check contact data validation
   As a developer

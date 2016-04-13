@@ -1,3 +1,4 @@
+@people
 Feature: Person emails collection CRUD
 
   Background:
