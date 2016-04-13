@@ -46,7 +46,6 @@ use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TicketFiltersController.
@@ -75,7 +74,7 @@ class TicketFiltersController extends CrudController
      * @param Request            $request
      * @param LegacyTicketFilter $filter
      *
-     * @return Response
+     * @return View
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
@@ -126,7 +125,7 @@ class TicketFiltersController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1');
-        $qb->setParameter('regexp', '^problem_\\d+$');
+        $qb->setParameter('regexp', '^problem_[0-9]+$');
     }
 
     /**
