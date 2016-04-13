@@ -136,7 +136,14 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 || strlen($cookie_value) < 5
                 || $data[$cookie_name] !== $cookie_value
             ) {
-                $error_message = $form_config->getOption('csrf_double_submit_error_message');
+                $error_message = null;
+                if ($lang = $this->language_manager->getLanguageStack()->getActive()) {
+                    $error_message = $this->language_manager->getTranslator($lang)->phrase($form_config->getOption('csrf_double_submit_error_message'));
+                }
+                if (!$error_message) {
+                    $error_message = $form_config->getOption('csrf_double_submit_error_message');
+                }
+
                 $form->addError(new FormError($error_message));
             }
 
