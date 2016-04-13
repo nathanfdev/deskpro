@@ -6482,6 +6482,8 @@ h1.fancy-header {
 ul.categories-article-list {
   @include blank-list;
 
+  padding-top: 10px;
+
   a {
     // text-decoration: none;
     // font-size: 1em;
