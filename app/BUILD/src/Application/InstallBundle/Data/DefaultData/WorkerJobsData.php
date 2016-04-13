@@ -326,15 +326,6 @@ class WorkerJobsData extends AbstractDefaultData
         );
 
         $jobs[] = array(
-            'id'           => 'agent_alerts_generator',
-            'worker_group' => 'agent_alerts_generator',
-            'title'        => 'Agent alerts generator',
-            'description'  => 'Creates a random amount (between 1-8) of notifications every 10 mins.',
-            'job_class'    => Job\AgentAlertsGeneration::class,
-            'run_interval' => Job\AgentAlertsGeneration::DEFAULT_INTERVAL,
-        );
-
-        $jobs[] = array(
             'id'           => 'update_agents_online',
             'worker_group' => 'update_agents_online',
             'title'        => 'Update online agents',
