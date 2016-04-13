@@ -5830,6 +5830,9 @@ h1.fancy-header {
           text-decoration: none;
           color: inherit;
           @include padding-left(2px);
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
       a {
@@ -5964,6 +5967,9 @@ h1.fancy-header {
 
       a {
         text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       p {
