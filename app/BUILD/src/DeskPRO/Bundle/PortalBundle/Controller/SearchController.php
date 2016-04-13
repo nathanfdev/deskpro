@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity;
@@ -324,11 +323,11 @@ class SearchController extends AbstractController
         if ($q) {
             $se = $this->get('search_engine');
 
-            /** @var UserSearchInterface $usersearch */
-            $usersearch = $se->getUserSearch();
+            /** @var UserSearchInterface $userSearch */
+            $userSearch = $se->getUserSearch();
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $result_set */
-            $result_set = $usersearch->search(
+            $result_set = $userSearch->search(
                 $context,
                 $q,
                ['page' => $cur_page, 'per_page' => $per_page, 'limit_types' => array($type)]

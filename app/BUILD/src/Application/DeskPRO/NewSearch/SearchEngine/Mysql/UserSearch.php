@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 namespace Application\DeskPRO\NewSearch\SearchEngine\Mysql;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
@@ -50,17 +52,24 @@ class UserSearch implements UserSearchInterface
     private $db;
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
      * @var MysqlResultsTransformer
      */
     private $transformer;
 
     /**
      * @param Connection              $db
+     * @param EntityManager           $em
      * @param MysqlResultsTransformer $transformer
      */
-    public function __construct(Connection $db, MysqlResultsTransformer $transformer)
+    public function __construct(Connection $db, EntityManager $em, MysqlResultsTransformer $transformer)
     {
         $this->db          = $db;
+        $this->em          = $em;
         $this->transformer = $transformer;
     }
 
@@ -239,92 +248,84 @@ class UserSearch implements UserSearchInterface
         return $this->search($context, $content, $options);
     }
 
-    private function getTicketResults(SearchContextInterface $context, array $query_words)
+    private function getTicketResults(SearchContextInterface $context, array $queryWords)
     {
         $limit = 5;
 
-        $search_places = array();
-        $search_params = array();
+        $qb = $this->em->createQueryBuilder();
 
-        foreach ($query_words as $w) {
-            $search_places[] = 'tickets.id = '.(int) $w;
+        $searchParams = 0;
+        $paramsIndex  = 0;
+        $params       = [];
 
-            $search_places[] = 'tickets.ref = ?';
-            $search_params[] = $w;
+        if (!count($queryWords)) {
+            return [];
+        }
+
+        $searchPlaces = $qb->expr()->orX();
+        foreach ($queryWords as $w) {
+            ++$searchParams;
+            $searchPlaces->add($qb->expr()->eq('tickets.id', '?'.$paramsIndex));
+            $params[$paramsIndex++] = (int) $w;
+
+            $searchPlaces->add($qb->expr()->eq('tickets.ref', '?'.$paramsIndex));
+            $params[$paramsIndex++] = $w;
 
             if (strlen($w) <= 2) {
                 continue;
             }
 
-            $search_places[] = 'tickets_messages.message LIKE ?';
-            $search_params[] = '%'.str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w).'%';
+            $searchPlaces->add($qb->expr()->like('tickets_messages.message', '?'.$paramsIndex));
+            $params[$paramsIndex++] = '%'.str_replace(['%', '_', '\\'], ['\\%', '\\_', '\\\\'], $w).'%';
 
-            if (count($search_params) >= self::MAX_WORDS) {
+            if ($searchParams >= self::MAX_WORDS) {
                 break;
             }
         }
 
-        if (!$search_params) {
-            return array();
+        $person = $qb->expr()->orX($qb->expr()->eq('tickets.person', '?'.$paramsIndex));
+
+        if (!$context->getPerson()->isAgent()) {
+            $person->add($qb->expr()->eq('tickets_participants.person', '?'.$paramsIndex));
         }
-
-        $search_places = implode(' OR ', $search_places);
-
+        $params[$paramsIndex++] = (int) $context->getPerson()->getId();
         if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
-            $params = array(
-                $context->getPerson()->getId(),
-                $context->getPerson()->getId(),
-                $context->getPerson()->getId(),
-                $context->getPerson()->organization->getId(),
-            );
-
-            $params = array_merge($params, $search_params);
-
-            $ticket_ids = $this->db->fetchAllCol("
-                SELECT DISTINCT(tickets.id)
-                FROM tickets
-                LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-                LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
-                WHERE
-                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ? OR tickets.organization_id = ?)
-                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
-                    AND ($search_places)
-                ORDER BY tickets.date_status DESC, tickets.date_created DESC
-                LIMIT $limit
-            ", $params);
-        } else {
-            $params = array(
-                $context->getPerson()->getId(),
-                $context->getPerson()->getId(),
-                $context->getPerson()->getId(),
-            );
-
-            $params = array_merge($params, $search_params);
-
-            $ticket_ids = $this->db->fetchAllCol("
-                SELECT DISTINCT(tickets.id)
-                FROM tickets
-                LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-                LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
-                WHERE
-                    (tickets.person_id = ? OR tickets_participants.person_id = ? OR tickets.agent_id = ?)
-                    AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL)
-                    AND ($search_places)
-                ORDER BY tickets.date_status DESC, tickets.date_created DESC
-                LIMIT $limit
-            ", $params);
+            $person->add($qb->expr()->eq('tickets.organization', '?'.$paramsIndex));
+            $params[$paramsIndex] = (int) $context->getPerson()->organization->getId();
         }
 
-        if (!$ticket_ids) {
-            return array();
+        $qb->select('DISTINCT(tickets.id)')
+           ->from(Ticket::class, 'tickets')
+           ->leftJoin('tickets.participants', 'tickets_participants')
+           ->leftJoin('tickets.messages', 'tickets_messages', 'WITH', 'tickets_messages.is_agent_note = 0')
+           ->where(
+               $qb->expr()->orX(
+                   $qb->expr()->isNotNull('tickets.date_last_agent_reply'),
+                   $qb->expr()->isNotNull('tickets.date_last_user_reply')
+               )
+           )
+           ->andWhere($searchPlaces)
+           ->andWhere($person)
+           ->orderBy('tickets.date_status', 'DESC')
+           ->addOrderBy('tickets.date_created', 'DESC')
+           ->setMaxResults($limit)
+           ->setParameters($params);
+
+        $ticketIds = $qb->getQuery()->getArrayResult();
+
+        if (!$ticketIds) {
+            return [];
         }
 
-        $hits = array_map(function ($tid) {
-            return array(
-                'object_type' => 'ticket',
-                'object_id'   => $tid,
-            );
-        }, $ticket_ids);
+        $hits = array_map(
+            function ($tid) {
+                return [
+                    'object_type' => 'ticket',
+                    'object_id'   => $tid[1],
+                ];
+            },
+            $ticketIds
+        );
 
         return $hits;
     }

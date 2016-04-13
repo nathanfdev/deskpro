@@ -122,9 +122,10 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Filter\Term(array('_type' => 'ticket')));
 
             $f2 = new Filter\BoolOr();
-            $f2->addFilter(new Filter\Term(array('agent' => $context->getPerson()->getId())));
             $f2->addFilter(new Filter\Term(array('person_id' => $context->getPerson()->getId())));
-            $f2->addFilter(new Filter\Term(array('participants' => $context->getPerson()->getId())));
+            if (!$context->getPerson()->isAgent()) {
+                $f2->addFilter(new Filter\Term(array('participants' => $context->getPerson()->getId())));
+            }
 
             if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
                 $f2->addFilter(new Filter\Term(array('organization_id' => $context->getPerson()->organization->getId())));
