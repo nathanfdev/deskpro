@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,7 +61,7 @@ class ProblemListener
     /**
      * @var array
      */
-    protected $queue = array();
+    protected $queue = [];
 
     /**
      * @var \SplQueue
@@ -81,12 +81,10 @@ class ProblemListener
      */
     public function onPreUpdate(Problem $problem, PreUpdateEventArgs $event)
     {
-        $this->updates->enqueue(
-            array(
-                'entity'    => $problem,
-                'changeset' => $event->getEntityChangeSet(),
-            )
-        );
+        $this->updates->enqueue([
+            'entity'    => $problem,
+            'changeset' => $event->getEntityChangeSet(),
+        ]);
     }
 
     /**
@@ -108,21 +106,21 @@ class ProblemListener
             $data = $this->updates->dequeue();
             /* @var Problem $p */
             $problem = $data['entity'];
-            $filter  = $event->getEntityManager()->getRepository('DeskPRO:LegacyTicketFilter')->findOneBy(array(
+            $filter  = $event->getEntityManager()->getRepository(LegacyTicketFilter::class)->findOneBy([
                 'sys_name' => Problem::FILTER_PREFIX.$problem->id,
-            ));
+            ]);
 
-            $this->queue[] = array(
+            $this->queue[] = [
                 'channel'      => self::CHANNEL_UPDATE,
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'id'        => $problem->id,
                     'title'     => $problem->title,
                     'filter_id' => $filter ? $filter->id : 0,
                     'changeset' => $data['changeset'],
-                )),
-            );
+                ]),
+            ];
         }
 
         $this->sendQueue();
@@ -138,16 +136,16 @@ class ProblemListener
             $problem  = $this->inserts->dequeue();
             $filterId = $this->createFilter($event->getEntityManager(), $problem);
 
-            $this->queue[] = array(
+            $this->queue[] = [
                 'channel'      => self::CHANNEL_NEW,
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'id'        => $problem->id,
                     'title'     => $problem->title,
                     'filter_id' => $filterId,
-                )),
-            );
+                ]),
+            ];
         }
 
         $this->sendQueue();
@@ -163,7 +161,7 @@ class ProblemListener
         }
 
         $q           = $this->queue;
-        $this->queue = array();
+        $this->queue = [];
 
         $this->conn->batchInsert('client_messages', $q);
 
@@ -185,7 +183,7 @@ class ProblemListener
     private function createFilter(EntityManager $em, Problem $problem)
     {
         $connection = $em->getConnection();
-        $id         = $problem->id;
+        $id         = $problem->getId();
         $connection->insert($em->getClassMetadata(LegacyTicketFilter::class)->getTableName(), [
             'title'      => 'Problem #'.$id,
             'sys_name'   => Problem::FILTER_PREFIX.$id,

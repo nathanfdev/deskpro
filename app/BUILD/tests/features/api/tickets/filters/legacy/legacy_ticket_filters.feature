@@ -1,4 +1,4 @@
-@ticket-filters
+@ticket-filters @basic
 Feature: /ticket_filters endpoint
   To legacy ticket filters
   As a developer
