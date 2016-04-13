@@ -9,8 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     initialLoad: ->
       data_promise = @Api.sendGet('/server_reqs').then( (res) =>
-
-        @$scope.server_reqs = res.data.server_reqs
+        @$scope.check_requirements_url = res.data.check_requirements_url
       )
 
       return @$q.all([data_promise])
