@@ -52,7 +52,7 @@ class Deskpro3RedirectController extends AbstractController
         if ($id) {
             $new_id = $this->getNewId('dp3_file_cat_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:DownloadCategory', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:DownloadCategory', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_downloads', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -72,7 +72,7 @@ class Deskpro3RedirectController extends AbstractController
         if ($id) {
             $new_id = $this->getNewId('dp3_filescat_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Download', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:Download', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_downloads_file', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -103,7 +103,7 @@ class Deskpro3RedirectController extends AbstractController
             $id     = Strings::extractRegexMatch('#^([0-9]+)#', $idea_str);
             $new_id = $this->getNewId('dp3_ideaid_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Feedback', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:Feedback', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_feedback_view', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -127,7 +127,7 @@ class Deskpro3RedirectController extends AbstractController
         if ($id) {
             $new_id = $this->getNewId('dp3_kbref_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:Article', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:Article', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_articles_article', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -147,7 +147,7 @@ class Deskpro3RedirectController extends AbstractController
         if ($id) {
             $new_id = $this->getNewId('dp3_kbcatid_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:ArticleCategory', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:ArticleCategory', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_articles', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -180,7 +180,7 @@ class Deskpro3RedirectController extends AbstractController
         if ($id) {
             $new_id = $this->getNewId('dp3_newsid_'.$id);
             if ($new_id) {
-                $obj = $this->em->find('DeskPRO:News', $new_id);
+                $obj = $this->getEm()->find('DeskPRO:News', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_news_view', array('slug' => $obj->getUrlSlug()), 301);
                 }
@@ -231,7 +231,7 @@ class Deskpro3RedirectController extends AbstractController
             $new_id = $this->getNewId('dp3_ticketref_'.$id);
             if ($new_id) {
                 $new_id = $new_id['new_id'];
-                $obj    = $this->em->find('DeskPRO:Ticket', $new_id);
+                $obj    = $this->getEm()->find('DeskPRO:Ticket', $new_id);
                 if ($obj) {
                     return $this->redirectToRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
                 }
