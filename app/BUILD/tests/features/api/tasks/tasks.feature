@@ -1,4 +1,4 @@
-@tasks-nav
+@tasks-nav @tasks
 Feature: /tasks endpoint
   To CRUD DeskPRO tasks
   As a developer

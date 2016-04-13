@@ -32,18 +32,22 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsSelectCriteria;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -112,11 +116,9 @@ class CommentsController extends BaseController
      */
     public function getCommentCountsAction($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
-        $dataService = $this->get('data.comments');
-
         $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
+
         try {
             /** @var CommentsCountCriteria $criteria */
             $criteria = CommentsCountCriteria::fromParameters($params, new OptionsResolver());
@@ -124,12 +126,7 @@ class CommentsController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $dataService->countComments($this->getClass($type), $criteria);
-
-        return View::create(
-            $this->wrap($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.comments')->countComments($this->getClass($type), $criteria)));
     }
 
     /**
@@ -169,6 +166,8 @@ class CommentsController extends BaseController
      */
     public function listArticlesCommentsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Article::class));
+
         return $this->listComments('article', $request);
     }
 
@@ -209,6 +208,8 @@ class CommentsController extends BaseController
      */
     public function listNewsCommentsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(News::class));
+
         return $this->listComments('news', $request);
     }
 
@@ -249,6 +250,8 @@ class CommentsController extends BaseController
      */
     public function listDownloadsCommentsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Download::class));
+
         return $this->listComments('download', $request);
     }
 
@@ -260,11 +263,9 @@ class CommentsController extends BaseController
      */
     private function listComments($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService $dataService */
-        $dataService = $this->get('data.comments');
-
         $params = $this->removeAdditionalParameters($request);
         $this->validateParentConsistency($type, $params);
+
         try {
             /** @var CommentsSelectCriteria $criteria */
             $criteria = CommentsSelectCriteria::fromParameters($params, new OptionsResolver());
@@ -274,12 +275,9 @@ class CommentsController extends BaseController
 
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
-        $pager = $dataService->selectComments($this->getClass($type), $criteria, $page, $count);
+        $pager = $this->get('data.comments')->selectComments($this->getClass($type), $criteria, $page, $count);
 
-        return View::create(
-            $this->wrap($pager),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($pager));
     }
 
     /**
@@ -306,6 +304,7 @@ class CommentsController extends BaseController
                     "You can't group_by \"{$params['group_by']}\" when selecting $type comments."
                 );
             }
+
             unset($params['group_by']);
         }
 

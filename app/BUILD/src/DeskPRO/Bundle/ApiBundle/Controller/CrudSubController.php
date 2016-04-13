@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -113,5 +114,26 @@ abstract class CrudSubController extends CrudController
         return parent::getLocationUrl($entity, $request, [
             'parentId' => $this->findParentOr404()->getId(),
         ]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    protected function getPermissionGroupContext(Request $request)
+    {
+        return new PermissionGroupContext($this->findParentOr404(), static::$entity);
+    }
+
+    /**
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return object
+     */
+    protected function getPermissionGroupEntityContext($id, Request $request)
+    {
+        return new PermissionGroupContext($this->findParentOr404(), $this->findEntity($id, $request));
     }
 }

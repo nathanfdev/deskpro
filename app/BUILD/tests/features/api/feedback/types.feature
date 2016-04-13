@@ -1,4 +1,4 @@
-@feedback-nav
+@feedback-nav @feedback
 Feature: /feedback_types endpoint
   To retrieve info about feedback types
   As a developer
