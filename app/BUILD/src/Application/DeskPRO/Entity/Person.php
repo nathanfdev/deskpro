@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -563,7 +562,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     /**
      * @var AgentTeam
      *
-     * @Assert\Null(groups="User")
+     * @Assert\IsNull(groups="User")
      */
     protected $primary_team;
 
