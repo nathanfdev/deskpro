@@ -64,6 +64,6 @@ abstract class AbstractAction implements ActionInterface
     /** @return array */
     public function serialize()
     {
-        return $this->options;
+        return $this->options ?: [];
     }
 }
