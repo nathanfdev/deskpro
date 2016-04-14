@@ -10,8 +10,28 @@ cd $ROOT_DIR
 DATABASE_NAME=$DATABASE_PREFIX
 
 echo "Init project deps"
-$ROOT_DIR/dev/bin/init-project
+if [ "$1" = "quick" ]; then
+    echo "Building on top of the previous build"
+    rm -rf $ROOT_DIR/www/BUILD/pub/build
+    rm -rf $ROOT_DIR/var/cache/*/
+    rm -rf $ROOT_DIR/var/kernel_cache/*/
+    rm -rf $ROOT_DIR/var/tmp/*/
+    rm -f $ROOT_DIR/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
+    find $ROOT_DIR/var/ -type d -print0 | xargs -0 chmod 755
+
+    cd $ROOT_DIR/app/BUILD
+    composer install --ignore-platform-reqs -o
+
+    cd $ROOT_DIR/www/assets/BUILD/pub
+    npm install
+    npm run-script gulp-refresh-reducers
+else
+    echo "Building from the ground up"
+    $ROOT_DIR/dev/bin/init-project
+fi
 echo "--> Done"
+
+cd $ROOT_DIR
 
 echo "Creating test databases"
 mysql -e "DROP DATABASE IF EXISTS ${DATABASE_NAME};"
@@ -37,7 +57,6 @@ echo "\$CONFIG['database']['dbname'] = '${DATABASE_NAME}';" >> app/BUILD/tests/c
 echo "-- Done"
 
 echo "Ensuring permissions"
-chmod -R 0777 data
 chmod -R 0777 var
 echo "--> Done"
 

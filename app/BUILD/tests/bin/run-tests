@@ -54,6 +54,7 @@ IS_BEHAT_INSTALL_ERROR=0
 bin/behat --config=behat.yml --profile=install
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_INSTALL_ERROR=1
+fi
 
 IS_BEHAT_API_ERROR=0
 bin/behat --config=behat.yml --profile=api
