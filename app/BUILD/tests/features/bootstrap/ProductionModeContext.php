@@ -76,5 +76,8 @@ CONTENTS
         $page->fillField('login_username', $users->getEmail($who));
         $page->fillField('login_password', $users->getPass($who));
         $page->pressButton('Login');
+
+        // Can't access API right after login w/o visiting this page
+        $this->visitPath('/new-agent/');
     }
 }

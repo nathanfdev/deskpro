@@ -4,17 +4,9 @@ Feature: Production errors logging with System Alerts
   I want to log PHP errors and unhandled exceptions
 
   Background:
-    Given I install the api data set
+    Given I install the fresh data set
     And I log in as admin from the portal
-    And I go to "/new-agent/"
     And I have no logged system alert events
-
-  @basic
-  Scenario: I access API controller which doesn't produce any errors
-    And I go to "/api/v2/people"
-    Then the response status code should be 200
-    And the JSON node "data" should exist
-    And there should be no system alert events
 
   Scenario: I access API controller throwing an HTTP exception
     When I send a GET request to "/api/v2/_internal/incidents-demo/http-exception?confirm=Yes_I_use_it_for_testing"
