@@ -16,10 +16,7 @@ Feature: Hiding internal actions
 
   Scenario Outline: I access an API internal action as a registered user
     Given I install the api data set
-    And I go to "/login"
-    And I fill in "login_username" with "user@deskpro.dev"
-    And I fill in "login_password" with "pass"
-    And I press "Login"
+    And I log in as user from the portal
     And I go to "/new-agent/"
     When I go to "<internal_action>"
     Then the response status code should be 401
@@ -44,12 +41,9 @@ Feature: Hiding internal actions
 
   Scenario Outline: I access a portal internal action as a registered user
     Given I install the api data set
-    And I go to "/login"
-    And I fill in "login_username" with "user@deskpro.dev"
-    And I fill in "login_password" with "pass"
-    And I press "Login"
+    And I log in as user from the portal
     When I go to "<internal_action>"
-    Then I should be on "/en/login"
+    Then the response status code should be 403
 
     Examples:
       | internal_action                                                                   |

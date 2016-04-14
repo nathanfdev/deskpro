@@ -5,10 +5,7 @@ Feature: Production errors logging with System Alerts
 
   Background:
     Given I install the api data set
-    And I go to "/login"
-    And I fill in "login_username" with "admin@deskpro.dev"
-    And I fill in "login_password" with "pass"
-    And I press "Login"
+    And I log in as admin from the portal
     And I go to "/new-agent/"
     And I have no logged system alert events
 

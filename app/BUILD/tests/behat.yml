@@ -130,6 +130,7 @@ production:
                 - DpBehat\Portal\AuthContext
                 - DpBehat\Http\HttpContext
                 - DpBehat\System\Alerts\EventsContext
+                - DpBehat\ProductionModeContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:

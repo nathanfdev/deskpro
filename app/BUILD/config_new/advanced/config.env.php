@@ -31,10 +31,6 @@ $ENV_CONFIG['set_umask'] = 0000;
 
 $ENV_CONFIG['environment'] = 'prod';
 
-// Use the below lines for your test environment
-// $prodModeFlagFile = realpath(__DIR__ . '/../../var/tmp/behat_production_mode_flag.tmp');
-// $ENV_CONFIG['environment'] = file_exists($prodModeFlagFile) ? 'prod' : 'dev';
-
 ######################################################
 # Enable DEBUG mode                                  #
 ######################################################
