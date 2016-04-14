@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
@@ -95,6 +96,11 @@ class PortalHttpCache extends EventDispatchingHttpCache
         }
 
         $cache_disabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
+
+        // Cache is disabled for agents, they need to see content asap
+        if (!$cache_disabled && ($request->cookies->has('dpsid-agent'))) {
+            $cache_disabled = true;
+        }
 
         if ($cache_disabled) {
             return $this->kernel->handle($request, $type, $catch);
