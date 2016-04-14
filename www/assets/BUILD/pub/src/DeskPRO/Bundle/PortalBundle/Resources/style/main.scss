@@ -9903,6 +9903,7 @@ form {
     .form-label-link {
       position: absolute;
       @include right(0);
+      font-size: 80%;
       i {
         @include margin-left(4px);
       }
