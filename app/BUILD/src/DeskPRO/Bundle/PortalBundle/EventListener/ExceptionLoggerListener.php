@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DpSys\LowError\SystemErrorHandler;
@@ -50,6 +49,7 @@ class ExceptionLoggerListener implements EventSubscriberInterface
             $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
             || $e instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException
             || $e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+            || $e instanceof \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
             || $e instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException
         ) {
             return;
