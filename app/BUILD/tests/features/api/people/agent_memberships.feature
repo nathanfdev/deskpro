@@ -30,8 +30,7 @@ Feature: /people endpoint
   "teams": [1, 2]
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
 
     And I send a GET request to "/api/v2/people/2"
     And the JSON node "data.primary_team" should be equal to 2
