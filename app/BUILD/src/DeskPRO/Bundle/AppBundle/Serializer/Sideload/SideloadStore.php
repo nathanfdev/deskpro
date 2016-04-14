@@ -47,7 +47,7 @@ class SideloadStore
     /**
      * @var array
      */
-    private $classmap;
+    private $classmap = [];
 
     /**
      * @var
@@ -191,6 +191,11 @@ class SideloadStore
         }
 
         return $return;
+    }
+
+    public function getAvailableTypes()
+    {
+        return array_merge(array_keys($this->classmap), array_keys($this->customs));
     }
 
     /**

@@ -38,6 +38,7 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\GenericSerializationVisitor;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class SideloadListener.
@@ -94,27 +95,48 @@ class SideloadListener implements EventSubscriberInterface
         $context->setExclusionEnabled(false);
         while ($includes && $sideloads->hasSideloads()) {
             foreach ($includes as $include) {
-                if (!isset($linked[$include])) {
-                    $linked[$include] = [];
-                }
                 $fqcn = $sideloads->getFqcn($include);
                 if ($fqcn) {
                     $ids_to_load = $sideloads->getSideloads($include);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        $linked[$include][$entity->getId()] = $context->accept($entity);
+                        $this->addLinked($linked, $include, $entity->getId(), $context->accept($entity));
                     }
                 }
-
                 if ($sideloads->hasCustom($include)) {
                     foreach ($sideloads->getCustom($include) as $custom) {
-                        $linked[$include][$custom->getId()] = $context->accept($custom->getData());
+                        $this->addLinked($linked, $include, $custom->getId(), $context->accept($custom->getData()));
                     }
                 }
             }
         }
+
+        // unfortunately we could realise that provided includes contain error only after we finish all sideloads
+        // e.g. we loading (note) -> sideload (person) -> sideload (organization) -> sideload (ticket)
+        // so while sideloading person we can realise that ticket could be sideloaded, until step with organization
+        $availableTypes = $sideloads->getAvailableTypes();
+
+        if (count($diff = array_diff($includes, $availableTypes)) > 0) {
+            throw new BadRequestHttpException(
+                sprintf(
+                    'You can\'t sideload [ %s ], available types for sideloading are [ %s ]',
+                    implode(', ', $diff),
+                    implode(', ', $availableTypes)
+                )
+            );
+        }
+
         // perhaps it's not necessary at all, but who knows where context will be used?
         $context->setExclusionEnabled(true);
 
         $visitor->addData('linked', $linked);
+    }
+
+    protected function addLinked(&$linked, $include, $id, $data)
+    {
+        if (!isset($linked[$include])) {
+            $linked[$include] = [];
+        }
+
+        $linked[$include][$id] = $data;
     }
 }
