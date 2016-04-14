@@ -170,6 +170,7 @@ class PortalController extends AbstractController
                 'breadcrumbs'          => $this->getBreadcrumbGenerator()->buildLogin(),
                 'page_title'           => $this->createPageTitle()->loginPage(),
                 'usersources_view'     => $usersources_view,
+                'destination'          => $request->query->get('_destination', false),
             )
         );
     }

@@ -4,17 +4,9 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-feedback">
+    <article class="feedback main-feedback" id="feedback_view">
         <div class="feedback-item">
-            <div class="feedback-item-controls">
-                <a href="{{ portal_path(item, 'vote_up') }}" class="i-agree post-link {% if user_up_voted(item) %} agreed{% endif %}">
-                    <i class="fa fa-thumbs-up"></i>
-                    <div>{{ phrase('portal.feedback.btn-vote') }}</div>
-                    <span class="counter-wrapper">
-                      <span class="counter">{{ item.total_rating }}</span>
-                    </span>
-                </a>
-            </div>
+            {%  include 'Theme:Feedback:items_controls_partial.html.twig' with {'item': item} %}
 
 
             <div class="feedback-item-content">

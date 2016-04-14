@@ -390,6 +390,8 @@ class PortalPermissionsManager
      */
     public function isCacheDisabled()
     {
-        return $this->settingsResolver->getGlobalSettings()->get('portal.disable_permissions_cache', false);
+        // FixMe make cache aware of configuration changes
+        //return $this->settingsResolver->getGlobalSettings()->get('portal.disable_permissions_cache', false);
+        return true;
     }
 }

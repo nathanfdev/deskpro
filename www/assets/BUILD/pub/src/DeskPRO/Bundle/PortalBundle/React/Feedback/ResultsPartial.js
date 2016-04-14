@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import $ from 'jquery';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import { FeedbackVoteWidget } from '../../PageWidget/FeedbackVoteWidget';
 
 export class ResultsPartial extends React.Component {
 
@@ -71,20 +72,9 @@ export class ResultsPartial extends React.Component {
 
     // add events to "I Agree"
     results.find('.feedback-item-controls a.i-agree').each(function () {
-      let $iAgreeBox = $(this);
-      $iAgreeBox.click(function (e) {
-        e.preventDefault();
-        if ($iAgreeBox.hasClass('agreed')) {
-          return; // already agreed
-        }
-        let action = $iAgreeBox.attr('href');
-        $.post(action);
-        let $counter = $iAgreeBox.find('span.counter');
-        $counter.text(_.parseInt($counter.text()) + 1);
-        $iAgreeBox.addClass('agreed');
-
-        return false;
-      });
+      const $el = $(this);
+      const w = new FeedbackVoteWidget($el);
+      w.render();
     });
 
     // add events to status category links

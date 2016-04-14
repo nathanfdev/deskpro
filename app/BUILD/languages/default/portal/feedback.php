@@ -36,6 +36,7 @@ return array(
     'portal.feedback.nav-closed-items'          => 'Closed Items',
     'portal.feedback.nav-my-items'              => 'My Votes & Stars',
     'portal.feedback.btn-vote'                  => 'I Agree',
+    'portal.feedback.btn-closed'                => 'Closed',
     'portal.feedback.view-x-feedback'           => 'View 1 feedback|View {{count}} feedback',
     'portal.feedback.x-feedback'                => '1 feedback|{{count}} feedback',
     'portal.feedback.none'                      => 'No feedback yet',
@@ -66,4 +67,8 @@ return array(
     'portal.feedback.sort_rating'               => 'Rating',
     'portal.feedback.dir_asc'                   => 'ASC',
     'portal.feedback.dir_desc'                  => 'DESC',
+    'portal.feedback.error_login'               => 'Please login',
+    'portal.feedback.error_hidden'              => 'This feedback item is hidden',
+    'portal.feedback.module_forbidden'          => 'You don\'t have access to this module',
+    'portal.feedback.rate_forbidden'            => 'You are not allowed to vote',
 );

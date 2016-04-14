@@ -668,6 +668,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->hidden_status;
     }
 
+    /**
+     * @return bool
+     */
+    public function isClosed()
+    {
+        return $this->status === static::STATUS_CLOSED;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

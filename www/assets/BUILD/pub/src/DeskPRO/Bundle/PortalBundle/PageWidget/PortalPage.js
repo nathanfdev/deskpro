@@ -6,6 +6,7 @@ import { TicketList } from './TicketList';
 import { DownloadsList } from './DownloadsList';
 import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { FeedbackPage } from './FeedbackPage';
+import { FeedbackVoteWidget } from './FeedbackVoteWidget';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
 import { AlertsWidget } from './AlertsWidget';
 import { LoginPage } from './LoginPage';
@@ -38,6 +39,9 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(DownloadPopupWidget, '.dpx-download-popup');
     this.addWidgetDef(DownloadsList, '.download-list');
     this.addWidgetDef(FeedbackPage, '#feedback_page');
+    // this is specifically on the view page, because the vote widget is managed
+    // manually via the react component on the filter page
+    this.addWidgetDef(FeedbackVoteWidget, '#feedback_view .i-agree');
     this.addWidgetDef(HtmlLinkToPostWidget, 'body');
     this.addWidgetDef(CustomPerFieldEdit, '.form-custom-per-field');
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
