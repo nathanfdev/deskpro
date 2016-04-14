@@ -157,9 +157,7 @@
                         <span class="person">{{ last_message.person.display_name_user }}</span>
                         <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
                     {% elseif col.id == 'date_created' %}
-                        <a href="{{ portal_path(ticket) }}">
-                            <span class="date">{{ ticket.date_created|date }}</span>
-                        </a>
+                        <span class="date">{{ ticket.date_created|date }}</span>
                     {% elseif col.id == 'date_user' %}
                         {% if ticket.date_last_user_reply %}
                             {% if ticket.person %}
