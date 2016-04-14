@@ -9,7 +9,7 @@ See example on javascript tab.
 {
     ids:[66, 123, 234],      // List of IDs of object for actions applying
     content: "tickets",      // Type of objects for actions applying
-    actions:                 // Actions parameters
+    params:                 // Actions parameters
       {
         set_status: "resolved",
         assign: {agent: 2},

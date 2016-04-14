@@ -11,28 +11,17 @@ export const resetParam = createAction(
     param => param
 );
 
-export const getJobStatus = createAction(
-  'APP_GET_JOB_STATUS',
-  (id, reloadNavAction) => (dispatch) =>
-    api.sendGet('DP_API/mass_actions/' + id)
-      .success(response => {
-        if (response.data.status !== 'complete') {
-          setTimeout(() => dispatch(getJobStatus(id, reloadNavAction)), 2000);
-        } else {
-          return dispatch(reloadNavAction());
-        }
-      })
-);
-
 export const submitMassActions = createAction(
   'APP_MASS_ACTIONS_SUBMIT',
-  ({ content, ids, actions, loadIndicatorAction, reloadNavAction }) => (dispatch) => new Promise(resolve =>
-    api.sendPost(`DP_API/mass_actions/${content}`, { ids, actions })
-      .success(response => {
-        dispatch(toggleMassAction());
-        dispatch(cancelMassActions());
-        dispatch(loadIndicatorAction());
-        setTimeout(() => dispatch(getJobStatus(response.job, reloadNavAction)), 350);
-        return resolve(response);
-      }))
+  ({ content, ids, params, loadIndicatorAction, reloadNavAction }) => (dispatch) => {
+    dispatch(loadIndicatorAction());
+    return new Promise(resolve =>
+      api.sendPost(`DP_API/mass_actions/${content}`, { ids, params })
+        .success(response => {
+          dispatch(toggleMassAction());
+          dispatch(cancelMassActions());
+          dispatch(reloadNavAction());
+          return resolve(response);
+        }));
+  }
 );

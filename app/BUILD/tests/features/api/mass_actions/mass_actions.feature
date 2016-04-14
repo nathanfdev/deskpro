@@ -13,7 +13,7 @@ Feature: /mass_actions endpoint
     """
 {
   "ids": ["1"],
-  "actions":{"set_status":1}
+  "params":{"set_status":1}
 }
     """
     Then the response status code should be 400
@@ -27,7 +27,7 @@ Feature: /mass_actions endpoint
     """
 {
   "ids": [],
-  "actions":{"set_status":"awaiting_agent"}
+  "params":{"set_status":"awaiting_agent"}
 }
     """
     Then the response status code should be 400
@@ -40,7 +40,7 @@ Feature: /mass_actions endpoint
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "actions":{"set_status":"awaiting_agent"}
+  "params":{"set_status":"awaiting_agent"}
 }
     """
     Then the response status code should be 400
@@ -54,14 +54,14 @@ Feature: /mass_actions endpoint
     """
 {
   "ids": ["1"],
-  "actions":{}
+  "params":{}
 }
     """
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
     And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must define one or more actions"
+    And the JSON node "message" should be equal to "You must define parameters for one or more actions"
 
   Scenario: I post mass actions request without actions
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -74,4 +74,4 @@ Feature: /mass_actions endpoint
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
     And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must define one or more actions"
+    And the JSON node "message" should be equal to "You must define parameters for one or more actions"

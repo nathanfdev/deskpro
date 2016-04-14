@@ -6,8 +6,8 @@ import { SubmitButton } from './SubmitButton';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  ids:           selectedSelector(state),
-  currentParams: paramsSelector(state)
+  ids:    selectedSelector(state),
+  params: paramsSelector(state)
 }))
 export class MassActionBarContainer extends Component {
   static propTypes = {
@@ -17,20 +17,12 @@ export class MassActionBarContainer extends Component {
     loadIndicatorAction: PropTypes.func.isRequired,
     actions:             PropTypes.array.isRequired,
     content:             PropTypes.string.isRequired,
-    currentParams:       PropTypes.object
+    params:              PropTypes.object
   };
 
   submit = () => {
-    const { dispatch, ids, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
-    dispatch(submitMassActions(
-      {
-        ids,
-        content,
-        reloadNavAction,
-
-        loadIndicatorAction,
-        actions: currentParams
-      }));
+    const { dispatch, ids, params, content, loadIndicatorAction, reloadNavAction } = this.props;
+    dispatch(submitMassActions({ ids, content, params, reloadNavAction, loadIndicatorAction }));
   };
 
   cancel = () => {
@@ -39,8 +31,8 @@ export class MassActionBarContainer extends Component {
   };
 
   render() {
-    const { actions, currentParams } = this.props;
-    const isActive     = currentParams && currentParams.size > 0;
+    const { actions, params } = this.props;
+    const isActive     = params && params.size > 0;
     const renderByType = (item, index) => {
       if (item.type === 'button') {
         return (
@@ -56,7 +48,7 @@ export class MassActionBarContainer extends Component {
           key={index}
           id={index}
           item={item}
-          currentParams={currentParams}
+          currentParams={params}
           />
       );
     };

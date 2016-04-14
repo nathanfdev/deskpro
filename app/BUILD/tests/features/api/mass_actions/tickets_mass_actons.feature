@@ -20,7 +20,7 @@ Feature: /mass_actions/tickets endpoint
     """
 {
   "ids": ["1"],
-  "actions":{"set_status":"awaiting_agent"}
+  "params":{"set_status":"awaiting_agent"}
 }
     """
     Then the response status code should be 200
@@ -37,7 +37,7 @@ Feature: /mass_actions/tickets endpoint
     """
 {
   "ids": ["1"],
-  "actions":{"set_status":1}
+  "params":{"set_status":1}
 }
     """
     Then the response status code should be 400

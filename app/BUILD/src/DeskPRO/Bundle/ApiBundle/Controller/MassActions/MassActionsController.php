@@ -38,7 +38,6 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Services\ApplicatorServiceInterface;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,7 +72,7 @@ class MassActionsController extends BaseController
      *             "dataType"="array"
      *         },
      *         {
-     *             "name"="actions",
+     *             "name"="params",
      *             "requirement"="array",
      *             "description"="Array with action_name as key and array of action's options as value",
      *             "dataType"="array"
@@ -94,11 +93,11 @@ class MassActionsController extends BaseController
      */
     public function postRealTimeAction(Request $request, $content)
     {
-        list($ids, $actions) = $this->checkRequest($request, $content);
+        list($ids, $params) = $this->checkRequest($request, $content);
         /* @var ApplicatorServiceInterface $applicator */
         $service = $this->getActionApplicatorService($content);
         try {
-            $service->apply($ids, $actions);
+            $service->apply($ids, $params);
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
@@ -128,16 +127,12 @@ class MassActionsController extends BaseController
      *
      * @Rest\Post("/{content}/queued", name="queued_mass_action_create")
      *
-     * @param Request $request
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function postQueuedAction(Request $request)
+    public function postQueuedAction()
     {
         /* Temporary just put a 404 as a placeholder. https://trello.com/c/aFwqyV5V/661-mass-actions-in-real-time */
         throw $this->createNotFoundException();
-
-        return View::create([], Response::HTTP_CREATED);
     }
 
     /**
@@ -148,16 +143,16 @@ class MassActionsController extends BaseController
      */
     private function checkRequest(Request $request, $content)
     {
-        $ids     = $request->request->get('ids');
-        $actions = $request->request->get('actions');
+        $ids    = $request->request->get('ids');
+        $params = $request->request->get('params');
         if (null === $ids || empty($ids)) {
             throw $this->createBadRequestException("You must select $content for mass action apply");
         }
-        if (null === $actions || empty($actions)) {
-            throw $this->createBadRequestException('You must define one or more actions');
+        if (null === $params || empty($params)) {
+            throw $this->createBadRequestException('You must define parameters for one or more actions');
         }
 
-        return [$ids, $actions];
+        return [$ids, $params];
     }
 
     private function getActionApplicatorService($content)
