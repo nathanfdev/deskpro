@@ -50,6 +50,11 @@ fi
 ##################################
 # BEHAT
 ##################################
+IS_BEHAT_INSTALL_ERROR=0
+bin/behat --config=behat.yml --profile=install
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_INSTALL_ERROR=1
+
 IS_BEHAT_API_ERROR=0
 bin/behat --config=behat.yml --profile=api
 if [[ $? -ne 0 ]] ; then
@@ -86,7 +91,7 @@ fi
 ##################################
 # EXIT IF ERROR
 ##################################
-IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_BEHAT_PRODUCTION_ERROR + IS_JEST_ERROR))
+IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_INSTALL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_BEHAT_PRODUCTION_ERROR + IS_JEST_ERROR))
 if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPSPEC_ERROR" -ne "0" ]]; then
         echo "
@@ -103,6 +108,10 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "IS_PHPUNIT_PORTAL_ERROR" -ne "0" ]]; then
         echo "
         --- PHPUNIT PORTAL FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_INSTALL_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT API FAILED --- "
     fi
     if [[ "$IS_BEHAT_API_ERROR" -ne "0" ]]; then
         echo "
