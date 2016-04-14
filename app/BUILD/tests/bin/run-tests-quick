@@ -60,14 +60,11 @@ if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PORTAL_ERROR=1
 fi
 
-PRODUCTION_MODE_FLAG_FILE="$SCRIPT_DIR/../../../../var/tmp/behat_production_mode_flag.tmp"
-touch $PRODUCTION_MODE_FLAG_FILE
 IS_BEHAT_PRODUCTION_ERROR=0
 bin/behat --profile=production --tags '@basic'
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PRODUCTION_ERROR=1
 fi
-rm $PRODUCTION_MODE_FLAG_FILE
 
 ##################################
 # Jest

@@ -68,7 +68,7 @@ class ExceptionController extends BaseController
             $errors_array = $this->get('form_error.validator_errors_generator')->generateValidatorErrors(ErrorMessageFactory::PREFIX_API, $exception->getErrors());
         }
 
-        // Log exceptions if when in production
+        // Log exceptions if in production
         if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
             if (!$this->container->getParameter('kernel.debug')) {
                 $this->logException($exception);

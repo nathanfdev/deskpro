@@ -14,19 +14,31 @@ $ROOT_DIR/dev/bin/init-project
 echo "--> Done"
 
 echo "Creating test databases"
+mysql -e "DROP DATABASE IF EXISTS ${DATABASE_NAME};"
 mysql -e "CREATE DATABASE ${DATABASE_NAME};"
-mysql -e "CREATE DATABASE ${DATABASE_NAME}_test;"
 mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
-mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}_test.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
 echo "--> Done"
 
-echo "Creating config.all.php"
+echo "Creating testing config.all.php"
 cp app/BUILD/tests/config/config.all.dist.php app/BUILD/tests/config/config.all.php
 echo "--> Done"
 
+echo "Copying configs"
+cp -a app/BUILD/config_new/. config/
+echo "--> Done"
+
+echo "Modifying copied configs"
+echo "\$DB_CONFIG['user']     = 'deskpro';" >> config/config.database.php
+echo "\$DB_CONFIG['password'] = 'deskpro';" >> config/config.database.php
+echo "\$DB_CONFIG['dbname']   = '${DATABASE_NAME}';" >> config/config.database.php
+echo "\$prodModeFlagFile = realpath(__DIR__ . '/../../var/tmp/behat_production_mode_flag.tmp');" >> config/advanced/config.env.php
+echo "\$ENV_CONFIG['environment'] = file_exists(\$prodModeFlagFile) ? 'prod' : 'dev';" >> config/advanced/config.env.php
+echo "\$CONFIG['database']['dbname'] = '${DATABASE_NAME}';" >> app/BUILD/tests/config/config.all.php
+echo "-- Done"
+
 echo "Ensuring permissions"
 chmod -R 0777 data
-chmod -R 0777 app/BUILD/sys/cache
+chmod -R 0777 var
 echo "--> Done"
 
 if [ "$1" = "quick" ]; then
@@ -40,10 +52,5 @@ fi
 if [[ $? -eq 0 ]]; then
     TESTS_ERROR=0
 fi
-
-echo "Removing test databases"
-mysql -e "DROP DATABASE ${DATABASE_NAME};"
-mysql -e "DROP DATABASE ${DATABASE_NAME}_test;"
-echo "--> Done"
 
 exit $TESTS_ERROR
