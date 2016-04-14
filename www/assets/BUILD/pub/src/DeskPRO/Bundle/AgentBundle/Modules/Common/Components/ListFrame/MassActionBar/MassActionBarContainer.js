@@ -6,12 +6,12 @@ import { SubmitButton } from './SubmitButton';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  selected:      selectedSelector(state),
+  ids:           selectedSelector(state),
   currentParams: paramsSelector(state)
 }))
 export class MassActionBarContainer extends Component {
   static propTypes = {
-    selected:            PropTypes.object.isRequired,
+    ids:                 PropTypes.object.isRequired,
     dispatch:            PropTypes.func.isRequired,
     reloadNavAction:     PropTypes.func.isRequired,
     loadIndicatorAction: PropTypes.func.isRequired,
@@ -21,14 +21,14 @@ export class MassActionBarContainer extends Component {
   };
 
   submit = () => {
-    const { dispatch, selected, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
+    const { dispatch, ids, currentParams, content, loadIndicatorAction, reloadNavAction } = this.props;
     dispatch(submitMassActions(
       {
+        ids,
         content,
         reloadNavAction,
-        loadIndicatorAction,
 
-        ids:     selected,
+        loadIndicatorAction,
         actions: currentParams
       }));
   };
