@@ -1,3 +1,12 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# READ ME
+# ----------------------------------------------------------------------------------------------------------------------
+#
+# 1) To pass the base_url option to mink you can use BEHAT_PARAMS environment variable:
+#    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
 api:
     suites:
         api:
@@ -24,7 +33,6 @@ api:
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -48,10 +56,6 @@ install:
                 - DpBehat\Install\ServerInfoContext
     extensions:
         Behat\MinkExtension:
-            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
-            # e.g.:
-            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
-            #base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -92,7 +96,6 @@ portal:
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -115,51 +118,6 @@ portal:
                 page_parameters:
                     base_url: /
 
-e2e:
-    suites:
-        general:
-            mink_session: selenium2
-            mink_javascript_session: selenium2
-            paths:
-                - %paths.base%/e2e/features
-            contexts:
-                - Behat\MinkExtension\Context\MinkContext
-                - behatch:json
-                - behatch:rest
-                - DpBehat\DataSetContext:
-                    dataset_manager: @dataset_manager
-                - DpBehat\E2E\AuthContext:
-                    user_details: @user_details
-                - DpBehat\E2E\SeleniumContext
-                - behatch:browser
-                - behatch:debug:
-                    screenshotDir: %paths.base%/e2e/logs/screenshots
-                - DpBehat\DataSetContext:
-                    dataset_manager: @dataset_manager
-    extensions:
-        Sanpi\Behatch\Extension: ~
-        Behat\MinkExtension:
-
-            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
-            # e.g.:
-            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
-
-            browser_name: "phantomjs"
-            selenium2:
-              browser: phantomjs
-              wd_host: "http://127.0.0.1:4444/wd/hub"
-            default_session: selenium2
-            sessions:
-                default:
-                    selenium2: ~
-        Behat\Symfony2Extension:
-            kernel:
-                bootstrap: e2e/bootstrap/boot.php
-                path: ../sys/Kernel/ApiKernel.php
-                class: DpSys\Kernel\ApiKernel
-                env: test
-                debug: true
-
 production:
     suites:
         production:
@@ -177,7 +135,6 @@ production:
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            base_url: '/'
             default_session: default
             sessions:
                 default:
