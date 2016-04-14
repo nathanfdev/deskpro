@@ -103,6 +103,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('col_count', [$this, 'countTruthy']),
             new \Twig_SimpleFunction('has_permission', [$this, 'hasPermission']),
             new \Twig_SimpleFunction('get_ordered_tabs', [$this, 'getOrderedTabs']),
+            new \Twig_SimpleFunction('get_tabs_count', [$this, 'getTabsCount']),
             new \Twig_SimpleFunction('url_full', [$this, 'urlFull']),
             new \Twig_SimpleFunction('base_url', [$this, 'baseUrl']),
             new \Twig_SimpleFunction('root_url', [$this, 'rootUrl']),
@@ -211,6 +212,23 @@ class PortalSupportExtension extends \Twig_Extension
     public function getOrderedTabs()
     {
         return explode(',', $this->container->get('brand_stack')->getActive()->getSetting('user.portal_tabs_order'));
+    }
+
+    public function getTabsCount()
+    {
+        $tabs  = explode(',', $this->container->get('brand_stack')->getActive()->getSetting('user.portal_tabs_order'));
+        $count = 0;
+        foreach ($tabs as $tab) {
+            if ($tab == 'newticket') {
+                $tab = 'tickets';
+            }
+            if ($this->container->get('brand_stack')->getActive()->getSetting(sprintf('user.portal_tab_%s', strtolower($tab)))
+            && $this->container->get('security.authorization_checker')->isGranted('USE_'.strtoupper($tab))) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 
     /**
