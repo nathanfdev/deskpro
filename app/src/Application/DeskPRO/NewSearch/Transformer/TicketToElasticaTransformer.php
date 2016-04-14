@@ -124,7 +124,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $attachments = [];
             if ($object->has_attachments) {
                 try {
-                    /** @var \Application\DeskPRO\Elastica\ClientFactory $client_factory */
+                    /** @var \Application\DeskPRO\ApacheTika\ClientManager $client */
                     $client         = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
                     foreach ($object->getAttachments() as $attachment) {
