@@ -11,7 +11,6 @@ Feature: User can submit new tickets
   @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
-    And I have a verified email "alternate@email.com"
     And I press "Submit"
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_required"
@@ -31,12 +30,14 @@ Feature: User can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_required"
 
+  @reinstall
   Scenario: Submitting a VALID FORM
+    Given I have a verified email "alternate@email.com"
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
     And I select "alternate@email.com" from "ticket_person_user_email"
     And I press "Submit"
-    Then I should be on "/thank-you/1"
+    Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
