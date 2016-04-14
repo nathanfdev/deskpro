@@ -370,7 +370,7 @@ class Person
     /**
      * Date when user was last seen online.
      *
-     * @JMS\Type("DateTime")
+     * @JMS\Type("deferred<DateTime>")
      *
      * @var \DateTime
      */
@@ -515,11 +515,11 @@ class Person
     }
 
     /**
-     * @param \DateTime $last_seen
+     * @param $last_seen
      *
      * @return $this
      */
-    public function setLastSeen(\DateTime $last_seen = null)
+    public function setLastSeen($last_seen = null)
     {
         $this->last_seen = $last_seen;
 
