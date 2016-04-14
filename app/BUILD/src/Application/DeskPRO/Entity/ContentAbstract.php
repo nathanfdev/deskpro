@@ -720,14 +720,19 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this['total_rating'] = $this->total_rating - $rating->rating;
     }
 
+    /**
+     * @param CommentAbstract $comment
+     */
     public function addComment($comment)
     {
-        $this->setModelField('num_comments', $this->num_comments + 1);
+        if ($comment->getStatus() == CommentAbstract::STATUS_VISIBLE) {
+            $this->setModelField('num_comments', $this->num_comments + 1);
+        }
         $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
     }
 
-    public function removeComment($comment)
+    public function removeComment()
     {
         $this->setModelField('num_comments', $this->num_comments - 1);
     }
