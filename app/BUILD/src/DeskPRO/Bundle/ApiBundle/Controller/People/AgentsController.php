@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -49,7 +48,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/agents")
  * @ApiDocSection("Agents")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class AgentsController extends CrudController
 {

@@ -57,7 +57,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @ApiModes("all")
  * @Rest\Route("/people")
  * @ApiDocSection("People")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class PeopleController extends CrudController
 {
