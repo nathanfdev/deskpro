@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Person;
@@ -86,21 +85,25 @@ class ContentAccessVoter extends AbstractVoter
             case static::VIEW_FEEDBACK:
             case static::DOWNLOAD_DOWNLOAD:
             case static::VIEW_DOWNLOAD:
-            case static::VIEW_DOWNLOAD_CATEGORY:
             case static::VIEW_ARTICLE:
-            case static::VIEW_ARTICLE_CATEGORY:
             case static::VIEW_NEWS:
-            case static::VIEW_NEWS_CATEGORY:
                 /* @var \Application\DeskPRO\Entity\ContentAbstract $object */
-
                 if ($permissions_bag->hasContentCategoryAccess($object) && $object->isPublic()) {
                     return true;
                 }
-
                 // agents can still see unpublished stuff
                 if ($user && $user instanceof Person && $user->is_agent && $object->getStatusCode() === 'hidden.unpublished') {
                     return true;
                 }
+
+                break;
+            case static::VIEW_NEWS_CATEGORY:
+            case static::VIEW_DOWNLOAD_CATEGORY:
+            case static::VIEW_ARTICLE_CATEGORY:
+                if ($permissions_bag->hasContentCategoryAccess($object)) {
+                    return true;
+                }
+                break;
         }
 
         return false;
