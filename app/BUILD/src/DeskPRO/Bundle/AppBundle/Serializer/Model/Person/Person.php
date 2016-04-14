@@ -54,7 +54,7 @@ class Person
      *
      * @var Blob
      */
-    protected $picture_blob;
+    protected $pictureBlob;
 
     /**
      * True if user`s picture disabled.
@@ -63,7 +63,7 @@ class Person
      *
      * @var bool
      */
-    protected $disable_picture;
+    protected $disablePicture;
 
     /**
      * The URL to the users gravatar if any.
@@ -72,7 +72,7 @@ class Person
      *
      * @var string
      */
-    protected $gravatar_url;
+    protected $gravatarUrl;
 
     /**
      * Is this person a contact?
@@ -81,14 +81,14 @@ class Person
      *
      * @var bool
      */
-    protected $is_contact;
+    protected $isContact;
 
     /**
      * Is this person a user?
      *
      * @var bool
      */
-    protected $is_user;
+    protected $isUser;
 
     /**
      * Is this person an agent?
@@ -97,7 +97,7 @@ class Person
      *
      * @var bool
      */
-    protected $is_agent;
+    protected $isAgent;
 
     /**
      * Was this person an agent?
@@ -106,7 +106,7 @@ class Person
      *
      * @var bool
      */
-    protected $was_agent;
+    protected $wasAgent;
 
     /**
      * Is person allowed to use agent interface.
@@ -115,7 +115,7 @@ class Person
      *
      * @var bool
      */
-    protected $can_agent;
+    protected $canAgent;
 
     /**
      * Is person allowed to use admin interface.
@@ -124,7 +124,7 @@ class Person
      *
      * @var bool
      */
-    protected $can_admin;
+    protected $canAdmin;
 
     /**
      * Is person allowed to use billing interface.
@@ -133,7 +133,7 @@ class Person
      *
      * @var bool
      */
-    protected $can_billing;
+    protected $canBilling;
 
     /**
      * Are autoresponses disabled?
@@ -142,7 +142,7 @@ class Person
      *
      * @var bool
      */
-    protected $disable_autoresponses;
+    protected $disableAutoresponses;
 
     /**
      * Disabled autoresponses log.
@@ -151,7 +151,7 @@ class Person
      *
      * @var string
      */
-    protected $disable_autoresponses_log;
+    protected $disableAutoresponsesLog;
 
     /**
      * Has person confirmed their email?
@@ -160,7 +160,7 @@ class Person
      *
      * @var bool
      */
-    protected $is_confirmed;
+    protected $isConfirmed;
 
     /**
      * Is the user deleted?
@@ -169,7 +169,7 @@ class Person
      *
      * @var bool
      */
-    protected $is_deleted;
+    protected $isDeleted;
 
     /**
      * Is the user disabled?
@@ -178,7 +178,7 @@ class Person
      *
      * @var bool
      */
-    protected $is_disabled;
+    protected $isDisabled;
 
     /**
      * The way person was created.
@@ -187,7 +187,7 @@ class Person
      *
      * @var string
      */
-    protected $creation_system;
+    protected $creationSystem;
 
     /**
      * The users name (best guess from other sources etc).
@@ -205,7 +205,7 @@ class Person
      *
      * @var string
      */
-    protected $first_name;
+    protected $firstName;
 
     /**
      * The users name (best guess from other sources etc).
@@ -214,7 +214,7 @@ class Person
      *
      * @var string
      */
-    protected $last_name;
+    protected $lastName;
 
     /**
      * The users title prefix (Mr., Mrs., etc).
@@ -223,7 +223,7 @@ class Person
      *
      * @var string
      */
-    protected $title_prefix;
+    protected $titlePrefix;
 
     /**
      * Overrides the display name of an person in the user interface (agents only).
@@ -232,7 +232,7 @@ class Person
      *
      * @var string
      */
-    protected $override_display_name;
+    protected $overrideDisplayName;
 
     /**
      * The summary field as filled in by agents.
@@ -268,7 +268,7 @@ class Person
      *
      * @var string
      */
-    protected $organization_position;
+    protected $organizationPosition;
 
     /**
      * True if the person is a manager of their organization.
@@ -277,7 +277,7 @@ class Person
      *
      * @var bool
      */
-    protected $organization_manager;
+    protected $organizationManager;
 
     /**
      * The timezone associated with this user.
@@ -295,7 +295,7 @@ class Person
      *
      * @var \DateTime
      */
-    protected $date_created;
+    protected $dateCreated;
 
     /**
      * The date the user was logged in last time.
@@ -304,7 +304,7 @@ class Person
      *
      * @var \DateTime
      */
-    protected $date_last_login;
+    protected $dateLastLogin;
 
     /**
      * The browser person was used last time.
@@ -338,7 +338,7 @@ class Person
      *
      * @var string
      */
-    protected $primary_email;
+    protected $primaryEmail;
 
     /**
      * Emails belong to user.
@@ -374,7 +374,7 @@ class Person
      *
      * @var \DateTime
      */
-    protected $last_seen;
+    protected $lastSeen;
 
     /**
      * Phone numbers belong to user.
@@ -383,7 +383,7 @@ class Person
      *
      * @var array
      */
-    protected $phone_numbers;
+    protected $phoneNumbers;
 
     /**
      * Overall tickets count assigned to user.
@@ -392,7 +392,7 @@ class Person
      *
      * @var int
      */
-    protected $tickets_count;
+    protected $ticketsCount;
 
     /**
      * Overall count of chats user participating.
@@ -401,7 +401,7 @@ class Person
      *
      * @var int
      */
-    protected $chats_count;
+    protected $chatsCount;
 
     /**
      * Custom persons data.
@@ -419,7 +419,7 @@ class Person
      *
      * @var \Application\DeskPRO\Entity\PersonContactData[]
      */
-    protected $contact_data;
+    protected $contactData;
 
     /**
      * Agent teams.
@@ -446,48 +446,48 @@ class Person
      */
     public function __construct(\Application\DeskPRO\Entity\Person $person)
     {
-        $this->id                        = $person->getId();
-        $this->picture_blob              = $person->picture_blob;
-        $this->disable_picture           = $person->disable_picture;
-        $this->gravatar_url              = $person->getGravatarUrl();
-        $this->is_contact                = $person->is_contact;
-        $this->is_user                   = $person->isUser();
-        $this->is_agent                  = $person->isAgent();
-        $this->was_agent                 = $person->was_agent;
-        $this->can_agent                 = $person->can_agent;
-        $this->can_admin                 = $person->can_admin;
-        $this->can_billing               = $person->getRealCanBilling();
-        $this->disable_autoresponses     = $person->disable_autoresponses;
-        $this->disable_autoresponses_log = $person->disable_autoresponses_log;
-        $this->is_confirmed              = $person->isConfirmed();
-        $this->is_deleted                = $person->isDeleted();
-        $this->is_disabled               = $person->isDisabled();
-        $this->creation_system           = $person->creation_system;
-        $this->name                      = $person->name;
-        $this->first_name                = $person->first_name;
-        $this->last_name                 = $person->last_name;
-        $this->title_prefix              = $person->title_prefix;
-        $this->override_display_name     = $person->override_display_name;
-        $this->summary                   = $person->summary;
-        $this->language                  = $person->getLanguage();
-        $this->organization              = $person->getOrganization();
-        $this->organization_position     = $person->organization_position;
-        $this->organization_manager      = $person->isOrganizationManager();
-        $this->timezone                  = $person->getTimezone();
-        $this->date_created              = $person->date_created;
-        $this->date_last_login           = $person->date_last_login;
-        $this->browser                   = $person->browser;
-        $this->usergroups                = $person->getUsergroups();
-        $this->labels                    = $person->getLabelsArray();
-        $this->primary_email             = $person->getPrimaryEmail();
-        $this->tickets_count             = $person->getTicketsCount();
-        $this->chats_count               = $person->getChatsCount();
-        $this->phone_numbers             = $person->getPhoneNumbersArray();
-        $this->fields                    = $person->custom_data;
-        $this->contact_data              = $person->getContactData();
-        $this->emails                    = $person->getEmails();
-        $this->teams                     = $person->getTeams();
-        $this->primaryTeam               = $person->getPrimaryTeam();
+        $this->id                      = $person->getId();
+        $this->pictureBlob             = $person->picture_blob;
+        $this->disablePicture          = $person->disable_picture;
+        $this->gravatarUrl             = $person->getGravatarUrl();
+        $this->isContact               = $person->is_contact;
+        $this->isUser                  = $person->isUser();
+        $this->isAgent                 = $person->isAgent();
+        $this->wasAgent                = $person->was_agent;
+        $this->canAgent                = $person->can_agent;
+        $this->canAdmin                = $person->can_admin;
+        $this->canBilling              = $person->getRealCanBilling();
+        $this->disableAutoresponses    = $person->disable_autoresponses;
+        $this->disableAutoresponsesLog = $person->disable_autoresponses_log;
+        $this->isConfirmed             = $person->isConfirmed();
+        $this->isDeleted               = $person->isDeleted();
+        $this->isDisabled              = $person->isDisabled();
+        $this->creationSystem          = $person->creation_system;
+        $this->name                    = $person->name;
+        $this->firstName               = $person->first_name;
+        $this->lastName                = $person->last_name;
+        $this->titlePrefix             = $person->title_prefix;
+        $this->overrideDisplayName     = $person->override_display_name;
+        $this->summary                 = $person->summary;
+        $this->language                = $person->getLanguage();
+        $this->organization            = $person->getOrganization();
+        $this->organizationPosition    = $person->organization_position;
+        $this->organizationManager     = $person->isOrganizationManager();
+        $this->timezone                = $person->getTimezone();
+        $this->dateCreated             = $person->date_created;
+        $this->dateLastLogin           = $person->date_last_login;
+        $this->browser                 = $person->browser;
+        $this->usergroups              = $person->getUsergroups();
+        $this->labels                  = $person->getLabelsArray();
+        $this->primaryEmail            = $person->getPrimaryEmail();
+        $this->ticketsCount            = $person->getTicketsCount();
+        $this->chatsCount              = $person->getChatsCount();
+        $this->phoneNumbers            = $person->getPhoneNumbersArray();
+        $this->fields                  = $person->custom_data;
+        $this->contactData             = $person->getContactData();
+        $this->emails                  = $person->getEmails();
+        $this->teams                   = $person->getTeams();
+        $this->primaryTeam             = $person->getPrimaryTeam();
     }
 
     /**
@@ -515,13 +515,13 @@ class Person
     }
 
     /**
-     * @param $last_seen
+     * @param $lastSeen
      *
      * @return $this
      */
-    public function setLastSeen($last_seen = null)
+    public function setLastSeen($lastSeen = null)
     {
-        $this->last_seen = $last_seen;
+        $this->lastSeen = $lastSeen;
 
         return $this;
     }
