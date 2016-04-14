@@ -26,6 +26,8 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/datepicker";
 @import "global-widgets/modal";
 @import "global-widgets/select-dropdown";
+@import "global-widgets/choice-list";
+@import "global-widgets/notification";
 @import "animation"; // ReactCSSTransitionGroup
 @import "calendar";
 //@import "raw/styles";
@@ -92,4 +94,21 @@ hr {
 
 .hidden {
   display: none;
+}
+
+.cutted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.section-list-title {
+  i {
+    vertical-align: middle;
+  }
+
+  div {
+    vertical-align: middle;
+    display: inline-block;
+    width: 145px;
+  }
 }
