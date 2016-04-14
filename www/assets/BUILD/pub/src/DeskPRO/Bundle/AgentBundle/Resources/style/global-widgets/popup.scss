@@ -153,11 +153,13 @@
   font-size: 12px;
   display: block;
   font-weight: normal;
+  margin: 0;
+  padding: 0;
   line-height: 1em;
+  padding-left: 4px;
   color: #9a9a9a;
-  margin: 0 0 7px;
-  padding: 0 10px 0 4px;
-  text-align: left;
+  margin-bottom: 7px;
+  padding-right: 10px;
 
   .dpw--popup-item-collection-options {
     float: right;

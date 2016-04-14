@@ -80,9 +80,8 @@ export class Modal extends React.Component {
     this.cancelClick(event);
   };
 
-  render() {
-    const { title, content, confirmVisible, cancelVisible, isMini, children } = this.props;
-    const { isOpen } = this.state;
+  renderBody() {
+    const { title, confirmVisible, cancelVisible, isMini, children } = this.props;
 
     let className = 'dpw--modal';
     if (isMini) {
@@ -98,25 +97,31 @@ export class Modal extends React.Component {
     }
 
     return (
-      <Detached>
-        {isOpen &&
-        <div className="cover" onClick={this.coverClick} style={style}>
-          <section className={className}>
-            <header>
-              <h1>
-                {title}
-              </h1>
-              <div className="controls">
-                <a href="#" onClick={this.cancelClick}><i className="fa fa-times"></i></a>
-              </div>
-            </header>
-            <div className={(isMini && 'mini-') + 'popup-content'}>
-              {children}
+      <div className="dpw-site-cover" onClick={this.coverClick} style={style}>
+        <section className={className}>
+          <header>
+            <h1>
+              {title}
+            </h1>
+            <div className="controls">
+              <a href="#" onClick={this.cancelClick}><i className="fa fa-times"></i></a>
             </div>
-            {this.renderFooter()}
-          </section>
-        </div>
-        }
+          </header>
+          <div className={(isMini && 'mini-') + 'popup-content'}>
+            {children}
+          </div>
+          {this.renderFooter()}
+        </section>
+      </div>
+    );
+  }
+
+  render() {
+    const { isOpen } = this.state;
+
+    return (
+      <Detached>
+        {isOpen ? this.renderBody() : null}
       </Detached>
     );
   }
