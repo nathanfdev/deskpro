@@ -19,7 +19,7 @@ Feature: /mass_actions/tickets endpoint
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": ["1"],
+  "ids": [1],
   "params":{"set_status":"awaiting_agent"}
 }
     """
@@ -36,7 +36,7 @@ Feature: /mass_actions/tickets endpoint
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": ["1"],
+  "ids": [1],
   "params":{"set_status":1}
 }
     """
