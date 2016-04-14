@@ -5,39 +5,20 @@ import { CheckboxList } from './CheckboxList';
 export class BaseList extends React.Component {
 
   static propTypes = {
-    multiple: PropTypes.bool,
-    values:   PropTypes.object.isRequired
+    values: PropTypes.object.isRequired,
+    multiple: PropTypes.bool
   };
 
-  getKeyword() {
-    return '';
-  }
-
-  renderLabel(value) {
+  renderLabelComponent(value) {
     return value;
   }
 
-  renderRadioList() {
-    return (
-      <RadioList
-        {...this.props}
-
-        renderLabel={this.renderLabel}
-        getKeyword={this.getKeyword} />
-    );
-  }
-
-  renderCheckboxList() {
-    return (
-      <CheckboxList
-        {...this.props}
-
-        renderLabel={this.renderLabel}
-        getKeyword={this.getKeyword} />
-    );
-  }
-
   render() {
-    return this.props.multiple ? this.renderCheckboxList() : this.renderRadioList();
+    return (
+      this.props.multiple
+        ? <CheckboxList {...this.props} renderLabelComponent={this.renderLabelComponent} />
+        : <RadioList {...this.props} renderLabelComponent={this.renderLabelComponent} />
+    );
   }
 }
+
