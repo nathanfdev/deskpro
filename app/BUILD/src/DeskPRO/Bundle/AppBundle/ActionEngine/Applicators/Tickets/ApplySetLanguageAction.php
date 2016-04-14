@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
@@ -43,6 +44,9 @@ class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionA
     public function apply(array $tickets)
     {
         $language = $this->em->getRepository('DeskPRO:Language')->find($this->options);
+        if (!$language) {
+            throw new BadRequestHttpException("Language with ID=$this->options doesn't exists");
+        }
         foreach ($tickets as $ticket) {
             $ticket->setLanguage($language);
             $context = $this->tm->createAgentExecutorContext(null, 'set_language', 'mass_actions');

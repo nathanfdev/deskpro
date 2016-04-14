@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetProductAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
@@ -43,6 +44,9 @@ class ApplySetProductAction extends AbstractTicketApplicator implements ActionAp
     public function apply(array $tickets)
     {
         $product = $this->em->getRepository('DeskPRO:Product')->find($this->options);
+        if (null === $product) {
+            throw new BadRequestHttpException("Product with ID=$this->options doesn't exists");
+        }
         foreach ($tickets as $ticket) {
             $ticket->setProduct($product);
             $context = $this->tm->createAgentExecutorContext(null, 'set_product', 'mass_actions');
