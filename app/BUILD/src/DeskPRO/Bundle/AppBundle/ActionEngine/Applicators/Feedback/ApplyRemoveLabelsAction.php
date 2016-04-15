@@ -44,7 +44,7 @@ class ApplyRemoveLabelsAction extends AbstractActionApplicator implements Action
     public function apply(array $feedback)
     {
         foreach ($feedback as $item) {
-            foreach ($this->options as $string) {
+            foreach ($this->options['remove_labels'] as $string) {
                 if ($label = $item->findLabelByString($string)) {
                     $item->getLabels()->removeElement($label);
                 }

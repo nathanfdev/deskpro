@@ -50,7 +50,7 @@ class ApplySetCategoryAction extends AbstractActionApplicator implements ActionA
         foreach ($feedback as $item) {
             $item->resetCustomData();
             $customCategory = new CustomDataFeedback();
-            $customCategory->setInput($this->options);
+            $customCategory->setInput($this->options['set_category']);
             $customCategory->setField($customDef);
             $item->addCustomData($customCategory);
         }

@@ -40,10 +40,10 @@ class SetWorkflowAction extends AbstractAction implements ActionWithOptionsInter
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setRequired('set_workflow');
+        $resolver->setAllowedTypes('set_workflow', ['string', 'int']);
         $resolver->setAllowedValues(
-            'options',
+            'set_workflow',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

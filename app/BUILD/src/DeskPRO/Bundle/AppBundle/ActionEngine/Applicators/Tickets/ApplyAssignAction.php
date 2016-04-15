@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
@@ -75,16 +76,29 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
     private function init()
     {
         $collection = [];
-        foreach ($this->options as $type => $id) {
+
+        foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    $collection['agent'] = $this->em->getRepository('DeskPRO:Person')->find($id[0]);
+                    $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
+                    if (!$agent) {
+                        throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
+                    }
+                    $collection['agent'] = $agent;
                     break;
                 case 'team':
-                    $collection['team'] = $this->em->getRepository('DeskPRO:AgentTeam')->find($id[0]);
+                    $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                    if (!$team) {
+                        throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
+                    }
+                    $collection['team'] = $team;
                     break;
                 case 'department':
-                    $collection['department'] = $this->em->getRepository('DeskPRO:Department')->find($id[0]);
+                    $department = $this->em->getRepository('DeskPRO:Department')->find($id);
+                    if (!$department) {
+                        throw new BadRequestHttpException("Department with ID=$id doesn't exists");
+                    }
+                    $collection['department'] = $department;
                     break;
             }
         }

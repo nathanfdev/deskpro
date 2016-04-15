@@ -40,10 +40,10 @@ class SetProjectAction extends AbstractAction implements ActionWithOptionsInterf
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setRequired('set_project');
+        $resolver->setAllowedTypes('set_project', ['string', 'int']);
         $resolver->setAllowedValues(
-            'options',
+            'set_project',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

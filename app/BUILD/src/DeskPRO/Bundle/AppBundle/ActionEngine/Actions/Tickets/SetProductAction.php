@@ -40,10 +40,10 @@ class SetProductAction extends AbstractAction implements ActionWithOptionsInterf
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setRequired('set_product');
+        $resolver->setAllowedTypes('set_product', ['string', 'int']);
         $resolver->setAllowedValues(
-            'options',
+            'set_product',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

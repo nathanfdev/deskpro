@@ -44,7 +44,7 @@ class ApplyAddLabelsAction extends AbstractActionApplicator implements ActionApp
     public function apply(array $feedback)
     {
         foreach ($feedback as $item) {
-            foreach ($this->options as $string) {
+            foreach ($this->options['add_labels'] as $string) {
                 $item->addLabelByString($string);
             }
         }

@@ -74,7 +74,7 @@ class ActionCollection
     {
         $actionClass = ActionTypeCodes::getActionClass($namespace, $name);
         if ($options) {
-            $this->addAction(new $actionClass(['options' => $options]));
+            $this->addAction(new $actionClass([$name => $options]));
         } else {
             $this->addAction(new $actionClass());
         }

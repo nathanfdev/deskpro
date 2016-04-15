@@ -12,6 +12,8 @@ toc_footers:
 
 includes:
   - sideloading
+  - additional
+  - mass_actions
 
 search: true
 ---
