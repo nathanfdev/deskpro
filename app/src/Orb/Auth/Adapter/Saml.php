@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\Saml\SamlMetadataBuilder;
@@ -237,6 +238,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                     "SAML Errors: \n".trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
                     Logger::DEBUG
                 );
+                if ($saml->getLastErrorReason()) {
+                    $this->logger->log(
+                        'Last Error Reason: '.$saml->getLastErrorReason(),
+                        Logger::DEBUG
+                    );
+                }
             }
 
             return new Result(Result::FAILURE, null, array('saml_errors' => $errors));
