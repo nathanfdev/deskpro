@@ -8,7 +8,6 @@ See example on javascript tab.
 ```javascript
 {
     ids:[66, 123, 234],      // List of IDs of object for actions applying
-    content: "tickets",      // Type of objects for actions applying
     params:                 // Actions parameters
       {
         set_status: "resolved",
