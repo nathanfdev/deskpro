@@ -1104,7 +1104,6 @@ SQL
         $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         // SLAs
-
         $this->getDb()->exec(
             <<<SQL
             INSERT INTO `slas` (`id`, `title`, `sla_type`,`active_time`, `work_start`, `work_end`, `work_days`, `apply_type`, `warn_time`, `warn_time_unit`, `fail_time`, `fail_time_unit`)
@@ -1112,6 +1111,18 @@ SQL
                 (1, 'First', 'first_response', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'all', 1, 'hours', 1, 'hours'),
                 (2, 'Second', 'resolution', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'auto', 1, 'days', 1, 'days'),
                 (3, 'Third', 'waiting_time', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'manual', 1, 'hours', 1, 'hours')
+            ;
+SQL
+        );
+
+        // Task projects
+        $this->getDb()->exec(
+            <<<SQL
+            INSERT INTO `task_projects` (`id`, `title`)
+            VALUES
+                (1, 'First project'),
+                (2, 'Second project'),
+                (3, 'Third project')
             ;
 SQL
         );

@@ -40,8 +40,8 @@ class SetStatusAction extends AbstractAction implements ActionWithOptionsInterfa
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'int');
-        $resolver->setAllowedValues('options', [0, 1]);
+        $resolver->setRequired('set_status');
+        $resolver->setAllowedTypes('set_status', 'string');
+        $resolver->setAllowedValues('set_status', ['0', '1']);
     }
 }

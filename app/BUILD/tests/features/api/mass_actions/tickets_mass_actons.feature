@@ -32,7 +32,6 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data" should exist
     And the JSON node "data.status" should be equal to "awaiting_agent"
 
-
   Scenario: I apply set of actions on ticket with ID=1
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """

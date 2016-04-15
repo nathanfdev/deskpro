@@ -15,7 +15,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"set_hidden_status": "incorrect"}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -30,7 +29,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"set_status_category": 1000}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -45,7 +43,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"set_status_category": [1,2,3]}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -60,7 +57,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"set_status_category": "anything"}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -75,7 +71,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"add_labels": 1}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -90,7 +85,6 @@ Feature: /mass_actions/feedback endpoint
   "params":{"remove_labels": 1}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400

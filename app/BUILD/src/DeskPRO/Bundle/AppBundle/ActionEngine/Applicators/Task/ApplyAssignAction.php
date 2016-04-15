@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
@@ -46,39 +47,33 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
     {
         $collection = $this->init($tasks);
 
-        foreach ($collection as $type => $values) {
+        foreach ($collection as $type => $value) {
             switch ($type) {
-                case 'agents':
-                    foreach ($values as $person) {
-                        foreach ($tasks as $task) {
-                            $assignment = new TaskAssignment();
-                            $assignment->setPerson($person);
-                            $assignment->setTask($task);
-                            $this->em->persist($assignment);
-                            $task->addAssigned($assignment);
-                        }
+                case 'agent':
+                    foreach ($tasks as $task) {
+                        $assignment = new TaskAssignment();
+                        $assignment->setPerson($value);
+                        $assignment->setTask($task);
+                        $this->em->persist($assignment);
+                        $task->addAssigned($assignment);
                     }
                     break;
-                case 'teams':
-                    foreach ($values as $team) {
-                        foreach ($tasks as $task) {
-                            $assignment = new TaskAssignment();
-                            $assignment->setTeam($team);
-                            $assignment->setTask($task);
-                            $this->em->persist($assignment);
-                            $task->addAssigned($assignment);
-                        }
+                case 'team':
+                    foreach ($tasks as $task) {
+                        $assignment = new TaskAssignment();
+                        $assignment->setTeam($value);
+                        $assignment->setTask($task);
+                        $this->em->persist($assignment);
+                        $task->addAssigned($assignment);
                     }
                     break;
-                case 'departments':
-                    foreach ($values as $department) {
-                        foreach ($tasks as $task) {
-                            $assignment = new TaskAssignment();
-                            $assignment->setDepartment($department);
-                            $assignment->setTask($task);
-                            $this->em->persist($assignment);
-                            $task->addAssigned($assignment);
-                        }
+                case 'department':
+                    foreach ($tasks as $task) {
+                        $assignment = new TaskAssignment();
+                        $assignment->setDepartment($value);
+                        $assignment->setTask($task);
+                        $this->em->persist($assignment);
+                        $task->addAssigned($assignment);
                     }
                     break;
             }
@@ -97,21 +92,29 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
                 $this->em->remove($assigned);
             }
         }
-        $collection = [
-            'agents'      => [],
-            'teams'       => [],
-            'departments' => [],
-        ];
-        foreach ($this->options as $type => $id) {
+
+        foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    $collection['agents'][] = $this->em->getRepository('DeskPRO:Person')->find($id);
+                    $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
+                    if (!$agent) {
+                        throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
+                    }
+                    $collection['agent'] = $agent;
                     break;
                 case 'team':
-                    $collection['teams'][] = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                    $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                    if (!$team) {
+                        throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
+                    }
+                    $collection['team'] = $team;
                     break;
                 case 'department':
-                    $collection['departments'][] = $this->em->getRepository('DeskPRO:Department')->find($id);
+                    $department = $this->em->getRepository('DeskPRO:Department')->find($id);
+                    if (!$department) {
+                        throw new BadRequestHttpException("Department with ID=$id doesn't exists");
+                    }
+                    $collection['department'] = $department;
                     break;
             }
         }

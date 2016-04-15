@@ -30,7 +30,6 @@ Feature: /mass_actions endpoint
   "params":{"non_existed":"anything"}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
