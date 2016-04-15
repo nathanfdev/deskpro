@@ -42,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -157,6 +158,17 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
     {
         return $this->members;
     }
+
+    /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function hasMember(Person $person)
+    {
+        return $this->members->matching(new Criteria(Criteria::expr()->eq('id', $person->getId())))->count() > 0;
+    }
+
     /**
      * @return int
      */

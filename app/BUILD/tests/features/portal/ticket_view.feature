@@ -3,6 +3,7 @@ Feature: Ticket View
 
   Background: Fresh DB
     Given I install the fresh data set
+    And the setting "core_tickets.use_ref" is set to 0
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme

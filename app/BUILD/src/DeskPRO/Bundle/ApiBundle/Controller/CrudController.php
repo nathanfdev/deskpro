@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -99,12 +101,9 @@ abstract class CrudController extends BaseController
     public function getAction(Request $request, $id)
     {
         $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($id, $request));
 
-        if (!$entity = $this->findEntity($id, $request)) {
-            throw $this->createNotFoundException();
-        }
-
-        return View::create($this->wrap($entity), Response::HTTP_OK);
+        return View::create($this->wrap($this->findEntity($id, $request)), Response::HTTP_OK);
     }
 
     /**
@@ -135,6 +134,7 @@ abstract class CrudController extends BaseController
     public function listAction(Request $request)
     {
         $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
 
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $this->getManager()->createQueryBuilder();
@@ -206,6 +206,7 @@ abstract class CrudController extends BaseController
     public function postAction(Request $request)
     {
         $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         $entity = $this->instantiateEntity($request);
         $view   = $this->handleForm($entity, $request);
@@ -247,6 +248,7 @@ abstract class CrudController extends BaseController
     public function putAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
 
         return $this->handleForm($this->findEntity($id, $request), $request);
     }
@@ -281,6 +283,7 @@ abstract class CrudController extends BaseController
     public function deleteAction($id, Request $request)
     {
         $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupEntityContext($id, $request));
 
         $entity = $this->findEntity($id, $request);
         $this->deleteEntity($entity);
@@ -429,6 +432,27 @@ abstract class CrudController extends BaseController
             $request->getContent(),
             true // convert to assoc arrays instead of stdClass instances
         );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    protected function getPermissionGroupContext(Request $request)
+    {
+        return new PermissionGroupContext(static::$entity);
+    }
+
+    /**
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return object
+     */
+    protected function getPermissionGroupEntityContext($id, Request $request)
+    {
+        return new PermissionGroupContext($this->findEntity($id, $request));
     }
 
     /**

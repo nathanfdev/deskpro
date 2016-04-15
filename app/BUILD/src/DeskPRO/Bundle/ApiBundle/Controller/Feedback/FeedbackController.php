@@ -32,16 +32,17 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\ImportBundle\Generator\Exporter\DeskPRO;
+use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCountCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackSelectCriteria;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
@@ -97,22 +98,21 @@ class FeedbackController extends BaseController
      */
     public function listAction(Request $request)
     {
-        $dataService = $this->get('data.feedback');
-        $params      = $this->removeAdditionalParameters($request);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Feedback::class));
+
+        $params = $this->removeAdditionalParameters($request);
+
         try {
+            /** @var FeedbackCountCriteria $criteria */
             $criteria = FeedbackSelectCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 5);
 
-        $feedback = $dataService->selectFeedback($criteria, $page, $count);
-
-        return View::create(
-            $this->wrap($feedback),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.feedback')->selectFeedback($criteria, $page, $count)));
     }
 
     /**
@@ -157,20 +157,17 @@ class FeedbackController extends BaseController
      */
     public function getCountsAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService $dataService */
-        $dataService = $this->get('data.feedback');
-        $params      = $this->removeAdditionalParameters($request);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Feedback::class));
+
+        $params = $this->removeAdditionalParameters($request);
+
         try {
             /** @var FeedbackCountCriteria $criteria */
             $criteria = FeedbackCountCriteria::fromParameters($params, new OptionsResolver());
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        $count = $dataService->countFeedback($criteria);
 
-        return View::create(
-            $this->wrap($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.feedback')->countFeedback($criteria)));
     }
 }

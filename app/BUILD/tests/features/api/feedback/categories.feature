@@ -1,4 +1,4 @@
-@feedback-categories
+@feedback-categories @feedback
 Feature: /feedback_categories endpoint
   To retrieve info about feedback categories (custom_category)
   As a developer

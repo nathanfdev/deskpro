@@ -6,6 +6,9 @@ Feature: /articles, /news, /downloads endpoints
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I set permission "articles.use" = 1 for "registered" usergroup
+    And I set permission "downloads.use" = 1 for "registered" usergroup
+    And I set permission "news.use" = 1 for "registered" usergroup
 
   Scenario Outline: I search for content with empty search criteria
     When I send a GET request to "/api/v2/<endpoint>"

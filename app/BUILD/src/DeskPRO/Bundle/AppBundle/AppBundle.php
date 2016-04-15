@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\PermissionGroupsCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
@@ -52,11 +53,17 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AppBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getContainerExtension()
     {
         return new AppExtension();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
@@ -68,6 +75,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new TermEnginePass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
         $container->addCompilerPass(new DbalConnectionPass());
+        $container->addCompilerPass(new PermissionGroupsCompilerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');
@@ -76,17 +84,26 @@ class AppBundle extends Bundle
         $security->addSecurityListenerFactory(new TransferSessionAuthFactory());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerCommands(Application $application)
     {
         $application->add(new WebServerInfoCommand());
         $application->add(new ConfigElasticCommand());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getNamespace()
     {
         return __NAMESPACE__;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPath()
     {
         return __DIR__;

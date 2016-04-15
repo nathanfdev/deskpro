@@ -40,7 +40,9 @@ use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class ExceptionController.
@@ -79,6 +81,10 @@ class ExceptionController extends BaseController
             $error->headers->set('content-type', 'text/html');
 
             return $error;
+        }
+
+        if ($exception instanceof AccessDeniedException) {
+            $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
         $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
