@@ -72,7 +72,7 @@ class OverrideHandler implements HandlerInterface
         if ($annotation instanceof DpApiDoc
             && ($classReflection = ControllerUtils::extractControllerReflection($route))
         ) {
-            $annotation = clone $annotation;
+            //            $annotation = clone $annotation;
             $this->getClassAnnotations($classReflection);
 
             $action = ControllerUtils::cleanAction($method->getName());
@@ -104,6 +104,7 @@ class OverrideHandler implements HandlerInterface
      */
     private function getClassAnnotations(\ReflectionClass $classReflection)
     {
+        $this->annotationsList = [];
         foreach ($this->reader->getClassAnnotations($classReflection) as $annotation) {
             if ($annotation instanceof DpApiDoc) {
                 $this->annotationsList[$annotation->getTarget()] = $annotation;

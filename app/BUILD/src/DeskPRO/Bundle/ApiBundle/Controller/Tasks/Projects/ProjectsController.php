@@ -29,12 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -49,10 +46,9 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class ProjectsController.
  *
- * @Rest\Route("/task_projects")
- * @ApiDocSection("TaskProjects")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
  * @ApiModes("all")
+ * @Rest\Route("/task_projects")
+ * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
  */
 class ProjectsController extends CrudController
 {

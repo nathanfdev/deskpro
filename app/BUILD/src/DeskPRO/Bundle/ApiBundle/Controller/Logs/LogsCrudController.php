@@ -54,12 +54,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Logs;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
@@ -70,10 +67,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class LogsCrudController.
  *
- * @ApiDocSection("Logs")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ApiLog")
  * @ApiModes("all")
  * @Rest\Route("/api_logs")
+ * @ApiDoc(target="all", section="Logs", output="DeskPRO\Bundle\AppBundle\Entity\ApiLog")
  */
 class LogsCrudController extends CrudController
 {

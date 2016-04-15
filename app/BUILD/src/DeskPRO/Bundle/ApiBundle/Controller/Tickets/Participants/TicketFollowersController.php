@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -41,9 +39,13 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * Class TicketFollowersController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Ticket participants")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ 
  * @Rest\Route("/tickets/{parentId}/followers")
+ * @ApiDoc(
+ *     target="all",
+ *     section="Ticket participants",
+ *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person"
+ * )
  */
 class TicketFollowersController extends AbstractTicketParticipantsController
 {

@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
@@ -44,10 +42,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class TaskAttachmentsController.
  *
- * @ApiDocSection("Tasks")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\TaskAttachment")
  * @ApiModes("all")
  * @Rest\Route("/task_attachments")
+ * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment")
  */
 class TaskAttachmentsController extends CrudController
 {

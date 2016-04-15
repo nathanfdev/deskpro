@@ -29,13 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
@@ -48,9 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketProblemController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickets")
- * @OutputEntity("Application\DeskPRO\Entity\Problem")
  * @Rest\Route("/ticket_problems")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\Problem")
  */
 class TicketProblemsController extends CrudController
 {

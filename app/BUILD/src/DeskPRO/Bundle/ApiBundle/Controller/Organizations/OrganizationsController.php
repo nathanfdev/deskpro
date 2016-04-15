@@ -29,13 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -51,8 +48,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/organizations")
- * @ApiDocSection("Organizations")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
+ * @ApiDoc(target="all", section="Organizations", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
  */
 class OrganizationsController extends CrudController
 {

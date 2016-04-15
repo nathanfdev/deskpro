@@ -29,10 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
@@ -46,9 +45,9 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class IncidentController.
  *
- * @ApiDocSection("System")
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
+ * @ApiDoc(target="all", section="System")
  */
 class IncidentController extends CrudController
 {

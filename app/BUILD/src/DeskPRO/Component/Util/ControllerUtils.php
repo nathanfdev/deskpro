@@ -69,12 +69,26 @@ class ControllerUtils
      */
     public static function extractControllerReflection(Route $route)
     {
+        if ($class = self::extractControllerClass($route)) {
+            return new \ReflectionClass($class);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Route $route
+     *
+     * @return bool
+     */
+    public static function extractControllerClass(Route $route)
+    {
         $ctrl          = $route->getDefault('_controller');
         $parts         = explode('::', $ctrl);
         $is_controller = preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
 
         if ($is_controller && $parts[0]) {
-            return new \ReflectionClass($parts[0]);
+            return $parts[0];
         }
 
         return false;

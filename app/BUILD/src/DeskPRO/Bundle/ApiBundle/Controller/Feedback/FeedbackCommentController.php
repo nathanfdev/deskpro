@@ -34,8 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsSelectCriteria;
@@ -53,8 +51,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @ApiModes("all")
  * @Rest\Route("/feedback_comments")
- * @ApiDocSection("Feedback")
- * @OutputEntity("Application\DeskPRO\Entity\FeedbackComment")
+ * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackComment")
  */
 class FeedbackCommentController extends CrudController
 {

@@ -29,13 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWord;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType;
@@ -46,10 +43,9 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class GlossaryWordController.
  *
- * @ApiDocSection("Glossary")
- * @OutputEntity("Application\DeskPRO\Entity\GlossaryWord")
  * @ApiModes("all")
  * @Rest\Route("/glossary/words")
+ * @ApiDoc(target="all", section="Glossary", output="Application\DeskPRO\Entity\GlossaryWord")
  */
 class GlossaryWordController extends CrudController
 {
