@@ -32,19 +32,23 @@ export class MassActionContainer extends Component {
     if (navItem && navItem.get('awaiting_validation')) {
       const deleteAction = () => dispatch(submitMassActions(
         {
-          jobType:             'publish_mass',
+          content,
+
           loadIndicatorAction: loadIndicator,
           reloadNavAction:     initialLoad,
-          params:              { content, ids: selected, actions: { delete: [] } }
+          ids:                 selected,
+          actions:             { delete: [] }
         }
       ));
 
       const approveAction = () => dispatch(submitMassActions(
         {
-          jobType:             'publish_mass',
+          content,
+
           loadIndicatorAction: loadIndicator,
           reloadNavAction:     initialLoad,
-          params:              { content, ids: selected, actions: { approve: [] } }
+          ids:                 selected,
+          actions:             { approve: [] }
         }
       ));
 
@@ -61,12 +65,10 @@ export class MassActionContainer extends Component {
 
     const config = {
       actions:             this.choiceActions(),
-      jobType:             'publish_mass',
       content:             isComments ? 'feedback_comments' : 'feedback',
       loadIndicatorAction: loadIndicator,
       reloadNavAction:     initialLoad
     };
-
 
     return (
       <MassActionBarContainer {...config} />

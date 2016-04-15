@@ -43,7 +43,7 @@ class ApplySetStatusAction extends AbstractTicketApplicator implements ActionApp
     public function apply(array $tickets)
     {
         foreach ($tickets as $ticket) {
-            $ticket->setStatus($this->options);
+            $ticket->setStatus($this->options['set_status']);
             $context = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
             $this->tm->saveTicket($ticket, $context);
         }

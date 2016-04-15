@@ -1,4 +1,4 @@
-@counts @feedback-nav
+@counts @feedback-nav @feedback
 Feature: /feedback/counts endpoint
   To obtain counters for different types of feedback
   As a developer
@@ -7,6 +7,7 @@ Feature: /feedback/counts endpoint
   Background:
     Given I install the "api" data set
     And my request is authenticated
+    And I set permission "feedback.use" = 1 for "registered" usergroup
 
   @reinstall
   Scenario: I GET count of feedback with hidden_status set to validating
@@ -49,4 +50,3 @@ Feature: /feedback/counts endpoint
     And the JSON node "data.grouped_by" should be equal to "custom_category"
     And the JSON node "data.nested[0].title" should be equal to "Linux"
     And the JSON node "data.nested[0].count" should be equal to 2
-

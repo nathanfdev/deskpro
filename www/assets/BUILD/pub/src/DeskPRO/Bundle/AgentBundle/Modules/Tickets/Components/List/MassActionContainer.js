@@ -31,7 +31,6 @@ export class MassActionContainer extends Component {
     const config = {
       actions,
 
-      jobType:             'publish_mass',
       content:             'tickets',
       loadIndicatorAction: loadIndicator,
       reloadNavAction:     initialLoad

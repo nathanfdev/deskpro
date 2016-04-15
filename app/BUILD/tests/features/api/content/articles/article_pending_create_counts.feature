@@ -1,4 +1,4 @@
-@counts @publish-nav
+@counts @publish-nav @articles
 Feature: /article_pending_create/counts endpoint
   To retrieve counts of DeskPRO ArticlePendingCreate
   As a developer
@@ -7,7 +7,9 @@ Feature: /article_pending_create/counts endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I set permission "articles.use" = 1 for "registered" usergroup
 
+  @reinstall
   Scenario: I retrieve total count of ArticlePendingCreate
     When I send a GET request to "/api/v2/article_pending_create/counts"
     Then the response should be in JSON

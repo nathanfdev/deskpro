@@ -35,6 +35,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +51,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TicketFormsController extends AbstractTicketsController
 {
     public static $exposeOnly = [];
-    public static $type       = 'ticket_with_layouts';
+    public static $type       = TicketWithLayoutsType::class;
 
     /**
      * @ApiDoc(
@@ -78,6 +81,8 @@ class TicketFormsController extends AbstractTicketsController
      */
     public function postContextAction($context, Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, new PermissionGroupContext(Ticket::class));
+
         return $this->handleForm($this->instantiateEntity($request), $request, [
             'ticket_view_context' => $context,
         ]);
@@ -117,6 +122,8 @@ class TicketFormsController extends AbstractTicketsController
      */
     public function putContextAction($context, Ticket $ticket, Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
+
         return $this->handleForm($ticket, $request, [
             'ticket_view_context' => $context,
         ]);

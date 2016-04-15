@@ -47,7 +47,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetCategoryAction(['options' => 'Linux']);
+        $action = new SetCategoryAction(['set_category' => 'Linux']);
         $this->assertInstanceOf(SetCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -68,14 +68,14 @@ class SetCategoryActionTest extends DeskProTestCase
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
         $resolver
-            ->setRequired(Argument::exact('options'))
+            ->setRequired(Argument::exact('set_category'))
             ->shouldBeCalled();
         $resolver
-            ->setAllowedTypes(Argument::exact('options'), Argument::exact('string'))
+            ->setAllowedTypes(Argument::exact('set_category'), Argument::exact('string'))
             ->shouldBeCalled();
         $resolver
             ->setAllowedValues(
-                Argument::exact('options'),
+                Argument::exact('set_category'),
                 Argument::that(
                     function ($value) {
                         return !empty($value);
@@ -93,7 +93,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_input_param()
     {
-        new SetCategoryAction(['options' => '']);
+        new SetCategoryAction(['set_category' => '']);
     }
 
     /**
@@ -102,7 +102,7 @@ class SetCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_none_string_input_param()
     {
-        new SetCategoryAction(['options' => ['one']]);
+        new SetCategoryAction(['set_category' => ['one']]);
     }
 
     /**

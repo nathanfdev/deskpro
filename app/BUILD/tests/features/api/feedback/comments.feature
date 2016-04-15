@@ -1,4 +1,4 @@
-@counts @feedback-nav
+@counts @feedback-nav @feedback
 Feature: /feedback_comments/counts endpoint
   To retrieve count of feedback comments to validate
   As a developer
@@ -10,7 +10,7 @@ Feature: /feedback_comments/counts endpoint
 
   @reinstall
   Scenario: I GET feedback comments list with hidden_status set to validating and side-loaded author info
-    When I send a GET request to "/api/v2/feedback_comments/?include=person&awaiting_validation=1"
+    When I send a GET request to "/api/v2/feedback_comments?include=person&awaiting_validation=1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist

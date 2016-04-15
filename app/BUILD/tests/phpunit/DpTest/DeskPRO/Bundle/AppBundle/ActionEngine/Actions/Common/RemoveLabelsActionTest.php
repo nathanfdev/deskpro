@@ -47,7 +47,7 @@ class RemoveLabelsActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new RemoveLabelsAction(['options' => ['one', 'two']]);
+        $action = new RemoveLabelsAction(['remove_labels' => ['one', 'two']]);
         $this->assertInstanceOf(RemoveLabelsAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -67,10 +67,10 @@ class RemoveLabelsActionTest extends DeskProTestCase
     public function it_should_configure_the_labels_param()
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
-        $resolver->setRequired(Argument::exact('options'))->shouldBeCalled();
-        $resolver->setAllowedTypes(Argument::exact('options'), Argument::exact('array'))->shouldBeCalled();
+        $resolver->setRequired(Argument::exact('remove_labels'))->shouldBeCalled();
+        $resolver->setAllowedTypes(Argument::exact('remove_labels'), Argument::exact('array'))->shouldBeCalled();
         $resolver->setAllowedValues(
-            Argument::exact('options'),
+            Argument::exact('remove_labels'),
             Argument::that(
                 function ($value) {
                     return !empty($value);
@@ -87,7 +87,7 @@ class RemoveLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_labels_param()
     {
-        new RemoveLabelsAction(['options' => []]);
+        new RemoveLabelsAction(['remove_labels' => []]);
     }
 
     /**
@@ -96,7 +96,7 @@ class RemoveLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_string_labels_param()
     {
-        new RemoveLabelsAction(['options' => 'one']);
+        new RemoveLabelsAction(['remove_labels' => 'one']);
     }
 
     /**

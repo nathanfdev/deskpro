@@ -63,9 +63,7 @@ final class ErrorsCodes
     const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS                = 'bad_credentials';
-    const NO_PERSON                      = 'person_not_found';
-    const NOT_AGENT                      = 'person_not_agent';
-    const NOT_USER                       = 'person_not_user';
+    const CSRF                           = 'csrf';
 
     /** Validator/Constraint specific error codes */
     const NULL                        = 'empty';
@@ -84,6 +82,9 @@ final class ErrorsCodes
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
     const EXACTLY_ONE_SHOULD_BE_SET   = 'exactly_one_value_should_be_set';
+    const NO_PERSON                   = 'person_not_found';
+    const NOT_AGENT                   = 'person_not_agent';
+    const NOT_USER                    = 'person_not_user';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

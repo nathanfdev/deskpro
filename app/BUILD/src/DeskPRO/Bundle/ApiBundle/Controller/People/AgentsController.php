@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -38,6 +37,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -49,7 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/agents")
  * @ApiDocSection("Agents")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class AgentsController extends CrudController
 {
@@ -72,9 +73,9 @@ class AgentsController extends CrudController
      */
     public function getAgentsOnlineAction()
     {
-        $agent_ids = $this->get('data.agent')->getOnlineAgentIds();
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Person::class));
 
-        return View::create($this->wrap($agent_ids));
+        return View::create($this->wrap($this->get('data.agent')->getOnlineAgentIds()));
     }
 
     /**

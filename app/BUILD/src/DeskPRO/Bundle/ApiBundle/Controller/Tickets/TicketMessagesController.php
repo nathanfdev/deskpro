@@ -32,12 +32,14 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,9 +53,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends CrudSubController
 {
-    public static $exposeOnly     = ['list', 'get', 'post', 'put'];
     public static $entity         = TicketMessage::class;
-    public static $type           = 'ticket_message';
+    public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
     public static $sortOptions    = ['date' => 'date_created'];
     public static $listSort       = 'id';
@@ -81,11 +82,33 @@ class TicketMessagesController extends CrudSubController
         /* @var TicketMessage $entity */
         $ticket = $entity->getTicket();
 
+        $this->saveTicket($ticket);
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        /* @var TicketMessage $entity */
+        $ticket = $entity->getTicket();
+        $ticket->messages->removeElement($entity);
+
+        $this->saveTicket($ticket);
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @throws \Exception
+     */
+    protected function saveTicket(Ticket $ticket)
+    {
         /** @var TicketManager $manager */
         $manager = $this->getContainer()->getTicketManager();
         $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
         $manager->saveTicket($ticket, $context);
-
-        return $entity;
     }
 }
