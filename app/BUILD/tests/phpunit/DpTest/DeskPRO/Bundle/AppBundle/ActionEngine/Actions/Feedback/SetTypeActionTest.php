@@ -47,7 +47,7 @@ class SetTypeActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetTypeAction(['options' => 1]);
+        $action = new SetTypeAction(['set_type' => 1]);
         $this->assertInstanceOf(SetTypeAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -68,14 +68,14 @@ class SetTypeActionTest extends DeskProTestCase
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
         $resolver
-            ->setRequired(Argument::exact('options'))
+            ->setRequired(Argument::exact('set_type'))
             ->shouldBeCalled();
         $resolver
-            ->setAllowedTypes(Argument::exact('options'), Argument::exact(['string', 'int']))
+            ->setAllowedTypes(Argument::exact('set_type'), Argument::exact(['string', 'int']))
             ->shouldBeCalled();
         $resolver
             ->setAllowedValues(
-                Argument::exact('options'),
+                Argument::exact('set_type'),
                 Argument::that(
                     function ($value) {
                         return !empty($value);
@@ -93,7 +93,7 @@ class SetTypeActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_id_param()
     {
-        new SetTypeAction(['options' => 0]);
+        new SetTypeAction(['set_type' => 0]);
     }
 
     /**
@@ -102,7 +102,7 @@ class SetTypeActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_none_integer_id_param()
     {
-        new SetTypeAction(['options' => ['one']]);
+        new SetTypeAction(['set_type' => ['one']]);
     }
 
     /**
