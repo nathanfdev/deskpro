@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -229,8 +230,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if ($this->apikey) {
             $this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
-        } else {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
         }
 
         if ($this->rate_info['hits'] >= App::getSetting('core.api_rate_limit')) {
@@ -244,8 +243,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     {
         if ($this->apikey) {
             $this->em->getRepository('DeskPRO:ApiKey')->updateRateLimit($this->apikey);
-        } else {
-            $this->em->getRepository('DeskPRO:ApiToken')->updateRateLimit($this->api_token);
         }
 
         if ($this->rate_info) {
