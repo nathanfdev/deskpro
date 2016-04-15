@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetProjectAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
@@ -44,7 +45,10 @@ class ApplySetProjectAction extends AbstractActionApplicator implements ActionAp
     public function apply(array $tasks)
     {
         /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskProject $project */
-        $project = $this->em->getRepository('App:TaskProject')->find($this->options);
+        $project = $this->em->getRepository('App:TaskProject')->find($this->options['set_project']);
+        if (null === $project) {
+            throw new BadRequestHttpException('Project with ID='.$this->options['set_project']." doesn't exists");
+        }
         foreach ($tasks as $task) {
             $task->setProject($project);
         }

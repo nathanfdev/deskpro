@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -42,6 +43,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -57,7 +60,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @ApiModes("all")
  * @Rest\Route("/people")
  * @ApiDocSection("People")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\ApiPerson")
+ * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class PeopleController extends CrudController
 {
@@ -126,10 +129,11 @@ class PeopleController extends CrudController
      */
     public function countAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService $dataService */
-        $dataService = $this->get('data.people_counts');
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Person::class));
 
-        $params = $this->removeAdditionalParameters($request);
+        $dataService = $this->get('data.people_counts');
+        $params      = $this->removeAdditionalParameters($request);
+
         try {
             /** @var PeopleCountCriteria $criteria */
             $criteria = PeopleCountCriteria::fromParameters($params, new OptionsResolver());

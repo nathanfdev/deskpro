@@ -79,7 +79,7 @@ class ActionTypeCodes
                 $actionClassName
             );
             if (!class_exists($actionClass)) {
-                throw new ActionApplicatorDoesNotExists('Action Class Does Not Exists '.$actionName);
+                throw new ActionApplicatorDoesNotExists("Action class '$actionName' doesn't exists");
             }
         }
 

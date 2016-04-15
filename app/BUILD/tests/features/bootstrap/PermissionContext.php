@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 /**
@@ -83,5 +84,26 @@ class PermissionContext extends BaseContext
         }
 
         $connection->executeUpdate('DELETE FROM permissions_cache');
+    }
+
+    /**
+     * @Given I grant department :departmentId permission of :app app for :who
+     *
+     * @param string $who
+     * @param string $departmentId
+     * @param string $app
+     */
+    public function iGrantDepartmentPermission($departmentId, $who, $app)
+    {
+        $person = $this->getContainer()->get('user_details')->getWho($who);
+        if (!$person) {
+            throw new \RuntimeException('Unable to get person '.$who);
+        }
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'INSERT IGNORE INTO department_permissions SET department_id = ?, person_id = ?, app = ?, name="full", value=1, is_active=1',
+            [$departmentId, $person->getId(), $app]
+        );
     }
 }

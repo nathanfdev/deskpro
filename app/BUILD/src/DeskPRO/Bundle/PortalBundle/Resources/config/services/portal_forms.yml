@@ -57,7 +57,7 @@ services:
 
   form.csrf_double_submit_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
-    arguments: ["@request_stack", "@language_manager", %kernel.environment%]
+    arguments: ["@request_stack", %kernel.environment%]
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 

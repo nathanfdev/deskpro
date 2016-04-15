@@ -12,6 +12,7 @@ Feature: /ticket_forms endpoint
     And the setting "core.use_ticket_category" is set to 1
     And the setting "core.use_ticket_workflow" is set to 1
 
+  @reinstall
   Scenario: I try to create a ticket with empty subject (empty request)
     When I send a POST request to "/api/v2/ticket_forms/agent"
     Then the response status code should be 400

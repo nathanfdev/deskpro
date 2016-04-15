@@ -117,11 +117,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
      */
     private function getOptions(ActionInterface $action)
     {
-        $serialized = $action->serialize();
-        $options    = array_key_exists('options', $serialized) && $serialized['options'] ?
-            $serialized['options'] : [];
-
-        return $options;
+        return $action->serialize() ?: [];
     }
 
     /**

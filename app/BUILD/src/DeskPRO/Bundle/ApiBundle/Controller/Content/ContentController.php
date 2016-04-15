@@ -40,10 +40,11 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlesCriteria;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ContentCriteria;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -106,10 +107,8 @@ class ContentController extends BaseController
      */
     public function getContentCountsAction($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService $dataService */
-        $dataService = $this->get('data.content_counts');
-
         $params = $this->removeAdditionalParameters($request);
+
         try {
             /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria $criteria */
             // API interfaces for all content types are identical, however articles is different from
@@ -122,12 +121,7 @@ class ContentController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $dataService->countContent($this->getClass($type), $criteria);
-
-        return View::create(
-            $this->wrap($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.content_counts')->countContent($this->getClass($type), $criteria)));
     }
 
     /**
@@ -165,6 +159,8 @@ class ContentController extends BaseController
      */
     public function listArticlesAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Article::class));
+
         return $this->getList('articles', $request);
     }
 
@@ -204,6 +200,8 @@ class ContentController extends BaseController
      */
     public function listNewsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(News::class));
+
         return $this->getList('news', $request);
     }
 
@@ -243,6 +241,8 @@ class ContentController extends BaseController
      */
     public function listDownloadsAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Download::class));
+
         return $this->getList('downloads', $request);
     }
 
@@ -254,10 +254,8 @@ class ContentController extends BaseController
      */
     private function getList($type, Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService $dataService */
-        $dataService = $this->get('data.content');
-
         $params = $params = $this->removeAdditionalParameters($request);
+
         try {
             /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\BaseContentCriteria $criteria */
             $criteria = $type === 'articles'
@@ -269,12 +267,9 @@ class ContentController extends BaseController
 
         $page    = $request->query->get('page', 1);
         $count   = $request->query->get('count', 10);
-        $content = $dataService->selectContent($this->getClass($type), $criteria, $page, $count);
+        $content = $this->get('data.content')->selectContent($this->getClass($type), $criteria, $page, $count);
 
-        return View::create(
-            $this->wrap($content),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($content));
     }
 
     /**

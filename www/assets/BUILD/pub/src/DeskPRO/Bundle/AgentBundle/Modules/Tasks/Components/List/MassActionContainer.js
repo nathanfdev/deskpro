@@ -16,9 +16,11 @@ export class MassActionContainer extends React.Component {
   };
 
   render() {
+    const { actions } = this.props;
+
     const config = {
-      actions:             this.props.actions,
-      jobType:             'publish_mass',
+      actions,
+
       content:             'tasks',
       loadIndicatorAction: loadIndicator,
       reloadNavAction:     initialLoad

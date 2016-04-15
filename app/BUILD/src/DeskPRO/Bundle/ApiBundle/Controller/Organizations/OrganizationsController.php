@@ -45,7 +45,6 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class OrganizationsController.
@@ -57,7 +56,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class OrganizationsController extends CrudController
 {
-    public static $exposeOnly  = ['list', 'get', 'post', 'put'];
     public static $entity      = Organization::class;
     public static $type        = 'organization';
     public static $sortOptions = [
@@ -85,7 +83,7 @@ class OrganizationsController extends CrudController
      * @param Request $request
      * @param int     $id
      *
-     * @return Response
+     * @return View
      */
     public function getTicketsAction(Request $request, $id)
     {
@@ -102,11 +100,14 @@ class OrganizationsController extends CrudController
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      * @Rest\Get("/counts", name="api_organizations_counts")
+     *
+     * @return View
      */
     public function getCountAction()
     {
         $qb = $this->getManager()->createQueryBuilder();
-        $qb->select('count(o)')
+        $qb
+            ->select('count(o)')
             ->from(Organization::class, 'o')
         ;
 

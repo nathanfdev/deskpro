@@ -41,7 +41,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class CategoriesController.
@@ -71,9 +70,6 @@ class CategoriesController extends BaseController
             $this->getRepository(DownloadCategory::class)->findAll()
         );
 
-        return View::create(
-            $this->wrap($list),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($list));
     }
 }

@@ -4,6 +4,7 @@ Feature: Ticket Participants
 
   Background: Fresh DB
     Given I install the fresh data set
+    And the setting "core_tickets.use_ref" is set to 0
     And the following languages are enabled:
       | default |
     And the organization "walmart" exists
@@ -48,7 +49,6 @@ Feature: Ticket Participants
     Given I login with agent credentials
     When I go to "/tickets/1"
     Then the response status code should be 403
-
 
   @reinstall
   Scenario: A user can view a ticket they participate in

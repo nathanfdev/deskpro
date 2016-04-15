@@ -190,3 +190,10 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 200
     And the JSON node "data.message" should contain "&lt;span&gt;my edited message without attachments&lt;"
     And the JSON node "data.attachments" should have 0 elements
+
+  Scenario: I delete message
+    When I send a DELETE request to "/api/v2/tickets/1/messages/5"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/tickets/1/messages/5"
+    Then the response status code should be 404

@@ -47,7 +47,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new AddLabelsAction(['options' => ['one', 'two']]);
+        $action = new AddLabelsAction(['add_labels' => ['one', 'two']]);
         $this->assertInstanceOf(AddLabelsAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -67,10 +67,10 @@ class AddLabelsActionTest extends DeskProTestCase
     public function it_should_configure_the_labels_param()
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
-        $resolver->setRequired(Argument::exact('options'))->shouldBeCalled();
-        $resolver->setAllowedTypes(Argument::exact('options'), Argument::exact('array'))->shouldBeCalled();
+        $resolver->setRequired(Argument::exact('add_labels'))->shouldBeCalled();
+        $resolver->setAllowedTypes(Argument::exact('add_labels'), Argument::exact('array'))->shouldBeCalled();
         $resolver->setAllowedValues(
-            Argument::exact('options'),
+            Argument::exact('add_labels'),
             Argument::that(
                 function ($value) {
                     return !empty($value);
@@ -87,7 +87,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_labels_param()
     {
-        new AddLabelsAction(['options' => []]);
+        new AddLabelsAction(['add_labels' => []]);
     }
 
     /**
@@ -96,7 +96,7 @@ class AddLabelsActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_string_labels_param()
     {
-        new AddLabelsAction(['options' => 'one']);
+        new AddLabelsAction(['add_labels' => 'one']);
     }
 
     /**

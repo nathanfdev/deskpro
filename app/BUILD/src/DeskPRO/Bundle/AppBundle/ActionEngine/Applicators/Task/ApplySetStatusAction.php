@@ -44,7 +44,7 @@ class ApplySetStatusAction extends AbstractActionApplicator implements ActionApp
     public function apply(array $tasks)
     {
         foreach ($tasks as $task) {
-            $task->setIsDone((bool) $this->options);
+            $task->setIsDone((bool) $this->options['set_status']);
         }
     }
 }

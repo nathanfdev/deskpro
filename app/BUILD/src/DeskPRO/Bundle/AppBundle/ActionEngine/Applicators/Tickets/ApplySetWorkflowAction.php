@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
@@ -42,7 +43,10 @@ class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionA
      */
     public function apply(array $tickets)
     {
-        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options);
+        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options['set_workflow']);
+        if (!$workflow) {
+            throw new BadRequestHttpException('Workflow with ID='.$this->options['set_workflow']." doesn't exists");
+        }
         foreach ($tickets as $ticket) {
             $ticket->setWorkflow($workflow);
             $context = $this->tm->createAgentExecutorContext(null, 'set_workflow', 'mass_actions');

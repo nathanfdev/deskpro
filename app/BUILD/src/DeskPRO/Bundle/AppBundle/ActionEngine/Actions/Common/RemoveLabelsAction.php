@@ -40,10 +40,10 @@ class RemoveLabelsAction extends AbstractAction implements ActionWithOptionsInte
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'array');
+        $resolver->setRequired('remove_labels');
+        $resolver->setAllowedTypes('remove_labels', 'array');
         $resolver->setAllowedValues(
-            'options',
+            'remove_labels',
             function ($value) {
                 return !empty($value);
             }

@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -39,11 +40,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateCriteria;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -82,18 +84,13 @@ class ArticlePendingCreateController extends BaseController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('COUNT(apc)')
-            ->from(ArticlePendingCreate::class, 'apc');
+            ->from(ArticlePendingCreate::class, 'apc')
+        ;
 
         $params = $this->removeAdditionalParameters($request);
         $this->applyFilters($qb, $params);
 
-        $total = $qb->getQuery()->getSingleScalarResult();
-        $count = Count::fromValue($total);
-
-        return View::create(
-            $this->wrap($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap(Count::fromValue($qb->getQuery()->getSingleScalarResult())));
     }
 
     /**
@@ -118,10 +115,10 @@ class ArticlePendingCreateController extends BaseController
      */
     public function listAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService $dataService */
-        $dataService = $this->get('data.apc');
-        $params      = $this->removeAdditionalParameters($request);
-        $params      = $dataService->normalizeAssigned($params, $this->getUser());
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Article::class));
+
+        $params = $this->removeAdditionalParameters($request);
+        $params = $this->get('data.apc')->normalizeAssigned($params, $this->getUser());
 
         try {
             $criteria = ArticlePendingCreateCriteria::fromParameters(
@@ -131,24 +128,19 @@ class ArticlePendingCreateController extends BaseController
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
-        $apc   = $dataService->selectAPC($criteria, $page, $count);
 
-        return View::create(
-            $this->wrap($apc),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.apc')->selectAPC($criteria, $page, $count)));
     }
 
     /**
      * @param QueryBuilder $qb
      * @param array        $params
      */
-    private function applyFilters(
-        QueryBuilder $qb,
-        array $params
-    ) {
+    private function applyFilters(QueryBuilder $qb, array $params)
+    {
         // handle the only allowed filter "assigned_person"
         if (array_key_exists('assigned_person', $params)) {
             $assignee = $params['assigned_person'] === 'me'
@@ -158,7 +150,9 @@ class ArticlePendingCreateController extends BaseController
             $alias = $qb->getRootAliases()[0];
             $qb
                 ->where($alias.'.assigned_person = :assignee')
-                ->setParameters(compact('assignee'));
+                ->setParameters(compact('assignee'))
+            ;
+
             unset($params['assigned_person']);
         }
 
