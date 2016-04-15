@@ -1,9 +1,7 @@
 import React, { PropTypes } from 'react';
 import { createProject, editProject, deleteProject } from '../../../../Actions/navActions';
-import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import Immutable from 'immutable';
-import Loader from 'react-loader';
-import { Popup, CollectionField } from '../../../../../Common/Components/Popup';
+import { Popup } from '../../../../../Common/Components/Popup';
 import { AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../../Common/Components/Form';
 import {
   BaseForm,
@@ -19,9 +17,9 @@ import { connect } from 'react-redux';
 export class ProjectForm extends BaseForm {
 
   static propTypes = {
-    project: PropTypes.object,
+    project:    PropTypes.object,
     tasksCount: PropTypes.number,
-    dispatch: PropTypes.func.isRequired
+    dispatch:   PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -30,15 +28,16 @@ export class ProjectForm extends BaseForm {
     const localState = this.state;
     const emptyObject = Immutable.fromJS({});
     const project = props.project || emptyObject;
+    const set = Immutable.Set([]);
 
     this.state = {
       ...localState,
 
-      title: project.get('title'),
+      title:            project.get('title'),
       showOnlySelected: false,
-      agents: project.get('agents', emptyObject),
-      teams: project.get('teams', emptyObject),
-      departments: project.get('departments', emptyObject)
+      agents:           project.get('agents', set),
+      teams:            project.get('teams', set),
+      departments:      project.get('departments', set)
     };
   }
 
@@ -67,10 +66,10 @@ export class ProjectForm extends BaseForm {
     const { project, dispatch } = this.props;
     const isNew = !project.get('id');
     const submitData = {
-      title: this.state.title,
+      title:       this.state.title,
       departments: this.state.departments.toArray(),
-      teams: this.state.teams.toArray(),
-      agents: this.state.agents.toArray()
+      teams:       this.state.teams.toArray(),
+      agents:      this.state.agents.toArray()
     };
 
     let promise;
@@ -84,7 +83,7 @@ export class ProjectForm extends BaseForm {
       () => {
         !this.unmounted && this.setState({ submit: false });
       },
-        result => {
+      result => {
         !this.unmounted && this.setState({
           errors: result.getData().errors,
           submit: false
@@ -101,10 +100,12 @@ export class ProjectForm extends BaseForm {
     this.setState({ submit: true });
     const { project, dispatch } = this.props;
     dispatch(deleteProject(project.get('id'))).catch((result) => {
-      !this.unmounted && this.setState({
-        errors: result.getData().errors,
-        submit: false
-      });
+      if (!this.unmounted) {
+        this.setState({
+          errors: result.getData().errors,
+          submit: false
+        });
+      }
     });
   };
 
@@ -115,7 +116,7 @@ export class ProjectForm extends BaseForm {
     return (
       <Popup>
         <div className="dpw--popup-header">
-          <i className="fa fa-tags"/>
+          <i className="fa fa-tags" />
           Project - {isNew ? 'Create New' : 'Edit'}
         </div>
 
@@ -128,7 +129,8 @@ export class ProjectForm extends BaseForm {
               </h2>
               <div className="dpw--popup-form-container">
                 <input type="text" placeholder="Example Project" value={this.state.title}
-                       onChange={this.onChangeTitle} />
+                  onChange={this.onChangeTitle}
+                  />
               </div>
             </div>
           </div>
@@ -152,46 +154,47 @@ export class ProjectForm extends BaseForm {
           </div>
 
 
-
           <div className="dpw--popup-content-line">
 
             <AssignAgentContainer selected={this.state.agents.toSet()}
-                                  showOnlySelected={this.state.showOnlySelected}
-                                  filter={this.state.quickFilter}
-                                  onChange={this.onChange.bind(this, 'agents')} />
+              showOnlySelected={this.state.showOnlySelected}
+              filter={this.state.quickFilter}
+              onChange={(value) => this.onChange('agents', value)}
+              />
 
             <AssignTeamContainer selected={this.state.teams.toSet()}
-                                 showOnlySelected={this.state.showOnlySelected}
-                                 filter={this.state.quickFilter}
-                                 onChange={this.onChange.bind(this, 'teams')} />
+              showOnlySelected={this.state.showOnlySelected}
+              filter={this.state.quickFilter}
+              onChange={(value) => this.onChange('teams', value)}
+              />
 
             <AssignDepartmentContainer selected={this.state.departments.toSet()}
-                                       showOnlySelected={this.state.showOnlySelected}
-                                       filter={this.state.quickFilter}
-                                       onChange={this.onChange.bind(this, 'departments')} />
+              showOnlySelected={this.state.showOnlySelected}
+              filter={this.state.quickFilter}
+              onChange={(value) => this.onChange('departments', value)}
+              />
           </div>
 
           <div className="dpw--popup-content-line">
             <div className="dpw--popup-content-left">
-              <a href="#" className="dpw--popup-button" onClick={this.onSubmit} style={{minWidth: 175}}>
+              <a href="#" className="dpw--popup-button" onClick={this.onSubmit} style={{ minWidth: 175 }}>
                 {isNew ? 'Save new project' : 'Update project'}
               </a>
               {!isNew ?
                 <a href="#" className="dpw--popup-button" onClick={this.onDeletePrompt}
-                   style={{minWidth: 175, background: '#ff5460'}}>
+                  style={{ minWidth: 175, background: '#ff5460' }}>
                   Delete project and all tasks
                 </a>
-              : null}
+                : null}
               {!isNew ?
                 <Notification ref="deleteModal" title="Delete this project?" onConfirm={this.onDeleteConfirm}>
                   Are you sure you want to delete "{project.get('title')}"?
                   <br />
                   {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
                 </Notification>
-              : null}
+                : null}
             </div>
           </div>
-
 
 
         </div>

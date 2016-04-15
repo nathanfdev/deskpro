@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 
 export class BaseForm extends React.Component {
 
@@ -37,13 +38,16 @@ export class BaseForm extends React.Component {
 
   onUnassignAll = (event) => {
     event.preventDefault();
-    this.setState({ assign: {} });
+    const set = Immutable.Set([]);
+    this.setState({
+      agents:      set,
+      teams:       set,
+      departments: set
+    });
   };
 
-  onChange(prop, value) {
-    this.setState({
-      [prop]: value
-    });
-  }
+  onChange = (prop, value) => {
+    this.setState({ [prop]: value });
+  };
 
 }

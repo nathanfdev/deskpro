@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Detached } from 'DeskPRO/Component/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectForm } from './ProjectForm/ProjectForm';
 import { ListItemContainer } from '../ListItemContainer';
 import Immutable from 'immutable';
@@ -51,7 +50,7 @@ export class Projects extends React.Component {
   onCoverClick = (event) => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
-    console.info('target', event.target);
+
     if (event.target.className.indexOf('dpw-site-cover') !== -1) {
       this.onEdit(null, event);
     }
@@ -68,7 +67,7 @@ export class Projects extends React.Component {
     return project && project.get('id') && this.countMap[project.get('id')] || 0;
   }
 
-  renderProject(project, index) {
+  renderProject = (project, index) => {
     const urlHash = `project-${project.get('id')}-${project.get('title')}`;
 
     return (
@@ -76,9 +75,7 @@ export class Projects extends React.Component {
         urlHash={urlHash}
         listOptions={{ project: [project.get('id')] }}>
 
-        <ListItem count={this.countMap[project.get('id')] || 0}
-          onEdit={this.onEdit.bind(this, project)}>
-
+        <ListItem count={this.countMap[project.get('id')] || 0} onEdit={() => this.onEdit(project)}>
           <div part="label" className="section-list-title">
             <i className="fa fa-book" />
             <div className="cutted">
@@ -88,12 +85,11 @@ export class Projects extends React.Component {
         </ListItem>
       </ListItemContainer>
     );
-  }
+  };
 
   render() {
     const { projects } = this.props;
     const { project } = this.state;
-    const renderProject = this.renderProject.bind(this);
 
     return (
       <Section>
@@ -105,14 +101,14 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          {projects.map(renderProject)}
+          {projects.map(this.renderProject)}
         </ul>
 
         <Detached>
           {this.state.project
             ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
-            <ProjectForm project={project} tasksCount={this.getCount(project)} />
-          </div>
+                <ProjectForm project={project} tasksCount={this.getCount(project)} />
+              </div>
             : null
           }
         </Detached>
