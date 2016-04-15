@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Zend\XmlRpc\Client\Exception\HttpException;
 
 /**
  * Logs exceptions to error.log.
@@ -45,12 +48,14 @@ class ExceptionLoggerListener implements EventSubscriberInterface
     {
         $e = $event->getException();
 
+        // Ignore client errors like 404s etc
         if (
-            $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-            || $e instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
-            || $e instanceof \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-            || $e instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException
+            (
+                $e instanceof HttpException
+                && $e->getCode() >= 400
+                && $e->getCode() < 500
+            )
+            || $e instanceof MethodNotAllowedException
         ) {
             return;
         }
