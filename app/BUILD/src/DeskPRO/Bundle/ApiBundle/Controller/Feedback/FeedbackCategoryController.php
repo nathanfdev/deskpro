@@ -37,12 +37,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class FeedbackCategoryController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/feedback_categories")
  */
 class FeedbackCategoryController extends BaseController
 {
@@ -59,17 +59,14 @@ class FeedbackCategoryController extends BaseController
      *     },
      * )
      *
-     * @Rest\Get("/feedback_categories", name="api_feedback_categories")
+     * @Rest\Get("")
      * @Rest\View("list")
      *
      * @return View
-     *
-     * @internal param Request $request
      */
     public function listAction()
     {
-        /* @ToDo move below functionality into repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('category.id', 'category.input')
             ->from('DeskPRO:CustomDataFeedback', 'category')
@@ -77,13 +74,9 @@ class FeedbackCategoryController extends BaseController
             ->where('field.title = :title')
             ->setParameter('title', 'Category')
             ->groupBy('category.input')
-            ->orderBy('category.input', 'asc');
+            ->orderBy('category.input', 'asc')
+        ;
 
-        $categories = $qb->getQuery()->getResult();
-
-        return View::create(
-            $this->wrap($categories),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 }

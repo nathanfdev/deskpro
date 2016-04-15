@@ -32,22 +32,23 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class FeedbackLabelController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/feedback_labels")
  */
 class FeedbackLabelController extends BaseController
 {
     /**
-     * Fetch all feedback with labels only.
+     * Fetch all feedback labels.
      *
      * @ApiDoc(
      *     section="Feedback",
@@ -56,26 +57,23 @@ class FeedbackLabelController extends BaseController
      *     description="get list of feedback labels",
      *     statusCodes={
      *         200="Returned if request was successful"
-     *     },
-     *     output={
-     *          "class"="array<Application\DeskPRO\Entity\Feedback>",
-     *          "groups"= {"labels"}
      *     }
      * )
-     * @Rest\Get("/feedback_labels_list", name="api_feedback_labels_list")
-     * @Rest\View(serializerGroups={"labels"})
-     *
-     * @throws \LogicException
+     * @Rest\Get("")
      *
      * @return View
      */
     public function listAction()
     {
-        $feedback = $this->getRepository('Application\DeskPRO\Entity\Feedback')->findAll();
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('DISTINCT l.label')
+            ->from(LabelFeedback::class, 'l')
+        ;
 
-        return View::create(
-            $this->wrap($feedback),
-            Response::HTTP_OK
-        );
+        $labels = $qb->getQuery()->getScalarResult();
+        $labels = array_map('current', $labels);
+
+        return View::create($this->wrap($labels));
     }
 }

@@ -34,45 +34,23 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to feedback types.
  *
+ * **Note that current model called as Category, so don't be fooled with this - it's type**
+ *
  * @ApiModes("all")
+ * @Rest\Route("/feedback_types")
+ * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackCategory")
  */
-class FeedbackTypeController extends BaseController
+class FeedbackTypeController extends CrudController
 {
-    /**
-     * Fetch all feedback types.
-     *
-     * **Note that current model called as Category, so don't be fooled with this - it's type**
-     *
-     * @ApiDoc(
-     *     section="Feedback",
-     *     tags={"unstable"="#ff6666", "feedback"="#4422bb"},
-     *     resourceDescription="Operations about feedback",
-     *     description="get a filtered list of feedback types",
-     *     statusCodes={
-     *         200="Returned if request was successful"
-     *     },
-     *     output="array<Application\DeskPRO\Entity\FeedbackCategory>"
-     * )
-     * @Rest\Get("/feedback_types", name="api_feedback_types")
-     *
-     * @return View
-     */
-    public function listAction()
-    {
-        $types = $this->getRepository(FeedbackCategory::class)->findBy([], ['title' => 'ASC']);
-
-        return View::create(
-            $this->wrap($types),
-            Response::HTTP_OK
-        );
-    }
+    public static $exposeOnly = ['get', 'list'];
+    public static $entity     = FeedbackCategory::class;
+    public static $listSort   = 'title';
+    public static $listOrder  = 'asc';
 }

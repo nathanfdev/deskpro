@@ -132,7 +132,7 @@ class ArticlePendingCreateController extends BaseController
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
 
-        return View::create($this->get('data.apc')->selectAPC($criteria, $page, $count));
+        return View::create($this->wrap($this->get('data.apc')->selectAPC($criteria, $page, $count)));
     }
 
     /**

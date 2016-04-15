@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -144,7 +145,6 @@ abstract class CrudController extends BaseController
         $this->checkExposed(__METHOD__);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
 
-        /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('e')
@@ -321,8 +321,8 @@ abstract class CrudController extends BaseController
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
-        $sort  = static::$listSort;
-        $order = static::$listOrder;
+        $orderBy  = static::$listSort;
+        $orderDir = static::$listOrder;
 
         if (is_array(static::$sortOptions)) {
             $sortParam = strtolower($request->get('order_by'));
@@ -330,18 +330,17 @@ abstract class CrudController extends BaseController
                 throw $this->createBadRequestException('Unknown sort field');
             }
 
-            $sort = isset(static::$sortOptions[$sortParam])
+            $orderBy = isset(static::$sortOptions[$sortParam])
                   ? static::$sortOptions[$sortParam]
                   : static::$listSort;
 
-            $order = strtolower($request->get('order_dir'));
-            if ($order && !in_array($order, ['asc', 'desc'])) {
+            $orderDir = strtolower($request->get('order_dir'));
+            if ($orderDir && !in_array($orderDir, ['asc', 'desc'])) {
                 throw $this->createBadRequestException('Unknown order value');
             }
         }
 
-        $qb->orderBy($alias.'.'.$sort, $order);
-        $qb->orderBy($alias.'.id', $order);
+        $qb->orderBy($alias.'.'.$orderBy, $orderDir);
     }
 
     /**
