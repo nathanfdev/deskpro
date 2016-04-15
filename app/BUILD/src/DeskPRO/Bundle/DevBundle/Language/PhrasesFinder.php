@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -174,12 +174,20 @@ class PhrasesFinder
                 'adm.agents.perm_',
                 'adm.email_templates.',
                 'adm.settings.reset_demo_',
-                'dmin.emailtpl_desc.',
+                'admin.emailtpl_desc.',
                 'admin.languages.phrasegroup_',
                 'admin.portal.color_',
                 'agent.prefs.',
                 'agent.time.',
                 'api.error_codes.',
+                'user.lang.',
+                'user.error.',
+                'portal.forms.',
+                'portal.chat.',
+                'portal.email_subjects.',
+                'portal.emails.',
+                'portal.error.',
+                'user.time.',
             ])).')/';
         }
 
