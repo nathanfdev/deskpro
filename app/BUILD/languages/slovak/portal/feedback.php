@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Spätná väzba',
-    'portal.feedback.section-desc'    => 'Tieto návrhy boli schválené zákazníkmi ako vy; skúste problém s nimi prediskutovať a prísť na koreň problému spoločne.',
-    'portal.feedback.search-title'    => 'Spätná väzba',
-    'portal.feedback.filter_sort'     => 'Zoradiť',
     'portal.feedback.form_title'      => 'Nadpis',
+    'portal.feedback.search-title'    => 'Spätná väzba',
+    'portal.feedback.section-desc'    => 'Tieto návrhy boli schválené zákazníkmi ako vy; skúste problém s nimi prediskutovať a prísť na koreň problému spoločne.',
+    'portal.feedback.section-title'   => 'Spätná väzba',
     'portal.feedback.submit_feedback' => 'Potvrdiť spätnú väzbu',
 );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,6 @@ return array(
     'user.emails.comment_approved'            => 'Din kommentar har blitt publisert.',
     'user.emails.comment_deleted'             => 'Din kommentar ble brukt til å forbedre siden.',
     'user.emails.comment_thank-you'           => 'Takk for din kommentar på {{link}}',
-    'user.emails.comment_validate-email'      => 'Vennligst bekreft epostaddressen din ved å trykke på følgende link:',
-    'user.emails.do-not-reply'                => 'Vennligst ikke svar på denne eposten. Dette er en automatisk generert melding og svar vil ikke bli lest.',
     'user.emails.feedback_agent-validation'   => 'Legg merke til at din tilbakemelding ikke vil bli publisert før en av våre medarbeidere godkjenner den.',
     'user.emails.feedback_approved'           => 'Vi sender deg en epost for å fortelle deg at din tilbakemelding har blitt godkjent og kan ses på nettsiden vår.',
     'user.emails.feedback_closed'             => 'Din tilbakemelding {{title}} ble markert {{status}}',
@@ -42,7 +40,6 @@ return array(
     'user.emails.feedback_published'          => 'Du sendte inn tilbakemeldingen "{{title}}" har blitt godkjent og vil nå bli vist på nettsidene våre.',
     'user.emails.feedback_thank-you'          => 'Takk for at ga oss tilbakemeldingen "{{title}}"',
     'user.emails.feedback_updated'            => 'Din tilbakemelding "{{title}}" har nå blitt oppdatert. Den har nå fått statusen "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'Vennligst bekreft epostaddressen din ved å klikke på følgende lenke:',
     'user.emails.feedback_votes'              => 'Din tilbakemelding har fått <strong>1</strong> stemme. Se tilbakemeldingen her:|Din tilbakemelding har fått <strong>{{count}}</strong> stemmer. Se tilbakemeldingen her:',
     'user.emails.greeting'                    => 'Kjære {{to_name}},',
     'user.emails.label_view-online'           => 'Se denne online',
@@ -61,6 +58,4 @@ return array(
     'user.emails.ticket_received'             => 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.',
     'user.emails.ticket_reply-confirm'        => 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.',
     'user.emails.ticket_validate'             => 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.',
-    'user.emails.tickets_ommitted'            => '1 melding har blitt utelatt|{{count}} melding har blitt utelatt',
-    'user.emails.view_full_history_online'    => 'Se hele saken online',
 );

@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Feedback',
-    'portal.feedback.section-desc'    => 'Diese Vorschläge wurden von Kunden wie Ihnen übermittelt. Wir empfehlen Ihnen diese zu diskutieren und für die zu Voten denen Sie zustimmen sowie eigene Vorschläge zu unterbreiten, falls eine Anregung noch nicht aufgelistet ist.',
-    'portal.feedback.search-title'    => 'Feedback',
-    'portal.feedback.filter_sort'     => 'Sortieren',
     'portal.feedback.form_title'      => 'Titel',
+    'portal.feedback.search-title'    => 'Feedback',
+    'portal.feedback.section-desc'    => 'Diese Vorschläge wurden von Kunden wie Ihnen übermittelt. Wir empfehlen Ihnen diese zu diskutieren und für die zu Voten denen Sie zustimmen sowie eigene Vorschläge zu unterbreiten, falls eine Anregung noch nicht aufgelistet ist.',
+    'portal.feedback.section-title'   => 'Feedback',
     'portal.feedback.submit_feedback' => 'Feedback abgeben',
 );

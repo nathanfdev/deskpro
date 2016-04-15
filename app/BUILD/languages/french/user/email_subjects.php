@@ -29,14 +29,12 @@
 return array(
     'user.email_subjects.chat_transcript'          => 'Transcription du Chat',
     'user.email_subjects.comment-approved'         => 'Votre commentaire a été approuvé',
-    'user.email_subjects.comment-confirmation'     => 'Merci pour votre commentaire',
     'user.email_subjects.comment-deleted'          => 'Votre commentaire a été lu par nos agents',
     'user.email_subjects.email-too-big'            => 'Votre email "{{subject}}" n\'a pu être envoyé',
     'user.email_subjects.email_new-confirm'        => 'Validez votre adresse email',
     'user.email_subjects.feedback_new'             => 'Merci de nous avoir fait part de vos remarques',
     'user.email_subjects.feedback_new-approved'    => 'Votre remarque a été approuvée',
     'user.email_subjects.feedback_new-comment'     => 'Il y a un nouveau commentaire sur "{{title}}"',
-    'user.email_subjects.feedback_new-confirm'     => 'Merci de nous avoir fait part de vos remarques (validation nécessaire)',
     'user.email_subjects.feedback_new-disapproved' => 'Votre remarque a été rejetée',
     'user.email_subjects.feedback_updated'         => 'Votre remarque a été mise à jour: {{title}}',
     'user.email_subjects.kb_sub_new'               => 'Nouveaux articles',
@@ -49,5 +47,4 @@ return array(
     'user.email_subjects.ticket-rate'              => 'Evaluez la qualité de l\'aide reçue concernant votre ticket "{{ticket.subject}}"',
     'user.email_subjects.ticket_new-participant'   => 'Une nouvelle personne a été ajoutée à votre ticket',
     'user.email_subjects.tickets_re'               => 'RE:{{ticket.subject}}',
-    'user.email_subjects.validate-email'           => 'Validez votre adresse email',
 );

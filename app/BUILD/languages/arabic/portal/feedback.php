@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'أقتراحات',
-    'portal.feedback.section-desc'    => 'هذه الأقتراحات تم أضفافتها بواسطة عملاء أخرين; يسعدنا ان تشاركنا النقاش و التصويت على الأقتراحات التي تناسبك ويمكنك أضافة أقتراح جديد إذا لم يكن مضاف مسبقاً.',
-    'portal.feedback.search-title'    => 'أقتراحات',
-    'portal.feedback.filter_sort'     => 'سرد',
     'portal.feedback.form_title'      => 'العنوان',
+    'portal.feedback.search-title'    => 'أقتراحات',
+    'portal.feedback.section-desc'    => 'هذه الأقتراحات تم أضفافتها بواسطة عملاء أخرين; يسعدنا ان تشاركنا النقاش و التصويت على الأقتراحات التي تناسبك ويمكنك أضافة أقتراح جديد إذا لم يكن مضاف مسبقاً.',
+    'portal.feedback.section-title'   => 'أقتراحات',
     'portal.feedback.submit_feedback' => 'أضف أقتراحك',
 );
