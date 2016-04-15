@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -90,7 +91,7 @@ class FeedbackCommentController extends CrudController
      *      output="<Application\DeskPRO\Entity\FeedbackComment>"
      * )
      * @Rest\View(serializerGroups={"details"})
-     * @Rest\Get("/", name="api_feedback_comments_list")
+     * @Rest\Get("", name="api_feedback_comments_list")
      *
      * @param Request $request
      *
