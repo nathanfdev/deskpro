@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -264,24 +265,21 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
             $reply_pos = null;
 
             foreach ($this->snippet_items as $item) {
-                if (!$reply_pos) {
-                    $reply_pos = $item->reply_pos;
-                }
+                $reply_pos    = $item->reply_pos;
+                $snippet_desc = '';
+
                 if ($item->reply_pos == 'overwrite') {
-                    $ret[] = 'Reply with snippet: '.$item->snippet->title;
+                    $snippet_desc = 'Reply with snippet: '.$item->snippet->title;
                 } elseif ($item->reply_pos == 'append') {
-                    $ret[] = 'Append snippet to reply: '.$item->snippet->title;
+                    $snippet_desc = 'Append snippet to reply: '.$item->snippet->title;
                 } else {
-                    $ret[] = 'Prepend snippet to reply: '.$item->snippet->title;
+                    $snippet_desc = 'Prepend snippet to reply: '.$item->snippet->title;
                 }
-            }
 
-            $ret = implode(', ', $ret);
+                $html = '';
+                if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
+                    $snippet_text = array();
 
-            $html = '';
-            if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-                $snippet_text = array();
-                foreach ($this->snippet_items as $item) {
                     $text = App::getTranslator()->objectChoosePhraseText(
                         $item->snippet,
                         'snippet',
@@ -289,31 +287,34 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
                             $GLOBALS['DP_ACTIVE_TICKET']->language,
                         )
                     );
-                    $text = trim($text);
-                    if (!$text) {
-                        continue;
-                    }
 
-                    switch ($item->reply_pos) {
-                        case 'append':
-                            $snippet_text[] = $text;
-                            break;
-                        case 'prepend':
-                            array_unshift($snippet_text, $text);
-                            break;
-                        case 'overwrite':
-                            $snippet_text = array($text);
-                            break;
+                    if ($text = trim($text)) {
+                        switch ($item->reply_pos) {
+                            case 'append':
+                                $snippet_text[] = $text;
+                                break;
+                            case 'prepend':
+                                array_unshift($snippet_text, $text);
+                                break;
+                            case 'overwrite':
+                                $snippet_text = array($text);
+                                break;
+                        }
+
+                        $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
+                        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
+                        $formatter->addVar('agent_signature', '');
+                        $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
                     }
                 }
 
-                $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-                $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
-                $formatter->addVar('agent_signature', '');
-                $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
+                $snippet_desc = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$snippet_desc;
+                $snippet_desc .= '<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+
+                $ret[] = $snippet_desc;
             }
 
-            $ret = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$ret.'<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+            $ret = implode(', ', $ret);
 
             return $ret;
         }
