@@ -40,10 +40,10 @@ class AddLabelsAction extends AbstractAction implements ActionWithOptionsInterfa
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'array');
+        $resolver->setRequired('add_labels');
+        $resolver->setAllowedTypes('add_labels', 'array');
         $resolver->setAllowedValues(
-            'options',
+            'add_labels',
             function ($value) {
                 return !empty($value);
             }

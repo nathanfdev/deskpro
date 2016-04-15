@@ -44,7 +44,7 @@ class ApplySetDueDateAction extends AbstractActionApplicator implements ActionAp
     public function apply(array $tasks)
     {
         foreach ($tasks as $task) {
-            $task->setDateDue(new \DateTime($this->options));
+            $task->setDateDue(new \DateTime($this->options['set_due_date']));
         }
     }
 }

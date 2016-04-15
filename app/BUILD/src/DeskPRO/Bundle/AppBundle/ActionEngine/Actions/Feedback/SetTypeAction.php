@@ -41,10 +41,10 @@ class SetTypeAction extends AbstractAction implements ActionWithOptionsInterface
     /** @var  \Application\DeskPRO\Entity\FeedbackCategory */
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setRequired('set_type');
+        $resolver->setAllowedTypes('set_type', ['string', 'int']);
         $resolver->setAllowedValues(
-            'options',
+            'set_type',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

@@ -111,3 +111,68 @@ services:
       - %kernel.cache_dir%
       - 'api_permissions'
 
+  ###
+  ### Voters
+  ###
+
+  security.voter.permission_groups:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter
+    arguments: ["@service_container"]
+    public: false
+    tags:
+      - { name: security.voter }
+
+  security.voter.permission_groups.article:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ArticlesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.chat:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ChatVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.downloads:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\DownloadsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.feedback:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\FeedbackVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.news:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\NewsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.organizations:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\OrganizationsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.organization_notes:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\OrganizationNotesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.people:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PeopleVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.tasks:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.tickets:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.ticket_messages:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
+    tags:
+      - { name: security.voter.permission_groups }

@@ -26,22 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+
 /**
- * DeskPRO.
+ * Class TasksVoter.
  */
-
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
-
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
-
-class SetStatusAction extends AbstractAction implements ActionWithOptionsInterface
+class TasksVoter implements PermissionGroupEntityVoterInterface
 {
-    public static function configureOptions(ActionOptionsResolver $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'string');
-        $resolver->setAllowedValues('options', ['0', '1']);
+        return Task::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
+    {
+        return $user->hasPerm('agent_tasks.use');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
     }
 }

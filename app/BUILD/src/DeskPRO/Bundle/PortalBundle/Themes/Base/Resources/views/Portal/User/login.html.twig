@@ -42,6 +42,9 @@
             {% if auth_manager.isLoginFormVisible %}
                 <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post" novalidate>
                     <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+                    {% if destination %}
+                        <input type="hidden" name="_destination" value="{{ destination }}"/>
+                    {% endif %}
 
 
 

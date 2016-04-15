@@ -40,10 +40,10 @@ class SetDueDateAction extends AbstractAction implements ActionWithOptionsInterf
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'string');
+        $resolver->setRequired('set_due_date');
+        $resolver->setAllowedTypes('set_due_date', 'string');
         $resolver->setAllowedValues(
-            'options',
+            'set_due_date',
             function ($value) {
                 $dateTime = new \DateTime($value);
                 $errors = \DateTime::getLastErrors();

@@ -40,7 +40,6 @@ use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatSelectCriteria;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -80,10 +79,8 @@ class ChatsController extends BaseController
      */
     public function getCountsAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
-        $dataService = $this->get('data.chat');
-
         $params = $this->removeAdditionalParameters($request);
+
         try {
             /** @var ChatCountCriteria $criteria */
             $criteria = ChatCountCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
@@ -91,12 +88,7 @@ class ChatsController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        $count = $dataService->countChats($criteria);
-
-        return View::create(
-            $this->wrap($count),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.chat')->countChats($criteria)));
     }
 
     /**
@@ -126,9 +118,6 @@ class ChatsController extends BaseController
      */
     public function listAction(Request $request)
     {
-        /** @var \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService $dataService */
-        $dataService = $this->get('data.chat');
-
         $params = $this->removeAdditionalParameters($request);
 
         try {
@@ -140,11 +129,7 @@ class ChatsController extends BaseController
 
         $page  = $request->query->get('page', 1);
         $count = $request->query->get('count', 10);
-        $chats = $dataService->selectChats($criteria, $page, $count);
 
-        return View::create(
-            $this->wrap($chats),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('data.chat')->selectChats($criteria, $page, $count)));
     }
 }

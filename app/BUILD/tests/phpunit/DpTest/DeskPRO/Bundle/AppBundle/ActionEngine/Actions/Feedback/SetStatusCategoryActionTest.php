@@ -47,7 +47,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_be_instantiable()
     {
-        $action = new SetStatusCategoryAction(['options' => 1]);
+        $action = new SetStatusCategoryAction(['set_status_category' => 1]);
         $this->assertInstanceOf(SetStatusCategoryAction::class, $action);
         $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(ActionWithOptionsInterface::class, $action);
@@ -67,14 +67,14 @@ class SetStatusCategoryActionTest extends DeskProTestCase
     {
         $resolver = $this->prophesize(ActionOptionsResolver::class);
         $resolver
-            ->setRequired(Argument::exact('options'))
+            ->setRequired(Argument::exact('set_status_category'))
             ->shouldBeCalled();
         $resolver
-            ->setAllowedTypes(Argument::exact('options'), Argument::exact(['string', 'int']))
+            ->setAllowedTypes(Argument::exact('set_status_category'), Argument::exact(['string', 'int']))
             ->shouldBeCalled();
         $resolver
             ->setAllowedValues(
-                Argument::exact('options'),
+                Argument::exact('set_status_category'),
                 Argument::that(
                     function ($value) {
                         return !empty($value);
@@ -92,7 +92,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_empty_id_param()
     {
-        new SetStatusCategoryAction(['options' => 0]);
+        new SetStatusCategoryAction(['set_status_category' => 0]);
     }
 
     /**
@@ -101,7 +101,7 @@ class SetStatusCategoryActionTest extends DeskProTestCase
      */
     public function it_should_raise_exception_on_the_none_integer_id_param()
     {
-        new SetStatusCategoryAction(['options' => ['one']]);
+        new SetStatusCategoryAction(['set_status_category' => ['one']]);
     }
 
     /**

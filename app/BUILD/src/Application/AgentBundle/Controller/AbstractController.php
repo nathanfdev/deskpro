@@ -144,7 +144,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * @return Application\DeskPRO\Entity\Person
+     * @return \Application\DeskPRO\Entity\Person
      */
     public function getPerson()
     {

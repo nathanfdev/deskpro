@@ -29,9 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,6 +44,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class CsrfDoubleSubmitExtension.
+ */
 class CsrfDoubleSubmitExtension extends AbstractTypeExtension
 {
     const COOKIE_NAME = '_dp_csrf_token';
@@ -58,19 +62,22 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
     private $environment;
 
     /**
-     * @var LanguageManager
+     * Constructor.
+     *
+     * @param RequestStack $requestStack
+     * @param string       $environment
      */
-    private $languageManager;
-
-    public function __construct(RequestStack $requestStack, LanguageManager $languageManager, $environment)
+    public function __construct(RequestStack $requestStack, $environment)
     {
         // generally its not a good idea to make form's directly associated with a request object,
         // but in this case its the easiest way to access the cookie value
-        $this->requestStack    = $requestStack;
-        $this->environment     = $environment;
-        $this->languageManager = $languageManager;
+        $this->requestStack = $requestStack;
+        $this->environment  = $environment;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->shouldNotApply($options)) {
@@ -80,24 +87,9 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
-    protected function shouldNotApply(array $options)
-    {
-        if ('test' === $this->environment) {
-            return true;
-        }
-
-        if (!$options['csrf_double_submit_protection']) {
-            return true;
-        }
-
-        // don't add CSRF on the saved form requests
-        if ($options['saved_form_subrequest']) {
-            return true;
-        }
-
-        return false;
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function finishView(FormView $view, FormInterface $form, array $options)
     {
         // if saved_form_subrequest is true, we should still add to the view, because
@@ -123,6 +115,9 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         }
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onPreSubmit(FormEvent $event)
     {
         $form = $event->getForm();
@@ -141,17 +136,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 || strlen($cookieValue) < 5
                 || $data[$cookieName] !== $cookieValue
             ) {
-                $errorMessage = null;
-                if ($lang = $this->languageManager->getLanguageStack()->getActive()) {
-                    $errorMessage = $this->languageManager->getTranslator($lang)->phrase(
-                        $formConfig->getOption('csrf_double_submit_error_message')
-                    );
-                }
-                if (!$errorMessage) {
-                    $errorMessage = $formConfig->getOption('csrf_double_submit_error_message');
-                }
-
-                $form->addError(new FormError($errorMessage));
+                $form->addError(new FormError($formConfig->getOption('csrf_double_submit_error_code')));
             }
 
             if (is_array($data)) {
@@ -162,35 +147,56 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
         $event->setData($data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        parent::configureOptions($resolver);
-
         // apply to all forms and use the new method of protection
         // calling-code can always turn this off and the other back on
-        $resolver->setDefaults(
-            [
-                'csrf_protection'                  => false,
-                'csrf_double_submit_protection'    => true,
-                'csrf_double_submit_cookie_name'   => self::COOKIE_NAME,
-                'csrf_double_submit_error_message' => 'portal.forms.error_csrf',
-            ]
-        )->setAllowedTypes(
-            [
-                'csrf_double_submit_protection'    => 'bool',
-                'csrf_double_submit_cookie_name'   => 'string',
-                'csrf_double_submit_error_message' => 'string',
-            ]
-        );
+        $resolver
+            ->setDefaults([
+                'csrf_protection'                => false,
+                'csrf_double_submit_protection'  => true,
+                'csrf_double_submit_cookie_name' => self::COOKIE_NAME,
+                'csrf_double_submit_error_code'  => ErrorsCodes::CSRF,
+            ])
+            ->setAllowedTypes([
+                'csrf_double_submit_protection'  => 'bool',
+                'csrf_double_submit_cookie_name' => 'string',
+                'csrf_double_submit_error_code'  => 'string',
+            ])
+        ;
     }
 
     /**
-     * Returns the name of the type being extended.
-     *
-     * @return string The name of the type being extended
+     * {@inheritdoc}
      */
     public function getExtendedType()
     {
         return FormType::class;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return bool
+     */
+    protected function shouldNotApply(array $options)
+    {
+        if ('test' === $this->environment) {
+            return true;
+        }
+
+        if (!$options['csrf_double_submit_protection']) {
+            return true;
+        }
+
+        // don't add CSRF on the saved form requests
+        if ($options['saved_form_subrequest']) {
+            return true;
+        }
+
+        return false;
     }
 }
