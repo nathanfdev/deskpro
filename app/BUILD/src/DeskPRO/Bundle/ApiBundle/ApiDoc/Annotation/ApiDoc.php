@@ -36,19 +36,45 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc as BaseApiDoc;
 class ApiDoc extends BaseApiDoc
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $api_modes;
+    protected $target;
 
     /**
      * @var array
      */
-    protected $api_tags;
+    protected $apiModes;
+
+    /**
+     * @var array
+     */
+    protected $apiTags;
 
     /**
      * @var string
      */
-    protected $class_output;
+    protected $classOutput;
+
+    /**
+     * @var string
+     */
+    protected $classInput;
+
+    public function __construct(array $data)
+    {
+        if (isset($data['target'])) {
+            $this->target = $data['target'];
+        }
+        parent::__construct($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
 
     /**
      * @param mixed $modes
@@ -57,7 +83,7 @@ class ApiDoc extends BaseApiDoc
      */
     public function setApiModes($modes)
     {
-        $this->api_modes = $modes;
+        $this->apiModes = $modes;
 
         return $this;
     }
@@ -69,7 +95,7 @@ class ApiDoc extends BaseApiDoc
      */
     public function setApiTags($tags)
     {
-        $this->api_tags = $tags;
+        $this->apiTags = $tags;
 
         return $this;
     }
@@ -79,7 +105,7 @@ class ApiDoc extends BaseApiDoc
      */
     public function getApiModes()
     {
-        return $this->api_modes;
+        return $this->apiModes;
     }
 
     /**
@@ -87,17 +113,29 @@ class ApiDoc extends BaseApiDoc
      */
     public function getApiTags()
     {
-        return $this->api_tags;
+        return $this->apiTags;
     }
 
     /**
-     * @param mixed $class_output
+     * @param mixed $classOutput
      *
      * @return $this
      */
-    public function setClassOutput($class_output)
+    public function setClassOutput($classOutput)
     {
-        $this->class_output = $class_output;
+        $this->classOutput = $classOutput;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $classInput
+     *
+     * @return $this
+     */
+    public function setClassInput($classInput)
+    {
+        $this->classInput = $classInput;
 
         return $this;
     }
@@ -107,10 +145,12 @@ class ApiDoc extends BaseApiDoc
      */
     public function toArray()
     {
-        $data                 = parent::toArray();
-        $data['api_modes']    = $this->api_modes;
-        $data['api_tags']     = $this->api_tags;
-        $data['class_output'] = $this->class_output;
+        $data                = parent::toArray();
+        $data['apiModes']    = $this->apiModes;
+        $data['apiTags']     = $this->apiTags;
+        $data['classOutput'] = $this->classOutput;
+        $data['classInput']  = $this->classOutput;
+        $data['target']      = $this->target;
 
         return $data;
     }
@@ -122,9 +162,22 @@ class ApiDoc extends BaseApiDoc
     {
         $output = parent::getOutput();
         if (!$output) {
-            $output = $this->class_output;
+            $output = $this->classOutput;
         }
 
         return $output;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getInput()
+    {
+        $input = parent::getInput();
+        if (!$input) {
+            $input = $this->classInput;
+        }
+
+        return $input;
     }
 }

@@ -29,8 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\Common\Annotations\Reader;
@@ -38,38 +36,49 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Nelmio\ApiDocBundle\Extractor\HandlerInterface;
 use Symfony\Component\Routing\Route;
 
+/**
+ * Class OverrideHandler.
+ */
 class OverrideHandler implements HandlerInterface
 {
+    /**
+     * @var Reader
+     */
     private $reader;
 
+    /**
+     * @var array
+     */
+    private $annotationsList = [];
+
+    /**
+     * OverrideHandler constructor.
+     *
+     * @param Reader $reader
+     */
     public function __construct(Reader $reader)
     {
         $this->reader = $reader;
     }
 
+    /**
+     * @param ApiDoc            $annotation
+     * @param array             $annotations
+     * @param Route             $route
+     * @param \ReflectionMethod $method
+     */
     public function handle(ApiDoc $annotation, array $annotations, Route $route, \ReflectionMethod $method)
     {
         if ($annotation instanceof DpApiDoc
-            && ($class_reflection = ControllerUtils::extractControllerReflection($route))
+            && ($classReflection = ControllerUtils::extractControllerReflection($route))
         ) {
-            if (!$annotation->getOutput()
-                && in_array(ControllerUtils::cleanAction($method->name, true), $this->getCreativeMethods())
-                && ($output = $this->reader->getClassAnnotation($class_reflection, OutputEntity::class))
-                && ($output instanceof OutputEntity)
-            ) {
-                $output = $output->getOutput();
-                if (ControllerUtils::cleanAction($method->name, true) === 'list') {
-                    $output = "array<{$output}>";
-                }
-                $annotation->setClassOutput($output);
-            }
+            $annotation = clone $annotation;
+            $this->getClassAnnotations($classReflection);
 
-            if (!$annotation->getSection()
-                && ($section_annotation = $this->reader->getClassAnnotation($class_reflection, ApiDocSection::class))
-                && ($section_annotation instanceof ApiDocSection)
-            ) {
-                $annotation->setSection($section_annotation->getSection());
-            }
+            $action = ControllerUtils::cleanAction($method->getName());
+
+            $this->overrideWith('all', $annotation, $action);
+            $this->overrideWith($method->getName(), $annotation, $action);
         }
     }
 
@@ -78,7 +87,7 @@ class OverrideHandler implements HandlerInterface
      *
      * @return array
      */
-    private function getCreativeMethods()
+    private function getMethodsWithOutput()
     {
         $return = [];
         foreach (CrudController::$methods as $action => $creative) {
@@ -88,5 +97,134 @@ class OverrideHandler implements HandlerInterface
         }
 
         return $return;
+    }
+
+    /**
+     * @param \ReflectionClass $classReflection
+     */
+    private function getClassAnnotations(\ReflectionClass $classReflection)
+    {
+        foreach ($this->reader->getClassAnnotations($classReflection) as $annotation) {
+            if ($annotation instanceof DpApiDoc) {
+                $this->annotationsList[$annotation->getTarget()] = $annotation;
+            }
+        }
+    }
+
+    /**
+     * @param          $key
+     * @param DpApiDoc $annotation
+     * @param          $action
+     */
+    private function overrideWith($key, DpApiDoc $annotation, $action)
+    {
+        if (isset($this->annotationsList[$key])) {
+            $override = $this->annotationsList[$key];
+
+            $this->override($annotation, $override, $action, $key !== 'all');
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     * @param string   $action
+     * @param bool     $extended
+     */
+    private function override(DpApiDoc $annotation, DpApiDoc $override, $action, $extended)
+    {
+        $this->overrideOutput($annotation, $override, $action);
+        $this->overrideSection($annotation, $override);
+        $this->overrideInput($annotation, $override, $action);
+        if ($extended) {
+            $this->overrideFilters($annotation, $override);
+            $this->overrideRequirements($annotation, $override);
+            $this->overrideParameters($annotation, $override);
+            $this->overrideDescription($annotation, $override);
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     * @param          $action
+     */
+    private function overrideOutput(DpApiDoc $annotation, DpApiDoc $override, $action)
+    {
+        if (!$annotation->getOutput()
+            && in_array($action, $this->getMethodsWithOutput())
+            && $override->getOutput()
+        ) {
+            $output = $override->getOutput();
+            if ($action === 'list') {
+                $output = "array<{$output}>";
+            }
+            $annotation->setClassOutput($output);
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideSection(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        if (!$annotation->getSection()
+            && $override->getSection()
+        ) {
+            $annotation->setSection($override->getSection());
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     * @param          $action
+     */
+    private function overrideInput(DpApiDoc $annotation, DpApiDoc $override, $action)
+    {
+        if (($action === 'put' || $action === 'post') && !$annotation->getInput() && $override->getInput()) {
+            $annotation->setClassInput($override->getInput());
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideFilters(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        foreach ($override->getFilters() as $name => $filter) {
+            $annotation->addFilter($name, $filter);
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideRequirements(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        $annotation->setRequirements($override->getRequirements());
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideParameters(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        $annotation->setParameters(array_merge($annotation->getParameters(), $override->getParameters()));
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideDescription(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        if ($override->getDescription()) {
+            $annotation->setDescription($override->getDescription());
+        }
     }
 }
