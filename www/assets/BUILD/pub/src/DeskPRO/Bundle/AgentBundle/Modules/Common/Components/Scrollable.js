@@ -23,8 +23,14 @@ export class Scrollable extends React.Component {
     return true;
   }
 
+  componentWillReceiveProps(props) {
+    this.dirty = true;
+  }
+
   shouldComponentUpdate() {
-    return false;
+    const dirty = this.dirty;
+    this.dirty = false;
+    return dirty;
   }
 
   renderWithScrollbars() {

@@ -3,18 +3,18 @@ import { createProject, editProject, deleteProject } from '../../../../Actions/n
 import { FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 import Immutable from 'immutable';
 import Loader from 'react-loader';
-import { FieldGroup, Popup, CollectionField } from '../../../../../Common/Components/Popup';
-import { AssignAgentContainer } from '../../../../../Common/Components/Form/AssignAgentContainer';
+import { Popup, CollectionField } from '../../../../../Common/Components/Popup';
+import { AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../../Common/Components/Form';
 import {
   BaseForm,
-  Header,
-  FullField,
-  FloatField,
   ShowOnlySelected,
   Unassign
 } from '../../../Form';
 import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
 import { Notification } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notification';
+import { connect } from 'react-redux';
+
+@connect()
 
 export class ProjectForm extends BaseForm {
 
@@ -37,7 +37,7 @@ export class ProjectForm extends BaseForm {
       title: project.get('title'),
       showOnlySelected: false,
       agents: project.get('agents', emptyObject),
-      agentTeams: project.get('teams', emptyObject),
+      teams: project.get('teams', emptyObject),
       departments: project.get('departments', emptyObject)
     };
   }
@@ -69,7 +69,7 @@ export class ProjectForm extends BaseForm {
     const submitData = {
       title: this.state.title,
       departments: this.state.departments.toArray(),
-      teams: this.state.agentTeams.toArray(),
+      teams: this.state.teams.toArray(),
       agents: this.state.agents.toArray()
     };
 
@@ -114,75 +114,88 @@ export class ProjectForm extends BaseForm {
 
     return (
       <Popup>
-        <Header>
-          Project - {project ? 'Edit' : 'Create New'}
-        </Header>
+        <div className="dpw--popup-header">
+          <i className="fa fa-tags"/>
+          Project - {isNew ? 'Create New' : 'Edit'}
+        </div>
 
-        <form>
-          <div className="dpw--popup-content">
-            <FieldGroup>
-              <FullField title="Title">
-                <input name="title"
-                       type="text"
-                       placeholder="Title"
-                       value={this.state.title}
-                       onChange={this.onChangeTitle}/>
+        <div className="dpw--popup-content">
 
-                <FieldErrors errors={this.state.errors} name="title"/>
-              </FullField>
-            </FieldGroup>
+          <div className="dpw--popup-content-line">
+            <div className="dpw--popup-content-full">
+              <h2 className="dpw--popup-item-section-title">
+                Project Title
+              </h2>
+              <div className="dpw--popup-form-container">
+                <input type="text" placeholder="Example Project" value={this.state.title}
+                       onChange={this.onChangeTitle} />
+              </div>
+            </div>
+          </div>
 
-            <FieldGroup>
-              <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter}
-                             onChange={this.onChangeQuickFilter}/>
-              </FloatField>
+          <div className="dpw--popup-content-line">
+            <div className="dpw--popup-content-left">
+              <h2 className="dpw--popup-item-section-title">
+                Project Permissions
+              </h2>
+              <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
+            </div>
 
-              <FloatField align="right">
-                <ShowOnlySelected value={this.state.showOnlySelected}
-                                  onChange={this.onChangeFilterSelected}/>
-                <Unassign onClick={this.onUnassignAll}/>
-              </FloatField>
-            </FieldGroup>
+            <div className="dpw--popup-content-right">
+              <div className="dpw--popup-content-item">
+                <ShowOnlySelected value={this.state.showOnlySelected} onChange={this.onChangeFilterSelected} />
+              </div>
+              <div className="dpw--popup-content-item">
+                <Unassign onClick={this.onUnassignAll} />
+              </div>
+            </div>
+          </div>
 
-            <FieldGroup>
-              <AssignAgentContainer selected={this.state.agents.toSet()}
-                                    showOnlySelected={this.state.showOnlySelected}
-                                    filter={this.state.quickFilter}
-                                    onChange={this.onChange.bind(this, 'agents')} />
 
-            </FieldGroup>
 
-            <FieldGroup>
-              <FullField>
-                {!this.state.submit && <button type="submit"
-                                               value="Save"
-                                               className="dpw--popup-button"
-                                               onClick={this.onSubmit}>
-                  Save
-                </button>
-                }
-                {!isNew && !this.state.submit && <button type="button"
-                                                         className="dpw--popup-button"
-                                                         onClick={this.onDeletePrompt}>
-                  Delete
-                </button>
-                }
-                {!isNew && <Notification ref="deleteModal"
-                                  title="Delete this project?"
-                                  onConfirm={this.onDeleteConfirm}>
+          <div className="dpw--popup-content-line">
+
+            <AssignAgentContainer selected={this.state.agents.toSet()}
+                                  showOnlySelected={this.state.showOnlySelected}
+                                  filter={this.state.quickFilter}
+                                  onChange={this.onChange.bind(this, 'agents')} />
+
+            <AssignTeamContainer selected={this.state.teams.toSet()}
+                                 showOnlySelected={this.state.showOnlySelected}
+                                 filter={this.state.quickFilter}
+                                 onChange={this.onChange.bind(this, 'teams')} />
+
+            <AssignDepartmentContainer selected={this.state.departments.toSet()}
+                                       showOnlySelected={this.state.showOnlySelected}
+                                       filter={this.state.quickFilter}
+                                       onChange={this.onChange.bind(this, 'departments')} />
+          </div>
+
+          <div className="dpw--popup-content-line">
+            <div className="dpw--popup-content-left">
+              <a href="#" className="dpw--popup-button" onClick={this.onSubmit} style={{minWidth: 175}}>
+                {isNew ? 'Save new project' : 'Update project'}
+              </a>
+              {!isNew ?
+                <a href="#" className="dpw--popup-button" onClick={this.onDeletePrompt}
+                   style={{minWidth: 175, background: '#ff5460'}}>
+                  Delete project and all tasks
+                </a>
+              : null}
+              {!isNew ?
+                <Notification ref="deleteModal" title="Delete this project?" onConfirm={this.onDeleteConfirm}>
                   Are you sure you want to delete "{project.get('title')}"?
                   <br />
                   {tasksCount > 0 && `All (${tasksCount}) tasks will be deleted too!`}
                 </Notification>
-                }
-                <Loader opacity={0}
-                        width={3}
-                        loaded={!this.state.submit}/>
-              </FullField>
-            </FieldGroup>
+              : null}
+            </div>
           </div>
-        </form>
+
+
+
+        </div>
+
       </Popup>
     );
   }

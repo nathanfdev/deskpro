@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-export class Popup extends React.Component {
+class Popup extends React.Component {
 
   static propTypes = {
     indicator: PropTypes.string,
@@ -13,11 +13,7 @@ export class Popup extends React.Component {
     const { indicator, children, additionalClassNames } = this.props;
 
     return (
-      <popup className={classNames(
-        'sidebar-hover',
-        additionalClassNames,
-        {'hide-indicator': indicator === 'none'}
-      )}>
+      <popup className={classNames(additionalClassNames, {'hide-indicator': indicator === 'none'})}>
         <div className="dpw--popup-main">
           {children}
         </div>
@@ -25,3 +21,5 @@ export class Popup extends React.Component {
     );
   }
 }
+
+export { Popup };

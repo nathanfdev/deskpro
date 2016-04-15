@@ -35,14 +35,14 @@ export class ListItem extends React.Component {
     });
   };
 
-  renderEditButton() {
-    const onClick = event => {
-      event.preventDefault();
-      this.props.onEdit(event);
-    };
+  onEditClick = event => {
+    event.preventDefault();
+    this.props.onEdit(event);
+  };
 
+  renderEditButton() {
     return (
-      <a href="#" className="edit-icon" onClick={onClick}>
+      <a href="#" onClick={this.onEditClick}>
         <i className="fa fa-cog" />
       </a>
     );
@@ -56,6 +56,11 @@ export class ListItem extends React.Component {
     );
   }
 
+  onItemControlClick = event => {
+    event.preventDefault();
+    this.props.onItemControlClick && this.props.onItemControlClick(event);
+  };
+
   renderItemControl() {
     const { onItemControlClick } = this.props;
 
@@ -63,13 +68,8 @@ export class ListItem extends React.Component {
       return '';
     }
 
-    const onClick = event => {
-      event.preventDefault();
-      onItemControlClick(event);
-    };
-
     return (
-      <a href="" className="list-counter-dropdown active" onClick={onClick}>
+      <a href="" className="list-counter-dropdown active" onClick={this.onItemControlClick}>
         <span>&nbsp;</span>
         <i className="fa fa-angle-down"></i>
       </a>

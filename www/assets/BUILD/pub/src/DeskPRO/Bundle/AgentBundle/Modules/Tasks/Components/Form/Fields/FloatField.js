@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Children } from 'react';
 
 export class FloatField extends React.Component {
 
@@ -8,14 +8,15 @@ export class FloatField extends React.Component {
   };
 
   render() {
-    let children = this.props.children;
-    if (children instanceof Array === false) {
-      children = [children];
-    }
+    const { children } = this.props;
 
     return (
       <div className={`dpw--popup-content-${this.props.align}`}>
-        {children.map((child, index) => <div className="dpw-popup-content-item" key={index}>{child}</div>)}
+        {Children.map(children, (child, index) =>
+          <div className="dpw-popup-content-item" key={index}>
+            {child}
+          </div>
+        )}
       </div>
     );
   }

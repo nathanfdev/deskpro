@@ -3,7 +3,6 @@ export { Popup } from './Popup';
 export { FieldGroup } from './Fields/FieldGroup';
 export { FullField } from './Fields/FullField';
 export { FloatField } from './Fields/FloatField';
-export { CollectionField } from './Fields/CollectionField';
 export { ShowOnlySelected } from './Fields/ShowOnlySelected';
 export { Unassign } from './Fields/Unassign';
 export { AgentsList } from './Fields/AgentsList';

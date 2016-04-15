@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { ProjectForm } from './ProjectForm/ProjectForm';
@@ -19,6 +19,8 @@ export class Projects extends React.Component {
     this.state = {
       project: null
     };
+
+    this.countMap = [];
   }
 
   /**
@@ -49,13 +51,24 @@ export class Projects extends React.Component {
     });
   };
 
-  renderProject(countMap, project, index) {
+  onCoverClick = event => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    if (event.target.className !== 'dpw-site-cover') {
+      return false;
+    }
+    this.onEdit(null, event);
+  };
+
+  renderProject(project, index) {
+    const urlHash = `project-${project.get('id')}-${project.get('title')}`;
+
     return (
       <ListItemContainer key={index}
-                         urlHash={`project-${project.get('id')}-${project.get('title')}`}
+                         urlHash={urlHash}
                          listOptions={{project: [project.get('id')]}}>
 
-        <ListItem count={countMap[project.get('id')] || 0}
+        <ListItem count={this.countMap[project.get('id')] || 0}
                   onEdit={this.onEdit.bind(this, project)}>
 
           <div part="label" className="section-list-title">
@@ -69,16 +82,22 @@ export class Projects extends React.Component {
     );
   }
 
+  componentWillUpdate() {
+    const { projects, projectsCount = [] } = this.props;
+    this.countMap = [];
+    projectsCount.forEach(projectCount => {
+      this.countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
+    });
+  }
+
+  getCount(project) {
+    return project && project.get('id') && this.countMap[project.get('id')] || 0;
+  }
+
   render() {
     const { projects, projectsCount = [] } = this.props;
     const { project } = this.state;
-
-    const countMap = [];
-    projectsCount.forEach(projectCount => {
-      countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
-    });
-
-    const renderProject = this.renderProject.bind(this, countMap);
+    const renderProject = this.renderProject.bind(this);
 
     return (
       <Section>
@@ -93,15 +112,13 @@ export class Projects extends React.Component {
           {projects.map(renderProject)}
         </ul>
 
-        <Detached isOpen={this.state.project}
-                  positionTarget={this}
-                  positionAt="right+5 top-6"
-                  collision="fit">
-
-          <ClickOut onClickOut={this.onEdit.bind(this, null)}>
-            <ProjectForm project={project}
-                         tasksCount={project && project.get('id') && countMap[project.get('id')] || 0}/>
-          </ClickOut>
+        <Detached>
+          {this.state.project
+            ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
+                <ProjectForm project={project} tasksCount={this.getCount(project)} />
+              </div>
+            : null
+          }
         </Detached>
       </Section>
     );

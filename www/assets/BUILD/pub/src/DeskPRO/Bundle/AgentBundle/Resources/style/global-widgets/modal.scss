@@ -7,6 +7,12 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
+.dpw-site-cover.with-popup {
+  padding: 100px;
+  overflow-y: auto;
+  z-index: 1005;
+}
+
 .dpw--modal {
   &::after {
     clear: both;

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export class CheckboxListItem extends React.Component {
+export class RadioListItem extends React.Component {
 
   static propTypes = {
     value: PropTypes.any,
@@ -26,14 +26,14 @@ export class CheckboxListItem extends React.Component {
 
   render() {
     const { checked } = this.state;
-    const className = 'checkbox-button checkbox-with-label' + (checked ? ' checked' : '');
+    const className = 'dpwd-radio-button' + (checked ? ' active' : '');
 
     return (
       <a className={className}>
-        <span className="checkbox">
-          {checked ? <i className="fa fa-check"></i> : null}
+        <span className="dpwd-radio-button-disc"></span>
+        <span className="radio-button-title">
+          {this.props.value}
         </span>
-        {this.props.value}
       </a>
     );
   }
