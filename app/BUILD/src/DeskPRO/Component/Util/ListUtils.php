@@ -308,7 +308,7 @@ class ListUtils
             }
         }
 
-        return $a;
+        return $ret;
     }
 
     /**
