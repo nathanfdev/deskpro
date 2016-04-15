@@ -43,9 +43,9 @@ class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionA
      */
     public function apply(array $tickets)
     {
-        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options);
+        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options['set_workflow']);
         if (!$workflow) {
-            throw new BadRequestHttpException("Workflow with ID=$this->options doesn't exists");
+            throw new BadRequestHttpException('Workflow with ID='.$this->options['set_workflow']." doesn't exists");
         }
         foreach ($tickets as $ticket) {
             $ticket->setWorkflow($workflow);

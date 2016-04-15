@@ -61,7 +61,7 @@ class ApplySetFollowersAction extends AbstractTicketApplicator implements Action
             ->select('p')
             ->from('DeskPRO:Person', 'p')
             ->andWhere('p.id IN (:ids)')
-            ->setParameter('ids', $this->options);
+            ->setParameter('ids', $this->options['set_followers']);
         $this->followers = $qb->getQuery()->getResult();
     }
 }

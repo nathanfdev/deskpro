@@ -40,10 +40,10 @@ class SetStatusCategoryAction extends AbstractAction implements ActionWithOption
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', ['string', 'int']);
+        $resolver->setRequired('set_status_category');
+        $resolver->setAllowedTypes('set_status_category', ['string', 'int']);
         $resolver->setAllowedValues(
-            'options',
+            'set_status_category',
             function ($value) {
                 return (is_int($value) && $value > 0) || ctype_digit($value);
             }

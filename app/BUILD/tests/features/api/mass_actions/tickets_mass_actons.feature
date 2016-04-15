@@ -23,7 +23,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_status": "awaiting_agent"}
 }
     """
-    And print last JSON response
     Then the response status code should be 200
 
   Scenario: I get ticket with ID=1 and it's status should be equal 'awaiting_agent'
@@ -44,6 +43,7 @@ Feature: /mass_actions/tickets endpoint
      "set_product": 1,
      "set_language": 1,
      "set_workflow": 1,
+     "set_followers": [1, 2, 1000],
      "assign": {
         "agent": 1,
         "team": 1,
@@ -53,7 +53,6 @@ Feature: /mass_actions/tickets endpoint
   }
 }
     """
-    And print last JSON response
     Then the response status code should be 200
 
   Scenario: I set incorrect status = 1 for ticket with ID=1
@@ -68,7 +67,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
     And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "options" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
+    And the JSON node "message" should be equal to 'The option "set_status" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
 
   Scenario: I try to set non-existing product for ticket with ID=1
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -79,7 +78,6 @@ Feature: /mass_actions/tickets endpoint
 }
     """
     Then the response status code should be 400
-    And print last JSON response
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
     And the JSON node "message" should exist
@@ -93,7 +91,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"assign":{"agent":2000}}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -108,7 +105,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"assign":{"team":2000}}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -123,7 +119,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"assign":{"department":2000}}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -138,7 +133,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_category":2000}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -153,7 +147,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_language":2000}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -168,7 +161,6 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_workflow":2000}
 }
     """
-    And print last JSON response
     Then the response status code should be 400
     And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
@@ -187,3 +179,6 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.department" should be equal to 1
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
+    And the JSON node "data.followers" should have 2 elements
+    And the JSON node "data.followers[0]" should be equal to 1
+    And the JSON node "data.followers[1]" should be equal to 2

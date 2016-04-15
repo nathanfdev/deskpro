@@ -43,9 +43,9 @@ class ApplySetProductAction extends AbstractTicketApplicator implements ActionAp
      */
     public function apply(array $tickets)
     {
-        $product = $this->em->getRepository('DeskPRO:Product')->find($this->options);
+        $product = $this->em->getRepository('DeskPRO:Product')->find($this->options['set_product']);
         if (null === $product) {
-            throw new BadRequestHttpException("Product with ID=$this->options doesn't exists");
+            throw new BadRequestHttpException('Product with ID='.$this->options['set_product']." doesn't exists");
         }
         foreach ($tickets as $ticket) {
             $ticket->setProduct($product);

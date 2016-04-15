@@ -40,7 +40,7 @@ class SetFollowersAction extends AbstractAction implements ActionWithOptionsInte
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'array');
+        $resolver->setRequired('set_followers');
+        $resolver->setAllowedTypes('set_followers', 'array');
     }
 }

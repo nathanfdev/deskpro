@@ -41,10 +41,10 @@ class SetHiddenStatusAction extends AbstractAction implements ActionWithOptionsI
 {
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('options');
-        $resolver->setAllowedTypes('options', 'string');
+        $resolver->setRequired('set_hidden_status');
+        $resolver->setAllowedTypes('set_hidden_status', 'string');
         $resolver->setAllowedValues(
-            'options',
+            'set_hidden_status',
             [
                 Feedback::HIDDEN_STATUS_DELETED,
                 Feedback::HIDDEN_STATUS_DRAFT,

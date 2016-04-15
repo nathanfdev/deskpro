@@ -43,9 +43,9 @@ class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionA
      */
     public function apply(array $tickets)
     {
-        $language = $this->em->getRepository('DeskPRO:Language')->find($this->options);
+        $language = $this->em->getRepository('DeskPRO:Language')->find($this->options['set_language']);
         if (!$language) {
-            throw new BadRequestHttpException("Language with ID=$this->options doesn't exists");
+            throw new BadRequestHttpException('Language with ID='.$this->options['set_language']." doesn't exists");
         }
         foreach ($tickets as $ticket) {
             $ticket->setLanguage($language);

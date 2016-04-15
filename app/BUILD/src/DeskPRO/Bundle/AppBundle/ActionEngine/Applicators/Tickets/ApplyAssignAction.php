@@ -76,7 +76,8 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
     private function init()
     {
         $collection = [];
-        foreach ($this->options as $type => $id) {
+
+        foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
                     $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
