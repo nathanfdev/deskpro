@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -87,24 +86,5 @@ class TypeUtils
     public static function getSnakeCaseBaseTypeName($var)
     {
         return StringUtils::toSnakeCase(self::getBaseTypeName($var));
-    }
-
-    public static function cleanAction($action_name, $remove_version = false)
-    {
-        // remove class name if __METHOD__ was passed
-        if (strpos($action_name, '::')) {
-            $action_name = explode('::', $action_name)[1];
-        }
-
-        if ($remove_version) {
-            $action_name = preg_replace('#([a-zA-Z]+?)(\d+)(Action)#', '$1$3', $action_name);
-        }
-
-        // remove 'Action' postfix to get the short action name in case if __METHOD__ or __FUNCTION__ is passed
-        $action = strpos($action_name, 'Action') === strlen($action_name) - strlen('Action')
-            ? substr($action_name, 0, strlen($action_name) - strlen('Action'))
-            : $action_name;
-
-        return $action;
     }
 }

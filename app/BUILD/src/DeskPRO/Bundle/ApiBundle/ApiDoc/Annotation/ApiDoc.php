@@ -36,17 +36,17 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc as BaseApiDoc;
 class ApiDoc extends BaseApiDoc
 {
     /**
-     * @var
+     * @var array
      */
     protected $api_modes;
 
     /**
-     * @var
+     * @var array
      */
     protected $api_tags;
 
     /**
-     * @var
+     * @var string
      */
     protected $class_output;
 
@@ -91,13 +91,26 @@ class ApiDoc extends BaseApiDoc
     }
 
     /**
+     * @param mixed $class_output
+     *
+     * @return $this
+     */
+    public function setClassOutput($class_output)
+    {
+        $this->class_output = $class_output;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function toArray()
     {
-        $data              = parent::toArray();
-        $data['api_modes'] = $this->api_modes;
-        $data['api_tags']  = $this->api_tags;
+        $data                 = parent::toArray();
+        $data['api_modes']    = $this->api_modes;
+        $data['api_tags']     = $this->api_tags;
+        $data['class_output'] = $this->class_output;
 
         return $data;
     }
@@ -113,17 +126,5 @@ class ApiDoc extends BaseApiDoc
         }
 
         return $output;
-    }
-
-    /**
-     * @param mixed $class_output
-     *
-     * @return $this
-     */
-    public function setClassOutput($class_output)
-    {
-        $this->class_output = $class_output;
-
-        return $this;
     }
 }

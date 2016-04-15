@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
@@ -63,7 +62,7 @@ class AgentAlertsController extends CrudController
      * Get user's notification counts.
      *
      * @ApiDoc(
-     *     section="Notifications and alerts counts",
+     *     section="Notifications and alerts",
      *     resourceDescription="Operations about agent alerts",
      *     description="Get notifications counts",
      *     statusCodes={
