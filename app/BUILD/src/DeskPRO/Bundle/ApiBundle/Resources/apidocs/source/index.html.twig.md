@@ -2,8 +2,8 @@
 title: API Reference
 
 language_tabs:
-  - php
   - javascript
+  - php
 
 toc_footers:
   - <a href='http://deskpro.com/'>Obtain a DeskPRO version</a>
@@ -12,7 +12,6 @@ toc_footers:
 
 includes:
   - sideloading
-  - additional
   - mass_actions
 
 search: true

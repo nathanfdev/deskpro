@@ -3,21 +3,21 @@
 For performing mass actions on collection of objects, we must send POST to **/mass_actions/{content}** endpoint. 
 See example on javascript tab.
 
-> Example of the POST reguest body
+> Example of the POST request body
  
-```javascript
+```json
 {
-    ids:[66, 123, 234],      // List of IDs of object for actions applying
-    params:                 // Actions parameters
+    "ids":[66, 123, 234],
+    "params":
       {
-        set_status: "resolved",
-        assign: {agent: 2},
-        set_product: 5,
-        set_category: 4,
-        set_workflow: 3,
-        set_language: 5,
-        set_followers: [512, 1, 2, 3, 4, 5],
-        set_of_actions":["mark_as_spam", "delete"]
+        "set_status": "resolved",
+        "assign": {"agent": 2},
+        "set_product": 5,
+        "set_category": 4,
+        "set_workflow": 3,
+        "set_language": 5,
+        "set_followers": [512, 1, 2, 3, 4, 5],
+        "set_of_actions":["mark_as_spam", "delete"]
       }
  }
 ```
@@ -34,15 +34,15 @@ See example on javascript tab.
     * approve
     * delete
         
-```javascript
+```json
 {
-   set_category: "Linux",
-   set_hidden_status: "spam",
-   set_status_category: 1,
-   set_type: 2
-   add_labels: ["label1", "second", "any string"]
-   remove_labels: ["label1", "second", "any string"]
-   set_of_actions:["approve"]
+   "set_category": "Linux",
+   "set_hidden_status": "spam",
+   "set_status_category": 1,
+   "set_type": 2,
+   "add_labels": ["label1", "second", "any string"],
+   "remove_labels": ["label1", "second", "any string"],
+   "set_of_actions":["approve"]
 }
 ```        
 
@@ -52,9 +52,9 @@ See example on javascript tab.
     * approve
     * delete
         
-```javascript
+```json
 {
-   set_of_actions:["approve"]
+   "set_of_actions":["approve"]
 }
 ```
 
@@ -67,13 +67,13 @@ See example on javascript tab.
     * assign: {"agent": personId OR "team": teamId OR "department": departmentId}
     * delete
         
-```javascript
+```json
 {
-   set_due_date:["2016-04-04T12:03:35+03:00"],
-   set_project: 1,
-   assign: {"agent": 10},
-   set_status: [1],
-   set_of_actions: ["delete"]
+   "set_due_date":["2016-04-04T12:03:35+03:00"],
+   "set_project": 1,
+   "assign": {"agent": 10},
+   "set_status": [1],
+   "set_of_actions": ["delete"]
 }
 ```
 
@@ -89,16 +89,16 @@ See example on javascript tab.
     * delete
     * mark_as_spam
         
-```javascript
+```json
 {
-    set_status: "resolved",
-    assign: {agent: 2},
-    set_product: 5,
-    set_category: 4,
-    set_workflow: 3,
-    set_language: 5,
-    set_followers: [512, 1, 2, 3, 4, 5],
-    set_of_actions":["mark_as_spam", "delete"]
+    "set_status": "resolved",
+    "assign": {"agent": 2},
+    "set_product": 5,
+    "set_category": 4,
+    "set_workflow": 3,
+    "set_language": 5,
+    "set_followers": [512, 1, 2, 3, 4, 5],
+    "set_of_actions":["mark_as_spam", "delete"]
 }
 ```
 

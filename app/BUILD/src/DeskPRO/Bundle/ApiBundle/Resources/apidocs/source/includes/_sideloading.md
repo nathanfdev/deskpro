@@ -72,8 +72,8 @@ Therefore you should remember, that "With great power comes great responsibility
 ```json
 {
   "status": 400,
-  "code": "You can't sideload [ ticket_snippet_content ], available types for sideloading are [ text_snippet_category, text_snippet_content ]",
-  "message": "You can't sideload [ ticket_snippet_content ], available types for sideloading are [ text_snippet_category, text_snippet_content ]",
+  "code": "You can't sideload [ blah-blah ], available types for sideloading are [ blah-blah-blah ]",
+  "message": "You can't sideload [ blah-blah ], available types for sideloading are [ blah-blah-blah ]",
   "errors": null
 }
 ```
