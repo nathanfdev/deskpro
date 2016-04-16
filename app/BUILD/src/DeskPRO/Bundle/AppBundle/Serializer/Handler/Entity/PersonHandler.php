@@ -34,11 +34,13 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as SerializedPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class PersonHandler.
@@ -56,15 +58,32 @@ class PersonHandler extends AbstractEntityHandler
     private $avatarResolver;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var array
+     */
+    private $personIds = [];
+
+    /**
+     * @var array
+     */
+    private $lastSeen = [];
+
+    /**
      * Constructor.
      *
      * @param AvatarResolver   $avatarResolver
      * @param AgentDataService $agentDataService
+     * @param EntityManager    $em
      */
-    public function __construct(AvatarResolver $avatarResolver, AgentDataService $agentDataService)
+    public function __construct(AvatarResolver $avatarResolver, AgentDataService $agentDataService, EntityManager $em)
     {
         $this->avatarResolver   = $avatarResolver;
         $this->agentDataService = $agentDataService;
+        $this->em               = $em;
     }
 
     /**
@@ -84,7 +103,6 @@ class PersonHandler extends AbstractEntityHandler
     {
         $serializerClass = $context->getMappedClass(Person::class);
 
-        //oh how I dislike it
         switch ($serializerClass) {
             case PersonProfile::class:
                 return $this->createPersonProfile($entity);
@@ -108,12 +126,40 @@ class PersonHandler extends AbstractEntityHandler
             ->setOnline($this->agentDataService->isAgentOnline($entity))
         ;
 
-        $last_seen = $this->agentDataService->getLastSeen($entity);
-        if ($last_seen) {
-            $model->setLastSeen(new \DateTime($last_seen));
-        }
+        $this->personIds[$entity->getId()] = true; // (sic!) It's faster then doing array_unique about 12-13 times
+        $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
 
         return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return string
+     */
+    public function getLastSeen(Person $entity)
+    {
+        if (!$this->lastSeen) {
+            /** @var \Application\DeskPRO\DBAL\Connection $connection */
+            $connection     = $this->em->getConnection();
+            $this->lastSeen = $connection->fetchAllKeyValue(
+                'SELECT
+                    `s`.`person_id`,
+                    MAX(`s`.`date_last`)
+                FROM
+                  `sessions` AS `s`
+                WHERE `s`.`person_id` IN (?)
+                GROUP BY (`s`.`person_id`)
+                ',
+                [implode(',', array_keys($this->personIds))]
+            );
+        }
+
+        if (isset($this->lastSeen[$entity->getId()])) {
+            return new \DateTime($this->lastSeen[$entity->getId()]);
+        }
+
+        return;
     }
 
     /**
