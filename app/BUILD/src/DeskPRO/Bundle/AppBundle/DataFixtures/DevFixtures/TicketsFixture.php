@@ -98,6 +98,11 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private $peopleIds;
 
     /**
+     * @var int[]
+     */
+    private $slas_ids;
+
+    /**
      * @var int - our test user for portal
      */
     private $joeId;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,13 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @property int $id
@@ -47,6 +49,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property int $completed_time_taken
  * @property Ticket $ticket
  * @property Sla $sla
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class TicketSla extends DomainObject
 {
@@ -57,36 +61,57 @@ class TicketSla extends DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $sla_status = 'ok';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime|null
      */
     protected $warn_date;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime|null
      */
     protected $fail_date;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_completed = false;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_completed_set = false;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var null|int
      */
     protected $completed_time_taken = null;

@@ -29,24 +29,53 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Sla;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class TicketSlaController.
+ * API access to ticket slas.
  *
  * @ApiModes("all")
+ * @ApiDocSection("Tickets")
+ * @OutputEntity("Application\DeskPRO\Entity\Sla")
  * @Rest\Route("/ticket_slas")
- * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\Sla")
  */
 class TicketSlasController extends CrudController
 {
-    public static $exposeOnly   = ['list'];
-    public static $entity       = Sla::class;
-    public static $listPaginate = false;
+    /**
+     * Retrieve the list of custom fields available for tickets.
+     *
+     * @Rest\Get("/tickets/{ticket_id}/slas", name="api_ticket_sla")
+     */
+    public function getForTicketAction($ticket_id)
+    {
+        $service = $this->get('data.ticket_slas');
+
+        return View::create(
+            $this->wrap($service->loadForTicket($ticket_id)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @Rest\Get("/tickets/{ticket_id}/slas/{sla_id}", name="api_ticket_sla_single")
+     */
+    public function getSingleAction($ticket_id, $sla_id)
+    {
+        $service = $this->get('data.ticket_slas');
+
+        return View::create(
+            $this->wrap($service->loadSingleForTicket($ticket_id, $sla_id)),
+            Response::HTTP_OK
+        );
+    }
 }
