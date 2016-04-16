@@ -114,7 +114,7 @@ class TicketsDataService extends AbstractDataService
                         break;
 
                     case TicketFilter::CATEGORY_RESOLVED:
-                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_RESOLVED);
+                        $qb->andWhere('t.status IN (:status)')->setParameter('status', [Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED]);
                         break;
 
                     case TicketFilter::CATEGORY_AWAITING_USER:
@@ -211,6 +211,7 @@ class TicketsDataService extends AbstractDataService
                     $status_list = array(
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_RESOLVED,
+                        Ticket::STATUS_ARCHIVED,
                         Ticket::STATUS_AWAITING_USER,
                     );
                 }
