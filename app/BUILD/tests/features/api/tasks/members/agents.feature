@@ -8,17 +8,6 @@ Feature: /projects/{id}/members/agents endpoint
     And my request is authenticated
 
   @reinstall
-  Scenario: I create a new project
-    And I send a POST request to "/api/v2/task_projects" with body:
-    """
-{
-  "title": "Test project"
-}
-    """
-    And the response status code should be 201
-    And the JSON node "data.id" should be equal to 1
-    And the JSON node "data.title" should be equal to "Test project"
-
   Scenario: I try to create member with malformed request
     When I send a POST request to "/api/v2/task_projects/1/members/agents"
     Then the response status code should be 400
