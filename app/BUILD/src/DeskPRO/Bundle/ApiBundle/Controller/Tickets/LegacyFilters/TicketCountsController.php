@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -43,8 +41,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class TicketCountsController.
  *
- * @ApiDocSection("Ticket filters (legacy)")
  * @ApiModes("all")
+ * @ApiDoc(target="all", section="Ticket filters (legacy)")
  */
 class TicketCountsController extends AbstractLegacyFiltersController
 {

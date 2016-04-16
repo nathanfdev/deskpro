@@ -29,14 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Component\Util\TypeUtils;
+use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -53,7 +52,16 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
  */
 abstract class CrudController extends BaseController
 {
+    public static $methods = [
+        'list'   => true,
+        'get'    => true,
+        'post'   => true,
+        'put'    => false,
+        'delete' => false,
+    ];
+
     public static $entity;
+
     public static $type;
 
     /**
@@ -480,7 +488,7 @@ abstract class CrudController extends BaseController
             return true;
         }
 
-        return in_array(TypeUtils::cleanAction($actionMethodName), static::$exposeOnly);
+        return in_array(ControllerUtils::cleanAction($actionMethodName), static::$exposeOnly);
     }
 
     /**

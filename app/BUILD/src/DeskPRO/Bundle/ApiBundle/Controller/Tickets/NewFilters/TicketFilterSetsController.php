@@ -29,12 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
@@ -47,9 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to TicketFilterSet entities.
  *
  * @ApiModes("all")
- * @ApiDocSection("Ticket filters")
- * @OutputEntity(TicketFilterSet::class)
  * @Rest\Route("/new/ticket_filter_sets")
+ * @ApiDoc(target="all", section="Ticket filters", output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet")
  */
 class TicketFilterSetsController extends CrudController
 {

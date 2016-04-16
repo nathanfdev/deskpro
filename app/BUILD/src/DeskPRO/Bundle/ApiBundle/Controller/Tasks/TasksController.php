@@ -29,12 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
@@ -56,10 +53,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class TasksController.
  *
- * @ApiDocSection("Tasks")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
  * @ApiModes("all")
  * @Rest\Route("/tasks")
+ * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
  */
 class TasksController extends CrudController
 {

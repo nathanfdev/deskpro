@@ -53,16 +53,16 @@
                     <div>{{ data.documentation|extra_markdown }}</div>
                 {% endif %}
 
-                {% if data.api_modes %}
+                {% if data.apiModes %}
                     <h4>Applicable api modes</h4>
-                        {% for mode in data.api_modes %}
+                        {% for mode in data.apiModes %}
                             <span class="tag" style="background-color: #0f6ab4">{{ mode }}</span>
                         {% endfor %}
                 {% endif %}
 
-                {% if data.api_tags %}
+                {% if data.apiTags %}
                     <h4>Api tags for this endpoint</h4>
-                    {% for tag in data.api_tags %}
+                    {% for tag in data.apiTags %}
                         <span class="tag" style="background-color: #0f6ab4">{{ tag }}</span>
                     {% endfor %}
                 {% endif %}

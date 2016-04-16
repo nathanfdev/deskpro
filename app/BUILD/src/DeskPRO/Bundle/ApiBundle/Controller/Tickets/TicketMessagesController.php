@@ -29,14 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
@@ -47,9 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketMessageController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickets")
- * @OutputEntity("Application\DeskPRO\Entity\TicketMessage")
  * @Rest\Route("/tickets/{parentId}/messages")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketMessage")
  */
 class TicketMessagesController extends CrudSubController
 {

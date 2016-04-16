@@ -29,13 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -51,9 +48,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class TextSnippetsController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Text snippets")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet")
  * @Rest\Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
+ * @ApiDoc(
+ *     target="all",
+ *     section="TaskProjects",
+ *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet"
+ * )
  */
 class TextSnippetsController extends CrudController
 {

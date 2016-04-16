@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\MassActions;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Services\ApplicatorServiceInterface;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -47,7 +45,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class MassActionsController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Mass actions")
+ * @ApiDoc(target="all", section="Mass actions")
  * @Rest\Route("/mass_actions")
  */
 class MassActionsController extends BaseController
