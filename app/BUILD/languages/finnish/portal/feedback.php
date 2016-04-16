@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Palaute',
-    'portal.feedback.section-desc'    => 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.',
-    'portal.feedback.search-title'    => 'Palaute',
-    'portal.feedback.filter_sort'     => 'Järjestä',
     'portal.feedback.form_title'      => 'Aihe',
+    'portal.feedback.search-title'    => 'Palaute',
+    'portal.feedback.section-desc'    => 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.',
+    'portal.feedback.section-title'   => 'Palaute',
     'portal.feedback.submit_feedback' => 'Lähetä palaute',
 );

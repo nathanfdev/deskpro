@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Remarques',
-    'portal.feedback.section-desc'    => 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n\'est pas encore representée ici.',
-    'portal.feedback.search-title'    => 'Remarques',
-    'portal.feedback.filter_sort'     => 'Tri',
     'portal.feedback.form_title'      => 'Titre',
+    'portal.feedback.search-title'    => 'Remarques',
+    'portal.feedback.section-desc'    => 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n\'est pas encore representée ici.',
+    'portal.feedback.section-title'   => 'Remarques',
     'portal.feedback.submit_feedback' => 'Faire une remarque',
 );

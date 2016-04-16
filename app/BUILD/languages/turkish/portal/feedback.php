@@ -27,10 +27,9 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Geri Bildirim',
-    'portal.feedback.section-desc'    => 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.',
-    'portal.feedback.search-title'    => 'Geri Bildirim',
-    'portal.feedback.filter_sort'     => 'Kısa',
     'portal.feedback.form_title'      => 'Başlık',
+    'portal.feedback.search-title'    => 'Geri Bildirim',
+    'portal.feedback.section-desc'    => 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.',
+    'portal.feedback.section-title'   => 'Geri Bildirim',
     'portal.feedback.submit_feedback' => 'Geri bildirim gönder',
 );

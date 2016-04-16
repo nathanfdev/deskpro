@@ -27,9 +27,8 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => 'Feedback',
-    'portal.feedback.section-desc'    => 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.',
     'portal.feedback.search-title'    => 'Feedback',
-    'portal.feedback.filter_sort'     => 'Sorteaza',
+    'portal.feedback.section-desc'    => 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.',
+    'portal.feedback.section-title'   => 'Feedback',
     'portal.feedback.submit_feedback' => 'Trimite feedback',
 );

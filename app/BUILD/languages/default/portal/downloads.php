@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,15 +27,12 @@
  */
 
 return array(
-    'portal.downloads.section-title'    => 'Downloads',
-    'portal.downloads.search-title'     => 'Downloads',
-    'portal.downloads.recent-downloads' => 'Recent Downloads',
-    'portal.downloads.section-desc'     => 'Browse our collection of downloads.',
-    'portal.downloads.btn-download'     => 'Download ({{size}})',
-    'portal.downloads.view-x-files'     => 'View 1 download|View {{count}} downloads',
-    'portal.downloads.x-files'          => '1 download|{{count}} downloads',
-    'portal.downloads.none'             => 'No downloads yet',
-    'portal.downloads.subscribed_info'  => 'You are subscribed to recieve notifications about this download.',
-    'portal.downloads.uploaded-on'      => 'Uploaded',
     'portal.downloads.download'         => 'Download',
+    'portal.downloads.none'             => 'No downloads yet',
+    'portal.downloads.recent-downloads' => 'Recent Downloads',
+    'portal.downloads.search-title'     => 'Downloads',
+    'portal.downloads.section-desc'     => 'Browse our collection of downloads.',
+    'portal.downloads.section-title'    => 'Downloads',
+    'portal.downloads.uploaded-on'      => 'Uploaded',
+    'portal.downloads.view-x-files'     => 'View 1 download|View {{count}} downloads',
 );

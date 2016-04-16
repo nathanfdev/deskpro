@@ -27,9 +27,8 @@
  */
 
 return array(
-    'portal.feedback.section-title'   => '피드백',
-    'portal.feedback.search-title'    => '피드백',
-    'portal.feedback.filter_sort'     => '나열',
     'portal.feedback.form_title'      => '제목',
+    'portal.feedback.search-title'    => '피드백',
+    'portal.feedback.section-title'   => '피드백',
     'portal.feedback.submit_feedback' => '피드백 작성하기',
 );

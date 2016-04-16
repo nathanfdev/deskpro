@@ -86,7 +86,7 @@ class UserSearch implements UserSearchInterface
 
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
             $search->addType('article');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'article')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
@@ -94,7 +94,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
             $search->addType('news');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'news')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
@@ -102,7 +102,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
             $search->addType('download');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'download')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
@@ -110,7 +110,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
             $search->addType('feedback');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'feedback')));
             $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
             $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
@@ -118,7 +118,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getPerson() && ($limit_types === null || in_array('ticket', $limit_types))) {
             $search->addType('ticket');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'ticket')));
 
             $f2 = new Filter\BoolOr();
@@ -143,7 +143,7 @@ class UserSearch implements UserSearchInterface
             $query = substr($query, 0, self::MAX_LEN);
         }
 
-        $bool_query = new Query\Bool();
+        $bool_query = new Query\BoolQuery();
         $qs         = $this->getQueryString($query);
         $qs->setDefaultField('_all');
         $qs->setFields(array('_id', 'ref', 'title', 'labels', 'content', 'messages'));
@@ -211,7 +211,7 @@ class UserSearch implements UserSearchInterface
 
         if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
             $search->addType('article');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'article')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
@@ -219,7 +219,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
             $search->addType('news');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'news')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
@@ -227,7 +227,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
             $search->addType('download');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'download')));
             $f->addMust(new Filter\Term(array('status' => 'published')));
             $f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
@@ -235,7 +235,7 @@ class UserSearch implements UserSearchInterface
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
             $search->addType('feedback');
-            $f = new Filter\Bool();
+            $f = new Filter\BoolFilter();
             $f->addMust(new Filter\Term(array('_type' => 'feedback')));
             $f->addMustNot(new Filter\Term(array('status' => 'hidden')));
             $f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));

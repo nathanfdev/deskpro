@@ -29,14 +29,12 @@
 return array(
     'user.email_subjects.chat_transcript'          => 'Keskustelu kopio',
     'user.email_subjects.comment-approved'         => 'Kommenttisi hyväksyttiin',
-    'user.email_subjects.comment-confirmation'     => 'Kiitos kommentistasi',
     'user.email_subjects.comment-deleted'          => 'Edustajamme on lukenut kommenttisi',
     'user.email_subjects.email-too-big'            => 'Sähköpostiosoitteesi "{{subject}}" hylättiin',
     'user.email_subjects.email_new-confirm'        => 'Vahvista sähköpostiosoitteesi',
     'user.email_subjects.feedback_new'             => 'Kiitos lähettämästäsi palautteesta',
     'user.email_subjects.feedback_new-approved'    => 'Palautteesi hyväskyttiin',
     'user.email_subjects.feedback_new-comment'     => 'Uusi kommentti ketjussa "{{title}}"',
-    'user.email_subjects.feedback_new-confirm'     => 'Kiitos lähettämästäsi palautteesta (vahvistus vaaditaan)',
     'user.email_subjects.feedback_new-disapproved' => 'Palautteesi hylättiin',
     'user.email_subjects.feedback_updated'         => 'Palautteesi ladattiin: {{title}}',
     'user.email_subjects.kb_sub_new'               => 'Uudet artikkelit',
@@ -49,5 +47,4 @@ return array(
     'user.email_subjects.ticket-rate'              => 'Arvioi saamsi palvelu tukipyynnössä "{{ticket.subject}}"',
     'user.email_subjects.ticket_new-participant'   => 'Uusi henkilö lisätty tukipyyntöösi',
     'user.email_subjects.tickets_re'               => 'VS: {{ticket.subject}}',
-    'user.email_subjects.validate-email'           => 'Vahvista sähköpostiosoitteesi',
 );

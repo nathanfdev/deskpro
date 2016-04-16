@@ -31,8 +31,6 @@ return array(
     'user.emails.comment_approved'            => 'Din kommentar har blivit publicerad.',
     'user.emails.comment_deleted'             => 'Din kommentar användes för att förbättra sidan.',
     'user.emails.comment_thank-you'           => 'Tack för din kommentar på {{link}}.',
-    'user.emails.comment_validate-email'      => 'Var vänlig och bekfräfta din e-postadress genom att klicka på följande länk:',
-    'user.emails.do-not-reply'                => 'Svara inte på detta mail. Detta mail har genererats automatiskt av en dator och eventuella svar kommer inte att läsas av någon agent.',
     'user.emails.feedback_agent-validation'   => 'Notera att din feedback inte kommer att visas på sidan innan den har blivit granskad av en agent',
     'user.emails.feedback_approved'           => 'Vi mailar till dig för att meddela att din feedback har blivit godkänd och att den nu visas publikt på vår sida.',
     'user.emails.feedback_closed'             => 'Din inskickade feedback "{{title}}" stängdes: {{status}}',
@@ -42,7 +40,6 @@ return array(
     'user.emails.feedback_published'          => 'Din feedback "{{title}}" har blivit granskad och kommer nu att visas på vår sida.',
     'user.emails.feedback_thank-you'          => 'Tack för att du skickade in din feedback "{{title}}"',
     'user.emails.feedback_updated'            => 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:',
     'user.emails.feedback_votes'              => 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:|Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:',
     'user.emails.greeting'                    => 'Hej {{to_name}},',
     'user.emails.label_view-online'           => 'Visa Online',
@@ -65,6 +62,4 @@ return array(
     'user.emails.ticket_received'             => 'Ditt ärende har registrerats. En av våra agenter kommer att kontakta dig inom kort.',
     'user.emails.ticket_reply-confirm'        => 'Tack för ditt svar. En av våra agenter kommer att kontakta dig inom kort.',
     'user.emails.ticket_validate'             => 'Tack för att du kontaktar oss.<br /><br />Innan en agent kan läsa ditt meddelande så måste du bekräfta din e-postadress.',
-    'user.emails.tickets_ommitted'            => '1 meddelande har utelämnats|{{count}} meddelanden har utelämnats',
-    'user.emails.view_full_history_online'    => 'Visa hela ärendet online',
 );

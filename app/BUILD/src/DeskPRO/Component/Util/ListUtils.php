@@ -109,6 +109,25 @@ class ListUtils
     }
 
     /**
+     * Similar to array_map except this always returns a plain array (i.e. string keys are completely discarded).
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn
+     *
+     * @return array
+     */
+    public static function map($array, $fn)
+    {
+        $arr = [];
+
+        foreach ($array as $v) {
+            $arr[] = $fn($v);
+        }
+
+        return $arr;
+    }
+
+    /**
      * Calls $fn on each value in $array and any that are not null are returned as part of a new array.
      *
      * @param \Traversable|array $array
@@ -289,7 +308,7 @@ class ListUtils
             }
         }
 
-        return $a;
+        return $ret;
     }
 
     /**

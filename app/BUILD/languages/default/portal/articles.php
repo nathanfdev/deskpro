@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,13 +27,11 @@
  */
 
 return array(
-    'portal.articles.section-title'   => 'Knowledgebase',
-    'portal.articles.section-desc'    => 'Our knowledgebase contains articles written by our support team to help you answer your questions.',
-    'portal.articles.search-title'    => 'Knowledgebase',
-    'portal.articles.authored_by'     => 'Authored By',
     'portal.articles.by-line'         => 'By {{name}} on {{date}}',
+    'portal.articles.none'            => 'No articles yet',
+    'portal.articles.search-title'    => 'Knowledgebase',
+    'portal.articles.section-desc'    => 'Our knowledgebase contains articles written by our support team to help you answer your questions.',
+    'portal.articles.section-title'   => 'Knowledgebase',
     'portal.articles.view-x-articles' => 'View 1 article|View {{count}} articles',
     'portal.articles.x-articles'      => '1 article|{{count}} articles',
-    'portal.articles.none'            => 'No articles yet',
-    'portal.articles.subscribed_info' => 'You are subscribed to recieve notifications about this article',
 );

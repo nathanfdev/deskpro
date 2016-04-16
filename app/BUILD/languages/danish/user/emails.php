@@ -31,8 +31,6 @@ return array(
     'user.emails.comment_approved'            => 'Din kommentar er blevet publiceret',
     'user.emails.comment_deleted'             => 'Din kommentar er blevet brugt til at forbedre siden.',
     'user.emails.comment_thank-you'           => 'Tak for din kommentar til {{link}}.',
-    'user.emails.comment_validate-email'      => 'Bekræft venligts din emailadresse online ved at klikke på det følgende link:',
-    'user.emails.do-not-reply'                => 'Svar venligst ikke på denne email. Dette er en maskingenereret besked og svar på denne vil ikke blive læst af vores ansatte.',
     'user.emails.feedback_agent-validation'   => 'Bemærk at din tilbagemelding ikke kan ses offentligt på vores website, før en af vores medarbejdere manuelt har godkendt den.',
     'user.emails.feedback_approved'           => 'Vi emailer dig for at fortælle at dit indlæg er blevet godkendt og nu kan ses offentligt på vores website.',
     'user.emails.feedback_closed'             => 'Din fremsendte indlæg "{{title}}" er lukket med statussen: {{status}}',
@@ -42,7 +40,6 @@ return array(
     'user.emails.feedback_published'          => 'Dit indlæg "{{title}}" er blevet godkendt og vil blive vist på vores hjemmeside.',
     'user.emails.feedback_thank-you'          => 'Tak for dit indlæg "{{title}}"',
     'user.emails.feedback_updated'            => 'Dit indlæg "{{title}}" er blevet opdateret og kan nu findes under den nye status "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'Bekræft venligts din emailadresse online ved at klikke på følgende link:',
     'user.emails.feedback_votes'              => 'Dit indlæg har i øjeblikket <strong>1</strong> stemme. Se din indlæg online på: |Dit indlæg har i øjeblikket <strong>{{count}}</strong> stemmer. Se dine indlæg online på:',
     'user.emails.greeting'                    => 'Kære {{to_name}},',
     'user.emails.label_view-online'           => 'Se online',
@@ -61,6 +58,4 @@ return array(
     'user.emails.ticket_received'             => 'Din sag er modtaget. En af vore medarbejdere vil svare snarest.',
     'user.emails.ticket_reply-confirm'        => 'Tak for dit svar. En af vore medarbejdere svare snarest.',
     'user.emails.ticket_validate'             => 'Tak fordi du kontaktede os.<br /><br />Før vore medarbejdere læser og svarer din besked, skal du bekræfte din email adresse.',
-    'user.emails.tickets_ommitted'            => '1 besked er udeladt | {{count}} beskeder er udeladt',
-    'user.emails.view_full_history_online'    => 'Se hele sagen online',
 );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,6 @@ return array(
     'user.emails.comment_approved'            => 'O seu comentário foi publicado.',
     'user.emails.comment_deleted'             => 'O seu comentário foi usado para melhorar a página.',
     'user.emails.comment_thank-you'           => 'Obrigado pelo seu comentário sobre {{link}}.',
-    'user.emails.comment_validate-email'      => 'Por favor valide o seu endereço de email clicando no link seguinte:',
-    'user.emails.do-not-reply'                => 'Por favor não responda a este email. Esta mensagem é gerada automaticamente pelo servidor e respostas a esta mensagem não serão lidas pelo nosso pessoal.',
     'user.emails.email-too-big'               => 'O seu e-mail "{{subject}}" não foi aceito, porque é mdemasiado grande. O tamanho máximo de e-mail que este helpdesk aceita é {{max_size}}. Remova todos os anexos e tente novamente.',
     'user.emails.feedback_agent-validation'   => 'Lembre-se que seu comentário não será exibido publicamente no nosso site, até que um dos nossos agentes o reveja manualmente.',
     'user.emails.feedback_approved'           => 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.',
@@ -44,7 +42,6 @@ return array(
     'user.emails.feedback_published'          => 'O comentário que enviou "{{title}}" foi validado e irá agora aparecer no nosso Website.',
     'user.emails.feedback_thank-you'          => 'Obrigado por ter enviado o seu comentário "{{title}}"',
     'user.emails.feedback_updated'            => 'O seu comentário "{{title}}" foi atualizado. Pode encontrar o mesmo com o novo estado "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'Por favor valide o seu endereço de email online, clicando no link abaixo:',
     'user.emails.feedback_votes'              => 'O seu comentário tem atualmente  <strong>1</strong> voto. Veja o seu comentário online em:|O seu comentário tem atualmente  <strong>{{count}}</strong> votos. Veja o seu comentário online em:',
     'user.emails.greeting'                    => 'Caro {{to_name}},',
     'user.emails.label_view-online'           => 'Ver Online',
@@ -53,7 +50,6 @@ return array(
     'user.emails.password_reset'              => 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:',
     'user.emails.profile_email-new-confirm'   => 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo',
     'user.emails.profile_email_link-validate' => 'Para validar o seu endereço de email simplesmente clique no link abaixo',
-    'user.emails.register-agent-validation'   => 'Nota: Antes da sua conta se tornar completamente ativa, os nossos agentes necessitam validar a sua conta. Bilhetes e outros conteúdos que já enviou serão mantidos numa fila de validação até que um agente valide as suas contas.',
     'user.emails.register-welcome'            => 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}',
     'user.emails.reject_resolved'             => 'A sua resposta não foi aceite porque o bilhete já foi marcado como resolvido. Os nossos agentes não vão ler ou responder a esta mensagem.',
     'user.emails.reject_resolved-new'         => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>',
@@ -68,6 +64,4 @@ return array(
     'user.emails.ticket_rate-question'        => 'Esta mensagem foi de ajuda?',
     'user.emails.ticket_received'             => 'O seu bilhete foi recebido. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.',
     'user.emails.ticket_reply-confirm'        => 'Obrigado pela sua resposta. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.',
-    'user.emails.tickets_ommitted'            => '1 mensagem foi omitida|{{count}} mensagens foram omitidas',
-    'user.emails.view_full_history_online'    => 'Ver bilhete online inteiro',
 );

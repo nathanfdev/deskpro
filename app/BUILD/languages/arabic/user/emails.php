@@ -32,8 +32,6 @@ return array(
     'user.emails.comment_approved'            => 'تم نشر تعليقك',
     'user.emails.comment_deleted'             => 'تم إستخدام تعليقك لتحسين الصفحه',
     'user.emails.comment_thank-you'           => 'شكرا لتعليقكم علي : {{link}}.',
-    'user.emails.comment_validate-email'      => 'يرجي تأكيد صحة بريدك الالكتروني عن طريق الضغط علي الرابط التالي :',
-    'user.emails.do-not-reply'                => 'رجاء لا تقم بالرد علي تلك الرسالة . هذه رسالة آلية و الرد عليها لن يصل لأي من الموظفين',
     'user.emails.feedback_agent-validation'   => 'برجاء ملاحظة : لن يتم نشر تنويهك في موقعنا حتي يقوم الموظف المختص بالإطلاع عليه',
     'user.emails.feedback_approved'           => 'نراسلك لإبلاغك أن تنويهك تمت الموافقة عليه و تم نشره بموقعنا',
     'user.emails.feedback_closed'             => 'تنويهك المرسل {{title}}  تم إغلاقه {{status}}',
@@ -43,7 +41,6 @@ return array(
     'user.emails.feedback_published'          => 'تنويهك المرسل بعنوان "{{title}}"  تم التحقق منه و الأن هو منشور علي موقعنا',
     'user.emails.feedback_thank-you'          => 'شكرا لك علي إرسال تنويهك "{{title}}"',
     'user.emails.feedback_updated'            => 'تنويهك المرسل بعنوان "{{title}}"   تم تحديثه . و الحاله الجديده له الأن هي "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'يرجي تأكيد صحة بريدك الالكتروني عن طريق الضغط على الرابط التالي :',
     'user.emails.feedback_votes'              => 'تحصل تنويهك على عدد <strong>1</strong> تصويت . إستعرض تنويهك مباشرة علي :| تنويهك تحصل على عدد  تصويتات <strong>{{count}}</strong>  . إستعرض تنويهك مباشرة على :',
     'user.emails.greeting'                    => 'عزيزي {{to_name}},',
     'user.emails.label_view-online'           => 'شاهد مباشرة',
@@ -66,6 +63,4 @@ return array(
     'user.emails.ticket_received'             => 'تم إستلام تذكرتك . سيقوم أحد موظفينا بالرد عليك في أقرب وقت',
     'user.emails.ticket_reply-confirm'        => 'شكرا لك علي الرد . سيقوم أحد موظفينا بالرد عليك في أقرب وقت',
     'user.emails.ticket_validate'             => 'شكرا لك علي الإتصال بنا <br /><br />يجب عليك تأكيد صحة بريدك الإلكتروني , لكي يقوم أحد موظفينا بالرد عليك',
-    'user.emails.tickets_ommitted'            => 'تم أهمال رسالة واحدة | عدد الرسائل المهمله{{count}}',
-    'user.emails.view_full_history_online'    => 'إستعرض التذكرة بالكامل',
 );

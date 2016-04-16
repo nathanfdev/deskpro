@@ -32,8 +32,6 @@ return array(
     'user.emails.comment_approved'            => 'Hozzászólása publikálásra került.',
     'user.emails.comment_deleted'             => 'Hozzászólását felhasználtuk tartalmunk fejlesztéséhez.',
     'user.emails.comment_thank-you'           => 'Köszönjük hozzászólását. ({{link}})',
-    'user.emails.comment_validate-email'      => 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:',
-    'user.emails.do-not-reply'                => 'Ez egy automata üzenet. kérjük ne válaszoljon rá, mert a válaszként küldött üzeneteket rendszerünk olvasás és ellenőrzés nélkül törli!',
     'user.emails.feedback_agent-validation'   => 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.',
     'user.emails.feedback_approved'           => 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.',
     'user.emails.feedback_closed'             => '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}',
@@ -43,7 +41,6 @@ return array(
     'user.emails.feedback_published'          => '"{{title}}" tárgyú visszajelzése ellenőrzésre került, és megjelent weboldalunkon.',
     'user.emails.feedback_thank-you'          => 'Köszönjük "{{title}}" tárgyú visszajelzését',
     'user.emails.feedback_updated'            => '"{{title}}" tárgyú visszajelzése frissítésre és {{status}} státusz besorolásba került.',
-    'user.emails.feedback_validate-email'     => 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:',
     'user.emails.feedback_votes'              => 'Visszajelzésére eddig <strong>1</strong> szavazat érkezett. Tekintse meg online:|Visszajelzésére eddig <strong>{{count}}</strong> szavazat érkezett. Tekintse meg online:',
     'user.emails.greeting'                    => 'Tisztelt {{to_name}}!',
     'user.emails.label_view-online'           => 'Online megtekintés',
@@ -66,6 +63,4 @@ return array(
     'user.emails.ticket_received'             => 'Megkaptuk üzenetét. Munkatársunk hamarosan felveszi Önnel a kapcsolatot.',
     'user.emails.ticket_reply-confirm'        => 'Válaszüzenetét megkaptuk. Munkatársunk hamarosan válaszol Önnek.',
     'user.emails.ticket_validate'             => 'Mielőtt munkatársaink feldolgozhatnák üzenetét,<br /><br />meg kell erősítenie e-mail címét.',
-    'user.emails.tickets_ommitted'            => '1 üzenet kimaradt|{{count}} üzenet kimaradt',
-    'user.emails.view_full_history_online'    => 'Online megtekintés',
 );
