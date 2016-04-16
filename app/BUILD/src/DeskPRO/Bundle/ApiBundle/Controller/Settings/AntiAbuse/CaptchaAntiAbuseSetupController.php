@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\AntiAbuse;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha\CaptchaAntiAbuseType;
 use DeskPRO\Bundle\AppBundle\Settings\CaptchaSettingsResolver;
@@ -40,7 +40,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/settings/anti_abuse/captcha")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings")
+ * @ApiDoc(target="all", output="DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings")
  */
 class CaptchaAntiAbuseSetupController extends AbstractAntiAbuseSetupController
 {

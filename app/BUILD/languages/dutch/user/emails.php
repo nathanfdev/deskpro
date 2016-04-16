@@ -31,8 +31,6 @@ return array(
     'user.emails.comment_approved'            => 'Uw antwoord is gepubliceerd.',
     'user.emails.comment_deleted'             => 'Uw antwoord is gebruikt om de pagina te verbeteren.',
     'user.emails.comment_thank-you'           => 'Bedankt voor uw antwoord op {{link}}.',
-    'user.emails.comment_validate-email'      => 'Valideer uw e-mailadres online door te klikken op de volgende link:',
-    'user.emails.do-not-reply'                => 'Let op: reageer niet op deze e-mail. Dit is een automatisch verzonden bericht, e-mails naar dit adres zullen niet worden gelezen door onze medewerkers.',
     'user.emails.feedback_agent-validation'   => 'Let op: Uw feedback zal niet publiekelijk op onze website verschijnen totdat één van onze agenten beoordelingen handmatig heeft bekeken.',
     'user.emails.feedback_approved'           => 'Wij sturen u een e-mail om u te laten weten dat uw feedback nu voor iedereen zichtbaar is op onze website.',
     'user.emails.feedback_closed'             => 'Uw feedback "{{title}}" is gesloten: {{status}}',
@@ -42,7 +40,6 @@ return array(
     'user.emails.feedback_published'          => 'Uw feedback "{{title}}" is gevalideerd en zal nu verschijnen op onze website.',
     'user.emails.feedback_thank-you'          => 'Bedankt voor uw feedback "{{title}}"',
     'user.emails.feedback_updated'            => 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"',
-    'user.emails.feedback_validate-email'     => 'U kunt uw e-mailadres online valideren door te klikken op de volgende link:',
     'user.emails.feedback_votes'              => 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:|Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:',
     'user.emails.greeting'                    => 'Beste {{to_name}},',
     'user.emails.kb-new-articles'             => '1 nieuw artikelen|{{count}} nieuwe artikelen',
@@ -67,6 +64,4 @@ return array(
     'user.emails.ticket_received'             => 'Uw vraag is correct ontvangen. Onze medewerkers zullen uw vraag zo spoedig mogelijk beantwoorden.',
     'user.emails.ticket_reply-confirm'        => 'Bedankt voor uw antwoord. Een medewerker zal zo spoedig mogelijk antwoorden.',
     'user.emails.ticket_validate'             => 'Bedankt voor het contact opnemen.<br /><br />Voordat onze medewerkers u verder kunnen helpen, dient u uw e-mailadres te verifiëren.',
-    'user.emails.tickets_ommitted'            => 'Er is 1 bericht weggelaten|Er zijn {{count}} berichten weggelaten',
-    'user.emails.view_full_history_online'    => 'Bekijk de volledige ticket online',
 );

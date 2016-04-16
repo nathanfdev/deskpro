@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Product;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -43,10 +41,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * Class TicketProductController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickets")
- * @OutputEntity("Application\DeskPRO\Entity\Product")
  * @Rest\Route("/ticket_products")
  * @Rest\View(serializerGroups={"list", "details", "product"})
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\Product")
  */
 class TicketProductsController extends CrudController
 {

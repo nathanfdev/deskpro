@@ -37,6 +37,7 @@ services:
     arguments:
       - "@avatar_resolver"
       - "@data.agent"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

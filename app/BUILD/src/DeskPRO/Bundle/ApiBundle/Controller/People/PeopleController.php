@@ -34,8 +34,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
@@ -59,8 +57,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @ApiModes("all")
  * @Rest\Route("/people")
- * @ApiDocSection("People")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(target="all", section="People", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
 class PeopleController extends CrudController
 {

@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\OrganizationNote;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationNoteType;
@@ -45,9 +43,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class OrganizationNotesController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Organizations")
- * @OutputEntity("Application\DeskPRO\Entity\OrganizationNote")
  * @Rest\Route("/organizations/{parentId}/notes")
+ * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\OrganizationNote")
  */
 class OrganizationNotesController extends CrudSubController
 {

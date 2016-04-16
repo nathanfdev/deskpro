@@ -29,15 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Component\Util\TypeUtils;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use DeskPRO\Component\Util\ControllerUtils;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
 
@@ -47,25 +42,14 @@ use Symfony\Component\Routing\Route;
 class ApiDocExtractor extends BaseApiDocExtractor
 {
     /**
-     * @var array
-     */
-    protected $actionList = [
-        'list'   => true,
-        'get'    => true,
-        'post'   => true,
-        'put'    => false,
-        'delete' => false,
-    ];
-
-    /**
      * @return Route[]
      */
     public function getRoutes()
     {
         return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
             $ctrl = $r->getDefault('_controller');
-            $action = $ctrl ? TypeUtils::cleanAction($ctrl, true) : false;
-            $reflection = $this->extractControllerReflection($r);
+            $action = $ctrl ? ControllerUtils::cleanAction($ctrl, true) : false;
+            $reflection = ControllerUtils::extractControllerReflection($r);
 
             return $action && $reflection && $this->isExposedAction($action, $reflection);
         });
@@ -97,7 +81,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     protected function getExposedActions($action, \ReflectionClass $reflection)
     {
-        if (!in_array($action, array_keys($this->actionList))) {
+        if (!in_array($action, array_keys(CrudController::$methods))) {
             // This method is custom for crud - e.g. getMySuperListAction, shouldn't process it
             return false;
         }
@@ -111,88 +95,5 @@ class ApiDocExtractor extends BaseApiDocExtractor
         }
 
         return $exposedMethods;
-    }
-
-    /**
-     * This method extends basic Nelmio`s and provide the ability to interact with DP CrudController.
-     *
-     * @param ApiDoc            $annotation
-     * @param Route             $route
-     * @param \ReflectionMethod $method
-     *
-     * @return ApiDoc
-     */
-    protected function extractData(ApiDoc $annotation, Route $route, \ReflectionMethod $method)
-    {
-        $annotation = clone $annotation;
-
-        if ($annotation instanceof DpApiDoc
-            && ($class_reflection = $this->extractControllerReflection($route))
-        ) {
-            if (!$annotation->getOutput()
-                && in_array(TypeUtils::cleanAction($method->name, true), $this->getCreativeMethods())
-                && ($output = $this->reader->getClassAnnotation($class_reflection, OutputEntity::class))
-                && ($output instanceof OutputEntity)
-            ) {
-                $output = $output->getOutput();
-                if (TypeUtils::cleanAction($method->name, true) === 'list') {
-                    $output = "array<{$output}>";
-                }
-                $annotation->setClassOutput($output);
-            }
-
-            if (!$annotation->getSection()
-                && ($section_annotation = $this->reader->getClassAnnotation($class_reflection, ApiDocSection::class))
-                && ($section_annotation instanceof ApiDocSection)
-            ) {
-                $annotation->setSection($section_annotation->getSection());
-                unset($section_annotation);
-            }
-        }
-
-        $extracted_annotation = parent::extractData($annotation, $route, $method);
-        if ($annotation instanceof DpApiDoc) {
-            $annotation->setSection(null);
-            $annotation->setClassOutput(null);
-        }
-
-        return $extracted_annotation;
-    }
-
-    /**
-     * return the list of methods that should return some output.
-     *
-     * @return array
-     */
-    protected function getCreativeMethods()
-    {
-        $return = [];
-        foreach ($this->actionList as $action => $creative) {
-            if ($creative) {
-                $return[] = $action;
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * Extract \ReflectionClass from route default _controller attribute.
-     *
-     * @param Route $route
-     *
-     * @return \ReflectionClass|false
-     */
-    protected function extractControllerReflection(Route $route)
-    {
-        $ctrl          = $route->getDefault('_controller');
-        $parts         = explode('::', $ctrl);
-        $is_controller = preg_match('#^DeskPRO\\\\Bundle\\\\ApiBundle\\\\#', $ctrl);
-
-        if ($is_controller && $parts[0]) {
-            return new \ReflectionClass($parts[0]);
-        }
-
-        return false;
     }
 }

@@ -29,22 +29,19 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * API access to languages.
  *
- * @ApiDocSection("Languages")
- * @OutputEntity("Application\DeskPRO\Entity\Language")
  * @ApiModes("all")
  * @Rest\Route("/languages")
+ * @ApiDoc(target="all", section="Languages", output="Application\DeskPRO\Entity\Language")
  */
 class LanguagesController extends CrudController
 {

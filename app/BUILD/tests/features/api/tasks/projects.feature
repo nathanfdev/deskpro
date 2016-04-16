@@ -18,7 +18,7 @@ Feature: /projects endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/task_projects/1"
+    And the header "Location" should be equal to "/api/v2/task_projects/4"
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
@@ -30,14 +30,14 @@ Feature: /projects endpoint
     And the JSON node "errors.fields.title.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I GET a single project
-    When I send a GET request to "/api/v2/task_projects/1"
+    When I send a GET request to "/api/v2/task_projects/4"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test project"
 
   Scenario: I get task lists
-    When I send a GET request to "/api/v2/task_projects/1/lists"
+    When I send a GET request to "/api/v2/task_projects/4/lists"
     Then the response should be in JSON
     And the response status code should be 200
 
@@ -47,10 +47,11 @@ Feature: /projects endpoint
     And the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
-    And the JSON node "data[0].title" should be equal to "My test project"
+    And the JSON node "data[0].title" should be equal to "First project"
+    And the JSON node "data[3].title" should be equal to "My test project"
 
   Scenario: I modify a project
-    When I send a PUT request to "/api/v2/task_projects/1" with body:
+    When I send a PUT request to "/api/v2/task_projects/4" with body:
     """
 {
   "title": "New project title"
@@ -60,7 +61,7 @@ Feature: /projects endpoint
     And the response should be empty
 
   Scenario: I verify the resource has been updated by the PUT request
-    When I send a GET request to "/api/v2/task_projects/1"
+    When I send a GET request to "/api/v2/task_projects/4"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -71,25 +72,25 @@ Feature: /projects endpoint
     """
 {
   "title": "Test project task",
-  "project": 1
+  "project": 4
 }
     """
     Then the response should be in JSON
     And the response status code should be 201
 
   Scenario: I verify that the project has tasks attached
-    When I send a GET request to "/api/v2/task_projects/1/tasks"
+    When I send a GET request to "/api/v2/task_projects/4/tasks"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "Test project task"
 
   Scenario: I DELETE a single project
-    When I send a DELETE request to "/api/v2/task_projects/1"
+    When I send a DELETE request to "/api/v2/task_projects/4"
     Then the response should be in JSON
     And the response status code should be 200
 
   Scenario: I verify the resource has been removed by the DELETE request
-    When I send a GET request to "/api/v2/task_projects/1"
+    When I send a GET request to "/api/v2/task_projects/4"
     Then the response should be in JSON
     And the response status code should be 404

@@ -31,8 +31,6 @@ return array(
     'user.emails.comment_approved'            => 'コメントが公開されました。',
     'user.emails.comment_deleted'             => 'あなたのコメントはページの改善のために参考にされました。',
     'user.emails.comment_thank-you'           => '{{link}}についてのコメントを頂き、ありがとうございました。',
-    'user.emails.comment_validate-email'      => '次のリンクをクリックして、メールアドレスを有効にしてください。',
-    'user.emails.do-not-reply'                => '本メールはシステムにより自動配信されたものです。メッセージへの返信はこちらのメールアドレスでは受け付けておりません。また返信されたメッセージの内容は確認できませんのでご注意ください。',
     'user.emails.feedback_agent-validation'   => 'フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。',
     'user.emails.feedback_approved'           => '本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。',
     'user.emails.feedback_closed'             => '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}',
@@ -42,7 +40,6 @@ return array(
     'user.emails.feedback_published'          => '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。',
     'user.emails.feedback_thank-you'          => 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。',
     'user.emails.feedback_updated'            => 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。',
-    'user.emails.feedback_validate-email'     => '次のリンクをクリックしてメールアドレスを有効にしてください。:',
     'user.emails.feedback_votes'              => 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:|あなたのフィードバックには現在 <strong>{{count}}</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:',
     'user.emails.greeting'                    => '{{to_name}}様',
     'user.emails.label_view-online'           => 'オンラインで確認',
@@ -60,6 +57,4 @@ return array(
     'user.emails.ticket_received'             => 'リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。',
     'user.emails.ticket_reply-confirm'        => '返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。',
     'user.emails.ticket_validate'             => 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。',
-    'user.emails.tickets_ommitted'            => 'メッセージが1つ削除されました|メッセージが{{count}}つ削除されました',
-    'user.emails.view_full_history_online'    => 'リクエストの全文をオンラインにて表示',
 );

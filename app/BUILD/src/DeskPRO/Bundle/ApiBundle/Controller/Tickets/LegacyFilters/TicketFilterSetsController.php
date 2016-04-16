@@ -29,11 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -41,8 +39,8 @@ use FOS\RestBundle\View\View;
 /**
  * Class TicketFilterSetsController.
  *
- * @ApiDocSection("Ticket filters (legacy)")
  * @ApiModes("all")
+ * @ApiDoc(target="all", section="Ticket filters (legacy)")
  */
 class TicketFilterSetsController extends AbstractLegacyFiltersController
 {

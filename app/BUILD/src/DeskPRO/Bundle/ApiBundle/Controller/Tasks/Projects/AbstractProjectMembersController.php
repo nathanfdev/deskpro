@@ -29,12 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -48,10 +45,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ProjectMembersController.
  *
- * @ApiDocSection("TaskProjects")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
- * @Rest\Route("/task_projects/{parentId}/members/{type}")
  * @ApiModes("all")
+ * @Rest\Route("/task_projects/{parentId}/members/{type}")
+ * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
  */
 abstract class AbstractProjectMembersController extends CrudSubController
 {

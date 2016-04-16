@@ -29,14 +29,12 @@
 return array(
     'user.email_subjects.chat_transcript'          => 'Odpis konverzácie',
     'user.email_subjects.comment-approved'         => 'Váš komentár bol schválený',
-    'user.email_subjects.comment-confirmation'     => 'Ďakujeme za Váš komentár',
     'user.email_subjects.comment-deleted'          => 'Váš komentár bol prečítaný našimi operátormi',
     'user.email_subjects.email-too-big'            => 'Váš e-mail "{{subject}}" nebol prijatý',
     'user.email_subjects.email_new-confirm'        => 'Potvrďte Vašu e-mailovú adresu',
     'user.email_subjects.feedback_new'             => 'Ďakujeme za podanie Vašej spätnej väzby',
     'user.email_subjects.feedback_new-approved'    => 'Vaša spätná väzba bol prijatá',
     'user.email_subjects.feedback_new-comment'     => 'Nový komentár v "{{title}}"',
-    'user.email_subjects.feedback_new-confirm'     => 'Ďakujeme za podanie Vašej spätnej väzby (potrebné overenie)',
     'user.email_subjects.feedback_new-disapproved' => 'Vaša spätná väzba bola odmietnutá',
     'user.email_subjects.feedback_updated'         => 'Vaša soätná väzba bola aktualizovaná: {{title}}',
     'user.email_subjects.kb_sub_new'               => 'Nové články',
@@ -49,5 +47,4 @@ return array(
     'user.email_subjects.ticket-rate'              => 'Ohodnoťte Vaše skúsenosti s podporou na tikete "{{ticket.subject}}"',
     'user.email_subjects.ticket_new-participant'   => 'Nová osoba bola pridaná do Vášho tiketu',
     'user.email_subjects.tickets_re'               => 'RE: {{ticket.subject}}',
-    'user.email_subjects.validate-email'           => 'Overte Vašu e-mailovú adresu',
 );

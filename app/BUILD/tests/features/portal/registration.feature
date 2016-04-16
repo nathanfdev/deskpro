@@ -18,7 +18,7 @@ Feature: Registration
   Scenario: Submitting valid registration and verifying email
     Given I go to "/register"
     And I fill in "Name" with "Test User"
-    And I fill in "Email" with "testuser@deskpro.com"
+    And I fill in "person_registration_primary_email_email" with "testuser@deskpro.com"
     And I fill in "Password" with "password"
     And I fill in "Confirm" with "password"
     And I press "Register"
@@ -33,7 +33,7 @@ Feature: Registration
   Scenario: Trying to register with an email that exists will send you to the password
     Given I go to "/register"
     And I fill in "Name" with "Entering an Existing Email"
-    And I fill in "Email" with "user@deskpro.dev"
+    And I fill in "person_registration_primary_email_email" with "user@deskpro.dev"
     And I fill in "Password" with "password"
     And I fill in "Confirm" with "password"
     And I press "Register"

@@ -29,13 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
@@ -52,10 +49,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Class AgentTeamsController.
  *
- * @ApiDocSection("Agents")
- * @OutputEntity("DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
- * @Rest\Route("/agent_teams")
  * @ApiModes("all")
+ * @Rest\Route("/agent_teams")
+ * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
  */
 class AgentTeamsController extends CrudController
 {

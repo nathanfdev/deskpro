@@ -29,14 +29,12 @@
 return array(
     'user.email_subjects.chat_transcript'          => 'Chat Abschrift',
     'user.email_subjects.comment-approved'         => 'Ihr Kommentar wurde genehmigt',
-    'user.email_subjects.comment-confirmation'     => 'Vielen Dank für Ihren Kommentar',
     'user.email_subjects.comment-deleted'          => 'Ihr Kommentar wurde von unseren Agenten gelesen',
     'user.email_subjects.email-too-big'            => 'Ihr Email "{{subject}}" wurde nicht angenommen',
     'user.email_subjects.email_new-confirm'        => 'Bestätigen Sie Ihre Email Adresse',
     'user.email_subjects.feedback_new'             => 'Vielen Dank für Ihr Feedback',
     'user.email_subjects.feedback_new-approved'    => 'Ihr Feedback wurde genehmigt',
     'user.email_subjects.feedback_new-comment'     => 'Es gibt einen neuen Kommentar zu "{{title}}"',
-    'user.email_subjects.feedback_new-confirm'     => 'Vielen Dank für Ihr Feedback (Validierung erforderlich)',
     'user.email_subjects.feedback_new-disapproved' => 'Ihr Feedback wurde abgelehnt',
     'user.email_subjects.feedback_updated'         => 'Ihr Feedback wurde aktualisiert: {{title}}',
     'user.email_subjects.kb_sub_new'               => 'Neue Artikel',
@@ -49,5 +47,4 @@ return array(
     'user.email_subjects.ticket-rate'              => 'Bewerten Sie die Erfahrungen mit unserem Support zu Ihrem Ticket  "{{ticket.subject}}"',
     'user.email_subjects.ticket_new-participant'   => 'Ihrem Ticket wurde eine neue Person hinzugefügt',
     'user.email_subjects.tickets_re'               => 'AW: {{ticket.subject}}',
-    'user.email_subjects.validate-email'           => 'Bestätigen Sie Ihre Email Adresse',
 );

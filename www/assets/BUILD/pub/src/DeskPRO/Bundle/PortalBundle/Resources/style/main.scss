@@ -5342,7 +5342,7 @@ h1.fancy-header {
     margin: 0;
   }
 
-  a {
+  a, .link {
     display: block;
     padding: 0 15px;
     padding-bottom: 3px;
@@ -5395,22 +5395,16 @@ h1.fancy-header {
     }
   }
 
-  .quick-jump > a, .quick-jump > a {
+  .quick-jump > a, .quick-jump > .link {
     border-bottom: 3px solid transparent;
   }
 
-  .quick-jump > a:hover {
+  .quick-jump > a:hover, .quick-jump > .link:hover {
     color: $text-color-darker;
   }
 
-  .quick-jump > a.active {
+  .quick-jump > .active {
     border-bottom: 3px solid $button-color-secondary;
-  }
-
-  .without-touch-device & {
-    .quick-jump:hover .dropdown-content, .quick-jump .dropdown-content:hover {
-      display: block;
-    }
   }
 
   .quick-jump.is-focused .dropdown-content {
@@ -9920,6 +9914,7 @@ form {
     .form-label-link {
       position: absolute;
       @include right(0);
+      font-size: 80%;
       i {
         @include margin-left(4px);
       }

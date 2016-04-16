@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -691,6 +690,26 @@ SQL
         "
         );
         // end of department permissions
+
+        // permissions for agent usergroups
+        $this->getDb()->exec(
+            "
+            INSERT INTO `permissions`
+              (`usergroup_id`, `person_id`, `name`, `value`, `is_active`)
+            VALUES
+              ('8', NULL, 'articles.use', 1, 1),
+              ('8', NULL, 'feedback.use', 1, 1),
+              ('8', NULL, 'downloads.use', 1, 1),
+              ('8', NULL, 'news.use', 1, 1),
+              ('8', NULL, 'chat.use', 1, 1),
+
+              ('7', NULL, 'articles.use', 1, 1),
+              ('7', NULL, 'feedback.use', 1, 1),
+              ('7', NULL, 'downloads.use', 1, 1),
+              ('7', NULL, 'news.use', 1, 1),
+              ('7', NULL, 'chat.use', 1, 1);
+            "
+        );
 
         // Products test data ----------------------------------------------------------------------------------
         $this->getDb()->exec(

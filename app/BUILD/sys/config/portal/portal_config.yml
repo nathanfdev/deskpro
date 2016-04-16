@@ -84,7 +84,7 @@ security:
                 login_path: /
                 require_previous_session: false
                 remember_me: false
-                always_use_default_target_path: true
+                always_use_default_target_path: false
                 default_target_path: /
                 target_path_parameter: _destination
                 use_referer: false

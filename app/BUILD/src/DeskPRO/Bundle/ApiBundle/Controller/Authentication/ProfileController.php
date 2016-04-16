@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -44,7 +43,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class ProfileController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Auth")
  * @Rest\Route("/me/profile")
  * @SerializerView(mapping={
  *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"

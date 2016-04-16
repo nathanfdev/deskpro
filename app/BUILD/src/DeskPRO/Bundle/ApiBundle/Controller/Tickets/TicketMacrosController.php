@@ -29,15 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -53,8 +50,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_macros")
- * @OutputEntity("Application\DeskPRO\Entity\TicketMacro")
- * @ApiDocSection("Tickets")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketMacro")
  */
 class TicketMacrosController extends CrudController
 {

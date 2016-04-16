@@ -29,12 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\CustomDefOrganization;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -45,9 +43,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class OrganizationCustomFieldsController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Organizations")
- * @OutputEntity("Application\DeskPRO\Entity\CustomDefOrganization")
  * @Rest\Route("/organization_custom_fields")
+ * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\CustomDefOrganization")
  */
 class OrganizationCustomFieldsController extends CrudController
 {

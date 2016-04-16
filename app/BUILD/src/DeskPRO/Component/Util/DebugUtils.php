@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\Util;
 
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 
 /**
  * Utility methods used aid debugging or logging.
@@ -126,5 +128,24 @@ class DebugUtils
         }
 
         return var_export($str, true);
+    }
+
+    /**
+     * Checks a PHP file for syntax errors by running the linter.
+     * 
+     * @param string      $file   Full path to the PHP file to check
+     * @param string|null $out    The output from the linter check will be placed in here
+     * @param string      $phpBin The path to the PHP binary to use
+     *
+     * @return bool
+     */
+    public static function lintPhpFile($file, &$out = null, $phpBin = 'php')
+    {
+        $proc = new Process(sprintf("'%s' -l '%s'", $phpBin, $file));
+        $proc->run(function ($l) use (&$out) {
+            $out .= $l;
+        });
+
+        return $proc->isSuccessful();
     }
 }

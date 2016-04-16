@@ -29,11 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -44,8 +43,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketCustomFieldsController.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickets")
  * @Rest\Route("/ticket_custom_fields")
+ * @ApiDoc(target="all", section="Tickets")
  */
 class TicketCustomFieldsController extends CrudController
 {
