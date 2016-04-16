@@ -29,15 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Zend\XmlRpc\Client\Exception\HttpException;
 
 /**
  * Logs exceptions to error.log.
