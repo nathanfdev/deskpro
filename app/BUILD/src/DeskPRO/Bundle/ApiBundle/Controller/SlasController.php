@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
@@ -39,7 +40,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * API access to languages.
+ * API access to SLAs.
  *
  * @ApiModes("all")
  * @Rest\Route("/slas")

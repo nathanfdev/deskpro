@@ -45,16 +45,28 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to ticket slas.
  *
  * @ApiModes("all")
- * @ApiDocSection("Tickets")
- * @OutputEntity("Application\DeskPRO\Entity\Sla")
- * @Rest\Route("/ticket_slas")
  */
 class TicketSlasController extends CrudController
 {
     /**
-     * Retrieve the list of custom fields available for tickets.
+     * Retrieve the list of ticket's SLAs.
+     *
+     * @ApiDoc(
+     *     section="Tickets",
+     *     resourceDescription="Operations about ticket SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="get SLAs collection for single ticket",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="array<Application\DeskPRO\Entity\TicketSla>"
+     * )
      *
      * @Rest\Get("/tickets/{ticket_id}/slas", name="api_ticket_sla")
+     *
+     * @param int $ticket_id
+     *
+     * @return View
      */
     public function getForTicketAction($ticket_id)
     {
@@ -68,6 +80,11 @@ class TicketSlasController extends CrudController
 
     /**
      * @Rest\Get("/tickets/{ticket_id}/slas/{sla_id}", name="api_ticket_sla_single")
+     *
+     * @param int $ticket_id
+     * @param int $sla_id
+     *
+     * @return View
      */
     public function getSingleAction($ticket_id, $sla_id)
     {
