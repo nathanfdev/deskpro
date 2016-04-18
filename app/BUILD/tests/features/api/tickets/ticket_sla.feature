@@ -51,14 +51,12 @@ Feature: /tickets/{id}/slas endpoint
 
   Scenario: I try to get SLAs for non-existing ticket
     When I send a GET request to "/api/v2/tickets/3000/slas"
-    And print last JSON response
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
     And the JSON node "message" should be equal to "Not found"
 
   Scenario: I try to get ticket SLA for non-existing parent SLA
     When I send a GET request to "/api/v2/tickets/3/slas/3000"
-    And print last JSON response
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
     And the JSON node "message" should be equal to "Ticket SLA for ticket ID=3 and SLA ID=3000 not found"

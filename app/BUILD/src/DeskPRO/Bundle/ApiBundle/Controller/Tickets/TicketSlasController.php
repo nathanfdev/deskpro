@@ -50,13 +50,6 @@ class TicketSlasController extends CrudSubController
     public static $parentProperty = 'ticket';
     public static $entity         = TicketSla::class;
     public static $type           = TicketSlaType::class;
-    public static $methods        = [
-        'list'            => true,
-        'getSingleSla'    => true,
-        'post'            => true,
-        'put'             => false,
-        'deleteSingleSla' => true,
-    ];
 
     /**
      * Retrieve the list of ticket's SLAs.
