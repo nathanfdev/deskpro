@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -335,6 +336,21 @@ class PublishController extends AbstractController
 
         $comment = $this->em->find($entity, $comment_id);
 
+        switch ($typename) {
+            case 'articles':
+                $objectUrl = $this->get('router')->generate('agent_kb_article', ['article_id' => $comment->getObject()->getId()]);
+                break;
+            case 'downloads':
+                $objectUrl = $this->get('router')->generate('agent_downloads_view', ['download_id' => $comment->getObject()->getId()]);
+                break;
+            case 'news':
+                $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
+                break;
+            case 'feedback':
+                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['feedback_id' => $comment->getObject()->getId()]);
+                break;
+        }
+
         return $this->createJsonResponse(array(
             'message'      => $comment->getContentPlain(),
             'status'       => $comment->status,
@@ -344,7 +360,7 @@ class PublishController extends AbstractController
             'person_id'    => $comment->getPersonId(),
             'email'        => $comment->getUserEmail(),
             'object_title' => $comment->getObject()->getTitle(),
-            'object_url'   => $this->get('router')->getGenerator()->generateObjectUrl($comment->getObject()),
+            'object_url'   => $objectUrl,
         ));
     }
 
