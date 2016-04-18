@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\CustomDataFeedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -69,7 +70,7 @@ class FeedbackCategoryController extends BaseController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('category.id', 'category.input')
-            ->from('DeskPRO:CustomDataFeedback', 'category')
+            ->from(CustomDataFeedback::class, 'category')
             ->leftJoin('category.field', 'field')
             ->where('field.title = :title')
             ->setParameter('title', 'Category')

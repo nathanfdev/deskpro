@@ -16,6 +16,12 @@ Feature: /feedback endpoint
       When I send a GET request to "/api/v2/feedback/1"
       Then the response status code should be 403
 
+      When I send a GET request to "/api/v2/feedback_comments"
+      Then the response status code should be 403
+
+      When I send a GET request to "/api/v2/feedback_comments/1"
+      Then the response status code should be 403
+
     Scenario: I grant use feedback permission
       Given I set permission "feedback.use" = 1 for "registered" usergroup
 
@@ -23,4 +29,10 @@ Feature: /feedback endpoint
       Then the response status code should be 200
 
       When I send a GET request to "/api/v2/feedback/1"
+      Then the response status code should be 200
+
+      When I send a GET request to "/api/v2/feedback_comments"
+      Then the response status code should be 200
+
+      When I send a GET request to "/api/v2/feedback_comments/1"
       Then the response status code should be 200

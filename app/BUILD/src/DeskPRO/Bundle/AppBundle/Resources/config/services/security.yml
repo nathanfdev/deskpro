@@ -142,6 +142,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.feedback_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\FeedbackCommentsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.news:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\NewsVoter
     tags:
