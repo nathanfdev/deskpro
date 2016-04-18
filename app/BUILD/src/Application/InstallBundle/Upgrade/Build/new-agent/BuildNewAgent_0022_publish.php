@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,6 +53,7 @@ class BuildNewAgent_0022_publish extends AbstractBuild
 
         $this->out('Modify feedback table');
         $this->execMutateSql('ALTER TABLE feedback ADD is_reviewed TINYINT(1) NOT NULL, ADD date_updated DATETIME DEFAULT NULL, ADD date_last_comment DATETIME DEFAULT NULL, DROP validating');
+        $this->execMutateSql("UPDATE feedback SET is_reviewed = 1 WHERE hidden_status != 'validating'");
         $this->execMutateSql('ALTER TABLE feedback ADD INDEX date_updated_idx (date_updated), ADD INDEX date_last_comment_idx (date_last_comment)');
 
         foreach ([
@@ -69,4 +70,3 @@ class BuildNewAgent_0022_publish extends AbstractBuild
 }
 
 //[[build:1456790408]]
-
