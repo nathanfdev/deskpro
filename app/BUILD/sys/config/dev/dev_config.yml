@@ -5,3 +5,15 @@ services:
       - "@=service('deskpro.app_env').getConfig('onesky.api_key')"
       - "@=service('deskpro.app_env').getConfig('onesky.api_secret')"
       - "@=service('deskpro.app_env').getConfig('onesky.projects')"
+
+doctrine_mongodb:
+    connections:
+        audit:
+            server: mongodb://localhost:27017
+            options: {}
+    default_database: dp_audit
+    default_document_manager: audit
+    default_connection: audit
+    document_managers:
+        audit:
+            auto_mapping: true

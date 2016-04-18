@@ -35,6 +35,7 @@ class DbConfigReader
 {
     const DEFAULT_ID = 'default';
     const SYSTEM_ID  = 'system';
+    const AUDIT_ID   = 'audit';
     const READ_ID    = 'read';
     const REPORTS_ID = 'read_reports';
     const SEARCH_ID  = 'read_search';
@@ -69,6 +70,9 @@ class DbConfigReader
                 break;
             case self::SYSTEM_ID:
                 $conf_array_raw = $this->appEnv->getConfig('database.system') ?: $this->appEnv->getConfig('database');
+                break;
+            case self::AUDIT_ID:
+                $conf_array_raw = $this->appEnv->getConfig('database.audit') ?: $this->appEnv->getConfig('database');
                 break;
             case self::READ_ID:
                 $conf_array_raw = $this->appEnv->getConfig('database_advanced.read')

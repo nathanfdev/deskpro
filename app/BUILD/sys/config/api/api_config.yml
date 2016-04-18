@@ -160,6 +160,17 @@ doctrine:
                  group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
                  regexp: DoctrineExtensions\Query\Mysql\Regexp
 
+doctrine_mongodb:
+    connections:
+        audit:
+            server: mongodb://localhost:27017
+            options: {}
+    default_database: dp_audit
+    default_document_manager: audit
+    default_connection: audit
+    document_managers:
+        audit:
+            auto_mapping: true
 #rms_push_notifications:
 #  ios:
 #    timeout: 60 # Seconds to wait for connection timeout, default is 60

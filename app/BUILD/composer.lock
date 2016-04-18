@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "181566ac8e3ec13618af7bc1e29fc098",
-    "content-hash": "c9cb628e05e83122057c449234623802",
+    "hash": "a7f679e0a5f0a2249f7a46b5d4fcfa30",
+    "content-hash": "b040a3190562096a7f8421dd5120595a",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1712,6 +1712,237 @@
                 "migrations"
             ],
             "time": "2015-09-15 13:41:30"
+        },
+        {
+            "name": "doctrine/mongodb",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/mongodb.git",
+                "reference": "b4eb8683d66d44de4e9e4e974149bdce327dc818"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/mongodb/zipball/b4eb8683d66d44de4e9e4e974149bdce327dc818",
+                "reference": "b4eb8683d66d44de4e9e4e974149bdce327dc818",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/common": "^2.2",
+                "ext-mongo": "^1.5",
+                "php": "^5.5 || ^7.0"
+            },
+            "require-dev": {
+                "jmikola/geojson": "^1.0",
+                "phpunit/phpunit": "~4.8|~5.0"
+            },
+            "suggest": {
+                "jmikola/geojson": "Support GeoJSON geometry objects in 2dsphere queries"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\MongoDB": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com"
+                },
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris.wallsmith@gmail.com"
+                },
+                {
+                    "name": "Maciej Malarz",
+                    "email": "malarzm@gmail.com"
+                },
+                {
+                    "name": "Andreas Braun",
+                    "email": "alcaeus@alcaeus.org"
+                }
+            ],
+            "description": "Doctrine MongoDB Abstraction Layer",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database",
+                "mongodb",
+                "persistence"
+            ],
+            "time": "2016-03-19 18:45:48"
+        },
+        {
+            "name": "doctrine/mongodb-odm",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/mongodb-odm.git",
+                "reference": "c1e9777d1e083d819a354553522903b3b83a6f39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/c1e9777d1e083d819a354553522903b3b83a6f39",
+                "reference": "c1e9777d1e083d819a354553522903b3b83a6f39",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/annotations": "~1.0",
+                "doctrine/cache": "~1.0",
+                "doctrine/collections": "~1.1",
+                "doctrine/common": "~2.4",
+                "doctrine/inflector": "~1.0",
+                "doctrine/instantiator": "~1.0.1",
+                "doctrine/mongodb": "~1.3",
+                "php": "^5.5 || ^7.0",
+                "symfony/console": "~2.3|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8|~5.0",
+                "symfony/yaml": "~2.3|~3.0"
+            },
+            "suggest": {
+                "symfony/yaml": "Enables the YAML metadata mapping driver"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\ODM\\MongoDB": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Jeremy Mikola",
+                    "email": "jmikola@gmail.com"
+                },
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com"
+                },
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris.wallsmith@gmail.com"
+                },
+                {
+                    "name": "Maciej Malarz",
+                    "email": "malarzm@gmail.com"
+                },
+                {
+                    "name": "Andreas Braun",
+                    "email": "alcaeus@alcaeus.org"
+                }
+            ],
+            "description": "Doctrine MongoDB Object Document Mapper",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database",
+                "mongodb",
+                "odm",
+                "persistence"
+            ],
+            "time": "2016-03-28 17:52:33"
+        },
+        {
+            "name": "doctrine/mongodb-odm-bundle",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/DoctrineMongoDBBundle.git",
+                "reference": "5ecd5d553816a258bb5860a5a2eddb67b4446f75"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMongoDBBundle/zipball/5ecd5d553816a258bb5860a5a2eddb67b4446f75",
+                "reference": "5ecd5d553816a258bb5860a5a2eddb67b4446f75",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/mongodb-odm": "^1.0",
+                "php": "^5.5 || ^7.0",
+                "psr/log": "^1.0",
+                "symfony/config": "^2.7 || ^3.0",
+                "symfony/console": "^2.7 || ^3.0",
+                "symfony/dependency-injection": "^2.7 || ^3.0",
+                "symfony/doctrine-bridge": "^2.7 || ^3.0",
+                "symfony/framework-bundle": "^2.7 || ^3.0",
+                "symfony/options-resolver": "^2.7 || ^3.0"
+            },
+            "require-dev": {
+                "doctrine/data-fixtures": "@dev",
+                "symfony/form": "^2.7 || ^3.0",
+                "symfony/phpunit-bridge": "^2.7 || ^3.0",
+                "symfony/yaml": "^2.7 || ^3.0"
+            },
+            "suggest": {
+                "doctrine/data-fixtures": "Load data fixtures"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Bundle\\MongoDBBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris@symfony.com"
+                },
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com"
+                }
+            ],
+            "description": "Symfony2 Doctrine MongoDB Bundle",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "mongodb",
+                "persistence",
+                "symfony"
+            ],
+            "time": "2016-04-10 19:04:45"
         },
         {
             "name": "doctrine/orm",
@@ -3971,6 +4202,137 @@
                 "testing"
             ],
             "time": "2014-12-22 10:06:19"
+        },
+        {
+            "name": "mongofill/mongofill",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mongofill/mongofill.git",
+                "reference": "c2a16b7cb6c8fa94aa4c286acd8b4a90c3a843f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mongofill/mongofill/zipball/c2a16b7cb6c8fa94aa4c286acd8b4a90c3a843f5",
+                "reference": "c2a16b7cb6c8fa94aa4c286acd8b4a90c3a843f5",
+                "shasum": ""
+            },
+            "provide": {
+                "ext-mongo": "*"
+            },
+            "require-dev": {
+                "athletic/athletic": "dev-master",
+                "phpunit/phpunit": "~4.7.7"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    {
+                        "Mongofill": "src/"
+                    },
+                    {
+                        "Mongo": "src/Mongo.php"
+                    },
+                    {
+                        "MongoBinData": "src/MongoBinData.php"
+                    },
+                    {
+                        "MongoClient": "src/MongoClient.php"
+                    },
+                    {
+                        "MongoCode": "src/MongoCode.php"
+                    },
+                    {
+                        "MongoCollection": "src/MongoCollection.php"
+                    },
+                    {
+                        "MongoConnectionException": "src/MongoConnectionException.php"
+                    },
+                    {
+                        "MongoCursor": "src/MongoCursor.php"
+                    },
+                    {
+                        "MongoCursorException": "src/MongoCursorException.php"
+                    },
+                    {
+                        "MongoCursorTimeoutException": "src/MongoCursorTimeoutException.php"
+                    },
+                    {
+                        "MongoDB": "src/MongoDB.php"
+                    },
+                    {
+                        "MongoDBRef": "src/MongoDBRef.php"
+                    },
+                    {
+                        "MongoDate": "src/MongoDate.php"
+                    },
+                    {
+                        "MongoException": "src/MongoException.php"
+                    },
+                    {
+                        "MongoGridFS": "src/MongoGridFS.php"
+                    },
+                    {
+                        "MongoGridFSFile": "src/MongoGridFSFile.php"
+                    },
+                    {
+                        "MongoGridFSException": "src/MongoGridFSException.php"
+                    },
+                    {
+                        "MongoGridFSCursor": "src/MongoGridFSCursor.php"
+                    },
+                    {
+                        "MongoId": "src/MongoId.php"
+                    },
+                    {
+                        "MongoInt32": "src/MongoInt32.php"
+                    },
+                    {
+                        "MongoInt64": "src/MongoInt64.php"
+                    },
+                    {
+                        "MongoLog": "src/MongoLog.php"
+                    },
+                    {
+                        "MongoMaxKey": "src/MongoMaxKey.php"
+                    },
+                    {
+                        "MongoMinKey": "src/MongoMinKey.php"
+                    },
+                    {
+                        "MongoRegex": "src/MongoRegex.php"
+                    },
+                    {
+                        "MongoResultException": "src/MongoResultException.php"
+                    },
+                    {
+                        "MongoTimestamp": "src/MongoTimestamp.php"
+                    }
+                ],
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jakub Husák",
+                    "email": "husak.j@gmail.com"
+                },
+                {
+                    "name": "Mongofill Community",
+                    "homepage": "https://github.com/mongofill/mongofill/graphs/contributors"
+                },
+                {
+                    "name": "Máximo Cuadros",
+                    "email": "mcuadros@gmail.com"
+                }
+            ],
+            "description": "Polyfill of PECL Mongo extension",
+            "time": "2015-08-22 21:39:36"
         },
         {
             "name": "monolog/monolog",
@@ -8299,7 +8661,9 @@
         "behat/mink-extension": 20,
         "vipsoft/code-coverage-extension": 20,
         "sensiolabs/behat-page-object-extension": 20,
-        "behatch/contexts": 20
+        "behatch/contexts": 20,
+        "doctrine/mongodb-odm": 20,
+        "mongofill/mongofill": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
