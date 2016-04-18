@@ -12,7 +12,8 @@ export class LoginForm extends React.Component {
     this.state = {
       failed: false,
       captcha: '',
-      captcha_public_key: '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9'
+      captcha_public_key: '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
+      reset_path: portalUrlGenerator.path('/login/reset-password')
     };
   }
 
@@ -48,6 +49,23 @@ export class LoginForm extends React.Component {
         this.addCaptchaIfNecessary();
       }
     });
+  }
+
+  onEmailBlur() {
+    console.log(this);
+    const $username = $(this.refs.username);
+
+    console.log($username);
+
+    if ($username) {
+      this.setState({
+        reset_path: portalUrlGenerator.path('/login/reset-password') + '?email=' + $username.val()
+      });
+    } else {
+      this.setState({
+        reset_path: portalUrlGenerator.path('/login/reset-password')
+      });
+    }
   }
 
   addCaptchaIfNecessary() {
@@ -89,6 +107,7 @@ export class LoginForm extends React.Component {
             tabIndex="2"
             placeholder="email@example.com"
             name="username"
+            onBlur={this.onEmailBlur.bind(this)}
             />
         </label>
 
@@ -126,7 +145,7 @@ export class LoginForm extends React.Component {
         <button type="submit" tabIndex="2">{portalPhrases.get('portal.account.login-btn')}</button>
 
         <div className="secondary-action">
-          <a href={portalUrlGenerator.path('/login/reset-password')}>
+          <a href={this.state.reset_path}>
             {portalPhrases.get('portal.account.login-password-reminder')}
           </a>
         </div>
