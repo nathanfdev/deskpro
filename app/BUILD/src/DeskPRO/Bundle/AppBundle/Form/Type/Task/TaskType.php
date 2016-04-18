@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
@@ -38,10 +38,9 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedArticleType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedChatType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedTicketType;
+use DeskPRO\Bundle\AppBundle\Form\Type\SetCollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -49,6 +48,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType as CoreDateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -174,7 +175,10 @@ class TaskType extends AbstractType
                         return new TaskLinkedChat($builder->getData());
                     },
                 ],
-            ]);
+            ])
+        ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelatedData'], 100);
     }
 
     /**
@@ -182,8 +186,29 @@ class TaskType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Task::class,
-        ]);
+        $resolver
+            ->setRequired(['person'])
+            ->setDefaults([
+                'data_class' => Task::class,
+            ])
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
+        ;
+    }
+
+    /**
+     * Set related data for new task.
+     *
+     * @param FormEvent $event
+     */
+    public function onSetRelatedData(FormEvent $event)
+    {
+        $data   = $event->getData();
+        $config = $event->getForm()->getConfig();
+
+        if ($data instanceof Task && !$data->getId()) {
+            $data->setCreator($config->getOption('person'));
+        }
     }
 }

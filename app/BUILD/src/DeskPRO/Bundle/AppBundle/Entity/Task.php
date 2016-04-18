@@ -240,10 +240,8 @@ class Task implements EntityInterface
 
     /**
      * Constructor.
-     *
-     * @param Person $creator
      */
-    public function __construct(Person $creator)
+    public function __construct()
     {
         $this->subtasks        = new ArrayCollection();
         $this->labels          = new ArrayCollection();
@@ -252,7 +250,6 @@ class Task implements EntityInterface
         $this->linked_chats    = new ArrayCollection();
         $this->linked_tickets  = new ArrayCollection();
 
-        $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
 

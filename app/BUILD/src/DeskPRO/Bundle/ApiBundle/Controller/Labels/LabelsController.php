@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 use Application\DeskPRO\Entity\LabelDef;
@@ -39,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class LabelsController.
@@ -82,7 +77,7 @@ class LabelsController extends BaseController
      *     "/{type}_labels",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="ticket|person|organization|feedback|news|chat|article|download"
+     *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"
      *     }
      * )
      *
@@ -94,53 +89,55 @@ class LabelsController extends BaseController
     public function getLabelsAction(Request $request, $type)
     {
         switch ($type) {
+            case 'task':
+                $labelType = LabelDef::TYPE_TASKS;
+                break;
             case 'ticket':
-                $label_type = LabelDef::TYPE_TICKETS;
+                $labelType = LabelDef::TYPE_TICKETS;
                 break;
             case 'person':
-                $label_type = LabelDef::TYPE_PEOPLE;
+                $labelType = LabelDef::TYPE_PEOPLE;
                 break;
             case 'organization':
-                $label_type = LabelDef::TYPE_ORGS;
+                $labelType = LabelDef::TYPE_ORGS;
                 break;
             case 'feedback':
-                $label_type = LabelDef::TYPE_FEEDBACK;
+                $labelType = LabelDef::TYPE_FEEDBACK;
                 break;
             case 'news':
-                $label_type = LabelDef::TYPE_NEWS;
+                $labelType = LabelDef::TYPE_NEWS;
                 break;
             case 'chat':
-                $label_type = LabelDef::TYPE_CHATS;
+                $labelType = LabelDef::TYPE_CHATS;
                 break;
             case 'article':
-                $label_type = LabelDef::TYPE_ARTICLES;
+                $labelType = LabelDef::TYPE_ARTICLES;
                 break;
             case 'download':
-                $label_type = LabelDef::TYPE_DOWNLOADS;
+                $labelType = LabelDef::TYPE_DOWNLOADS;
                 break;
             default:
-                throw new \InvalidArgumentException();
+                throw $this->createNotFoundException();
         }
 
         /* @ToDo move below functionality into LabelDef repository after removing old code */
-        $qb = $this->getDoctrine()->getManager()->createQueryBuilder();
+        $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('l')
-            ->from('DeskPRO:LabelDef', 'l')
+            ->from(LabelDef::class, 'l')
             ->where('l.label_type = :type')
-            ->setParameter('type', $label_type)
-            ->orderBy('l.label', 'asc');
+            ->setParameter('type', $labelType)
+            ->orderBy('l.label', 'asc')
+        ;
+
         $term = $request->get('term');
         if (null !== $term) {
             $qb
                 ->andWhere('l.label LIKE :term')
-                ->setParameter('term', $term.'%');
+                ->setParameter('term', $term.'%')
+            ;
         }
-        $definitions = $qb->getQuery()->getResult();
 
-        return View::create(
-            $this->wrap($definitions),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 }

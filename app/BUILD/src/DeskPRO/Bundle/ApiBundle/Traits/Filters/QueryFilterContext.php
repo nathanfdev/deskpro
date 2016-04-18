@@ -26,34 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
+namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class ProjectTeamsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/task_projects/{parentId}/members/teams")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
+ * Class QueryFilterContext.
  */
-class ProjectTeamsController extends AbstractProjectMembersController
+class QueryFilterContext
 {
     /**
-     * {@inheritdoc}
+     * @var QueryBuilder
      */
-    protected function getType()
+    private $qb;
+
+    /**
+     * @var string
+     */
+    private $alias;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * Constructor.
+     *
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
+     */
+    public function __construct(QueryBuilder $qb, $alias, Request $request)
     {
-        return 'team';
+        $this->qb      = $qb;
+        $this->alias   = $alias;
+        $this->request = $request;
     }
 
     /**
-     * {@inheritdoc}
+     * @return QueryBuilder
      */
-    protected function getTaskCriteriaParam()
+    public function getQb()
     {
-        return 'assigned_team';
+        return $this->qb;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

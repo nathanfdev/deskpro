@@ -22,12 +22,36 @@ export const projectsCountSelector = createSelector(
   state => state.get('projects')
 );
 
+export const groupsCountMapSelector = createSelector(
+  groupsCountSelector,
+  groupsCount => {
+    const countMap = [];
+    groupsCount.get('nested').forEach(groupCount => {
+      countMap[groupCount.get('type')] = parseInt(groupCount.get('count'), 10);
+    });
+
+    return countMap;
+  }
+);
+
+export const agentsCountMapSelector = createSelector(
+  agentsCountSelector,
+  agentsCount => {
+    const countMap = [];
+    agentsCount.get('nested').forEach(agentCount => {
+      countMap[agentCount.get('id')] = parseInt(agentCount.get('count'), 10);
+    });
+
+    return countMap;
+  }
+);
+
 export const projectsCountMapSelector = createSelector(
   projectsCountSelector,
   projectsCount => {
     const countMap = [];
-    projectsCount.forEach(projectCount => {
-      countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
+    projectsCount.get('nested').forEach(projectCount => {
+      countMap[projectCount.get('id')] = parseInt(projectCount.get('count'), 10);
     });
 
     return countMap;

@@ -2,13 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Agents } from './Agents';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { agentsCountSelector } from '../../../Selectors/nav';
+import { agentsCountMapSelector } from '../../../Selectors/nav';
 
 @connect(state => ({
-  agents:      agentsSelector(state),
-  agentsCount: agentsCountSelector(state)
+  agents:         agentsSelector(state),
+  agentsCountMap: agentsCountMapSelector(state)
 }))
 export class AgentsContainer extends React.Component {
+
   render() {
     return <Agents {...this.props} />;
   }

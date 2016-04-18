@@ -26,47 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskAttachmentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskAttachmentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TaskAttachmentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/task_attachments")
+ * @Rest\Route("/tasks/{parentId}/attachments")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment")
  */
-class TaskAttachmentsController extends CrudController
+class TaskAttachmentsController extends AbstractTaskSubController
 {
     public static $entity = TaskAttachment::class;
     public static $type   = TaskAttachmentType::class;
-
-    protected function instantiateEntity(Request $request)
-    {
-        return new TaskAttachment($this->getUser());
-    }
-
-    protected function handleForm($model, Request $request, array $options = [])
-    {
-        $submitted = $request->request->all();
-        /** @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage $bs */
-        $bs           = $this->container->getBlobStorage();
-        $file_string  = base64_decode($submitted['file']);
-        $file_name    = $submitted['filename'];
-        $content_type = $submitted['content_type'];
-        $blob         = $bs->createBlobRecordFromString($file_string, $file_name, $content_type);
-        $model->setBlob($blob);
-
-        return parent::handleForm($model, $request, $options);
-    }
 }

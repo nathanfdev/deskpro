@@ -12,6 +12,7 @@ Feature: /feedback_labels endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0]" should be equal to "another"
-    And the JSON node "data[1]" should be equal to "label1"
-    And the JSON node "data[2]" should be equal to "label2"
+    And the JSON node "data[0].label_type" should be equal to "feedback"
+    And the JSON node "data[0].label" should be equal to "AAA-feedback"
+    And the JSON node "data[1].label" should be equal to "BBB-feedback"
+    And the JSON node "data[2].label" should be equal to "CCC-feedback"

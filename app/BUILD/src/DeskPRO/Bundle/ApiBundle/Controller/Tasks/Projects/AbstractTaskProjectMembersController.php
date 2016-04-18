@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -43,13 +40,13 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class ProjectMembersController.
+ * Class AbstractTaskProjectMembersController.
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects/{parentId}/members/{type}")
  * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Entity\ProjectMember")
  */
-abstract class AbstractProjectMembersController extends CrudSubController
+abstract class AbstractTaskProjectMembersController extends CrudSubController
 {
     public static $entity         = ProjectMember::class;
     public static $type           = ProjectMemberType::class;

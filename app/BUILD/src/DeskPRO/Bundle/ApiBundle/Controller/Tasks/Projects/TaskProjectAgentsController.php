@@ -26,54 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
-
-use Application\DeskPRO\Entity\LabelFeedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 
 /**
- * Class FeedbackLabelController.
+ * Class TaskProjectAgentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/feedback_labels")
+ * @Rest\Route("/task_projects/{parentId}/members/agents")
+ * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  */
-class FeedbackLabelController extends BaseController
+class TaskProjectAgentsController extends AbstractTaskProjectMembersController
 {
     /**
-     * Fetch all feedback labels.
-     *
-     * @ApiDoc(
-     *     section="Feedback",
-     *     tags={"unstable"="#ff6666", "feedback"="#4422bb"},
-     *     resourceDescription="Operations about feedback",
-     *     description="get list of feedback labels",
-     *     statusCodes={
-     *         200="Returned if request was successful"
-     *     }
-     * )
-     * @Rest\Get("")
-     *
-     * @return View
+     * {@inheritdoc}
      */
-    public function listAction()
+    protected function getType()
     {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('DISTINCT l.label')
-            ->from(LabelFeedback::class, 'l')
-        ;
+        return 'person';
+    }
 
-        $labels = $qb->getQuery()->getScalarResult();
-        $labels = array_map('current', $labels);
-
-        return View::create($this->wrap($labels));
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTaskCriteriaParam()
+    {
+        return 'assigned_agent';
     }
 }

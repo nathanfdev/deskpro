@@ -62,7 +62,6 @@ abstract class CrudController extends BaseController
     ];
 
     public static $entity;
-
     public static $type;
 
     /**
@@ -334,9 +333,13 @@ abstract class CrudController extends BaseController
                   ? static::$sortOptions[$sortParam]
                   : static::$listSort;
 
-            $orderDir = strtolower($request->get('order_dir'));
-            if ($orderDir && !in_array($orderDir, ['asc', 'desc'])) {
-                throw $this->createBadRequestException('Unknown order value');
+            $requestOrderDir = strtolower($request->get('order_dir'));
+            if ($requestOrderDir) {
+                if (!in_array($requestOrderDir, ['asc', 'desc'])) {
+                    throw $this->createBadRequestException('Unknown order value');
+                }
+
+                $orderDir = $requestOrderDir;
             }
         }
 

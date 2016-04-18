@@ -26,54 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskLabelType;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TaskLabelsController.
+ * Class TaskProjectTeamsController.
  *
- * @Rest\Route("/task_labels")
  * @ApiModes("all")
- * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\LabelTask")
+ * @Rest\Route("/task_projects/{parentId}/members/teams")
+ * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
  */
-class TaskLabelsController extends CrudController
+class TaskProjectTeamsController extends AbstractTaskProjectMembersController
 {
-    public static $entity    = LabelTask::class;
-    public static $type      = TaskLabelType::class;
-    public static $listSort  = 'label';
-    public static $listOrder = 'asc';
-
     /**
      * {@inheritdoc}
      */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    protected function getType()
     {
-        $group = $request->query->get('group', false);
-
-        if (!empty($group)) {
-            $qb->groupBy("$alias.label");
-        }
-        parent::applyListFilters($qb, $alias, $request);
+        return 'team';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function instantiateEntity(Request $request)
+    protected function getTaskCriteriaParam()
     {
-        $label = new LabelTask($this->getUser());
-
-        return $label;
+        return 'assigned_team';
     }
 }

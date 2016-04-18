@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -210,13 +211,15 @@ SQL
         $ticket_layout2->user_layout  = new Layout();
 
         // Create a basic task
-        $task = new Task($admin);
+        $task = new Task();
+        $task->setCreator($admin);
         $task->setTitle('A demo task');
         $taskAssignment = new TaskAssignment();
         $taskAssignment->setTask($task);
         $taskAssignment->setPerson($admin);
 
-        $unassignedTask = new Task($admin);
+        $unassignedTask = new Task();
+        $unassignedTask->setCreator($admin);
         $unassignedTask->setTitle('An unassigned task');
 
         // Create a new knowledge base article

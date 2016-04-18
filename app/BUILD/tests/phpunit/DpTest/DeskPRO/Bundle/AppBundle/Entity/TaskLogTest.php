@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -117,8 +118,9 @@ class TaskLogTest extends ApiTestCase
      */
     private function getValidTask()
     {
-        $task = new Task($this->getUser());
+        $task = new Task();
         $task->setTitle('valid task');
+        $task->setCreator($this->getUser());
 
         return $task;
     }
@@ -128,6 +130,9 @@ class TaskLogTest extends ApiTestCase
      */
     private function getInvalidTask()
     {
-        return new Task($this->getUser());
+        $task = new Task();
+        $task->setCreator($this->getUser());
+
+        return $task;
     }
 }

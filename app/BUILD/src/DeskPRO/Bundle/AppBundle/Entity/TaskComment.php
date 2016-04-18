@@ -131,13 +131,10 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Constructor.
-     *
-     * @param Person $person
      */
-    public function __construct(Person $person)
+    public function __construct()
     {
         $this->attachments = new ArrayCollection();
-        $this->setPerson($person);
         $this->setDateCreated(new \DateTime());
     }
 

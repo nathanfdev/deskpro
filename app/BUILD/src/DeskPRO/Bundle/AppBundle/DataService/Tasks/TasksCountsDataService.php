@@ -29,13 +29,47 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class TasksCountsDataService.
  */
-class TasksCountsDataService extends AbstractTasksDataService
+class TasksCountsDataService
 {
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var Person
+     */
+    protected $user;
+
+    /**
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
+     */
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    {
+        $this->em   = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getBaseQueryBuilder()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->from(Task::class, 't');
+
+        return $qb;
+    }
+
     /**
      * @return int
      */
@@ -156,7 +190,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS agent_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
+            ->select('p.id, p.name, COALESCE(COUNT(t.id), 0) AS tasks_count')
             ->from(Person::class, 'p')
             ->leftJoin('p.assigned_tasks', 'ta')
             ->leftJoin('ta.task', 't')
@@ -174,7 +208,7 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS project_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
+            ->select('p.id, p.title, COALESCE(COUNT(t.id), 0) AS tasks_count')
             ->from(TaskProject::class, 'p')
             ->leftJoin('p.tasks', 't')
             ->groupBy('p.id')

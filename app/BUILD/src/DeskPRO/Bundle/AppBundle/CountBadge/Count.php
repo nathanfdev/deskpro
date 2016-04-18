@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 use JMS\Serializer\Annotation as JMS;
@@ -259,6 +260,8 @@ class Count
      * @param string $type
      * @param string $title
      * @param bool   $sum_to_value If need to increase $this->value by nested count value
+     *
+     * @return $this
      */
     public function addNested($value, $id, $type, $title = '', $sum_to_value = false)
     {
@@ -272,6 +275,8 @@ class Count
         if ($sum_to_value) {
             $this->add($value);
         }
+
+        return $this;
     }
 
     /**

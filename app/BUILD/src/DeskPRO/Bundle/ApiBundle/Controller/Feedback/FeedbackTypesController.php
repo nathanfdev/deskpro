@@ -32,52 +32,25 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 
 /**
- * Class FeedbackCategoryController.
+ * API access to feedback types.
+ *
+ * **Note that current model called as Category, so don't be fooled with this - it's type**
  *
  * @ApiModes("all")
- * @Rest\Route("/feedback_categories")
+ * @Rest\Route("/feedback_types")
+ * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackCategory")
  */
-class FeedbackCategoryController extends BaseController
+class FeedbackTypesController extends CrudController
 {
-    /**
-     * Fetch feedback categories list.
-     * Proper output coming soon.
-     *
-     * @ApiDoc(
-     *     section="Feedback",
-     *     resourceDescription="Operations about feedback",
-     *     description="get list of feedback categories",
-     *     statusCodes={
-     *         200="Returned if request was successful"
-     *     },
-     * )
-     *
-     * @Rest\Get("")
-     * @Rest\View("list")
-     *
-     * @return View
-     */
-    public function listAction()
-    {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('category.id', 'category.input')
-            ->from(CustomDataFeedback::class, 'category')
-            ->leftJoin('category.field', 'field')
-            ->where('field.title = :title')
-            ->setParameter('title', 'Category')
-            ->groupBy('category.input')
-            ->orderBy('category.input', 'asc')
-        ;
-
-        return View::create($this->wrap($qb->getQuery()->getResult()));
-    }
+    public static $exposeOnly = ['get', 'list'];
+    public static $entity     = FeedbackCategory::class;
+    public static $listSort   = 'title';
+    public static $listOrder  = 'asc';
 }

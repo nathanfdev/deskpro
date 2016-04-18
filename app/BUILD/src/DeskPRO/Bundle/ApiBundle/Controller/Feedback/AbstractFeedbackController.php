@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\LabelFiltersTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -38,6 +41,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractFeedbackController extends CrudController
 {
+    use LabelFiltersTrait, DateFiltersTrait;
+
     /**
      * @param QueryBuilder $qb
      * @param string       $alias
@@ -57,21 +62,10 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyDateCreatedFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $createdFrom = $request->get('created_from');
-        if ($createdFrom) {
-            $qb
-                ->andWhere("$alias.date_created >= DATE(:from_date)")
-                ->setParameter('from_date', $createdFrom)
-            ;
-        }
-
-        $createdTo = $request->get('created_to');
-        if ($createdTo) {
-            $qb
-                ->andWhere("$alias.date_created <= DATE(:to_date)")
-                ->setParameter('to_date', $createdTo)
-            ;
-        }
+        $this->applyDateRangeFilters(
+            new QueryFilterContext($qb, $alias, $request),
+            'date_created', 'created_from', 'created_to'
+        );
     }
 
     /**
@@ -79,6 +73,8 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyFeedbackListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $this->applyLabelFilters(new QueryFilterContext($qb, $alias, $request), Feedback::class);
+
         $category = $request->get('category');
         if (!empty($category)) {
             $qb
@@ -94,43 +90,6 @@ abstract class AbstractFeedbackController extends CrudController
                 ->leftJoin("$alias.status_category", 'statusCategory')
                 ->andWhere('statusCategory.id IN (:statusCategory)')
                 ->setParameter('statusCategory', $statusCategory)
-            ;
-        }
-
-        $label      = $request->get('label');
-        $labelsMode = $request->get('labels_mode');
-
-        if (!empty($label)) {
-            // cast to array
-            $label = (array) $label;
-
-            if ($labelsMode === 'all') {
-                $qb2 = $this->getManager()->createQueryBuilder();
-                $qb2
-                    ->select('f2.id')
-                    ->from(Feedback::class, 'f2')
-                    ->join('f2.labels', 'labels')
-                    ->where('labels.label IN (:labels)')
-                    ->groupBy('f2.id')
-                    ->having('COUNT(f2.id) = :label_count')
-                ;
-
-                $qb
-                    ->andWhere("$alias.id IN ({$qb2->getDQL()})")
-                    ->setParameter('labels', $label)
-                    ->setParameter('label_count', count($label))
-                ;
-            } else {
-                $qb
-                    ->leftJoin("$alias.labels", 'labels')
-                    ->andWhere('labels.label IN (:labels)')
-                    ->setParameter('labels', $label)
-                ;
-            }
-        } elseif ($request->get('no_labels')) {
-            $qb
-                ->leftJoin("$alias.labels", 'labels')
-                ->andWhere('labels.label IS NULL')
             ;
         }
 

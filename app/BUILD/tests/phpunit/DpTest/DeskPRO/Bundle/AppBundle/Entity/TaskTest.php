@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -46,7 +47,8 @@ class TaskTest extends ApiTestCase
         $validator = $this->getValidator();
 
         // A valid task only needs a title and to have a person injected
-        $task = new Task($person);
+        $task = new Task();
+        $task->setCreator($person);
         $task->setTitle('A test task');
 
         $errors = $validator->validate($task);
@@ -61,8 +63,9 @@ class TaskTest extends ApiTestCase
     {
         $person    = $this->getUser();
         $validator = $this->getValidator();
-        $task      = new Task($person);
+        $task      = new Task();
         // Set a date due, but not a title
+        $task->setCreator($person);
         $task->setDateDue(new \DateTime());
 
         $errors = $validator->validate($task);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,57 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskCommentType extends AbstractType
+/**
+ * Class TaskListType.
+ */
+class TaskListType extends AbstractType
 {
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'task_comment';
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add(
-                'comment',
-                'text',
-                array(
-                    'description' => 'the comment',
-                    'required'    => false,
-                )
-            )
-            ->add(
-                'task',
-                'entity',
-                array(
-                    'class'    => 'App:Task',
-                    'property' => 'title',
-                    'required' => true,
-                )
-            );
+        $builder
+           ->add('title', TextType::class)
+           ->add('project', EntityType::class, [
+               'class' => TaskProject::class,
+           ])
+           ->add('display_order', IntegerType::class, [
+               'required' => false,
+           ])
+       ;
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\TaskComment',
-        ));
+        $resolver->setDefaults([
+            'data_class' => TaskList::class,
+        ]);
     }
 }
