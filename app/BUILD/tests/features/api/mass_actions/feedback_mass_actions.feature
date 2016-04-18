@@ -107,15 +107,15 @@ Feature: /mass_actions/feedback endpoint
     Then the response status code should be 200
 
   Scenario: I check if all mass actions was applied to feedback with ID=1
-    When I send a GET request to "/api/v2/feedback"
+    When I send a GET request to "/api/v2/feedback/1"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should exist
-    And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[0].category" should be equal to 1
-    And the JSON node "data[0].status_category" should be equal to 1
-    And the JSON node "data[0].labels[0]" should be equal to "first"
-    And the JSON node "data[0].labels[3]" should be equal to "second"
+    And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.category" should be equal to 1
+    And the JSON node "data.status_category" should be equal to 1
+    And the JSON node "data.labels[0]" should be equal to "first"
+    And the JSON node "data.labels[3]" should be equal to "second"
 
 
   Scenario: I apply set of actions on feedback with ID=1
@@ -132,12 +132,12 @@ Feature: /mass_actions/feedback endpoint
     Then the response status code should be 200
 
   Scenario: I check if all mass actions was applied to feedback with ID=1
-    When I send a GET request to "/api/v2/feedback"
+    When I send a GET request to "/api/v2/feedback/1"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should exist
-    And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[0].status" should be equal to "hidden"
-    And the JSON node "data[0].hidden_status" should be equal to "deleted"
-    And the JSON node "data[0].labels[0]" should be equal to "first"
-    And the JSON node "data[0].labels[1]" should be equal to "label2"
+    And the JSON node "data.id" should be equal to 1
+    And the JSON node "data.status" should be equal to "hidden"
+    And the JSON node "data.hidden_status" should be equal to "deleted"
+    And the JSON node "data.labels[0]" should be equal to "first"
+    And the JSON node "data.labels[1]" should be equal to "label2"
