@@ -11,8 +11,6 @@ define([
   'Admin/Apps/Ctrl/ImportersList',
   'Admin/Apps/Ctrl/ImportersView',
   'Admin/Apps/Ctrl/Resync',
-  'Admin/AuditLog/Ctrl/List',
-  'Admin/AuditLog/Ctrl/View',
   'Admin/Agents/Ctrl/Edit',
   'Admin/Agents/Ctrl/EditProfile',
   'Admin/Agents/Ctrl/DeletedList',

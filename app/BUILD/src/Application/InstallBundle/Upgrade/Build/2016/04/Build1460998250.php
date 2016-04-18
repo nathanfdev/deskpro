@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,32 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\LegacyApiBundle\DependencyInjection;
-
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-
-class AuditWriterPass implements CompilerPassInterface
+class Build1460998250 extends AbstractBuild
 {
-    public function process(ContainerBuilder $container)
+    public function run()
     {
-        if (!$container->hasDefinition('deskpro.auditlog.manager')) {
-            return;
-        }
-        if (!$container->hasDefinition('deskpro.auditlog.doctrine_listener')) {
-            return;
-        }
-
-        $audit_def = $container->getDefinition('deskpro.auditlog.manager');
-
-        $taggedServices = $container->findTaggedServiceIds('deskpro.auditlog.writers');
-        foreach ($taggedServices as $id => $attributes) {
-            $audit_def->addMethodCall('addWriter', array(new Reference($id)));
-        }
+        $this->out('Delete the old auditlog table');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS `auditlog`');
     }
 }

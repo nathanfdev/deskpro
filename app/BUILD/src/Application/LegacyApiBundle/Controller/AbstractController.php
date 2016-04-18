@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -152,8 +151,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             $this->person->loadHelper('PermissionsManager');
             $this->person->loadHelper('HelpMessages');
             $this->person->loadHelper('AgentPrefs');
-
-            $this->container->get('deskpro.auditlog.manager')->setDefaultPerformer($this->person);
         }
     }
 
