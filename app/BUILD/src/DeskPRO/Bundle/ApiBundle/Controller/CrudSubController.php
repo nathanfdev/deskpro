@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
@@ -54,8 +53,7 @@ abstract class CrudSubController extends CrudController
         $prop = static::$parentProperty;
         $qb
             ->andWhere("$alias.$prop = :parentId")
-            ->setParameter('parentId', $this->findParentOr404()->getId())
-        ;
+            ->setParameter('parentId', $this->findParentOr404()->getId());
     }
 
     /**
@@ -76,13 +74,11 @@ abstract class CrudSubController extends CrudController
      */
     protected function findEntity($id, Request $request)
     {
-        $parent = $this->findParentOr404();
-
+        $parent             = $this->findParentOr404();
         $entity             = $this->findOr404(static::$entity, $id);
         $reflectionProperty = new \ReflectionProperty(static::$entity, static::$parentProperty);
         $reflectionProperty->setAccessible(true);
         $entityParent = $reflectionProperty->getValue($entity);
-
         if ($parent !== $entityParent) {
             throw $this->createNotFoundException('Requested resources does not belong to the specified parent');
         }
@@ -98,10 +94,9 @@ abstract class CrudSubController extends CrudController
         $request     = $this->container->get('request_stack')->getCurrentRequest();
         $parentId    = $request->get('parentId');
         $parentClass = $this
-            ->getManager()
-            ->getClassMetadata(trim(static::$entity, '\\'))
-            ->getAssociationMapping(static::$parentProperty)['targetEntity']
-        ;
+                           ->getManager()
+                           ->getClassMetadata(trim(static::$entity, '\\'))
+                           ->getAssociationMapping(static::$parentProperty)['targetEntity'];
 
         return $this->findOr404($parentClass, $parentId);
     }
@@ -111,9 +106,13 @@ abstract class CrudSubController extends CrudController
      */
     protected function getLocationUrl($entity, Request $request, array $params = [])
     {
-        return parent::getLocationUrl($entity, $request, [
-            'parentId' => $this->findParentOr404()->getId(),
-        ]);
+        return parent::getLocationUrl(
+            $entity,
+            $request,
+            [
+                'parentId' => $this->findParentOr404()->getId(),
+            ]
+        );
     }
 
     /**
@@ -135,5 +134,27 @@ abstract class CrudSubController extends CrudController
     protected function getPermissionGroupEntityContext($id, Request $request)
     {
         return new PermissionGroupContext($this->findParentOr404(), $this->findEntity($id, $request));
+    }
+
+    /**
+     * It's useful for replacing content.
+     *
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    protected function getRequestContent(Request $request)
+    {
+        $parentProperty = $this
+                                        ->getManager()
+                                        ->getClassMetadata(trim(static::$entity, '\\'))
+                                        ->getAssociationMapping(static::$parentProperty)['fieldName'];
+        $content = json_decode(
+            $request->getContent(),
+            true // convert to assoc arrays instead of stdClass instances
+        );
+        $content[$parentProperty] = $request->get('parentId');
+
+        return $content;
     }
 }

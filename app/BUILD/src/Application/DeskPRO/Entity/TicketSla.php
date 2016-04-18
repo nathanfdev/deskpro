@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -117,11 +116,15 @@ class TicketSla extends DomainObject
     protected $completed_time_taken = null;
 
     /**
+     * @JMS\Expose()
+     *
      * @var Ticket
      */
     protected $ticket;
 
     /**
+     * @JMS\Expose()
+     *
      * @var Sla
      */
     protected $sla;

@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +49,14 @@ class TicketSlasController extends CrudSubController
 {
     public static $parentProperty = 'ticket';
     public static $entity         = TicketSla::class;
+    public static $type           = TicketSlaType::class;
+    public static $methods        = [
+        'list'            => true,
+        'getSingleSla'    => true,
+        'post'            => true,
+        'put'             => false,
+        'deleteSingleSla' => true,
+    ];
 
     /**
      * Retrieve the list of ticket's SLAs.
@@ -144,5 +153,31 @@ class TicketSlasController extends CrudSubController
         }
 
         return parent::deleteAction($ticketSla->getId(), $request);
+    }
+
+    /**
+     * Create Ticket SLA.
+     *
+     * @ApiDoc(
+     *     section="Tickets",
+     *     resourceDescription="Operations about ticket SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="Create Ticket SLA",
+     *     statusCodes={
+     *         201="Ticket SLA was created",
+     *         400="Request was malformed",
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
+     * )
+     *
+     * @Rest\Post("/tickets/{parentId}/slas", name="api_ticket_sla_single_create")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postSingleSlaAction(Request $request, $parentId)
+    {
+        return parent::postAction($request);
     }
 }
