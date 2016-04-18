@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
@@ -212,10 +215,17 @@ class PublishController extends AbstractController
 
         $entity = $this->_getCommentEntityName($typename);
 
-        $comment           = $this->em->find($entity, $comment_id);
-        $comment['status'] = 'visible';
+        /** @var CommentAbstract $comment */
+        $comment = $this->em->find($entity, $comment_id);
+        $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
+
+        //TODO fix update number
+        /** @var ContentAbstract $object */
+        $object = $comment->getObject();
+        $object->setNumComments($object->getNumComments() + 1);
 
         $this->em->persist($comment);
+        $this->em->persist($object);
         $this->em->flush();
 
         $this->_sendCommentApprovedNotification($comment);

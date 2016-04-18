@@ -566,4 +566,9 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('ip_address', $ip_address);
     }
+
+    public function isVisible()
+    {
+        return $this->getStatus() == self::STATUS_VISIBLE;
+    }
 }

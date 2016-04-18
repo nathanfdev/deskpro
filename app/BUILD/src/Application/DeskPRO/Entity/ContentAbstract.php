@@ -750,6 +750,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getNumComments()
+    {
+        return $this->num_comments;
+    }
+
+    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()
