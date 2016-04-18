@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2073,7 +2072,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Set the ticket department.
      *
-     * @param Department $department
+     * @param Department|null $department
      *
      * @return $this
      */
@@ -2352,7 +2351,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @param AgentTeam $team
+     * @param AgentTeam|null $team
      *
      * @return $this
      */
