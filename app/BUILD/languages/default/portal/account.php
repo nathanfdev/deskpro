@@ -76,7 +76,7 @@ return array(
     'portal.account.section-title-register'         => 'Register',
     'portal.account.section-title-reset-password'   => 'Reset Password',
     'portal.account.section-title-set-password'     => 'Set Password',
-    'portal.account.section-title-usersource-email' => 'Please Set an Email',
+    'portal.account.section-title-usersource-email' => 'Enter Your Email',
     'portal.account.section-title-your-account'     => 'Your Account',
     'portal.account.set-password-btn'               => 'Set Password',
     'portal.account.set-password-click-here'        => 'Click here to set your password',
