@@ -52,10 +52,7 @@ export class LoginForm extends React.Component {
   }
 
   onEmailBlur() {
-    console.log(this);
     const $username = $(this.refs.username);
-
-    console.log($username);
 
     if ($username) {
       this.setState({
