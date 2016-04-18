@@ -100,20 +100,20 @@ class TicketSlasController extends CrudSubController
      *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
-     * @Rest\Get("/tickets/{parentId}/slas/{sla_id}", name="api_ticket_sla_single")
+     * @Rest\Get("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID
-     * @param int     $sla_id   parent SLA's ID
+     * @param int     $slaId    parent SLA's ID
      *
      * @return View
      */
-    public function getSingleSlaAction(Request $request, $parentId, $sla_id)
+    public function getSingleSlaAction(Request $request, $parentId, $slaId)
     {
-        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $sla_id]);
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
         if (null === $ticketSla) {
             throw $this->createNotFoundException(
-                'Ticket SLA for ticket ID= '.$parentId.' and SLA ID='.$sla_id.' not found'
+                'Ticket SLA for ticket ID='.$parentId.' and SLA ID='.$slaId.' not found'
             );
         }
 
@@ -135,20 +135,20 @@ class TicketSlasController extends CrudSubController
      *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
-     * @Rest\Delete("/tickets/{parentId}/slas/{sla_id}", name="api_ticket_sla_single_delete")
+     * @Rest\Delete("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single_delete")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID
-     * @param int     $sla_id   parent SLA's ID
+     * @param int     $slaId    parent SLA's ID
      *
      * @return View
      */
-    public function deleteSingleSlaAction(Request $request, $parentId, $sla_id)
+    public function deleteSingleSlaAction(Request $request, $parentId, $slaId)
     {
-        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $sla_id]);
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
         if (null === $ticketSla) {
             throw $this->createNotFoundException(
-                'Ticket SLA for ticket ID= '.$parentId.' and SLA ID='.$sla_id.' not found'
+                'Ticket SLA for ticket ID='.$parentId.' and SLA ID='.$slaId.' not found'
             );
         }
 
@@ -176,8 +176,43 @@ class TicketSlasController extends CrudSubController
      *
      * @return View
      */
-    public function postSingleSlaAction(Request $request, $parentId)
+    public function postSingleSlaAction(Request $request)
     {
         return parent::postAction($request);
+    }
+
+    /**
+     * Update Ticket SLA.
+     *
+     * @ApiDoc(
+     *     section="Tickets",
+     *     resourceDescription="Operations about ticket SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="Update Ticket SLA",
+     *     statusCodes={
+     *         204="Ticket SLA was updated",
+     *         400="Request was malformed",
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
+     * )
+     *
+     * @Rest\Put("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single_update")
+     *
+     * @param Request $request
+     * @param int     $parentId parent Ticket ID
+     * @param int     $slaId    parent SLA ID
+     *
+     * @return View
+     */
+    public function putSingleSlaAction(Request $request, $parentId, $slaId)
+    {
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
+        if (null === $ticketSla) {
+            throw $this->createNotFoundException(
+                'Ticket SLA for ticket ID='.$parentId.' and SLA ID='.$slaId.' not found'
+            );
+        }
+
+        return parent::putAction($ticketSla->getId(), $request);
     }
 }

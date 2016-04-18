@@ -19,15 +19,8 @@ Feature: /tickets/{id}/slas endpoint
     """
     Then the response status code should be 201
 
-  Scenario: I gey created ticket SLA
-    When I send a GET request to "/api/v2/tickets/3/slas" with body:
-"""
-{
-  "sla": 1,
-  "sla_status": "ok"
-}
-    """
-    And print last JSON response
+  Scenario: I get created ticket SLA
+    When I send a GET request to "/api/v2/tickets/3/slas"
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
@@ -36,3 +29,36 @@ Feature: /tickets/{id}/slas endpoint
     And the JSON node "data[0].sla.id" should be equal to 2
     And the JSON node "data[0].ticket.id" should be equal to 3
 
+  Scenario: I update a ticket SLA
+    When I send a PUT request to "/api/v2/tickets/3/slas/2" with body:
+"""
+{
+  "sla": 1,
+  "sla_status": "ok"
+}
+    """
+    Then the response status code should be 204
+
+  Scenario: I get updated ticket SLA
+    When I send a GET request to "/api/v2/tickets/3/slas"
+    Then the response status code should be 200
+    And the JSON node "meta" should exist
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].sla_status" should be equal to "ok"
+    And the JSON node "data[0].sla.id" should be equal to 1
+    And the JSON node "data[0].ticket.id" should be equal to 3
+
+  Scenario: I try to get SLAs for non-existing ticket
+    When I send a GET request to "/api/v2/tickets/3000/slas"
+    And print last JSON response
+    Then the response status code should be 404
+    And the JSON node "status" should be equal to 404
+    And the JSON node "message" should be equal to "Not found"
+
+  Scenario: I try to get ticket SLA for non-existing parent SLA
+    When I send a GET request to "/api/v2/tickets/3/slas/3000"
+    And print last JSON response
+    Then the response status code should be 404
+    And the JSON node "status" should be equal to 404
+    And the JSON node "message" should be equal to "Ticket SLA for ticket ID=3 and SLA ID=3000 not found"
