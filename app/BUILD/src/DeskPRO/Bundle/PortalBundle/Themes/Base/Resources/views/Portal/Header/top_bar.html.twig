@@ -5,11 +5,11 @@
   <div class="brand">
     <a href="{{ path('portal_home') }}">
       {% if portal_custom_logo() %}
-        <img alt="{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}"
+        <img alt="{{ global_settings.get('core.deskpro_name') }}"
              src="{{ portal_custom_logo() }}"
              class="logo" />
       {% else %}
-        <h1>{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}</h1>
+        <h1>{{ global_settings.get('core.deskpro_name') }}</h1>
       {% endif %}
     </a>
   </div>
