@@ -17,25 +17,6 @@
 				{% endfor %}
 				'': null
 				};
-				$(document).ready(function() {
-					DeskPRO.WordHighlighter.highlight(
-							document.getElementById('dp_article_content'),
-							{{ glossary_words|json_encode|raw }},
-							false,
-							true
-					);
-
-					$('.dp-highlight-word').on('mouseover.dp_init_hl', function() {
-						$(this).off('mouseover.dp_init_hl');
-
-						$(this).popover({
-							placement: 'top',
-							title: $(this).data('word'),
-							content: dp_glossary_words[$(this).data('word')] || '',
-							delay: {show: 250, hide: 250}
-						}).popover('show');
-					});
-				});
 			</script>
 		{% endif %}
 
