@@ -48,7 +48,54 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends BaseController
 {
     /**
-     * Search through articles, donwloads, feedback, news, tickets, chat_conversations, people and organizations.
+     * Search through articles, downloads, feedback, news, tickets, chat_conversations, people and organizations.
+     *
+     * @ApiDoc(
+     *     section="Search",
+     *     resourceDescription="Operations about search",
+     *     filters={
+     *          {
+     *              "name"="q",
+     *              "requirement"=".*",
+     *              "description"="search term",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="sort",
+     *              "requirement"=".*",
+     *              "description"="how to sort",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="types",
+     *              "requirement"="(article|download|feedback|news|ticket|person|organization|chat_conversation)+",
+     *              "description"="comma separated list of types",
+     *              "dataType"="string"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Get("/search")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function quickSearchAction(Request $request)
+    {
+        $searchRequest = $this->getSearchRequest($request);
+
+        $types = explode(',', $request->query->get('types', ''));
+        $searchRequest->setTypes($types);
+
+        return $this->getSearchResults($searchRequest);
+    }
+
+    /**
+     * Search only organizations and people.
      *
      * @ApiDoc(
      *     section="Search",
@@ -72,24 +119,23 @@ class SearchController extends BaseController
      *     }
      * )
      *
-     * @Rest\Get("/search", name="api_quick_search")
+     * @Rest\Get("/search/people_and_orgs")
      *
      * @param Request $request
      *
      * @return View
      */
-    public function quickSearchAction(Request $request)
+    public function quickSearchPeopleOrganizationsAction(Request $request)
     {
-        $search_request = $this->getSearchRequest($request);
+        $searchRequest = $this->getSearchRequest($request);
+        $searchRequest->setTypes([QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);
+        $searchRequest->disableSideloads();
 
-        $types = explode(',', $request->query->get('types', ''));
-        $search_request->setTypes($types);
-
-        return $this->getSearchResults($search_request);
+        return $this->getSearchResults($searchRequest);
     }
 
     /**
-     * Search only organizations and people.
+     * Search by entity type.
      *
      * @ApiDoc(
      *     section="Search",
@@ -104,7 +150,7 @@ class SearchController extends BaseController
      *          {
      *              "name"="sort",
      *              "requirement"=".*",
-     *              "description"="how to sord",
+     *              "description"="how to sort",
      *              "dataType"="string"
      *          }
      *      },
@@ -112,21 +158,22 @@ class SearchController extends BaseController
      *         200="Returned if everything is ok"
      *     }
      * )
+     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|organization|chat_conversation)"})
      *
-     * @Rest\Get("/search/people_and_orgs", name="api_quick_search_people_and_orgs")
-     *
+     * @param string  $type
      * @param Request $request
      *
      * @return View
      */
-    public function quickSearchPeopleOrganizationsAction(Request $request)
+    public function quickSearchByTypeAction($type, Request $request)
     {
-        $search_request = $this->getSearchRequest($request);
+        $searchRequest = $this->getSearchRequest($request);
+        $searchRequest->setTypes([$type]);
+        $searchRequest->disableSideloads();
 
-        $search_request->setTypes([QuickSearchContext::TYPE_PERSON, QuickSearchContext::TYPE_ORGANIZATION]);
-        $search_request->disableSideloads();
+        $results = $this->get('quick_search')->search($searchRequest);
 
-        return $this->getSearchResults($search_request);
+        return new View($this->wrap($results->getContext($type)->getEntities()));
     }
 
     /**
@@ -136,29 +183,30 @@ class SearchController extends BaseController
      */
     protected function getSearchRequest(Request $request)
     {
-        $search_request = new QuickSearchRequest(
+        $searchRequest = new QuickSearchRequest(
             $this->getUser(),
             (string) $request->query->get('q'),
             (string) $request->query->get('sort')
         );
 
-        if ($limit = (int) $request->get('limit')) {
-            $search_request->setLimit(min($search_request->getLimit(), $limit));
+        $limit = (int) $request->get('limit');
+        if ($limit) {
+            $searchRequest->setLimit(min($searchRequest->getLimit(), $limit));
         }
 
-        return $search_request;
+        return $searchRequest;
     }
 
     /**
-     * @param QuickSearchRequest $search_request
+     * @param QuickSearchRequest $searchRequest
      *
      * @return View
      */
-    protected function getSearchResults(QuickSearchRequest $search_request)
+    protected function getSearchResults(QuickSearchRequest $searchRequest)
     {
-        $results = $this->get('quick_search')->search($search_request);
-
+        $results  = $this->get('quick_search')->search($searchRequest);
         $response = ['grouped_results' => []];
+
         foreach ($results->getContexts() as $context) {
             $response['grouped_results'][] = [
                 'type'    => $context->getType(),

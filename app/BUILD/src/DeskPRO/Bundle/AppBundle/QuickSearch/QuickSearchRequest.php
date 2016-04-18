@@ -224,10 +224,14 @@ class QuickSearchRequest
 
     /**
      * @param array $types
+     *
+     * @return $this
      */
     public function setTypes(array $types)
     {
         $this->types = array_intersect($types, array_keys(QuickSearchContext::getDoctrineMapping()));
+
+        return $this;
     }
 
     /**
