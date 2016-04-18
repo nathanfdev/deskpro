@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
@@ -44,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/slas")
- * @ApiDoc(target="all", section="Slas", output="Application\DeskPRO\Entity\Sla")
+ * @ApiDoc(target="all", section="SLAs", output="Application\DeskPRO\Entity\Sla")
  */
 class SlasController extends CrudController
 {

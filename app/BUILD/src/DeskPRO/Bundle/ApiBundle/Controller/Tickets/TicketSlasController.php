@@ -29,25 +29,26 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\Sla;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDocSection;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\OutputEntity;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use Application\DeskPRO\Entity\TicketSla;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * API access to ticket slas.
  *
  * @ApiModes("all")
  */
-class TicketSlasController extends CrudController
+class TicketSlasController extends CrudSubController
 {
+    public static $parentProperty = 'ticket';
+    public static $entity         = TicketSla::class;
+
     /**
      * Retrieve the list of ticket's SLAs.
      *
@@ -62,37 +63,86 @@ class TicketSlasController extends CrudController
      *     output="array<Application\DeskPRO\Entity\TicketSla>"
      * )
      *
-     * @Rest\Get("/tickets/{ticket_id}/slas", name="api_ticket_sla")
+     * @Rest\Get("/tickets/{parentId}/slas", name="api_ticket_sla")
      *
-     * @param int $ticket_id
+     * @param Request $request
      *
      * @return View
+     *
+     * @internal param int $ticket_id
      */
-    public function getForTicketAction($ticket_id)
+    public function listAction(Request $request)
     {
-        $service = $this->get('data.ticket_slas');
-
-        return View::create(
-            $this->wrap($service->loadForTicket($ticket_id)),
-            Response::HTTP_OK
-        );
+        return parent::listAction($request);
     }
 
     /**
-     * @Rest\Get("/tickets/{ticket_id}/slas/{sla_id}", name="api_ticket_sla_single")
+     * Retrieve single SLA for ticket by parent SLA's ID.
      *
-     * @param int $ticket_id
-     * @param int $sla_id
+     * @ApiDoc(
+     *     section="Tickets",
+     *     resourceDescription="Operations about ticket SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="single SLA for ticket by parent SLA's ID",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *         404="Ticket SLA not found"
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
+     * )
+     *
+     * @Rest\Get("/tickets/{parentId}/slas/{sla_id}", name="api_ticket_sla_single")
+     *
+     * @param Request $request
+     * @param int     $parentId parent Ticket's ID
+     * @param int     $sla_id   parent SLA's ID
      *
      * @return View
      */
-    public function getSingleAction($ticket_id, $sla_id)
+    public function getSingleSlaAction(Request $request, $parentId, $sla_id)
     {
-        $service = $this->get('data.ticket_slas');
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $sla_id]);
+        if (null === $ticketSla) {
+            throw $this->createNotFoundException(
+                'Ticket SLA for ticket ID= '.$parentId.' and SLA ID='.$sla_id.' not found'
+            );
+        }
 
-        return View::create(
-            $this->wrap($service->loadSingleForTicket($ticket_id, $sla_id)),
-            Response::HTTP_OK
-        );
+        return parent::getAction($request, $ticketSla->getId());
+    }
+
+    /**
+     * Delete single Ticket SLA.
+     *
+     * @ApiDoc(
+     *     section="Tickets",
+     *     resourceDescription="Operations about ticket SLAs",
+     *     tags={"CRUD"="#ffa500"},
+     *     description="Delete single Ticket SLA",
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *         404="Ticket SLA not found"
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
+     * )
+     *
+     * @Rest\Delete("/tickets/{parentId}/slas/{sla_id}", name="api_ticket_sla_single_delete")
+     *
+     * @param Request $request
+     * @param int     $parentId parent Ticket's ID
+     * @param int     $sla_id   parent SLA's ID
+     *
+     * @return View
+     */
+    public function deleteSingleSlaAction(Request $request, $parentId, $sla_id)
+    {
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $sla_id]);
+        if (null === $ticketSla) {
+            throw $this->createNotFoundException(
+                'Ticket SLA for ticket ID= '.$parentId.' and SLA ID='.$sla_id.' not found'
+            );
+        }
+
+        return parent::deleteAction($ticketSla->getId(), $request);
     }
 }
