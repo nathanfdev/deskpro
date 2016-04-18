@@ -122,7 +122,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments[1]" should be equal to 2
 
   Scenario: I'm checking last created message with sideloading
-    When I send a GET request to "/api/v2/tickets/1/messages/5?include=ticket_attachment,blob"
+    When I send a GET request to "/api/v2/tickets/1/messages/5?include=ticket_attachment"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 5
 

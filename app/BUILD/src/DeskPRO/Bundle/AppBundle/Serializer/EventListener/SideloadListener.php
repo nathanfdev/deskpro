@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
@@ -47,7 +49,12 @@ class SideloadListener implements EventSubscriberInterface
     /**
      * @var EntityManager
      */
-    protected $em;
+    private $em;
+
+    /**
+     * @var array
+     */
+    private $linked = [];
 
     /**
      * SideloadListener constructor.
@@ -80,6 +87,8 @@ class SideloadListener implements EventSubscriberInterface
      */
     public function sideload(ObjectEvent $event)
     {
+        $this->linked = []; // just clear it
+
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
 
@@ -88,33 +97,44 @@ class SideloadListener implements EventSubscriberInterface
         $sideloads = $context->getSideloadStore();
         $includes  = $context->getIncludes();
 
-        $linked = [];
         $sideloads->setInterests($includes);
 
         $context->setExclusionEnabled(false);
         while ($includes && $sideloads->hasSideloads()) {
             foreach ($includes as $include) {
-                if (!isset($linked[$include])) {
-                    $linked[$include] = [];
-                }
                 $fqcn = $sideloads->getFqcn($include);
                 if ($fqcn) {
                     $ids_to_load = $sideloads->getSideloads($include);
                     foreach ($this->em->getRepository($fqcn)->findBy(['id' => $ids_to_load]) as $entity) {
-                        $linked[$include][$entity->getId()] = $context->accept($entity);
+                        /* @var EntityInterface|DomainObject $entity */
+                        $this->addLinked($include, $entity->getId(), $context->accept($entity));
                     }
                 }
-
                 if ($sideloads->hasCustom($include)) {
                     foreach ($sideloads->getCustom($include) as $custom) {
-                        $linked[$include][$custom->getId()] = $context->accept($custom->getData());
+                        $this->addLinked($include, $custom->getId(), $context->accept($custom->getData()));
                     }
                 }
             }
         }
+
         // perhaps it's not necessary at all, but who knows where context will be used?
         $context->setExclusionEnabled(true);
 
-        $visitor->addData('linked', $linked);
+        $visitor->addData('linked', $this->linked);
+    }
+
+    /**
+     * @param $include
+     * @param $id
+     * @param $data
+     */
+    private function addLinked($include, $id, $data)
+    {
+        if (!isset($this->linked[$include])) {
+            $this->linked[$include] = [];
+        }
+
+        $this->linked[$include][$id] = $data;
     }
 }
