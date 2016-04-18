@@ -60,6 +60,10 @@ echo "Ensuring permissions"
 chmod -R 0777 var
 echo "--> Done"
 
+echo "Warming up caches"
+$ROOT_DIR/bin/console cache:warmup
+echo "--> Done"
+
 if [ "$1" = "quick" ]; then
     echo "Running quick tests"
     app/BUILD/tests/bin/run-tests-quick

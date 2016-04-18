@@ -109,7 +109,7 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
     fi
     if [[ "$IS_BEHAT_INSTALL_ERROR" -ne "0" ]]; then
         echo "
-        --- BEHAT API FAILED --- "
+        --- BEHAT INSTALL FAILED --- "
     fi
     if [[ "$IS_BEHAT_API_ERROR" -ne "0" ]]; then
         echo "

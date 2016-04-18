@@ -65,6 +65,14 @@ CONTENTS
     }
 
     /**
+     * @BeforeScenario
+     */
+    public function iGoToTheHomePage()
+    {
+        $this->visitPath('/');
+    }
+
+    /**
      * @Given I log in as :who from the portal
      */
     public function iLogInAs($who)
@@ -76,6 +84,7 @@ CONTENTS
         $page->fillField('login_username', $users->getEmail($who));
         $page->fillField('login_password', $users->getPass($who));
         $page->pressButton('Login');
+        echo 'URL after login: ', $this->getSession()->getCurrentUrl();
 
         // Can't access API right after login w/o visiting this page
         $this->visitPath('/new-agent/');
