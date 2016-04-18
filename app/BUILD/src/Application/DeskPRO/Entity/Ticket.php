@@ -2041,6 +2041,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getDepartment()
     {
+        return $this->department;
+    }
+
+    public function getDepartmentOrDefault()
+    {
         if (!$this->department) {
             return App::getDataService('Department')->getDefaultTicketDepartment();
         }
