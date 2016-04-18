@@ -1,12 +1,20 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-	{% if list_type == 'category' %}
-		{{ set_tplvar('subgroup_url', path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID') }}
-	{% elseif list_type == 'status' %}
-		{{ set_tplvar('subgroup_url', path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID') }}
-	{% endif %}
-{% endblock %}
+{%- if list_type == 'category' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_feedback_category', {'category_id': category_id}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- elseif list_type == 'status' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- else -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: null
+	} %}
+{%- endif -%}
 
 {######################################################################################################################}
 {# METADATA #}

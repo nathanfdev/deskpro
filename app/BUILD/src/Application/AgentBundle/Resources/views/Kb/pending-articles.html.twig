@@ -1,7 +1,5 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
+{% set tplvars = { baseId: el_uid() } %}
 
 {######################################################################################################################}
 {# METADATA #}
