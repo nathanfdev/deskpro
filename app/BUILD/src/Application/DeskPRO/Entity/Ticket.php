@@ -2044,6 +2044,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->department;
     }
 
+    /**
+     * Failproof method to avoid errors if ticket has no department.
+     *
+     * @return Department
+     */
     public function getDepartmentOrDefault()
     {
         if (!$this->department) {
