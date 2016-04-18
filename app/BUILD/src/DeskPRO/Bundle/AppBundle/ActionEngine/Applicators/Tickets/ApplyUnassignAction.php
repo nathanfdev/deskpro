@@ -42,7 +42,7 @@ class ApplyUnassignAction extends AbstractTicketApplicator implements ActionAppl
     public function apply(array $tickets)
     {
         $context = $this->tm->createAgentExecutorContext(null, 'unassign', 'mass_actions');
-        // Department will not set in null, it will be set in default value
+        // Department will not set to null, it will be set to default value
         // see Application\DeskPRO\Tickets\TicketSaveActions\VerifyDepartment::processTicket()
         foreach ($tickets as $ticket) {
             $ticket

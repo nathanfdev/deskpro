@@ -20,7 +20,6 @@ Feature: /*_labels endpoints
       | person       | AAA-person   |
       | organization | AAA-org      |
       | ticket       | AAA-ticket   |
-      | feedback     | AAA-feedback |
 
   Scenario Outline: I search for labels
     When I send a GET request to "/api/v2/<target>_labels?term=BBB"
@@ -34,4 +33,3 @@ Feature: /*_labels endpoints
       | person       |
       | organization |
       | ticket       |
-      | feedback     |
