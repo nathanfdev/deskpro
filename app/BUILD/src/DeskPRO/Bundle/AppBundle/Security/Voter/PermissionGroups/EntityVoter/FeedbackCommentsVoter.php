@@ -26,31 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
-
-use Application\DeskPRO\Entity\FeedbackCategory;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * API access to feedback types.
- *
- * **Note that current model called as Category, so don't be fooled with this - it's type**
- *
- * @ApiModes("all")
- * @Rest\Route("/feedback_types")
- * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackCategory")
+ * Class FeedbackCommentsVoter.
  */
-class FeedbackTypeController extends CrudController
+class FeedbackCommentsVoter implements PermissionGroupEntityVoterInterface
 {
-    public static $exposeOnly = ['get', 'list'];
-    public static $entity     = FeedbackCategory::class;
-    public static $listSort   = 'title';
-    public static $listOrder  = 'asc';
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
+    {
+        return FeedbackComment::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
+    {
+        return $user->hasPerm('feedback.use');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
+    }
 }

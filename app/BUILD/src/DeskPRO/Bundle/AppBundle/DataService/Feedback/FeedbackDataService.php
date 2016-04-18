@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -40,9 +41,6 @@ use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\Query\QueryException;
-use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -296,136 +294,5 @@ class FeedbackDataService extends AbstractDataService
     public function getItemCommetRepo()
     {
         return $this->em->getRepository('DeskPRO:FeedbackComment');
-    }
-
-    /**
-     * NEW CODE (Aug.2015).
-     */
-
-    /**
-     * Select filtered list of feedback.
-     *
-     * @param FeedbackSelectCriteria $criteria
-     * @param int                    $page
-     * @param int                    $count
-     *
-     * @return array
-     */
-    public function selectFeedback(FeedbackSelectCriteria $criteria, $page, $count)
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('f')
-            ->from('DeskPRO:Feedback', 'f')
-            ->leftJoin('f.status_category', 'statusCategory')
-            ->leftJoin('f.custom_data', 'customCat')
-            ->leftJoin('f.labels', 'labels')
-            ->leftJoin('f.category', 'category')
-            ->leftJoin('f.person', 'person')
-            ->addGroupBy('f.id');
-        $criteria->applyFilters($qb);
-        $criteria->applySorting($qb);
-
-        $feedback = $qb->getQuery()->getResult();
-
-        $filters  = $criteria->getFilters();
-        $feedback = $this->allLabelsMode($filters, $feedback);
-        $pager    = new Pagerfanta(new ArrayAdapter($feedback));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return $pager;
-    }
-
-    /**
-     * @param FeedbackCountCriteria $criteria
-     *
-     * @throws \LogicException
-     *
-     * @return Count
-     */
-    public function countFeedback(FeedbackCountCriteria $criteria)
-    {
-        if (!$criteria->hasGroupBy()) {
-            return $this->countFlat($criteria);
-        }
-
-        return $this->countGrouped($criteria);
-    }
-
-    /**
-     * @param FeedbackCountCriteria $criteria
-     *
-     * @return Count
-     */
-    private function countFlat(FeedbackCountCriteria $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('count(f)')
-            ->from('DeskPRO:Feedback', 'f');
-        $criteria->applyFilters($qb);
-        try {
-            $count = $qb->getQuery()->getSingleScalarResult();
-        } catch (QueryException $e) {
-            $count = 0;
-        }
-
-        return Count::fromValue($count);
-    }
-
-    /**
-     * @param FeedbackCountCriteria $criteria
-     *
-     * @throws \LogicException
-     *
-     * @return Count
-     */
-    private function countGrouped(FeedbackCountCriteria $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('count(f) as value')
-            ->from('DeskPRO:Feedback', 'f');
-        $criteria->applyFilters($qb);
-        $criteria->applyGroupBy($qb);
-        $result = $qb->getQuery()->getArrayResult();
-
-        $count = Count::fromGroupedBy($criteria->getGroupBy());
-        foreach ($criteria->getFilters() as $field => $value) {
-            switch ($field) {
-                case 'status':
-                    $count->setId($value);
-                    $count->setTitle($value);
-                    break;
-            }
-        }
-        foreach ($result as $group) {
-            $count->add($group['value']);
-            $count->addNested($group['value'], $group['id'], $criteria->getGroupBy(), $group['group_name']);
-        }
-
-        return $count;
-    }
-
-    /**
-     * @param array $filters
-     * @param array $feedback
-     *
-     * @return array
-     */
-    private function allLabelsMode(array $filters, array $feedback)
-    {
-        if (array_key_exists('labels_mode', $filters) && $filters['labels_mode'] === 'all'
-            && array_key_exists('label', $filters) && !empty($filters['label'])
-        ) {
-            foreach ($filters['label'] as $label) {
-                foreach ($feedback as $key => $item) {
-                    if (!$item->findLabelByString($label)) {
-                        unset($feedback[$key]);
-                    }
-                }
-            }
-        }
-
-        return $feedback;
     }
 }
