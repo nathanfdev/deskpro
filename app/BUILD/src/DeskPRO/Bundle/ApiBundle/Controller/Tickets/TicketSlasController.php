@@ -66,6 +66,14 @@ class TicketSlasController extends CrudSubController
      *     resourceDescription="Operations about ticket SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="get SLAs collection for single ticket",
+     *     requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
      *     },
@@ -93,6 +101,20 @@ class TicketSlasController extends CrudSubController
      *     resourceDescription="Operations about ticket SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="single SLA for ticket by parent SLA's ID",
+     *     requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="slaId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent SLA",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
      *         404="Ticket SLA not found"
@@ -128,6 +150,20 @@ class TicketSlasController extends CrudSubController
      *     resourceDescription="Operations about ticket SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="Delete single Ticket SLA",
+     *     requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="slaId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent SLA",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
      *         404="Ticket SLA not found"
@@ -163,6 +199,14 @@ class TicketSlasController extends CrudSubController
      *     resourceDescription="Operations about ticket SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="Create Ticket SLA",
+     *     requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         201="Ticket SLA was created",
      *         400="Request was malformed",
@@ -189,6 +233,20 @@ class TicketSlasController extends CrudSubController
      *     resourceDescription="Operations about ticket SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="Update Ticket SLA",
+     *     requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *          },
+     *          {
+     *              "name"="slaId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent SLA",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         204="Ticket SLA was updated",
      *         400="Request was malformed",

@@ -81,6 +81,14 @@ class SlasController extends CrudController
      *     resourceDescription="Operations about SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="get SLA",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of SLA",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
      *     },
