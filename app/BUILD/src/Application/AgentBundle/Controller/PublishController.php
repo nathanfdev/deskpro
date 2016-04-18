@@ -219,10 +219,10 @@ class PublishController extends AbstractController
         $comment = $this->em->find($entity, $comment_id);
         $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
 
-        //TODO fix update number
         /** @var ContentAbstract $object */
         $object = $comment->getObject();
-        $object->setNumComments($object->getNumComments() + 1);
+        //TODO should be using object getter but it doesn't work for obscure reasons
+        $object->setNumComments($object->num_comments + 1);
 
         $this->em->persist($comment);
         $this->em->persist($object);
