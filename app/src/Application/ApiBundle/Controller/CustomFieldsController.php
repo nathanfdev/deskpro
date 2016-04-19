@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
@@ -321,11 +322,19 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         switch ($step) {
 
             case 1:
-                $response = array('success' => $rep->hasData($ids));
-                $field    = $rep->getByOptions($ids);
-                $root     = (int) reset($ids);
-                $options  = array();
-                $map      = array();
+                $hasData  = $rep->hasData($ids);
+                $response = array('success' => $hasData);
+                $root     = (int) min($ids);
+
+                if (!$hasData) {
+                    $rep->delete($ids);
+
+                    return $this->createJsonResponse($response);
+                }
+
+                $field   = $rep->getByOptions($ids);
+                $options = array();
+                $map     = array();
                 foreach ($field->children as $child) {
                     if ($pid = $child->getOption('parent_id')) {
                         if ($root !== $child['id']) {

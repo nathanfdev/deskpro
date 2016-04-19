@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -163,6 +164,13 @@ class CustomDefAbstract extends AbstractEntityRepository
             WHERE c.id in (:ids)
         "
         )->setParameter('ids', $ids)->getOneOrNullResult();
+    }
+
+    public function delete(array $ids)
+    {
+        return $this->getEntityManager()->createQuery(
+            "DELETE {$this->_entityName} f WHERE f.id IN (:ids)"
+        )->setParameter('ids', $ids)->execute();
     }
 
     public function updateTo(array $fromIds, $toId)
