@@ -37,11 +37,9 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\SortableCriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
-use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -59,6 +57,7 @@ class ChatDataService
         'this_year'  => 'This Year',
         'ever'       => 'Ever',
     ];
+
     /**
      * @var EntityManager
      */
@@ -72,30 +71,6 @@ class ChatDataService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param SortableCriteriaInterface $criteria
-     * @param int                       $page
-     * @param int                       $count
-     *
-     * @return Pagerfanta
-     */
-    public function selectChats(SortableCriteriaInterface $criteria, $page, $count)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('c')
-            ->from('DeskPRO:ChatConversation', 'c');
-        $criteria->applyFilters($qb);
-        $criteria->applySorting($qb);
-
-        $result = $qb->getQuery()->getResult();
-        $pager  = new Pagerfanta(new ArrayAdapter($result));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return $pager;
     }
 
     /**

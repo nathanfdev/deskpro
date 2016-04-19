@@ -39,18 +39,11 @@ use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
-use DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class PeopleController.
@@ -104,45 +97,6 @@ class PeopleController extends CrudController
         die('v 20151231');
     }
 
-    /**
-     * @ApiDoc(
-     *     section="People",
-     *     description="Get people count",
-     *     filters={
-     *         {"name"="is_agent", "requirement"="0|1", "description"="Agents filter", "dataType"="integer"},
-     *         {"name"="is_deleted", "requirement"="0|1", "description"="Soft-deleted filter", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned in case of success",
-     *         400="Your request was malformed",
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
-     * )
-     * @Rest\Get("/counts", name="api_people_counts")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function countAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Person::class));
-
-        $dataService = $this->get('data.people_counts');
-        $params      = $this->removeAdditionalParameters($request);
-
-        try {
-            /** @var PeopleCountCriteria $criteria */
-            $criteria = PeopleCountCriteria::fromParameters($params, new OptionsResolver());
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
-
-        $count = $dataService->countPeople($criteria);
-
-        return View::create($this->wrap($count));
-    }
-
     // #################################################################################################################
 
     /**
@@ -161,9 +115,8 @@ class PeopleController extends CrudController
         }
 
         if ($request->get('not_me')) {
-            $user = $this->getUser();
             $qb->andWhere("$alias.id != :id");
-            $qb->setParameter('id', $user->getId());
+            $qb->setParameter('id', $this->getUser()->getId());
         }
 
         $period = $request->get('period_created');
@@ -177,15 +130,13 @@ class PeopleController extends CrudController
         if (null !== $userGroups) {
             $qb->leftJoin("$alias.usergroups", 'ug');
             if (is_array($userGroups)) {
-                $qb
-                    ->andWhere('ug.id in (:user_group_id)')
-                    ->setParameter('user_group_id', $userGroups);
+                $qb->andWhere('ug.id in (:user_group_id)');
+                $qb->setParameter('user_group_id', $userGroups);
             } else {
                 $user_group = (int) $userGroups;
                 if ($user_group > 0) {
-                    $qb
-                        ->andWhere('ug.id = :user_group_id')
-                        ->setParameter('user_group_id', $user_group);
+                    $qb->andWhere('ug.id = :user_group_id');
+                    $qb->setParameter('user_group_id', $user_group);
                 } else {
                     $qb->andWhere('ug.id IS NULL');
                 }
@@ -193,12 +144,11 @@ class PeopleController extends CrudController
         }
 
         if (null !== $request->get('agent_team')) {
-            $agent_team = (int) $request->get('agent_team');
+            $agentTeam = (int) $request->get('agent_team');
             $qb->leftJoin("$alias.teams", 'teams');
-            if ($agent_team > 0) {
-                $qb
-                    ->andWhere('teams.id = :agent_team_id')
-                    ->setParameter('agent_team_id', $agent_team);
+            if ($agentTeam > 0) {
+                $qb->andWhere('teams.id = :agent_team_id');
+                $qb->setParameter('agent_team_id', $agentTeam);
             } else {
                 $qb->andWhere('teams.id IS NULL');
             }
@@ -212,16 +162,13 @@ class PeopleController extends CrudController
             } else {
                 $qb->andWhere('org.id = :org');
             }
+
             $qb->setParameter('org', $org);
         }
     }
 
     /**
-     * Apply 'sort' and 'order' depending on static::$sortOptions.
-     *
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
+     * {@inheritdoc}
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
@@ -241,6 +188,33 @@ class PeopleController extends CrudController
             } else {
                 parent::applySorting($qb, $alias, $request);
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
+    {
+        switch ($groupBy) {
+            case 'user_group':
+                $qb
+                    ->leftJoin("$alias.usergroups", 'groups')
+                    ->addSelect('groups.title as title')
+                    ->addSelect('groups.id as group_name')
+                    ->groupBy('group_name')
+                ;
+
+                break;
+            case 'agent_team':
+                $qb
+                    ->leftJoin("$alias.teams", 'teams')
+                    ->addSelect('teams.name as title')
+                    ->addSelect('teams.id as group_name')
+                    ->groupBy('group_name')
+                ;
+
+                break;
         }
     }
 }

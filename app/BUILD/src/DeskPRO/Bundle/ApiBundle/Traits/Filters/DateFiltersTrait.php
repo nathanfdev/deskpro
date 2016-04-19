@@ -47,18 +47,14 @@ trait DateFiltersTrait
 
         $minValue = $request->get($minQueryParam);
         if ($minValue) {
-            $qb
-                ->andWhere("$alias.$property >= DATE(:$minQueryParam)")
-                ->setParameter($minQueryParam, $minValue)
-            ;
+            $qb->andWhere("$alias.$property >= DATE(:$minQueryParam)");
+            $qb->setParameter($minQueryParam, $minValue);
         }
 
         $maxValue = $request->get($maxQueryParam);
         if ($maxValue) {
-            $qb
-                ->andWhere("$alias.$property <= DATE(:$maxQueryParam)")
-                ->setParameter($maxQueryParam, $maxValue)
-            ;
+            $qb->andWhere("$alias.$property <= DATE(:$maxQueryParam)");
+            $qb->setParameter($maxQueryParam, $maxValue);
         }
     }
 }
