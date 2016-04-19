@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Component\SassCompiler\Compiler\ScssPhpCompiler;
@@ -68,6 +69,14 @@ class StylesheetCompiler
         // Compile custom_vars.scss from $variables
         $custom_vars_scss = '';
         $variables        = $this->precompileVariables($variables);
+
+        $buildDir                     = DP_ACTIVE_BUILD;
+        $variables['pub-path']        = "'../../../../../../../../../assets/{$buildDir}/pub'";
+        $variables['portal-res-path'] = "'../../../../../../../../../assets/{$buildDir}/pub/src/DeskPRO/Bundle/PortalBundle/Resources'";
+        $variables['portal-img-path'] = "'../../../../../../../../../assets/{$buildDir}/pub/src/DeskPRO/Bundle/PortalBundle/Resources/img'";
+        $variables['modules-path']    = "'../../../../../../../../../assets/{$buildDir}/pub/node_modules'";
+        $variables['fa-font-path']    = "'../../../../../../../../../assets/{$buildDir}/pub/node_modules/font-awesome/fonts'";
+
         foreach ($variables as $variable => $value) {
             $custom_vars_scss .= '$'."$variable: $value;\n";
         }

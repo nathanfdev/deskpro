@@ -2,6 +2,8 @@
 // Paths
 //-------------------------
 
+// Note that these paths are re-declared in StylesheetCompiler.php
+
 $pub-path: "../../../../../../../pub";
 $portal-res-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources";
 $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
