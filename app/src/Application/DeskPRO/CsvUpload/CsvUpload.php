@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
@@ -138,6 +139,13 @@ class CsvUpload
      */
     public function returnStatusOfImport()
     {
+        if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
+            return array(
+                'status'  => 'disabled_on_demo',
+                'message' => '',
+            );
+        }
+
         $tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
 
         if (!count($tasks)) {
