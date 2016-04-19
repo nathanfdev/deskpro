@@ -568,12 +568,13 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         return new FormField('ticket_description', [
-            'mapped' => false,
-            'label'  => false,
-            'person' => $context->getPerson(),
-            'ticket' => $context->getTicket(),
-            'data'   => $context->getMessage(),
-            'format' => $context->forApi() ? '' : 'html',
+            'mapped'         => false,
+            'label'          => false,
+            'person'         => $context->getPerson(),
+            'ticket'         => $context->getTicket(),
+            'ticket_message' => $context->getMessage(),
+            'data'           => $context->getMessage(),
+            'format'         => $context->forApi() ? '' : 'html',
         ]);
     }
 

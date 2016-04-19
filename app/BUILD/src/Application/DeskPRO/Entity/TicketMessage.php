@@ -726,6 +726,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $this->attachments;
     }
 
+    /**
+     * Get a collection of attachments suitable for display in an attach list (that is, excluding inlined ones).
+     * 
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAttachmentsList()
+    {
+        return $this->attachments->filter(function ($a) { return !$a->is_inline; });
+    }
+
     public function removeAttachment(TicketAttachment $attachment)
     {
         $this->attachments->removeElement($attachment);
