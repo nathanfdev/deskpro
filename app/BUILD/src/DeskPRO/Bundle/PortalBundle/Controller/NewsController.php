@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -254,7 +254,6 @@ class NewsController extends AbstractController
      * Need to force a redirect here to support old permalinks!
      *
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
-     * @PageHttpCache(content="post")
      */
     public function viewLEGACYAction(Request $request, $slug)
     {
