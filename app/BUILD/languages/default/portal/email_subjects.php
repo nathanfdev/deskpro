@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ return array(
     'portal.email_subjects.feedback_new-approved'           => 'Your feedback has been approved',
     'portal.email_subjects.feedback_new-comment'            => 'There is a new comment on "{{title}}"',
     'portal.email_subjects.feedback_new-confirm'            => 'Thank you for submitting your feedback (validation required)',
-    'portal.email_subjects.feedback_new-disapproved'        => 'Your feedback has been declined',
+    'portal.email_subjects.feedback_new-disapproved'        => 'Your feedback item has been declined',
     'portal.email_subjects.feedback_updated'                => 'Your feedback was updated: {{title}}',
     'portal.email_subjects.kb_sub_new'                      => 'New Articles',
     'portal.email_subjects.kb_sub_new_and_updated'          => 'New and Updated Articles',
@@ -47,7 +47,7 @@ return array(
     'portal.email_subjects.download_sub_new'                => 'New Downloads',
     'portal.email_subjects.download_sub_new_and_updated'    => 'New and Updated Downloads',
     'portal.email_subjects.download_sub_updated'            => 'Updated Downloads',
-    'portal.email_subjects.news_sub_new'                    => 'New News',
+    'portal.email_subjects.news_sub_new'                    => 'Breaking News',
     'portal.email_subjects.news_sub_new_and_updated'        => 'New and Updated News',
     'portal.email_subjects.news_sub_updated'                => 'Updated News',
     'portal.email_subjects.feedback_sub_updated'            => 'Updated Feedback',
@@ -59,7 +59,7 @@ return array(
     'portal.email_subjects.remind_unresolved_subject'       => 'REMINDER: {{ticket.subject}}',
     'portal.email_subjects.remind_unresolved_final_subject' => 'REMINDER: {{ticket.subject}}',
     'portal.email_subjects.register-welcome-byagent'        => 'Your new helpdesk account',
-    'portal.email_subjects.ticket-rate'                     => 'Rate your support experience on your ticket "{{ticket.subject}}"',
+    'portal.email_subjects.ticket-rate'                     => 'Rate your support experience for your ticket "{{ticket.subject}}"',
     'portal.email_subjects.ticket_new-participant'          => 'A new person has been added to your ticket',
     'portal.email_subjects.new-ticket-guest'                => 'Thank you for contacting us',
     'portal.email_subjects.tickets_re'                      => 'RE: {{ticket.subject}}',
