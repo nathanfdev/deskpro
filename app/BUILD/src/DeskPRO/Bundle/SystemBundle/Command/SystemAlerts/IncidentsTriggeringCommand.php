@@ -94,8 +94,8 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
         $this
             ->setName('dp:sys:trigger-incidents')
             ->setDescription('Process system alerts events log')
-            ->addArgument('batch_size', InputArgument::REQUIRED, 'Number of events processed within an iteration')
-            ->addArgument('iterations_limit', InputArgument::REQUIRED, 'Iteration limit per single command run')
+            ->addArgument('batch_size', InputArgument::OPTIONAL, 'Number of events processed within an iteration', 100)
+            ->addArgument('iterations_limit', InputArgument::OPTIONAL, 'Iteration limit per single command run', 5)
         ;
     }
 
