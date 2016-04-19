@@ -57,6 +57,7 @@ return array(
     'portal.general.comment_btn_save'            => 'Save Comment',
     'portal.general.comments-count'              => '1 Comment|{{count}} Comments',
     'portal.general.comments-title'              => 'Comments (1)|Comments ({{count}})',
+    'portal.general.comments-pending-validation' => 'This comment is being reviewed. It will be displayed shortly',
     'portal.general.delete'                      => 'Delete',
     'portal.general.everything'                  => 'Everything',
     'portal.general.get-in-touch'                => 'Get in touch',

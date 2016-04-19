@@ -4283,6 +4283,10 @@ ul.kb-checkbox-extra {
 
   .comment-info, .comment-content {
     float: $float-left;
+    .pending-review {
+      font-size: smaller;
+      color: $text-faded;
+    }
   }
 
   .comment-info {

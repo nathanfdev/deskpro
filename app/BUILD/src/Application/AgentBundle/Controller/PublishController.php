@@ -34,6 +34,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
@@ -213,10 +215,17 @@ class PublishController extends AbstractController
 
         $entity = $this->_getCommentEntityName($typename);
 
-        $comment           = $this->em->find($entity, $comment_id);
-        $comment['status'] = 'visible';
+        /** @var CommentAbstract $comment */
+        $comment = $this->em->find($entity, $comment_id);
+        $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
+
+        /** @var ContentAbstract $object */
+        $object = $comment->getObject();
+        //TODO should be using object getter but it doesn't work for obscure reasons
+        $object->setNumComments($object->num_comments + 1);
 
         $this->em->persist($comment);
+        $this->em->persist($object);
         $this->em->flush();
 
         $this->_sendCommentApprovedNotification($comment);

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use JMS\Serializer\Annotation as JMS;
@@ -190,6 +191,95 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->setModelField('email', $email);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        $this->setModelField('name', $name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * @param string $website
+     */
+    public function setWebsite($website)
+    {
+        $this->setModelField('website', $website);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReviewed()
+    {
+        return $this->is_reviewed;
+    }
+
+    /**
+     * @param bool $is_reviewed
+     */
+    public function setIsReviewed($is_reviewed)
+    {
+        $this->setModelField('is_reviewed', $is_reviewed);
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     /**
@@ -475,5 +565,10 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setIpAddress($ip_address)
     {
         $this->setModelField('ip_address', $ip_address);
+    }
+
+    public function isVisible()
+    {
+        return $this->getStatus() == self::STATUS_VISIBLE;
     }
 }

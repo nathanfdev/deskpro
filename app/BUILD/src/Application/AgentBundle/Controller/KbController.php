@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
@@ -621,22 +622,26 @@ class KbController extends AbstractController
 
     public function ajaxSaveCommentAction($article_id)
     {
+        /** @var Article $article */
         $article = $this->em->find('DeskPRO:Article', $article_id);
 
         if (!$article) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $comment                 = new ArticleComment();
-        $comment->article        = $article;
-        $comment->person         = $this->person;
-        $comment['content']      = $this->in->getString('content');
-        $comment['status']       = 'visible';
-        $comment['date_created'] = new \DateTime();
+        $comment = new ArticleComment();
+        $comment->setObject($article);
+        $comment->setPerson($this->person);
+        $comment->setContent($this->in->getString('content'));
+        $comment->setDateCreated(new \DateTime());
 
         if ($this->person->hasPerm('agent_publish.validate')) {
-            $comment->is_reviewed = true;
+            $comment->setStatus(ArticleComment::STATUS_VISIBLE);
+        } else {
+            $comment->setStatus(ArticleComment::STATUS_HIDDEN);
         }
+
+        $article->addComment($comment);
 
         $this->em->persist($comment);
         $this->em->flush();
