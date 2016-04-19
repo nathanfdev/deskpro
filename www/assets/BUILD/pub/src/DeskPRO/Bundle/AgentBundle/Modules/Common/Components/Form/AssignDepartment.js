@@ -6,11 +6,10 @@ import Immutable from 'immutable';
 export class AssignDepartment extends Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    filter: PropTypes.string,
-    selected: PropTypes.object,
+    filter:           PropTypes.string,
+    selected:         PropTypes.object,
     showOnlySelected: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange:         PropTypes.func
   };
 
   static defaultProps = {
@@ -20,17 +19,17 @@ export class AssignDepartment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
-    }
+      filter:           props.filter
+    };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
+      filter:           props.filter
     });
   }
 
@@ -41,10 +40,12 @@ export class AssignDepartment extends Component {
       ;
   }
 
-  onChange(values) {
-    this.setState({selected: values});
-    this.props.onChange && this.props.onChange(values);
-  }
+  onChange = (selected) => {
+    this.setState({ selected });
+    if (this.props.onChange) {
+      this.props.onChange(selected);
+    }
+  };
 
   renderTitle() {
     return (
@@ -60,7 +61,8 @@ export class AssignDepartment extends Component {
     return (
       <CollectionField title={this.renderTitle()}>
         <DepartmentsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
-                                  onChange={this.props.onChange} />
+          onChange={this.onChange}
+          />
       </CollectionField>
     );
   }

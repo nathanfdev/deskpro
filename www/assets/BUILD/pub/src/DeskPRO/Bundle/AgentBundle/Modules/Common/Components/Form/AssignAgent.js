@@ -6,11 +6,11 @@ import Immutable from 'immutable';
 export class AssignAgent extends Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    filter: PropTypes.string,
-    selected: PropTypes.object,
+    me:               PropTypes.object.isRequired,
+    filter:           PropTypes.string,
+    selected:         PropTypes.object,
     showOnlySelected: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange:         PropTypes.func
   };
 
   static defaultProps = {
@@ -20,17 +20,17 @@ export class AssignAgent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
-    }
+      filter:           props.filter
+    };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
+      filter:           props.filter
     });
   }
 
@@ -41,16 +41,18 @@ export class AssignAgent extends Component {
       ;
   }
 
-  onChange(values) {
-    this.setState({selected: values});
-    this.props.onChange && this.props.onChange(values);
-  }
+  onChange = (selected) => {
+    this.setState({ selected });
+    if (this.props.onChange) {
+      this.props.onChange(selected);
+    }
+  };
 
-  assignMe(event) {
+  assignMe = (event) => {
     event.preventDefault();
     const values = Immutable.Set([this.props.me.get('id')]);
     this.onChange(values);
-  }
+  };
 
   renderTitle() {
     return (
@@ -58,7 +60,7 @@ export class AssignAgent extends Component {
         <span key="title">
           Assign to Agent
         </span>,
-        <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMe.bind(this)}>
+        <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMe}>
           <a href="#">Assign To Me</a>
         </span>
       ]
@@ -71,7 +73,8 @@ export class AssignAgent extends Component {
     return (
       <CollectionField title={this.renderTitle()}>
         <AgentsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
-                             onChange={this.props.onChange} />
+          onChange={this.onChange}
+          />
       </CollectionField>
     );
   }

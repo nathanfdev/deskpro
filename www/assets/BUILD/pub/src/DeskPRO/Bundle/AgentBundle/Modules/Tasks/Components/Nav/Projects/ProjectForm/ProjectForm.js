@@ -1,20 +1,14 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { createProject, editProject, deleteProject } from '../../../../Actions/navActions';
 import Immutable from 'immutable';
 import { Popup } from '../../../../../Common/Components/Popup';
-import { AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../../Common/Components/Form';
-import {
-  BaseForm,
-  ShowOnlySelected,
-  Unassign
-} from '../../../Form';
-import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
+import { AssignForm, AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../../Common/Components/Form';
 import { Notification } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notification';
 import { connect } from 'react-redux';
 
 @connect()
 
-export class ProjectForm extends BaseForm {
+export class ProjectForm extends Component {
 
   static propTypes = {
     project:    PropTypes.object,
@@ -25,36 +19,40 @@ export class ProjectForm extends BaseForm {
   constructor(props) {
     super(props);
 
-    const localState = this.state;
-    const emptyObject = Immutable.fromJS({});
-    const project = props.project || emptyObject;
-    const set = Immutable.Set([]);
+    const project = props.project || Immutable.fromJS({});
+    const set = Immutable.Set();
 
     this.state = {
-      ...localState,
-
-      title:            project.get('title'),
-      showOnlySelected: false,
-      agents:           project.get('agents', set),
-      teams:            project.get('teams', set),
-      departments:      project.get('departments', set)
+      title:       project.get('title'),
+      agents:      project.get('agents', set),
+      teams:       project.get('teams', set),
+      departments: project.get('departments', set)
     };
   }
 
-  componentWillUnmount() {
-    this.unmounted = true;
+  componentWillReceiveProps(props) {
+    const { project = Immutable.fromJS({}) } = props;
+    const set = Immutable.Set([]);
+    this.setState({
+      title:       project.get('title'),
+      agents:      project.get('agents', set),
+      teams:       project.get('teams', set),
+      departments: project.get('departments', set)
+    });
   }
 
-  onChangeTitle = event => {
-    this.setState({
-      title: event.target.value
-    });
-  };
+  shouldComponentUpdate(props, state) {
+    const { title, agents, teams, departments } = state;
 
-  onChangeFilterSelected = value => {
-    this.setState({
-      showOnlySelected: value
-    });
+    return title !== this.state.title
+      || !Immutable.is(this.state.agents, agents)
+      || !Immutable.is(this.state.teams, teams)
+      || !Immutable.is(this.state.departments, departments)
+      ;
+  }
+
+  onChange = (prop, value) => {
+    this.setState({ [prop]: value });
   };
 
   onSubmit = event => {
@@ -81,13 +79,17 @@ export class ProjectForm extends BaseForm {
 
     promise.then(
       () => {
-        !this.unmounted && this.setState({ submit: false });
+        if (!this.unmounted) {
+          this.setState({submit: false});
+        }
       },
       result => {
-        !this.unmounted && this.setState({
-          errors: result.getData().errors,
-          submit: false
-        });
+        if (!this.unmounted) {
+          this.setState({
+            errors: result.getData().errors,
+            submit: false
+          });
+        }
       }
     );
   };
@@ -112,11 +114,12 @@ export class ProjectForm extends BaseForm {
   render() {
     const { project, tasksCount } = this.props;
     const isNew = !project.get('id');
+    const { title, agents, teams, departments } = this.state;
 
     return (
       <Popup>
         <div className="dpw--popup-header">
-          <i className="fa fa-tags" />
+          <i className="fa fa-tags"/>
           Project - {isNew ? 'Create New' : 'Edit'}
         </div>
 
@@ -128,52 +131,26 @@ export class ProjectForm extends BaseForm {
                 Project Title
               </h2>
               <div className="dpw--popup-form-container">
-                <input type="text" placeholder="Example Project" value={this.state.title}
-                  onChange={this.onChangeTitle}
+                <input type="text" placeholder="Example Project" value={title}
+                  onChange={(value) => this.onChange('title', value)}
                   />
               </div>
             </div>
           </div>
 
-          <div className="dpw--popup-content-line">
-            <div className="dpw--popup-content-left">
-              <h2 className="dpw--popup-item-section-title">
-                Project Permissions
-              </h2>
-              <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
-            </div>
-
-            <div className="dpw--popup-content-right">
-              <div className="dpw--popup-content-item">
-                <ShowOnlySelected value={this.state.showOnlySelected} onChange={this.onChangeFilterSelected} />
-              </div>
-              <div className="dpw--popup-content-item">
-                <Unassign onClick={this.onUnassignAll} />
-              </div>
-            </div>
-          </div>
-
-
-          <div className="dpw--popup-content-line">
-
-            <AssignAgentContainer selected={this.state.agents.toSet()}
-              showOnlySelected={this.state.showOnlySelected}
-              filter={this.state.quickFilter}
+          <AssignForm title="Project Permissions">
+            <AssignAgentContainer selected={agents.toSet()}
               onChange={(value) => this.onChange('agents', value)}
               />
 
-            <AssignTeamContainer selected={this.state.teams.toSet()}
-              showOnlySelected={this.state.showOnlySelected}
-              filter={this.state.quickFilter}
+            <AssignTeamContainer selected={teams.toSet()}
               onChange={(value) => this.onChange('teams', value)}
               />
 
-            <AssignDepartmentContainer selected={this.state.departments.toSet()}
-              showOnlySelected={this.state.showOnlySelected}
-              filter={this.state.quickFilter}
+            <AssignDepartmentContainer selected={departments.toSet()}
               onChange={(value) => this.onChange('departments', value)}
               />
-          </div>
+          </AssignForm>
 
           <div className="dpw--popup-content-line">
             <div className="dpw--popup-content-left">
@@ -182,7 +159,8 @@ export class ProjectForm extends BaseForm {
               </a>
               {!isNew ?
                 <a href="#" className="dpw--popup-button" onClick={this.onDeletePrompt}
-                  style={{ minWidth: 175, background: '#ff5460' }}>
+                  style={{ minWidth: 175, background: '#ff5460' }}
+                  >
                   Delete project and all tasks
                 </a>
                 : null}
@@ -195,7 +173,6 @@ export class ProjectForm extends BaseForm {
                 : null}
             </div>
           </div>
-
 
         </div>
 

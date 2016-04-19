@@ -6,11 +6,11 @@ import Immutable from 'immutable';
 export class AssignTeam extends Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    filter: PropTypes.string,
-    selected: PropTypes.object,
+    team:             PropTypes.object,
+    filter:           PropTypes.string,
+    selected:         PropTypes.object,
     showOnlySelected: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange:         PropTypes.func
   };
 
   static defaultProps = {
@@ -20,17 +20,17 @@ export class AssignTeam extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
-    }
+      filter:           props.filter
+    };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      selected: props.selected,
+      selected:         props.selected,
       showOnlySelected: props.showOnlySelected,
-      filter: props.filter
+      filter:           props.filter
     });
   }
 
@@ -41,28 +41,35 @@ export class AssignTeam extends Component {
       ;
   }
 
-  onChange(values) {
-    this.setState({selected: values});
-    this.props.onChange && this.props.onChange(values);
-  }
+  onChange = (selected) => {
+    this.setState({ selected });
+    if (this.props.onChange) {
+      this.props.onChange(selected);
+    }
+  };
 
-  assignMe(event) {
+  assignMine = (event) => {
     event.preventDefault();
-    const values = Immutable.Set([this.props.me.get('id')]);
-    this.onChange(values);
-  }
+    if (this.props.team) {
+      const values = Immutable.Set([this.props.team.get('id')]);
+      this.onChange(values);
+    }
+  };
 
   renderTitle() {
-    return (
-      [
-        <span key="title">
-          Assign to Team
-        </span>,
-        <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMe.bind(this)}>
-          <a href="#">Assign To My Team</a>
-        </span>
-      ]
-    );
+    const { team } = this.props;
+    const title = <span key="title">Assign to Team</span>;
+
+    if (!team) {
+      return title;
+    }
+
+    return ([
+      title,
+      <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMine}>
+        <a href="#">Assign To Mine</a>
+      </span>
+    ]);
   }
 
   render() {
@@ -71,7 +78,8 @@ export class AssignTeam extends Component {
     return (
       <CollectionField title={this.renderTitle()}>
         <AgentTeamsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
-                                 onChange={this.props.onChange} />
+          onChange={this.onChange}
+          />
       </CollectionField>
     );
   }

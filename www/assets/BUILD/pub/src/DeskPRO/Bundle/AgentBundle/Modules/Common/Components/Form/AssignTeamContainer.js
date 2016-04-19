@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { AssignTeam } from './AssignTeam';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { createSelector } from 'reselect';
+import { myAgentTeamsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  me: meSelector(state),
+  team: createSelector(myAgentTeamsSelector, teams => teams.first())(state)
 }))
 
 export class AssignTeamContainer extends Component {
