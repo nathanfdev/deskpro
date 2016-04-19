@@ -1351,7 +1351,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $charge               = new TicketCharge();
         $charge->charge_time  = $time;
         $charge->amount       = $amount;
-        $charge->comment      = strval($comment);
         $charge->ticket       = $this;
         $charge->person       = $this->person;
         $charge->organization = $this->organization;
@@ -2041,6 +2040,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getDepartment()
     {
+        return $this->department;
+    }
+
+    /**
+     * Failproof method to avoid errors if ticket has no department.
+     *
+     * @return Department
+     */
+    public function getDepartmentOrDefault()
+    {
+        if (!$this->department) {
+            return App::getDataService('Department')->getDefaultTicketDepartment();
+        }
+
         return $this->department;
     }
 

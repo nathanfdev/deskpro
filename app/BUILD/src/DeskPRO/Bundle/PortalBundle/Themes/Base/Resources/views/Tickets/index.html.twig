@@ -135,7 +135,7 @@
 
             {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
                 {% if col.id == 'department_subject' %}
-                    <span class="focus">[{{ ticket.department.user_title }}]</span>
+                    <span class="focus">[{{ ticket.department_or_default.user_title }}]</span>
                     {{ ticket.subject }}
                 {% else %}
                     {% if col.id == 'agent' %}
@@ -144,7 +144,7 @@
                             <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
                         {% endif %}
                     {% elseif col.id == 'department' %}
-                        {{ ticket.department.user_title }}
+                        {{ ticket.department_or_default.user_title }}
                     {% elseif col.id == 'subject' %}
                         {{ ticket.subject }}
                     {% elseif col.id == 'user' %}
@@ -157,9 +157,7 @@
                         <span class="person">{{ last_message.person.display_name_user }}</span>
                         <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
                     {% elseif col.id == 'date_created' %}
-                        <a href="{{ portal_path(ticket) }}">
-                            <span class="date">{{ ticket.date_created|date }}</span>
-                        </a>
+                        <span class="date">{{ ticket.date_created|date }}</span>
                     {% elseif col.id == 'date_user' %}
                         {% if ticket.date_last_user_reply %}
                             {% if ticket.person %}

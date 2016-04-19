@@ -7669,8 +7669,6 @@ ul.categories-article-list {
     }
 
     td.first-in-line {
-      position: relative;
-
       &:before {
         content: "";
         display: block;
@@ -7926,6 +7924,25 @@ ul.big-button-collection {
   list-style: none;
   margin: 50px 0;
   display: block;
+
+  &.display-5-buttons {
+    @media screen and (max-width: 1036px) {
+      max-width: 750px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  &.display-4-buttons {
+    @media screen and (max-width: 841px) {
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      li:first-child {
+        margin: 0 10px;
+      }
+    }
+  }
 
   @media screen and (max-width: 760px) {
     position: fixed;
@@ -8743,35 +8760,43 @@ body.with-agent-bar {
       border-bottom: 1px solid #dadada;
     }
 
-    li.dpt-active-tab a {
-      background: #fff;
-      border-bottom: 1px solid #fff;
-      position: relative;
+    li.dpt-active-tab {
+      a {
+        background: #fff;
+        border-bottom: 1px solid #fff;
+        position: relative;
 
-      &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        background: #3d75b4;
-        width: 100%;
-        height: 4px;
-        @include left(-1px);
-        top: 0;
+        &:before {
+          content: "";
+          display: block;
+          position: absolute;
+          background: #3d75b4;
+          width: 100%;
+          height: 4px;
+          @include left(-1px);
+          top: 0;
+        }
+        &:after {
+          // better than checking width with js
+          content: "";
+          display: block;
+          position: absolute;
+          background: #3d75b4;
+          width: 50%;
+          height: 4px;
+          @include right(0px);
+          top: 0;
+          z-index: 299;
+        }
       }
-      &:after {
-        // better than checking width with js
-        content: "";
-        display: block;
-        position: absolute;
-        background: #3d75b4;
-        width: 50%;
-        height: 4px;
-        @include right(-1px);
-        top: 0;
-        z-index: 299;
+      &:first-child,
+      &:last-child {
+        a:after {
+          @include right(-1px);
+        }
       }
-
     }
+
 
   }
 }
