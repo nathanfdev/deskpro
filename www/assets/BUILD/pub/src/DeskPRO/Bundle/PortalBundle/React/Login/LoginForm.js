@@ -54,7 +54,7 @@ export class LoginForm extends React.Component {
   onEmailBlur() {
     const $username = $(this.refs.username);
 
-    if ($username) {
+    if (this.refs.username && $username.val()) {
       this.setState({
         reset_path: portalUrlGenerator.path('/login/reset-password') + '?email=' + $username.val()
       });
