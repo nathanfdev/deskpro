@@ -1,307 +1,113 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-<div class="admin-content-main">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>{{ phrase('agent.general.title') }} *</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
+										   style="width: 50%;" required autofocus>
+									<span class="help-block">
+										{{ phrase('adm.ticket_filters.title_explain') }}
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Permission</h3>
+							</div>
+							<div class="col-lg-10">
+								<div style="line-height: 30px;">
+									<label style="font-weight: normal; display: inline;"><input type="radio" ng-model="EditCtrl.form.perm_type" value="global" /> Everyone can use this filter</label>
+								</div>
 
-<div class="admin-content-major-header">
-	<h1 ng-hide="formstate.editingFilterSetTitle">
-        <span>Manage Filter Set:</span>
-        {{ ng_var('EditCtrl.filterset.title') }}
-        <span><a ng-click="formstate.editingFilterSetTitle=true"><i class="fa fa-pencil"></i></a></span>
-    </h1>
-    <h1 ng-show="formstate.editingFilterSetTitle" class="ng-hide">
-        <span>Manage Filter Set:</span>
-        <input type="text" ng-model="formstate.filterset.title" />
-        <button class="btn btn-primary" ng-href="#here" ng-click="EditCtrl.saveFilterSet()">save</button>
-        <button class="btn btn-danger" ng-click="formstate.editingFilterSetTitle=false">cancel</button>
-    </h1>
+								<div style="line-height: 30px;">
+									<label style="font-weight: normal; display: inline;"><input type="radio" ng-model="EditCtrl.form.perm_type" value="agent" /> This filter belongs to a specific agent</label>
+									<select ng-model="EditCtrl.form.agent_id" ui-select2 style="width: 250px;" ng-show="EditCtrl.form.perm_type == 'agent'">
+										<option ng-repeat="agent in EditCtrl.agents" value="{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+									</select>
+								</div>
 
-	<div class="help-panel">
-	<i class="fa fa-support"></i>
-	</div>
-</div>
-
-<div class="admin-content-container">
-
-	<div class="admin-content-container-box">
-
-	<h2 class="secondary-title">Available on the default filter set?</h2>
-	<p>Explanation about the default filter set.</p>
-
-	<div class="admin-switchboard">
-		<div class="switchboard-row short">
-            <button dp-toggle-switch ng-model="formstate.filterset.is_default" ng-click="EditCtrl.changedFilterDefault()">Blah blah</button>
-		    <span class="slider-button-label grey">Default Filter Set</span>
-		</div>
-	</div>
-
-	<div class="divided-header">
-		<h2>Agents that can use these filters <span>(12)</span></h2>
-		<span class="control">
-		<a class="checkbox" href="#"><i class="fa fa-check"></i></a>
-		<span class="text">Show full agent info?</span>
-		</span>
-		<hr>
-	</div>
-
-	<!-- Filtering the agent-cards -->
-	<div class="admin-filters">
-		<div>
-		<a href="#" class="checkbox"><i class="fa fa-check"></i></a> Select all agents <span class="count">(30)</span>
-		</div>
-
-		<div>
-		<a href="#" class="checkbox"><i class="fa fa-check"></i></a> Unselect all agents <span class="count">(30)</span>
-		</div>
-
-		<div>
-		Select all agents from <a href="#" class="select-dropdown">Tech Support <i class="fa fa-caret-down"></i></a>
-		</div>
-
-		<div>
-		Unselect all agents from <a href="#" class="select-dropdown">Tech Support <i class="fa fa-caret-down"></i></a>
-		<div class="dropdown-content">
-			<ul>
-			<li><a href="#">Tech Support</a></li>
-			<li><a href="#">Tech Support</a></li>
-			<li><a href="#">Tech Support</a></li>
-			<li><a href="#">Tech Support</a></li>
-			</ul>
-		</div>
-		</div>
-	</div>
-
-	<div class="agent-cards">
-		<div class="agent-card">
-		<span class="checkbox checked"><i class="fa fa-check"></i></span>
-		<a style="background-image: url(./img/avatar5.png)" class="chat-avatar"></a>
-		<span class="name">Nelson Manning</span>
-		<div class="whitespace-wrapper">
-			<span class="position">Tech Support</span>
-			<span class="email">&lt;nelson@aslongemailnameaslongemailnameaslongemailnameaslongemailname.com&gt;</span>
-		</div>
-		</div>
-
-		<div class="agent-card agent-card-disabled">
-		<span class="checkbox"><i class="fa fa-check"></i></span>
-		<a style="background-image: url(./img/avatar6.png)" class="chat-avatar"></a>
-		<span class="name">Nelson Manning</span>
-		<div class="whitespace-wrapper">
-			<span class="position">Tech Support</span>
-			<span class="email">&lt;nelson@techsupport.com&gt;</span>
-		</div>
-		</div>
-
-		<div class="agent-card">
-		<span class="checkbox checked"><i class="fa fa-check"></i></span>
-		<a style="background-image: url(./img/avatar6.png)" class="chat-avatar"></a>
-		<span class="name">Nelson Manning</span>
-		<div class="whitespace-wrapper">
-			<span class="position">Tech Support</span>
-			<span class="email">&lt;nelson@techsupport.com&gt;</span>
-		</div>
-		</div>
-
-		<div class="agent-card">
-		<span class="checkbox checked"><i class="fa fa-check"></i></span>
-		<a style="background-image: url(./img/avatar6.png)" class="chat-avatar"></a>
-		<span class="name">Nelson Manning</span>
-		<div class="whitespace-wrapper">
-			<span class="position">Tech Support</span>
-			<span class="email">&lt;nelson@techsupport.com&gt;</span>
-		</div>
-		</div>
-
-		<div class="agent-card">
-		<span class="checkbox checked"><i class="fa fa-check"></i></span>
-		<a style="background-image: url(./img/avatar6.png)" class="chat-avatar"></a>
-		<span class="name">Nelson Manning</span>
-		<div class="whitespace-wrapper">
-			<span class="position">Tech Support Long position name for text wrap</span>
-			<span class="email">&lt;nelson@techsupport.com&gt;</span>
-		</div>
-		</div>
-
-	</div><!-- End .agent-cards -->
-
-
-
-	<div class="divided-header">
-		<h2>Filters on this filter set</h2>
-		<div class="control">
-			<a href="{{ ng_href('tickets.ticket_filters.edit.single_filter', '{id: EditCtrl.filterset.id, filter_id: 0}') }}" class="btn btn-primary">&#43;</a>
-		</div>
-		<hr>
-	</div>
-
-
-	<div class="admin-switchboard" >
-        <ul class="admin-list" ui-sortable="EditCtrl.sortedListOptions">
-    		<li class="switchboard-row with-drag-handle" ng-repeat="filter in EditCtrl.filterset.filters" data-id="{{ ng_var('filter.id') }}"
-                dp-state-mark="filter_id:tickets.ticket_filters.edit.single_filter.{{ ng_var('filter.id') }}">
-    			<a href="{{ ng_href('tickets.ticket_filters.edit.single_filter', '{id: EditCtrl.filterset.id, filter_id: filter.id}') }}"
-    				class="" ng-click="editFilter()" data-id="{{ ng_var('filter.id') }}">
-                    <i class="fa fa-bars drag-handle"></i>
-                    {{ ng_var('filter.title') }}
-                </a>
-    		</li>
-        </ul>
-
-		<div ui-view autoscroll="false"></div>
-
-		<hr />
-
-		<!--
-		<div class="switchboard-row switchboard-row-expanded">
-		<div class="switchboard-selected-header">
-			<a href="#" class="move"><i class="fa fa-navicon"></i></a>
-			<span class="slider-button-label">
-			More Tickets
-			</span>
-			<a href="#" class="config"><i class="fa fa-cog"></i></a>
-		</div>
-
-		<div class="switchboard-row-expanded-content">
-			<div class="content-row">
-			<label>Title:</label> <input type="text" value="My Tickets"> <span class="form-info"> This title will be displayed in the agent interface in the Filter list. It should be kept short.</span>
-			</div>
-			<hr>
-
-			<div class="inline-help">
-			<p><i class="fa fa-question-circle"></i> When you run this filter, only tickets that match all of the search terms defined here will be included in the result.</p>
-			</div>
-
-			<div class="content-row">
-			<h2 class="form-collection-title">Criteria for your filter:</h2>
-
-			<div class="custom-criteria-form">
-				<form>
-				<div class="form-row short">
-					<label></label>
-					<a href="#" class="select-dropdown">Status <i class="fa fa-caret-down"></i></a>
-					<a href="#" class="select-dropdown secondary">Is <i class="fa fa-caret-down"></i></a>
-
-					<div class="selection-bucket">
-					<span>Awaiting Agent <a href="#"><i class="fa fa-times"></i></a></span>
-					<span class="add"><a href="#"><i class="fa fa-plus"></i></a></span>
+								<div style="line-height: 30px;" ng-if="EditCtrl.teams">
+									<label style="font-weight: normal; display: inline;" ng-if="EditCtrl.teams"><input type="radio" ng-model="EditCtrl.form.perm_type" value="team" /> This filter belongs to a specific team</label>
+									<select ng-model="EditCtrl.form.team_id" ui-select2 style="width: 250px;" ng-show="EditCtrl.form.perm_type == 'team'">
+										<option ng-repeat="team in EditCtrl.teams" value="{{ ng_var('team.id') }}">{{ ng_var('team.name') }}</option>
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
 
-					<span class="remove">
-					<a href="#">Remove <i class="fa fa-times"></i></a>
-					</span>
+					<div class="panel panel-innertable">
+						<div class="panel-heading">
+							<h3>
+								<span>Search Terms</span>
+								<button dp-inhelp-btn="admin.ticket_filters.edit.search_terms"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_filters.edit.search_terms">
+							<p>
+								When you run this filter, only tickets that match all of the search terms defined here
+								will be included in the result.
+							</p>
+						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag if">if</em>
+									The following conditions are met:
+								</header>
+								<article>
+									<dp-option-builder
+										types-def="EditCtrl.criteriaTypeDef"
+										save-target="EditCtrl.filter_criteria"
+										options="{tag_first: false, tag_after: 'and'}"
+										option-types="EditCtrl.criteriaOptionTypes"
+									>
+										<add-btn-label>Criteria</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
+					</div>
 				</div>
-
-				<div class="form-row short">
-					<label>And</label>
-					<a href="#" class="select-dropdown">user waiting time <i class="fa fa-caret-down"></i></a>
-
-					<span class="dropdown-wrapper">
-					<a href="#" class="select-dropdown secondary">&gt;= <i class="fa fa-caret-down"></i></a>
-
-					<div class="dropdown-content">
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
-						<li><a href="#">Tech Support</a></li>
-						<li><a href="#">Tech Support</a></li>
-						<li><a href="#">Tech Support</a></li>
-						<li><a href="#">Tech Support</a></li>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
 						</ul>
 					</div>
-					</span>
 
-					<a href="#" class="select-dropdown secondary">Weeks <i class="fa fa-caret-down"></i></a>
+					<div class="dp-delete-control" ng-if="EditCtrl.filter.id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+                                ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.filter.id);">
+                            Delete
+                        </button>
+					</div>
 
-
-					<span class="remove">
-					<a href="#">Remove <i class="fa fa-times"></i></a>
-					</span>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
 				</div>
-
-				<div class="form-row short">
-					<label>And</label>
-					<a href="#" class="button secondary">Add criteria</a>
-				</div>
-
-				<div class="divider-title">
-					<span>or</span>
-					<hr>
-				</div>
-
-				<div class="form-row short">
-					<label>And</label>
-					<a href="#" class="button secondary faded">Alternate set of criteria</a>
-				</div>
-
-				</form>
-			</div>
-
-			</div>
-
-			<hr>
-
-			<div class="content-row top">
-			<h2 class="form-collection-title">Default view settings for this filter:</h2>
-
-			<form class="form-collection">
-				<div class="form-row short">
-				<label>1st Column Grouping</label>
-				<div class="row-content">
-					<a class="select-dropdown" href="#">Tech Support <i class="fa fa-caret-down"></i></a>
-				</div>
-				</div>
-
-				<div class="form-row short">
-				<label>Show SLA grouping</label>
-				<div class="row-content">
-					<span class="radio-group">
-					<span class="radio-select" onclick="radioSelect(this); return false;">
-						<span class="radio"><span class="radio-disc"></span></span>
-						<span class="text">Yes</span>
-					</span>
-
-					<span class="radio-select radio-selected" onclick="radioSelect(this); return false;">
-						<span class="radio"><span class="radio-disc"></span></span>
-						<span class="text">No</span>
-					</span>
-					</span>
-				</div>
-				</div>
-
-				<div class="form-row short">
-				<label>Results grouping</label>
-				<div class="row-content">
-					<a class="select-dropdown" href="#">None <i class="fa fa-caret-down"></i></a>
-				</div>
-				</div>
-
-				<div class="form-row short">
-				<label>Results order by</label>
-				<div class="row-content">
-					<a class="select-dropdown half-size" href="#">Urgency <i class="fa fa-caret-down"></i></a>
-					<a class="select-dropdown half-size" href="#">Asc <i class="fa fa-caret-down"></i></a>
-				</div>
-				</div>
-
-				<div class="form-row short">
-				<label>Filter view</label>
-				<div class="row-content">
-					<a class="select-dropdown" href="#">Default <i class="fa fa-caret-down"></i></a>
-				</div>
-				</div>
-			</form>
-			</div>
-
-			<div class="content-row footer">
-			<a href="#" class="button">Save Changes</a> <a href="#" class="button secondary">Cancel Changes</a>
-			</div>
-
-		</div>
-		</div>
-	-->
-	</div>
-
-
-	</div><!-- End .admin-content-container -->
-
-</div><!-- End .admin-content-container-box -->
-
-</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_filter">Filter was saved successfully.</div>
 {% endblock %}

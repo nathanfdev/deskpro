@@ -140,7 +140,6 @@ define [
         responseType: "text",
         cache: false
       }).success((res) =>
-        @$scope.readable_config = true
         return if not res or res.success
         if typeof res is 'string' and res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DESKPRO_PONG') != -1
           @$scope.readable_config = true

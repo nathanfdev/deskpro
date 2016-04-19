@@ -7,8 +7,6 @@ define [
   'Admin/CustomFields/Billing/DataService/BillingFields',
   'Admin/CustomFields/DataService/CustomFields',
   'Admin/TicketFilters/DataService/TicketFilters',
-  'Admin/TicketFilters/DataService/TicketFilterSets',
-  'Admin/TicketFilters/DataService/TicketFilterViews',
   'Admin/TicketDeps/DataService/TicketDeps',
   'Admin/ChatDeps/DataService/ChatDeps',
   'Admin/TicketEscalations/DataService/TicketEscalations',

@@ -4,14 +4,17 @@ define [
   BaseListEdit,
 )  ->
   class Admin_TicketFilters_DataService_TicketFilters extends BaseListEdit
-    @$inject = ['Api2', '$q']
+    @$inject = ['Api', '$q']
 
     _doLoadList: ->
       deferred = @$q.defer()
 
-      @Api2.sendGet('/ticket_filters')
-        .success( (data) => deferred.resolve(data.data) )
-        .error( (data, status, headers, config) => deferred.reject() )
+      @Api.sendGet('/ticket_filters').success( (data) =>
+        models = data.filters
+        deferred.resolve(models)
+      , (data, status, headers, config) ->
+        deferred.reject()
+      )
 
       return deferred.promise
 
@@ -23,14 +26,13 @@ define [
       # @return {promise}
     ###
     saveDisplayOrder: (orders) ->
-      ###
       for id, idx in orders
         model = @findListModelById(id)
         if model
           model.display_order = idx
-      ###
 
-      @Api2.sendPostJson('/ticket_filters/display_order', { display_order: orders })
+      promise = @Api.sendPostJson('/ticket_filters/display_order', { display_order: orders }).then(=> @loadList(true))
+      return promise
 
 
     ###
@@ -44,18 +46,6 @@ define [
         @removeListModelById(id)
       )
       return promise
-    
-    ###
-    # Save a brand new filter.
-    ###
-    saveFilterData: (filter) ->
-      deferred = @$q.defer()
-      @Api2.sendPostJson('/ticket_filters', filter).then(
-        (data) => deferred.resolve(data.data)
-      ,
-        (data) => deferred.reject()
-      )
-      return deferred.promise
 
 
     ###
@@ -65,29 +55,24 @@ define [
       # @return {promise}
     ###
     loadEditFilterData: (id) ->
+
       deferred = @$q.defer()
 
-      @Api2.sendGet('/ticket_filters/' + id).then(
-        (res) => deferred.resolve(res.data.data)
-      ,
-        (data) => deferred.reject()
-      )
+      types = {}
+      if id
+        types.filter = '/ticket_filters/' + id
 
-      # types = {}
-      # if id
-      #   types.filter = '/ticket_filters/' + id
-      #
-      # types.agents = '/agents'
-      # types.teams = '/agent_teams'
-      #
-      # @Api2.sendDataGet(types).then( (res) ->
-      #   data = {}
-      #   if res.data.filter
-      #     data.filter = res.data.filter.filter
-      #
-      #   data.agents = res.data.agents.agents
-      #   data.teams  = res.data.teams.agent_teams
-      #   deferred.resolve(data)
-      # , -> deferred.reject())
+      types.agents = '/agents'
+      types.teams = '/agent_teams'
+
+      @Api.sendDataGet(types).then( (res) ->
+        data = {}
+        if res.data.filter
+          data.filter = res.data.filter.filter
+
+        data.agents = res.data.agents.agents
+        data.teams  = res.data.teams.agent_teams
+        deferred.resolve(data)
+      , -> deferred.reject())
 
       return deferred.promise
