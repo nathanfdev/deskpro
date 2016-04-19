@@ -43,7 +43,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * API access to ticket slas.
  *
+ * @Rest\Route("/tickets/{parentId}/slas")
  * @ApiModes("all")
+ * @ApiDoc(target="all", section="Tickets", output="TicketSla")
  */
 class TicketSlasController extends CrudSubController
 {
@@ -52,70 +54,26 @@ class TicketSlasController extends CrudSubController
     public static $type           = TicketSlaType::class;
 
     /**
-     * Retrieve the list of ticket's SLAs.
-     *
-     * @ApiDoc(
-     *     section="Tickets",
-     *     resourceDescription="Operations about ticket SLAs",
-     *     tags={"CRUD"="#ffa500"},
-     *     description="get SLAs collection for single ticket",
-     *     requirements={
-     *          {
-     *              "name"="parentId",
-     *              "requirement"="\d+",
-     *              "description"="the id of parent ticket",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         200="Returned if everything is OK",
-     *     },
-     *     output="array<Application\DeskPRO\Entity\TicketSla>"
-     * )
-     *
-     * @Rest\Get("/tickets/{parentId}/slas", name="api_ticket_sla")
-     *
-     * @param Request $request
-     *
-     * @return View
-     *
-     * @internal param int $ticket_id
-     */
-    public function listAction(Request $request)
-    {
-        return parent::listAction($request);
-    }
-
-    /**
      * Retrieve single SLA for ticket by parent SLA's ID.
      *
      * @ApiDoc(
-     *     section="Tickets",
-     *     resourceDescription="Operations about ticket SLAs",
-     *     tags={"CRUD"="#ffa500"},
-     *     description="single SLA for ticket by parent SLA's ID",
-     *     requirements={
-     *          {
+     *    requirements={
+     *        {
      *              "name"="parentId",
      *              "requirement"="\d+",
      *              "description"="the id of parent ticket",
      *              "dataType"="integer"
-     *          },
-     *          {
+     *        },
+     *        {
      *              "name"="slaId",
      *              "requirement"="\d+",
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         200="Returned if everything is OK",
-     *         404="Ticket SLA not found"
-     *     },
-     *     output="Application\DeskPRO\Entity\TicketSla"
+     *        }
+     *     }
      * )
      *
-     * @Rest\Get("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single")
+     * @Rest\Get("/{slaId}", name="api_ticket_sla_single")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID
@@ -139,32 +97,23 @@ class TicketSlasController extends CrudSubController
      * Delete single Ticket SLA.
      *
      * @ApiDoc(
-     *     section="Tickets",
-     *     resourceDescription="Operations about ticket SLAs",
-     *     tags={"CRUD"="#ffa500"},
-     *     description="Delete single Ticket SLA",
-     *     requirements={
-     *          {
+     *    requirements={
+     *        {
      *              "name"="parentId",
      *              "requirement"="\d+",
      *              "description"="the id of parent ticket",
      *              "dataType"="integer"
-     *          },
-     *          {
+     *        },
+     *        {
      *              "name"="slaId",
      *              "requirement"="\d+",
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         200="Returned if everything is OK",
-     *         404="Ticket SLA not found"
-     *     },
-     *     output="Application\DeskPRO\Entity\TicketSla"
+     *        }
+     *     }
      * )
      *
-     * @Rest\Delete("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single_delete")
+     * @Rest\Delete("/{slaId}", name="api_ticket_sla_single_delete")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID
@@ -187,76 +136,37 @@ class TicketSlasController extends CrudSubController
     /**
      * Create Ticket SLA.
      *
-     * @ApiDoc(
-     *     section="Tickets",
-     *     resourceDescription="Operations about ticket SLAs",
-     *     tags={"CRUD"="#ffa500"},
-     *     description="Create Ticket SLA",
-     *     requirements={
-     *          {
-     *              "name"="parentId",
-     *              "requirement"="\d+",
-     *              "description"="the id of parent ticket",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         201="Ticket SLA was created",
-     *         400="Request was malformed",
-     *     },
-     *     output="Application\DeskPRO\Entity\TicketSla"
-     * )
-     *
-     * @Rest\Post("/tickets/{parentId}/slas", name="api_ticket_sla_single_create")
+     * @Rest\Post("", name="api_ticket_sla_single_create")
      *
      * @param Request $request
+     * @param int     $parentId parent ticket ID
      *
      * @return View
      */
-    public function postSingleSlaAction(Request $request)
+    public function postSingleSlaAction(Request $request, $parentId)
     {
+        $slaId     = $request->get('sla');
+        $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
+        if (null !== $ticketSla) {
+            return parent::putAction($ticketSla->getId(), $request);
+        }
+
         return parent::postAction($request);
     }
 
     /**
      * Update Ticket SLA.
      *
-     * @ApiDoc(
-     *     section="Tickets",
-     *     resourceDescription="Operations about ticket SLAs",
-     *     tags={"CRUD"="#ffa500"},
-     *     description="Update Ticket SLA",
-     *     requirements={
-     *          {
-     *              "name"="parentId",
-     *              "requirement"="\d+",
-     *              "description"="the id of parent ticket",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="slaId",
-     *              "requirement"="\d+",
-     *              "description"="the id of parent SLA",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         204="Ticket SLA was updated",
-     *         400="Request was malformed",
-     *     },
-     *     output="Application\DeskPRO\Entity\TicketSla"
-     * )
-     *
-     * @Rest\Put("/tickets/{parentId}/slas/{slaId}", name="api_ticket_sla_single_update")
+     * @Rest\Put("", name="api_ticket_sla_single_update")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket ID
-     * @param int     $slaId    parent SLA ID
      *
      * @return View
      */
-    public function putSingleSlaAction(Request $request, $parentId, $slaId)
+    public function putSingleSlaAction(Request $request, $parentId)
     {
+        $slaId     = $request->get('sla');
         $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
         if (null === $ticketSla) {
             throw $this->createNotFoundException(

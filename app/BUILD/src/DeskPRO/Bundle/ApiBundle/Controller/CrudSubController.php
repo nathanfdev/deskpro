@@ -106,13 +106,7 @@ abstract class CrudSubController extends CrudController
      */
     protected function getLocationUrl($entity, Request $request, array $params = [])
     {
-        return parent::getLocationUrl(
-            $entity,
-            $request,
-            [
-                'parentId' => $this->findParentOr404()->getId(),
-            ]
-        );
+        return parent::getLocationUrl($entity, $request, ['parentId' => $this->findParentOr404()->getId()]);
     }
 
     /**

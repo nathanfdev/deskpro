@@ -29,11 +29,41 @@ Feature: /tickets/{id}/slas endpoint
     And the JSON node "data[0].sla.id" should be equal to 2
     And the JSON node "data[0].ticket.id" should be equal to 3
 
-  Scenario: I update a ticket SLA
-    When I send a PUT request to "/api/v2/tickets/3/slas/2" with body:
+  Scenario: I try create a ticket SLA with the same SLA
+    When I send a POST request to "/api/v2/tickets/3/slas" with body:
+"""
+{
+  "sla": 2,
+  "sla_status": "fail"
+}
+    """
+    Then the response status code should be 204
+
+  Scenario: I get created ticket SLA
+    When I send a GET request to "/api/v2/tickets/3/slas"
+    Then the response status code should be 200
+    And the JSON node "meta" should exist
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].sla_status" should be equal to "fail"
+    And the JSON node "data[0].sla.id" should be equal to 2
+    And the JSON node "data[0].ticket.id" should be equal to 3
+
+  Scenario: I try update non-existing ticket SLA
+    When I send a PUT request to "/api/v2/tickets/3/slas" with body:
 """
 {
   "sla": 1,
+  "sla_status": "ok"
+}
+    """
+    Then the response status code should be 404
+
+  Scenario: I update ticket SLA
+    When I send a PUT request to "/api/v2/tickets/3/slas" with body:
+"""
+{
+  "sla": 2,
   "sla_status": "ok"
 }
     """
@@ -46,7 +76,7 @@ Feature: /tickets/{id}/slas endpoint
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].sla_status" should be equal to "ok"
-    And the JSON node "data[0].sla.id" should be equal to 1
+    And the JSON node "data[0].sla.id" should be equal to 2
     And the JSON node "data[0].ticket.id" should be equal to 3
 
   Scenario: I try to get SLAs for non-existing ticket
