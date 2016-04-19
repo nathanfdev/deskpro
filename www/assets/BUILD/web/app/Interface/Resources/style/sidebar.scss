@@ -425,8 +425,9 @@
   a.item {
     @extend %whitespace;
     display: block;
-    padding: 5px;
+    padding: 7px;
     padding-left: 16px;
+    padding-right: 3px;
     color: #5b5b5b;
     padding-right: 40px;
     position: relative;
@@ -441,12 +442,12 @@
     }
 
     &:hover, &.active {
-      background: $top-bar-blue;
-      color: #fff;
+      background: #D4E4FF;
       position: relative;
       z-index: 89;
 
-      i { color: #fff; }
+      color: #3476BE;
+      i { color: #3476BE; }
     }
   }
 

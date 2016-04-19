@@ -95,11 +95,17 @@
 {% endif %}
 
 <header class="dp-app-header">
-	<div class="site-header">
-		<div class="header-left">
-			<a href="#" class="logo"></a>
-		</div>
-	</div>
+    <div class="user-profile pull-left">
+        <img class="gravatar pull-left" src="{{ app.user.getPictureUrl(32) }}">
+        <div class="username">{{ phrase('agent.chrome.hello-user', {name: app.user.name}) }}</div>
+        <ul class="nav-list nav-profile">
+            <li onclick="window.location=''; return false;"><i class="fa fa-sign-out"></i> <a>{{ phrase('agent.chrome.link_logout') }}</a></li>
+        </ul>
+    </div>
+
+    <div class="group pull-right">
+        <a href="https://www.deskpro.com/" target="_blank" class="logo"></a>
+    </div>
 </header>
 
 <div id="dp_main_view" ng-controller="Admin_Main_Ctrl_MainPage">
