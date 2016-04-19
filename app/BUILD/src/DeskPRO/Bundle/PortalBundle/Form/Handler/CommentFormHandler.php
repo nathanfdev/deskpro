@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
 use Application\DeskPRO\Entity\Article;
@@ -282,8 +283,10 @@ class CommentFormHandler
 
     public function acceptComment(ContentAbstract $content, CommentAbstract $comment, Request $request = null)
     {
-        $perm_bag = $this->permissions_manager->getPermissionsBagForPerson($comment->getPerson());
-        if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')) {
+        $person   = $comment->getPerson();
+        $perm_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
+        if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')
+            && !($person->isAgent() && $person->hasPerm('agent_publish.validate'))) {
             // hide the comment until its approved
             $comment->setStatus(CommentAbstract::STATUS_HIDDEN);
             $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you_review');
