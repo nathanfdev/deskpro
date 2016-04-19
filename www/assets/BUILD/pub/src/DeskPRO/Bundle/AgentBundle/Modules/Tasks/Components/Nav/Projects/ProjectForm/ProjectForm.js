@@ -61,11 +61,13 @@ export class ProjectForm extends Component {
 
     const { project, dispatch } = this.props;
     const isNew = !project.get('id');
+    const { title, departments, teams, agents } = this.state;
+
     const submitData = {
-      title:       this.state.title,
-      departments: this.state.departments.toArray(),
-      teams:       this.state.teams.toArray(),
-      agents:      this.state.agents.toArray()
+      title,
+      departments: departments.toArray(),
+      teams:       teams.toArray(),
+      agents:      agents.toArray()
     };
 
     if (isNew) {

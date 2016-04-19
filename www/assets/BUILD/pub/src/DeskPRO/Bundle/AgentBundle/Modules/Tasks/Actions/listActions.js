@@ -28,13 +28,6 @@ export const setListParamsFilters = createAction(
   'TASKS_LIST_SET_PARAMS_FILTERS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsFiltersSelector(getState()).toJS();
-    if (overwrite.order_by) {
-      dispatch(updateRoutingState('list', 'order_by', overwrite.order_by));
-    }
-    if (overwrite.order_dir) {
-      dispatch(updateRoutingState('list', 'order_dir', overwrite.order_dir));
-    }
-
     return { ...current, ...overwrite };
   }
 );
@@ -63,7 +56,6 @@ export const loadList = createAction(
     const params = {
       ...navParams,
       ...filtersParams,
-
       order_by:  currentOrderBySelector(state),
       order_dir: currentOrderDirSelector(state),
       include:   'ticket,chat_conversation,article'
@@ -81,10 +73,10 @@ export const loadList = createAction(
 
         dispatch(releaseCollection('Task', recordStoresId));
         dispatch(setCollection('Task', recordStoresId, res.data));
-
-        return { ids, pagination: res.meta.pagination };
+        const { pagination } = res.meta;
+        return { ids, pagination };
       }
-    );
+      );
   }
 );
 
@@ -120,25 +112,19 @@ export const addTask = createAction(
   })
 );
 
-let latestPromise;
-let latestTasks;
-
+let updateRequests = 0;
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
   (taskId, data) => (dispatch, getState) => {
-    const tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
-
-    // Update task props
+    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
     const oldTask = tasks.get(taskId);
     let newTask = tasks.get(taskId);
-    const changedProps = Object.keys(data).filter(taskProp => newTask.get(taskProp) !== data[taskProp]);
 
-    changedProps.forEach(changedProp => {
-      let newValue = data[changedProp];
-      if (Array.isArray(newValue)) {
-        newValue = Immutable.fromJS(newValue);
+    newTask = newTask.withMutations(map => {
+      for (const key of Object.keys(data)) {
+        const value = Immutable.fromJS(data[key]);
+        map.set(key, value);
       }
-      newTask = newTask.set(changedProp, newValue);
     });
 
     if (Immutable.is(newTask, oldTask)) {
@@ -146,23 +132,17 @@ export const editTask = createAction(
     }
 
     const promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
-    latestPromise = promise;
-    latestTasks = tasks;
+    updateRequests++;
 
     // todo show errors (alert?)
     promise.success(() => {
-      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, newTask);
-      if (latestPromise !== promise) return;
-
-      console.time('set collections');
-      dispatch(setCollection('Task', recordStoresId, latestTasks));
-      latestTasks = null;
-      console.timeEnd('set collections');
+      if (--updateRequests > 1) return;
+      tasks = collectionSelectorFactory('Task', recordStoresId)(getState()).set(taskId, newTask);
+      dispatch(setCollection('Task', recordStoresId, tasks));
     }).error(() => {
-      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, oldTask);
-      if (latestPromise !== promise) return;
-      dispatch(setCollection('Task', recordStoresId, latestTasks));
-      latestTasks = null;
+      if (--updateRequests > 1) return;
+      tasks = collectionSelectorFactory('Task', recordStoresId)(getState()).set(taskId, oldTask);
+      dispatch(setCollection('Task', recordStoresId, tasks));
     });
   }
 );
