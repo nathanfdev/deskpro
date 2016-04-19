@@ -107,7 +107,7 @@ export class Projects extends React.Component {
         <Detached>
           {this.state.project
             ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
-                <ProjectForm project={project} tasksCount={this.getCount(project)} />
+                <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={() => this.onEdit(null)} />
               </div>
             : null
           }

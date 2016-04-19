@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-class Popup extends React.Component {
+export class Popup extends React.Component {
 
   static propTypes = {
     indicator:            PropTypes.string,
@@ -19,5 +19,3 @@ class Popup extends React.Component {
     );
   }
 }
-
-export { Popup };

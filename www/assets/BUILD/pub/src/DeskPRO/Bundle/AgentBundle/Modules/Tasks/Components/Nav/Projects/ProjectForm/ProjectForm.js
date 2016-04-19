@@ -13,7 +13,8 @@ export class ProjectForm extends Component {
   static propTypes = {
     project:    PropTypes.object,
     tasksCount: PropTypes.number,
-    dispatch:   PropTypes.func.isRequired
+    dispatch:   PropTypes.func.isRequired,
+    onSubmit:   PropTypes.func
   };
 
   constructor(props) {
@@ -57,9 +58,6 @@ export class ProjectForm extends Component {
 
   onSubmit = event => {
     event.preventDefault();
-    this.setState({
-      submit: true
-    });
 
     const { project, dispatch } = this.props;
     const isNew = !project.get('id');
@@ -70,28 +68,15 @@ export class ProjectForm extends Component {
       agents:      this.state.agents.toArray()
     };
 
-    let promise;
-    if (!isNew) {
-      promise = dispatch(editProject(project.get('id'), submitData));
+    if (isNew) {
+      dispatch(createProject(submitData));
     } else {
-      promise = dispatch(createProject(submitData));
+      dispatch(editProject(project.get('id'), submitData));
     }
 
-    promise.then(
-      () => {
-        if (!this.unmounted) {
-          this.setState({submit: false});
-        }
-      },
-      result => {
-        if (!this.unmounted) {
-          this.setState({
-            errors: result.getData().errors,
-            submit: false
-          });
-        }
-      }
-    );
+    if (this.props.onSubmit) {
+      this.props.onSubmit();
+    }
   };
 
   onDeletePrompt = () => {
@@ -99,16 +84,8 @@ export class ProjectForm extends Component {
   };
 
   onDeleteConfirm = () => {
-    this.setState({ submit: true });
     const { project, dispatch } = this.props;
-    dispatch(deleteProject(project.get('id'))).catch((result) => {
-      if (!this.unmounted) {
-        this.setState({
-          errors: result.getData().errors,
-          submit: false
-        });
-      }
-    });
+    dispatch(deleteProject(project.get('id')));
   };
 
   render() {
@@ -132,7 +109,7 @@ export class ProjectForm extends Component {
               </h2>
               <div className="dpw--popup-form-container">
                 <input type="text" placeholder="Example Project" value={title}
-                  onChange={(value) => this.onChange('title', value)}
+                  onChange={(event) => this.onChange('title', event.target.value)}
                   />
               </div>
             </div>
