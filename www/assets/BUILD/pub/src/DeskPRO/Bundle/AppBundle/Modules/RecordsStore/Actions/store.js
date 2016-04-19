@@ -10,13 +10,13 @@ export const loadBatch = createAction(
   (recordName, ids, collectionName) => (dispatch, getState) => {
     const recordStore = getState().RecordsStore.store.get(recordName);
     const loaded = recordStore && recordStore.has('records')
-                 ? recordStore.get('records')
-                 : Immutable.fromJS({});
+      ? recordStore.get('records')
+      : Immutable.fromJS({});
 
     const targets = [];
 
     ids.forEach(id => {
-      if (!loaded.has(id) && !loaded.has('' + id)) {
+      if (!loaded.has(id) && !loaded.has(id.toString())) {
         targets.push(id);
       }
     });
@@ -56,8 +56,8 @@ export const loadAll = createAction(
       result = {
         recordName,
         collectionName: 'all',
-        ids: [],
-        promise: repository(recordName).loadAll().then(response => {
+        ids:            [],
+        promise:        repository(recordName).loadAll().then(response => {
           const records = response.getData().data;
           const ids = records.map(record => record.id);
 
@@ -104,7 +104,7 @@ export const setCollection = createAction(
   (recordName, collectionName, records) => {
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
-    return {recordName, collectionName, records: recordsArray};
+    return { recordName, collectionName, records: recordsArray };
   }
 );
 
@@ -113,11 +113,16 @@ export const addToCollection = createAction(
   (recordName, collectionName, records) => {
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
-    return {recordName, collectionName, records: recordsArray};
+    return { recordName, collectionName, records: recordsArray };
   }
+);
+
+export const removeFromCollection = createAction(
+  'RECORDS_STORE_REMOVE_FROM_COLLECTION',
+  (recordName, collectionName, ids) => ({ recordName, collectionName, ids })
 );
 
 export const releaseCollection = createAction(
   'RECORDS_STORE_RELEASE_COLLECTION',
-  (recordName, collectionName) => ({recordName, collectionName})
+  (recordName, collectionName) => ({ recordName, collectionName })
 );

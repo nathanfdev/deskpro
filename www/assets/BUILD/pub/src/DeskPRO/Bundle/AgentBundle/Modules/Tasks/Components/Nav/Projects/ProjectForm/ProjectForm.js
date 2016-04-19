@@ -88,6 +88,9 @@ export class ProjectForm extends Component {
   onDeleteConfirm = () => {
     const { project, dispatch } = this.props;
     dispatch(deleteProject(project.get('id')));
+    if (this.props.onSubmit) {
+      this.props.onSubmit();
+    }
   };
 
   render() {

@@ -60,12 +60,14 @@ export class Modal extends React.Component {
   }
 
   confirmClick = (event) => {
+    event.preventDefault();
     if (!this.state.isOpen) return;
     this.setState({isOpen: false});
     this.props.onConfirm && this.props.onConfirm();
   };
 
   cancelClick = (event) => {
+    event.preventDefault();
     if (!this.state.isOpen) return;
     this.setState({isOpen: false});
     this.props.onCancel && this.props.onCancel();
