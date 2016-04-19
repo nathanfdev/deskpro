@@ -54,10 +54,10 @@ class NewsDataService extends AbstractDataService
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         $this->em                  = $em;
-        $this->permissions_manager = $permissions_manager;
+        $this->permissions_manager = $permissionsManager;
     }
 
     /**

@@ -34,4 +34,5 @@ return array(
     'portal.articles.section-title'   => 'Knowledgebase',
     'portal.articles.view-x-articles' => 'View 1 article|View {{count}} articles',
     'portal.articles.x-articles'      => '1 article|{{count}} articles',
+    'portal.articles.view-as-agent'   => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
 );

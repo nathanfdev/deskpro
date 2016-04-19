@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -66,18 +66,19 @@ class ArticlesController extends AbstractController
                 null,
                 $page,
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
-                $person
+                $person,
+                true
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+            return $this->render('PortalBundle:Articles:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => null,
                 'page_title' => $this->get('portal_view.page_title_generator')->kb(),
-            ));
+            ]);
         }
         $rss_link = $this->generateUrl(
             'portal_kb',
-            array('_format' => 'rss')
+            ['_format' => 'rss']
         );
 
         //
@@ -90,13 +91,13 @@ class ArticlesController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig',
-            array(
+            [
                 'page'        => $page,
                 'count'       => $this->getBrandSetting('portal.per_page_content'),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
                 'rss_link'    => $rss_link,
-            )
+            ]
         );
     }
 
@@ -120,16 +121,17 @@ class ArticlesController extends AbstractController
                 $category,
                 $page,
                 $request->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
-                $person
+                $person,
+                false
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', array(
+            return $this->render('PortalBundle:Articles:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => $category,
                 'page_title' => $this->get('portal_view.page_title_generator')->kb($category),
-            ));
+            ]);
         }
-        $rss_link = $this->generateUrl('portal_kb_browse', array('slug' => $category->getSlug(), '_format' => 'rss'));
+        $rss_link = $this->generateUrl('portal_kb_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
         //
         // BREADCRUMBS
@@ -156,14 +158,14 @@ class ArticlesController extends AbstractController
         // PAGER
         //
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false);
 
         //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Articles:browse.html.twig',
-            array(
+            [
                 'category'      => $category,
                 'breadcrumbs'   => $breadcrumbs,
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb($category),
@@ -172,7 +174,7 @@ class ArticlesController extends AbstractController
                 'count'         => $count,
                 'page'          => $page,
                 'rss_link'      => $rss_link,
-            )
+            ]
         );
     }
 

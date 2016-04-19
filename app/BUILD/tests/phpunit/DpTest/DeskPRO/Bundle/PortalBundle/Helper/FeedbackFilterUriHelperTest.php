@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -54,7 +54,7 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
     {
         $helper = new FeedbackFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('all');
+        $filter = $helper->extractFeedbackFilter('active');
 
         $this->assertEquals(FeedbackFilter::getDefaultValues(), $filter->toArray());
     }
@@ -204,27 +204,104 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
         $this->assertEquals('', $helper->generateUriSegment($filter));
     }
 
-    public function testGenerateUriSegmentStatus()
+    /**
+     * @dataProvider generateUriSegmentStatusProvider
+     *
+     * @param string $status
+     * @param string $expected
+     */
+    public function testGenerateUriSegmentStatus($status, $expected)
     {
         $filter = new FeedbackFilter();
-        $filter->setStatus('active');
+        $filter->setStatus($status);
 
         $helper = new FeedbackFilterUriHelper();
 
-        $this->assertEquals('active', $helper->generateUriSegment($filter));
+        $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
 
-    public function testGenerateUriSegmentSort()
+    public function generateUriSegmentStatusProvider()
+    {
+        return [
+            ['active', ''],
+            ['all', 'all'],
+            ['closed', 'closed'],
+        ];
+    }
+
+    /**
+     * @dataProvider generateUriSegmentSort
+     *
+     * @param string $orderBy
+     * @param string $orderDir
+     * @param string $expected
+     */
+    public function testGenerateUriSegmentSort($orderBy, $orderDir, $expected)
     {
         $filter = new FeedbackFilter();
-        $filter->setSort('most-popular');
+        $filter->setSort($orderBy);
+        $filter->setSortDirection($orderDir);
 
         $helper = new FeedbackFilterUriHelper();
 
-        $this->assertEquals('most-popular', $helper->generateUriSegment($filter));
+        $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
 
-    public function testGenerateUriSegmentStatusCategories()
+    public function generateUriSegmentSort()
+    {
+        return [
+            ['date', 'asc', 'date-asc'],
+            ['date', 'desc', ''],
+            ['most-popular', 'asc', 'most-popular-asc'],
+            ['most-popular', 'desc', 'most-popular'],
+            ['most-discussed', 'desc', 'most-discussed'],
+            ['highest-rating', 'desc', 'highest-rating'],
+            ['most-views', 'desc', 'most-views'],
+        ];
+    }
+
+    /**
+     * @dataProvider generateUriSegmentStatusSort
+     *
+     * @param string $status
+     * @param string $orderBy
+     * @param string $orderDir
+     * @param string $expected
+     */
+    public function testGenerateUriSegmentStatusSort($status, $orderBy, $orderDir, $expected)
+    {
+        $filter = new FeedbackFilter();
+        $filter->setStatus($status);
+        $filter->setSort($orderBy);
+        $filter->setSortDirection($orderDir);
+
+        $helper = new FeedbackFilterUriHelper();
+
+        $this->assertEquals($expected, $helper->generateUriSegment($filter));
+    }
+
+    public function generateUriSegmentStatusSort()
+    {
+        return [
+            ['all', 'date', 'asc', 'all/date-asc'],
+            ['active', 'date', 'desc', ''],
+            ['active', 'date', 'asc', 'date-asc'],
+            ['all', 'most-popular', 'asc', 'all/most-popular-asc'],
+            ['closed', 'most-popular', 'desc', 'closed/most-popular'],
+            ['all', 'most-discussed', 'desc', 'all/most-discussed'],
+            ['active', 'highest-rating', 'asc', 'highest-rating-asc'],
+            ['closed', 'most-views', 'desc', 'closed/most-views'],
+        ];
+    }
+
+    /**
+     * @dataProvider generateUriSegmentStatusCategories
+     *
+     * @param string $status
+     * @param array  $categories
+     * @param string $expected
+     */
+    public function testGenerateUriSegmentStatusCategories($status, array $categories, $expected)
     {
         $filter = new FeedbackFilter();
         $filter->setStatus('active');
@@ -232,7 +309,16 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $helper = new FeedbackFilterUriHelper();
 
-        $this->assertEquals('active-5,6', $helper->generateUriSegment($filter));
+        $this->assertEquals('5,6', $helper->generateUriSegment($filter));
+    }
+
+    public function generateUriSegmentStatusCategories()
+    {
+        return [
+            ['active', [5, 6], '5,6'],
+            ['all', [6], 'all-6'],
+            ['closed', [], 'closed'],
+        ];
     }
 
     public function testGenerateUriSegmentMultiple()
@@ -246,7 +332,7 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
         $helper = new FeedbackFilterUriHelper();
 
-        $this->assertEquals('active-5,6/type-15/most-views-asc', $helper->generateUriSegment($filter));
+        $this->assertEquals('5,6/type-15/most-views-asc', $helper->generateUriSegment($filter));
     }
 
     public function testGenerateUriSegmentFew()

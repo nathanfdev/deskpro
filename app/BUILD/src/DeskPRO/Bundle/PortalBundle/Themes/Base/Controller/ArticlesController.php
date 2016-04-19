@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,7 +55,8 @@ class ArticlesController extends AbstractController
      *      defaults={
      *          "style": "browse",
      *          "category": null,
-     *          "articles_count": 10
+     *          "articles_count": 10,
+     *          "with_tree": false
      *      },
      *      allowed_values={
      *          "style": {"expander", "browse", "list"}
@@ -86,21 +87,22 @@ class ArticlesController extends AbstractController
 
         // the cat list might want details on the total # of articles, and we need a pager because it
         // takes into account permissions
-        $category_pager           = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person);
+        $category_pager           = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, $options['with_tree']);
         $category_children_pagers = [];
         foreach ($category_children as $child_cat) {
-            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 1, $person);
+            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 1, $person, $options['with_tree']);
         }
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
-            array(
+            [
                 'category'                 => $category,
                 'category_pager'           => $category_pager,
                 'category_children'        => $category_children,
                 'category_children_pagers' => $category_children_pagers,
                 'articles_count'           => $options['articles_count'],
-            )
+                'with_tree'                => $options['with_tree'],
+            ]
         );
     }
 
@@ -116,7 +118,8 @@ class ArticlesController extends AbstractController
      *          "page": 1,
      *          "count": 10,
      *          "show_category_link": false,
-     *          "show_pager": false
+     *          "show_pager": false,
+     *          "with_tree": false
      *      },
      *      inherit_from={"articles_options"},
      *      allowed_values={
@@ -135,16 +138,16 @@ class ArticlesController extends AbstractController
     public function listAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
         $person = $this->getCurrentPerson();
-        $pager  = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count'], $person);
+        $pager  = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count'], $person, $options['with_tree']);
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:ArticleList/%s.html.twig', $options['style']),
-            array(
+            [
                 'pager'              => $pager,
                 'category'           => $category,
                 'show_category_link' => $options['show_category_link'],
                 'show_pager'         => $options['show_pager'],
-            )
+            ]
         );
     }
 
@@ -169,8 +172,8 @@ class ArticlesController extends AbstractController
     {
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
-        return $this->renderThemeView('Theme:Common:comments.html.twig', array(
+        return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,
-        ));
+        ]);
     }
 }

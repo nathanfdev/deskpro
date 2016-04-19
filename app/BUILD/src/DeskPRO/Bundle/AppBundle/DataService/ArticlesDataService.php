@@ -49,12 +49,12 @@ class ArticlesDataService extends AbstractDataService
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
 
         $this->em                  = $em;
-        $this->permissions_manager = $permissions_manager;
+        $this->permissions_manager = $permissionsManager;
     }
 
     /**
@@ -64,7 +64,7 @@ class ArticlesDataService extends AbstractDataService
     {
         $em = $this->em;
 
-        return $this->generateAndCache(array('hasAny'), function () use ($em) {
+        return $this->generateAndCache(['hasAny'], function () use ($em) {
             return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM articles LIMIT 1') ? true : false;
         });
     }
@@ -72,24 +72,27 @@ class ArticlesDataService extends AbstractDataService
     /**
      * @param ArticleCategory $category
      * @param $page
-     * @param $max_per_page
+     * @param $maxPerPage
+     * @param Person $person
+     * @param bool   $withTree
      *
      * @return Pagerfanta
      */
-    public function getArticlesPager(ArticleCategory $category = null, $page, $max_per_page, Person $person)
+    public function getArticlesPager(ArticleCategory $category = null, $page, $maxPerPage, Person $person, $withTree = false)
     {
-        $em                  = $this->em;
-        $permissions_manager = $this->permissions_manager;
+        $em                 = $this->em;
+        $permissionsManager = $this->permissions_manager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getArticlesPager',
                 $category,
                 $page,
-                $max_per_page,
+                $maxPerPage,
                 $person,
-            ),
-            function () use ($em, $permissions_manager, $category, $max_per_page, $page, $person) {
+                $withTree,
+            ],
+            function () use ($em, $permissionsManager, $category, $maxPerPage, $page, $person, $withTree) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
@@ -97,31 +100,35 @@ class ArticlesDataService extends AbstractDataService
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.id', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
+                $allowedIds = $permissionsManager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
                 if ($category) {
-                    // find allowed ids
-                    $cat_ids = $category->getTreeIds(true);
-                    $using_ids = array();
-                    foreach ($cat_ids as $cat_id) {
-                        if (in_array($cat_id, $allowed_ids)) {
-                            $using_ids[] = $cat_id;
+                    if ($withTree) {
+                        // find allowed ids
+                        $catIds = $category->getTreeIds(true);
+                        $usingIds = [];
+                        foreach ($catIds as $catId) {
+                            if (in_array($catId, $allowedIds)) {
+                                $usingIds[] = $catId;
+                            }
                         }
+                    } else {
+                        $usingIds = [$category->getId()];
                     }
                 } else {
-                    $using_ids = $allowed_ids;
+                    $usingIds = $allowedIds;
                 }
 
-                if (empty($using_ids)) {
-                    // nocategories are allowed, so no articles are either, returning a blank array pager
-                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                if (empty($usingIds)) {
+                    // no categories are allowed, so no articles are either, returning a blank array pager
+                    $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
                     $qb->leftJoin('a.categories', 'c')
-                    ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $using_ids);
+                    ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
 
-                $pager->setMaxPerPage($max_per_page);
+                $pager->setMaxPerPage($maxPerPage);
                 $pager->setCurrentPage($page);
 
                 return $pager;
@@ -129,19 +136,19 @@ class ArticlesDataService extends AbstractDataService
         );
     }
 
-    public function getTopArticlesPager($page, $max_per_page, Person $person)
+    public function getTopArticlesPager($page, $maxPerPage, Person $person)
     {
-        $em                  = $this->em;
-        $permissions_manager = $this->permissions_manager;
+        $em                 = $this->em;
+        $permissionsManager = $this->permissions_manager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getTopArticlesPager',
                 $page,
-                $max_per_page,
+                $maxPerPage,
                 $person,
-            ),
-            function () use ($em, $permissions_manager, $max_per_page, $page, $person) {
+            ],
+            function () use ($em, $permissionsManager, $maxPerPage, $page, $person) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
@@ -149,20 +156,20 @@ class ArticlesDataService extends AbstractDataService
                     ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.total_rating', 'DESC');
 
-                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
-                $using_ids = $allowed_ids;
+                $allowedIds = $permissionsManager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
+                $usingIds = $allowedIds;
 
-                if (empty($using_ids)) {
+                if (empty($usingIds)) {
                     // nocategories are allowed, so no articles are either, returning a blank array pager
-                    $pager = new Pagerfanta(new ArrayAdapter(array()));
+                    $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
                     $qb->leftJoin('a.categories', 'c')
-                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $using_ids);
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
 
-                $pager->setMaxPerPage($max_per_page);
+                $pager->setMaxPerPage($maxPerPage);
                 $pager->setCurrentPage($page);
 
                 return $pager;
@@ -185,20 +192,20 @@ class ArticlesDataService extends AbstractDataService
      */
     public function getCategoryChildren($category, Person $person)
     {
-        $that                = $this;
-        $permissions_manager = $this->permissions_manager;
+        $that               = $this;
+        $permissionsManager = $this->permissions_manager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategoryChildren',
                 $category,
                 $person,
-            ),
-            function () use ($that, $category, $person, $permissions_manager) {
-                $allowed_ids = $permissions_manager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
+            ],
+            function () use ($that, $category, $person, $permissionsManager) {
+                $allowedIds = $permissionsManager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
 
                 if (!$category) { // get root categories
-                    $result = $that->getArticleCategoriesRepo()->findBy(array('parent' => null, 'id' => $allowed_ids));
+                    $result = $that->getArticleCategoriesRepo()->findBy(['parent' => null, 'id' => $allowedIds]);
                 } else {
                     if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
                         if (!$category = $that->getCategory($category)) {
@@ -208,9 +215,9 @@ class ArticlesDataService extends AbstractDataService
 
                     $children = $category->children;
 
-                    $result = array();
+                    $result = [];
                     foreach ($children as $child) {
-                        if (in_array($child->getId(), $allowed_ids)) {
+                        if (in_array($child->getId(), $allowedIds)) {
                             $result[] = $child;
                         }
                     }
@@ -233,10 +240,10 @@ class ArticlesDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getArticle',
                 $article,
-            ),
+            ],
             function () use ($that, $article) {
                 if (!$article) { // we need some input
                     return;
@@ -265,10 +272,10 @@ class ArticlesDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getCategory',
                 $category,
-            ),
+            ],
             function () use ($that, $category) {
                 if (!$category) { // we need some input
                     return;
@@ -288,11 +295,11 @@ class ArticlesDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getArticleComments',
                 $article,
                 $person,
-            ),
+            ],
             function () use ($that, $article, $person) {
                 $article = $that->getArticle($article);
 

@@ -29,6 +29,9 @@
         <hr>
         {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
       </div>
+      {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
+        <div class="sub-note">{{ phrase('portal.articles.view-as-agent') }}</div>
+      {% endif %}
     </header>
 
     <div class="article-content padded dpx-kb-article-content">
