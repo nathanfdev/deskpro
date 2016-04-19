@@ -11,5 +11,5 @@
       <p>{{ phrase('portal.articles.section-desc') }}</p>
   </header>
 
-  {% show section kb with { articles_count: 5 } %}
+  {% show section kb with { articles_count: 5, with_tree: true } %}
 {% endblock inner_content %}

@@ -56,10 +56,10 @@ class FeedbackDataService extends AbstractDataService
      */
     protected $permissions_manager;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
-        $this->permissions_manager = $permissions_manager;
+        $this->permissions_manager = $permissionsManager;
     }
 
     /**

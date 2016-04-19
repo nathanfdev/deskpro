@@ -56,12 +56,12 @@ class DownloadsDataService extends AbstractDataService
      * Constructor.
      *
      * @param EntityManager      $em
-     * @param PermissionsManager $permissions_manager
+     * @param PermissionsManager $permissionsManager
      */
-    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
-        $this->permissions_manager = $permissions_manager;
+        $this->permissions_manager = $permissionsManager;
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,13 +51,13 @@ class DepartmentDataService extends AbstractDataService
      * Constructor.
      *
      * @param EntityManager      $em
-     * @param PermissionsManager $permissions_manager
+     * @param PermissionsManager $permissionsManager
      */
-    public function __construct(EntityManager $em, PermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
     {
         parent::__construct($em);
 
-        $this->permissions_manager = $permissions_manager;
+        $this->permissions_manager = $permissionsManager;
     }
 
     /**
