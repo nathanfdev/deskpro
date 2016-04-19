@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
@@ -100,13 +101,17 @@ class LoadListener implements EventSubscriberInterface
             return;
         }
 
+        $organizationContext = $context->getResponse()->getContext(QuickSearchContext::TYPE_ORGANIZATION);
+        if (!$organizationContext) {
+            return;
+        }
+
         /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $context->getEntities();
         foreach ($people as $person) {
             $organization = $person->getOrganization();
             if ($organization) {
-                $organization_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_ORGANIZATION);
-                $organization_context->addEntity($organization);
+                $organizationContext->addEntity($organization);
             }
         }
     }
@@ -118,6 +123,11 @@ class LoadListener implements EventSubscriberInterface
     {
         $context = $event->getContext();
         if (!$context->isOrganization() || !$event->getRequest()->enabledSideloads()) {
+            return;
+        }
+
+        $personContext = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
+        if (!$personContext) {
             return;
         }
 
@@ -135,7 +145,7 @@ class LoadListener implements EventSubscriberInterface
             $qb = $this->em->createQueryBuilder();
             $qb
                 ->select('p')
-                ->from('DeskPRO:Person', 'p')
+                ->from(Person::class, 'p')
                 ->where('p.organization IN(:ids)')
                 ->orderBy('p.date_last_login', 'desc')
                 ->setMaxResults(100)
@@ -145,8 +155,7 @@ class LoadListener implements EventSubscriberInterface
             /** @var \Application\DeskPRO\Entity\Person[] $people */
             $people = $qb->getQuery()->getResult();
             foreach ($people as $person) {
-                $person_context = $context->getResponse()->getContext(QuickSearchContext::TYPE_PERSON);
-                $person_context->addEntity($person);
+                $personContext->addEntity($person);
             }
         }
     }
