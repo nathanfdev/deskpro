@@ -19,7 +19,7 @@ Feature: /mass_actions/tickets endpoint
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1],
+  "ids": [1,2],
   "params":{"set_status": "awaiting_agent"}
 }
     """
@@ -36,7 +36,7 @@ Feature: /mass_actions/tickets endpoint
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1],
+  "ids": [1,2],
   "params":{
      "set_category": 1,
      "set_product": 1,
@@ -203,3 +203,32 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.agent" should be null
     And the JSON node "data.agent_team" should be null
     And the JSON node "data.department" should be equal to 1
+
+  Scenario: I delete ticket with ID=1,2 and check if delete mass actions was applied
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [3,4],
+  "params":{
+     "set_of_actions": ["delete"]
+  }
+}
+    """
+    Then the response status code should be 200
+
+  Scenario: I get ticket with ID=3 and check if delete mass actions was applied
+    When I send a GET request to "/api/v2/tickets/3"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data.status" should be equal to "hidden"
+    And the JSON node "data.hidden_status" should be equal to "deleted"
+
+  Scenario: I get ticket with ID=4 and check if delete mass actions was applied
+    When I send a GET request to "/api/v2/tickets/4"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data.status" should be equal to "hidden"
+    And the JSON node "data.hidden_status" should be equal to "deleted"
+
