@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -321,14 +321,21 @@ class Ticket extends AbstractEntityRepository
      */
     public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
     {
-        $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
-            SELECT DISTINCT id FROM (
+        if (!$person->is_agent) {
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
+                SELECT DISTINCT id FROM (
+                    SELECT id FROM tickets WHERE person_id = ?
+                    UNION
+                    SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+                    LIMIT 2000
+                ) AS t
+            ', array($person->id, $person->id));
+        } else {
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
                 SELECT id FROM tickets WHERE person_id = ?
-                UNION
-                SELECT ticket_id FROM tickets_participants WHERE person_id = ?
                 LIMIT 2000
-            ) AS t
-        ', array($person->id, $person->id));
+            ', array($person->id));
+        }
 
         if (!$ids) {
             return array();
@@ -444,20 +451,28 @@ class Ticket extends AbstractEntityRepository
             $excludeNotesCondition = ' AND (tickets.date_last_agent_reply IS NOT NULL OR tickets.date_last_user_reply IS NOT NULL) ';
         }
 
-        $count = App::getDb()->fetchColumn('
-            SELECT SUM(count)
-            FROM (
-                SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
-                    .$status
-                    .$excludeNotesCondition.'
-                UNION
-                SELECT COUNT(*) AS count FROM tickets_participants
-                JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
-                WHERE tickets_participants.person_id = ? '
+        if (!$person->is_agent) {
+            $count = App::getDb()->fetchColumn('
+                SELECT SUM(count)
+                FROM (
+                    SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
+                .$status
+                .$excludeNotesCondition.'
+                    UNION
+                    SELECT COUNT(*) AS count FROM tickets_participants
+                    JOIN tickets ON (tickets.id = tickets_participants.ticket_id)
+                    WHERE tickets_participants.person_id = ? '
                 .$status
                 .$excludeNotesCondition
-            .') a',
-            array($person->id, $person->id));
+                .') a',
+                array($person->id, $person->id)
+            );
+        } else {
+            $count = App::getDb()->fetchColumn('
+                SELECT COUNT(*) AS count FROM tickets WHERE tickets.person_id = ? '
+                .$status
+                .$excludeNotesCondition, array($person->id));
+        }
 
         return $count;
     }
@@ -717,14 +732,35 @@ class Ticket extends AbstractEntityRepository
             $ids[] = $p['id'];
         }
 
-        return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-            SELECT person_id, COUNT(person_id) FROM (
-				SELECT person_id FROM tickets WHERE person_id IN (?)
-				UNION ALL
-				SELECT person_id FROM tickets_participants WHERE person_id IN (?)
-			) a
-            GROUP BY person_id
-        ', array($ids, $ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
+        /** @var Connection $db */
+        $db = $this->_em->getConnection();
+
+        $peopleIds = $db->fetchAllCol('SELECT id FROM people WHERE id IN (?) AND is_agent = 0', [$ids], [Connection::PARAM_INT_ARRAY]);
+        $agentIds  = $db->fetchAllCol('SELECT id FROM people WHERE id IN (?) AND is_agent = 1', [$ids], [Connection::PARAM_INT_ARRAY]);
+
+        if ($peopleIds) {
+            $countsPeople = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+                SELECT person_id, COUNT(person_id) FROM (
+                    SELECT person_id FROM tickets WHERE person_id IN (?)
+                    UNION ALL
+                    SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+                ) a
+                GROUP BY person_id
+            ', array($peopleIds, $peopleIds), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
+        } else {
+            $countsPeople = [];
+        }
+
+        if ($agentIds) {
+            $countsAgents = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+                SELECT person_id, COUNT(*) FROM tickets WHERE person_id IN (?)
+                GROUP BY person_id
+            ', array($agentIds), array(Connection::PARAM_INT_ARRAY));
+        } else {
+            $countsAgents = [];
+        }
+
+        return $countsPeople + $countsAgents;
     }
 
     /**
