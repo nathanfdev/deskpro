@@ -117,9 +117,9 @@ export class ProjectForm extends Component {
     const { title, agents, teams, departments } = this.state;
 
     return (
-      <Popup>
+      <Popup additionalClassNames="m-100">
         <div className="dpw--popup-header">
-          <i className="fa fa-tags"/>
+          <i className="fa fa-tags" />
           Project - {isNew ? 'Create New' : 'Edit'}
         </div>
 

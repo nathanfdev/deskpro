@@ -4,16 +4,16 @@ import classNames from 'classnames';
 class Popup extends React.Component {
 
   static propTypes = {
-    indicator: PropTypes.string,
+    indicator:            PropTypes.string,
     additionalClassNames: PropTypes.string,
-    children: PropTypes.node
+    children:             PropTypes.node
   };
 
   render() {
     const { indicator, children, additionalClassNames } = this.props;
 
     return (
-      <div className={classNames('dpw--popup-main', additionalClassNames, {'hide-indicator': indicator === 'none'})}>
+      <div className={classNames('dpw--popup-main', additionalClassNames, { 'hide-indicator': indicator === 'none' })}>
         {children}
       </div>
     );

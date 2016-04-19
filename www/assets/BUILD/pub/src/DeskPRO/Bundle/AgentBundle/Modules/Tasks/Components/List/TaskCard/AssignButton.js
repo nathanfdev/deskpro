@@ -68,7 +68,7 @@ export class AssignButton extends CardWidget {
         </div>
 
         <Positioned isOpen={this.state.isOpen}
-          positionTarget={this}
+          positionTarget={this.refs.button}
           positionAt="right+5 top-10"
           collision="fit"
           zIndex={1002}
