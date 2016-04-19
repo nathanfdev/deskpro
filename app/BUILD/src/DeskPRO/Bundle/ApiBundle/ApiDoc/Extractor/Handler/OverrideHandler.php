@@ -72,7 +72,6 @@ class OverrideHandler implements HandlerInterface
         if ($annotation instanceof DpApiDoc
             && ($classReflection = ControllerUtils::extractControllerReflection($route))
         ) {
-            //            $annotation = clone $annotation;
             $this->getClassAnnotations($classReflection);
 
             $action = ControllerUtils::cleanAction($method->getName());
@@ -107,7 +106,14 @@ class OverrideHandler implements HandlerInterface
         $this->annotationsList = [];
         foreach ($this->reader->getClassAnnotations($classReflection) as $annotation) {
             if ($annotation instanceof DpApiDoc) {
-                $this->annotationsList[$annotation->getTarget()] = $annotation;
+                $targets = explode(',', $annotation->getTarget());
+                foreach ($targets as $target) {
+                    $target = trim($target);
+                    if (!isset($this->annotationsList[$target])) {
+                        $this->annotationsList[$target] = [];
+                    }
+                    $this->annotationsList[$target][] = $annotation;
+                }
             }
         }
     }
@@ -120,9 +126,30 @@ class OverrideHandler implements HandlerInterface
     private function overrideWith($key, DpApiDoc $annotation, $action)
     {
         if (isset($this->annotationsList[$key])) {
-            $override = $this->annotationsList[$key];
+            $overrides = $this->annotationsList[$key];
 
-            $this->override($annotation, $override, $action, $key !== 'all');
+            $this->override($annotation, $overrides, $action, $key !== 'all');
+        }
+    }
+
+    /**
+     * @param DpApiDoc   $annotation
+     * @param DpApiDoc[] $overrides
+     * @param string     $action
+     * @param bool       $extended
+     */
+    private function override(DpApiDoc $annotation, array $overrides, $action, $extended)
+    {
+        foreach ($overrides as $override) {
+            $this->overrideOutput($annotation, $override, $action);
+            $this->overrideSection($annotation, $override);
+            $this->overrideInput($annotation, $override, $action);
+            if ($extended) {
+                $this->overrideFilters($annotation, $override);
+                $this->overrideRequirements($annotation, $override);
+                $this->overrideParameters($annotation, $override);
+                $this->overrideDescription($annotation, $override);
+            }
         }
     }
 
@@ -130,25 +157,6 @@ class OverrideHandler implements HandlerInterface
      * @param DpApiDoc $annotation
      * @param DpApiDoc $override
      * @param string   $action
-     * @param bool     $extended
-     */
-    private function override(DpApiDoc $annotation, DpApiDoc $override, $action, $extended)
-    {
-        $this->overrideOutput($annotation, $override, $action);
-        $this->overrideSection($annotation, $override);
-        $this->overrideInput($annotation, $override, $action);
-        if ($extended) {
-            $this->overrideFilters($annotation, $override);
-            $this->overrideRequirements($annotation, $override);
-            $this->overrideParameters($annotation, $override);
-            $this->overrideDescription($annotation, $override);
-        }
-    }
-
-    /**
-     * @param DpApiDoc $annotation
-     * @param DpApiDoc $override
-     * @param          $action
      */
     private function overrideOutput(DpApiDoc $annotation, DpApiDoc $override, $action)
     {
@@ -180,7 +188,7 @@ class OverrideHandler implements HandlerInterface
     /**
      * @param DpApiDoc $annotation
      * @param DpApiDoc $override
-     * @param          $action
+     * @param string   $action
      */
     private function overrideInput(DpApiDoc $annotation, DpApiDoc $override, $action)
     {
