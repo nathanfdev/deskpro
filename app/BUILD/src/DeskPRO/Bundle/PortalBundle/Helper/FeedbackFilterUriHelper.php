@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -204,7 +204,10 @@ class FeedbackFilterUriHelper
         }
 
         if ($filter->getStatusCategories() != $defaults['status_categories']) {
-            $uri .= sprintf('-%s', implode(',', $filter->getStatusCategories()));
+            $uri .= sprintf(
+                '%s%s',
+                $filter->getStatus() !== $defaults['status'] ? '-' : '',
+                implode(',', $filter->getStatusCategories()));
         }
 
         if ($filter->getTypes() != $defaults['types']) {
@@ -222,6 +225,6 @@ class FeedbackFilterUriHelper
             }
         }
 
-        return strlen($uri) ? substr($uri, 1) : ''; // remove the leading "/"
+        return ltrim($uri, '/');
     }
 }
