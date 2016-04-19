@@ -1,0 +1,32 @@
+<p>
+    This incident is shown because of a critical PHP error.
+</p>
+
+<p>
+    Error information:
+    <table class="table table-bordered">
+        <tr>
+            <td>Code</td><td>{{ incident.getFirstEvent().getType() }}</td>
+        </tr>
+        <tr>
+            <td>File</td><td>{{ incident.getFirstEvent().getFile() }}</td>
+        </tr>
+        <tr>
+            <td>Line</td><td>{{ incident.getFirstEvent().getLine() }}</td>
+        </tr>
+    </table>
+
+    Error log:
+    <table class="table table-bordered">
+        {% for error in incident.getEvents() %}
+            <tr>
+                <td>{{ error.getDateCreated()|date }}</td>
+                <td>{{ error.getMessage() }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</p>
+
+<p>
+    We'll be glad if you report this error to DeskPRO, we'll fix it ASAP.
+</p>

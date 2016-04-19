@@ -60,6 +60,12 @@ if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PORTAL_ERROR=1
 fi
 
+IS_BEHAT_PRODUCTION_ERROR=0
+bin/behat --profile=production --tags '@basic'
+if [[ $? -ne 0 ]] ; then
+    IS_BEHAT_PRODUCTION_ERROR=1
+fi
+
 ##################################
 # Jest
 ##################################
@@ -75,7 +81,7 @@ fi
 ##################################
 # EXIT IF ERROR
 ##################################
-IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_JEST_ERROR))
+IS_ERROR=$((IS_PHPSPEC_ERROR + IS_PHPUNIT_ERROR + IS_PHPUNIT_TERM_ENGINE_ERROR + IS_PHPUNIT_PORTAL_ERROR + IS_BEHAT_API_ERROR + IS_BEHAT_PORTAL_ERROR + IS_BEHAT_PRODUCTION_ERROR + IS_JEST_ERROR))
 if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_PHPSPEC_ERROR" -ne "0" ]]; then
         echo "
@@ -100,6 +106,10 @@ if [[ "$IS_ERROR" -ne "0" ]]; then
     if [[ "$IS_BEHAT_PORTAL_ERROR" -ne "0" ]]; then
         echo "
         --- BEHAT PORTAL FAILED --- "
+    fi
+    if [[ "$IS_BEHAT_PRODUCTION_ERROR" -ne "0" ]]; then
+        echo "
+        --- BEHAT PRODUCTION MODE FAILED --- "
     fi
     if [[ "IS_JEST_ERROR" -ne "0" ]]; then
         echo "

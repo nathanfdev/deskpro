@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 
 /**
  * Class TagProcessor.
@@ -51,15 +51,20 @@ class TagProcessor
     private $tag_handlers;
 
     /**
-     * Constructor.
-     *
+     * @var EventLogger
+     */
+    private $logger;
+
+    /**
      * @param TagRequestFactory $tag_request_factory
      * @param array             $tag_handlers
+     * @param EventLogger       $logger
      */
-    public function __construct(TagRequestFactory $tag_request_factory, array $tag_handlers)
+    public function __construct(TagRequestFactory $tag_request_factory, array $tag_handlers, EventLogger $logger)
     {
         $this->tag_request_factory = $tag_request_factory;
         $this->tag_handlers        = $tag_handlers;
+        $this->logger              = $logger;
     }
 
     /**
@@ -81,13 +86,7 @@ class TagProcessor
         if (!$response) {
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
-            if (!defined('DP_INTERFACE') || DP_INTERFACE !== 'test') {
-                $id       = 'tag-'.$tag->getName().'-code'.$response->getStatusCode();
-                $dumpFile = SystemErrorHandler::logDebugDataDump($response->getContent(), $id);
-
-                $e = new \RuntimeException('Theme tag returned error status: '.$response->getStatusCode().' (details in '.basename($dumpFile).')');
-                SystemErrorHandler::logException($e);
-            }
+            $this->logger->log(new \RuntimeException('Unable to render theme content: '.$response->getContent()));
 
             return ''; // be passive and default to blank
         }

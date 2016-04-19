@@ -32,6 +32,7 @@ services:
     arguments:
       - "@fos_elastica.manager"
       - "@settings_resolver"
+      - "@dp_sys.alerts.event_logger"
     tags:
       - { name: quick_search.event_subscriber }
 

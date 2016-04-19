@@ -181,11 +181,6 @@ class HttpServerInfoBootTask implements BootTaskInterface
 
     private function checkAuth($auth)
     {
-        // Hardcode auth to 'TEST' during test mode
-        if ($this->env->getConfig('env.environment') === 'test') {
-            return $auth === 'TEST';
-        }
-
         // If installed, we require auth
         if (($this->env->getConfig('database.host') || $this->env->getConfig('database.0.host'))) {
             $server_info_auth = $this->env->getDatManager()->readTxtFile('server_info_auth', null);

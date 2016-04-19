@@ -5,7 +5,7 @@ Feature: Adding custom header, footer, SCSS and javascript
     And I am authenticated as admin
 
   Scenario: I get current advanced edit data
-    When I send a GET request to "/portal/api/style/edit-theme-set/advanced-edits"
+    When I go to "/portal/api/style/edit-theme-set/advanced-edits"
     Then the response status code should be 200
     And the JSON node "header" should exist
     And the JSON node "footer" should exist
@@ -31,7 +31,7 @@ Feature: Adding custom header, footer, SCSS and javascript
         "javascript": "alert('hello')"
       }
     """
-    When I send a GET request to "/portal/api/style/edit-theme-set/advanced-edits"
+    When I go to "/portal/api/style/edit-theme-set/advanced-edits"
     Then the response status code should be 200
     And the JSON node "header" should be equal to "<h1>Header</h1>"
     And the JSON node "footer" should be equal to "<i>Footer</i>"
@@ -47,7 +47,7 @@ Feature: Adding custom header, footer, SCSS and javascript
     """
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/admin-preview"
+    When I go to "/admin-preview"
     Then I should see "Just edited custom header"
 
   Scenario: I check portal doesn't contain a not yet committed custom header
@@ -59,7 +59,7 @@ Feature: Adding custom header, footer, SCSS and javascript
     """
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/"
+    When I go to "/"
     Then I should not see "Just edited custom header"
 
   Scenario: I check portal contain committed custom header
@@ -72,10 +72,10 @@ Feature: Adding custom header, footer, SCSS and javascript
     Then the response status code should be 204
     And the response should be empty
 
-    When I send a GET request to "/portal/api/style/edit-theme-set/commit"
+    When I go to "/portal/api/style/edit-theme-set/commit"
     Then the response status code should be 200
 
-    When I send a GET request to "/"
+    When I go to "/"
     Then I should see "Just edited custom header I commit"
 
   Scenario: I discard a custom header
@@ -88,10 +88,10 @@ Feature: Adding custom header, footer, SCSS and javascript
     Then the response status code should be 204
     And the response should be empty
 
-    When I send a GET request to "/portal/api/style/edit-theme-set/discard"
+    When I go to "/portal/api/style/edit-theme-set/discard"
     Then the response status code should be 200
 
-    When I send a GET request to "/admin-preview"
+    When I go to "/admin-preview"
     Then I should not see "Just edited custom header I discard"
 
   Scenario: I check custom SCSS is applied to the portal
@@ -106,8 +106,8 @@ Feature: Adding custom header, footer, SCSS and javascript
     {
     }
     """
-    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-    When I send a GET request to "/portal/api/style/portal.css"
+    And I go to "/portal/api/style/edit-theme-set/commit"
+    When I go to "/portal/api/style/portal.css"
     Then the response should contain ".my-important-custom-css-class"
 
   Scenario: I check custom JS is applied to the portal
@@ -117,6 +117,6 @@ Feature: Adding custom header, footer, SCSS and javascript
         "javascript": "var custom_js = 1 + 1;"
       }
     """
-    And I send a GET request to "/portal/api/style/edit-theme-set/commit"
-    When I send a GET request to "/"
+    And I go to "/portal/api/style/edit-theme-set/commit"
+    When I go to "/"
     Then the response should contain "var custom_js = 1 + 1;"

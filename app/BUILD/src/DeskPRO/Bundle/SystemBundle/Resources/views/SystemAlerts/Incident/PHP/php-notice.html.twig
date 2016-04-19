@@ -1,0 +1,35 @@
+<p>
+    This incident is shown because of a PHP notice message. Typically this means your system works as expected, but
+    there are some minor issues such as using a deprecated language feature.
+</p>
+
+<p>
+    Notice information:
+    <table class="table table-bordered">
+        <tr>
+            <td>Type</td><td>{{ incident.getFirstEvent().getType() }}</td>
+        </tr>
+        <tr>
+            <td>File</td><td>{{ incident.getFirstEvent().getFile() }}</td>
+        </tr>
+        <tr>
+            <td>Line</td><td>{{ incident.getFirstEvent().getLine() }}</td>
+        </tr>
+    </table>
+
+    Notice log:
+    <table class="table table-bordered">
+        {% for error in incident.getEvents() %}
+            <tr>
+                <td>{{ error.getDateCreated()|date }}</td>
+                <td>{{ error.getMessage() }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</p>
+
+<p>
+    You can try to solve the notice using the above information, most of the times issue is related to your environment
+    (outdated PHP version, misconfigured environment etc). If you think that this is caused by DeskPRO source,
+    you can contact us and we'll produce a solution ASAP.
+</p>

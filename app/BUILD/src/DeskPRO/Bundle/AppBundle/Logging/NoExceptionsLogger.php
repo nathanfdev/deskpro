@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Logging;
 
-use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 
 /**
@@ -47,7 +47,6 @@ class NoExceptionsLogger extends Logger
         } catch (\Exception $e) {
             // this is disabled for now because it clogs the normal error.log file with an exception trace
             // dozens of times per request. ignore log exceptions silently.
-            //SystemErrorHandler::handleException($e, false);
         }
     }
 }

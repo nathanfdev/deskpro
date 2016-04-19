@@ -17,6 +17,11 @@ services:
     arguments:
       - "@doctrine.orm.system_entity_manager"
 
+  dp_sys.alerts.monolog_handler:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Bridge\SystemAlertsMonologHandler
+    arguments:
+      - "@service_container"
+
   dp_sys.alerts.incident_manager:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\IncidentManager
     arguments:
@@ -28,22 +33,12 @@ services:
     arguments:
       - "@doctrine.orm.system_entity_manager"
 
-  dp_sys.alerts.instructions_generator:
-    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator
-    arguments:
-      - "@twig"
-    calls:
-      - [addIncidentTemplate, ["Email\IncomingEmailFailureIncident", "Email:incoming-failure.html.twig"]]
-      - [addIncidentTemplate, ["Email\OutgoingEmailFailureIncident", "Email:outgoing-failure.html.twig"]]
-
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger services
   # --------------------------------------------------------------------------------------------------------------------
 
   dp_sys.alerts.incoming_email_failure_trigger:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\IncomingEmailFailureTrigger
-    arguments:
-      - "@doctrine.orm.system_entity_manager"
     tags:
       -  { name: dp_sys.alerts.trigger }
     calls:
@@ -59,8 +54,6 @@ services:
 
   dp_sys.alerts.outgoing_email_failure_trigger:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger
-    arguments:
-      - "@doctrine.orm.system_entity_manager"
     tags:
       -  { name: dp_sys.alerts.trigger }
     calls:
@@ -74,6 +67,49 @@ services:
             - "DeskPRO outgoing email continuing failures"
             - "%dp_sys.alerts.email.incident_raised_admins_message%"
 
+  dp_sys.alerts.php_critical_error_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP\PhpCriticalErrorTrigger
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      # Configure to raise an incident on a single fatal error within a year period
+      - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
+      - [setIncidentErrorsCount, [1]]
+      -
+        - setRaisedCallback
+        -
+          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+          -
+            - "%dp_sys.alerts.email.from%"
+            - "DeskPRO critical PHP error"
+            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+
+  dp_sys.alerts.php_notice_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP\PhpNoticeTrigger
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      # Configure to raise an incident if notice appeared at least 3 times within a week
+      - [setPeriodMinutes, ["@= 60 * 24 * 7"]]
+      - [setIncidentErrorsCount, [3]]
+
+  dp_sys.alerts.exception_trigger:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Exception\ExceptionTrigger
+    tags:
+      -  { name: dp_sys.alerts.trigger }
+    calls:
+      # Configure to raise an incident on a single exception within a year period
+      - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
+      - [setIncidentErrorsCount, [1]]
+      -
+        - setRaisedCallback
+        -
+          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+          -
+            - "%dp_sys.alerts.email.from%"
+            - "Exception occurred"
+            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger action services
   # --------------------------------------------------------------------------------------------------------------------
@@ -83,6 +119,21 @@ services:
     arguments:
       - "@mailer"
       - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Person')"
+
+  # --------------------------------------------------------------------------------------------------------------------
+  # Incident instructions generator
+  # --------------------------------------------------------------------------------------------------------------------
+
+  dp_sys.alerts.instructions_generator:
+    class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Instructions\InstructionsGenerator
+    arguments:
+      - "@twig"
+    calls:
+      - [addIncidentTemplate, ["Email\\IncomingEmailFailureIncident", "Email:incoming-failure.html.twig"]]
+      - [addIncidentTemplate, ["Email\\OutgoingEmailFailureIncident", "Email:outgoing-failure.html.twig"]]
+      - [addIncidentTemplate, ["PHP\\PhpCriticalErrorIncident", "PHP:php-critical-error.html.twig"]]
+      - [addIncidentTemplate, ["PHP\\PhpNoticeIncident", "PHP:php-notice.html.twig"]]
+      - [addIncidentTemplate, ["Exception\\ExceptionIncident", "Exception:exception.html.twig"]]
 
   # --------------------------------------------------------------------------------------------------------------------
   # Incident subject listeners

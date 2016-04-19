@@ -1,0 +1,46 @@
+<p>
+    This incident is shown because of {{ incident.getFailureEventsCount() }} PHP exception(s)
+    of type {{ incident.getFirstEvent().getClass() }} and {{ incident.getFirstEvent().getCode() }} code.
+</p>
+
+<p>
+    First exception information:
+    <table class="table table-bordered">
+        <tr>
+            <td>Class</td><td>{{ incident.getFirstEvent().getClass() }}</td>
+        </tr>
+        <tr>
+            <td>Message</td><td>{{ incident.getFirstEvent().getMessage() }}</td>
+        </tr>
+        <tr>
+            <td>Code</td><td>{{ incident.getFirstEvent().getCode() }}</td>
+        </tr>
+        <tr>
+            <td>File</td><td>{{ incident.getFirstEvent().getFile() }}</td>
+        </tr>
+        <tr>
+            <td>Line</td><td>{{ incident.getFirstEvent().getLine() }}</td>
+        </tr>
+    </table>
+
+    Exceptions log:
+    <table class="table table-bordered">
+        <tr>
+            <td>Date</td>
+            <td>Message</td>
+            <td>Trace</td>
+        </tr>
+        {% for exception in incident.getEvents() %}
+            <tr>
+                <td>{{ exception.getDateCreated()|date }}</td>
+                <td>{{ exception.getMessage() }}</td>
+                <td><textarea cols="100" rows="10">{{ dump(exception.getTrace()) }}</textarea></td>
+            </tr>
+        {% endfor %}
+    </table>
+</p>
+
+<p>
+    If exception description doesn't give you enough information to solve it or you think it's caused by DeskPRO code
+    issue, you can report this error to DeskPRO.
+</p>

@@ -1,3 +1,12 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# READ ME
+# ----------------------------------------------------------------------------------------------------------------------
+#
+# 1) To pass the base_url option to mink you can use BEHAT_PARAMS environment variable:
+#    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
 api:
     suites:
         api:
@@ -13,7 +22,6 @@ api:
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
-                - DpBehat\Api\IncidentsContext
                 - DpBehat\PermissionContext
                 - DpBehat\Api\ModesAndTagsContext
                 - DpBehat\Api\ApiLogContext
@@ -21,10 +29,10 @@ api:
                 - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
+                - DpBehat\System\Alerts\IncidentsContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -48,10 +56,6 @@ install:
                 - DpBehat\Install\ServerInfoContext
     extensions:
         Behat\MinkExtension:
-            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
-            # e.g.:
-            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
-            #base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -92,7 +96,6 @@ portal:
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-            base_url: '/'
             default_session: default
             sessions:
                 default:
@@ -115,47 +118,39 @@ portal:
                 page_parameters:
                     base_url: /
 
-e2e:
+production:
     suites:
-        general:
-            mink_session: selenium2
-            mink_javascript_session: selenium2
+        production:
             paths:
-                - %paths.base%/e2e/features
+                - %paths.base%/features/production
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - behatch:rest
-                - DpBehat\DataSetContext:
-                    dataset_manager: @dataset_manager
-                - DpBehat\E2E\AuthContext:
-                    user_details: @user_details
-                - DpBehat\E2E\SeleniumContext
-                - behatch:browser
-                - behatch:debug:
-                    screenshotDir: %paths.base%/e2e/logs/screenshots
+                - DpBehat\Api\RestContext
+                - DpBehat\Portal\AuthContext
+                - DpBehat\Http\HttpContext
+                - DpBehat\System\Alerts\EventsContext
+                - DpBehat\ProductionModeContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
-
-            # THE base_url OPTION NEEDS TO BE SET VIA BEHAT_PARAMS ENV VARIABLE
-            # e.g.:
-            # export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
-
-            browser_name: "phantomjs"
-            selenium2:
-              browser: phantomjs
-              wd_host: "http://127.0.0.1:4444/wd/hub"
-            default_session: selenium2
+            default_session: default
             sessions:
                 default:
-                    selenium2: ~
+                    goutte: ~
         Behat\Symfony2Extension:
             kernel:
-                bootstrap: e2e/bootstrap/boot.php
+                bootstrap: features/bootstrap/boot.php
                 path: ../sys/Kernel/ApiKernel.php
                 class: DpSys\Kernel\ApiKernel
                 env: test
-                debug: true
+                debug: false
+        SensioLabs\Behat\PageObjectExtension:
+            namespaces:
+                page: DpBehat\Portal\Page
+                element: DpBehat\Portal\Page\Element
+            factory:
+                page_parameters:
+                    base_url: /

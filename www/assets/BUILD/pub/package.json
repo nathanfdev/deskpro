@@ -165,6 +165,7 @@
     "eslint": "eslint src || true",
     "gulp": "gulp",
     "gulp-prod": "gulp prod",
+    "gulp-refresh-reducers": "gulp refresh-reducers",
     "gulp-docs": "gulp slate",
     "test": "jest"
   }

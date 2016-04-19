@@ -38,6 +38,7 @@ services:
           - "@dp_authentication_manager.user"
           - "@dp_person_user_provider"
           - "@session"
+          - "@dp_sys.alerts.event_logger"
 
     dp_security.agent_impersonate.provider:
         class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\AgentImpersonateProvider

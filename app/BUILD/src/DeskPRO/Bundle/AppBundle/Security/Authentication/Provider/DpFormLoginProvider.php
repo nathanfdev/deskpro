@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
@@ -37,7 +38,7 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -63,11 +64,24 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      */
     private $session;
 
-    public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session)
+    /**
+     * @var EventLogger
+     */
+    private $logger;
+
+    /**
+     * @param DpAuthManager        $dp_auth_manager
+     * @param DpPersonUserProvider $dp_person_provider
+     * @param Session              $session
+     * @param EventLogger          $logger
+     */
+    public function __construct(
+        DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session, EventLogger $logger)
     {
         $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
         $this->session            = $session;
+        $this->logger             = $logger;
     }
 
     /**
@@ -152,7 +166,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 try {
                     $authResult = $adapter->authenticate();
                 } catch (\Exception $e) {
-                    SystemErrorHandler::logException($e, false);
+                    $this->logger->log($e);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;

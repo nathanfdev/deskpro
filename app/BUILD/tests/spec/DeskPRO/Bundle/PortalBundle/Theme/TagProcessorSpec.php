@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,9 +48,10 @@ class TagProcessorSpec extends ObjectBehavior
     public function let(
         TagRequestFactory $tag_request_factory,
         TagHandlerInterface $esi_handler,
-        TagHandlerInterface $inline_handler
+        TagHandlerInterface $inline_handler,
+        EventLogger $logger
     ) {
-        $this->beConstructedWith($tag_request_factory, array($esi_handler, $inline_handler));
+        $this->beConstructedWith($tag_request_factory, array($esi_handler, $inline_handler), $logger);
     }
 
     public function it_returns_the_result_of_the_first_handler_that_supports_the_tag_request(

@@ -34,6 +34,15 @@ use DeskPRO\Component\Util\TypeUtils;
 class ServerInfoContext extends RawMinkContext
 {
     /**
+     * @Given I have :code as my server info auth code
+     */
+    public function iHaveAsMyServerInfoAuth($code)
+    {
+        global $DP_ENV;
+        $DP_ENV->getDatManager()->writeTxtFile('server_info_auth', $code);
+    }
+
+    /**
      * @Then the encoded output should decode into :classname
      */
     public function theEncodedOutputShouldDecodeInto($classname)

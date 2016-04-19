@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,93 +29,20 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class BaseContext extends RawMinkContext implements KernelAwareContextInterface
 {
-    /**
-     * @var KernelInterface
-     */
-    protected $kernel;
+    use KernelAwareTrait;
 
     public function resetAllContext()
     {
-        // after any kind of re-install, we need to reboot the
-        // kernel to reset references
+        // after any kind of re-install, we need to reboot the kernel to reset references
         $this->kernel->shutdown();
         $this->kernel->boot();
-    }
-
-    /**
-     * Sets Kernel instance.
-     *
-     * @param KernelInterface $kernel
-     */
-    public function setKernel(KernelInterface $kernel)
-    {
-        $this->kernel = $kernel;
-        if ($this instanceof RebootableContextInterface) {
-            $this->rebootContext();
-        }
-    }
-
-    public function get($service_id)
-    {
-        return $this->getContainer()->get($service_id);
-    }
-
-    /**
-     * Returns HttpKernel instance.
-     *
-     * @return KernelInterface
-     */
-    public function getKernel()
-    {
-        return $this->kernel;
-    }
-
-    /**
-     * Returns HttpKernel service container.
-     *
-     * @return ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->kernel->getContainer();
-    }
-
-    public function getEntityRepo($entity_name)
-    {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository($entity_name);
-    }
-
-    public function persistAndFlush($entity)
-    {
-        $this->getContainer()->get('doctrine.orm.default_entity_manager')->persist($entity);
-        $this->getContainer()->get('doctrine.orm.default_entity_manager')->flush($entity);
-    }
-
-    /**
-     * @return EntityManager
-     */
-    protected function em()
-    {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return \Doctrine\ORM\EntityRepository
-     */
-    protected function getRepository($class)
-    {
-        return $this->em()->getRepository($class);
     }
 }
