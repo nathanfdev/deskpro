@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
  * Class ExceptionLoggerListener.
@@ -73,7 +74,14 @@ class ExceptionLoggerListener
         }
 
         $exception = $event->getException();
-        if ($exception instanceof HttpException) {
+        if (
+            (
+                $exception instanceof HttpException
+                && $exception->getStatusCode() >= 400
+                && $exception->getStatusCode() < 500
+            )
+            || $exception instanceof MethodNotAllowedException
+        ) {
             return;
         }
 
