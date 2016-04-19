@@ -7,14 +7,12 @@ Feature: Guests can submit new tickets
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I press "Submit"
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_required"
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -22,7 +20,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error with the phrase "portal.forms.error_required"
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"

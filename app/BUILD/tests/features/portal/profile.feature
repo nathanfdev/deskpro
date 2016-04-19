@@ -51,7 +51,6 @@ Feature: User Profile
     And I press "Save"
     Then I should see a form error with "This value already exists in the system."
 
-  @reinstall
   Scenario: A user successfully adds and verifies an email
     Given I login with user credentials
     And I am on "/profile/emails"
@@ -63,7 +62,6 @@ Feature: User Profile
     Then I should see a "success" flash message with the phrase "portal.flashes.user_add_email_verified"
     And I should be on "/profile/emails"
 
-  @reinstall
   Scenario: A user changes their primary email address
     Given I login with user credentials
     And I have a verified email "verified@email.com"
