@@ -11,6 +11,7 @@ Feature: Captcha Anti-Abuse Setup
     And the response status code should be 200
     And the JSON node "data.use_recaptcha2" should be equal to 0
     And the JSON node "data.recaptcha2_site_key" should be equal to 0
+    And the JSON node "data.recaptcha2_secret_key" should be equal to 0
     And the JSON node "data.tickets" should be equal to 0
     And the JSON node "data.comments" should be equal to 0
     And the JSON node "data.feedback" should be equal to 0
@@ -22,6 +23,7 @@ Feature: Captcha Anti-Abuse Setup
 {
   "use_recaptcha2": true,
   "recaptcha2_site_key": "some key",
+  "recaptcha2_secret_key": "some key",
   "tickets": "everyone",
   "comments": "guests",
   "feedback": "everyone",
@@ -35,6 +37,7 @@ Feature: Captcha Anti-Abuse Setup
     And the response status code should be 200
     And the JSON node "data.use_recaptcha2" should be equal to 1
     And the JSON node "data.recaptcha2_site_key" should be equal to "some key"
+    And the JSON node "data.recaptcha2_secret_key" should be equal to "some key"
     And the JSON node "data.tickets" should be equal to "everyone"
     And the JSON node "data.comments" should be equal to "guests"
     And the JSON node "data.feedback" should be equal to "everyone"

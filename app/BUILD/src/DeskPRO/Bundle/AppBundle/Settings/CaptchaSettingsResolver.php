@@ -55,6 +55,7 @@ class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver impleme
         $model
             ->setUseRecaptcha2($this->getSetting(self::USE_RECAPTCHA))
             ->setRecaptcha2SiteKey($this->getSetting(self::RECAPTCHA_SITE_KEY))
+            ->setRecaptcha2SecretKey($this->getSetting(self::RECAPTCHA_SECRET_KEY))
             ->setTickets($this->getSetting(self::TICKETS))
             ->setComments($this->getSetting(self::COMMENTS))
             ->setFeedback($this->getSetting(self::FEEDBACK))
