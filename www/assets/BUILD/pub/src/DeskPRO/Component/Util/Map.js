@@ -5,7 +5,6 @@ import Immutable from 'immutable';
 import warning from 'warning';
 import invariant from 'invariant';
 
-const __DEV__ = true;
 /**
  * Given an array of objects, create an object keyed by a property in one of the sub-arrays.
  * Basically converts [{id: x}, {id: y}] into {x: {id: x}, y: {id: y}}.

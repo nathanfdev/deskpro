@@ -319,7 +319,8 @@ function getWebpackConfig(mode, isProd) {
       new WebpackNotifierPlugin(),
       new ExtractTextPlugin('[name].css'),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': (isProd ? '\"production\"' : '\"development\"')
+        'process.env.NODE_ENV': (isProd ? '\"production\"' : '\"development\"'),
+        '__DEV__': !isProd
       }),
       new webpack.ProvidePlugin({
         $: 'jquery',

@@ -27,8 +27,8 @@ describe('Ampliflux Logger Middleware', () => {
     });
 
     describe('Action handler', () => {
-      it('should pass action to the next handler when logger is disabled', () => {
-        window.DP_ENABLE_ACTION_LOGGER = false;
+      it('should pass action to the next handler when not in dev mode', () => {
+        window.DP_DEV_MODE = false;
         const dummyAction = createAction('TEST');
         const actionHandler = nextHandler((action) => expect(action).toBe(dummyAction));
         actionHandler(dummyAction);
@@ -36,7 +36,7 @@ describe('Ampliflux Logger Middleware', () => {
 
       describe('Logging', () => {
         beforeEach(() => {
-          window.DP_ENABLE_ACTION_LOGGER = true;
+          window.DP_DEV_MODE = true;
           spyOn(console, 'error');
           spyOn(console, 'debug');
         });
