@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Cache;
 
 use DeskPRO\Bundle\AppBundle\Entity\CacheVersion;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\CacheVersion as CacheVersionRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\CacheVersionRepository;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 
@@ -104,6 +104,6 @@ class VersionService
      */
     protected function repo()
     {
-        return $this->em->getRepository('DeskPRO\Bundle\AppBundle\Entity\CacheVersion');
+        return $this->em->getRepository(CacheVersion::class);
     }
 }
