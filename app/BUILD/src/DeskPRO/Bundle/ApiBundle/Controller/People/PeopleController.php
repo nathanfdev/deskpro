@@ -97,6 +97,27 @@ class PeopleController extends CrudController
         die('v 20151231');
     }
 
+    /**
+     * @ApiDoc(
+     *     section="People",
+     *     description="adds permissions (for now only accepts {agent: true} to add agent permissions)",
+     *     statusCodes={
+     *         200="OK"
+     *     }
+     * )
+     * @Rest\Put("/{id}/permissions")
+     */
+    public function updatePermissionsAction($id, Request $request)
+    {
+        $person      = $this->findEntity($id, $request);
+        $permissions = $this->getRequestContent($request);
+        if (array_key_exists('agent', $permissions) && $permissions['agent'] === true) {
+            $person->setIsAgent(true);
+        }
+        $this->getManager()->persist($person);
+        $this->getManager()->flush();
+    }
+
     // #################################################################################################################
 
     /**
@@ -216,5 +237,16 @@ class PeopleController extends CrudController
 
                 break;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        if ($entity->isAgent()) {
+            throw $this->createBadRequestException("You can't delete an agent via 'people' API endpoint, use 'agents'");
+        }
+        parent::deleteEntity($entity);
     }
 }
