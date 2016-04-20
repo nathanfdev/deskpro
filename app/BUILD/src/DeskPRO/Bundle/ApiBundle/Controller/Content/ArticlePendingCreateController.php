@@ -26,139 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateCriteria;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ArticlePendingCreateController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/article_pending_creates")
+ * @ApiDoc(
+ *     target="listAction,countAction",
+ *     filters={
+ *          {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
+ *     }
+ * )
+ * @ApiDoc(
+ *     target="listAction",
+ *     filters={
+ *          {"name"="order_by", "pattern"="date_created|assigned_person", "description"="how to order result", "dataType"="string"},
+ *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
+ *     }
+ * )
  */
-class ArticlePendingCreateController extends BaseController
+class ArticlePendingCreateController extends CrudController
 {
-    /**
-     * Get count of articles that need to be created.
-     *
-     * @ApiDoc(
-     *     section="Content",
-     *     resourceDescription="Operations about pending articles",
-     *     description="total count of articles should be created",
-     *     statusCodes={
-     *         200="Returned if request was succeeded",
-     *         400="Returned if provided filters was wrong",
-     *     },
-     *    filters={
-     *        {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
-     *    },
-     *    output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
-     * )
-     * @Rest\Get("/article_pending_create/counts", name="api_article_pending_create_counts")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function getTotalCountAction(Request $request)
-    {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('COUNT(apc)')
-            ->from(ArticlePendingCreate::class, 'apc')
-        ;
-
-        $params = $this->removeAdditionalParameters($request);
-        $this->applyFilters($qb, $params);
-
-        return View::create($this->wrap(Count::fromValue($qb->getQuery()->getSingleScalarResult())));
-    }
+    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $entity      = ArticlePendingCreate::class;
+    public static $sortOptions = ['date_created', 'assigned_person'];
 
     /**
-     * @ApiDoc(
-     *     section="Content",
-     *     resourceDescription="Operations about pending articles",
-     *     description="Get ArticlePendingCreate entities list",
-     *     statusCodes={
-     *         200="Returned if everything is ok",
-     *         400="Returned if you filter set was wrong way formed",
-     *         404="Specified person not found"
-     *     },
-     *    filters={
-     *        {"name"="assigned_person", "dataType"="string|integer", "pattern"="me|\d+"}
-     *    },
-     * )
-     * @Rest\Get("/article_pending_creates", name="api_article_pending_creates")
-     *
-     * @param Request $request
-     *
-     * @return View
+     * {@inheritdoc}
      */
-    public function listAction(Request $request)
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Article::class));
+        $assignedPerson = $request->get('assigned_person');
+        if ($assignedPerson) {
+            if ($assignedPerson === 'me') {
+                $assignedPerson = $this->getUser()->getId();
+            }
 
-        $params = $this->removeAdditionalParameters($request);
-        $params = $this->get('data.apc')->normalizeAssigned($params, $this->getUser());
-
-        try {
-            $criteria = ArticlePendingCreateCriteria::fromParameters(
-                $params,
-                new OptionsResolver()
-            );
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        return View::create($this->wrap($this->get('data.apc')->selectAPC($criteria, $page, $count)));
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     * @param array        $params
-     */
-    private function applyFilters(QueryBuilder $qb, array $params)
-    {
-        // handle the only allowed filter "assigned_person"
-        if (array_key_exists('assigned_person', $params)) {
-            $assignee = $params['assigned_person'] === 'me'
-                ? $this->getUser()
-                : $this->findOr404(Person::class, $params['assigned_person']);
-
-            $alias = $qb->getRootAliases()[0];
-            $qb
-                ->where($alias.'.assigned_person = :assignee')
-                ->setParameters(compact('assignee'))
-            ;
-
-            unset($params['assigned_person']);
-        }
-
-        // throw Bad Request if there are any filers except "assigned_person"
-        if (!empty($params)) {
-            throw new BadRequestHttpException('Unknown parameters: '.implode(', ', array_keys($params)));
+            $qb->andWhere("$alias.assigned_person IN (:assigned_person)");
+            $qb->setParameter('assigned_person', $assignedPerson);
         }
     }
 }

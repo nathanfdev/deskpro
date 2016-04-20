@@ -117,6 +117,8 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * Entities counts.
+     *
      * @ApiDoc(
      *      description="Count list",
      *      tags={"CRUD"="#ffa500"},
