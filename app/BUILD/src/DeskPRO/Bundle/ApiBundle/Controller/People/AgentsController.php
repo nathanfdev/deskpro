@@ -29,9 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -48,11 +51,21 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/agents")
  * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(
+ *     target="listAction",
+ *     description="get list of agents",
+ *     filters={
+ *         {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"}
+ *     },
+ *     statusCodes={
+ *         200="OK"
+ *     }
+ * )
  */
 class AgentsController extends CrudController
 {
     public static $entity       = Person::class;
-    public static $exposeOnly   = ['list'];
+    public static $exposeOnly   = ['list', 'delete'];
     public static $listPaginate = false;
 
     /**
@@ -76,11 +89,85 @@ class AgentsController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *     section="Agents",
+     *     description="remove agents permission (converts agent to user, unassigns tickets)",
+     *     statusCodes={
+     *         200="OK"
+     *     }
+     * )
+     * @Rest\Delete("/{id}/agent_permissions")
+     */
+    public function deletePermissionsAction($id, Request $request)
+    {
+        $agent = $this->findEntity($id, $request);
+
+        // Unassign tickets before setting $agent->setIsAgent(false) to prevent
+        // error in the Application\DeskPRO\People\Helpers class
+
+        /** @var Ticket[] $tickets */
+        $tickets = $this->getRepository(Ticket::class)->findBy(compact('agent'));
+        foreach ($tickets as $ticket) {
+            $this->unassignTicket($ticket);
+        }
+
+        // Convert to user
+
+        /* @var Person $agent */
+        $agent->setIsAgent(false);
+        $this->getManager()->persist($agent);
+        $this->getManager()->flush();
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb->andWhere("$alias.is_agent = 1");
-        parent::applyListFilters($qb, $alias, $request);
+
+        $isDeleted = $request->get('is_deleted', 0);
+        if ($isDeleted != -1) {
+            $qb
+                ->andWhere("$alias.is_deleted = :is_deleted")
+                ->setParameter('is_deleted', (bool) $isDeleted);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id, Request $request)
+    {
+        /** @var Person $entity */
+        $entity = parent::findEntity($id, $request);
+        if (!$entity->isAgent()) {
+            throw $this->createNotFoundException("This person isn't an agent");
+        }
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        $entity->setIsDeleted(true);
+        $this->getManager()->persist($entity);
+        $this->getManager()->flush();
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    private function unassignTicket(Ticket $ticket)
+    {
+        $ticket->setAgent(null);
+
+        /* @var TicketManager $manager */
+        $manager = $this->container->getTicketManager();
+        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
+        $manager->saveTicket($ticket, $context);
     }
 }

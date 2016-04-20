@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Person;
@@ -37,17 +38,20 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use DpBehat\BaseContext;
 
+/**
+ * Class PeopleContext.
+ */
 class PeopleContext extends BaseContext
 {
     /**
      * @var RestContext
      */
-    private $rest_context;
+    private $restContext;
 
     /**
      * @var Person
      */
-    private $last_person;
+    private $lastPerson;
 
     /**
      * @BeforeScenario
@@ -56,7 +60,7 @@ class PeopleContext extends BaseContext
     {
         $environment = $scope->getEnvironment();
 
-        $this->rest_context = $environment->getContext('DpBehat\Api\RestContext');
+        $this->restContext = $environment->getContext('DpBehat\Api\RestContext');
     }
 
     /**
@@ -88,7 +92,7 @@ class PeopleContext extends BaseContext
         $personEmail->setEmail($email);
         $person->setPrimaryEmail($personEmail);
         $this->persistAndFlush($person);
-        $this->last_person = $person;
+        $this->lastPerson = $person;
     }
 
     /**
@@ -107,7 +111,7 @@ class PeopleContext extends BaseContext
             $person->addEmail($personEmail);
         }
         $this->persistAndFlush($person);
-        $this->last_person = $person;
+        $this->lastPerson = $person;
     }
 
     /**
@@ -118,7 +122,7 @@ class PeopleContext extends BaseContext
         $person = new Person();
         $person->setName($name);
         $this->persistAndFlush($person);
-        $this->last_person = $person;
+        $this->lastPerson = $person;
     }
 
     /**
@@ -127,11 +131,29 @@ class PeopleContext extends BaseContext
      * @When he sends a PUT request to modify his personal data:
      * @When she sends a PUT request to modify her personal data:
      */
-    public function iSendAPutRequestToTheJustCreatedPersonResource(PyStringNode $string)
+    public function iSendAPutRequestToTheJustCreatedPersonResource(PyStringNode $data)
     {
-        return $this->rest_context->iSendARequestToWithBody(
-            'PUT', '/api/v2/people/'.$this->last_person->getId(), $string
+        return $this->restContext->iSendARequestToWithBody(
+            'PUT', '/api/v2/people/'.$this->lastPerson->getId(), $data
         );
+    }
+
+    /**
+     * @When I send a PUT request to the last created person permissions resource:
+     */
+    public function iSendAPostRequestToTheJustCreatedPersonPermissionsResource(PyStringNode $data)
+    {
+        return $this->restContext->iSendARequestToWithBody(
+            'PUT', '/api/v2/people/'.$this->lastPerson->getId().'/permissions', $data
+        );
+    }
+
+    /**
+     * @When I send a :method request to the last created person resource via agents endpoint
+     */
+    public function iSendADeleteRequestToTheJustCreatedAgentResourceViaPeopleEndpoint($method)
+    {
+        return $this->restContext->iSendARequestTo($method, '/api/v2/agents/'.$this->lastPerson->getId());
     }
 
     /**
@@ -139,7 +161,7 @@ class PeopleContext extends BaseContext
      */
     public function iRetrieveThePerson()
     {
-        return $this->rest_context->iSendARequestTo('GET', '/api/v2/people/'.$this->last_person->getId());
+        return $this->restContext->iSendARequestTo('GET', '/api/v2/people/'.$this->lastPerson->getId());
     }
 
     /**
@@ -147,7 +169,7 @@ class PeopleContext extends BaseContext
      */
     public function iDeleteJustCreatedPerson()
     {
-        $this->em()->remove($this->last_person);
+        $this->em()->remove($this->lastPerson);
         $this->em()->flush();
     }
 }
