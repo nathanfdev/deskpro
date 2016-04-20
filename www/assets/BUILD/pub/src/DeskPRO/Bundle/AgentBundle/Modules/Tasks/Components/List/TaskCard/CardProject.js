@@ -8,19 +8,19 @@ import { CardWidget } from './CardWidget';
 export class CardProject extends CardWidget {
 
   static propTypes = {
-    value: PropTypes.number,
-    projects: PropTypes.object.isRequired,
+    value:             PropTypes.number,
+    projects:          PropTypes.object.isRequired,
     openBySingleClick: PropTypes.bool,
-    onSetEditing: PropTypes.func,
-    onChange: PropTypes.func.isRequired
+    onSetEditing:      PropTypes.func,
+    onChange:          PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: props.isOpen,
+      isOpen:   props.isOpen,
       projects: props.projects,
-      value: props.value
+      value:    props.value
     };
   }
 
@@ -31,8 +31,8 @@ export class CardProject extends CardWidget {
   }
 
   componentWillReceiveProps(props) {
-    let state = {
-      value: props.value,
+    const state = {
+      value:    props.value,
       projects: props.projects
     };
     if (undefined !== props.isOpen) {
@@ -42,47 +42,49 @@ export class CardProject extends CardWidget {
   }
 
   filterProjects = (str) => {
-    str = str || '';
+    const search = (str || '').toLowerCase();
     this.setState({
       projects: this.props.projects.filter((item) => {
-        return (item.get('title') || '').toLowerCase().indexOf(str.toLowerCase()) !== -1
+        return (item.get('title', '')).toLowerCase().indexOf(search) !== -1;
       })
     });
   };
 
   onChange = (value) => {
-    this.setState({value: this.state.value === value ? null : value});
+    this.setState({ value: this.state.value === value ? null : value });
   };
 
   onClose = () => {
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
-    this.props.onSetEditing && this.props.onSetEditing(false);
-    this.props.onChange && this.props.onChange(this.state.value);
+    this.setState({ isOpen: false });
+    if (this.props.onSetEditing) {
+      this.props.onSetEditing(false);
+    }
+    if (this.props.onChange) {
+      this.props.onChange(this.state.value);
+    }
   };
 
   render() {
     const { projects, value } = this.state;
     const project = value ? projects.get(value) : null;
-    const prop = {[this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen};
+    const prop = { [this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen };
     const title = project ? project.get('title') : 'N/A';
 
     return (
-      <div style={{display: 'inline-block', maxWidth: '30%'}}>
+      <div style={{ display: 'inline-block', maxWidth: '30%' }}>
         <div className="dpwd--card-line-item" ref="button" {...prop}
-             style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
-          <i className="fa fa-book" style={{position: 'absolute', left: 2, top: 2}} />
+          style={{ display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%' }}
+          >
+          <i className="fa fa-book" style={{ position: 'absolute', left: 2, top: 2 }} />
           <span title={title}>{title}</span>
         </div>
 
-        <Positioned isOpen={this.state.isOpen}
-                  positionTarget={this}
-                  positionAt="right+5 top-23"
-                  collision="fit"
-                  zIndex={1002}>
+        <Positioned isOpen={this.state.isOpen} positionTarget={this} positionAt="right+5 top-23" collision="fit"
+          zIndex={1002}
+          >
 
-          <ClickOut onClickOut={this.onClose}
-                    additionalNodes={[this.refs.button, '.fa-check']}>
+          <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.fa-check']}>
 
             <div className="dpw-navigation-dropdown-panel">
               <div className="dpw-navigation-dropdown-panel-content">
@@ -94,7 +96,7 @@ export class CardProject extends CardWidget {
                         <ul>
                           {projects.map((item) =>
                             <li>
-                              <div className="dpw--popup-item-box" onClick={this.onChange.bind(this, item.get('id'))}>
+                              <div className="dpw--popup-item-box" onClick={() => this.onChange(item.get('id'))}>
                                 <span className="dpw--checkbox-boxy">
                                   {project === item ? <i className="fa fa-check"></i> : null}
                                 </span>

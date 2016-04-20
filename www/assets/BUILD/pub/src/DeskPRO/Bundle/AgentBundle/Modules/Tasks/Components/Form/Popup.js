@@ -4,9 +4,9 @@ import classNames from 'classnames';
 export class Popup extends React.Component {
 
   static propTypes = {
-    indicator: PropTypes.string,
+    indicator:            PropTypes.string,
     additionalClassNames: PropTypes.string,
-    children: PropTypes.node
+    children:             PropTypes.node
   };
 
   render() {
@@ -14,7 +14,7 @@ export class Popup extends React.Component {
 
     return (
       <div className={classNames('sidebar-hover', additionalClassNames, { 'hide-indicator': indicator === 'none' })}>
-        {children}
+        { children }
       </div>
     );
   }

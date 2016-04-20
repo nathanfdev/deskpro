@@ -14,11 +14,8 @@ export class LabelItem extends React.Component {
     const name = label.get('label');
 
     return (
-      <a href="#"
-         className={classNames('item-label', {'active': active})}
-         onClick={onClick}>
-
-        {name}
+      <a href="#" className={classNames('item-label', { active })} onClick={ onClick }>
+        { name }
       </a>
     );
   }

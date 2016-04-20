@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import Immutable from 'immutable';
-import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, setCollection, collectionSelectorFactory, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const createProject = createAction(
   'TASKS_NAV_POST_PROJECT',
@@ -50,7 +50,7 @@ export const editProject = createAction(
 
 export const deleteProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
-  (projectId) => (dispatch, getState) => api.sendDelete(`DP_API/task_projects/${projectId}`).success(() => {
+  (projectId) => (dispatch) => api.sendDelete(`DP_API/task_projects/${projectId}`).success(() => {
     dispatch(removeFromCollection('Project', 'all', [projectId]));
   })
 );

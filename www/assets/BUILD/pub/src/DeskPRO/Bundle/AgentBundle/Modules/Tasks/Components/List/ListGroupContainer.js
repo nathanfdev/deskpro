@@ -104,7 +104,6 @@ export class ListGroupContainer extends React.Component {
 
     return React.cloneElement(children, {
       ...childProps,
-
       ids,
       tasks,
       taskGroups:    Immutable.fromJS(groupCollection(groupConfig, tasks)),
