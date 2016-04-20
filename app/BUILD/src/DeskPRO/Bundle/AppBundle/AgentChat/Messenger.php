@@ -174,7 +174,7 @@ class Messenger
     public function getChat($id, $forceReload = false)
     {
         /** @var AgentChatRepository $agentChatRepository */
-        $agentChatRepository = $this->em->getRepository(AgentChat::class);
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
 
         return !$forceReload ? $agentChatRepository->find($id) : $agentChatRepository->findOneBy(['id' => $id]);
     }
@@ -187,7 +187,7 @@ class Messenger
     public function getChats(array $ids)
     {
         /** @var AgentChatRepository $agentChatRepository */
-        $agentChatRepository = $this->em->getRepository(AgentChat::class);
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
 
         return $agentChatRepository->findBy(['id' => $ids]);
     }
@@ -234,7 +234,7 @@ class Messenger
     public function findChat(Person $user, Chatable $target)
     {
         /** @var AgentChatRepository $agentChatRepository */
-        $agentChatRepository = $this->em->getRepository(AgentChat::class);
+        $agentChatRepository = $this->em->getRepository('App:AgentChat');
 
         switch ($target->getChatableType()) {
             case Chatable::PARTICIPANT_TYPE_AGENT:

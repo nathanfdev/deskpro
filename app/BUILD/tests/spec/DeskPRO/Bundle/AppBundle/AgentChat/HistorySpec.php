@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace spec\DeskPRO\Bundle\AppBundle\AgentChat;
 
 use Application\DeskPRO\Entity\Person;
@@ -39,8 +38,8 @@ use DeskPRO\Bundle\AppBundle\AgentChat\Search\Doctrine as DoctrineSearcher;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepo;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipant as AgentChatParticipantRepo;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatParticipantRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -54,8 +53,8 @@ class HistorySpec extends ObjectBehavior
         DoctrineSearcher $searcher,
         EntityManager $em,
         DepartmentDataService $dataService,
-        AgentChatParticipantRepo $participantRepo,
-        AgentChatRepo $chatRepo,
+        AgentChatParticipantRepository $participantRepo,
+        AgentChatRepository $chatRepo,
         AgentChat $chat1,
         AgentChat $chat2
     ) {
