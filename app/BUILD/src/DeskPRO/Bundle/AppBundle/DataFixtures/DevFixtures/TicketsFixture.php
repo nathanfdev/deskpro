@@ -152,6 +152,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->loadTicketMessages();
         $this->loadTicketProps();
         $this->loadTicketSlas();
+        $this->setParentTicket();
     }
 
     private function initIds()
@@ -574,5 +575,19 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             ];
         }
         $this->db->batchInsert('ticket_slas', $batch, true);
+    }
+
+    private function setParentTicket()
+    {
+        foreach ($this->ticket_ids as $id) {
+            if ($id > 2 && $this->faker->boolean(33)) {
+                $parentId = $this->faker->numberBetween(1, $id - 1);
+                $this->db->executeUpdate(
+                    'UPDATE tickets
+                    SET tickets.parent_ticket_id = '.$parentId.'
+                    WHERE tickets.id = '.$id
+                );
+            }
+        }
     }
 }
