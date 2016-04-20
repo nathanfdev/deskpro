@@ -6178,6 +6178,15 @@ $collection->create(
     )
 );
 
+$collection->create(
+    'api_custom_fields_delete_option',
+    array(
+        'path'       => '/custom_fields/option',
+        'controller' => 'LegacyApiBundle:CustomFields:deleteOption',
+        'methods'    => array('DELETE'),
+    )
+);
+
 ########################################################################################################################
 # CRM Organization Fields
 ########################################################################################################################
