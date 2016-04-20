@@ -48,7 +48,7 @@
 
                         {% if can_edit and ticket.isOpen() %}
                             <div class="ticket-view-sidebar">
-                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-button post-link">
+                                <a href="{{ portal_path(ticket, 'resolve') }}" class="ticket-sidebar-button">
                                     {{ phrase('portal.tickets.view_close') }}
                                 </a>
                             </div>

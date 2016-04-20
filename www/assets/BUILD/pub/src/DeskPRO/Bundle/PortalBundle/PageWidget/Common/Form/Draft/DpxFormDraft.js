@@ -68,12 +68,16 @@ export class DpxFormDraft extends PageWidget {
 
     updateDrafts(drafts);
   }
+  
+  resetForm() {
+    return confirm(portalPhrases.get('portal.forms.confirm_reset'));
+  }
 
   renderWidget() {
     this.$element.on('submit', this.onClearDraft);
     this.$element.on('reset', this.onClearDraft);
 
     const $formSubmit = this.$element.find('input[type="submit"]:visible, button[type="submit"]:visible');
-    $('<button type="reset">'+portalPhrases.get('portal.forms.label_reset')+'</button>').insertAfter($formSubmit);
+    $('<button type="reset">'+portalPhrases.get('portal.forms.label_reset')+'</button>').on('click', this.resetForm).insertAfter($formSubmit);
   }
 }

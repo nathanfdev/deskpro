@@ -112,7 +112,7 @@ return array(
     'portal.tickets.view_opened_by'                    => 'Ticket opened by:',
     'portal.tickets.view_participants'                 => 'Also on this ticket:',
     'portal.tickets.view_reply_errors'                 => 'There are some errors with your submission.',
-    'portal.tickets.view_reply_or_close'               => 'Add a reply or <a href="{{ close_url }}" class="post-link">close the ticket</a>',
+    'portal.tickets.view_reply_or_close'               => 'Add a reply or <a href="{{ close_url }}" class="close-ticket-trigger">close the ticket</a>',
     'portal.tickets.view_scroll_reply'                 => 'Click here to scroll down to the form.',
     'portal.tickets.view_ticket_info'                  => 'Ticket info:',
     'portal.tickets.view_unassigned'                   => 'Unassigned',

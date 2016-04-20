@@ -94,6 +94,7 @@ class LanguageController extends AbstractApiController
             'portal.forms.label_drag_overlay',
             'portal.forms.label_full_name',
             'portal.forms.label_reset',
+            'portal.forms.confirm_reset',
             'portal.chat.asset_failed',
             'portal.chat.asset_not_delivered',
             'portal.chat.cancel_end_chat',
@@ -216,7 +217,7 @@ class LanguageController extends AbstractApiController
      */
     protected function getResponse(Request $request, array $phrases)
     {
-        $tr = $this->container->get('deskpro.core.translate');
+        $tr       = $this->container->get('deskpro.core.translate');
         $language = $this->container->get('language_stack')->getActiveOrDefault();
 
         $output = MapUtils::map($phrases, function ($idx, $id) use ($tr, $language) {

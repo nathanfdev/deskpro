@@ -96,4 +96,5 @@ return array(
     'portal.forms.error_password_forbid_reuse'          => 'You cannot use a password you have used before',
     'portal.forms.error_password_current'               => 'This must be your current password',
     'portal.forms.extra_fields'                         => 'There was an error processing your request. Please try again.',
+    'portal.forms.confirm_reset'                        => 'Are you sure you want to reset this form?',
 );

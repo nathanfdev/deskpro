@@ -46,6 +46,7 @@ return array(
     'portal.general.agent_bar_agent_news'        => 'Manage News',
     'portal.general.agents-available'            => 'Agents Available',
     'portal.general.attachments'                 => 'Attachments',
+    'portal.general.btn-cancel'                  => 'Cancel',
     'portal.general.btn-download-pdf'            => 'Download PDF',
     'portal.general.btn-email'                   => 'Email',
     'portal.general.btn-go'                      => 'Go',
