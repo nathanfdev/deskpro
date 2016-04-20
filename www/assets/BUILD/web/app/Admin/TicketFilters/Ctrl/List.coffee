@@ -43,7 +43,6 @@ define [
     initialLoad: ->
       promise = @filterData.loadList()
       promise.then( (list) =>
-
         @list = list
 
         if @$state.current.name == 'tickets.ticket_filters'

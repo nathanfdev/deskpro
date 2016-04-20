@@ -39,8 +39,6 @@ define [
   DataService_BillingFields,
   DataService_CustomFields,
   DataService_TicketFilters,
-  DataService_TicketFilterSets,
-  DataService_TicketFilterViews,
   DataService_TicketDeps,
   DataService_ChatDeps,
   DataService_TicketEscalations,
