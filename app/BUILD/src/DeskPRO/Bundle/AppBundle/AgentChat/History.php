@@ -94,7 +94,7 @@ class History
         $ids    = $this->getSearcher()->searchInChat($chat, $searchString);
         $result = [];
         if ($ids) {
-            $messageRepo = $this->em->getRepository(AgentChatMessage::class);
+            $messageRepo = $this->em->getRepository('App:AgentChatMessage');
             $messages    = $messageRepo->findBy(array('id' => $ids), array($orderBy => 'DESC'));
             foreach ($messages as $message) {
                 /* @var AgentChatMessage $message */
@@ -152,10 +152,10 @@ class History
         }
 
         /** @var AgentChatParticipantRepository $repo */
-        $repo = $this->em->getRepository(AgentChatParticipant::class);
+        $repo = $this->em->getRepository('App:AgentChatParticipant');
         $ids  = $repo->findChatsIds($person, $departments_ids);
         /* @var AgentChatRepository $chatRepo */
-        $chatRepo = $this->em->getRepository(AgentChat::class);
+        $chatRepo = $this->em->getRepository('App:AgentChat');
         $chats    = $chatRepo->findAllChats($ids, $order);
 
         return $chats;
@@ -170,7 +170,7 @@ class History
     {
         $chats = $this->findChats($user);
         /** @var AgentChatMessageRepository $repo */
-        $repo = $this->em->getRepository(AgentChatMessage::class);
+        $repo = $this->em->getRepository('App:AgentChatMessage');
 
         return $repo->countMessages($user, $chats);
     }
