@@ -193,6 +193,19 @@ class TicketMacro extends DomainObject
     }
 
     /**
+     * Get macro summary.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array<string>")
+     *
+     * @return array
+     */
+    public function getSummary()
+    {
+        return $this->getActionDescriptions(false);
+    }
+
+    /**
      * @param bool $as_html
      *
      * @return array
