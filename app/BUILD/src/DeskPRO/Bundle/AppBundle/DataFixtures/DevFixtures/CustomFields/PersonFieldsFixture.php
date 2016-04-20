@@ -61,9 +61,9 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         #------------------------------
         $fields   = [];
         $fields[] = $this->createField(
-            'select',
-            'Flumdiggler',
-            ['Agree', 'Disagree', 'I\'d rather not say']
+            'radio',
+            'Owner',
+            ['Mine', "Don't mine", "I don't know"]
         );
 
         self::$fields['default'] = $fields;
@@ -84,35 +84,35 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         #------------------------------
         $fields   = [];
         $fields[] = $this->createField(
-            'radio',
-            'Reason for Complaint',
-            ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']
+            'select',
+            'Mood today',
+            ['Fun', 'Serious', 'Lyric', 'Furious', 'Impassive', 'Other']
         );
 
         $fields[] = $this->createField(
             'multiselect',
-            'Suggested Actions',
-            ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']
+            'Dishes',
+            ['Steak', 'Burger', 'Porridge', 'Tom Yam soup']
         );
 
         self::$fields['regulation'] = $fields;
         self::$fields['control']    = $fields;
 
         #------------------------------
-        # Hotdogs
+        # Music
         #------------------------------
         $fields   = [];
         $fields[] = $this->createField(
             'select',
-            'Hotdog Kind',
+            'Music',
             [
-                'Normal',
-                ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
-                'Large',
+                'Classic',
+                ['Rock', ['Nazareth', 'Deep Purple', ['Queen', ['We will rock you', 'Bohemian Rhapsody']]]],
+                'Jazz',
             ]
         );
 
-        $fields[] = $this->createField('datetime', 'Delivery Time');
+        $fields[] = $this->createField('datetime', 'Date of Creation');
 
         self::$fields['hotdogs'] = $fields;
     }
